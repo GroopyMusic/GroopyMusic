@@ -1,29 +1,25 @@
 <?php
-// src/AppBundle/Form/RegistrationType.php
 
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RegistrationType extends AbstractType
+class ProfileUserFanType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('lastname')
-            ->add('firstname')
-        ;
+        $builder->add('name');
     }
 
     public function getParent()
     {
-        return 'FOS\UserBundle\Form\Type\RegistrationFormType';
+        return 'AppBundle\Form\ProfileType';
     }
 
     public function getBlockPrefix()
     {
-        return 'app_user_registration';
+        return 'app_user_fan_profile';
     }
-
 }

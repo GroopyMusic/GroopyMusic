@@ -1,0 +1,11 @@
+<route id="fos_user_registration_check_email" path="/check-email" methods="GET">
+    <default key="_controller">FOSUserBundle:Registration:checkEmail</default>
+</route>
+
+<route id="fos_user_registration_confirm" path="/confirm/{token}" methods="GET">
+<default key="_controller">FOSUserBundle:Registration:confirm</default>
+</route>
+
+<route id="fos_user_registration_confirmed" path="/confirmed" methods="GET">
+<default key="_controller">FOSUserBundle:Registration:confirmed</default>
+</route>

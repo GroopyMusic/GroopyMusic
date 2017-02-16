@@ -7,7 +7,20 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        <header>{% block header %}{% endblock %}</header>
+        <header>
+            {% block header %}
+                <nav id="menu">
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <a href="{{ path('fos_user_profile_edit') }}">Profil</a>
+                        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('user_registration') }}">Inscription<a>
+                        <a href="{{ path('fos_user_security_login') }}">Connexion<a>
+                    {% endif %}
+                </nav>
+
+            {% endblock %}
+        </header>
         <main>{% block body %}{% endblock %}</main>
         <footer>{% block footer %}{% endblock %}</footer>
         {% block javascripts %}{% endblock %}

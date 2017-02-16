@@ -1,14 +1,38 @@
 # app/config/routing.yml
+
+user_registration:
+  path: /register
+  defaults: { _controller: AppBundle:Security:register }
+
+user_artist_registration:
+    path:  /register/artist
+    defaults: { _controller: AppBundle:Security:registerArtist }
+
+user_fan_registration:
+    path:  /register/fan
+    defaults: { _controller: AppBundle:Security:registerFan }
+
+fos_user_registration_check_email:
+  path: /check-email
+  methods: GET
+  defaults: { _controller: FOSUserBundle:Registration:checkEmail}
+
+fos_user_registration_confirm:
+  path: /confirm/{token}
+  methods: GET
+  defaults: { _controller: FOSUserBundle:Registration:confirm}
+
+fos_user_registration_confirmed:
+  path: /confirmed
+  methods: GET
+  defaults: { _controller: FOSUserBundle:Registration:confirmed}
+
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
 fos_user_profile:
     resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
     prefix: /profile
-
-fos_user_register:
-    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
-    prefix: /register
 
 fos_user_resetting:
     resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"

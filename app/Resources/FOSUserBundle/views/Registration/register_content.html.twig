@@ -1,0 +1,12 @@
+{# trans_default_domain 'FOSUserBundle' %}
+
+<form action="
+    {% if app.request.attributes.get('_route') == 'user_one_registration' %}
+    {{ path('user_one_registration_register') }}
+    {% endif %}
+
+    {% if app.request.attributes.get('_route') == 'user_two_registration' %}
+    {{ path('user_two_registration_register') }}
+    {% endif %}
+    " {{ form_enctype(form) }} method="POST" class="fos_user_registration_register">
+#}

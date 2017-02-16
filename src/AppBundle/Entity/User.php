@@ -9,8 +9,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="fos_user")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({"user_artist" = "UserArtist", "user_fan" = "UserFan"})
  */
-class User extends BaseUser
+abstract class User extends BaseUser
 {
     /**
      * @ORM\Id
@@ -20,18 +23,23 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank(message="Please enter your name.", groups={"Registration", "Profile"})
+     * @ORM\Column(name="lastname", type="string", length=255)
+     * TODO traduire
+     * @Assert\NotBlank(message="Please enter your last name.", groups={"Registration", "Profile"})
      * @Assert\Length(
      *     min=3,
      *     max=255,
-     *     minMessage="The name is too short.",
-     *     maxMessage="The name is too long.",
+     *     minMessage="The last name is too short.",
+     *     maxMessage="The last name is too long.",
      *     groups={"Registration", "Profile"}
      * )
      */
-    protected $name;
+    protected $lastname;
+
+    /**
+     * @ORM\Column(name="firstname", type="string", length=255)
+     */
+    protected $firstname;
 
     public function __construct()
     {
@@ -40,26 +48,50 @@ class User extends BaseUser
     }
 
     /**
-     * Set name
+     * Set lastname
      *
-     * @param string $name
+     * @param string $lastname
      *
      * @return User
      */
-    public function setName($name)
+    public function setLastname($lastname)
     {
-        $this->name = $name;
+        $this->lastname = $lastname;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get lastname
      *
      * @return string
      */
-    public function getName()
+    public function getLastname()
     {
-        return $this->name;
+        return $this->lastname;
+    }
+
+    /**
+     * Set firstname
+     *
+     * @param string $firstname
+     *
+     * @return User
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get firstname
+     *
+     * @return string
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
     }
 }

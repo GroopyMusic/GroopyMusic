@@ -4,6 +4,6 @@
 
 {% block email_content %}
     {% autoescape false %}
-        {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}) }}
+        {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
     {% endautoescape %}
 {% endblock %}
