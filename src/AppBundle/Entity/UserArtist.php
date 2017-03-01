@@ -32,7 +32,6 @@ class UserArtist extends User
     private $artistname;
 
 
-
     /**
      * Set artistname
      *

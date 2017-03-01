@@ -29,7 +29,8 @@
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "^2.0",
         "friendsofsymfony/user-bundle": "dev-master",
-        "pugx/multi-user-bundle": "3.0.*@dev"
+        "pugx/multi-user-bundle": "3.0.*@dev",
+        "azine/email-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

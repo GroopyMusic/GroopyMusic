@@ -27,6 +27,10 @@ fos_user_registration_confirmed:
   methods: GET
   defaults: { _controller: FOSUserBundle:Registration:confirmed}
 
+azine_email_bundle:
+    resource: "@AzineEmailBundle/Resources/config/routing.yml"
+    prefix: /mail/
+
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 

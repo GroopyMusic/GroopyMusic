@@ -126,3 +126,69 @@ pugx_multi_user:
             type: AppBundle\Form\ProfileUserFanType
             name: user_fan_profile_form
             validation_groups:  [Profile, Default]
+
+azine_email:
+    # the class of your implementation of the RecipientInterface
+    recipient_class:      AppBundle\Entity\User # Required
+
+    # the fieldname of the boolean field on the recipient class indicating, that a newsletter should be sent or not
+    recipient_newsletter_field:  newsletter
+
+    # the service-id of your implementation of the nofitier service to be used
+    notifier_service:     email.notifier_service
+
+    # the service-id of your implementation of the template provider service to be used
+    template_provider:    email.template_provider # Required
+
+    # the service-id of the implementation of the RecipientProviderInterface to be used
+    recipient_provider:   azine_email.default.recipient_provider
+
+    # the service-id of the mailer service to be used
+    template_twig_swift_mailer:  azine_email.default.template_twig_swift_mailer
+
+    no_reply:             # Required
+        # the no-reply email-address
+        email:                no-reply@un-mute.be # Required
+        # the name to appear with the 'no-reply'-address.
+        name:                 'Un-Mute' # Required
+
+    # absolute path to the image-folder containing the images used in your templates.
+    image_dir:            '%kernel.root_dir%/../web/images/mail/'
+
+    # list of folders from which images are allowed to be embeded into emails
+    allowed_images_folders:  []
+
+    # newsletter configuration
+    # newsletter:
+        # number of days between newsletters
+    #    interval:             '14'
+        # time of the day, when newsletters should be sent, 24h-format => e.g. 23:59
+    #   send_time:            '10:00'
+
+    # templates configuration
+    templates:
+        # wrapper template id (without ending) for the newsletter
+        newsletter:           'AzineEmailBundle::newsletterEmailLayout'
+        # wrapper template id (without ending) for notifications
+        notifications:        'AzineEmailBundle::notificationsEmailLayout'
+        # template id (without ending) for notification content items
+        content_item:         'AzineEmailBundle:contentItem:message'
+
+    # the parameters for link tracking. see https://support.google.com/analytics/answer/1033867 for more infos.
+    tracking_params_campaign_name:    utm_campaign #defaluts to utm_name, piwik and google analytics both understand these parameters
+    tracking_params_campaign_term:    utm_term     #defaluts to utm_term, piwik and google analytics both understand these parameters
+    tracking_params_campaign_content: utm_content  #defaluts to utm_content, piwik and google analytics both understand these parameters
+    tracking_params_campaign_medium:  utm_medium   #defaluts to utm_medium, piwik and google analytics both understand these parameters
+    tracking_params_campaign_source:  utm_source   #defaluts to utm_source, piwik and google analytics both understand these parameters
+
+    # See the chapter further below for more information
+    email_open_tracking_url:  null
+
+    # Defaults to the AzineEmailOpenTrackingCodeBuilder. Depending on the email_open_tracking_url it will create tracking images for piwik or google analytics.
+    email_open_tracking_code_builder:  azine.email.open.tracking.code.builder.ga.or.piwik
+
+    # number of days that emails should be available in web-view
+    web_view_retention:   90
+
+    # the service-id of your implementation of the web view service to be used
+    web_view_service:     email.web_view_service

@@ -8,3 +8,39 @@ services:
         class: AppBundle\Form\RegistrationType
         tags:
             - { name: form.type, alias: app_user_registration }
+
+    email.web_view_service:
+            class: AppBundle\Services\MailWebViewService
+            arguments:
+              router:       "@router"
+
+    email.template_provider:
+          class: AppBundle\Services\MailTemplateProvider
+          arguments:
+            router:       "@router"
+            translator:   "@translator.default"
+            parameters:
+              image_dir:  "%azine_email_image_dir%"
+              allowed_images_folders: "%azine_email_allowed_images_folders%"
+              tracking_params_campaign_name: "%azine_email_tracking_params_campaign_name%"
+              tracking_params_campaign_term: "%azine_email_tracking_params_campaign_term%"
+              tracking_params_campaign_content: "%azine_email_tracking_params_campaign_content%"
+              tracking_params_campaign_medium: "%azine_email_tracking_params_campaign_medium%"
+              tracking_params_campaign_source: "%azine_email_tracking_params_campaign_source%"
+
+    email.notifier_service:
+            class: AppBundle\Services\MailNotifierService
+            arguments:
+              mailer:             "@azine_email_template_twig_swift_mailer"
+              twig:               "@twig"
+              router:             "@router"
+              managerRegistry:    "@doctrine"
+              templateProvider:   "@email.template_provider"
+              recipientProvider:  "@azine_email_recipient_provider"
+              translatorService:  "@translator.default"
+              parameters:
+                newsletter_interval :     "%azine_email_newsletter_interval%"
+                newsletter_send_time:     "%azine_email_newsletter_send_time%"
+                templates_newsletter:     "%azine_email_templates_newsletter%"
+                templates_notifications:  "%azine_email_templates_notifications%"
+                templates_content_item:   "%azine_email_templates_content_item%"

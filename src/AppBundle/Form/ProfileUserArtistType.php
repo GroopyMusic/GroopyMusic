@@ -10,7 +10,9 @@ class ProfileUserArtistType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name');
+        $builder
+            ->add('artistname')
+        ;
     }
 
     public function getParent()

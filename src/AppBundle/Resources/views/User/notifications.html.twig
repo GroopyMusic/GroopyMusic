@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <table>
+        {% for notif in notifs %}
+        <tr>
+            <td>
+                <a href="{{ path('user_notification', {'id': notif.id}) }}">{{ notif.title }}</a>
+            </td>
+        </tr>
+
+        {% else %}
+           <tr>
+               <td>
+                   Il n'y a pas encore de notification pour l'instant
+               </td>
+           </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

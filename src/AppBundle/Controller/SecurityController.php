@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class SecurityController extends Controller
 {
@@ -15,7 +16,6 @@ class SecurityController extends Controller
         return $this->container
             ->get('pugx_multi_user.registration_manager')
             ->register('AppBundle\Entity\UserArtist');
-
     }
 
     public function registerFanAction() {
@@ -23,6 +23,5 @@ class SecurityController extends Controller
         return $this->container
             ->get('pugx_multi_user.registration_manager')
             ->register('AppBundle\Entity\UserFan');
-
     }
 }
