@@ -31,4 +31,4 @@ monolog:
         #    level:  info
 
 swiftmailer:
-    delivery_address: gonzyer@gmail.com
+    delivery_address: "%dev_delivery_adress%"

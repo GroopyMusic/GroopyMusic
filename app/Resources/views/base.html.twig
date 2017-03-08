@@ -13,12 +13,12 @@
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <a href="{{ path('fos_user_profile_edit') }}">Profil</a>
                         <a href="{{ path('user_notifications') }}">Inbox</a>
+                        <a href="{{ path('testmail') }}">Test mail</a>
                         <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
                     {% else %}
                         <a href="{{ path('user_registration') }}">Inscription<a>
                         <a href="{{ path('fos_user_security_login') }}">Connexion<a>
                     {% endif %}
-                        <a href="{{ path('testmail') }}">Test mail</a>
                 </nav>
 
             {% endblock %}
