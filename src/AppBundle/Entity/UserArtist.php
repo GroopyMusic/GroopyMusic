@@ -19,6 +19,12 @@ use PUGX\MultiUserBundle\Validator\Constraints\UniqueEntity;
  */
 class UserArtist extends User
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->addRole("ROLE_ARTIST");
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -31,6 +37,11 @@ class UserArtist extends User
      */
     private $artistname;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Phase")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $phase;
 
     /**
      * Set artistname
@@ -102,5 +113,29 @@ class UserArtist extends User
     public function getFirstname()
     {
         return $this->firstname;
+    }
+
+    /**
+     * Set phase
+     *
+     * @param \AppBundle\Entity\Phase $phase
+     *
+     * @return UserArtist
+     */
+    public function setPhase(\AppBundle\Entity\Phase $phase)
+    {
+        $this->phase = $phase;
+
+        return $this;
+    }
+
+    /**
+     * Get phase
+     *
+     * @return \AppBundle\Entity\Phase
+     */
+    public function getPhase()
+    {
+        return $this->phase;
     }
 }

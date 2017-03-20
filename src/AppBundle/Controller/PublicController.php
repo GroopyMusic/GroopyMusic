@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -20,31 +21,25 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/testmail", name="testmail")
+     * @Route("/steps", name="steps")
      */
-    public function testmailAction(Request $request, UserInterface $user) {
-        // get all elements used for the notification email
-        $title = "You have won the lottery!";
-        $content = "Congratulation John! You have won 7'000'000$ in the lottery";
-        $goToUrl = "http://www.acmelottery.com/claim/you/money";
-        $recipientId = $user->getId();
+    public function stepsAction() {
 
-        // get your implementation of the AzineNotifierService
-        $notifierService = $this->get('email.notifier_service');
-        $notifierService->addNotificationMessage($recipientId, $title, $content, $goToUrl);
+         $em = $this->getDoctrine()->getManager();
+         $phases = $em->getRepository('AppBundle:Phase')->findAllWithSteps();
 
-        $params = array();
-        //$params['subject'] = $subject;
-       // $params['name'] = $recipientName;
-        //$params['age'] = 42;
-        //$params['message'] = "Happy birthday I wish you all the best!!"
-        $locale = "fr";
+        return $this->render('@App/Public/steps.html.twig', array(
+            'phases' => $phases,
+        ));
+    }
 
-        $mailer = $this->container->get('azine_email_template_twig_swift_mailer');
-        $mailer->sendSingleEmail($user->getEmail(), $user->getDisplayName(), "Test", $params, MailTemplateProvider::VIP_INFO_MAIL_TEMPLATE . ".txt.twig", $locale);
+    /**
+     * @Route("/step-{id}", name="step")
+     */
+    public function stepAction(Step $step) {
 
-        // TODO envoi du mail (pour l'instant manuel :()
-
-        return $this->render('@App/Test/vip.html.twig');
+        return $this->render('@App/Public/step.html.twig', array(
+            'step' => $step,
+        ));
     }
 }

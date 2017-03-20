@@ -1,0 +1,77 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Purchase
+ *
+ * @ORM\Table(name="purchase")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PurchaseRepository")
+ */
+class Purchase
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="quantity", type="smallint")
+     */
+    private $quantity;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ContractFan", inversedBy="purchases")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $contractFan;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CounterPart")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $counterpart;
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set quantity
+     *
+     * @param integer $quantity
+     *
+     * @return Purchase
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get quantity
+     *
+     * @return int
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+}
+

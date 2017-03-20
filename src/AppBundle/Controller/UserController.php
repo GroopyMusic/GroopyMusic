@@ -2,6 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\Step;
+use AppBundle\Entity\User;
+use AppBundle\Services\MailTemplateProvider;
 use Azine\EmailBundle\Entity\Notification;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +14,52 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class UserController extends Controller
 {
+    /**
+     * @Route("/home", name="default_security_target")
+     */
+    public function homeAction(Request $request, UserInterface $user) {
+
+        // TODO sécuriser cette route tout comme tout le reste de l'espace membres
+
+        if($user->hasRole("ROLE_ARTIST")) {
+            return $this->redirectToRoute('artist_home');
+        }
+
+        elseif($user->hasRole("ROLE_FAN")) {
+            return $this->redirectToRoute('fan_home');
+        }
+
+    }
+
+    /**
+     * @Route("/testmail", name="testmail")
+     */
+    public function testmailAction(Request $request, UserInterface $user) {
+        // get all elements used for the notification email
+        $title = "You have won the lottery!";
+        $content = "Congratulation John! You have won 7'000'000$ in the lottery";
+        $goToUrl = "http://www.acmelottery.com/claim/you/money";
+        $recipientId = $user->getId();
+
+        // get your implementation of the AzineNotifierService
+        $notifierService = $this->get('email.notifier_service');
+        $notifierService->addNotificationMessage($recipientId, $title, $content, $goToUrl);
+
+        $params = array();
+        $params['subject'] = $title;
+        $params['name'] = $user->getUsername();
+        $params['age'] = 42;
+        $params['message'] = "Happy birthday I wish you all the best!!";
+        $locale = "fr";
+
+        $mailer = $this->container->get('azine_email_template_twig_swift_mailer');
+        $mailer->sendSingleEmail($user->getEmail(), $user->getDisplayName(), "Test", $params, MailTemplateProvider::VIP_INFO_MAIL_TEMPLATE . ".txt.twig", $locale);
+
+        // TODO envoi du mail (pour l'instant manuel)
+
+        return $this->render('@App/Test/vip.html.twig');
+    }
+
     /**
      * @Route("/inbox", name="user_notifications")
      */
@@ -39,6 +89,25 @@ class UserController extends Controller
 
         return $this->render('@App/User/notification.html.twig', array(
             'notif' => $notif,
+        ));
+    }
+
+    /**
+     * @Route("/see-contract-{id}", name="user_see_contract")
+     */
+    public function seeContractAction(ContractArtist $contract, UserInterface $user, Request $request) {
+
+        return $this->render('@App/User/artist_contract.html.twig', array(
+            'contract' => $contract,
+        ));
+    }
+
+    /**
+     * @Route("/profile-{id}", name="user_see_profile")
+     */
+    public function seeProfileAction(User $user) {
+        return $this->render('@App/User/profile.html.twig', array(
+            'user' => $user,
         ));
     }
 }

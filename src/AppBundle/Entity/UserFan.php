@@ -19,6 +19,12 @@ use PUGX\MultiUserBundle\Validator\Constraints\UniqueEntity;
  */
 class UserFan extends User
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->addRole("ROLE_FAN");
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

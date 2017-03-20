@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <ul>
+        <li>
+            Date de début du contrat : {{ contract.date|date('d/m/Y H:i:s') }}
+        </li>
+        <li>
+            Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y H:i:s') }}
+        </li>
+        <li>
+            Palier correspondant : {{ contract.step.name }}
+        </li>
+        <li>
+            Nom du groupe : {{ contract.artist.artistname }}
+        </li>
+    </ul>
+
+    {% if is_granted('ROLE_FAN') %}
+
+        {# TODO système de mise #}
+
+    {% endif %}
+
+{% endblock %}

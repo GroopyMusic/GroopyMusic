@@ -1,0 +1,3 @@
+{% for message in app.request.session.flashbag.get('notice') %}
+    <p class="confirm">{{ message }}</p>
+{% endfor%}

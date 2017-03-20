@@ -44,3 +44,6 @@ services:
                 templates_newsletter:     "%azine_email_templates_newsletter%"
                 templates_notifications:  "%azine_email_templates_notifications%"
                 templates_content_item:   "%azine_email_templates_content_item%"
+
+    # The following line blocks an error in the AzineEmailBundle which references a non-existent "immediatemailer" service
+    swiftmailer.mailer.immediatemailer: "@mailer"

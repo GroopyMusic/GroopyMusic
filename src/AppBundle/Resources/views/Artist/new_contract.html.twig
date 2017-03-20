@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <p>Vous vous apprêtez à lancer un crowdfunding pour le palier suivant :</p>
+
+    {% include "AppBundle:Entity:step.html.twig" with {'step': contract.step} %}
+
+    {{ form(form) }}
+
+    Date de fin du contrat : {{ contract.theoriticalDeadline|date('d/m') }}
+
+{% endblock %}

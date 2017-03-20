@@ -1,0 +1,178 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ContractArtist
+ *
+ * @ORM\Table(name="contract_artist")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ContractArtistRepository")
+ */
+class ContractArtist
+{
+    public function __construct() {
+
+    }
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_end", type="datetime")
+     */
+    private $dateEnd;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Step")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $step;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="UserArtist")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $artist;
+
+    private $theoritical_deadline;
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return ContractArtist
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set dateEnd
+     *
+     * @param \DateTime $dateEnd
+     *
+     * @return ContractArtist
+     */
+    public function setDateEnd($dateEnd)
+    {
+        $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get dateEnd
+     *
+     * @return \DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->dateEnd;
+    }
+
+    /**
+     * Set step
+     *
+     * @param \AppBundle\Entity\Step $step
+     *
+     * @return ContractArtist
+     */
+    public function setStep(\AppBundle\Entity\Step $step)
+    {
+        $this->step = $step;
+
+        return $this;
+    }
+
+    /**
+     * Get step
+     *
+     * @return \AppBundle\Entity\Step
+     */
+    public function getStep()
+    {
+        return $this->step;
+    }
+
+    /**
+     * Set artist
+     *
+     * @param \AppBundle\Entity\UserArtist $artist
+     *
+     * @return ContractArtist
+     */
+    public function setArtist(\AppBundle\Entity\UserArtist $artist)
+    {
+        $this->artist = $artist;
+
+        return $this;
+    }
+
+    /**
+     * Get artist
+     *
+     * @return \AppBundle\Entity\UserArtist
+     */
+    public function getArtist()
+    {
+        return $this->artist;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTheoriticalDeadline()
+    {
+        return $this->theoritical_deadline;
+    }
+
+    /**
+     * @param mixed $theoritical_deadline
+     */
+    public function setTheoriticalDeadline($theoritical_deadline)
+    {
+        $this->theoritical_deadline = $theoritical_deadline;
+    }
+
+}

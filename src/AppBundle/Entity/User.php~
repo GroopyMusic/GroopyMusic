@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Azine\EmailBundle\Entity\RecipientInterface;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,8 +14,119 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"user_artist" = "UserArtist", "user_fan" = "UserFan"})
  */
-abstract class User extends BaseUser
+abstract class User extends BaseUser implements RecipientInterface
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY);
+        $this->setNewsletter(true);
+    }
+
+    /**
+     * @return string representation of this user
+     */
+    public function getDisplayName()
+    {
+        $firstName = $this->getFirstName();
+        $lastName = $this->getLastName();
+        $username = $this->getUsername();
+
+        $displayName = $username;
+        if ($firstName) {
+            $displayName = $firstName;
+        } elseif ($lastName) {
+            $displayName = $this->getSalutation()." ".$lastName;
+        }
+
+        return ucwords($displayName);
+    }
+
+    /**
+     * @var string
+     */
+    protected $preferredLocale;
+
+    /**
+     * @var string
+     */
+    protected $salutation;
+
+    /**
+     * @var integer
+     */
+    protected $notification_mode;
+
+    /**
+     * @var boolean
+     */
+    protected $newsletter;
+
+    /**
+     * @param mixed $salutation
+     */
+    public function setSalutation($salutation)
+    {
+        $this->salutation = $salutation;
+    }
+
+    /**
+     * @param int $notification_mode
+     */
+    public function setNotificationMode($notification_mode)
+    {
+        $this->notification_mode = $notification_mode;
+    }
+
+    /**
+     * @param boolean $newsletter
+     */
+    public function setNewsletter($newsletter)
+    {
+        $this->newsletter = $newsletter;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPreferredLocale()
+    {
+        return $this->preferredLocale;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalutation()
+    {
+        return $this->salutation;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNotificationMode()
+    {
+        return $this->notification_mode;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getNewsletter()
+    {
+        return $this->newsletter;
+    }
+
+    /**
+     * @param mixed $preferredLocale
+     */
+    public function setPreferredLocale($preferredLocale)
+    {
+        $this->preferredLocale = $preferredLocale;
+    }
+
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -41,9 +153,62 @@ abstract class User extends BaseUser
      */
     protected $firstname;
 
-    public function __construct()
+    /**
+     * @return mixed
+     */
+    public function getId()
     {
-        parent::__construct();
-        // your own logic
+        return $this->id;
     }
+
+
+    /**
+     * Set lastname
+     *
+     * @param string $lastname
+     *
+     * @return User
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * Get lastname
+     *
+     * @return string
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * Set firstname
+     *
+     * @param string $firstname
+     *
+     * @return User
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get firstname
+     *
+     * @return string
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+
 }

@@ -11,20 +11,47 @@
             {% block header %}
                 <nav id="menu">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
                         <a href="{{ path('fos_user_profile_edit') }}">Profil</a>
                         <a href="{{ path('user_notifications') }}">Inbox</a>
                         <a href="{{ path('testmail') }}">Test mail</a>
-                        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+
+                    {% if is_granted('ROLE_ARTIST') %}
+                        <a href="{{ path('artist_steps') }}">Paliers</a>
+                        <a href="{{ path('artist_contracts') }}">Contrats</a>
+                    {% endif %}
+
                     {% else %}
-                        <a href="{{ path('user_registration') }}">Inscription<a>
-                        <a href="{{ path('fos_user_security_login') }}">Connexion<a>
+                        <a href="{{ path('user_registration') }}">Inscription</a>
+                        <a href="{{ path('fos_user_security_login') }}">Connexion</a>
                     {% endif %}
                 </nav>
 
             {% endblock %}
         </header>
-        <main>{% block body %}{% endblock %}</main>
-        <footer>{% block footer %}{% endblock %}</footer>
+
+        <main>
+            {% block flashes %}
+                {% include ":patterns:notices.html.twig" %}
+            {% endblock %}
+
+            {% block errors %}
+                {% include ":patterns:errors.html.twig" %}
+            {% endblock %}
+
+            {# later
+            {% block breadcrumbs %}
+                {{ wo_render_breadcrumbs() }}
+            {% endblock %}
+            #}
+
+            {% block body %}{# Page body comes here #}{% endblock %}
+        </main>
+
+
+        <footer>
+            {% block footer %}{% endblock %}
+        </footer>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

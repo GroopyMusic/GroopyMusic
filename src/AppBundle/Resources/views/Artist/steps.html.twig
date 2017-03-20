@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div id="available-phases">
+
+    {% set overleveled = false %}
+
+    {% for phase in phases %}
+        {% if phase.num > app.user.phase.num and not overleveled %}
+            </div>
+            <div id="unavailable-phases">
+            {% set overleveled = true %}
+        {% endif %}
+        Phase #{{ phase.num }} : {{ phase.name }}
+        <ul>
+        {% for step in phase.steps %}
+            <li>Palier #{{ step.num }} : {{ step.name }} (type : {{ step.type.name }})
+                {% if not overleveled and currentContract is null %}
+                    <a href="{{ path('artist_new_contract', {'id': step.id}) }}">viser</a>
+                {% else %}
+                    <a href="{{ path('step', {'id': step.id}) }}">infos</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+
+    {% endfor %}
+
+    </div>
+{% endblock %}

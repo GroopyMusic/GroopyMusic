@@ -46,6 +46,26 @@ fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix: /profile
 
-app:
-    resource: "@AppBundle/Controller/"
+app_sec:
+    resource: "@AppBundle/Controller/SecurityController.php"
+    type:     annotation
+    prefix: /secure
+
+app_user:
+    resource: "@AppBundle/Controller/UserController.php"
+    type:     annotation
+    prefix: /secure
+
+app_fan:
+    resource: "@AppBundle/Controller/FanController.php"
+    type:     annotation
+    prefix: /secure/fan
+
+app_artist:
+    resource: "@AppBundle/Controller/ArtistController.php"
+    type:     annotation
+    prefix: /secure/artist
+
+app_public:
+    resource: "@AppBundle/Controller/PublicController.php"
     type:     annotation

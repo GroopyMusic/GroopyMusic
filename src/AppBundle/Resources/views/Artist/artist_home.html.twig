@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+{% if currentContract is not null %}
+    Palier en cours de contrat : <a href="{{ path('user_see_contract', {'id': currentContract.id}) }}">{{ currentContract.step.name }}</a>
+{% endif %}
+
+    <div>
+        <h2>Résumé de votre évolution :</h2>
+
+        mdr mdr mdr
+    </div>
+
+{% endblock  %}

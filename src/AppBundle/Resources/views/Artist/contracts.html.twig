@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    {% if contracts is not empty %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th># du contrat</th>
+                    <th>Date de passage du contrat</th>
+                    <th>Date limite</th>
+                    <th>Palier concerné</th>
+                    <th>État</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for contract in contracts %}
+                <tr>
+                    <td>{{ contract.id }}</td>
+                    <td>{{ contract.date|date('d/m/Y') }}</td>
+                    <td>{{ contract.dateEnd|date('d/m/Y') }}</td>
+                    <td><a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.name }}</a></td>
+                    <td><a href="{{ path('user_see_contract', {'id': contract.id}) }}">
+                        {% set date_act = "now" %}
+                        {% if contract.dateEnd > date_act %}
+                            En cours
+                        {% else %}
+                            Terminé
+                        {% endif %}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

@@ -17,3 +17,4 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+    dev_delivery_address: gounzy@un-mute.be #change this to your e-mail for testing
