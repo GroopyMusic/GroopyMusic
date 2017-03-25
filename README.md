@@ -1,11 +1,26 @@
 # Un-mute asbl
 
-## *Étapes importantes pour la collaboration au développement de la plateforme*
+###### *Étapes importantes pour la collaboration au développement de la plateforme*
+
 ### Rejoindre le Slack du projet
 
 Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
 ### Forker le projet github
+
+La première chose est d'avoir un compte Github. 
+
+On ne travaillera pas directement sur le projet original, il va donc falloir **forker** le projet. Pour cela, rendez-vous en haut à droite sur la page [GroopyMusic](https://github.com/Gounzy/GroopyMusic) et on fork le projet.
+
+Ensuite il faut aller cloner le fork. Pour cela il faut aller sur la page
+`https://github.com/VOTRE-PSEUDO/GroopyMusic`, cliquer sur `Clone or download` et dans le terminal entrer la commande suivante `git clone https://github.com/VOTRE-PSEUDO/GroopyMusic.git`
+
+Ceci fait vous pourrez travailler facilement et sans commettre de dégats sur le projet original.
+
+Pour rester à jour sur le projet, il faut ajouter ce qu'on appelle un remote. Pour cela, placez-vous dans le dossier git `GroopyMusic` et entrez la commande suivante `git remote add upstream https://github.com/Gounzy/GroopyMusic`.  
+Ensuite, pour rapatrier les modifications non présentes dans votre dépôt local, on utilisera la commande `git fetch upstream`, et pour les fusionner `git merge upstream/master` ou autre branche.
+
+Une fois que le travail est terminé, il faudra émettre une *pull request*. Cela se fait directement sur Github
 
 ### Installer les dépendances avec Composer
 
