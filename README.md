@@ -12,7 +12,7 @@ La première chose est d'avoir un compte Github.
 
 On ne travaillera pas directement sur le projet original, il va donc falloir **forker** le projet. Pour cela, rendez-vous en haut à droite sur la page [GroopyMusic](https://github.com/Gounzy/GroopyMusic) et on fork le projet.
 
-Ensuite il faut aller cloner le fork. Pour cela il faut aller sur la page
+Ensuite il faut aller cloner le fork. Pour cela il faut aller sur votre fork
 `https://github.com/VOTRE-PSEUDO/GroopyMusic`, cliquer sur `Clone or download` et dans le terminal entrer la commande suivante `git clone https://github.com/VOTRE-PSEUDO/GroopyMusic.git`
 
 Ceci fait vous pourrez travailler facilement et sans commettre de dégats sur le projet original.
