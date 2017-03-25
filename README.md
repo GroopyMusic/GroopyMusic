@@ -3,8 +3,7 @@
 ## *Étapes importantes pour la collaboration au développement de la plateforme*
 ### Rejoindre le Slack du projet
 
-Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/) 
-Une demande d'ajout peut être envoyée à gonzyer@gmail.com
+Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
 ### Forker le projet github
 
@@ -25,7 +24,7 @@ Pour mettre à jour Composer, exécuter
 
 Le fichier `app/config/parameters.yml n’est pas partagé parce qu’il contient des données « secrètes ». Voici ce qu’il faut en faire : 
 ```yaml
-    parameters:
+parameters:
    # Vos données de base de données locale
     database_host: 127.0.0.1
     database_port: null
