@@ -1,14 +1,14 @@
-#Un-mute asbl
+# Un-mute asbl
 
-##*Étapes importantes pour la collaboration au développement de la plateforme*
-###Rejoindre le Slack du projet
+## *Étapes importantes pour la collaboration au développement de la plateforme*
+### Rejoindre le Slack du projet
 
 Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/) 
 Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
-###Forker le projet github
+### Forker le projet github
 
-###Installer les dépendances avec Composer
+### Installer les dépendances avec Composer
 
 Nous utilisons Composer pour gérer les dépendances *third-party* du projet. Il faut avant toutes choses l’installer : <https://getcomposer.org/download/>
 
@@ -21,7 +21,7 @@ Pour installer les mises-à-jour, exécuter la commande
 Pour mettre à jour Composer, exécuter
 `php chemin/vers/composer.phar self-update`
 
-###Définir les paramètres locaux dans `parameters.yml`
+### Définir les paramètres locaux dans `parameters.yml`
 
 Le fichier `app/config/parameters.yml n’est pas partagé parce qu’il contient des données « secrètes ». Voici ce qu’il faut en faire : 
 ```yaml
@@ -47,7 +47,7 @@ Le fichier `app/config/parameters.yml n’est pas partagé parce qu’il contien
 
 ```
 
-###Mettre en place la base de données
+### Mettre en place la base de données
 
 Pour mettre en place la base de données, il faut d’abord exécuter
 `php bin/console doctrine:database:create`
