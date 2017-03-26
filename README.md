@@ -36,8 +36,7 @@ Pour mettre à jour Composer, exécuter
 `php chemin/vers/composer.phar self-update`
 
 ### Définir les paramètres locaux dans `parameters.yml`
-
-Le fichier `app/config/parameters.yml n’est pas partagé parce qu’il contient des données « secrètes ». Voici ce qu’il faut en faire : 
+Le fichier `app/config/parameters.yml` n’est pas partagé parce qu’il contient des données « secrètes ». Voici ce qu’il faut en faire : 
 ```yaml
 parameters:
    # Vos données de base de données locale
