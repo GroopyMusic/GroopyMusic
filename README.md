@@ -66,7 +66,7 @@ parameters:
 Pour mettre en place la base de données, il faut d’abord exécuter
 `php bin/console doctrine:database:create`
 
-Puis, pour créer la structure de la base de données au fur et à mesure des mises-à-jour, la commande est `doctrine:schema:update --dump-sql` (pour voir le SQL qui va être exécuté) et `doctrine:schema:update –force` (pour effectivement exécuter le SQL)
+Puis, pour créer la structure de la base de données au fur et à mesure des mises-à-jour, la commande est `doctrine:schema:update --dump-sql` (pour voir le SQL qui va être exécuté) et `doctrine:schema:update –force` (pour effectivement exécuter le SQL).
 
 La commande suivante vide d’abord l’entièreté de la base de données (!!!) puis la remplit avec des données définies dans des fichiers de « fixtures ». 
 `doctrine:fixtures:load` puis répondre `y` à la question posée.
