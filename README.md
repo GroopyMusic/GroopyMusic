@@ -1,4 +1,4 @@
-# Un-mute asbl
+# Un-Mute asbl
 
 ###### *Étapes importantes pour la collaboration au développement de la plateforme*
 
@@ -6,7 +6,7 @@
 
 Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
-### Forker le projet github
+### Forker le projet GitHub
 
 La première chose est d'avoir un compte Github. 
 
