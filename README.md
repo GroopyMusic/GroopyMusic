@@ -10,15 +10,15 @@ Pour communiquer facilement et efficacement au sein du projet nous utiliserons S
 
 La première chose est d'avoir un compte Github. 
 
-On ne travaillera pas directement sur le projet original, il va donc falloir **forker** le projet. Pour cela, rendez-vous en haut à droite sur la page [GroopyMusic](https://github.com/Gounzy/GroopyMusic) et on fork le projet.
+On ne travaillera pas directement sur le projet original, il va donc falloir **forker** le projet. Pour cela, rendez-vous en haut à droite sur la page [GroopyMusic](https://github.com/GroopyMusic/GroopyMusic) et on fork le projet.
 
 Ensuite il faut aller cloner le fork. Pour cela il faut aller sur votre fork
 `https://github.com/VOTRE-PSEUDO/GroopyMusic`, cliquer sur `Clone or download` et dans le terminal entrer la commande suivante `git clone https://github.com/VOTRE-PSEUDO/GroopyMusic.git`
 
 Ceci fait vous pourrez travailler facilement et sans commettre de dégats sur le projet original.
 
-Pour rester à jour sur le projet, il faut ajouter ce qu'on appelle un remote. Pour cela, placez-vous dans le dossier git `GroopyMusic` et entrez la commande suivante `git remote add upstream https://github.com/Gounzy/GroopyMusic`.  
-Ensuite, pour rapatrier les modifications non présentes dans votre dépôt local, on utilisera la commande `git fetch upstream`, et pour les fusionner `git merge upstream/master` ou autre branche.
+Pour rester à jour sur le projet, il faut ajouter ce qu'on appelle un remote. Pour cela, placez-vous dans le dossier git `GroopyMusic` et entrez la commande suivante `git remote add upstream https://github.com/GroopyMusic/GroopyMusic`.  
+Ensuite, pour rapatrier les modifications non présentes dans votre dépôt local, on utilisera la commande `git fetch upstream`, et pour les fusionner `git merge upstream` ou autre branche.
 
 Une fois que le travail est terminé, il faudra émettre une *pull request*. Cela se fait directement sur Github
 
@@ -36,8 +36,7 @@ Pour mettre à jour Composer, exécuter
 `php chemin/vers/composer.phar self-update`
 
 ### Définir les paramètres locaux dans `parameters.yml`
-
-Le fichier `app/config/parameters.yml n’est pas partagé parce qu’il contient des données « secrètes ». Voici ce qu’il faut en faire : 
+Le fichier `app/config/parameters.yml` n’est pas partagé parce qu’il contient des données « secrètes ». Voici ce qu’il faut en faire : 
 ```yaml
 parameters:
    # Vos données de base de données locale
