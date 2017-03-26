@@ -18,7 +18,7 @@ Ensuite il faut aller cloner le fork. Pour cela il faut aller sur votre fork
 Ceci fait vous pourrez travailler facilement et sans commettre de dégats sur le projet original.
 
 Pour rester à jour sur le projet, il faut ajouter ce qu'on appelle un remote. Pour cela, placez-vous dans le dossier git `GroopyMusic` et entrez la commande suivante `git remote add upstream https://github.com/GroopyMusic/GroopyMusic`.  
-Ensuite, pour rapatrier les modifications non présentes dans votre dépôt local, on utilisera la commande `git fetch upstream`, et pour les fusionner `git merge upstream` ou autre branche.
+Ensuite, pour rapatrier les modifications non présentes dans votre dépôt local, on utilisera la commande `git fetch upstream`, et pour les fusionner `git merge upstream/master` ou autre branche.
 
 Une fois que le travail est terminé, il faudra émettre une *pull request*. Cela se fait directement sur Github
 
