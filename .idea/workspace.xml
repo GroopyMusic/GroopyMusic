@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="64f9946e-afe9-4bd7-9bd3-f9ae8cd04001" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+=======
+>>>>>>> mdr
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="UnMuteBE.iws" />
@@ -42,22 +45,52 @@
         <entry file="file://$PROJECT_DIR$/src/AppBundle/Resources/views/User/artist_contract.html.twig">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="357">
+<<<<<<< HEAD
               <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
+=======
+              <caret line="21" column="32" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="32" />
+>>>>>>> mdr
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="parameters.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/config/parameters.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
               <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding />
+=======
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="918">
+                <caret line="54" column="4" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="4" />
+                <folding>
+                  <marker date="1490545612345" expanded="true" signature="2437:3009" ph="parameters: &lt;11 keys&gt;" />
+                  <marker date="1490545612345" expanded="true" signature="2511:2520" ph="127.0.0.1" />
+                  <marker date="1490545612345" expanded="true" signature="2540:2544" ph="null" />
+                  <marker date="1490545612345" expanded="true" signature="2564:2570" ph="unmute" />
+                  <marker date="1490545612345" expanded="true" signature="2590:2594" ph="root" />
+                  <marker date="1490545612345" expanded="true" signature="2618:2622" ph="null" />
+                  <marker date="1490545612345" expanded="true" signature="2699:2703" ph="smtp" />
+                  <marker date="1490545612345" expanded="true" signature="2721:2736" ph="smtp.un-mu..." />
+                  <marker date="1490545612345" expanded="true" signature="2754:2773" ph="no-reply@u..." />
+                  <marker date="1490545612345" expanded="true" signature="2795:2824" ph="mot_de_pas..." />
+                  <marker date="1490545612345" expanded="true" signature="2870:2885" ph="mdrmdrmdrm..." />
+                  <marker date="1490545612345" expanded="true" signature="2992:3009" ph="gonzyer@gm..." />
+                </folding>
+              </first_editor>
+              <second_editor />
+>>>>>>> mdr
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
@@ -80,6 +113,14 @@
                 </folding>
               </first_editor>
               <second_editor />
+=======
+      <file leaf-file-name="ProfileController.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/vendor/friendsofsymfony/user-bundle/Controller/ProfileController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+>>>>>>> mdr
             </state>
           </provider>
         </entry>
@@ -119,9 +160,13 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1105">
               <caret line="65" column="5" selection-start-line="65" selection-start-column="5" selection-end-line="65" selection-end-column="5" />
+<<<<<<< HEAD
               <folding>
                 <marker date="1490014799853" expanded="true" signature="225:1531" ph="{...}" />
               </folding>
+=======
+              <folding />
+>>>>>>> mdr
             </state>
           </provider>
         </entry>
@@ -190,11 +235,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+<<<<<<< HEAD
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
+=======
+>>>>>>> mdr
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -248,7 +296,10 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/ContractFan.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/Purchase.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Resources/views/User/artist_contract.html.twig" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/app/config/parameters.yml" />
+=======
+>>>>>>> mdr
         <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
@@ -291,6 +342,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+<<<<<<< HEAD
+=======
+      <pane id="Scratches" />
+>>>>>>> mdr
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -312,7 +367,10 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+<<<<<<< HEAD
       <pane id="Scratches" />
+=======
+>>>>>>> mdr
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -419,9 +477,14 @@
       <workItem from="1489613088160" duration="2625000" />
       <workItem from="1489860126695" duration="2676000" />
       <workItem from="1489919604461" duration="12183000" />
+<<<<<<< HEAD
       <workItem from="1490000171481" duration="7891000" />
       <workItem from="1490346448733" duration="917000" />
       <workItem from="1490544691788" duration="767000" />
+=======
+      <workItem from="1490000171481" duration="7387000" />
+      <workItem from="1490545575800" duration="51000" />
+>>>>>>> mdr
     </task>
     <task id="LOCAL-00001" summary="Test commit 2">
       <created>1485193444885</created>
@@ -441,7 +504,11 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="96884000" />
+=======
+    <option name="totallyTimeSpent" value="94747000" />
+>>>>>>> mdr
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -453,10 +520,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
+<<<<<<< HEAD
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21722364" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21465296" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> mdr
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914925" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33472803" sideWeight="0.5051414" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -469,7 +540,11 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33472803" sideWeight="0.49485862" order="11" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33472803" sideWeight="0.4974293" order="11" side_tool="false" content_ui="tabs" />
+>>>>>>> mdr
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -559,7 +634,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="202">
           <caret line="163" column="35" selection-start-line="163" selection-start-column="35" selection-end-line="163" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -820,9 +894,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1105">
           <caret line="65" column="5" selection-start-line="65" selection-start-column="5" selection-end-line="65" selection-end-column="5" />
+<<<<<<< HEAD
           <folding>
             <marker date="1490014799853" expanded="true" signature="225:1531" ph="{...}" />
           </folding>
+=======
+          <folding />
+>>>>>>> mdr
         </state>
       </provider>
     </entry>
@@ -845,6 +923,7 @@
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Resources/views/User/artist_contract.html.twig">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
+<<<<<<< HEAD
           <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
           <folding />
         </state>
@@ -854,6 +933,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+=======
+          <caret line="21" column="32" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="32" />
+>>>>>>> mdr
           <folding />
         </state>
       </provider>
@@ -861,6 +943,7 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
+<<<<<<< HEAD
           <first_editor relative-caret-position="136">
             <caret line="8" column="22" selection-start-line="8" selection-start-column="22" selection-end-line="8" selection-end-column="22" />
             <folding>
@@ -876,6 +959,23 @@
               <marker date="1490545230785" expanded="true" signature="2795:2807" ph="groopyrami..." />
               <marker date="1490545230785" expanded="true" signature="2853:2868" ph="mdrmdrmdrm..." />
               <marker date="1490545230785" expanded="true" signature="2975:2992" ph="gonzyer@gm..." />
+=======
+          <first_editor relative-caret-position="918">
+            <caret line="54" column="4" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="4" />
+            <folding>
+              <marker date="1490545612345" expanded="true" signature="2437:3009" ph="parameters: &lt;11 keys&gt;" />
+              <marker date="1490545612345" expanded="true" signature="2511:2520" ph="127.0.0.1" />
+              <marker date="1490545612345" expanded="true" signature="2540:2544" ph="null" />
+              <marker date="1490545612345" expanded="true" signature="2564:2570" ph="unmute" />
+              <marker date="1490545612345" expanded="true" signature="2590:2594" ph="root" />
+              <marker date="1490545612345" expanded="true" signature="2618:2622" ph="null" />
+              <marker date="1490545612345" expanded="true" signature="2699:2703" ph="smtp" />
+              <marker date="1490545612345" expanded="true" signature="2721:2736" ph="smtp.un-mu..." />
+              <marker date="1490545612345" expanded="true" signature="2754:2773" ph="no-reply@u..." />
+              <marker date="1490545612345" expanded="true" signature="2795:2824" ph="mot_de_pas..." />
+              <marker date="1490545612345" expanded="true" signature="2870:2885" ph="mdrmdrmdrm..." />
+              <marker date="1490545612345" expanded="true" signature="2992:3009" ph="gonzyer@gm..." />
+>>>>>>> mdr
             </folding>
           </first_editor>
           <second_editor />

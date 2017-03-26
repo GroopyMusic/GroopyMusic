@@ -51,7 +51,7 @@ parameters:
     mailer_transport: smtp
     mailer_host: smtp.un-mute.be
     mailer_user: no-reply@un-mute.be
-    mailer_password: groopyramide
+    mailer_password: mot_de_passe_recu_de_gonzague
     
     # Mettre n’importe quoi
     secret: mdrmdrmdrmdrmdr
