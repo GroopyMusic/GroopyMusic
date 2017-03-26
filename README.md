@@ -1,4 +1,4 @@
-# Un-mute asbl
+# Un-Mute asbl
 
 ###### *Étapes importantes pour la collaboration au développement de la plateforme*
 
@@ -6,7 +6,7 @@
 
 Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
-### Forker le projet github
+### Forker le projet GitHub
 
 La première chose est d'avoir un compte Github. 
 
@@ -51,7 +51,7 @@ parameters:
     mailer_transport: smtp
     mailer_host: smtp.un-mute.be
     mailer_user: no-reply@un-mute.be
-    mailer_password: groopyramide
+    mailer_password: mot_de_passe_recu_de_gonzague
     
     # Mettre n’importe quoi
     secret: mdrmdrmdrmdrmdr
