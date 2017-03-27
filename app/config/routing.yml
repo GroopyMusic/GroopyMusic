@@ -69,3 +69,7 @@ app_artist:
 app_public:
     resource: "@AppBundle/Controller/PublicController.php"
     type:     annotation
+
+app_public_boite:
+    path:  /boite
+    defaults: { _controller: AppBundle:Public:boite }
