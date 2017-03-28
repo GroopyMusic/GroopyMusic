@@ -48,7 +48,7 @@ class PublicController extends Controller
     /**
      * @Route("/", name="boite-a-idees")
      */
-    public function boiteAction(){
+    public function suggestionBoxAction(){
 
         $em = $this->getDoctrine()->getManager();
 
@@ -73,7 +73,7 @@ class PublicController extends Controller
         //petit message de bien envoyé
         $this->addFlash('notice', 'Message bien envoyé ! <br>Merci !');
 
-        return $this->render('AppBundle:Public:boiteAIdees.html.twig');
+        return $this->render('AppBundle:Public:suggestionBox.html.twig');
     }
 }
 
