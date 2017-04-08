@@ -255,3 +255,4 @@ class SuggestionBox
         return $this->mailCopy;
     }
 }
+

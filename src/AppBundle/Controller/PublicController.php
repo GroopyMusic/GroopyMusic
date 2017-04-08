@@ -18,6 +18,9 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+//
+use AppBundle\Form\SuggestionBoxType;
+use AppBundle\Form\UserSuggestionBoxType;
 
 class PublicController extends Controller
 {
@@ -55,45 +58,34 @@ class PublicController extends Controller
     /**
      * @Route("/", name="suggestionBox")
      */
-    public function suggestionBoxAction(){
+    public function suggestionBoxAction(Request $request, UserInterface $user=null){
 
         $em = $this->getDoctrine()->getManager();
 
         // Création de la suggestion box
         $suggestionBox = new SuggestionBox();
+
+        if($user != null){
+            $suggestionBox->setName($user->getLastName());
+            $suggestionBox->setFirstName($user->getFirstName());
+            $suggestionBox->setEmail($user->getEmail());
+            $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox);
+        }else{
+            $form = $this->createForm(SuggestionBoxType::class, $suggestionBox);
+        }
         
-        // Création du formbuilder -> formFactory
-        $formbuilder = $this->get('form.factory')->createBuilder(FormType::class, $suggestionBox);
+        if($request->isMethod('POST')){
 
-        // ajout des champs du formulaire
-        $formbuilder
-            ->add('date',       DateType::class)
-            ->add('name',       TextType::class)
-            ->add('firstName',  TextType::class)
-            ->add('email',      TextType::class)
-            ->add('object',     TextAreaType::class)
-            ->add('message',    TextType::class)
-            ->add('mailCopy',   CheckboxType::class)
-            ->add('send',       SubmitType::class)
-        ;
+            $form->handleRequest($request);
 
-        //des tests doivent venir ici ? 
-        // fin des tests
-
-        // on génère le formulaire
-        $form = $formbuilder->getForm();
-
-        //on persiste et on flush
-        // $em->persist($suggestionBox);
-        // $em->flush();
-
-        // /!\ j'en suis ici !
-            // https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony/creer-des-formulaires-avec-symfony#/id/r-3623367
-        // /!\ ici la suite
+            if($form->isValid()){
+                $em->persist($suggestionBox);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Suggestion bien envoyée. Merci !');
+            }
 
 
-        //petit message de bien envoyé
-        $this->addFlash('notice', 'Message bien envoyé ! Merci !');
+        }
 
         return $this->render('AppBundle:Public:suggestionBox.html.twig', array('form' => $form->createView(),));
     }
