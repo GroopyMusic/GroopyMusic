@@ -6,6 +6,17 @@
         Nombre de jours pour atteindre l'objectif : {{ step.deadlineDuration }}
     </li>
     <li>
+        Montant nécessaire : {{ step.amount }} €
+    </li>
+    <li>
         Type de palier : {{ step.type.name }}
+    </li>
+    <li>
+        Contreparties pour les fans :
+            <ul>
+                {% for cp in step.counterParts %}
+                    <li>{{ cp.price }} € : {{ cp.name }}</li>
+                {% endfor %}
+            </ul>
     </li>
 </ul>

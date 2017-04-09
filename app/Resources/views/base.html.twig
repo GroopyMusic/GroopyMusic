@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
@@ -19,6 +20,12 @@
                     {% if is_granted('ROLE_ARTIST') %}
                         <a href="{{ path('artist_steps') }}">Paliers</a>
                         <a href="{{ path('artist_contracts') }}">Contrats</a>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_FAN') %}
+                        <a href="{{ path('fan_artist_contracts') }}">Contrats en cours</a>
+                        <a href="{{ path('fan_cart') }}">Panier</a>
+                        <a href="{{ path('fan_paid_carts') }}">Paniers payés</a>
                     {% endif %}
 
                     {% else %}
@@ -46,12 +53,22 @@
             #}
 
             {% block body %}{# Page body comes here #}{% endblock %}
+            {% block js_vars %}{% endblock %}
         </main>
 
 
         <footer>
             {% block footer %}{% endblock %}
         </footer>
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+            <script >window.jQuery || document.write('<script type="text/javascript" src="{{ asset('js/public/jquery-3.2.0.min.js') }}"><\/script>')</script>
+            <script
+                    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+                    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+                    crossorigin="anonymous"></script>
+            {% block javascripts_with_jquery %}
+            {% endblock %}
+        {% endblock %}
     </body>
 </html>

@@ -8,6 +8,7 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
+use AppBundle\Entity\CounterPart;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -44,9 +45,26 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
         $st1->setName("Concert")->setDescription("blablabla");
         $st1->addStep($step11)->addStep($step12)->addStep($step21)->addStep($step22);
 
+        // Counterparts
+        $cp11 = new CounterPart();
+        $cp11->setStep($step11)
+             ->setDescription("Description")
+             ->setName("Place de concert")
+             ->setPrice(10);
+
+        $cp12 = new CounterPart();
+        $cp12->setStep($step11)
+            ->setDescription("Description")
+            ->setName("Place de concert")
+            ->setPrice(10);
+
         $manager->persist($st1);
         $manager->persist($phase1);
         $manager->persist($phase2);
+
+        $manager->persist($cp11);
+        $manager->persist($cp12);
+
         $manager->flush();
 
         $this->addReference('phase1', $phase1);

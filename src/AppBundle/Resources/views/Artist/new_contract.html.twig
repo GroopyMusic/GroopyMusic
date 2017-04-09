@@ -6,6 +6,8 @@
 
     {% include "AppBundle:Entity:step.html.twig" with {'step': contract.step} %}
 
+    <p>En validant le formulaire suivant, vous vous engagez à lire et respecter les <a href="{{ path('conditions') }}">conditions générales</a>.</p>
+
     {{ form(form) }}
 
     Date de fin du contrat : {{ contract.theoriticalDeadline|date('d/m') }}

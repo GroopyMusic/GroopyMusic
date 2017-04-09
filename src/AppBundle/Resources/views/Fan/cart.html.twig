@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <h1>Panier</h1>
+
+    <div id="cart-content">
+        {% include "@App/Fan/cart_content.html.twig" %}
+    </div>
+
+    {% block js_vars %}
+        {# TODO plutôt créer le modal dialog en JS#}
+        <div id="modal-dialog">
+        </div>
+        <div
+            id="js-vars"
+            data-vars="{{ {'ajax_path_remove_all': path('fan_ajax_remove_all_from_cart'),
+                           'ajax_path_remove_one': path('fan_ajax_remove_from_contract')}|json_encode|e('html_attr') }}">
+        </div>
+    {% endblock %}
+
+    {% block javascripts_with_jquery %}
+        {{ parent() }}
+        <script type="text/javascript" src="{{ asset('js/cart.js') }}"></script>
+    {% endblock %}
+
+{% endblock %}

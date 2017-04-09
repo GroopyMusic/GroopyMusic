@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Step;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -68,7 +69,8 @@ class ArtistController extends Controller
         $contract->setTheoriticalDeadline($th_date);
 
         $form = $this->createFormBuilder($contract);
-        $form->add('submit', SubmitType::class, array());
+        $form->add('accept_conditions', CheckboxType::class, array('required' => true))
+             ->add('submit', SubmitType::class, array());
         $form = $form->getForm();
 
         $form->handleRequest($request);
