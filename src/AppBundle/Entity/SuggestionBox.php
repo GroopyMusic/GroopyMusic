@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * SuggestionBox
@@ -31,6 +32,7 @@ class SuggestionBox
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
+     * @Assert\DateTime()
      */
     private $date;
 
@@ -38,6 +40,7 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\Length(min=2, minMessage="Le prénom doit faire au moins {{ limit }} caractères !")
      */
     private $name;
 
@@ -45,6 +48,7 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255)
+     * @Assert\Length(min=2, minMessage="Le nom doit faire au moins {{ limit }} caractères !")
      */
     private $firstname;
 
@@ -52,6 +56,7 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
+     * @Assert\Email(message="Email non valide !")
      */
     private $email;
 
@@ -59,6 +64,7 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="object", type="string", length=255)
+     * @Assert\Length(min=5, minMessage="L'objet du message doit faire au moins {{ limit }} caractères !")
      */
     private $object;
 
@@ -66,6 +72,7 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="message", type="text")
+     * @Assert\Length(min=20, minMessage="Le message doit faire au moins {{ limit }} caractères !")
      */
     private $message;
 

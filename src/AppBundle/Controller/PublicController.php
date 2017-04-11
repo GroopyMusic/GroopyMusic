@@ -82,6 +82,7 @@ class PublicController extends Controller
                 $em->persist($suggestionBox);
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('notice', 'Suggestion bien envoyée. Merci !');
+                return $this->render('AppBundle:Public:home.html.twig');
             }
 
 
