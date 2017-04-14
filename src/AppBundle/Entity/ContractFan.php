@@ -12,6 +12,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContractFan
 {
+    public function __construct()
+    {
+        $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getAmount() {
+        return array_sum(array_map(function($purchase) {
+            return $purchase->getAmount();
+        }, $this->purchases->toArray()));
+    }
+
     /**
      * @var int
      *
@@ -22,10 +33,10 @@ class ContractFan
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UserFan")
+     * @ORM\ManyToOne(targetEntity="Cart", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $fan;
+    private $cart;
 
     /**
      * @ORM\ManyToOne(targetEntity="ContractArtist")
@@ -34,7 +45,7 @@ class ContractFan
     private $contractArtist;
 
     /**
-     * @ORM\OneToMany(targetEntity="Purchase", mappedBy="contractFan")
+     * @ORM\OneToMany(targetEntity="Purchase", mappedBy="contractFan", cascade={"remove", "persist"})
      */
     private $purchases;
 
@@ -46,37 +57,6 @@ class ContractFan
     public function getId()
     {
         return $this->id;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Set fan
-     *
-     * @param \AppBundle\Entity\UserFan $fan
-     *
-     * @return ContractFan
-     */
-    public function setFan(\AppBundle\Entity\UserFan $fan)
-    {
-        $this->fan = $fan;
-
-        return $this;
-    }
-
-    /**
-     * Get fan
-     *
-     * @return \AppBundle\Entity\UserFan
-     */
-    public function getFan()
-    {
-        return $this->fan;
     }
 
     /**
@@ -135,5 +115,29 @@ class ContractFan
     public function getPurchases()
     {
         return $this->purchases;
+    }
+
+    /**
+     * Set cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     *
+     * @return ContractFan
+     */
+    public function setCart(\AppBundle\Entity\Cart $cart)
+    {
+        $this->cart = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Get cart
+     *
+     * @return \AppBundle\Entity\Cart
+     */
+    public function getCart()
+    {
+        return $this->cart;
     }
 }

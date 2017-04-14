@@ -22,7 +22,12 @@ class UserFan extends User
     public function __construct()
     {
         parent::__construct();
+        $this->credits = 0;
         $this->addRole("ROLE_FAN");
+    }
+
+    public function removeCredits($n) {
+        $this->credits -= $n;
     }
 
     /**
@@ -31,6 +36,21 @@ class UserFan extends User
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="SpecialPurchase", mappedBy="fan")
+     */
+    private $specialPurchases;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Cart", mappedBy="fan")
+     */
+    private $carts;
+
+    /**
+     * @ORM\Column(name="credits", type="integer")
+     */
+    private $credits;
 
     /**
      * Set lastname
@@ -78,5 +98,97 @@ class UserFan extends User
     public function getFirstname()
     {
         return $this->firstname;
+    }
+
+    /**
+     * Add specialPurchase
+     *
+     * @param \AppBundle\Entity\SpecialPurchase $specialPurchase
+     *
+     * @return UserFan
+     */
+    public function addSpecialPurchase(\AppBundle\Entity\SpecialPurchase $specialPurchase)
+    {
+        $this->specialPurchases[] = $specialPurchase;
+
+        return $this;
+    }
+
+    /**
+     * Remove specialPurchase
+     *
+     * @param \AppBundle\Entity\SpecialPurchase $specialPurchase
+     */
+    public function removeSpecialPurchase(\AppBundle\Entity\SpecialPurchase $specialPurchase)
+    {
+        $this->specialPurchases->removeElement($specialPurchase);
+    }
+
+    /**
+     * Get specialPurchases
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSpecialPurchases()
+    {
+        return $this->specialPurchases;
+    }
+
+    /**
+     * Add cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     *
+     * @return UserFan
+     */
+    public function addCart(\AppBundle\Entity\Cart $cart)
+    {
+        $this->carts[] = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Remove cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     */
+    public function removeCart(\AppBundle\Entity\Cart $cart)
+    {
+        $this->carts->removeElement($cart);
+    }
+
+    /**
+     * Get carts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCarts()
+    {
+        return $this->carts;
+    }
+
+    /**
+     * Set credits
+     *
+     * @param integer $credits
+     *
+     * @return UserFan
+     */
+    public function setCredits($credits)
+    {
+        $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * Get credits
+     *
+     * @return integer
+     */
+    public function getCredits()
+    {
+        return $this->credits;
     }
 }

@@ -51,6 +51,21 @@ class Step
     private $deadline_duration;
 
     /**
+     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="step")
+     */
+    private $counterParts;
+
+    /**
+     * @ORM\Column(name="required_amount", type="integer")
+     */
+    private $requiredAmount;
+
+    /**
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
+
+    /**
      * Get id
      *
      * @return int
@@ -178,5 +193,95 @@ class Step
     public function getDeadlineDuration()
     {
         return $this->deadline_duration;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->counterParts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     *
+     * @return Step
+     */
+    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counterParts[] = $counterPart;
+        $counterPart->setStep($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     */
+    public function removeCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counterParts->removeElement($counterPart);
+    }
+
+    /**
+     * Get counterParts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCounterParts()
+    {
+        return $this->counterParts;
+    }
+
+    /**
+     * Set requiredAmount
+     *
+     * @param integer $requiredAmount
+     *
+     * @return Step
+     */
+    public function setRequiredAmount($requiredAmount)
+    {
+        $this->requiredAmount = $requiredAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get requiredAmount
+     *
+     * @return integer
+     */
+    public function getRequiredAmount()
+    {
+        return $this->requiredAmount;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Step
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

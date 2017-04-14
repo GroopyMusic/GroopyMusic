@@ -1,3 +1,6 @@
+
+https://github.com/GroopyMusic/GroopyMusic
+
 # Un-Mute asbl
 
 ###### *Étapes importantes pour la collaboration au développement de la plateforme*
@@ -71,10 +74,3 @@ La commande suivante vide d’abord l’entièreté de la base de données (!!!)
 `doctrine:fixtures:load` puis répondre `y` à la question posée.
 
 Les fixtures actuels insèrent deux utilisateurs de test dans la base de données : artist@un-mute.be (mdp: test) et fan@un-mute.be (mdp: test). Des phases et paliers de test sont également insérés.  
-
-
-
-
-
-
-

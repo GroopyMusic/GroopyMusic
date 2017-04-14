@@ -12,6 +12,24 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Purchase
 {
+    const MAX_QTY = 20;
+
+    public function __construct()
+    {
+        $this->quantity = 0;
+    }
+
+    public function addQuantity($q) {
+        $this->quantity = $this->quantity + $q;
+        if($this->quantity > self::MAX_QTY) {
+            $this->quantity = self::MAX_QTY;
+        }
+    }
+
+    public function getAmount() {
+        return $this->quantity * $this->counterpart->getPrice();
+    }
+
     /**
      * @var int
      *

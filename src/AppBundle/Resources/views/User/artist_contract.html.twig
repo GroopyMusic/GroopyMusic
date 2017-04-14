@@ -2,25 +2,68 @@
 
 {% block body %}
 
+    {% if is_granted('ROLE_FAN') %}
+        <h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.name }}"</h1>
+
+    {% else %}
+        <h1>Contrat en cours</h1>
+    {% endif %}
+
     <ul>
         <li>
-            Date de début du contrat : {{ contract.date|date('d/m/Y H:i:s') }}
+            Date de début du contrat : {{ contract.date|date('d/m/Y') }}
         </li>
         <li>
-            Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y H:i:s') }}
+            Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y') }}
         </li>
         <li>
-            Palier correspondant : {{ contract.step.name }}
+            Palier : <a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.name }}</a>
         </li>
-        <li>
-            Nom du groupe : {{ contract.artist.artistname }}
-        </li>
+
+        {% if contract.motivations is not null or is_granted('ROLE_ARTIST') %}
+            <li>
+            {% if is_granted('ROLE_ARTIST') %}
+                <textarea id="motivations-textarea">{#
+                    #}{{ contract.motivations }}{#
+                #}</textarea>
+                <button type="submit" id="update-motivations-button" contract="{{ contract.id }}">Mettre à jour</button>
+            {% else %}
+                <div>{{ contract.motivations }}</div>
+            {% endif %}
+            </li>
+        {% endif %}
     </ul>
 
     {% if is_granted('ROLE_FAN') %}
-
-        {# TODO système de mise #}
-
+        {% for article in contract.step.counterParts %}
+            Contrepartie "{{ article.name }}" (prix : {{ article.price }} €) :
+            <select>
+                {% for i in 0..10 %}
+                    <option value="{{ i }}" {% if loop.first %}selected="selected"{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <button class="add-to-cart-button" type="submit" counterpart="{{ article.id }}" contract="{{ contract.id }}" id="submit_counterpart_{{ article.id }}">Ajouter au panier</button>
+            <br /><br />
+        {% endfor %}
     {% endif %}
 
+
 {% endblock %}
+
+{% if is_granted('ROLE_FAN') %}
+    {% block js_vars %}
+        <div id="modal-dialog">
+        </div>
+        <div
+            id="js-vars"
+            data-vars="{{ {'ajax_path_add_to_cart': path('fan_ajax_add_to_cart'),
+                           'ajax_path_update_motivations': path('artist_ajax_update_motivations')}|json_encode|e('html_attr') }}">
+        </div>
+    {% endblock %}
+
+    {% block javascripts_with_jquery %}
+        {{ parent() }}
+        <script type="text/javascript" src="{{ asset('js/cart.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/step.js') }}"></script>
+    {% endblock %}
+{% endif %}
