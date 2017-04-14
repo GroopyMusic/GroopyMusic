@@ -21,6 +21,13 @@ class PublicController extends Controller
     }
 
     /**
+     * @Route("/conditons", name="conditions")
+     */
+    public function conditionsAction() {
+        return $this->render('AppBundle:Public:conditions.html.twig');
+    }
+
+    /**
      * @Route("/steps", name="steps")
      */
     public function stepsAction() {

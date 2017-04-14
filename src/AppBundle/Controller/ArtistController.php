@@ -5,9 +5,11 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Step;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class ArtistController extends Controller
@@ -68,7 +70,8 @@ class ArtistController extends Controller
         $contract->setTheoriticalDeadline($th_date);
 
         $form = $this->createFormBuilder($contract);
-        $form->add('submit', SubmitType::class, array());
+        $form->add('accept_conditions', CheckboxType::class, array('required' => true))
+             ->add('submit', SubmitType::class, array());
         $form = $form->getForm();
 
         $form->handleRequest($request);
@@ -110,7 +113,30 @@ class ArtistController extends Controller
         return $this->render('@App/Artist/contracts.html.twig', array(
            'contracts' => $contracts,
         ));
-
     }
 
+
+    // AJAX ------------------------------------------------------------------------------------------------
+
+    /**
+     * @Route("/api/update-motivations", name="artist_ajax_update_motivations")
+     */
+    public function updateMotivations(Request $request, UserInterface $artist) {
+        $em = $this->getDoctrine()->getManager();
+
+        $motivations = $request->request->get('motivations');
+        $contract_id = $request->request->get('id_contract');
+
+        $contract = $em->getRepository('AppBundle:ContractArtist')->find($contract_id);
+
+        if($contract->getArtist()->getId() != $artist->getId()) {
+            throw $this->createAccessDeniedException("Interdit, vous n'êtes pas l'artiste à l'origine de ce contrat.");
+        }
+
+        $contract->setMotivations($motivations);
+        $em->persist($contract);
+        $em->flush();
+
+        return new Response($motivations);
+    }
 }
