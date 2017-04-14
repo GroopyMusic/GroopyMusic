@@ -80,7 +80,7 @@ $(document).ready(function() {
         var id_contract_artist = $(this).attr('contract');
 
         // Get Twig-defined variable for URL of AJAX call
-        var ajax_path = $('#js-vars').data('vars').ajax_path;
+        var ajax_path = $('#js-vars').data('vars').ajax_path_add_to_cart;
 
         if (quantity > 0) {
 

@@ -89,6 +89,11 @@ class FanController extends Controller
             $em->persist($cart);
             $em->flush();
 
+            // TODO
+            // Si c'est le x-ième panier du fan dans les 24h, nous envoyer une notif : ça pourrait être une fraude
+            // + lui envoyer un mail automatique (ou manuel)
+            // + nous permettre d'annuler dans l'espace d'admin un paiement
+
             $this->addFlash('notice', 'Bien reçu');
             return $this->redirectToRoute('fan_home');
         }
@@ -146,7 +151,7 @@ class FanController extends Controller
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 
     /**
-     * @Route("/add-to-cart", name="fan_ajax_add_to_cart")
+     * @Route("/api/add-to-cart", name="fan_ajax_add_to_cart")
      */
     public function addToCartAction(Request $request) {
 
@@ -197,10 +202,9 @@ class FanController extends Controller
         else {
             if($purchase->getQuantity() >= Purchase::MAX_QTY)
                 return new Response("MAX_QTY");
-            if($purchase->getQuantity() + $quantity > Purchase::MAX_QTY)
-                return new Response("TO_MAX_QTY");
         }
 
+        $to_max_qty = $purchase->getQuantity() + $quantity >= Purchase::MAX_QTY;
 
         $purchase->addQuantity($quantity);
 
@@ -210,11 +214,15 @@ class FanController extends Controller
 
         $em->flush();
 
+        if($to_max_qty) {
+            return new Response("TO_MAX_QTY");
+        }
+
         return new Response("OK");
     }
 
     /**
-     * @Route("/remove-all-from-cart", name="fan_ajax_remove_all_from_cart")
+     * @Route("/api/remove-all-from-cart", name="fan_ajax_remove_all_from_cart")
      */
     public function removeAllFromCartAction(Request $request) {
 
@@ -244,7 +252,7 @@ class FanController extends Controller
     }
 
     /**
-     * @Route("/remove-purchase-from-contract", name="fan_ajax_remove_from_contract")
+     * @Route("/api/remove-purchase-from-contract", name="fan_ajax_remove_from_contract")
      */
     public function removeFromContractAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -276,7 +284,7 @@ class FanController extends Controller
     }
 
     /**
-     * @Route("/deblock-advantage", name="fan_ajax_deblock_advantage")
+     * @Route("/api/deblock-advantage", name="fan_ajax_deblock_advantage")
      */
     public function deblockAdvantageAction(Request $request, UserInterface $fan) {
         $em = $this->getDoctrine()->getManager();

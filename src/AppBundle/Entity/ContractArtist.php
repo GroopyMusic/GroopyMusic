@@ -53,8 +53,9 @@ class ContractArtist
     private $artist;
 
     /**
-     *
+     * @ORM\Column(name="motivations", type="text", nullable=true)
      */
+    private $motivations;
 
     // Conditions approval (form only)
     /**
@@ -201,5 +202,29 @@ class ContractArtist
     public function setAcceptConditions($accept_conditions)
     {
         $this->accept_conditions = $accept_conditions;
+    }
+
+    /**
+     * Set motivations
+     *
+     * @param string $motivations
+     *
+     * @return ContractArtist
+     */
+    public function setMotivations($motivations)
+    {
+        $this->motivations = $motivations;
+
+        return $this;
+    }
+
+    /**
+     * Get motivations
+     *
+     * @return string
+     */
+    public function getMotivations()
+    {
+        return $this->motivations;
     }
 }
