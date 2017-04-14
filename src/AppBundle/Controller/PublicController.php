@@ -11,14 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\MailTemplateProvider;
 use Symfony\Component\Security\Core\User\UserInterface;
-// uses du formulaire
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-//
+//Uses for the form (suggestionBox)
 use AppBundle\Form\SuggestionBoxType;
 use AppBundle\Form\UserSuggestionBoxType;
 
@@ -84,22 +77,8 @@ class PublicController extends Controller
                 $request->getSession()->getFlashBag()->add('notice', 'Suggestion bien envoyée. Merci !');
                 return $this->redirectToRoute('homepage');
             }
-
-
         }
 
         return $this->render('AppBundle:Public:suggestionBox.html.twig', array('form' => $form->createView(),));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
