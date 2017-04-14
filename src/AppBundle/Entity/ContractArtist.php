@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ContractArtist
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class ContractArtist
 {
     public function __construct() {
-
+        $this->accept_conditions = false;
     }
 
     /**
@@ -51,6 +52,18 @@ class ContractArtist
      */
     private $artist;
 
+    /**
+     * @ORM\Column(name="motivations", type="text", nullable=true)
+     */
+    private $motivations;
+
+    // Conditions approval (form only)
+    /**
+     * @Assert\NotBlank(message="accept_conditions.notblank")
+     */
+    private $accept_conditions;
+
+    // Deadline calculation
     private $theoritical_deadline;
 
     /**
@@ -175,4 +188,43 @@ class ContractArtist
         $this->theoritical_deadline = $theoritical_deadline;
     }
 
+    /**
+     * @return boolean
+     */
+    public function getAcceptConditions()
+    {
+        return $this->accept_conditions;
+    }
+
+    /**
+     * @param boolean $accept_conditions
+     */
+    public function setAcceptConditions($accept_conditions)
+    {
+        $this->accept_conditions = $accept_conditions;
+    }
+
+    /**
+     * Set motivations
+     *
+     * @param string $motivations
+     *
+     * @return ContractArtist
+     */
+    public function setMotivations($motivations)
+    {
+        $this->motivations = $motivations;
+
+        return $this;
+    }
+
+    /**
+     * Get motivations
+     *
+     * @return string
+     */
+    public function getMotivations()
+    {
+        return $this->motivations;
+    }
 }

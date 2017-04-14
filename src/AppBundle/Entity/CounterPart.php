@@ -36,10 +36,15 @@ class CounterPart
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Step")
+     * @ORM\ManyToOne(targetEntity="Step", inversedBy="counterParts")
      * @ORM\JoinColumn(nullable=false)
      */
     private $step;
+
+    /**
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
 
     /**
      * Get id
@@ -121,5 +126,29 @@ class CounterPart
     public function getStep()
     {
         return $this->step;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return CounterPart
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }
