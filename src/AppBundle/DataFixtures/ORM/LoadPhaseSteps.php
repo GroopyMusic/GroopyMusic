@@ -24,8 +24,8 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
         $phase1 = new Phase();
         $phase1->setName("Initiation")->setNum(1);
 
-        $step11 = new Step(); $step11->setNum(1)->setName("Concert 1")->setDeadlineDuration(30);
-        $step12 = new Step(); $step12->setNum(2)->setName("Concert 2")->setDeadlineDuration(35);
+        $step11 = new Step(); $step11->setNum(1)->setName("Concert 1")->setDeadlineDuration(30)->setRequiredAmount(300)->setDescription("Blablabla");
+        $step12 = new Step(); $step12->setNum(2)->setName("Concert 2")->setDeadlineDuration(35)->setRequiredAmount(500)->setDescription("Blablabla");
 
         $phase1->addStep($step11);
         $phase1->addStep($step12);
@@ -34,8 +34,8 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
         $phase2 = new Phase();
         $phase2->setName("Expertise")->setNum(2);
 
-        $step21 = new Step(); $step21->setNum(1)->setName("Concert 3")->setDeadlineDuration(40);
-        $step22 = new Step(); $step22->setNum(2)->setName("Concert 4")->setDeadlineDuration(50);
+        $step21 = new Step(); $step21->setNum(1)->setName("Concert 3")->setDeadlineDuration(40)->setRequiredAmount(800)->setDescription("Blablabla");
+        $step22 = new Step(); $step22->setNum(2)->setName("Concert 4")->setDeadlineDuration(50)->setRequiredAmount(1000)->setDescription("Blablabla");
 
         $phase2->addStep($step21);
         $phase2->addStep($step22);
@@ -49,14 +49,14 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
         $cp11 = new CounterPart();
         $cp11->setStep($step11)
              ->setDescription("Description")
-             ->setName("Place de concert")
+             ->setName("Place de concert normale")
              ->setPrice(10);
 
         $cp12 = new CounterPart();
         $cp12->setStep($step11)
             ->setDescription("Description")
-            ->setName("Place de concert")
-            ->setPrice(10);
+            ->setName("Place de concert VIP")
+            ->setPrice(15);
 
         $manager->persist($st1);
         $manager->persist($phase1);

@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class SpecialAdvantageRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function findCurrents() {
+        return $this->createQueryBuilder('s')
+            ->where('s.available = 1')
+            ->andWhere('s.availableQuantity > 0')
+            ->getQuery()
+            ->getResult();
+    }
 }

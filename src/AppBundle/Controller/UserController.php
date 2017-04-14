@@ -95,10 +95,14 @@ class UserController extends Controller
     /**
      * @Route("/see-contract-{id}", name="user_see_contract")
      */
-    public function seeContractAction(ContractArtist $contract, UserInterface $user, Request $request) {
+    public function seeContractAction(ContractArtist $contract) {
+
+        $current = new \DateTime();
+        $done = $contract->getDateEnd() < $current;
 
         return $this->render('@App/User/artist_contract.html.twig', array(
             'contract' => $contract,
+            'done' => $done,
         ));
     }
 

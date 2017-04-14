@@ -12,6 +12,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SpecialPurchase
 {
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+    }
+
+    public function getAmountCredits() {
+        return $this->quantity * $this->specialAdvantage->getPriceCredits();
+    }
+
     /**
      * @var int
      *
@@ -32,11 +41,6 @@ class SpecialPurchase
      * @ORM\Column(name="quantity", type="smallint")
      */
     private $quantity;
-
-    /**
-     * @ORM\Column(name="price_credits", type="integer")
-     */
-    private $price_credits;
 
     /**
      * @ORM\ManyToOne(targetEntity="UserFan", inversedBy="specialPurchases")
@@ -104,30 +108,6 @@ class SpecialPurchase
     public function getQuantity()
     {
         return $this->quantity;
-    }
-
-    /**
-     * Set priceCredits
-     *
-     * @param integer $priceCredits
-     *
-     * @return SpecialPurchase
-     */
-    public function setPriceCredits($priceCredits)
-    {
-        $this->price_credits = $priceCredits;
-
-        return $this;
-    }
-
-    /**
-     * Get priceCredits
-     *
-     * @return integer
-     */
-    public function getPriceCredits()
-    {
-        return $this->price_credits;
     }
 
     /**

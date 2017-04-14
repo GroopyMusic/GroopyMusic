@@ -8,7 +8,7 @@
         Achats :
         <ul>
             {% for purchase in contract.purchases %}
-                <li>{{ purchase.counterpart.name }} (quantité : {{ purchase.quantity }}, prix unitaire : {{ purchase.counterpart.price }} €)
+                <li>{{ purchase.counterpart.name }} (quantité : {{ purchase.quantity }}, prix unitaire : {{ purchase.counterpart.price }} €, prix total : {{ purchase.amount }} €)
                     <button class="remove-from-cart-button" purchase="{{ purchase.id }}">supprimer</button> </li>
             {% endfor %}
         </ul>

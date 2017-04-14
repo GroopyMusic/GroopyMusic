@@ -12,6 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SpecialAdvantage
 {
+    public function __construct()
+    {
+        $this->available = false;
+        $this->availableQuantity = 0;
+    }
+
     /**
      * @var int
      *
@@ -38,9 +44,9 @@ class SpecialAdvantage
     /**
      * @var int
      *
-     * @ORM\Column(name="quantity", type="integer")
+     * @ORM\Column(name="available_quantity", type="integer")
      */
-    private $quantity;
+    private $availableQuantity;
 
     /**
      * @var int
@@ -49,6 +55,10 @@ class SpecialAdvantage
      */
     private $priceCredits;
 
+    /**
+     * @ORM\Column(name="available", type="boolean")
+     */
+    private $available;
 
     /**
      * Get id
@@ -109,30 +119,6 @@ class SpecialAdvantage
     }
 
     /**
-     * Set quantity
-     *
-     * @param integer $quantity
-     *
-     * @return SpecialAdvantage
-     */
-    public function setQuantity($quantity)
-    {
-        $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    /**
-     * Get quantity
-     *
-     * @return int
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
-
-    /**
      * Set priceCredits
      *
      * @param integer $priceCredits
@@ -154,5 +140,53 @@ class SpecialAdvantage
     public function getPriceCredits()
     {
         return $this->priceCredits;
+    }
+
+    /**
+     * Set availableQuantity
+     *
+     * @param integer $availableQuantity
+     *
+     * @return SpecialAdvantage
+     */
+    public function setAvailableQuantity($availableQuantity)
+    {
+        $this->availableQuantity = $availableQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get availableQuantity
+     *
+     * @return integer
+     */
+    public function getAvailableQuantity()
+    {
+        return $this->availableQuantity;
+    }
+
+    /**
+     * Set available
+     *
+     * @param boolean $available
+     *
+     * @return SpecialAdvantage
+     */
+    public function setAvailable($available)
+    {
+        $this->available = $available;
+
+        return $this;
+    }
+
+    /**
+     * Get available
+     *
+     * @return boolean
+     */
+    public function getAvailable()
+    {
+        return $this->available;
     }
 }

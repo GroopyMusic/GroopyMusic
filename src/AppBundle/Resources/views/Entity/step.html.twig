@@ -3,10 +3,16 @@
         Nom : {{ step.name }}
     </li>
     <li>
+        Description :
+        <blockquote>
+            {{ step.description }}
+        </blockquote>
+    </li>
+    <li>
         Nombre de jours pour atteindre l'objectif : {{ step.deadlineDuration }}
     </li>
     <li>
-        Montant nécessaire : {{ step.amount }} €
+        Montant nécessaire : {{ step.requiredAmount }} €
     </li>
     <li>
         Type de palier : {{ step.type.name }}

@@ -22,7 +22,12 @@ class UserFan extends User
     public function __construct()
     {
         parent::__construct();
+        $this->credits = 0;
         $this->addRole("ROLE_FAN");
+    }
+
+    public function removeCredits($n) {
+        $this->credits -= $n;
     }
 
     /**
@@ -41,6 +46,11 @@ class UserFan extends User
      * @ORM\OneToMany(targetEntity="Cart", mappedBy="fan")
      */
     private $carts;
+
+    /**
+     * @ORM\Column(name="credits", type="integer")
+     */
+    private $credits;
 
     /**
      * Set lastname
@@ -156,5 +166,29 @@ class UserFan extends User
     public function getCarts()
     {
         return $this->carts;
+    }
+
+    /**
+     * Set credits
+     *
+     * @param integer $credits
+     *
+     * @return UserFan
+     */
+    public function setCredits($credits)
+    {
+        $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * Get credits
+     *
+     * @return integer
+     */
+    public function getCredits()
+    {
+        return $this->credits;
     }
 }

@@ -41,7 +41,7 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
 
         // Fan test account (credentials : fan@un-mute.be - test)
         $userF = new UserFan();
-        $userF->setUsername("fan")->setPlainPassword("test")->setEmail("fan@un-mute.be")->setFirstname("Elvis")->setLastname("Presley")->setEnabled(true);
+        $userF->setUsername("fan")->setPlainPassword("test")->setEmail("fan@un-mute.be")->setFirstname("Elvis")->setLastname("Presley")->setCredits(100)->setEnabled(true);
         $userManager->updateUser($userF, true);
         $manager->persist($userF); // persist
 
@@ -50,6 +50,8 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
 
     public function getOrder()
     {
+        // the order in which fixtures will be loaded
+        // the lower the number, the sooner that this fixture is loaded
         return 2;
     }
 

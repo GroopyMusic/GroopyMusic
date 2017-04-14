@@ -2,6 +2,8 @@
 
 {% block body %}
 
+    <h1>Contrat en cours</h1>
+
     {% if is_granted('ROLE_FAN') %}
         <h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.name }}"</h1>
     {% endif %}
@@ -14,7 +16,7 @@
             Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y') }}
         </li>
         <li>
-            Palier : <a href="{{ path('steps') }}">{{ contract.step.name }}</a>
+            Palier : <a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.name }}</a>
         </li>
     </ul>
 

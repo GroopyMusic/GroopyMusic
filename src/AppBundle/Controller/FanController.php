@@ -6,6 +6,8 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\Purchase;
+use AppBundle\Entity\SpecialPurchase;
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -113,7 +115,35 @@ class FanController extends Controller
         ));
     }
 
-    // AJAX
+    /**
+     * @Route("/special-advantages", name="fan_special_advantages")
+     */
+    public function specialAdvantagesAction() {
+
+        $em = $this->getDoctrine()->getManager();
+        $sa = $em->getRepository('AppBundle:SpecialAdvantage')->findCurrents();
+
+        return $this->render('@App/Fan/special_advantages.html.twig', array(
+            'advantages' => $sa,
+        ));
+    }
+
+    /**
+     * @Route("/special-purchases", name="fan_special_purchases")
+     */
+    public function specialPurchasesAction(UserInterface $fan) {
+
+        $em = $this->getDoctrine()->getManager();
+        $sp = $em->getRepository('AppBundle:SpecialPurchase')->findBy(array('fan' => $fan), array('date' => 'DESC'));
+
+        return $this->render('@App/Fan/special_purchases.html.twig', array(
+            'purchases' => $sp,
+        ));
+    }
+
+
+
+    // AJAX ----------------------------------------------------------------------------------------------------------------------
 
     /**
      * @Route("/add-to-cart", name="fan_ajax_add_to_cart")
@@ -141,6 +171,7 @@ class FanController extends Controller
         foreach($fanContracts as $fc) {
             if($fc->getContractArtist()->getId() == $id_contract_artist) {
                 $contract = $fc;
+                break;
             }
         }
 
@@ -153,6 +184,7 @@ class FanController extends Controller
         foreach($contract->getPurchases() as $p) {
             if($p->getCounterPart()->getId() == $id_counterpart) {
                 $purchase = $p;
+                break;
             }
         }
 
@@ -161,6 +193,14 @@ class FanController extends Controller
             $purchase->setCounterpart($counterpart);
             $purchase->setContractFan($contract);
         }
+
+        else {
+            if($purchase->getQuantity() >= Purchase::MAX_QTY)
+                return new Response("MAX_QTY");
+            if($purchase->getQuantity() + $quantity > Purchase::MAX_QTY)
+                return new Response("TO_MAX_QTY");
+        }
+
 
         $purchase->addQuantity($quantity);
 
@@ -233,6 +273,35 @@ class FanController extends Controller
         return new Response($this->renderView('@App/Fan/cart_content.html.twig', array(
             'cart' => $cart,
         )));
+    }
+
+    /**
+     * @Route("/deblock-advantage", name="fan_ajax_deblock_advantage")
+     */
+    public function deblockAdvantageAction(Request $request, UserInterface $fan) {
+        $em = $this->getDoctrine()->getManager();
+
+        $id_advantage = intval($request->get('id_advantage'));
+        $quantity = intval($request->get('quantity'));
+
+        $adv = $em->getRepository('AppBundle:SpecialAdvantage')->find($id_advantage);
+
+        $purchase = new SpecialPurchase();
+        $purchase->setFan($fan)
+            ->setQuantity($quantity)
+            ->setSpecialAdvantage($adv);
+
+        if($fan->getCredits() < $purchase->getAmountCredits()) {
+            return new Response("NOT_ENOUGH_CREDITS");
+        }
+
+        $fan->removeCredits($purchase->getAmountCredits());
+
+        $em->persist($fan);
+        $em->persist($purchase);
+        $em->flush();
+
+        return new Response($fan->getCredits());
     }
 
 }

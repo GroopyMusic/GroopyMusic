@@ -1,6 +1,9 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+
+    <h1>Paliers</h1>
+
     <div id="available-phases">
 
     {% set overleveled = false %}
@@ -19,9 +22,8 @@
                     <a href="{{ path('artist_new_contract', {'id': step.id}) }}">viser</a>
                 {% elseif not overleveled and currentContract is not null and currentContract.step.id == step.id %}
                     <a href="{{ path('user_see_contract', {'id': currentContract.id}) }}">EN COURS</a>
-                {% else %}
-                    <a href="{{ path('step', {'id': step.id}) }}">infos</a>
                 {% endif %}
+                    <a href="{{ path('step', {'id': step.id}) }}">infos</a>
             </li>
         {% endfor %}
         </ul>

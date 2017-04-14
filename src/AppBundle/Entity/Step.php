@@ -56,9 +56,14 @@ class Step
     private $counterParts;
 
     /**
-     * @ORM\Column(name="amount", type="integer")
+     * @ORM\Column(name="required_amount", type="integer")
      */
-    private $amount;
+    private $requiredAmount;
+
+    /**
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
 
     /**
      * Get id
@@ -233,26 +238,50 @@ class Step
     }
 
     /**
-     * Set amount
+     * Set requiredAmount
      *
-     * @param integer $amount
+     * @param integer $requiredAmount
      *
      * @return Step
      */
-    public function setAmount($amount)
+    public function setRequiredAmount($requiredAmount)
     {
-        $this->amount = $amount;
+        $this->requiredAmount = $requiredAmount;
 
         return $this;
     }
 
     /**
-     * Get amount
+     * Get requiredAmount
      *
      * @return integer
      */
-    public function getAmount()
+    public function getRequiredAmount()
     {
-        return $this->amount;
+        return $this->requiredAmount;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Step
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }
