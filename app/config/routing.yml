@@ -69,3 +69,7 @@ app_artist:
 app_public:
     resource: "@AppBundle/Controller/PublicController.php"
     type:     annotation
+
+app_public_suggestionBox:
+    path:  /suggestionBox
+    defaults: { _controller: AppBundle:Public:suggestionBox }
