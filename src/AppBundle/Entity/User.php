@@ -63,6 +63,11 @@ abstract class User extends BaseUser implements RecipientInterface
     protected $newsletter;
 
     /**
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="user")
+     */
+    protected $payments;
+
+    /**
      * @param mixed $salutation
      */
     public function setSalutation($salutation)
@@ -211,4 +216,38 @@ abstract class User extends BaseUser implements RecipientInterface
     }
 
 
+
+    /**
+     * Add payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     *
+     * @return User
+     */
+    public function addPayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     */
+    public function removePayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
 }

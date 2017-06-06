@@ -69,46 +69,6 @@ class FanController extends Controller
     }
 
     /**
-     * @Route("/cart/payment", name="fan_cart_payment")
-     */
-    public function payCartAction(Request $request, UserInterface $fan) {
-        $em = $this->getDoctrine()->getManager();
-        $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForFan($fan);
-
-        $payment = new Payment();
-        $form = $this->createFormBuilder($payment);
-        $form->add('accept_conditions', CheckboxType::class, array('required' => true))
-            ->add('submit', SubmitType::class, array());
-
-        $form = $form->getForm();
-
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $cart->setConfirmed(true);
-
-            $em->persist($cart);
-            $em->flush();
-
-            // TODO
-            // Si c'est le x-ième panier du fan dans les 24h, nous envoyer une notif : ça pourrait être une fraude
-            // + lui envoyer un mail automatique (ou manuel)
-            // + nous permettre d'annuler dans l'espace d'admin un paiement
-
-            $this->addFlash('notice', 'Bien reçu');
-            return $this->redirectToRoute('fan_home');
-        }
-
-        if($cart == null || count($cart->getContracts()) == 0) {
-            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
-        }
-
-        return $this->render('@App/Fan/pay_cart.html.twig', array(
-            'cart' => $cart,
-            'form' => $form->createView(),
-        ));
-    }
-
-    /**
      * @Route("/paid-carts", name="fan_paid_carts")
      */
     public function paidCartsAction(UserInterface $fan) {

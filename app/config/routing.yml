@@ -66,10 +66,18 @@ app_artist:
     type:     annotation
     prefix: /secure/artist
 
+app_payment:
+    resource: "@AppBundle/Controller/PaymentController.php"
+    type:     annotation
+    prefix: /secure/payment-zone
+
+app_admin:
+    resource: "@AppBundle/Controller/AdminController.php"
+    type:     annotation
+    prefix: /admin
+
 app_public:
     resource: "@AppBundle/Controller/PublicController.php"
     type:     annotation
 
-app_public_suggestionBox:
-    path:  /suggestionBox
-    defaults: { _controller: AppBundle:Public:suggestionBox }
+

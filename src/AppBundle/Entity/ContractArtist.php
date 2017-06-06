@@ -57,6 +57,11 @@ class ContractArtist
      */
     private $motivations;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="contractArtist")
+     */
+    private $payments;
+
     // Conditions approval (form only)
     /**
      * @Assert\NotBlank(message="accept_conditions.notblank")
@@ -226,5 +231,39 @@ class ContractArtist
     public function getMotivations()
     {
         return $this->motivations;
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     *
+     * @return ContractArtist
+     */
+    public function addPayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     */
+    public function removePayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }

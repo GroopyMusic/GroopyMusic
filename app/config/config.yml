@@ -192,3 +192,35 @@ azine_email:
 
     # the service-id of your implementation of the web view service to be used
     web_view_service:     email.web_view_service
+
+#flosch_stripe:
+    #stripe_api_key: "%stripe_api_secret%"
+
+#ruudk_payment_stripe:
+#    api_key:  "%stripe_api_secret%"
+#    logger:   true   # Default true
+#    methods:
+#      - checkout
+#
+#jms_di_extra:
+#    locations:
+#        all_bundles: true
+#    automatic_controller_injections:
+#        properties:
+#            request: "@request"
+#            router: "@router"
+#
+#        method_calls:
+#            setRouter: ["@router"]
+
+# Assetic config
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    node: "%path_to_node%"
+    filters:
+        cssrewrite: ~
+        uglifyjs2:
+            bin: "%path_to_uglifyjs%"
+        uglifycss:
+            bin: "%path_to_uglifycss%"

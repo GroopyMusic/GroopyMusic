@@ -1,0 +1,17 @@
+<ul>
+
+
+    {% for payment in payments %}
+
+        <li>Paiement du membre {{ payment.user.displayName }} de {{ payment.amount }} € (id stripe : {{ payment.chargeId }})
+            <br />
+            {% if not payment.refunded %}
+                <button class="refund-button" payment="{{ payment.id }}">
+                    Rembourser
+                </button>
+            {% endif %}
+        </li>
+
+    {% endfor %}
+
+</ul>

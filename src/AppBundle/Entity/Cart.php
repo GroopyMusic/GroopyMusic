@@ -58,6 +58,7 @@ class Cart
      */
     private $fan;
 
+
     /**
      * Get id
      *
