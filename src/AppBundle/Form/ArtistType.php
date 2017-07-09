@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProfileUserArtistType extends AbstractType
+class ArtistType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -15,13 +15,9 @@ class ProfileUserArtistType extends AbstractType
         ;
     }
 
-    public function getParent()
-    {
-        return 'AppBundle\Form\ProfileType';
-    }
 
     public function getBlockPrefix()
     {
-        return 'app_user_artist_profile';
+        return 'app_user_artist';
     }
 }

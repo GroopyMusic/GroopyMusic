@@ -58,17 +58,27 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
             ->setName("Place de concert VIP")
             ->setPrice(15);
 
+        $cp21 = new CounterPart();
+        $cp21->setStep($step12)
+            ->setDescription("Description")
+            ->setName("Place de concert normale")
+            ->setPrice(30);
+
         $manager->persist($st1);
         $manager->persist($phase1);
         $manager->persist($phase2);
 
         $manager->persist($cp11);
         $manager->persist($cp12);
+        $manager->persist($cp21);
 
         $manager->flush();
 
         $this->addReference('phase1', $phase1);
         $this->addReference('phase2', $phase2);
+
+        $this->addReference('step11', $step11);
+        $this->addReference('step12', $step12);
     }
 
     public function getOrder()

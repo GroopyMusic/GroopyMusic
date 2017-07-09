@@ -1,31 +1,7 @@
 # app/config/routing.yml
 
-user_registration:
-  path: /register
-  defaults: { _controller: AppBundle:Security:register }
-
-user_artist_registration:
-    path:  /register/artist
-    defaults: { _controller: AppBundle:Security:registerArtist }
-
-user_fan_registration:
-    path:  /register/fan
-    defaults: { _controller: AppBundle:Security:registerFan }
-
-fos_user_registration_check_email:
-  path: /check-email
-  methods: GET
-  defaults: { _controller: FOSUserBundle:Registration:checkEmail}
-
-fos_user_registration_confirm:
-  path: /confirm/{token}
-  methods: GET
-  defaults: { _controller: FOSUserBundle:Registration:confirm}
-
-fos_user_registration_confirmed:
-  path: /confirmed
-  methods: GET
-  defaults: { _controller: FOSUserBundle:Registration:confirmed}
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
 azine_email_bundle:
     resource: "@AzineEmailBundle/Resources/config/routing.yml"
@@ -64,16 +40,20 @@ app_fan:
 app_artist:
     resource: "@AppBundle/Controller/ArtistController.php"
     type:     annotation
-    prefix: /secure/artist
+    prefix: /secure/artist/{id}
 
 app_payment:
     resource: "@AppBundle/Controller/PaymentController.php"
     type:     annotation
     prefix: /secure/payment-zone
 
-app_admin:
-    resource: "@AppBundle/Controller/AdminController.php"
-    type:     annotation
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /admin
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
     prefix: /admin
 
 app_public:

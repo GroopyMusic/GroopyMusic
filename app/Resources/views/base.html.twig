@@ -27,21 +27,20 @@
                         <a href="{{ path('user_notifications') }}">Inbox</a>
                         <a href="{{ path('testmail') }}">Test mail</a>
 
-                    {% if is_granted('ROLE_ARTIST') %}
-                        <a href="{{ path('artist_steps') }}">Paliers</a>
-                        <a href="{{ path('artist_contracts') }}">Contrats</a>
-                    {% endif %}
-
                     {% if is_granted('ROLE_FAN') %}
                         <a href="{{ path('fan_artist_contracts') }}">Contrats en cours</a>
                         <a href="{{ path('fan_cart') }}">Panier</a>
                         <a href="{{ path('fan_paid_carts') }}">Paniers payés</a>
                         <a href="{{ path('fan_special_advantages') }}">Avantages spéciaux</a>
                         <a href="{{ path('fan_special_purchases') }}">Achats spéciaux</a>
+
+                        {% if app.user.artistsUser is not empty %}
+                            <a href="{{ path('fan_artists') }}">Mes groupes</a>
+                        {% endif %}
                     {% endif %}
 
                     {% else %}
-                        <a href="{{ path('user_registration') }}">Inscription</a>
+                        <a href="{{ path('fos_user_registration_register') }}">Inscription</a>
                         <a href="{{ path('fos_user_security_login') }}">Connexion</a>
                     {% endif %}
                      <a href="{{ path('suggestionBox') }}">Boite à idées</a>

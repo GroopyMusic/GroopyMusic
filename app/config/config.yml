@@ -10,7 +10,7 @@ parameters:
 
 framework:
     #esi:             ~
-    translator:      ~
+    translator:      { fallbacks: [en] }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -78,7 +78,6 @@ fos_user:
     user_class: AppBundle\Entity\User
     service:
         mailer: fos_user.mailer.twig_swift
-        user_manager: pugx_user_manager
     registration:
         form:
             type: AppBundle\Form\RegistrationType
@@ -95,37 +94,37 @@ fos_user:
         email:
             template:   email/password_resetting.email.twig
 
-pugx_multi_user:
-  users:
-    user_artist:
-        entity:
-          class: AppBundle\Entity\UserArtist
-        registration:
-          form:
-            type: AppBundle\Form\RegistrationUserArtistType
-            name: user_artist_registration_form
-            validation_groups:  [Registration, Default]
-          template: user_artist.form.html.twig
-        profile:
-          form:
-            type: AppBundle\Form\ProfileUserArtistType
-            name: user_artist_profile_form
-            validation_groups:  [Profile, Default]
-
-    user_fan:
-        entity:
-          class: AppBundle\Entity\UserFan
-        registration:
-          form:
-            type: AppBundle\Form\RegistrationUserFanType
-            name: user_fan_registration_form
-            validation_groups:  [Registration, Default]
-          template: user_fan.form.html.twig
-        profile:
-          form:
-            type: AppBundle\Form\ProfileUserFanType
-            name: user_fan_profile_form
-            validation_groups:  [Profile, Default]
+#pugx_multi_user:
+#  users:
+#    user_artist:
+#        entity:
+#          class: AppBundle\Entity\UserArtist
+#        registration:
+#          form:
+#            type: AppBundle\Form\RegistrationUserArtistType
+#            name: user_artist_registration_form
+#            validation_groups:  [Registration, Default]
+#          template: user_artist.form.html.twig
+#        profile:
+#          form:
+#            type: AppBundle\Form\ProfileUserArtistType
+#            name: user_artist_profile_form
+#            validation_groups:  [Profile, Default]
+#
+#    user_fan:
+#        entity:
+#          class: AppBundle\Entity\UserFan
+#        registration:
+#          form:
+#            type: AppBundle\Form\RegistrationUserFanType
+#            name: user_fan_registration_form
+#            validation_groups:  [Registration, Default]
+#          template: user_fan.form.html.twig
+#        profile:
+#          form:
+#            type: AppBundle\Form\ProfileUserFanType
+#            name: user_fan_profile_form
+#            validation_groups:  [Profile, Default]
 
 azine_email:
     # the class of your implementation of the RecipientInterface
@@ -224,3 +223,11 @@ assetic:
             bin: "%path_to_uglifyjs%"
         uglifycss:
             bin: "%path_to_uglifycss%"
+
+# Sonata Admin
+sonata_block:
+      default_contexts: [cms]
+      blocks:
+          # enable the SonataAdminBundle block
+          sonata.admin.block.admin_list:
+              contexts: [admin]

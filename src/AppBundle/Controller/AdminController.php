@@ -32,7 +32,6 @@ class AdminController extends Controller
      */
     public function contractArtistAction(ContractArtist $ca)
     {
-        $em = $this->getDoctrine()->getManager();
         $payments = $ca->getPayments();
 
         return $this->render('@App/Admin/contract_artist.html.twig', array(

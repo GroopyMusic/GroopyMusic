@@ -1,7 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
-use AppBundle\Entity\UserArtist;
+use AppBundle\Entity\Artist;
 
 /**
  * ContractArtistRepository
@@ -11,7 +11,7 @@ use AppBundle\Entity\UserArtist;
  */
 class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findCurrentForArtist(UserArtist $artist) {
+    public function findCurrentForArtist(Artist $artist) {
         return $this->createQueryBuilder('c')
             ->where('c.artist = :artist')
             ->andWhere('c.dateEnd > :now')

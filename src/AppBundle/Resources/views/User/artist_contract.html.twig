@@ -5,6 +5,10 @@
     {% if is_granted('ROLE_FAN') %}
         <h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.name }}"</h1>
 
+        {% if artist is not defined and app.user.owns(contract.artist) %}
+            <a href="{{ path('artist_contract', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
+        {% endif %}
+
     {% else %}
         <h1>Contrat en cours</h1>
     {% endif %}
@@ -22,7 +26,7 @@
 
         {% if contract.motivations is not null or is_granted('ROLE_ARTIST') %}
             <li>
-            {% if is_granted('ROLE_ARTIST') %}
+            {% if artist is defined %}
                 <textarea id="motivations-textarea">{#
                     #}{{ contract.motivations }}{#
                 #}</textarea>
@@ -52,12 +56,13 @@
 
 {% if is_granted('ROLE_FAN') %}
     {% block js_vars %}
+        {% set path_artist = artist is defined ? path('artist_ajax_update_motivations', {'id': artist.id}) : "" %}
         <div id="modal-dialog">
         </div>
         <div
             id="js-vars"
             data-vars="{{ {'ajax_path_add_to_cart': path('fan_ajax_add_to_cart'),
-                           'ajax_path_update_motivations': path('artist_ajax_update_motivations')}|json_encode|e('html_attr') }}">
+                           'ajax_path_update_motivations': path_artist}|json_encode|e('html_attr') }}">
         </div>
     {% endblock %}
 

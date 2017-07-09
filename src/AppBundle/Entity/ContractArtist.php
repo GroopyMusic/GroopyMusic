@@ -47,7 +47,7 @@ class ContractArtist
     private $step;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UserArtist")
+     * @ORM\ManyToOne(targetEntity="Artist")
      * @ORM\JoinColumn(nullable=false)
      */
     private $artist;
@@ -156,11 +156,11 @@ class ContractArtist
     /**
      * Set artist
      *
-     * @param \AppBundle\Entity\UserArtist $artist
+     * @param \AppBundle\Entity\Artist $artist
      *
      * @return ContractArtist
      */
-    public function setArtist(\AppBundle\Entity\UserArtist $artist)
+    public function setArtist(\AppBundle\Entity\Artist $artist)
     {
         $this->artist = $artist;
 
@@ -170,7 +170,7 @@ class ContractArtist
     /**
      * Get artist
      *
-     * @return \AppBundle\Entity\UserArtist
+     * @return \AppBundle\Entity\Artist
      */
     public function getArtist()
     {

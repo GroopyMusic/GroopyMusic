@@ -1,7 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
-use AppBundle\Entity\UserFan;
+use AppBundle\Entity\User;
 
 /**
  * CartRepository
@@ -11,10 +11,10 @@ use AppBundle\Entity\UserFan;
  */
 class CartRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findCurrentForFan(UserFan $fan) {
+    public function findCurrentForFan(User $fan) {
 
         return $this->createQueryBuilder('c')
-            ->where('c.fan = :fan')
+            ->where('c.user = :fan')
             ->andWhere('c.confirmed = 0')
             ->setParameter('fan', $fan)
             ->getQuery()

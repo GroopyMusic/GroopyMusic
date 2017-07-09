@@ -10,17 +10,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="fos_user")
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"user_artist" = "UserArtist", "user_fan" = "UserFan"})
  */
-abstract class User extends BaseUser implements RecipientInterface
+class User extends BaseUser implements RecipientInterface
 {
     public function __construct()
     {
         parent::__construct();
         $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY);
         $this->setNewsletter(true);
+        $this->credits = 0;
+        $this->addRole("ROLE_FAN");
+    }
+
+    public function owns(Artist $artist) {
+        foreach($this->artists_user as $au) {
+            if($au->getArtist() == $artist) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function removeCredits($n) {
+        $this->credits -= $n;
     }
 
     /**
@@ -41,6 +53,47 @@ abstract class User extends BaseUser implements RecipientInterface
 
         return ucwords($displayName);
     }
+
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(name="lastname", type="string", length=255)
+     * TODO traduire
+     * @Assert\NotBlank(message="Please enter your last name.", groups={"Registration", "Profile"})
+     * @Assert\Length(
+     *     min=3,
+     *     max=255,
+     *     minMessage="The last name is too short.",
+     *     maxMessage="The last name is too long.",
+     *     groups={"Registration", "Profile"}
+     * )
+     */
+    protected $lastname;
+
+    /**
+     * @ORM\Column(name="firstname", type="string", length=255)
+     */
+    protected $firstname;
+
+    /**
+     * @ORM\OneToMany(targetEntity="SpecialPurchase", mappedBy="fan")
+     */
+    private $specialPurchases;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Cart", mappedBy="fan")
+     */
+    private $carts;
+
+    /**
+     * @ORM\Column(name="credits", type="integer")
+     */
+    private $credits;
 
     /**
      * @var string
@@ -66,6 +119,16 @@ abstract class User extends BaseUser implements RecipientInterface
      * @ORM\OneToMany(targetEntity="Payment", mappedBy="user")
      */
     protected $payments;
+
+    /**
+     * @ORM\Column(name="stripe_customer_id", type="string", length=255, nullable=true)
+     */
+    protected $stripe_customer_id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Artist_User", mappedBy="user")
+     */
+    protected $artists_user;
 
     /**
      * @param mixed $salutation
@@ -131,32 +194,6 @@ abstract class User extends BaseUser implements RecipientInterface
         $this->preferredLocale = $preferredLocale;
     }
 
-
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
-    /**
-     * @ORM\Column(name="lastname", type="string", length=255)
-     * TODO traduire
-     * @Assert\NotBlank(message="Please enter your last name.", groups={"Registration", "Profile"})
-     * @Assert\Length(
-     *     min=3,
-     *     max=255,
-     *     minMessage="The last name is too short.",
-     *     maxMessage="The last name is too long.",
-     *     groups={"Registration", "Profile"}
-     * )
-     */
-    protected $lastname;
-
-    /**
-     * @ORM\Column(name="firstname", type="string", length=255)
-     */
-    protected $firstname;
 
     /**
      * @return mixed
@@ -249,5 +286,157 @@ abstract class User extends BaseUser implements RecipientInterface
     public function getPayments()
     {
         return $this->payments;
+    }
+
+
+
+    /**
+     * Set stripeCustomerId
+     *
+     * @param string $stripeCustomerId
+     *
+     * @return User
+     */
+    public function setStripeCustomerId($stripeCustomerId)
+    {
+        $this->stripe_customer_id = $stripeCustomerId;
+
+        return $this;
+    }
+
+    /**
+     * Get stripeCustomerId
+     *
+     * @return string
+     */
+    public function getStripeCustomerId()
+    {
+        return $this->stripe_customer_id;
+    }
+
+    /**
+     * Add specialPurchase
+     *
+     * @param \AppBundle\Entity\SpecialPurchase $specialPurchase
+     *
+     * @return UserFan
+     */
+    public function addSpecialPurchase(\AppBundle\Entity\SpecialPurchase $specialPurchase)
+    {
+        $this->specialPurchases[] = $specialPurchase;
+
+        return $this;
+    }
+
+    /**
+     * Remove specialPurchase
+     *
+     * @param \AppBundle\Entity\SpecialPurchase $specialPurchase
+     */
+    public function removeSpecialPurchase(\AppBundle\Entity\SpecialPurchase $specialPurchase)
+    {
+        $this->specialPurchases->removeElement($specialPurchase);
+    }
+
+    /**
+     * Get specialPurchases
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSpecialPurchases()
+    {
+        return $this->specialPurchases;
+    }
+
+    /**
+     * Add cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     *
+     * @return UserFan
+     */
+    public function addCart(\AppBundle\Entity\Cart $cart)
+    {
+        $this->carts[] = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Remove cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     */
+    public function removeCart(\AppBundle\Entity\Cart $cart)
+    {
+        $this->carts->removeElement($cart);
+    }
+
+    /**
+     * Get carts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCarts()
+    {
+        return $this->carts;
+    }
+
+    /**
+     * Set credits
+     *
+     * @param integer $credits
+     *
+     * @return UserFan
+     */
+    public function setCredits($credits)
+    {
+        $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * Get credits
+     *
+     * @return integer
+     */
+    public function getCredits()
+    {
+        return $this->credits;
+    }
+
+    /**
+     * Add artistsUser
+     *
+     * @param \AppBundle\Entity\Artist_User $artistsUser
+     *
+     * @return User
+     */
+    public function addArtistsUser(\AppBundle\Entity\Artist_User $artistsUser)
+    {
+        $this->artists_user[] = $artistsUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove artistsUser
+     *
+     * @param \AppBundle\Entity\Artist_User $artistsUser
+     */
+    public function removeArtistsUser(\AppBundle\Entity\Artist_User $artistsUser)
+    {
+        $this->artists_user->removeElement($artistsUser);
+    }
+
+    /**
+     * Get artistsUser
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArtistsUser()
+    {
+        return $this->artists_user;
     }
 }

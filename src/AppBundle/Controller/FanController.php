@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Artist;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
@@ -106,7 +107,36 @@ class FanController extends Controller
         ));
     }
 
+    /**
+     * @Route("/my-bands", name="fan_artists")
+     */
+    public function artistsAction(UserInterface $fan) {
 
+        $em = $this->getDoctrine()->getManager();
+
+        $artists_user = $fan->getArtistsUser();
+
+        return $this->render('@App/Fan/artists.html.twig', array(
+            'artists_user' => $artists_user,
+        ));
+    }
+
+    /**
+     * @Route("/new-artist", name="fan_new_artist")
+     */
+    public function newArtistAction(UserInterface $fan) {
+
+        $artist = new Artist();
+
+
+
+
+        $artists = $fan->getArtists();
+
+        return $this->render('@App/Fan/artists.html.twig', array(
+            'artists' => $artists,
+        ));
+    }
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 
@@ -129,7 +159,7 @@ class FanController extends Controller
 
         if($cart == null) {
             $cart = new Cart();
-            $cart->setFan($fan);
+            $cart->setUser($fan);
         }
 
         $fanContracts = $cart->getContracts();
@@ -194,7 +224,7 @@ class FanController extends Controller
 
         if($cart == null) {
             $cart = new Cart();
-            $cart->setFan($fan);
+            $cart->setUser($fan);
 
             $em->persist($cart);
             $em->flush();
@@ -255,7 +285,7 @@ class FanController extends Controller
         $adv = $em->getRepository('AppBundle:SpecialAdvantage')->find($id_advantage);
 
         $purchase = new SpecialPurchase();
-        $purchase->setFan($fan)
+        $purchase->setUser($fan)
             ->setQuantity($quantity)
             ->setSpecialAdvantage($adv);
 

@@ -54,10 +54,9 @@ class Cart
     private $contracts;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UserFan", inversedBy="carts")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="carts")
      */
-    private $fan;
-
+    private $user;
 
     /**
      * Get id
@@ -152,26 +151,26 @@ class Cart
     }
 
     /**
-     * Set fan
+     * Set user
      *
-     * @param \AppBundle\Entity\UserFan $fan
+     * @param \AppBundle\Entity\User $user
      *
      * @return Cart
      */
-    public function setFan(\AppBundle\Entity\UserFan $fan = null)
+    public function setUser(\AppBundle\Entity\User $user = null)
     {
-        $this->fan = $fan;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get fan
+     * Get user
      *
-     * @return \AppBundle\Entity\UserFan
+     * @return \AppBundle\Entity\User
      */
-    public function getFan()
+    public function getUser()
     {
-        return $this->fan;
+        return $this->user;
     }
 }

@@ -39,19 +39,29 @@ class PaymentController extends Controller
 
             try {
 
+                $stripe_customer = \Stripe\Customer::create(array(
+                    "description" => "Customer for " . $fan->getEMail(),
+                    "source" => $token
+                ));
+
+                $fan->setStripeCustomerId($stripe_customer->id);
+
                 $charges = array();
                 $payments = array();
                 foreach($cart->getContracts() as $key => $contract) {
                     $charges[$key] = \Stripe\Charge::create(array(
-                        // TODO assurer que cet amount ne peut pas être changé au cours du processus
+                        // TODO assurer que cet amount ne peut pas être changé au cours du processus, par ex. avec un hach
                         "amount" => $contract->getAmount() * 100,
                         "currency" => "eur",
                         "description" => "Paiement du contrat numéro " . $contract->getId(),
-                        "source" => $token,
+                        "customer" => $stripe_customer->id
                     ));
+
                     $payments[$key] = new Payment();
-                    $payments[$key]->setChargeId($charges[$key]->id)->setDate(new \DateTime())->setUser($fan)->setContractFan($contract)->setRefunded(false)->setAmount($contract->getAmount());
+                    $payments[$key]->setChargeId($charges[$key]->id)->setDate(new \DateTime())->setUser($fan)
+                        ->setContractFan($contract)->setContractArtist($contract->getContractArtist())->setRefunded(false)->setAmount($contract->getAmount());
                     $em->persist($payments[$key]);
+                    $em->flush();
                 }
 
                 $cart->setConfirmed(true)->setPaid(true);
@@ -59,7 +69,7 @@ class PaymentController extends Controller
 
                 $em->flush();
 
-                $this->addFlash('notice', 'Bien reçu');
+                //$this->addFlash('notice', 'Bien reçu');
 
                 // TODO
                 // Si c'est le x-ième panier du fan dans les 24h, nous envoyer une notif : ça pourrait être une fraude
