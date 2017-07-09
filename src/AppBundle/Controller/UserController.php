@@ -21,14 +21,7 @@ class UserController extends Controller
 
         // TODO sécuriser cette route tout comme tout le reste de l'espace membres
 
-        if($user->hasRole("ROLE_ARTIST")) {
-            return $this->redirectToRoute('artist_home');
-        }
-
-        elseif($user->hasRole("ROLE_FAN")) {
-            return $this->redirectToRoute('fan_home');
-        }
-
+        return $this->redirectToRoute('fan_home');
     }
 
     /**

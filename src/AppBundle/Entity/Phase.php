@@ -20,6 +20,11 @@ class Phase
         $this->steps = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    // For forms
+    public function __toString() {
+        return $this->num . ' ' . $this->name;
+    }
+
     /**
      * @var int
      *

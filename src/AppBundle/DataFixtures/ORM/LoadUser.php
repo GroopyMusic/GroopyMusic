@@ -2,12 +2,14 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
+use AppBundle\Entity\Artist;
+use AppBundle\Entity\Artist_User;
+use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\User;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use AppBundle\Entity\UserArtist;
-use AppBundle\Entity\UserFan;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\ContainerAwareFixture;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -32,18 +34,39 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
         $userManager = $this->container->get('fos_user.user_manager');
 
         // Artist test account (credentials : artist@un-mute.be - test)
-        $userA = new UserArtist();
-        $userA->setUsername("artist")->setPlainPassword("test")->setEmail("artist@un-mute.be")->setFirstname("John")->setLastname("Doe")->setArtistname("Tartuffe")->setEnabled(true);
-        $userA->setPhase($this->getReference('phase1'));
-
+        $userA = new User();
+        $userA->setUsername("artist")->setPlainPassword("test")->setEmail("artist@un-mute.be")->setFirstname("John")->setLastname("Doe")->setEnabled(true);
         $userManager->updateUser($userA, true);
-        $manager->persist($userA); // persist
+
+        $artist = new Artist();
+        $artist->setPhase($this->getReference('phase1'))->setArtistname('SeeUsoon');
+
+        $artist_userA = new Artist_User();
+        $artist_userA->setArtist($artist);
+        $artist_userA->setUser($userA);
+
+        $manager->persist($userA);
+        $manager->persist($artist);
+        $manager->persist($artist_userA);
+
+        // Test contracts
+
+        $c1 = new ContractArtist();
+        $c1->setDate(new \DateTime())->setArtist($artist)->setDateEnd(new \DateTime("2018-6-30"))->setMotivations("")->setStep($this->getReference('step11'));
+
+        $manager->persist($c1);
 
         // Fan test account (credentials : fan@un-mute.be - test)
-        $userF = new UserFan();
+        $userF = new User();
         $userF->setUsername("fan")->setPlainPassword("test")->setEmail("fan@un-mute.be")->setFirstname("Elvis")->setLastname("Presley")->setCredits(100)->setEnabled(true);
         $userManager->updateUser($userF, true);
         $manager->persist($userF); // persist
+
+        // Admin test account (credentials : admin@un-mute.be - test)
+        $userAdmin = new User();
+        $userAdmin->setUsername("admin")->setPlainPassword("test")->setEmail("admin@un-mute.be")->setFirstname("Kids")->setLastname("United")->setCredits(1000)->setEnabled(true)->addRole('ROLE_ADMIN');
+        $userManager->updateUser($userAdmin, true);
+        $manager->persist($userAdmin); // persist
 
         $manager->flush();
     }

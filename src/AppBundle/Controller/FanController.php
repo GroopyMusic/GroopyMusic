@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Artist;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
@@ -69,46 +70,6 @@ class FanController extends Controller
     }
 
     /**
-     * @Route("/cart/payment", name="fan_cart_payment")
-     */
-    public function payCartAction(Request $request, UserInterface $fan) {
-        $em = $this->getDoctrine()->getManager();
-        $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForFan($fan);
-
-        $payment = new Payment();
-        $form = $this->createFormBuilder($payment);
-        $form->add('accept_conditions', CheckboxType::class, array('required' => true))
-            ->add('submit', SubmitType::class, array());
-
-        $form = $form->getForm();
-
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $cart->setConfirmed(true);
-
-            $em->persist($cart);
-            $em->flush();
-
-            // TODO
-            // Si c'est le x-ième panier du fan dans les 24h, nous envoyer une notif : ça pourrait être une fraude
-            // + lui envoyer un mail automatique (ou manuel)
-            // + nous permettre d'annuler dans l'espace d'admin un paiement
-
-            $this->addFlash('notice', 'Bien reçu');
-            return $this->redirectToRoute('fan_home');
-        }
-
-        if($cart == null || count($cart->getContracts()) == 0) {
-            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
-        }
-
-        return $this->render('@App/Fan/pay_cart.html.twig', array(
-            'cart' => $cart,
-            'form' => $form->createView(),
-        ));
-    }
-
-    /**
      * @Route("/paid-carts", name="fan_paid_carts")
      */
     public function paidCartsAction(UserInterface $fan) {
@@ -146,7 +107,36 @@ class FanController extends Controller
         ));
     }
 
+    /**
+     * @Route("/my-bands", name="fan_artists")
+     */
+    public function artistsAction(UserInterface $fan) {
 
+        $em = $this->getDoctrine()->getManager();
+
+        $artists_user = $fan->getArtistsUser();
+
+        return $this->render('@App/Fan/artists.html.twig', array(
+            'artists_user' => $artists_user,
+        ));
+    }
+
+    /**
+     * @Route("/new-artist", name="fan_new_artist")
+     */
+    public function newArtistAction(UserInterface $fan) {
+
+        $artist = new Artist();
+
+
+
+
+        $artists = $fan->getArtists();
+
+        return $this->render('@App/Fan/artists.html.twig', array(
+            'artists' => $artists,
+        ));
+    }
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 
@@ -169,7 +159,7 @@ class FanController extends Controller
 
         if($cart == null) {
             $cart = new Cart();
-            $cart->setFan($fan);
+            $cart->setUser($fan);
         }
 
         $fanContracts = $cart->getContracts();
@@ -234,7 +224,7 @@ class FanController extends Controller
 
         if($cart == null) {
             $cart = new Cart();
-            $cart->setFan($fan);
+            $cart->setUser($fan);
 
             $em->persist($cart);
             $em->flush();
@@ -295,7 +285,7 @@ class FanController extends Controller
         $adv = $em->getRepository('AppBundle:SpecialAdvantage')->find($id_advantage);
 
         $purchase = new SpecialPurchase();
-        $purchase->setFan($fan)
+        $purchase->setUser($fan)
             ->setQuantity($quantity)
             ->setSpecialAdvantage($adv);
 

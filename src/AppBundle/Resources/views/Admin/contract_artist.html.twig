@@ -1,0 +1,36 @@
+{% extends "admin.html.twig" %}
+
+{% block body %}
+
+    <h2>Contrat {{ contract.id }}</h2>
+
+    <div id="ajax_tab_payments">
+        {% include "@App/Admin/tab_payments.html.twig" %}
+    </div>
+
+    <button id="refund-contract-button">
+        Rembourser tous les paiements
+    </button>
+
+{% endblock %}
+
+{% block javascripts_with_jquery %}
+    {{ parent() }}
+
+    <script>
+        $('button#refund-contract-button').on('click', function() {
+            $(this).hide();
+
+            $.ajax({
+                url: "{{ path('admin_ajax_refund_contract') }}",
+                data: {
+                    contract_id: {{ contract.id }}
+                },
+                method: 'get',
+                success: function(data) {
+                    $('#ajax_tab_payments').html(data);
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -47,7 +47,7 @@ class ContractArtist
     private $step;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UserArtist")
+     * @ORM\ManyToOne(targetEntity="Artist")
      * @ORM\JoinColumn(nullable=false)
      */
     private $artist;
@@ -56,6 +56,11 @@ class ContractArtist
      * @ORM\Column(name="motivations", type="text", nullable=true)
      */
     private $motivations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="contractArtist")
+     */
+    private $payments;
 
     // Conditions approval (form only)
     /**
@@ -151,11 +156,11 @@ class ContractArtist
     /**
      * Set artist
      *
-     * @param \AppBundle\Entity\UserArtist $artist
+     * @param \AppBundle\Entity\Artist $artist
      *
      * @return ContractArtist
      */
-    public function setArtist(\AppBundle\Entity\UserArtist $artist)
+    public function setArtist(\AppBundle\Entity\Artist $artist)
     {
         $this->artist = $artist;
 
@@ -165,7 +170,7 @@ class ContractArtist
     /**
      * Get artist
      *
-     * @return \AppBundle\Entity\UserArtist
+     * @return \AppBundle\Entity\Artist
      */
     public function getArtist()
     {
@@ -226,5 +231,39 @@ class ContractArtist
     public function getMotivations()
     {
         return $this->motivations;
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     *
+     * @return ContractArtist
+     */
+    public function addPayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     */
+    public function removePayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }

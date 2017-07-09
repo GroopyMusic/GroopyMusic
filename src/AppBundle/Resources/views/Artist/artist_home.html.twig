@@ -3,11 +3,11 @@
 {% block body %}
 
     <div>
-        <h2>Résumé de votre évolution :</h2>
+        <h2>Artiste "{{ artist.artistname }}" - Résumé de votre évolution :</h2>
 
         <ul>
-            <li>Phase : <a href="{{ path('artist_steps') }}">{{ app.user.phase.name }}</a></li>
-            <li><a href="{{ path('artist_contracts') }}">Contrats passés</a></li>
+            <li>Phase : <a href="{{ path('artist_steps', {'id': artist.id}) }}">{{ artist.phase.name }}</a></li>
+            <li><a href="{{ path('artist_contracts', {'id': artist.id}) }}">Contrats passés</a></li>
             {% if currentContract is not null %}
                 <li>Palier en cours de contrat : <a href="{{ path('user_see_contract', {'id': currentContract.id}) }}">{{ currentContract.step.name }}</a></li>
             {% endif %}

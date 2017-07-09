@@ -13,16 +13,12 @@ use PUGX\MultiUserBundle\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user_artist")
- * @UniqueEntity(fields = "username", targetClass = "AppBundle\Entity\User", message="fos_user.username.already_used")
- * @UniqueEntity(fields = "email", targetClass = "AppBundle\Entity\User", message="fos_user.email.already_used")
+ * @ORM\Table(name="artist")
  */
-class UserArtist extends User
+class Artist
 {
     public function __construct()
     {
-        parent::__construct();
-        $this->addRole("ROLE_ARTIST");
     }
 
     /**
@@ -68,54 +64,6 @@ class UserArtist extends User
     }
 
     /**
-     * Set lastname
-     *
-     * @param string $lastname
-     *
-     * @return UserArtist
-     */
-    public function setLastname($lastname)
-    {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    /**
-     * Get lastname
-     *
-     * @return string
-     */
-    public function getLastname()
-    {
-        return $this->lastname;
-    }
-
-    /**
-     * Set firstname
-     *
-     * @param string $firstname
-     *
-     * @return UserArtist
-     */
-    public function setFirstname($firstname)
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    /**
-     * Get firstname
-     *
-     * @return string
-     */
-    public function getFirstname()
-    {
-        return $this->firstname;
-    }
-
-    /**
      * Set phase
      *
      * @param \AppBundle\Entity\Phase $phase
@@ -137,5 +85,15 @@ class UserArtist extends User
     public function getPhase()
     {
         return $this->phase;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

@@ -8,7 +8,11 @@
 
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            {% stylesheets 'css/*' filter='cssrewrite' output="css/compiled/main.css" %}
+                <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
 
         <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -23,24 +27,23 @@
                         <a href="{{ path('user_notifications') }}">Inbox</a>
                         <a href="{{ path('testmail') }}">Test mail</a>
 
-                    {% if is_granted('ROLE_ARTIST') %}
-                        <a href="{{ path('artist_steps') }}">Paliers</a>
-                        <a href="{{ path('artist_contracts') }}">Contrats</a>
-                    {% endif %}
-
                     {% if is_granted('ROLE_FAN') %}
                         <a href="{{ path('fan_artist_contracts') }}">Contrats en cours</a>
                         <a href="{{ path('fan_cart') }}">Panier</a>
                         <a href="{{ path('fan_paid_carts') }}">Paniers payés</a>
                         <a href="{{ path('fan_special_advantages') }}">Avantages spéciaux</a>
                         <a href="{{ path('fan_special_purchases') }}">Achats spéciaux</a>
+
+                        {% if app.user.artistsUser is not empty %}
+                            <a href="{{ path('fan_artists') }}">Mes groupes</a>
+                        {% endif %}
                     {% endif %}
 
                     {% else %}
-                        <a href="{{ path('user_registration') }}">Inscription</a>
+                        <a href="{{ path('fos_user_registration_register') }}">Inscription</a>
                         <a href="{{ path('fos_user_security_login') }}">Connexion</a>
                     {% endif %}
-                     <a href="{{ path('app_public_suggestionBox') }}">Boite à idées</a>
+                     <a href="{{ path('suggestionBox') }}">Boite à idées</a>
                 </nav>
 
             {% endblock %}
@@ -76,6 +79,7 @@
                     src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
                     integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
                     crossorigin="anonymous"></script>
+            <script src="https://js.stripe.com/v3/"></script>
             {% block javascripts_with_jquery %}
             {% endblock %}
         {% endblock %}

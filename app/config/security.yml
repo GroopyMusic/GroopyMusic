@@ -4,10 +4,9 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
+        ROLE_ADMIN:       ROLE_FAN
         ROLE_SUPER_ADMIN: ROLE_ADMIN
         ROLE_FAN:         ROLE_USER
-        ROLE_ARTIST:      ROLE_USER
 
     providers:
         fos_userbundle:
@@ -30,4 +29,4 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/secure/fan/, role: ROLE_FAN }
-        - { path: ^/secure/artist/, role: ROLE_ARTIST }
+        - { path: ^/secure/artist/, role: ROLE_FAN }

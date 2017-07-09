@@ -1,0 +1,44 @@
+{% extends "admin.html.twig" %}
+
+{% block body %}
+
+    <h2>Paiements par contrat d'artiste</h2>
+
+    <ul>
+        {% for contract in contracts %}
+            <li>
+                <a href="{{ path('admin_contract_artist', {'id': contract.id}) }}">
+                    Contrat #{{ contract.id }} de l'artiste {{ contract.artist.artistname }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+
+    <h2>Tous les paiements</h2>
+    <div id="ajax_tab_payments">
+        {% include "@App/Admin/tab_payments.html.twig" %}
+    </div>
+{% endblock %}
+
+{% block javascripts_with_jquery %}
+    {{ parent() }}
+
+    <script>
+        $('button.refund-button').on('click', function() {
+            $(this).hide();
+
+            $.ajax({
+                url: "{{ path('admin_ajax_refund_payment') }}",
+                data: {
+                    payment_id: $(this).attr('payment')
+                },
+                method: 'get',
+                success: function(data) {
+                    $('#ajax_tab_payments').html(data);
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

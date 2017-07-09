@@ -43,9 +43,9 @@ class SpecialPurchase
     private $quantity;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UserFan", inversedBy="specialPurchases")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="specialPurchases")
      */
-    private $fan;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="SpecialAdvantage")
@@ -111,30 +111,6 @@ class SpecialPurchase
     }
 
     /**
-     * Set fan
-     *
-     * @param \AppBundle\Entity\UserFan $fan
-     *
-     * @return SpecialPurchase
-     */
-    public function setFan(\AppBundle\Entity\UserFan $fan = null)
-    {
-        $this->fan = $fan;
-
-        return $this;
-    }
-
-    /**
-     * Get fan
-     *
-     * @return \AppBundle\Entity\UserFan
-     */
-    public function getFan()
-    {
-        return $this->fan;
-    }
-
-    /**
      * Set specialAdvantage
      *
      * @param \AppBundle\Entity\SpecialAdvantage $specialAdvantage
@@ -156,5 +132,29 @@ class SpecialPurchase
     public function getSpecialAdvantage()
     {
         return $this->specialAdvantage;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return SpecialPurchase
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

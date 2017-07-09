@@ -9,7 +9,7 @@
     {% set overleveled = false %}
 
     {% for phase in phases %}
-        {% if phase.num > app.user.phase.num and not overleveled %}
+        {% if phase.num > artist.phase.num and not overleveled %}
             </div>
             <div id="unavailable-phases">
             {% set overleveled = true %}
@@ -19,7 +19,7 @@
         {% for step in phase.steps %}
             <li>Palier #{{ step.num }} : {{ step.name }} (type : {{ step.type.name }})
                 {% if not overleveled and currentContract is null %}
-                    <a href="{{ path('artist_new_contract', {'id': step.id}) }}">viser</a>
+                    <a href="{{ path('artist_new_contract', {'id': artist.id, 'step_id': step.id}) }}">viser</a>
                 {% elseif not overleveled and currentContract is not null and currentContract.step.id == step.id %}
                     <a href="{{ path('user_see_contract', {'id': currentContract.id}) }}">EN COURS</a>
                 {% endif %}

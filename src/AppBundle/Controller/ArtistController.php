@@ -11,26 +11,29 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use AppBundle\Entity\Artist;
 
 class ArtistController extends Controller
 {
     /**
      * @Route("/home", name="artist_home")
      */
-    public function homeAction(Request $request, UserInterface $artist)
+    public function homeAction(Request $request, UserInterface $user, Artist $artist)
     {
         $em = $this->getDoctrine()->getManager();
         $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($artist);
 
         return $this->render('@App/Artist/artist_home.html.twig', array(
             'currentContract' => $currentContract,
+            'artist' => $artist,
         ));
     }
 
     /**
      * @Route("/steps", name="artist_steps")
      */
-    public function stepsAction(UserInterface $artist) {
+    public function stepsAction(UserInterface $user, Artist $artist) {
 
         $em = $this->getDoctrine()->getManager();
         $phases = $em->getRepository('AppBundle:Phase')->findAllWithSteps();
@@ -39,13 +42,15 @@ class ArtistController extends Controller
         return $this->render('@App/Artist/steps.html.twig', array(
             'phases' => $phases,
             'currentContract' => $currentContract,
+            'artist' => $artist,
         ));
     }
 
     /**
-     * @Route("/steps/new-contract-{id}", name="artist_new_contract")
+     * @Route("/steps/new-contract-{step_id}", name="artist_new_contract")
+     * @ParamConverter("step", class="AppBundle:Step", options={"id" = "step_id"})
      */
-    public function contractAction(Step $step, UserInterface $artist, Request $request) {
+    public function newCntractAction(Step $step, UserInterface $user, Artist $artist, Request $request) {
 
         // Only unlocked phases are allowed
         $phase = $step->getPhase();
@@ -105,13 +110,29 @@ class ArtistController extends Controller
     /**
      * @Route("/contracts", name="artist_contracts")
      */
-    public function contractsAction(UserInterface $artist) {
+    public function contractsAction(UserInterface $user, Artist $artist) {
 
         $em = $this->getDoctrine()->getManager();
         $contracts = $em->getRepository('AppBundle:ContractArtist')->findBy(array('artist' => $artist), array('dateEnd' => 'DESC'));
 
         return $this->render('@App/Artist/contracts.html.twig', array(
            'contracts' => $contracts,
+            'artist' => $artist,
+        ));
+    }
+
+    /**
+     * @Route("/contract-{contract_id}", name="artist_contract")
+     * @ParamConverter("contract", class="AppBundle:ContractArtist", options={"id" = "contract_id"})
+     */
+    public function contractAction(UserInterface $user, Artist $artist, ContractArtist $contract) {
+
+        $em = $this->getDoctrine()->getManager();
+        $contracts = $em->getRepository('AppBundle:ContractArtist')->findBy(array('artist' => $artist), array('dateEnd' => 'DESC'));
+
+        return $this->render('@App/User/artist_contract.html.twig', array(
+            'contract' => $contract,
+            'artist' => $artist,
         ));
     }
 
@@ -121,7 +142,7 @@ class ArtistController extends Controller
     /**
      * @Route("/api/update-motivations", name="artist_ajax_update_motivations")
      */
-    public function updateMotivations(Request $request, UserInterface $artist) {
+    public function updateMotivations(Request $request, UserInterface $user, Artist $artist) {
         $em = $this->getDoctrine()->getManager();
 
         $motivations = $request->request->get('motivations');

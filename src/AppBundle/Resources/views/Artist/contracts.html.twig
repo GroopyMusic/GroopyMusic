@@ -21,7 +21,7 @@
                     <td>{{ contract.date|date('d/m/Y') }}</td>
                     <td>{{ contract.dateEnd|date('d/m/Y') }}</td>
                     <td><a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.name }}</a></td>
-                    <td><a href="{{ path('user_see_contract', {'id': contract.id}) }}">
+                    <td><a href="{{ path('artist_contract', {'id': artist.id, 'contract_id': contract.id}) }}">
                         {% set date_act = "now" %}
                         {% if contract.dateEnd > date_act %}
                             En cours
