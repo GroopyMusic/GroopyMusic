@@ -40,6 +40,11 @@ class Artist
     private $phase;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Genre")
+     */
+    private $genres;
+
+    /**
      * Set artistname
      *
      * @param string $artistname
@@ -95,5 +100,39 @@ class Artist
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Add genre
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     *
+     * @return Artist
+     */
+    public function addGenre(\AppBundle\Entity\Genre $genre)
+    {
+        $this->genres[] = $genre;
+
+        return $this;
+    }
+
+    /**
+     * Remove genre
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     */
+    public function removeGenre(\AppBundle\Entity\Genre $genre)
+    {
+        $this->genres->removeElement($genre);
+    }
+
+    /**
+     * Get genres
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGenres()
+    {
+        return $this->genres;
     }
 }
