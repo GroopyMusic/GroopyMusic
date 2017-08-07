@@ -81,12 +81,12 @@ class User extends BaseUser implements RecipientInterface
     protected $firstname;
 
     /**
-     * @ORM\OneToMany(targetEntity="SpecialPurchase", mappedBy="fan")
+     * @ORM\OneToMany(targetEntity="SpecialPurchase", mappedBy="user")
      */
     private $specialPurchases;
 
     /**
-     * @ORM\OneToMany(targetEntity="Cart", mappedBy="fan")
+     * @ORM\OneToMany(targetEntity="Cart", mappedBy="user")
      */
     private $carts;
 
@@ -129,6 +129,12 @@ class User extends BaseUser implements RecipientInterface
      * @ORM\OneToMany(targetEntity="Artist_User", mappedBy="user")
      */
     protected $artists_user;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Genre")
+     */
+    private $genres;
+
 
     /**
      * @param mixed $salutation
@@ -438,5 +444,39 @@ class User extends BaseUser implements RecipientInterface
     public function getArtistsUser()
     {
         return $this->artists_user;
+    }
+
+    /**
+     * Add genre
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     *
+     * @return User
+     */
+    public function addGenre(\AppBundle\Entity\Genre $genre)
+    {
+        $this->genres[] = $genre;
+
+        return $this;
+    }
+
+    /**
+     * Remove genre
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     */
+    public function removeGenre(\AppBundle\Entity\Genre $genre)
+    {
+        $this->genres->removeElement($genre);
+    }
+
+    /**
+     * Get genres
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGenres()
+    {
+        return $this->genres;
     }
 }

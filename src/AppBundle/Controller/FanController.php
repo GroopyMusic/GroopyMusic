@@ -9,6 +9,7 @@ use AppBundle\Entity\Payment;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\SpecialPurchase;
 use AppBundle\Entity\User;
+use AppBundle\Form\ArtistType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -124,17 +125,24 @@ class FanController extends Controller
     /**
      * @Route("/new-artist", name="fan_new_artist")
      */
-    public function newArtistAction(UserInterface $fan) {
+    public function newArtistAction(Request $request, UserInterface $fan) {
+
+        $em = $this->getDoctrine()->getManager();
 
         $artist = new Artist();
 
+        $form = $this->createForm(ArtistType::class, $artist);
+        $form->handleRequest($request);
 
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($artist);
+            $em->flush();
 
+            $this->addFlash('notice', "Bien reçu");
+        }
 
-        $artists = $fan->getArtists();
-
-        return $this->render('@App/Fan/artists.html.twig', array(
-            'artists' => $artists,
+        return $this->render('@App/Fan/new_artist.html.twig', array(
+            'form' => $form,
         ));
     }
 

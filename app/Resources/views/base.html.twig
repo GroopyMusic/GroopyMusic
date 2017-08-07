@@ -8,6 +8,7 @@
 
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
         {% block stylesheets %}
             {% stylesheets 'css/*' filter='cssrewrite' output="css/compiled/main.css" %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
@@ -23,7 +24,7 @@
                 <nav id="menu">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
-                        <a href="{{ path('fos_user_profile_edit') }}">Profil</a>
+                        <a href="{{ path('fos_user_profile_show') }}">Profil</a>
                         <a href="{{ path('user_notifications') }}">Inbox</a>
                         <a href="{{ path('testmail') }}">Test mail</a>
 
@@ -80,6 +81,8 @@
                     integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
                     crossorigin="anonymous"></script>
             <script src="https://js.stripe.com/v3/"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+            <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
             {% block javascripts_with_jquery %}
             {% endblock %}
         {% endblock %}

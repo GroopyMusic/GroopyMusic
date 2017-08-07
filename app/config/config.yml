@@ -40,6 +40,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form_themes:
+      - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -231,3 +233,14 @@ sonata_block:
           # enable the SonataAdminBundle block
           sonata.admin.block.admin_list:
               contexts: [admin]
+
+
+tetranz_select2_entity:
+    minimum_input_length: 0
+    page_limit: 8
+    allow_clear: false
+    delay: 500
+    language: fr
+    cache: false
+    cache_timeout: 0
+    scroll: false

@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class ProfileType extends AbstractType
 {
@@ -13,6 +14,14 @@ class ProfileType extends AbstractType
         $builder
             ->add('lastname')
             ->add('firstname')
+            ->add('genres', Select2EntityType::class, [
+                'multiple' => true,
+                'remote_route' => 'select2_genres',
+                'class' => 'AppBundle\Entity\Genre',
+                'primary_key' => 'id',
+                'text_property' => 'name',
+            ])
+            ->remove('current_password')
         ;
     }
 

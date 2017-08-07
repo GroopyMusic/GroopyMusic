@@ -1,0 +1,30 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="fos_user_user_show">
+    <p>{{ 'profile.show.username'|trans }} : {{ user.username }}</p>
+    <p>{{ 'profile.show.email'|trans }} : {{ user.email }}</p>
+    <p>{{ 'profile.show.firstname'|trans }} : {{ user.firstName }} </p>
+    <p>{{ 'profile.show.lastname'|trans }} : {{ user.lastName }} </p>
+    <p>{{ 'profile.show.artists'|trans }} :
+        {% if user.artistsUser is not empty %}
+        <ul>
+            {% for a in user.artistsUser %}
+                <li><a href="{{ path('artist_home', {'id': a.artist.id}) }}">{{ a.artist.artistname }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </p>
+    <p>{{ 'profile.show.genres'|trans }} :
+        {% if user.genres is not empty %}
+        <ul>
+            {% for g in user.genres %}
+                <li>{{ g.name }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </p>
+</div>
+
+<div>
+    <a href="{{ path('fos_user_profile_edit') }}">Modifier mon profil</a>
+</div>

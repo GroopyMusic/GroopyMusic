@@ -47,6 +47,11 @@ app_payment:
     type:     annotation
     prefix: /secure/payment-zone
 
+app_select2:
+  resource: "@AppBundle/Controller/Select2Controller.php"
+  type: annotation
+  prefix: /select2
+
 admin_area:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
     prefix: /admin
