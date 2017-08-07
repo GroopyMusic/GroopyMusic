@@ -1,4 +1,4 @@
-<img src="https://img4.hostingpics.net/pics/435885UnMutelogo.png" style="float: right">
+<img src="https://img4.hostingpics.net/pics/435885UnMutelogo.png" align="right">
 
 [https://github.com/GroopyMusic/GroopyMusic](https://github.com/GroopyMusic/GroopyMusic)
 
