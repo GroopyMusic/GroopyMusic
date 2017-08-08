@@ -15,3 +15,5 @@
 /vendor/
 /web/bundles/
 /.idea/
+/.DS_Store
+**/.DS_Store
