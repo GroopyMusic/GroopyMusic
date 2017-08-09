@@ -5,7 +5,7 @@ fos_user:
 
 azine_email_bundle:
     resource: "@AzineEmailBundle/Resources/config/routing.yml"
-    prefix: /mail/
+    prefix: /mail
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"

@@ -34,10 +34,7 @@
                         <a href="{{ path('fan_paid_carts') }}">Paniers payés</a>
                         <a href="{{ path('fan_special_advantages') }}">Avantages spéciaux</a>
                         <a href="{{ path('fan_special_purchases') }}">Achats spéciaux</a>
-
-                        {% if app.user.artistsUser is not empty %}
-                            <a href="{{ path('fan_artists') }}">Mes groupes</a>
-                        {% endif %}
+                        <a href="{{ path('fan_artists') }}">Mes groupes</a>
                     {% endif %}
 
                     {% else %}
@@ -46,7 +43,6 @@
                     {% endif %}
                      <a href="{{ path('suggestionBox') }}">Boite à idées</a>
                 </nav>
-
             {% endblock %}
         </header>
 

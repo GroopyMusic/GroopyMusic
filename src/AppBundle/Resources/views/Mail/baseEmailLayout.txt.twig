@@ -1,3 +1,5 @@
+{% block subject %}Subject{% endblock %}
+
 {% block body_text %}
 {% autoescape false %}
 
@@ -66,5 +68,5 @@ Add "{{ sendMailAccountAddress }}" to your address book to ensure delivery of az
 {% endblock %}
 
 {% block body_html %}
-{% include 'AzineEmailBundle::baseEmailLayout.html.twig' %}
+    {% include 'AzineEmailBundle::baseEmailLayout.html.twig' %}
 {% endblock %}

@@ -9,7 +9,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use PUGX\MultiUserBundle\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
@@ -17,8 +16,9 @@ use PUGX\MultiUserBundle\Validator\Constraints\UniqueEntity;
  */
 class Artist
 {
-    public function __construct()
+    public function __construct(Phase $phase)
     {
+        $this->phase = $phase;
     }
 
     /**
@@ -43,6 +43,16 @@ class Artist
      * @ORM\ManyToMany(targetEntity="Genre")
      */
     private $genres;
+
+    /**
+     * @ORM\Column(name="short_description", type="string", length=255)
+     */
+    private $short_description;
+
+    /**
+     * @ORM\Column(name="biography", type="text")
+     */
+    private $biography;
 
     /**
      * Set artistname
@@ -134,5 +144,53 @@ class Artist
     public function getGenres()
     {
         return $this->genres;
+    }
+
+    /**
+     * Set shortDescription
+     *
+     * @param string $shortDescription
+     *
+     * @return Artist
+     */
+    public function setShortDescription($shortDescription)
+    {
+        $this->short_description = $shortDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get shortDescription
+     *
+     * @return string
+     */
+    public function getShortDescription()
+    {
+        return $this->short_description;
+    }
+
+    /**
+     * Set biography
+     *
+     * @param string $biography
+     *
+     * @return Artist
+     */
+    public function setBiography($biography)
+    {
+        $this->biography = $biography;
+
+        return $this;
+    }
+
+    /**
+     * Get biography
+     *
+     * @return string
+     */
+    public function getBiography()
+    {
+        return $this->biography;
     }
 }

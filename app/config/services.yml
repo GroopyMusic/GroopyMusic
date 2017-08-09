@@ -4,33 +4,12 @@ parameters:
 #    parameter_name: value
 
 services:
-
-    admin.suggestionbox:
-        class: AppBundle\Admin\SuggestionBoxAdmin
-        arguments: [~, AppBundle\Entity\SuggestionBox, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: SuggestionBox }
-        public: true
-
-    admin.user:
-            class: AppBundle\Admin\UserAdmin
-            arguments: [~, AppBundle\Entity\User, ~]
-            tags:
-                - { name: sonata.admin, manager_type: orm, label: User }
-            public: true
-
-    admin.step:
-            class: AppBundle\Admin\StepAdmin
-            arguments: [~, AppBundle\Entity\Step, ~]
-            tags:
-                - { name: sonata.admin, manager_type: orm, label: Step }
-            public: true
-
     app.form.registration:
         class: AppBundle\Form\RegistrationType
         tags:
             - { name: form.type, alias: app_user_registration }
 
+    ######################################## AZINE EMAIL SERVICES ##########################################
     email.web_view_service:
             class: AppBundle\Services\MailWebViewService
             arguments:
@@ -69,3 +48,41 @@ services:
 
     # The following line blocks an error in the AzineEmailBundle which references a non-existent "immediatemailer" service
     swiftmailer.mailer.immediatemailer: "@mailer"
+
+    ######################################## SONATA ADMIN SERVICES ##########################################
+    admin.suggestionbox:
+        class: AppBundle\Admin\SuggestionBoxAdmin
+        arguments: [~, AppBundle\Entity\SuggestionBox, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: SuggestionBox }
+        public: true
+
+    admin.user:
+            class: AppBundle\Admin\UserAdmin
+            arguments: [~, AppBundle\Entity\User, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: User }
+            public: true
+
+    admin.step:
+            class: AppBundle\Admin\StepAdmin
+            arguments: [~, AppBundle\Entity\Step, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Step }
+            public: true
+
+    admin.genre:
+            class: AppBundle\Admin\GenreAdmin
+            arguments: [~, AppBundle\Entity\Genre, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Genre }
+            public: true
+
+    admin.partner:
+            class: AppBundle\Admin\PartnerAdmin
+            arguments: [~, AppBundle\Entity\Partner, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Partner }
+            calls:
+                - [setSubClasses, [{hall: AppBundle\Entity\Hall}]]
+            public: true

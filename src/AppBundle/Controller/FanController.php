@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Artist;
+use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
@@ -60,7 +61,7 @@ class FanController extends Controller
 
         if($cart == null) {
             $cart = new Cart();
-            $cart->setFan($fan);
+            $cart->setUser($fan);
             $em->persist($cart);
             $em->flush();
         }
@@ -75,7 +76,7 @@ class FanController extends Controller
      */
     public function paidCartsAction(UserInterface $fan) {
         $em = $this->getDoctrine()->getManager();
-        $carts = $em->getRepository('AppBundle:Cart')->findBy(array('fan' => $fan, 'confirmed' => true));
+        $carts = $em->getRepository('AppBundle:Cart')->findBy(array('user' => $fan, 'confirmed' => true));
 
         return $this->render('@App/Fan/paid_carts.html.twig', array(
             'carts' => $carts,
@@ -101,7 +102,7 @@ class FanController extends Controller
     public function specialPurchasesAction(UserInterface $fan) {
 
         $em = $this->getDoctrine()->getManager();
-        $sp = $em->getRepository('AppBundle:SpecialPurchase')->findBy(array('fan' => $fan), array('date' => 'DESC'));
+        $sp = $em->getRepository('AppBundle:SpecialPurchase')->findBy(array('user' => $fan), array('date' => 'DESC'));
 
         return $this->render('@App/Fan/special_purchases.html.twig', array(
             'purchases' => $sp,
@@ -129,20 +130,29 @@ class FanController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $artist = new Artist();
+        $phase = $em->getRepository('AppBundle:Phase')->findOneBy(array('num' => 1));
+
+        $artist = new Artist($phase);
 
         $form = $this->createForm(ArtistType::class, $artist);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
             $em->persist($artist);
+
+            $au = new Artist_User();
+            $au->setUser($fan)->setArtist($artist);
+            $em->persist($au);
+
             $em->flush();
 
             $this->addFlash('notice', "Bien reçu");
+
+            return $this->redirectToRoute('fan_artists');
         }
 
         return $this->render('@App/Fan/new_artist.html.twig', array(
-            'form' => $form,
+            'form' => $form->createView(),
         ));
     }
 

@@ -45,12 +45,12 @@ class UserController extends Controller
         $params['message'] = "Happy birthday I wish you all the best!!";
         $locale = "fr";
 
-        $mailer = $this->container->get('azine_email_template_twig_swift_mailer');
+        $mailer = $this->get('azine_email_template_twig_swift_mailer');
         $mailer->sendSingleEmail($user->getEmail(), $user->getDisplayName(), "Test", $params, MailTemplateProvider::VIP_INFO_MAIL_TEMPLATE . ".txt.twig", $locale);
 
         // TODO envoi du mail (pour l'instant manuel)
 
-        return $this->render('@App/Test/vip.html.twig');
+        return $this->render('@App/Public/home.html.twig');
     }
 
     /**

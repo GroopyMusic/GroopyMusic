@@ -1,9 +1,0 @@
-{% extends ":email:base.html.twig" %}
-
-{% block email_title %}Confirm your account{% endblock %}
-
-{% block email_content %}
-    {% autoescape false %}
-        {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
-    {% endautoescape %}
-{% endblock %}

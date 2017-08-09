@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Step;
+use AppBundle\Form\ArtistType;
 use Genemu\Bundle\FormBundle\Form\JQuery\Type\Select2Type;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -32,6 +33,41 @@ class ArtistController extends Controller
     }
 
     /**
+     * @Route("/profile", name="artist_profile")
+     */
+    public function seeProfileAction(Request $request, UserInterface $user, Artist $artist) {
+        return $this->render('@App/Artist/profile.html.twig', array(
+            'artist' => $artist,
+        ));
+    }
+
+    /**
+     * @Route("/edit-profile", name="artist_profile_edit")
+     */
+    public function editProfileAction(Request $request, UserInterface $user, Artist $artist) {
+
+        $form = $this->createForm(ArtistType::class, $artist);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($artist);
+            $em->flush();
+
+            $this->addFlash('notice', 'Bien reçu');
+            return $this->redirectToRoute('artist_profile_edit', ['id' => $artist->getId()]);
+        }
+
+        return $this->render('@App/Artist/edit_profile.html.twig', array(
+            'artist' => $artist,
+            'form' => $form->createView(),
+        ));
+    }
+
+
+    /**
      * @Route("/steps", name="artist_steps")
      */
     public function stepsAction(UserInterface $user, Artist $artist) {
@@ -51,7 +87,7 @@ class ArtistController extends Controller
      * @Route("/steps/new-contract-{step_id}", name="artist_new_contract")
      * @ParamConverter("step", class="AppBundle:Step", options={"id" = "step_id"})
      */
-    public function newCntractAction(Step $step, UserInterface $user, Artist $artist, Request $request) {
+    public function newContractAction(Step $step, UserInterface $user, Artist $artist, Request $request) {
 
         // Only unlocked phases are allowed
         $phase = $step->getPhase();
@@ -105,6 +141,7 @@ class ArtistController extends Controller
         return $this->render('@App/Artist/new_contract.html.twig', array(
             'form' => $form->createView(),
             'contract' => $contract,
+            'artist' => $artist,
         ));
     }
 

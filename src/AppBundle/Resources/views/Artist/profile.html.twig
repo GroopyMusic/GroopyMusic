@@ -1,0 +1,11 @@
+{% extends "AppBundle:Bases:base_artist.html.twig" %}
+
+{% block body %}
+
+    <h1>Profil de l'artiste {{ artist.artistname }}</h1>
+
+    {% if app.user.owns(artist) %}
+        <a href="{{ path('artist_profile_edit', {'id': artist.id}) }}">Modifier le profil</a>
+    {% endif %}
+
+{% endblock %}
