@@ -55,6 +55,11 @@ class Artist
     private $biography;
 
     /**
+     * @ORM\OneToMany(targetEntity="Artist_User", mappedBy="artist")
+     */
+    private $artists_user;
+
+    /**
      * Set artistname
      *
      * @param string $artistname
@@ -192,5 +197,39 @@ class Artist
     public function getBiography()
     {
         return $this->biography;
+    }
+
+    /**
+     * Add artistsUser
+     *
+     * @param \AppBundle\Entity\Artist_User $artistsUser
+     *
+     * @return Artist
+     */
+    public function addArtistsUser(\AppBundle\Entity\Artist_User $artistsUser)
+    {
+        $this->artists_user[] = $artistsUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove artistsUser
+     *
+     * @param \AppBundle\Entity\Artist_User $artistsUser
+     */
+    public function removeArtistsUser(\AppBundle\Entity\Artist_User $artistsUser)
+    {
+        $this->artists_user->removeElement($artistsUser);
+    }
+
+    /**
+     * Get artistsUser
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArtistsUser()
+    {
+        return $this->artists_user;
     }
 }

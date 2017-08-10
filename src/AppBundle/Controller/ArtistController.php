@@ -33,15 +33,6 @@ class ArtistController extends Controller
     }
 
     /**
-     * @Route("/profile", name="artist_profile")
-     */
-    public function seeProfileAction(Request $request, UserInterface $user, Artist $artist) {
-        return $this->render('@App/Artist/profile.html.twig', array(
-            'artist' => $artist,
-        ));
-    }
-
-    /**
      * @Route("/edit-profile", name="artist_profile_edit")
      */
     public function editProfileAction(Request $request, UserInterface $user, Artist $artist) {

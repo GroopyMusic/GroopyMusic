@@ -4,16 +4,29 @@ parameters:
 #    parameter_name: value
 
 services:
+
     app.form.registration:
         class: AppBundle\Form\RegistrationType
         tags:
             - { name: form.type, alias: app_user_registration }
 
+    ######################################## CRON TASKS #############################################
+    app.reminder_contract_artist:
+        class: AppBundle\Services\ReminderContractArtist
+        arguments:
+          em: "@doctrine.orm.entity_manager"
+          notifier: "@email.notifier_service"
+          mailer: "@azine_email.default.template_twig_swift_mailer"
+          logger: "@logger"
+
+    app.reminder_contract_fan:
+        class: AppBundle\Services\ReminderContractFan
+
     ######################################## AZINE EMAIL SERVICES ##########################################
     email.web_view_service:
-            class: AppBundle\Services\MailWebViewService
-            arguments:
-              router:       "@router"
+        class: AppBundle\Services\MailWebViewService
+        arguments:
+          router:       "@router"
 
     email.template_provider:
           class: AppBundle\Services\MailTemplateProvider

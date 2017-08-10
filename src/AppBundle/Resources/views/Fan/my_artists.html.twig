@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    {% if artists_user is empty %}
+
+        <p>Vous n'avez pas de groupe. Souhaitez-vous en <a href="{{ path('fan_new_artist') }}">créer un</a> ?</p>
+
+    {% else %}
+
+        <h2>Mes groupes</h2>
+        <ul>
+            {% for artist_u in artists_user %}
+                <li><a href="{{ path('artist_home', {'id': artist_u.artist.id}) }}">{{ artist_u.artist.artistname }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

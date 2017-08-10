@@ -39,6 +39,30 @@ class FanController extends Controller
     }
 
     /**
+     * @Route("/artist-profile-{id}", name="fan_artist_profile")
+     */
+    public function seeProfileAction(Request $request, UserInterface $user, Artist $artist) {
+        return $this->render('@App/Fan/artist_profile.html.twig', array(
+            'artist' => $artist,
+        ));
+    }
+
+    /**
+     * @Route("/artists", name="fan_artists")
+     */
+    public function artistsAction(Request $request, UserInterface $user) {
+        $em = $this->getDoctrine()->getManager();
+
+        // TODO algorithm
+        $artists = $em->getRepository('AppBundle:Artist')->findAll();
+
+        return $this->render('@App/Fan/artists.html.twig', array(
+
+        ));
+    }
+
+
+    /**
      * @Route("/artist-contracts", name="fan_artist_contracts")
      */
     public function artistContractsAction() {
@@ -110,15 +134,15 @@ class FanController extends Controller
     }
 
     /**
-     * @Route("/my-bands", name="fan_artists")
+     * @Route("/my-bands", name="fan_my_artists")
      */
-    public function artistsAction(UserInterface $fan) {
+    public function myArtistsAction(UserInterface $fan) {
 
         $em = $this->getDoctrine()->getManager();
 
         $artists_user = $fan->getArtistsUser();
 
-        return $this->render('@App/Fan/artists.html.twig', array(
+        return $this->render('@App/Fan/my_artists.html.twig', array(
             'artists_user' => $artists_user,
         ));
     }

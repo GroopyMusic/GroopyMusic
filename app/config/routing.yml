@@ -61,6 +61,10 @@ _sonata_admin:
     type: sonata_admin
     prefix: /admin
 
+jmose_command_scheduler:
+    resource: "@JMoseCommandSchedulerBundle/Resources/config/routing.yml"
+    prefix:   /
+
 app_public:
     resource: "@AppBundle/Controller/PublicController.php"
     type:     annotation

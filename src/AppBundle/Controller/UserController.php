@@ -31,12 +31,11 @@ class UserController extends Controller
         // get all elements used for the notification email
         $title = "You have won the lottery!";
         $content = "Congratulation John! You have won 7'000'000$ in the lottery";
-        $goToUrl = "http://www.acmelottery.com/claim/you/money";
         $recipientId = $user->getId();
 
         // get your implementation of the AzineNotifierService
         $notifierService = $this->get('email.notifier_service');
-        $notifierService->addNotificationMessage($recipientId, $title, $content, $goToUrl);
+        $notifierService->addNotificationMessage($recipientId, $title, $content);
 
         $params = array();
         $params['subject'] = $title;

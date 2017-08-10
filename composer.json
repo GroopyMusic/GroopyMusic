@@ -35,7 +35,8 @@
         "symfony/assetic-bundle": "^2.8",
         "sonata-project/admin-bundle": "^3.20",
         "sonata-project/doctrine-orm-admin-bundle": "^3.1",
-        "tetranz/select2entity-bundle": "2.*"
+        "tetranz/select2entity-bundle": "2.*",
+        "jmose/command-scheduler-bundle": "^1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

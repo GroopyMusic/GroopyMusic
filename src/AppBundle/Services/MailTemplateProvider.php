@@ -16,6 +16,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     // design your own twig-templates for your custom emails
     // and list them here as constants, to avoid typos.
     const VIP_INFO_MAIL_TEMPLATE		= 'AppBundle:Mail:vip';
+    const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:reminder_contract_artist.txt.twig';
     // and also design your own base-template that should be used for newsletter/notification-emails
     // and define the template IDs for the newsletter- and notification-emails in your config.yml
 

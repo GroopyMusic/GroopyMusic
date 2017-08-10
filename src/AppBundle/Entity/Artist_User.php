@@ -29,7 +29,7 @@ class Artist_User
     private $role;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Artist")
+     * @ORM\ManyToOne(targetEntity="Artist", inversedBy="artists_user")
      */
     private $artist;
 

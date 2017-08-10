@@ -10,7 +10,7 @@ parameters:
 
 framework:
     #esi:             ~
-    translator:      { fallbacks: [en] }
+    translator:      { fallbacks: [fr] }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -71,7 +71,7 @@ swiftmailer:
     host:      "%mailer_host%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
-    spool:     { type: memory }
+    spool:     { type: file, path: "%kernel.root_dir%/spool" }
     auth_mode:  "%mailer_auth_mode%"
     port:       "%mailer_port%"
 
@@ -96,7 +96,7 @@ fos_user:
         sender_name:    'Un-Mute'
     resetting:
         email:
-            template:  AppBundle/Mail/password_resetting.txt.twig
+            template:  AppBundle:Mail:password_resetting.txt.twig
 
 #pugx_multi_user:
 #  users:

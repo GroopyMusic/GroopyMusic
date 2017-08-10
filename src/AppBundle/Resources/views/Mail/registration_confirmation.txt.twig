@@ -1,5 +1,7 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
+{% block subject %}Subject{% endblock %}
+
 {% autoescape false %}
 
 {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}

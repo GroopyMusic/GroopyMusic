@@ -187,4 +187,3 @@ class Address
         return $this->city;
     }
 }
-
