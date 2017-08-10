@@ -38,8 +38,8 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
         $userA->setUsername("artist")->setPlainPassword("test")->setEmail("artist@un-mute.be")->setFirstname("John")->setLastname("Doe")->setEnabled(true);
         $userManager->updateUser($userA, true);
 
-        $artist = new Artist();
-        $artist->setPhase($this->getReference('phase1'))->setArtistname('SeeUsoon');
+        $artist = new Artist($this->getReference('phase1'));
+        $artist->setArtistname('SeeUsoon');
 
         $artist_userA = new Artist_User();
         $artist_userA->setArtist($artist);

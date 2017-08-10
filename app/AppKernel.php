@@ -33,6 +33,7 @@ class AppKernel extends Kernel
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
+            new JMose\CommandSchedulerBundle\JMoseCommandSchedulerBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

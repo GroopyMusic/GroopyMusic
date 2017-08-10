@@ -2,16 +2,16 @@
 
 {% block body %}
 
-    {% if artists_user is empty %}
+    {% if artists is empty %}
 
-        <p>Vous n'avez pas de groupe. Souhaitez-vous en <a href="{{ path('fan_new_artist') }}">créer un</a> ?</p>
+        <p>Pas encore d'artiste sur la plateforme</p>
 
     {% else %}
 
-        <h2>Mes groupes</h2>
+        <h1>Artistes</h1>
         <ul>
-            {% for artist_u in artists_user %}
-                <li><a href="{{ path('artist_home', {'id': artist_u.artist.id}) }}">{{ artist_u.artist.artistname }}</a></li>
+            {% for artist in artists %}
+                <li><a href="{{ path('fan_artist_profile', {'id': artist.id}) }}">{{ artist.artistname }}</a></li>
             {% endfor %}
         </ul>
     {% endif %}

@@ -15,6 +15,7 @@ class ContractArtist
 {
     public function __construct() {
         $this->accept_conditions = false;
+        $this->reminders = 0;
     }
 
     /**
@@ -61,6 +62,11 @@ class ContractArtist
      * @ORM\OneToMany(targetEntity="Payment", mappedBy="contractArtist")
      */
     private $payments;
+
+    /**
+     * @ORM\Column(name="reminders", type="smallint")
+     */
+    private $reminders;
 
     // Conditions approval (form only)
     /**
@@ -265,5 +271,29 @@ class ContractArtist
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * Set reminders
+     *
+     * @param integer $reminders
+     *
+     * @return ContractArtist
+     */
+    public function setReminders($reminders)
+    {
+        $this->reminders = $reminders;
+
+        return $this;
+    }
+
+    /**
+     * Get reminders
+     *
+     * @return integer
+     */
+    public function getReminders()
+    {
+        return $this->reminders;
     }
 }

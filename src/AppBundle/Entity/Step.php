@@ -66,6 +66,11 @@ class Step
     private $description;
 
     /**
+     * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
+     */
+    private $halls;
+
+    /**
      * Get id
      *
      * @return int
@@ -283,5 +288,39 @@ class Step
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Add hall
+     *
+     * @param \AppBundle\Entity\Hall $hall
+     *
+     * @return Step
+     */
+    public function addHall(\AppBundle\Entity\Hall $hall)
+    {
+        $this->halls[] = $hall;
+
+        return $this;
+    }
+
+    /**
+     * Remove hall
+     *
+     * @param \AppBundle\Entity\Hall $hall
+     */
+    public function removeHall(\AppBundle\Entity\Hall $hall)
+    {
+        $this->halls->removeElement($hall);
+    }
+
+    /**
+     * Get halls
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHalls()
+    {
+        return $this->halls;
     }
 }

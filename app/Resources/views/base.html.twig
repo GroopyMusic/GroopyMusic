@@ -37,19 +37,17 @@
                         <a href="{{ path('fan_paid_carts') }}">Paniers payés</a>
                         <a href="{{ path('fan_special_advantages') }}">Avantages spéciaux</a>
                         <a href="{{ path('fan_special_purchases') }}">Achats spéciaux</a>
-
-                        {% if app.user.artistsUser is not empty %}
-                            <a href="{{ path('fan_artists') }}">Mes groupes</a>
-                        {% endif %}
+                        <a href="{{ path('fan_my_artists') }}">Mes artistes</a>
+                        <a href="{{ path('fan_artists') }}">Tous les artistes</a>
                     {% endif %}
 
                     {% else %}
                         <a href="{{ path('fos_user_registration_register') }}">Inscription</a>
                         <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+                        <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a>
                     {% endif %}
                      <a href="{{ path('suggestionBox') }}">Boite à idées</a>
                 </nav>
-
             {% endblock %}
         </header>
 

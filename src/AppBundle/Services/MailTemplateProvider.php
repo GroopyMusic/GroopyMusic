@@ -16,7 +16,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     // design your own twig-templates for your custom emails
     // and list them here as constants, to avoid typos.
     const VIP_INFO_MAIL_TEMPLATE		= 'AppBundle:Mail:vip';
-    const SOME_OTHER_MAIL_TEMPLATE		= 'AcmeExampleEmailBundle:Foo:marMail';
+    const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:reminder_contract_artist.txt.twig';
     // and also design your own base-template that should be used for newsletter/notification-emails
     // and define the template IDs for the newsletter- and notification-emails in your config.yml
 
@@ -47,7 +47,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
         $newVars["h2Style"]	= "style='padding:0; margin:0; font:bold 24px Arial; color:red; text-decoration:none;'";
 
         // add an image that should be embedded into the html-email.
-        $newVars['someRandomImage'] = $this->getTemplateImageDir()."someRandomImage.png";
+        $newVars['imageTest'] = $this->getTemplateImageDir()."test.png";
         // after the image has been added here, it will be base64-encoded so it can be embedded into a html-snippet
         // see self::getSnippetArrayFor()
 
@@ -66,9 +66,14 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     {
         // add a code snippet to reference the random image you added in the getParamArrayFor() method.
         // in the mean time it has been base64-encoded and attached as mime-part to your email.
-        $vars['sampleSnippetWithImage'] = "<img src='".$vars['logo_png']."'>";
+        try {
+            $vars['sampleSnippetWithImage'] = "<img src='".$vars['imageTest']."'>";
+        } catch(\Exception $e) {
+        }
+
         // with this html-snippet you can display the "someRandomImage.png" from your
         // template-folder like this in your twig-template:   .... {{ sampleSnippetWithImage }} ...
+        // TODO doesn't work :(
 
         return parent::getSnippetArrayFor($template, $vars, $emailLocale);
     }

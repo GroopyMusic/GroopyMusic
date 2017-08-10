@@ -56,7 +56,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/", name="suggestionBox")
+     * @Route("/suggestions", name="suggestionBox")
      */
     public function suggestionBoxAction(Request $request, UserInterface $user=null){
 

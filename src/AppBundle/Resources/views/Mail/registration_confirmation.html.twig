@@ -2,7 +2,7 @@
 {% autoescape false %}
     {% spaceless %}
 
-        {% block title %}Bienvenue !{% endblock %}
+        {% block title %}Confirmation de compte{% endblock %}
 
         {% block logo %}
             <a href="http://example.com" target="_blank" style="color: green; font-size: 72px; font-weight: bold; text-decoration: none;">
@@ -10,9 +10,14 @@
             </a>
         {% endblock %}
 
+
         {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
             {% block contentHead %}{# override this block for emails that do contain "contentItems" => e.g. NewsLetter or Notifications #}
                 <span {{ salutationStyle }}>Hello,</span>
+
+                <p>
+                {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
+                </p>
                 <p>
                     Add some html content here
                 </p>

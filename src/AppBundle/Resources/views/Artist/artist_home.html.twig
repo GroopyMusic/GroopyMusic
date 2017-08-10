@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "AppBundle:Bases:base_artist.html.twig" %}
 
 {% block body %}
 
@@ -11,6 +11,7 @@
             {% if currentContract is not null %}
                 <li>Palier en cours de contrat : <a href="{{ path('user_see_contract', {'id': currentContract.id}) }}">{{ currentContract.step.name }}</a></li>
             {% endif %}
+            <li><a href="{{ path('artist_profile', {'id':artist.id}) }}">Voir mon profil</a></li>
         </ul>
 
     </div>

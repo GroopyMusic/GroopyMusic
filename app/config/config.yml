@@ -10,7 +10,7 @@ parameters:
 
 framework:
     #esi:             ~
-    translator:      { fallbacks: [en] }
+    translator:      { fallbacks: [fr] }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -71,7 +71,9 @@ swiftmailer:
     host:      "%mailer_host%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
-    spool:     { type: memory }
+    spool:     { type: file, path: "%kernel.root_dir%/spool" }
+    auth_mode:  "%mailer_auth_mode%"
+    port:       "%mailer_port%"
 
 # friendsofsymfony/userbundle
 fos_user:
@@ -79,22 +81,22 @@ fos_user:
     firewall_name: main
     user_class: AppBundle\Entity\User
     service:
-        mailer: fos_user.mailer.twig_swift
+        mailer: azine_email.default.template_twig_swift_mailer
     registration:
         form:
             type: AppBundle\Form\RegistrationType
         confirmation:
             enabled: true
-            template: email/registration_confirmation.email.twig
+            template: AppBundle:Mail:registration_confirmation.txt.twig
     profile:
         form:
           type: AppBundle\Form\ProfileType
     from_email:
-        address:        noreply@un-mute.be
-        sender_name:    'Un-Mute : giving a voice to artists'
+        address:        no-reply@un-mute.be
+        sender_name:    'Un-Mute'
     resetting:
         email:
-            template:   email/password_resetting.email.twig
+            template:  AppBundle:Mail:password_resetting.txt.twig
 
 #pugx_multi_user:
 #  users:
@@ -135,7 +137,7 @@ azine_email:
     # the fieldname of the boolean field on the recipient class indicating, that a newsletter should be sent or not
     recipient_newsletter_field:  newsletter
 
-    # the service-id of your implementation of the nofitier service to be used
+    # the service-id of your implementation of the notifier service to be used
     notifier_service:     email.notifier_service
 
     # the service-id of your implementation of the template provider service to be used
@@ -154,7 +156,7 @@ azine_email:
         name:                 'Un-Mute' # Required
 
     # absolute path to the image-folder containing the images used in your templates.
-    image_dir:            '%kernel.root_dir%/../web/images/mail/'
+    image_dir:            '%kernel.root_dir%/../web/mail/images/'
 
     # list of folders from which images are allowed to be embeded into emails
     allowed_images_folders:  []
