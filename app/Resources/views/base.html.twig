@@ -9,8 +9,11 @@
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+
         {% block stylesheets %}
-            {% stylesheets 'css/*' filter='cssrewrite' output="css/compiled/main.css" %}
+            {% stylesheets filter='cssrewrite, scssphp, ?uglifycss' output="css/compiled/main.css"
+                "css/*"
+            %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
@@ -85,6 +88,9 @@
             <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
             {% block javascripts_with_jquery %}
             {% endblock %}
+            {% javascripts "js/*" filter='?jsqueeze, ?uglifyjs' output='js/compiled/main.js' %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
         {% endblock %}
     </body>
 </html>
