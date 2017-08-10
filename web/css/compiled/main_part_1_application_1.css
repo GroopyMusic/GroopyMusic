@@ -1,0 +1,9 @@
+// main variables
+@import "../../../css/config/variables";
+
+// importing bootstrap custom variables
+@import "../../../css/bootstrap/bootstrap_variables";
+
+
+// importing bootstrap files
+@import "../../../css/bootstrap/bootstrap";

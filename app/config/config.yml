@@ -223,10 +223,13 @@ assetic:
     node: "%path_to_node%"
     filters:
         cssrewrite: ~
+        jsqueeze: ~
         uglifyjs2:
             bin: "%path_to_uglifyjs%"
         uglifycss:
             bin: "%path_to_uglifycss%"
+        scssphp:
+            formatter: 'Leafo\ScssPhp\Formatter\Compressed'
 
 # Sonata Admin
 sonata_block:
