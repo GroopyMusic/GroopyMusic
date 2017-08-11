@@ -1,0 +1,13 @@
+{% extends 'SonataAdminBundle::standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{  parent() }}
+
+    {# If you're using less, you can also use the
+       '@SonataTranslationBundle/Resources/public/less/sonata-translation.less' template #}
+    {% stylesheets
+    '@SonataTranslationBundle/Resources/public/css/sonata-translation.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file date="2017-08-11T16:16:33Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="ccca5bfa7ca2e4db2af2e6c580434d8199ea78e8" resname="admin_app_genre_batch">
+        <source>/admin/app/genre/batch</source>
+        <target>/admin/app/genre/batch</target>
+      </trans-unit>
+      <trans-unit id="f5a699c8dfec22b3a810613b0d0a10b4415dfb4b" resname="admin_app_genre_create">
+        <source>/admin/app/genre/create</source>
+        <target>/admin/app/genre/create</target>
+      </trans-unit>
+      <trans-unit id="3723aa1fa0b34aad86dac32b9a5f563c5b0c880c" resname="admin_app_genre_delete">
+        <source>/admin/app/genre/{id}/delete</source>
+        <target>/admin/app/genre/{id}/delete</target>
+      </trans-unit>
+      <trans-unit id="c08876d60174d3e610d7e5e2d9214a709faf4fcc" resname="admin_app_genre_edit">
+        <source>/admin/app/genre/{id}/edit</source>
+        <target>/admin/app/genre/{id}/edit</target>
+      </trans-unit>
+      <trans-unit id="f184f8f686f527a2913c84acc91b73bf8b3493ae" resname="admin_app_genre_export">
+        <source>/admin/app/genre/export</source>
+        <target>/admin/app/genre/export</target>
+      </trans-unit>
+      <trans-unit id="0a3f2f9fd2eab9c1d6f4a82f8c22582e2b059099" resname="admin_app_genre_list">
+        <source>/admin/app/genre/list</source>
+        <target>/admin/app/genre/list</target>
+      </trans-unit>
+      <trans-unit id="7d591c47f9f65789fb5e6883dac92d533c50ca1a" resname="admin_app_genre_show">
+        <source>/admin/app/genre/{id}/show</source>
+        <target>/admin/app/genre/{id}/show</target>
+      </trans-unit>
+      <trans-unit id="2e8f545a471b8f5b8e01e3619ff7f959f7a6ef5a" resname="admin_app_partner_batch">
+        <source>/admin/app/partner/batch</source>
+        <target>/admin/app/partner/batch</target>
+      </trans-unit>
+      <trans-unit id="1d7ccde884baaab02f3afa6e7ff3fbe457dbdc89" resname="admin_app_partner_create">
+        <source>/admin/app/partner/create</source>
+        <target>/admin/app/partner/create</target>
+      </trans-unit>
+      <trans-unit id="622106b68f6b14f9436a62b0396f5a70e2e46142" resname="admin_app_partner_delete">
+        <source>/admin/app/partner/{id}/delete</source>
+        <target>/admin/app/partner/{id}/delete</target>
+      </trans-unit>
+      <trans-unit id="f35221675568060207a1685a84e8a2749c9494a5" resname="admin_app_partner_edit">
+        <source>/admin/app/partner/{id}/edit</source>
+        <target>/admin/app/partner/{id}/edit</target>
+      </trans-unit>
+      <trans-unit id="4e1453d3f9c838aa3af7ef2caf3aa8717ce03dcc" resname="admin_app_partner_export">
+        <source>/admin/app/partner/export</source>
+        <target>/admin/app/partner/export</target>
+      </trans-unit>
+      <trans-unit id="8128aa3aa59883347f7cbbd796d276d9722b4b6c" resname="admin_app_partner_list">
+        <source>/admin/app/partner/list</source>
+        <target>/admin/app/partner/list</target>
+      </trans-unit>
+      <trans-unit id="f70d24eb4a6118163af8aae260a02735a83d5554" resname="admin_app_partner_show">
+        <source>/admin/app/partner/{id}/show</source>
+        <target>/admin/app/partner/{id}/show</target>
+      </trans-unit>
+      <trans-unit id="9c46de0aa5777d0a285b0dc3ee419c1fb3f6fb31" resname="admin_app_step_batch">
+        <source>/admin/app/step/batch</source>
+        <target>/admin/app/step/batch</target>
+      </trans-unit>
+      <trans-unit id="937dd1dfad1fa2158a31b4185dd9f3d648ba903a" resname="admin_app_step_create">
+        <source>/admin/app/step/create</source>
+        <target>/admin/app/step/create</target>
+      </trans-unit>
+      <trans-unit id="8ca9c031314197e0587193a464465b3f075d531c" resname="admin_app_step_delete">
+        <source>/admin/app/step/{id}/delete</source>
+        <target>/admin/app/step/{id}/delete</target>
+      </trans-unit>
+      <trans-unit id="99b34dd221ae920ccb0f6211509ae943f06d61c3" resname="admin_app_step_edit">
+        <source>/admin/app/step/{id}/edit</source>
+        <target>/admin/app/step/{id}/edit</target>
+      </trans-unit>
+      <trans-unit id="69c81f488c3d5163307f650e9f295430e5bd13a3" resname="admin_app_step_export">
+        <source>/admin/app/step/export</source>
+        <target>/admin/app/step/export</target>
+      </trans-unit>
+      <trans-unit id="c976a867fa5d5a279b06702a0c539efa566f7993" resname="admin_app_step_list">
+        <source>/admin/app/step/list</source>
+        <target>/admin/app/step/list</target>
+      </trans-unit>
+      <trans-unit id="61f3a09fe51df8a24710cdfd19aeef96fa615d55" resname="admin_app_step_show">
+        <source>/admin/app/step/{id}/show</source>
+        <target>/admin/app/step/{id}/show</target>
+      </trans-unit>
+      <trans-unit id="cbb96d63a781b6f2b99966e6b77435fe160e89c3" resname="admin_app_suggestionbox_batch">
+        <source>/admin/app/suggestionbox/batch</source>
+        <target>/admin/app/suggestionbox/batch</target>
+      </trans-unit>
+      <trans-unit id="8a2cf1716ea152e5ac7a93c452194e243a155866" resname="admin_app_suggestionbox_create">
+        <source>/admin/app/suggestionbox/create</source>
+        <target>/admin/app/suggestionbox/create</target>
+      </trans-unit>
+      <trans-unit id="e3b22a015c344a656a018065b1bf846273c872a5" resname="admin_app_suggestionbox_delete">
+        <source>/admin/app/suggestionbox/{id}/delete</source>
+        <target>/admin/app/suggestionbox/{id}/delete</target>
+      </trans-unit>
+      <trans-unit id="dcceec953564543abb5ee8420ce785dc934a10c1" resname="admin_app_suggestionbox_edit">
+        <source>/admin/app/suggestionbox/{id}/edit</source>
+        <target>/admin/app/suggestionbox/{id}/edit</target>
+      </trans-unit>
+      <trans-unit id="533f9a684e9b79d69daa3f3649c5958fefcfb235" resname="admin_app_suggestionbox_export">
+        <source>/admin/app/suggestionbox/export</source>
+        <target>/admin/app/suggestionbox/export</target>
+      </trans-unit>
+      <trans-unit id="c9c653c9d5666c66be6d5ee14605e88cf04f2b99" resname="admin_app_suggestionbox_list">
+        <source>/admin/app/suggestionbox/list</source>
+        <target>/admin/app/suggestionbox/list</target>
+      </trans-unit>
+      <trans-unit id="ba59d716a885207def251f3a01082e69b3eea5cf" resname="admin_app_suggestionbox_show">
+        <source>/admin/app/suggestionbox/{id}/show</source>
+        <target>/admin/app/suggestionbox/{id}/show</target>
+      </trans-unit>
+      <trans-unit id="28620e44a4b286167dd421d7ea8fac84e8a96d19" resname="admin_app_user_batch">
+        <source>/admin/app/user/batch</source>
+        <target>/admin/app/user/batch</target>
+      </trans-unit>
+      <trans-unit id="a9ba0ac2f7d990ec09a45c983d41f1d85dfc02cd" resname="admin_app_user_create">
+        <source>/admin/app/user/create</source>
+        <target>/admin/app/user/create</target>
+      </trans-unit>
+      <trans-unit id="4ea19773b911f76c885b3eaf3a8d96bd5e364b59" resname="admin_app_user_delete">
+        <source>/admin/app/user/{id}/delete</source>
+        <target>/admin/app/user/{id}/delete</target>
+      </trans-unit>
+      <trans-unit id="95b54895b24b3cd11809b6e07f10a79d2f6407a1" resname="admin_app_user_edit">
+        <source>/admin/app/user/{id}/edit</source>
+        <target>/admin/app/user/{id}/edit</target>
+      </trans-unit>
+      <trans-unit id="dda5b29bf299c00a69687edf1cec4d7cdaa60591" resname="admin_app_user_export">
+        <source>/admin/app/user/export</source>
+        <target>/admin/app/user/export</target>
+      </trans-unit>
+      <trans-unit id="9a96380ec52df5410cfba731d99f4d8b70c457e4" resname="admin_app_user_list">
+        <source>/admin/app/user/list</source>
+        <target>/admin/app/user/list</target>
+      </trans-unit>
+      <trans-unit id="fb8792008fd9117e416d0306fa152c7d72365b21" resname="admin_app_user_show">
+        <source>/admin/app/user/{id}/show</source>
+        <target>/admin/app/user/{id}/show</target>
+      </trans-unit>
+      <trans-unit id="b98f62f3b4c33078c2a9673d31ea6dd4ac39812a" resname="artist_ajax_update_motivations">
+        <source>/secure/artist/{id}/api/update-motivations</source>
+        <target>/secure/artist/{id}/api/update-motivations</target>
+      </trans-unit>
+      <trans-unit id="717e033cbe3cf60243775541aaa990ca0cc243ae" resname="artist_contract">
+        <source>/secure/artist/{id}/contract-{contract_id}</source>
+        <target>/secure/artist/{id}/contract-{contract_id}</target>
+      </trans-unit>
+      <trans-unit id="2a3eee61573e58baa0212e936b7f7aae4c289a26" resname="artist_contracts">
+        <source>/secure/artist/{id}/contracts</source>
+        <target>/secure/artist/{id}/contracts</target>
+      </trans-unit>
+      <trans-unit id="8fef181fe82ae41553205f02dee2a556f618f1f4" resname="artist_home">
+        <source>/secure/artist/{id}/home</source>
+        <target>/secure/artist/{id}/home</target>
+      </trans-unit>
+      <trans-unit id="b9186a95e56567100380ad037d4af423396de3c1" resname="artist_new_contract">
+        <source>/secure/artist/{id}/steps/new-contract-{step_id}</source>
+        <target>/secure/artist/{id}/steps/new-contract-{step_id}</target>
+      </trans-unit>
+      <trans-unit id="0a5f6c54b588c9ce51b7519f1ec6b85447cc1806" resname="artist_profile_edit">
+        <source>/secure/artist/{id}/edit-profile</source>
+        <target>/secure/artist/{id}/edit-profile</target>
+      </trans-unit>
+      <trans-unit id="3259d0529d355b44b359bbb3bdd9c79c5b69ea88" resname="artist_steps">
+        <source>/secure/artist/{id}/steps</source>
+        <target>/secure/artist/{id}/steps</target>
+      </trans-unit>
+      <trans-unit id="edc2efde98243704b5435ff506afc3b2544402d7" resname="azine_email_send_test_email">
+        <source>/mail/admin/email/send-test-email-for/{template}/to/{email}</source>
+        <target>/mail/admin/email/send-test-email-for/{template}/to/{email}</target>
+      </trans-unit>
+      <trans-unit id="9de28dcb89eaa24b197306765476296ded1c247d" resname="azine_email_serve_template_image">
+        <source>/mail/email/image/{folderKey}/{filename}</source>
+        <target>/mail/email/image/{folderKey}/{filename}</target>
+      </trans-unit>
+      <trans-unit id="21ebe1adb8a65ba18e1978ea55b307c5f9b740c0" resname="azine_email_template_index">
+        <source>/mail/admin/email/</source>
+        <target>/mail/admin/email/</target>
+      </trans-unit>
+      <trans-unit id="468998551f4a9ab5918fc12e0222b890555c9e2a" resname="azine_email_test_sent_email_spam_score">
+        <source>/mail/admin/email/test-sent-email-spam-score</source>
+        <target>/mail/admin/email/test-sent-email-spam-score</target>
+      </trans-unit>
+      <trans-unit id="6040f3233fe9568d3e8496f8ba81251bce8fc24b" resname="azine_email_web_preview">
+        <source>/mail/admin/email/webpreview/{template}/{format}</source>
+        <target>/mail/admin/email/webpreview/{template}/{format}</target>
+      </trans-unit>
+      <trans-unit id="631365d5b745c09752e2cf71cd117a4d84b3c639" resname="azine_email_webview">
+        <source>/mail/email/webview/{token}</source>
+        <target>/mail/email/webview/{token}</target>
+      </trans-unit>
+      <trans-unit id="f8eb525d26e1bfccf25865e02eef17703b609c66" resname="conditions">
+        <source>/conditons</source>
+        <target>/conditons</target>
+      </trans-unit>
+      <trans-unit id="0ad7249f9650e3a4f4a41db501bcda84abf16eef" resname="default_security_target">
+        <source>/secure/home</source>
+        <target>/secure/home</target>
+      </trans-unit>
+      <trans-unit id="dde0502645f2abe2f785055de0a46c81ad663f0c" resname="fan_ajax_add_to_cart">
+        <source>/secure/fan/api/add-to-cart</source>
+        <target>/secure/fan/api/add-to-cart</target>
+      </trans-unit>
+      <trans-unit id="a9ffc08ee67198dbc9b65d8a3ea45caf18b8ad24" resname="fan_ajax_deblock_advantage">
+        <source>/secure/fan/api/deblock-advantage</source>
+        <target>/secure/fan/api/deblock-advantage</target>
+      </trans-unit>
+      <trans-unit id="2dd3d255bf7b379e48eadd7fe90af1139130c9a7" resname="fan_ajax_remove_all_from_cart">
+        <source>/secure/fan/api/remove-all-from-cart</source>
+        <target>/secure/fan/api/remove-all-from-cart</target>
+      </trans-unit>
+      <trans-unit id="c2b6f2de2622bbe7d22c5957aa2feba94be8e028" resname="fan_ajax_remove_from_contract">
+        <source>/secure/fan/api/remove-purchase-from-contract</source>
+        <target>/secure/fan/api/remove-purchase-from-contract</target>
+      </trans-unit>
+      <trans-unit id="74db40ca7b426741bdaed0ede3d880e40f078778" resname="fan_artist_contracts">
+        <source>/secure/fan/artist-contracts</source>
+        <target>/secure/fan/artist-contracts</target>
+      </trans-unit>
+      <trans-unit id="cb29ad5618b2e07bb357edfe558709195a15d8a3" resname="fan_artist_profile">
+        <source>/secure/fan/artist-profile-{id}</source>
+        <target>/secure/fan/artist-profile-{id}</target>
+      </trans-unit>
+      <trans-unit id="bbdef555671aec7a0a6fc7e8d66b68f37e79e7b8" resname="fan_artists">
+        <source>/secure/fan/artists</source>
+        <target>/secure/fan/artists</target>
+      </trans-unit>
+      <trans-unit id="8acd000b205a80a67937b1e6877e1b1d3d7aceec" resname="fan_cart">
+        <source>/secure/fan/cart</source>
+        <target>/secure/fan/cart</target>
+      </trans-unit>
+      <trans-unit id="bb1d1abc3f605b13573dbb9fe6a59008575f441c" resname="fan_cart_payment_stripe">
+        <source>/secure/payment-zone/cart/payment</source>
+        <target>/secure/payment-zone/cart/payment</target>
+      </trans-unit>
+      <trans-unit id="6bfd5fda0ae8ee588b2ab989d014a403f8bc6ed2" resname="fan_cart_payment_stripe_success">
+        <source>/secure/payment-zone/cart/payment/success</source>
+        <target>/secure/payment-zone/cart/payment/success</target>
+      </trans-unit>
+      <trans-unit id="fd39eedc71d598b18996bf046ce82e9ae78537ba" resname="fan_home">
+        <source>/secure/fan/home</source>
+        <target>/secure/fan/home</target>
+      </trans-unit>
+      <trans-unit id="0162c6f93ccf35d17ab89e70b6acab41b88184f5" resname="fan_my_artists">
+        <source>/secure/fan/my-bands</source>
+        <target>/secure/fan/my-bands</target>
+      </trans-unit>
+      <trans-unit id="25291a16a368290e64c6eafbb59ef55173e5cf13" resname="fan_new_artist">
+        <source>/secure/fan/new-artist</source>
+        <target>/secure/fan/new-artist</target>
+      </trans-unit>
+      <trans-unit id="749d5e06f4ba92f73e86174ee5a9fa9729b48ec0" resname="fan_paid_carts">
+        <source>/secure/fan/paid-carts</source>
+        <target>/secure/fan/paid-carts</target>
+      </trans-unit>
+      <trans-unit id="f3434d96a2757343c2f47ef493ff15098427b99e" resname="fan_special_advantages">
+        <source>/secure/fan/special-advantages</source>
+        <target>/secure/fan/special-advantages</target>
+      </trans-unit>
+      <trans-unit id="ea8df693cc02efad5ceafe85c0e01acad0cb7b7c" resname="fan_special_purchases">
+        <source>/secure/fan/special-purchases</source>
+        <target>/secure/fan/special-achats</target>
+      </trans-unit>
+      <trans-unit id="3e7a1eb65964daab6c8503cea70e628e3f933ce0" resname="fos_user_change_password">
+        <source>/profile/change-password</source>
+        <target>/profile/change-password</target>
+      </trans-unit>
+      <trans-unit id="89d9f90f552727a161575b47336d827555229023" resname="fos_user_profile_edit">
+        <source>/profile/edit</source>
+        <target>/profile/edit</target>
+      </trans-unit>
+      <trans-unit id="a5c247e0ed2953f5e091126240a417a30fe47c12" resname="fos_user_profile_show">
+        <source>/profile/</source>
+        <target>/profile/</target>
+      </trans-unit>
+      <trans-unit id="a7796b4f4f42c56769357a8303569fc003731e87" resname="fos_user_registration_check_email">
+        <source>/register/check-email</source>
+        <target>/register/check-email</target>
+      </trans-unit>
+      <trans-unit id="22ca20e7a4ac37652a84e45daaf1e68e388eca26" resname="fos_user_registration_confirm">
+        <source>/register/confirm/{token}</source>
+        <target>/register/confirm/{token}</target>
+      </trans-unit>
+      <trans-unit id="43816e069e01819401d9822574dad6c50d82d2d7" resname="fos_user_registration_confirmed">
+        <source>/register/confirmed</source>
+        <target>/register/confirmed</target>
+      </trans-unit>
+      <trans-unit id="693eeded1b8403ebe14463be5de2a9a1ecefbf14" resname="fos_user_registration_register">
+        <source>/register/</source>
+        <target>/register/</target>
+      </trans-unit>
+      <trans-unit id="031c418d91c7b50426906ae4ad5b80194b7e153e" resname="fos_user_resetting_check_email">
+        <source>/resetting/check-email</source>
+        <target>/resetting/check-email</target>
+      </trans-unit>
+      <trans-unit id="57721581c69f4c8163632a830f07d82ee0d719f3" resname="fos_user_resetting_request">
+        <source>/resetting/request</source>
+        <target>/resetting/request</target>
+      </trans-unit>
+      <trans-unit id="3631be6fbf01f3e1ac7ed153ed4648c6469fe0e2" resname="fos_user_resetting_reset">
+        <source>/resetting/reset/{token}</source>
+        <target>/resetting/reset/{token}</target>
+      </trans-unit>
+      <trans-unit id="b68f7e5fae30e8373429c4abe045ae50b8f5f762" resname="fos_user_resetting_send_email">
+        <source>/resetting/send-email</source>
+        <target>/resetting/send-email</target>
+      </trans-unit>
+      <trans-unit id="33d36422431d1bc6e64296b7b849a049c426bfb1" resname="fos_user_security_check">
+        <source>/login_check</source>
+        <target>/login_check</target>
+      </trans-unit>
+      <trans-unit id="e33cc56c226adb625998728b77c6d7989d693f61" resname="fos_user_security_login">
+        <source>/login</source>
+        <target>/login</target>
+      </trans-unit>
+      <trans-unit id="00fb021cee4fd738a7b66a0f5deb9f30bf059593" resname="fos_user_security_logout">
+        <source>/logout</source>
+        <target>/logout</target>
+      </trans-unit>
+      <trans-unit id="568be0fa2023d1a447e7bd150dda7068ece26898" resname="homepage">
+        <source>/</source>
+        <target>/</target>
+      </trans-unit>
+      <trans-unit id="d2fe946224c50dd1f185005e379178d801fa0f48" resname="jmose_command_scheduler_action_execute">
+        <source>/command-scheduler/action/execute/{id}</source>
+        <target>/command-scheduler/action/execute/{id}</target>
+      </trans-unit>
+      <trans-unit id="32fafee5605bd8fd53c984776198267658581b0e" resname="jmose_command_scheduler_action_remove">
+        <source>/command-scheduler/action/remove/{id}</source>
+        <target>/command-scheduler/action/remove/{id}</target>
+      </trans-unit>
+      <trans-unit id="8378e9ce2ca013c8d242d62bfad76dc5af1e9bf7" resname="jmose_command_scheduler_action_toggle">
+        <source>/command-scheduler/action/toggle/{id}</source>
+        <target>/command-scheduler/action/toggle/{id}</target>
+      </trans-unit>
+      <trans-unit id="e9b64cb1bbe026703ba46c03921088c966a48c36" resname="jmose_command_scheduler_action_unlock">
+        <source>/command-scheduler/action/unlock/{id}</source>
+        <target>/command-scheduler/action/unlock/{id}</target>
+      </trans-unit>
+      <trans-unit id="4f938adf7f4aa893e6c821beb7f8c05f097c951e" resname="jmose_command_scheduler_detail_edit">
+        <source>/command-scheduler/detail/edit/{scheduledCommandId}</source>
+        <target>/command-scheduler/detail/edit/{scheduledCommandId}</target>
+      </trans-unit>
+      <trans-unit id="45cec04696169ec9ca65be36c3e358b0e9c78588" resname="jmose_command_scheduler_detail_index">
+        <source>/command-scheduler/detail/view/</source>
+        <target>/command-scheduler/detail/view/</target>
+      </trans-unit>
+      <trans-unit id="c0e003a8512824b141914eb0b3b2b088350b88a3" resname="jmose_command_scheduler_detail_new">
+        <source>/command-scheduler/detail/new</source>
+        <target>/command-scheduler/detail/new</target>
+      </trans-unit>
+      <trans-unit id="6594ba05326ac1e2750bb441004a5274093daa2f" resname="jmose_command_scheduler_detail_save">
+        <source>/command-scheduler/detail/save</source>
+        <target>/command-scheduler/detail/save</target>
+      </trans-unit>
+      <trans-unit id="6286b08f27fcc2507f3b004ec5ec28a5e08c0645" resname="jmose_command_scheduler_list">
+        <source>/command-scheduler/list</source>
+        <target>/command-scheduler/list</target>
+      </trans-unit>
+      <trans-unit id="129a7cce64abfe802f97b497c187b933ad2e5de7" resname="jmose_command_scheduler_monitor">
+        <source>/command-scheduler/monitor</source>
+        <target>/command-scheduler/monitor</target>
+      </trans-unit>
+      <trans-unit id="13562fd9b5f1a48f7b6591aa15c608864171cf78" resname="select2_genres">
+        <source>/select2/genres</source>
+        <target>/select2/genres</target>
+      </trans-unit>
+      <trans-unit id="04a323eaf4b555f3ca15619a7d4d2b2eeb9527af" resname="sonata_admin_append_form_element">
+        <source>/admin/core/append-form-field-element</source>
+        <target>/admin/core/append-form-field-element</target>
+      </trans-unit>
+      <trans-unit id="9b9a4b5e261b7bc6a7e83332811b28d362aaad89" resname="sonata_admin_dashboard">
+        <source>/admin/dashboard</source>
+        <target>/admin/dashboard</target>
+      </trans-unit>
+      <trans-unit id="9377b6a268d95eb843045165fd433e0b4f7bcee6" resname="sonata_admin_redirect">
+        <source>/admin/</source>
+        <target>/admin/</target>
+      </trans-unit>
+      <trans-unit id="0991ce5c547d6187b372b3799e5694e0471c01e6" resname="sonata_admin_retrieve_autocomplete_items">
+        <source>/admin/core/get-autocomplete-items</source>
+        <target>/admin/core/get-autocomplete-items</target>
+      </trans-unit>
+      <trans-unit id="c1f8c0683377fcc919a326b66c14411d8cbb13b6" resname="sonata_admin_retrieve_form_element">
+        <source>/admin/core/get-form-field-element</source>
+        <target>/admin/core/get-form-field-element</target>
+      </trans-unit>
+      <trans-unit id="c4fe33bf68363259adbe9c28c24bc3abc63bbe18" resname="sonata_admin_search">
+        <source>/admin/search</source>
+        <target>/admin/search</target>
+      </trans-unit>
+      <trans-unit id="bffdaa97ccfe1e7f01f72dcabeb5d4dbbdfa6f9b" resname="sonata_admin_set_object_field_value">
+        <source>/admin/core/set-object-field-value</source>
+        <target>/admin/core/set-object-field-value</target>
+      </trans-unit>
+      <trans-unit id="9d2f0bcd80379e8ce7f6a72aace38539b1ee8b9e" resname="sonata_admin_short_object_information">
+        <source>/admin/core/get-short-object-description.{_format}</source>
+        <target>/admin/core/get-short-object-description.{_format}</target>
+      </trans-unit>
+      <trans-unit id="bd370d1b6f9b3580a77083b3ed3256c621f44a99" resname="step">
+        <source>/step-{id}</source>
+        <target>/step-{id}</target>
+      </trans-unit>
+      <trans-unit id="6578912eabc4ebb2adc8227a6f64b4aff57456fa" resname="steps">
+        <source>/steps</source>
+        <target>/steps</target>
+      </trans-unit>
+      <trans-unit id="fae91638d042a4292e78828771cc6358449c77dd" resname="suggestionBox">
+        <source>/suggestions</source>
+        <target>/suggestions</target>
+      </trans-unit>
+      <trans-unit id="5afbe8f67197351cf3cf108f7197b31649cd04fe" resname="testmail">
+        <source>/secure/testmail</source>
+        <target>/secure/testmail</target>
+      </trans-unit>
+      <trans-unit id="87ba178d1393e55a6fef1270056438fb85fa8e3f" resname="user_notification">
+        <source>/secure/inbox/notifications/{id}</source>
+        <target>/secure/inbox/notifications/{id}</target>
+      </trans-unit>
+      <trans-unit id="37821c276874a00ebd2547c633579d319a00d82d" resname="user_notifications">
+        <source>/secure/inbox</source>
+        <target>/secure/inbox</target>
+      </trans-unit>
+      <trans-unit id="fbc64cdc04653d00dbb5a7f116fe259668c8ba0a" resname="user_see_contract">
+        <source>/secure/see-contract-{id}</source>
+        <target>/secure/see-contract-{id}</target>
+      </trans-unit>
+      <trans-unit id="d5b71c13719a3f40a2162f7794f2c36aa496580d" resname="user_see_profile">
+        <source>/secure/profile-{id}</source>
+        <target>/secure/profile-{id}</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

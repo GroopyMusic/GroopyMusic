@@ -4,7 +4,6 @@ parameters:
 #    parameter_name: value
 
 services:
-
     app.form.registration:
         class: AppBundle\Form\RegistrationType
         tags:
