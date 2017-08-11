@@ -3,14 +3,19 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Genre
  *
  * @ORM\Table(name="genre")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenreRepository")
+ * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\GenreTranslation")
  */
-class Genre
+class Genre extends AbstractPersonalTranslatable implements TranslatableInterface
 {
     /**
      * @var int
@@ -24,10 +29,21 @@ class Genre
     /**
      * @var string
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\Translations\GenreTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
 
     /**
      * Get id
@@ -61,5 +77,15 @@ class Genre
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \AppBundle\Entity\Translations\GenreTranslation $translation
+     */
+    public function removeTranslation(\AppBundle\Entity\Translations\GenreTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }
