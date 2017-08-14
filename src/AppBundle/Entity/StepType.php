@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class StepType
 {
+    const TYPE_CONCERT = 'concert';
+
     /**
      * @var int
      *

@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Step;
 use AppBundle\Form\ArtistType;
+use AppBundle\Form\ContractArtistType;
 use Genemu\Bundle\FormBundle\Form\JQuery\Type\Select2Type;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -88,34 +89,25 @@ class ArtistController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        // Only one contract at a time
-        $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($artist);
-        if($currentContract != null) {
-            throw $this->createAccessDeniedException("Interdit de s'inscrire à deux paliers en même temps !");
-        }
-
         // New contract creation
         $contract = new ContractArtist();
-        $contract->setArtist($artist)->setStep($step);
+        $contract->setArtist($artist)
+            ->setStep($step); // This needs to be done here as it is used in the formBuilder
 
         $th_date = new \DateTime;
         $th_date->modify('+ ' . $step->getDeadlineDuration() . ' days');
         $contract->setTheoriticalDeadline($th_date);
 
-        $form = $this->createFormBuilder($contract);
-        $form->add('accept_conditions', CheckboxType::class, array('required' => true))
-             ->add('submit', SubmitType::class, array());
-        $form = $form->getForm();
+        $form = $this->createForm(ContractArtistType::class, $contract);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
             $deadline = new \DateTime();
             $deadline->modify('+ ' . $step->getDeadlineDuration() . ' days');
-            $contract->setDate(new \DateTime());
             $contract->setDateEnd($deadline);
 
-            // We re-check that there doesn't exist another contract for that artist before DB insertion
+            // We check that there doesn't exist another contract for that artist before DB insertion
             $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($artist);
             if($currentContract != null) {
                 throw $this->createAccessDeniedException("Interdit de s'inscrire à deux paliers en même temps !");
@@ -159,7 +151,7 @@ class ArtistController extends Controller
         $em = $this->getDoctrine()->getManager();
         $contracts = $em->getRepository('AppBundle:ContractArtist')->findBy(array('artist' => $artist), array('dateEnd' => 'DESC'));
 
-        return $this->render('@App/User/artist_contract.html.twig', array(
+        return $this->render('@App/Fan/artist_contract.html.twig', array(
             'contract' => $contract,
             'artist' => $artist,
         ));

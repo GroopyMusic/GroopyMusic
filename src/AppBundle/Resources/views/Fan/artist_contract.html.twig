@@ -1,0 +1,69 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.name }}"</h1>
+
+    {% if artist is not defined and app.user.owns(contract.artist) %}
+        <a href="{{ path('artist_contract', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
+    {% endif %}
+
+<ul>
+    <li>
+        Date de début du contrat : {{ contract.date|date('d/m/Y') }}
+    </li>
+    <li>
+        Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y') }}
+    </li>
+    <li>
+        Palier : <a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.name }}</a>
+    </li>
+    <li>
+        État du crowdfunding : {{ contract.collectedAmount }} € / {{ contract.step.requiredAmount }} €
+    </li>
+
+    {% if contract.motivations is not null or is_granted('ROLE_ARTIST') %}
+        <li>
+        {% if artist is defined %}
+            <textarea id="motivations-textarea">{#
+                #}{{ contract.motivations }}{#
+            #}</textarea>
+            <button type="submit" id="update-motivations-button" contract="{{ contract.id }}">Mettre à jour</button>
+        {% else %}
+            <div>{{ contract.motivations }}</div>
+        {% endif %}
+        </li>
+    {% endif %}
+</ul>
+
+{% for article in contract.step.counterParts %}
+    {% set tickets_left = contract.nbAvailable(article) %}
+    Contrepartie "{{ article.name }}" (prix : {{ article.price }} €, nombre restant : {{ tickets_left }}) :
+    <select>
+        {% set max_to_purchase = min(tickets_left, 10) %}
+        {% for i in 0..max_to_purchase %}
+            <option value="{{ i }}" {% if loop.first %}selected="selected"{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    <button class="add-to-cart-button" type="submit" counterpart="{{ article.id }}" contract="{{ contract.id }}" id="submit_counterpart_{{ article.id }}">Ajouter au panier</button>
+    <br /><br />
+{% endfor %}
+
+{% endblock %}
+
+{% block js_vars %}
+    {% set path_artist = artist is defined ? path('artist_ajax_update_motivations', {'id': artist.id}) : "" %}
+    <div id="modal-dialog">
+    </div>
+    <div
+        id="js-vars"
+        data-vars="{{ {'ajax_path_add_to_cart': path('fan_ajax_add_to_cart'),
+                       'ajax_path_update_motivations': path_artist}|json_encode|e('html_attr') }}">
+    </div>
+{% endblock %}
+
+{% block javascripts_with_jquery %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/cart.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/step.js') }}"></script>
+{% endblock %}

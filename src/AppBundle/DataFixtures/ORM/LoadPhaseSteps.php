@@ -50,19 +50,25 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
         $cp11->setStep($step11)
              ->setDescription("Description")
              ->setName("Place de concert normale")
-             ->setPrice(10);
+             ->setPrice(10)
+            ->setMaximumAmount(50)
+        ;
 
         $cp12 = new CounterPart();
         $cp12->setStep($step11)
             ->setDescription("Description")
             ->setName("Place de concert VIP")
-            ->setPrice(15);
+            ->setPrice(15)
+            ->setMaximumAmount(10)
+        ;
 
         $cp21 = new CounterPart();
         $cp21->setStep($step12)
             ->setDescription("Description")
             ->setName("Place de concert normale")
-            ->setPrice(30);
+            ->setPrice(30)
+            ->setMaximumAmount(100)
+        ;
 
         $manager->persist($st1);
         $manager->persist($phase1);

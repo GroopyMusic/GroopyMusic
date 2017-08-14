@@ -28,26 +28,15 @@ class SuggestionBoxType extends AbstractType
             ->add('mailCopy', CheckboxType::class, array('required' => false))
             ->add('submit', SubmitType::class);
     }
-    
-    
-    
-    // /**
-    //  * {@inheritdoc}
-    //  */
-    // public function configureOptions(OptionsResolver $resolver)
-    // {
-    //     $resolver->setDefaults(array(
-    //         'data_class' => 'AppBundle\Entity\SuggestionBox'
-    //     ));
-    // }
 
-    // /**
-    //  * {@inheritdoc}
-    //  */
-    // public function getBlockPrefix()
-    // {
-    //     return 'appbundle_suggestionbox';
-    // }
+
+     /**
+      * {@inheritdoc}
+      */
+     public function getBlockPrefix()
+     {
+         return 'app_suggestionbox';
+     }
 
 
 }

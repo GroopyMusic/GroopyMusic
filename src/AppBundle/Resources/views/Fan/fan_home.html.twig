@@ -7,7 +7,7 @@
         {% for contract in currentContracts %}
             <li>#{{ contract.id }} : palier visé = <a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.name }}</a>
                 ; artiste concerné = <a href="{{ path('fan_artist_profile', {'id': contract.artist.id}) }}">{{ contract.artist.artistname }}</a> <br />
-                <a href="{{ path('user_see_contract', {'id': contract.id}) }}">Soutenir</a>
+                <a href="{{ path('fan_see_contract', {'id': contract.id}) }}">Soutenir</a>
             </li>
         {% endfor %}
         </ul>

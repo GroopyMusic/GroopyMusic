@@ -53,12 +53,6 @@ doctrine:
         user:     "%database_user%"
         password: "%database_password%"
         charset:  UTF8
-        # if using pdo_sqlite as your database driver:
-        #   1. add the path in parameters.yml
-        #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
-        #   2. Uncomment database_path in parameters.yml.dist
-        #   3. Uncomment next line:
-        #     path:     "%database_path%"
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
@@ -110,38 +104,6 @@ fos_user:
     resetting:
         email:
             template:  AppBundle:Mail:password_resetting.txt.twig
-
-#pugx_multi_user:
-#  users:
-#    user_artist:
-#        entity:
-#          class: AppBundle\Entity\UserArtist
-#        registration:
-#          form:
-#            type: AppBundle\Form\RegistrationUserArtistType
-#            name: user_artist_registration_form
-#            validation_groups:  [Registration, Default]
-#          template: user_artist.form.html.twig
-#        profile:
-#          form:
-#            type: AppBundle\Form\ProfileUserArtistType
-#            name: user_artist_profile_form
-#            validation_groups:  [Profile, Default]
-#
-#    user_fan:
-#        entity:
-#          class: AppBundle\Entity\UserFan
-#        registration:
-#          form:
-#            type: AppBundle\Form\RegistrationUserFanType
-#            name: user_fan_registration_form
-#            validation_groups:  [Registration, Default]
-#          template: user_fan.form.html.twig
-#        profile:
-#          form:
-#            type: AppBundle\Form\ProfileUserFanType
-#            name: user_fan_profile_form
-#            validation_groups:  [Profile, Default]
 
 azine_email:
     # the class of your implementation of the RecipientInterface
@@ -209,25 +171,6 @@ azine_email:
     # the service-id of your implementation of the web view service to be used
     web_view_service:     email.web_view_service
 
-#flosch_stripe:
-    #stripe_api_key: "%stripe_api_secret%"
-
-#ruudk_payment_stripe:
-#    api_key:  "%stripe_api_secret%"
-#    logger:   true   # Default true
-#    methods:
-#      - checkout
-#
-#jms_di_extra:
-#    locations:
-#        all_bundles: true
-#    automatic_controller_injections:
-#        properties:
-#            request: "@request"
-#            router: "@router"
-#
-#        method_calls:
-#            setRouter: ["@router"]
 
 # Assetic config
 assetic:
@@ -287,3 +230,11 @@ tetranz_select2_entity:
     cache: false
     cache_timeout: 0
     scroll: false
+
+ensepar_html2pdf:
+    orientation: P
+    format: A4
+    lang: fr
+    unicode: true
+    encoding: UTF-8
+    margin: [10,15,10,15]

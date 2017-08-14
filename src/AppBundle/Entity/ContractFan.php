@@ -39,7 +39,7 @@ class ContractFan
     private $cart;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ContractArtist")
+     * @ORM\ManyToOne(targetEntity="ContractArtist", inversedBy="contractsFan")
      * @ORM\JoinColumn(nullable=false)
      */
     private $contractArtist;

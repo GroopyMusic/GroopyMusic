@@ -17,7 +17,7 @@ security:
             pattern: ^/
             form_login:
                 provider: fos_userbundle
-                default_target_path: default_security_target
+                default_target_path: fan_home
                 # TODO uncomment this and make it work... (currently getting an error "unrecognized option")
                 # csrf_provider: security.csrf.token_manager
             logout:       true
@@ -28,5 +28,5 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
-        - { path: ^/secure/fan/, role: ROLE_FAN }
-        - { path: ^/secure/artist/, role: ROLE_FAN }
+        - { path: ^/fan/, role: ROLE_FAN }
+        - { path: ^/artist/, role: ROLE_FAN }

@@ -3,7 +3,7 @@
     Pas d'article dans le panier pour l'instant
 {% else %}
     {% for contract in cart.contracts %}
-        Contrat de fan #{{ contract.id }} : en lien avec le contrat d'artiste <a href="{{ path('user_see_contract', {'id': contract.contractArtist.id}) }}">#{{ contract.contractArtist.id }}</a>
+        Contrat de fan #{{ contract.id }} : en lien avec le contrat d'artiste <a href="{{ path('fan_see_contract', {'id': contract.contractArtist.id}) }}">#{{ contract.contractArtist.id }}</a>
         <br />
         Achats :
         <ul>

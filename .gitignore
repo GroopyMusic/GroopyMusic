@@ -1,4 +1,5 @@
 /app/config/parameters.yml
+/app/spool/
 /build/
 /phpunit.xml
 /var/*
@@ -14,6 +15,7 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+/web/pdf/
 /.idea/
 /.DS_Store
 **/.DS_Store
