@@ -7,7 +7,7 @@
         <ul>
             <li>Artist : {{ contract.artist.artistname }}</li>
             <li>Step : {{ contract.step.name }}</li>
-            <li><a href="{{ path('user_see_contract', {'id': contract.id}) }}">Soutenir</a></li>
+            <li><a href="{{ path('fan_see_contract', {'id': contract.id}) }}">Soutenir</a></li>
         </ul>
     {% endfor %}
 

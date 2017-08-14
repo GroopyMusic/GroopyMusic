@@ -16,6 +16,32 @@ class ContractArtist
     public function __construct() {
         $this->accept_conditions = false;
         $this->reminders = 0;
+        $this->date = new \DateTime();
+        $this->preferences = new ContractArtistPreferences();
+        $this->collected_amount = 0;
+    }
+
+    public function addAmount($amount) {
+        $this->collected_amount += $amount;
+    }
+
+    public function getNbAvailable(CounterPart $cp) {
+        $nb = $cp->getMaximumAmount();
+
+        foreach($this->contractsFan as $cf) {
+            foreach($cf->getPurchases() as $purchase) {
+                if($purchase->getCounterPart()->getId() == $cp->getId()) {
+                    $nb -= $purchase->getQuantity();
+                }
+            }
+        }
+
+        if($nb <= 0) return 0;
+        return $nb;
+    }
+
+    public function cantAddPurchase($quantity, CounterPart $cp) {
+        return $this->getNbAvailable($cp) < $quantity;
     }
 
     /**
@@ -67,6 +93,21 @@ class ContractArtist
      * @ORM\Column(name="reminders", type="smallint")
      */
     private $reminders;
+
+    /**
+     * @ORM\OneToOne(targetEntity="ContractArtistPreferences", cascade={"persist"})
+     */
+    private $preferences;
+
+    /**
+     * @ORM\Column(name="collected_amount", type="integer")
+     */
+    private $collected_amount;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="contractArtist")
+     */
+    private $contractsFan;
 
     // Conditions approval (form only)
     /**
@@ -295,5 +336,53 @@ class ContractArtist
     public function getReminders()
     {
         return $this->reminders;
+    }
+
+    /**
+     * Set preferences
+     *
+     * @param \AppBundle\Entity\ContractArtistPreferences $preferences
+     *
+     * @return ContractArtist
+     */
+    public function setPreferences(\AppBundle\Entity\ContractArtistPreferences $preferences = null)
+    {
+        $this->preferences = $preferences;
+
+        return $this;
+    }
+
+    /**
+     * Get preferences
+     *
+     * @return \AppBundle\Entity\ContractArtistPreferences
+     */
+    public function getPreferences()
+    {
+        return $this->preferences;
+    }
+
+    /**
+     * Set collectedAmount
+     *
+     * @param integer $collectedAmount
+     *
+     * @return ContractArtist
+     */
+    public function setCollectedAmount($collectedAmount)
+    {
+        $this->collected_amount = $collectedAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get collectedAmount
+     *
+     * @return integer
+     */
+    public function getCollectedAmount()
+    {
+        return $this->collected_amount;
     }
 }

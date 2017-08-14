@@ -4,13 +4,6 @@
 
         {% block title %}Title{% endblock %}
 
-        {% block logo %}
-            <a href="http://example.com" target="_blank" style="color: green; font-size: 72px; font-weight: bold; text-decoration: none;">
-                <img src="{{ imageTest }}" alt="Un-Mute" height="35" width="169" />
-            </a>
-        {% endblock %}
-
-
         {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
 
                 <p>Hi there ! In {{ days }} days there is a concert for your artist {{ artist }}.</p>

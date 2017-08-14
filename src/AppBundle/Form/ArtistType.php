@@ -32,6 +32,6 @@ class ArtistType extends AbstractType
 
     public function getBlockPrefix()
     {
-        return 'app_user_artist';
+        return 'app_artist';
     }
 }

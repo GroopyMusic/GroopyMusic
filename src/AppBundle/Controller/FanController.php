@@ -35,13 +35,26 @@ class FanController extends Controller
         return $this->render('@App/Fan/fan_home.html.twig', array(
             'currentContracts' => $currentContracts,
         ));
+    }
 
+    /**
+     * @Route("/see-contract-{id}", name="fan_see_contract")
+     */
+    public function seeContractAction(ContractArtist $contract) {
+
+        $current = new \DateTime();
+        $done = $contract->getDateEnd() < $current;
+
+        return $this->render('@App/Fan/artist_contract.html.twig', array(
+            'contract' => $contract,
+            'done' => $done,
+        ));
     }
 
     /**
      * @Route("/artist-profile-{id}", name="fan_artist_profile")
      */
-    public function seeProfileAction(Request $request, UserInterface $user, Artist $artist) {
+    public function seeArtistProfileAction(Request $request, UserInterface $user, Artist $artist) {
         return $this->render('@App/Fan/artist_profile.html.twig', array(
             'artist' => $artist,
         ));
@@ -60,7 +73,6 @@ class FanController extends Controller
 
         ));
     }
-
 
     /**
      * @Route("/artist-contracts", name="fan_artist_contracts")
@@ -89,6 +101,8 @@ class FanController extends Controller
             $em->persist($cart);
             $em->flush();
         }
+
+
 
         return $this->render('@App/Fan/cart.html.twig', array(
             'cart' => $cart,
@@ -196,6 +210,10 @@ class FanController extends Controller
         $em = $this->getDoctrine()->getManager();
         $counterpart = $em->getRepository('AppBundle:CounterPart')->find($id_counterpart);
         $contractArtist = $em->getRepository('AppBundle:ContractArtist')->find($id_contract_artist);
+
+        if($contractArtist->getNbAvailable($counterpart) < $quantity) {
+            return new Response("MAX_QTY");
+        }
 
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForFan($fan);
 

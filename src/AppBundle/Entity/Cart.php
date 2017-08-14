@@ -19,6 +19,18 @@ class Cart
         $this->paid = false;
     }
 
+    public function isProblematic() {
+        foreach($this->contracts as $contract) {
+            $contract_artist = $contract->getContractArtist();
+            foreach($contract->getPurchases() as $purchase) {
+                if($contract_artist->cantAddPurchase($purchase->getQuantity(), $purchase->getCounterPart())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public function getAmount() {
         return array_sum(array_map(function($contract) {
             return $contract->getAmount();

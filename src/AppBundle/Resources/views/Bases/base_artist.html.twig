@@ -7,7 +7,7 @@
     <nav>
         Artiste <b>{{ artist.artistName }}</b>
         <a href="{{ path('artist_home', {'id':artist.id}) }}">Accueil</a>
-        <a href="{{ path('artist_profile', {'id':artist.id}) }}">Profil</a>
+        <a href="{{ path('fan_artist_profile', {'id':artist.id}) }}">Profil</a>
         <a href="{{ path('artist_contracts', {'id':artist.id}) }}">Contrats</a>
         <a href="{{ path('artist_steps', {'id':artist.id}) }}">Nouveau concert</a>
     </nav>

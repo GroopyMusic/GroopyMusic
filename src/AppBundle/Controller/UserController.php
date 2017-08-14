@@ -15,16 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class UserController extends Controller
 {
     /**
-     * @Route("/home", name="default_security_target")
-     */
-    public function homeAction(Request $request, UserInterface $user) {
-
-        // TODO sécuriser cette route tout comme tout le reste de l'espace membres
-
-        return $this->redirectToRoute('fan_home');
-    }
-
-    /**
      * @Route("/testmail", name="testmail")
      */
     public function testmailAction(Request $request, UserInterface $user) {
@@ -37,17 +27,27 @@ class UserController extends Controller
         $notifierService = $this->get('email.notifier_service');
         $notifierService->addNotificationMessage($recipientId, $title, $content);
 
-        $params = array();
-        $params['subject'] = $title;
-        $params['name'] = $user->getUsername();
-        $params['age'] = 42;
-        $params['message'] = "Happy birthday I wish you all the best!!";
-        $locale = "fr";
+
+        $from = "no-reply@un-mute.be";
+        $fromName = "Un-Mute";
+
+        $bcc = "gonzyer@gmail.com";
+        $bccName = "Webmaster";
+
+        $replyTo = "gonzyer@gmail.com";
+        $replyToName = "Webmaster";
+
+        $params = [];
+
+        $html2pdf = $this->get('html2pdf_factory')->create();
+        $html2pdf->writeHTML($this->renderView('AppBundle:PDF:contract_artist.html.twig', array()));
+        $html2pdf->Output('pdf/contracts/contrat-x.pdf', 'F');
+
+        $attachments = ['votreContrat.pdf' => $this->get('kernel')->getRootDir() . '\..\web\pdf\contracts\contrat-x.pdf'];
 
         $mailer = $this->get('azine_email_template_twig_swift_mailer');
-        $mailer->sendSingleEmail($user->getEmail(), $user->getDisplayName(), "Test", $params, MailTemplateProvider::VIP_INFO_MAIL_TEMPLATE . ".txt.twig", $locale);
-
-        // TODO envoi du mail (pour l'instant manuel)
+        $mailer->sendEmail($failedRecipients, "Sujet", $from, $fromName, $user->getEmail(), $user->getDisplayName(), '', '',
+            $bcc, $bccName, $replyTo, $replyToName, $params, MailTemplateProvider::VIP_INFO_MAIL_TEMPLATE, $attachments, 'fr');
 
         return $this->render('@App/Public/home.html.twig');
     }
@@ -58,13 +58,6 @@ class UserController extends Controller
     public function notifsAction(Request $request, UserInterface $user)
     {
         $notifs = $this->getDoctrine()->getRepository('AzineEmailBundle:Notification')->findBy(array('recipient_id' => $user->getId()));
-
-        /*$notifs = array();
-        foreach($notifications as $n) {
-            if($n->getSent() != null) {
-                $notifs[] = $n;
-            }
-        }*/
 
         return $this->render('@App/User/notifications.html.twig', array(
             'notifs' => $notifs,
@@ -81,29 +74,6 @@ class UserController extends Controller
 
         return $this->render('@App/User/notification.html.twig', array(
             'notif' => $notif,
-        ));
-    }
-
-    /**
-     * @Route("/see-contract-{id}", name="user_see_contract")
-     */
-    public function seeContractAction(ContractArtist $contract) {
-
-        $current = new \DateTime();
-        $done = $contract->getDateEnd() < $current;
-
-        return $this->render('@App/User/artist_contract.html.twig', array(
-            'contract' => $contract,
-            'done' => $done,
-        ));
-    }
-
-    /**
-     * @Route("/profile-{id}", name="user_see_profile")
-     */
-    public function seeProfileAction(User $user) {
-        return $this->render('@App/User/profile.html.twig', array(
-            'user' => $user,
         ));
     }
 }

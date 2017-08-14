@@ -47,6 +47,11 @@ class CounterPart
     private $description;
 
     /**
+     * @ORM\Column(name="maximum_amount", type="smallint")
+     */
+    private $maximum_amount;
+
+    /**
      * Get id
      *
      * @return int
@@ -150,5 +155,29 @@ class CounterPart
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set maximumAmount
+     *
+     * @param integer $maximumAmount
+     *
+     * @return CounterPart
+     */
+    public function setMaximumAmount($maximumAmount)
+    {
+        $this->maximum_amount = $maximumAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get maximumAmount
+     *
+     * @return integer
+     */
+    public function getMaximumAmount()
+    {
+        return $this->maximum_amount;
     }
 }

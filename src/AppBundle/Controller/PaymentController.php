@@ -26,6 +26,11 @@ class PaymentController extends Controller
 
         if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
 
+            // TODO
+            if($cart->isProblematic()) {
+                return $this->createAccessDeniedException("Panier problématique");
+            }
+
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
             \Stripe\Stripe::setApiKey("sk_test_b75odA2dm9Og4grQZyFdn9HP");
@@ -57,9 +62,14 @@ class PaymentController extends Controller
                         "customer" => $stripe_customer->id
                     ));
 
+                    $contract_artist = $contract->getContractArtist();
+
                     $payments[$key] = new Payment();
                     $payments[$key]->setChargeId($charges[$key]->id)->setDate(new \DateTime())->setUser($fan)
-                        ->setContractFan($contract)->setContractArtist($contract->getContractArtist())->setRefunded(false)->setAmount($contract->getAmount());
+                        ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());
+
+                    $contract_artist->addAmount($contract->getAmount());
+
                     $em->persist($payments[$key]);
                     $em->flush();
                 }
@@ -68,8 +78,6 @@ class PaymentController extends Controller
                 $em->persist($cart);
 
                 $em->flush();
-
-                //$this->addFlash('notice', 'Bien reçu');
 
                 // TODO
                 // Si c'est le x-ième panier du fan dans les 24h, nous envoyer une notif : ça pourrait être une fraude
@@ -113,7 +121,8 @@ class PaymentController extends Controller
      * @Route("/cart/payment/success", name="fan_cart_payment_stripe_success")
      */
     public function fanCartSuccessAction(UserInterface $fan, Request $request) {
-        return new Response("OK");
+        $this->addFlash('notice', 'Paiement reçu');
+        return $this->redirectToRoute('fan_cart');
     }
 
 
