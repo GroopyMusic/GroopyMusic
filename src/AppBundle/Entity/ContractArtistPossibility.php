@@ -7,10 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ContractArtistPreferences
  *
- * @ORM\Table(name="contract_artist_preferences")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ContractArtistPreferencesRepository")
+ * @ORM\Table(name="contract_artist_possibility")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ContractArtistPossibilityRepository")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"concert" = "ConcertPossibility", "possibility" = "ContractArtistPossibility"})
  */
-class ContractArtistPreferences
+class ContractArtistPossibility
 {
     /**
      * @var int
@@ -34,11 +37,6 @@ class ContractArtistPreferences
      * @ORM\Column(name="additional_info", type="text", nullable=true)
      */
     private $additionalInfo;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Hall")
-     */
-    private $hall;
 
     /**
      * Get id

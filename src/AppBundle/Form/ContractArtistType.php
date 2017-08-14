@@ -18,11 +18,14 @@ class ContractArtistType extends AbstractType
         $contract = $builder->getData();
         $step = $contract->getStep();
 
+        if ($step != null && $step->getType()->getName() == StepType::TYPE_CONCERT) {
+            $builder->add('preferences', ConcertPossibilityType::class, array(
+                'step' => $step,
+            ));
+        }
+
         $builder
             ->add('motivations', TextareaType::class)
-            ->add('preferences', ContractArtistPreferencesType::class, array(
-                'step' => $step,
-            ))
             ->add('accept_conditions', CheckboxType::class, array('required' => true))
             ->add('submit', SubmitType::class)
         ;

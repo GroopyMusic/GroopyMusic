@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Command\FailedContractCommand;
+use AppBundle\Command\KnownOutcomeContractCommand;
 use AppBundle\Entity\Artist;
 
 /**
@@ -31,6 +33,44 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('c.step', 's')
             ->addSelect('s')
             ->setParameter('now', new \DateTime('now'))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @see KnownOutcomeContractCommand
+     */
+    public function findNewlyFailed() {
+        return $this->createQueryBuilder('c')
+            ->join('c.artist', 'a')
+            ->join('a.artists_user', 'au')
+            ->join('c.step', 's')
+            ->addSelect('a')
+            ->addSelect('au')
+            ->addSelect('s')
+            ->where('c.dateEnd < :now')
+            ->andWhere('c.successful = 0')
+            ->andWhere('c.failed = 0') // Not marked as failed yet
+            ->andWhere('c.collected_amount < s.requiredAmount')
+            ->setParameter('now', new \DateTime('now'))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @see KnownOutcomeContractCommand
+     */
+    public function findNewlySuccessful() {
+        return $this->createQueryBuilder('c')
+            ->join('c.artist', 'a')
+            ->join('a.artists_user', 'au')
+            ->join('c.step', 's')
+            ->addSelect('a')
+            ->addSelect('au')
+            ->addSelect('s')
+            ->andWhere('c.failed = 0')
+            ->andWhere('c.successful = 0') // Not marked as successful yet
+            ->andWhere('c.collected_amount >= s.requiredAmount')
             ->getQuery()
             ->getResult();
     }

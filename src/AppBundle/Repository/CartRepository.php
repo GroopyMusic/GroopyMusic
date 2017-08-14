@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
 
 /**
@@ -12,13 +13,34 @@ use AppBundle\Entity\User;
 class CartRepository extends \Doctrine\ORM\EntityRepository
 {
     public function findCurrentForFan(User $fan) {
-
         return $this->createQueryBuilder('c')
             ->where('c.user = :fan')
             ->andWhere('c.confirmed = 0')
             ->setParameter('fan', $fan)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+            ;
+    }
 
+    public function findWithUsersAndContracts() {
+        return $this->createQueryBuilder('c')
+            ->join('c.user', 'u')
+            ->join('c.contracts', 'fc')
+            ->addSelect('u')
+            ->addSelect('fc')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findOngoingForContract(ContractArtist $contract) {
+        return $this->createQueryBuilder('c')
+            ->join('c.contracts', 'fc')
+            ->where('c.confirmed = 0')
+            ->andWhere('fc.contractArtist = :contract')
+            ->setParameter('contract', $contract)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 }

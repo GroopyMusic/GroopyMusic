@@ -39,7 +39,7 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
         $userManager->updateUser($userA, true);
 
         $artist = new Artist($this->getReference('phase1'));
-        $artist->setArtistname('SeeUsoon');
+        $artist->setArtistname('SeeUsoon')->setShortDescription("short")->setBiography('long');
 
         $artist_userA = new Artist_User();
         $artist_userA->setArtist($artist);
