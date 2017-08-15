@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="fr" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="app.admin.group.evolution">
+                <source>app.admin.group.evolution</source>
+                <target>Évolution</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.group.content">
+                <source>app.admin.group.content</source>
+                <target>Contenu</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.group.user">
+                <source>app.admin.group.user</source>
+                <target>Utilisateurs</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.group.crowdfunding">
+                <source>app.admin.group.crowdfunding</source>
+                <target>Crowdfunding</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.group.payment">
+                <source>app.admin.group.payment</source>
+                <target>Paiements</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.group.special">
+                <source>app.admin.group.special</source>
+                <target>Crédits bonus</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.step">
+                <source>app.admin.step</source>
+                <target>Palier</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.genre">
+                <source>app.admin.genre</source>
+                <target>Genre musical</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.partner">
+                <source>app.admin.partner</source>
+                <target>Partenaire</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.user">
+                <source>app.admin.user</source>
+                <target>Membre</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.suggestionBox">
+                <source>app.admin.suggestionBox</source>
+                <target>Suggestion</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.phase">
+                <source>app.admin.phase</source>
+                <target>Phase</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.artist">
+                <source>app.admin.artist</source>
+                <target>Artiste</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.contractartist">
+                <source>app.admin.contractartist</source>
+                <target>Crowdfunding</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.contractfan">
+                <source>app.admin.contractfan</source>
+                <target>Achat fan</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.cart">
+                <source>app.admin.cart</source>
+                <target>Panier</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.payment">
+                <source>app.admin.payment</source>
+                <target>Paiement</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.specialadvantage">
+                <source>app.admin.specialadvantage</source>
+                <target>Avantage spécial</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.specialpurchase">
+                <source>app.admin.specialpurchase</source>
+                <target>Achat spécial</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

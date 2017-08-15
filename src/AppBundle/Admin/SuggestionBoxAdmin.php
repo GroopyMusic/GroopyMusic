@@ -2,12 +2,11 @@
 
 namespace AppBundle\Admin;
 
-use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 
-class SuggestionBoxAdmin extends AbstractAdmin
+class SuggestionBoxAdmin extends BaseAdmin
 {
     protected function configureFormFields(FormMapper $formMapper)
     {
@@ -22,5 +21,14 @@ class SuggestionBoxAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('name');
+    }
+
+    public function getDashboardActions()
+    {
+        $actions = parent::getDashboardActions();
+
+        unset($actions['create']);
+
+        return $actions;
     }
 }

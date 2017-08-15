@@ -189,8 +189,65 @@ assetic:
 
 # Sonata Admin
 sonata_admin:
+    title:      Un-Mute Admin
+    title_logo: admin/images/logo.png
     templates:
-        layout: "AppBundle:Admin:layout.html.twig"
+        layout: "::sonata_admin_layout.html.twig"
+    options:
+        html5_validate: true
+        use_select2: true
+    dashboard:
+        blocks:
+            -
+              position: left
+              type: sonata.admin.block.admin_list
+              settings:
+                groups: [app.admin.group.user, app.admin.group.evolution, app.admin.group.content]
+            -
+              position: right
+              type: sonata.admin.block.admin_list
+              settings:
+                groups: [app.admin.group.crowdfunding, app.admin.group.special, app.admin.group.payment]
+
+        groups:
+            app.admin.group.user:
+                label: app.admin.group.user
+                label_catalogue: SonataAdminBundle
+                items:
+                    - app.admin.user
+                    - app.admin.artist
+                    - app.admin.suggestionbox
+            app.admin.group.evolution:
+                label: app.admin.group.evolution
+                label_catalogue: SonataAdminBundle
+                items:
+                    - app.admin.phase
+                    - app.admin.step
+            app.admin.group.content:
+                label: app.admin.group.content
+                label_catalogue: SonataAdminBundle
+                items:
+                    - app.admin.genre
+                    - app.admin.partner
+            app.admin.group.crowdfunding:
+                label: app.admin.group.crowdfunding
+                label_catalogue: SonataAdminBundle
+                items:
+                    - app.admin.contractartist
+                    - app.admin.contractfan
+                    - app.admin.cart
+            app.admin.group.special:
+                label: app.admin.group.special
+                label_catalogue: SonataAdminBundle
+                items:
+                    - app.admin.specialadvantage
+                    - app.admin.specialpurchase
+            app.admin.group.payment:
+                label: app.admin.group.payment
+                label_catalogue: SonataAdminBundle
+                items:
+                    - app.admin.payment
+                roles: [ROLE_PAYMENTS_ADMIN]
 
 sonata_block:
       default_contexts: [cms]
@@ -198,6 +255,8 @@ sonata_block:
           # enable the SonataAdminBundle block
           sonata.admin.block.admin_list:
               contexts: [admin]
+          sonata.admin.block.stats:
+              contexts:   [admin]
 
 sonata_translation:
     locales: [fr, en]

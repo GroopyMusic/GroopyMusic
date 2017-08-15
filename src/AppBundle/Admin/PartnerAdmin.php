@@ -3,12 +3,11 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Entity\Hall;
-use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 
-class PartnerAdmin extends AbstractAdmin
+class PartnerAdmin extends BaseAdmin
 {
     protected function configureFormFields(FormMapper $formMapper)
     {
