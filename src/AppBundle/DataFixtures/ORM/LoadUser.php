@@ -64,7 +64,7 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
 
         // Admin test account (credentials : admin@un-mute.be - test)
         $userAdmin = new User();
-        $userAdmin->setUsername("admin")->setPlainPassword("test")->setEmail("admin@un-mute.be")->setFirstname("Kids")->setLastname("United")->setCredits(1000)->setEnabled(true)->addRole('ROLE_ADMIN');
+        $userAdmin->setUsername("admin")->setPlainPassword("test")->setEmail("admin@un-mute.be")->setFirstname("Kids")->setLastname("United")->setCredits(1000)->setEnabled(true)->addRole('ROLE_SUPER_ADMIN');
         $userManager->updateUser($userAdmin, true);
         $manager->persist($userAdmin); // persist
 

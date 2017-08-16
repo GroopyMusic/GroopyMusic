@@ -13,6 +13,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ContractArtist
 {
+    public function __toString()
+    {
+        return 'Crowdfunding #'.$this->id. ' de l\'artiste '. $this->artist . ' (palier : ' . $this->step . ')';
+    }
+
     public function __construct() {
         $this->accept_conditions = false;
         $this->reminders = 0;
@@ -22,6 +27,7 @@ class ContractArtist
         $this->failed = false;
         $this->successful = false;
         $this->cart_reminder_sent = false;
+        $this->refunded = false;
     }
 
     public function addAmount($amount) {
@@ -153,6 +159,11 @@ class ContractArtist
      * @ORM\Column(name="cart_reminder_sent", type="boolean")
      */
     private $cart_reminder_sent;
+
+    /**
+     * @ORM\Column(name="refunded", type="boolean")
+     */
+    private $refunded;
 
     // Conditions approval (form only)
     /**
@@ -559,5 +570,29 @@ class ContractArtist
     public function getCartReminderSent()
     {
         return $this->cart_reminder_sent;
+    }
+
+    /**
+     * Set refunded
+     *
+     * @param boolean $refunded
+     *
+     * @return ContractArtist
+     */
+    public function setRefunded($refunded)
+    {
+        $this->refunded = $refunded;
+
+        return $this;
+    }
+
+    /**
+     * Get refunded
+     *
+     * @return boolean
+     */
+    public function getRefunded()
+    {
+        return $this->refunded;
     }
 }

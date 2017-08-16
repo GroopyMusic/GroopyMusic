@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use Sonata\AdminBundle\Datagrid\ListMapper;
 
 class ContractFanAdmin extends BaseAdmin
 {
@@ -12,5 +13,13 @@ class ContractFanAdmin extends BaseAdmin
         unset($actions['create']);
 
         return $actions;
+    }
+
+    public function configureListFields(ListMapper $list)
+    {
+        $list->add('id')
+            ->add('user')
+            ->add('contractArtist')
+        ;
     }
 }

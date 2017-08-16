@@ -39,4 +39,3 @@ class ConcertPossibility extends ContractArtistPossibility
         return $this->hall;
     }
 }
-

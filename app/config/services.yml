@@ -101,7 +101,7 @@ services:
 
     app.admin.contractartist:
         class: AppBundle\Admin\ContractArtistAdmin
-        arguments: [~, AppBundle\Entity\ContractArtist, ~]
+        arguments: [~, AppBundle\Entity\ContractArtist, AppBundle:ContractArtistAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.contractartist }
         public: true
@@ -115,7 +115,7 @@ services:
 
     app.admin.payment:
         class: AppBundle\Admin\PaymentAdmin
-        arguments: [~, AppBundle\Entity\Payment, ~]
+        arguments: [~, AppBundle\Entity\Payment, AppBundle:PaymentAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.payment }
         public: true
