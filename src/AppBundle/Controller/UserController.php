@@ -59,7 +59,7 @@ class UserController extends Controller
     {
         $notifs = $this->getDoctrine()->getRepository('AzineEmailBundle:Notification')->findBy(array('recipient_id' => $user->getId()));
 
-        return $this->render('@App/User/notifications.html.twig', array(
+        return $this->render('@App/Fan/notifications.html.twig', array(
             'notifs' => $notifs,
         ));
     }
@@ -72,7 +72,7 @@ class UserController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        return $this->render('@App/User/notification.html.twig', array(
+        return $this->render('@App/Fan/notification.html.twig', array(
             'notif' => $notif,
         ));
     }

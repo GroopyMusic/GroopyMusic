@@ -16,6 +16,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Artist
 {
+    public function __toString()
+    {
+        return $this->artistname;
+    }
+
     public function __construct(Phase $phase)
     {
         $this->phase = $phase;

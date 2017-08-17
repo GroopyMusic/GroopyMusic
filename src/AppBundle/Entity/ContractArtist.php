@@ -13,12 +13,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ContractArtist
 {
+    public function __toString()
+    {
+        return 'Crowdfunding #'.$this->id. ' de l\'artiste '. $this->artist . ' (palier : ' . $this->step . ')';
+    }
+
     public function __construct() {
         $this->accept_conditions = false;
         $this->reminders = 0;
         $this->date = new \DateTime();
-        $this->preferences = new ContractArtistPreferences();
+        $this->preferences = new ContractArtistPossibility();
         $this->collected_amount = 0;
+        $this->failed = false;
+        $this->successful = false;
+        $this->cart_reminder_sent = false;
+        $this->refunded = false;
     }
 
     public function addAmount($amount) {
@@ -42,6 +51,26 @@ class ContractArtist
 
     public function cantAddPurchase($quantity, CounterPart $cp) {
         return $this->getNbAvailable($cp) < $quantity;
+    }
+
+    public function getArtistProfiles() {
+        $result = [];
+
+        foreach($this->artist->getArtistsUser() as $artist_user) {
+            $result[] = $artist_user->getUser();
+        }
+
+        return $result;
+    }
+
+    public function getFanProfiles() {
+        $fans = [];
+
+        foreach($this->contractsFan as $cf) {
+            $fans[] = $cf->getUser();
+        }
+
+        return $fans;
     }
 
     /**
@@ -95,9 +124,16 @@ class ContractArtist
     private $reminders;
 
     /**
-     * @ORM\OneToOne(targetEntity="ContractArtistPreferences", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $preferences;
+
+    /**
+     * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $reality;
 
     /**
      * @ORM\Column(name="collected_amount", type="integer")
@@ -105,9 +141,29 @@ class ContractArtist
     private $collected_amount;
 
     /**
-     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="contractArtist")
+     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="contractArtist", cascade={"persist"})
      */
     private $contractsFan;
+
+    /**
+     * @ORM\Column(name="failed", type="boolean")
+     */
+    private $failed;
+
+    /**
+     * @ORM\Column(name="successful", type="boolean")
+     */
+    private $successful;
+
+    /**
+     * @ORM\Column(name="cart_reminder_sent", type="boolean")
+     */
+    private $cart_reminder_sent;
+
+    /**
+     * @ORM\Column(name="refunded", type="boolean")
+     */
+    private $refunded;
 
     // Conditions approval (form only)
     /**
@@ -341,11 +397,11 @@ class ContractArtist
     /**
      * Set preferences
      *
-     * @param \AppBundle\Entity\ContractArtistPreferences $preferences
+     * @param \AppBundle\Entity\ContractArtistPossibility $preferences
      *
      * @return ContractArtist
      */
-    public function setPreferences(\AppBundle\Entity\ContractArtistPreferences $preferences = null)
+    public function setPreferences(\AppBundle\Entity\ContractArtistPossibility $preferences = null)
     {
         $this->preferences = $preferences;
 
@@ -355,7 +411,7 @@ class ContractArtist
     /**
      * Get preferences
      *
-     * @return \AppBundle\Entity\ContractArtistPreferences
+     * @return \AppBundle\Entity\ContractArtistPossibility
      */
     public function getPreferences()
     {
@@ -384,5 +440,159 @@ class ContractArtist
     public function getCollectedAmount()
     {
         return $this->collected_amount;
+    }
+
+    /**
+     * Set failed
+     *
+     * @param boolean $failed
+     *
+     * @return ContractArtist
+     */
+    public function setFailed($failed)
+    {
+        $this->failed = $failed;
+
+        return $this;
+    }
+
+    /**
+     * Get failed
+     *
+     * @return boolean
+     */
+    public function getFailed()
+    {
+        return $this->failed;
+    }
+
+    /**
+     * Set successful
+     *
+     * @param boolean $successful
+     *
+     * @return ContractArtist
+     */
+    public function setSuccessful($successful)
+    {
+        $this->successful = $successful;
+
+        return $this;
+    }
+
+    /**
+     * Get successful
+     *
+     * @return boolean
+     */
+    public function getSuccessful()
+    {
+        return $this->successful;
+    }
+
+    /**
+     * Set reality
+     *
+     * @param \AppBundle\Entity\ContractArtistPossibility $reality
+     *
+     * @return ContractArtist
+     */
+    public function setReality(\AppBundle\Entity\ContractArtistPossibility $reality = null)
+    {
+        $this->reality = $reality;
+
+        return $this;
+    }
+
+    /**
+     * Get reality
+     *
+     * @return \AppBundle\Entity\ContractArtistPossibility
+     */
+    public function getReality()
+    {
+        return $this->reality;
+    }
+
+    /**
+     * Add contractsFan
+     *
+     * @param \AppBundle\Entity\ContractFan $contractsFan
+     *
+     * @return ContractArtist
+     */
+    public function addContractsFan(\AppBundle\Entity\ContractFan $contractsFan)
+    {
+        $this->contractsFan[] = $contractsFan;
+
+        return $this;
+    }
+
+    /**
+     * Remove contractsFan
+     *
+     * @param \AppBundle\Entity\ContractFan $contractsFan
+     */
+    public function removeContractsFan(\AppBundle\Entity\ContractFan $contractsFan)
+    {
+        $this->contractsFan->removeElement($contractsFan);
+    }
+
+    /**
+     * Get contractsFan
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContractsFan()
+    {
+        return $this->contractsFan;
+    }
+
+    /**
+     * Set cartReminderSent
+     *
+     * @param boolean $cartReminderSent
+     *
+     * @return ContractArtist
+     */
+    public function setCartReminderSent($cartReminderSent)
+    {
+        $this->cart_reminder_sent = $cartReminderSent;
+
+        return $this;
+    }
+
+    /**
+     * Get cartReminderSent
+     *
+     * @return boolean
+     */
+    public function getCartReminderSent()
+    {
+        return $this->cart_reminder_sent;
+    }
+
+    /**
+     * Set refunded
+     *
+     * @param boolean $refunded
+     *
+     * @return ContractArtist
+     */
+    public function setRefunded($refunded)
+    {
+        $this->refunded = $refunded;
+
+        return $this;
+    }
+
+    /**
+     * Get refunded
+     *
+     * @return boolean
+     */
+    public function getRefunded()
+    {
+        return $this->refunded;
     }
 }

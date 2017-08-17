@@ -1,0 +1,30 @@
+{% extends 'SonataAdminBundle::standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{  parent() }}
+{% endblock %}
+
+{% block logo %}
+    {% spaceless %}
+        <a class="logo" href="{{ path('sonata_admin_dashboard') }}">
+            {% if 'single_image' == sonata_admin.adminPool.getOption('title_mode') or 'both' == sonata_admin.adminPool.getOption('title_mode') %}
+                <img src="{{ asset(sonata_admin.adminPool.titlelogo) }}" alt="{{ sonata_admin.adminPool.title }}">
+            {% endif %}
+            {% if 'single_text' == sonata_admin.adminPool.getOption('title_mode') or 'both' == sonata_admin.adminPool.getOption('title_mode') %}
+                <span>{{ sonata_admin.adminPool.title }}</span>
+            {% endif %}
+        </a>
+    {% endspaceless %}
+{% endblock %}
+
+{% block sonata_top_nav_menu %}
+
+{% endblock %}
+
+{% block side_bar_after_nav %}
+    {% if is_granted('ROLE_TRANSLATIONS_ADMIN') %}
+        <p class="text-center" style="border-top: 1px solid #444444; padding-top: 10px">
+            <a href="{{ path('jms_translation_index') }}">Traductions</a>
+        </p>
+    {% endif %}
+{% endblock %}

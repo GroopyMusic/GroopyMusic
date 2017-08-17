@@ -8,11 +8,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="fos_user")
  */
 class User extends BaseUser implements RecipientInterface
 {
+    public function __toString()
+    {
+        return $this->getDisplayName();
+    }
+
     public function __construct()
     {
         parent::__construct();

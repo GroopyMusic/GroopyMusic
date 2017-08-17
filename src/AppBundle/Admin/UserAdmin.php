@@ -2,13 +2,21 @@
 
 namespace AppBundle\Admin;
 
-use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 
-class UserAdmin extends AbstractAdmin
+class UserAdmin extends BaseAdmin
 {
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->remove('delete')
+            ->remove('create')
+        ;
+    }
+
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper->add('firstname', 'text')
@@ -24,5 +32,14 @@ class UserAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('firstname');
+    }
+
+    public function getDashboardActions()
+    {
+        $actions = parent::getDashboardActions();
+
+        unset($actions['create']);
+
+        return $actions;
     }
 }

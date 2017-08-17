@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Step
 {
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     /**
      * @var int
      *

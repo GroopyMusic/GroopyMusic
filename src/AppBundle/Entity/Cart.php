@@ -61,7 +61,7 @@ class Cart
     private $paid;
 
     /**
-     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart")
+     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart", cascade={"persist"})
      */
     private $contracts;
 

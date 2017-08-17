@@ -13,13 +13,17 @@ use Azine\EmailBundle\Services\TemplateProviderInterface;
  */
 class MailTemplateProvider extends AzineTemplateProvider implements TemplateProviderInterface
 {
-    // design your own twig-templates for your custom emails
-    // and list them here as constants, to avoid typos.
     const VIP_INFO_MAIL_TEMPLATE		= 'AppBundle:Mail:vip.txt.twig';
-    const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:reminder_contract_artist.txt.twig';
-    // and also design your own base-template that should be used for newsletter/notification-emails
-    // and define the template IDs for the newsletter- and notification-emails in your config.yml
 
+    const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:reminder_contract_artist.txt.twig';
+
+    const FAILED_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:failed_contract_artist.txt.twig';
+    const FAILED_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail:failed_contract_fan.txt.twig';
+
+    const SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:successful_contract_artist.txt.twig';
+    const SUCCESSFUL_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail:successful_contract_fan.txt.twig';
+
+    const ONGOING_CART_TEMPLATE = 'AppBundle:Mail:ongoing_cart.txt.twig';
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
      * @param string $template
