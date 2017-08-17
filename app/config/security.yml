@@ -24,7 +24,9 @@ security:
                 provider: fos_userbundle
                 default_target_path: fan_home
                 # TODO uncomment this and make it work... (currently getting an error "unrecognized option")
-                csrf_provider: security.csrf.token_manager
+                csrf_parameter:       _csrf_token
+                csrf_token_id:        authenticate
+                csrf_token_generator: security.csrf.token_manager
             logout:       true
             anonymous:    true
 
