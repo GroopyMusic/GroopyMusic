@@ -5,9 +5,17 @@ namespace AppBundle\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 
 class SuggestionBoxAdmin extends BaseAdmin
 {
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->remove('create')
+        ;
+    }
+
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper->add('message', 'textarea');
@@ -21,14 +29,5 @@ class SuggestionBoxAdmin extends BaseAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('name');
-    }
-
-    public function getDashboardActions()
-    {
-        $actions = parent::getDashboardActions();
-
-        unset($actions['create']);
-
-        return $actions;
     }
 }

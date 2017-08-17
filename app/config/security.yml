@@ -16,12 +16,15 @@ security:
 
     firewalls:
         main:
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 2419200 # 4 weeks in seconds
             pattern: ^/
             form_login:
                 provider: fos_userbundle
                 default_target_path: fan_home
                 # TODO uncomment this and make it work... (currently getting an error "unrecognized option")
-                # csrf_provider: security.csrf.token_manager
+                csrf_provider: security.csrf.token_manager
             logout:       true
             anonymous:    true
 

@@ -3,16 +3,15 @@
 namespace AppBundle\Admin;
 
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 
 class ContractFanAdmin extends BaseAdmin
 {
-    public function getDashboardActions()
+    public function configureRoutes(RouteCollection $collection)
     {
-        $actions = parent::getDashboardActions();
-
-        unset($actions['create']);
-
-        return $actions;
+        $collection
+            ->remove('delete')
+            ->remove('create');
     }
 
     public function configureListFields(ListMapper $list)

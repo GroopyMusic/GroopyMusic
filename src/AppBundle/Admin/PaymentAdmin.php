@@ -7,13 +7,13 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class PaymentAdmin extends BaseAdmin
 {
-    public function getDashboardActions()
+    public function configureRoutes(RouteCollection $collection)
     {
-        $actions = parent::getDashboardActions();
-
-        unset($actions['create']);
-
-        return $actions;
+        $collection
+            ->remove('delete')
+            ->remove('create')
+            ->add('refund', $this->getRouterIdParameter().'/refund')
+        ;
     }
 
     public function configureListFields(ListMapper $list)
@@ -29,11 +29,6 @@ class PaymentAdmin extends BaseAdmin
                     )
                 )))
         ;
-    }
-
-    public function configureRoutes(RouteCollection $collection)
-    {
-        $collection->add('refund', $this->getRouterIdParameter().'/refund');
     }
 
 }
