@@ -180,12 +180,16 @@ assetic:
     filters:
         cssrewrite: ~
         jsqueeze: ~
-        # uglifyjs2:
-        #     bin: "%path_to_uglifyjs%"
-        # uglifycss:
-        #     bin: "%path_to_uglifycss%"
+        uglifyjs2:
+            bin: "%path_to_uglifyjs%"
+        uglifycss:
+            bin: "%path_to_uglifycss%"
         scssphp:
             formatter: 'Leafo\ScssPhp\Formatter\Compressed'
+    assets:
+        bootstrap_js:
+            inputs:
+                - "%kernel.root_dir%/../vendor/twbs/bootstrap/dist/js/bootstrap.js"
 
 # Sonata Admin
 sonata_admin:

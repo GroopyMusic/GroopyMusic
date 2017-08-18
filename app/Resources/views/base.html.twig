@@ -11,7 +11,7 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
         {% block stylesheets %}
-            {% stylesheets filter='scssphp' output="css/layout.min.css"
+            {% stylesheets filter='scssphp, ?uglifycss' output="css/layout.min.css"
                 "scss/layout.scss"
             %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
@@ -72,23 +72,12 @@
 
 
         <footer>
-            {% block footer %}{% endblock %}
+            {% block footer %}{# page footer comes here #}{% endblock %}
         </footer>
+
         {% block javascripts %}
-            <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-            <script >window.jQuery || document.write('<script type="text/javascript" src="{{ asset('js/public/jquery-3.2.0.min.js') }}"><\/script>')</script>
-            <script
-                    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-                    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-                    crossorigin="anonymous"></script>
-            <script src="https://js.stripe.com/v3/"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-            <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
-            {% block javascripts_with_jquery %}
-            {% endblock %}
-            {% javascripts "js/*" filter='?jsqueeze, ?uglifyjs' output='js/compiled/main.js' %}
-                <script src="{{ asset_url }}"></script>
-            {% endjavascripts %}
+            {% include 'patterns/javascripts.html.twig' %}
         {% endblock %}
+
     </body>
 </html>
