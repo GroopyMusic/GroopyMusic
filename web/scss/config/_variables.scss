@@ -1,0 +1,14 @@
+// =========================
+// Main colors for Un-Mute =
+// =========================
+
+$brand-color: rgb(252, 204, 34);
+
+
+// ====================================
+// Overriding the bootstrap variables =
+// ====================================
+// every variables in vendor/twbs/bootstrap/scss/_variables.scss is customizable.
+// https://getbootstrap.com/docs/4.0/getting-started/options/
+
+$blue: $brand-color;
