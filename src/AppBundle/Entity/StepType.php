@@ -17,7 +17,12 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class StepType extends AbstractPersonalTranslatable implements TranslatableInterface
 {
-    const TYPE_CONCERT = 'concert';
+    const TYPE_CONCERT = 'Concert';
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     /**
      * @var ArrayCollection

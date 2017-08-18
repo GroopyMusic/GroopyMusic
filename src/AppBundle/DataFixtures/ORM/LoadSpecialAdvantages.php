@@ -19,6 +19,7 @@ class LoadSpecialAdvantages extends AbstractFixture implements OrderedFixtureInt
     public function load(ObjectManager $manager)
     {
         $sa1 = new SpecialAdvantage();
+        $sa1->setLocale('fr');
         $sa1->setName("Visite des bureaux Un-Mute")
             ->setDescription("blablabla")
             ->setAvailable(true)
@@ -26,6 +27,7 @@ class LoadSpecialAdvantages extends AbstractFixture implements OrderedFixtureInt
             ->setPriceCredits(60);
 
         $sa2 = new SpecialAdvantage();
+        $sa2->setLocale('fr');
         $sa2->setName("T-shirt Un-Mute")
             ->setDescription("blablabla")
             ->setAvailable(true)

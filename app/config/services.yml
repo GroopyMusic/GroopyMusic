@@ -106,6 +106,13 @@ services:
             - { name: sonata.admin, manager_type: orm, label: app.admin.contractartist }
         public: true
 
+    app.admin.contractartistartist:
+        class: AppBundle\Admin\ContractArtistArtistAdmin
+        arguments: [~, AppBundle\Entity\ContractArtist_Artist, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.contractartistartist }
+        public: true
+
     app.admin.contractfan:
         class: AppBundle\Admin\ContractFanAdmin
         arguments: [~, AppBundle\Entity\ContractFan, ~]

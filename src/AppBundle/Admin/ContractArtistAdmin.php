@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\ContractArtist_Artist;
 use AppBundle\Entity\StepType;
 use AppBundle\Form\ConcertPossibilityType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -42,9 +43,9 @@ class ContractArtistAdmin extends BaseAdmin
                     'show' => array(),
                     'edit' => array(),
                     'refund' => array(
-                        'template' => 'AppBundle:Admin:icon_refund_contractartist.html.twig'
+                        'template' => 'AppBundle:Admin:icon_refund_contractartist.html.twig',
                     ),
-            )))
+                )))
         ;
     }
 
@@ -66,9 +67,7 @@ class ContractArtistAdmin extends BaseAdmin
             ))
             ->add('reminders')
             ->add('preferences')
-            ->add('coartists', null, array(
-                'route' => array('name' => 'show'),
-            ))
+            ->add('coartists_list')
             ->add('reality')
             ->add('collected_amount')
             ->add('failed')
@@ -85,26 +84,34 @@ class ContractArtistAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $form
-                ->add('dateEnd')
-                ->add('motivations')
-            ->end()
-            ->with('Premières parties')
-                ->add('coartists', 'sonata_type_model', array(
-                    'multiple' => true,
-                ))
-            ->end()
+            ->add('dateEnd')
+            ->add('motivations')
+            ->end();
 
+        if($this->getSubject()->getStep()->getType()->getName() == StepType::TYPE_CONCERT) {
+            $form
+                ->with('Réalité')
+                    ->add('reality', 'sonata_type_admin', array('required' => false), array(
+                        'admin_code' => 'app.admin.concertpossibility',
+                    ))
+                ->end();
+        }
+
+        $form
+            ->with('Premières parties')
+            ->add( 'coartists_list', 'sonata_type_collection', array(
+                'by_reference' => false,
+            ), array(
+
+                    'edit'            => 'inline',
+                    'inline'          => 'table',
+                    'sortable'        => 'position',
+                    'link_parameters' => array( 'context' => 'define context from which you want to select media or else just add default' ),
+                    'admin_code'      => 'app.admin.contractartistartist'
+                )
+            )
+            ->end()
         ;
 
-        //if($this->getSubject()->getStep()->getType()->getName() == StepType::TYPE_CONCERT)
-        $form->with('Réalité')
-                ->add('reality', 'sonata_type_admin', array() , array(
-                    'admin_code' => 'app.admin.concertpossibility'
-                ))
-            ->end()
-            ;
-
     }
-
-
 }

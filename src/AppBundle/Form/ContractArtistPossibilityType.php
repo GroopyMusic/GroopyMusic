@@ -24,7 +24,7 @@ class ContractArtistPossibilityType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\ContractArtistPreferences'
+            'data_class' => 'AppBundle\Entity\ContractArtistPossibility'
         ));
     }
 

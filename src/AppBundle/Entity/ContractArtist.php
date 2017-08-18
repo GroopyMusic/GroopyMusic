@@ -32,6 +32,13 @@ class ContractArtist
         $this->cart_reminder_sent = false;
         $this->refunded = false;
         $this->asking_refund = new ArrayCollection();
+        $this->coartists_list = new ArrayCollection();
+    }
+
+    public function getCoartists() {
+        return array_map(function($elem) {
+            return $elem->getArtist();
+        }, $this->coartists_list->toArray());
     }
 
     public function isRefundReady() {
@@ -191,13 +198,13 @@ class ContractArtist
     private $asking_refund;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Artist")
+     * @ORM\OneToMany(targetEntity="ContractArtist_Artist", mappedBy="contract", cascade={"all"}, orphanRemoval=true)
      */
-    private $coartists;
+    private $coartists_list;
 
-    // Conditions approval (form only)
+    // Conditions approval (user form only)
     /**
-     * @Assert\NotBlank(message="accept_conditions.notblank")
+     * @Assert\NotBlank(message="accept_conditions.notblank", groups={"user_creation"})
      */
     private $accept_conditions;
 
@@ -627,40 +634,6 @@ class ContractArtist
     }
 
     /**
-     * Add coartist
-     *
-     * @param \AppBundle\Entity\Artist $coartist
-     *
-     * @return ContractArtist
-     */
-    public function addCoartist(\AppBundle\Entity\Artist $coartist)
-    {
-        $this->coartists[] = $coartist;
-
-        return $this;
-    }
-
-    /**
-     * Remove coartist
-     *
-     * @param \AppBundle\Entity\Artist $coartist
-     */
-    public function removeCoartist(\AppBundle\Entity\Artist $coartist)
-    {
-        $this->coartists->removeElement($coartist);
-    }
-
-    /**
-     * Get coartists
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCoartists()
-    {
-        return $this->coartists;
-    }
-
-    /**
      * Add askingRefund
      *
      * @param \AppBundle\Entity\User $askingRefund
@@ -692,5 +665,59 @@ class ContractArtist
     public function getAskingRefund()
     {
         return $this->asking_refund;
+    }
+
+    /**
+     * Set coartistsList
+     *
+     * @param ArrayCollection $coartistsList
+     *
+     * @return ContractArtist
+     */
+    public function setCoartistsList($list)
+    {
+        if (count($list) > 0) {
+            foreach ($list as $elem) {
+                $this->addCoartistsList($elem);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add coartistsList
+     *
+     * @param \AppBundle\Entity\ContractArtist_Artist $coartistsList
+     *
+     * @return ContractArtist
+     */
+    public function addCoartistsList(\AppBundle\Entity\ContractArtist_Artist $coartistsList)
+    {
+        $this->coartists_list[] = $coartistsList;
+        $coartistsList->setContract($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove coartistsList
+     *
+     * @param \AppBundle\Entity\ContractArtist_Artist $coartistsList
+     */
+    public function removeCoartistsList(\AppBundle\Entity\ContractArtist_Artist $coartistsList)
+    {
+        $this->coartists_list->removeElement($coartistsList);
+        $coartistsList->setContract(null)->setArtist(null);
+    }
+
+    /**
+     * Get coartistsList
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoartistsList()
+    {
+        return $this->coartists_list;
     }
 }
