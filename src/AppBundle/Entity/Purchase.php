@@ -14,6 +14,11 @@ class Purchase
 {
     const MAX_QTY = 20;
 
+    public function __toString()
+    {
+        return 'purchase #' . $this->id . ' (quantité : ' . $this->quantity . ' ; counterpart : ' . $this->counterpart . ')';
+    }
+
     public function __construct()
     {
         $this->quantity = 0;

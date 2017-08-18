@@ -1,0 +1,14 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+
+    <div>Es-tu sûr de vouloir rembourser ce paiement ? {% if payment.isOneStepFromBeingRefunded %}(cela le remboursera immédiatement){% else %}(il y aura besoin de la validation d'autres admins avant le remboursement){% endif %}</div>
+
+    {{ form_start(form) }}
+
+        {{ form_row(form.confirm) }}
+        {{ form_row(form.cancel) }}
+
+    {{ form_rest(form) }}
+
+{% endblock %}

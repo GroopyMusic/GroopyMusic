@@ -180,10 +180,10 @@ assetic:
     filters:
         cssrewrite: ~
         jsqueeze: ~
-        uglifyjs2:
-            bin: "%path_to_uglifyjs%"
-        uglifycss:
-            bin: "%path_to_uglifycss%"
+#        uglifyjs2:
+#            bin: "%path_to_uglifyjs%"
+#        uglifycss:
+#            bin: "%path_to_uglifycss%"
         scssphp:
             formatter: 'Leafo\ScssPhp\Formatter\Compressed'
     assets:
@@ -233,6 +233,7 @@ sonata_admin:
                 items:
                     - app.admin.genre
                     - app.admin.partner
+                   # - app.admin.hall
             app.admin.group.crowdfunding:
                 label: app.admin.group.crowdfunding
                 label_catalogue: SonataAdminBundle

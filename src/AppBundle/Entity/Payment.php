@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,33 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Payment
 {
+    const VOTES_TO_REFUND = 2;
+
+    public function __toString()
+    {
+        return 'payment #' . $this->id;
+    }
+
+    public function __construct() {
+        $this->asking_refund = new ArrayCollection();
+    }
+
+    public function isRefundReady() {
+        return count($this->asking_refund) >= self::VOTES_TO_REFUND;
+    }
+
+    public function isAskedRefundBy(User $user) {
+        return $this->asking_refund->contains($user);
+    }
+
+    public function isAskedRefundByOne() {
+        return count($this->asking_refund) >= 1;
+    }
+
+    public function isOneStepFromBeingRefunded() {
+        return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
+    }
+
     /**
      * @var int
      *
@@ -61,6 +89,11 @@ class Payment
      * @ORM\Column(name="amount", type="decimal")
      */
     private $amount;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="User")
+     */
+    private $asking_refund;
 
     /**
      * Get id
@@ -238,5 +271,39 @@ class Payment
     public function getContractArtist()
     {
         return $this->contractArtist;
+    }
+
+    /**
+     * Add askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     *
+     * @return Payment
+     */
+    public function addAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund[] = $askingRefund;
+
+        return $this;
+    }
+
+    /**
+     * Remove askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     */
+    public function removeAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund->removeElement($askingRefund);
+    }
+
+    /**
+     * Get askingRefund
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAskingRefund()
+    {
+        return $this->asking_refund;
     }
 }

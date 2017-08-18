@@ -15,6 +15,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Partner
 {
+    public function getType() {
+        if($this instanceof Hall) {
+            return 'hall';
+        }
+    }
+
     /**
      * @var int
      *
@@ -27,29 +33,29 @@ class Partner
     /**
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\OneToOne(targetEntity="Address")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $address;
+    protected $address;
 
     /**
-     * @ORM\Column(name="website", type="string", length=255)
+     * @ORM\Column(name="website", type="string", length=255, nullable=true)
      */
-    private $website;
+    protected $website;
 
     /**
      * @ORM\ManyToOne(targetEntity="ContactPerson")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $contact_person;
+    protected $contact_person;
 
     /**
-     * @ORM\Column(name="comment", type="text")
+     * @ORM\Column(name="comment", type="text", nullable=true)
      */
-    private $comment;
+    protected $comment;
 
     /**
      * Get id

@@ -106,6 +106,13 @@ services:
             - { name: sonata.admin, manager_type: orm, label: app.admin.contractartist }
         public: true
 
+    app.admin.contractartistartist:
+        class: AppBundle\Admin\ContractArtistArtistAdmin
+        arguments: [~, AppBundle\Entity\ContractArtist_Artist, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.contractartistartist }
+        public: true
+
     app.admin.contractfan:
         class: AppBundle\Admin\ContractFanAdmin
         arguments: [~, AppBundle\Entity\ContractFan, ~]
@@ -139,4 +146,32 @@ services:
         arguments: [~, AppBundle\Entity\SpecialPurchase, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.specialpurchase }
+        public: true
+
+    app.admin.concertpossibility:
+        class: AppBundle\Admin\ConcertPossibilityAdmin
+        arguments: [~, AppBundle\Entity\ConcertPossibility, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.concertpossibility }
+        public: true
+
+    app.admin.hall:
+        class: AppBundle\Admin\HallAdmin
+        arguments: [~, AppBundle\Entity\Hall, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.hall }
+        public: true
+
+    app.admin.contactperson:
+        class: AppBundle\Admin\ContactPersonAdmin
+        arguments: [~, AppBundle\Entity\ContactPerson, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.contactperson }
+        public: true
+
+    app.admin.address:
+        class: AppBundle\Admin\AddressAdmin
+        arguments: [~, AppBundle\Entity\Address, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.address }
         public: true

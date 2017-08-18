@@ -3,16 +3,37 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * StepType
  *
  * @ORM\Table(name="step_type")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StepTypeRepository")
+ * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\StepTypeTranslation")
  */
-class StepType
+class StepType extends AbstractPersonalTranslatable implements TranslatableInterface
 {
-    const TYPE_CONCERT = 'concert';
+    const TYPE_CONCERT = 'Concert';
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\Translations\StepTypeTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
 
     /**
      * @var int
@@ -27,6 +48,7 @@ class StepType
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Gedmo\Translatable
      */
     private $name;
 
@@ -34,6 +56,7 @@ class StepType
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     * @Gedmo\Translatable
      */
     private $description;
 
@@ -41,6 +64,7 @@ class StepType
      * @ORM\OneToMany(targetEntity="Step", mappedBy="type", cascade={"persist"})
      */
      private $steps;
+
 
     /**
      * Get id
@@ -140,5 +164,15 @@ class StepType
     public function getSteps()
     {
         return $this->steps;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \AppBundle\Entity\Translations\StepTypeTranslation $translation
+     */
+    public function removeTranslation(\AppBundle\Entity\Translations\StepTypeTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

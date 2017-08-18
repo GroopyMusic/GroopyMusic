@@ -15,6 +15,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContractArtistPossibility
 {
+    public function __toString()
+    {
+        if($this instanceof ConcertPossibility) {
+            return $this->__toString();
+        }
+        else {
+            return 'Possibility';
+        }
+    }
+
+
     /**
      * @var int
      *
@@ -29,14 +40,14 @@ class ContractArtistPossibility
      *
      * @ORM\Column(name="date", type="date", nullable=true)
      */
-    private $date;
+    protected $date;
 
     /**
      * @var string
      *
      * @ORM\Column(name="additional_info", type="text", nullable=true)
      */
-    private $additionalInfo;
+    protected $additionalInfo;
 
     /**
      * Get id

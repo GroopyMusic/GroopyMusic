@@ -12,6 +12,8 @@ class ConcertPossibilityType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $step = $options['step'];
+
         $builder
             ->add('hall', EntityType::class, array(
                 'class' => 'AppBundle\Entity\Hall',

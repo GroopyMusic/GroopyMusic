@@ -13,6 +13,7 @@ class RegistrationType extends AbstractType
         $builder
             ->add('lastname')
             ->add('firstname')
+            ->add('newsletter')
         ;
     }
 

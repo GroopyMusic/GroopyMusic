@@ -12,6 +12,22 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Artist_User
 {
+    public function userToString() {
+        $result = $this->getUser() . '';
+        if($this->role) {
+            $result .= ' (rôle : ' . $this->role . ')';
+        }
+        return $result;
+    }
+
+    public function artistToString() {
+        $result = $this->getArtist() . '';
+        if($this->role) {
+            $result .= ' (rôle : ' . $this->role . ')';
+        }
+        return $result;
+    }
+
     /**
      * @var int
      *

@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Cart
 {
+    public function __toString()
+    {
+        return 'cart #' . $this->id;
+    }
+
     public function __construct()
     {
         $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();

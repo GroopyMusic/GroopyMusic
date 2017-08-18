@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,6 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ContractArtist
 {
+    const VOTES_TO_REFUND = 2;
+
     public function __toString()
     {
         return 'Crowdfunding #'.$this->id. ' de l\'artiste '. $this->artist . ' (palier : ' . $this->step . ')';
@@ -28,6 +31,30 @@ class ContractArtist
         $this->successful = false;
         $this->cart_reminder_sent = false;
         $this->refunded = false;
+        $this->asking_refund = new ArrayCollection();
+        $this->coartists_list = new ArrayCollection();
+    }
+
+    public function getCoartists() {
+        return array_map(function($elem) {
+            return $elem->getArtist();
+        }, $this->coartists_list->toArray());
+    }
+
+    public function isRefundReady() {
+        return count($this->asking_refund) >= self::VOTES_TO_REFUND;
+    }
+
+    public function isAskedRefundBy(User $user) {
+        return $this->asking_refund->contains($user);
+    }
+
+    public function isAskedRefundByOne() {
+        return count($this->asking_refund) >= 1;
+    }
+
+    public function isOneStepFromBeingRefunded() {
+        return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
     }
 
     public function addAmount($amount) {
@@ -165,9 +192,19 @@ class ContractArtist
      */
     private $refunded;
 
-    // Conditions approval (form only)
     /**
-     * @Assert\NotBlank(message="accept_conditions.notblank")
+     * @ORM\ManyToMany(targetEntity="User")
+     */
+    private $asking_refund;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ContractArtist_Artist", mappedBy="contract", cascade={"all"}, orphanRemoval=true)
+     */
+    private $coartists_list;
+
+    // Conditions approval (user form only)
+    /**
+     * @Assert\NotBlank(message="accept_conditions.notblank", groups={"user_creation"})
      */
     private $accept_conditions;
 
@@ -594,5 +631,93 @@ class ContractArtist
     public function getRefunded()
     {
         return $this->refunded;
+    }
+
+    /**
+     * Add askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     *
+     * @return ContractArtist
+     */
+    public function addAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund[] = $askingRefund;
+
+        return $this;
+    }
+
+    /**
+     * Remove askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     */
+    public function removeAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund->removeElement($askingRefund);
+    }
+
+    /**
+     * Get askingRefund
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAskingRefund()
+    {
+        return $this->asking_refund;
+    }
+
+    /**
+     * Set coartistsList
+     *
+     * @param ArrayCollection $coartistsList
+     *
+     * @return ContractArtist
+     */
+    public function setCoartistsList($list)
+    {
+        if (count($list) > 0) {
+            foreach ($list as $elem) {
+                $this->addCoartistsList($elem);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add coartistsList
+     *
+     * @param \AppBundle\Entity\ContractArtist_Artist $coartistsList
+     *
+     * @return ContractArtist
+     */
+    public function addCoartistsList(\AppBundle\Entity\ContractArtist_Artist $coartistsList)
+    {
+        $this->coartists_list[] = $coartistsList;
+        $coartistsList->setContract($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove coartistsList
+     *
+     * @param \AppBundle\Entity\ContractArtist_Artist $coartistsList
+     */
+    public function removeCoartistsList(\AppBundle\Entity\ContractArtist_Artist $coartistsList)
+    {
+        $this->coartists_list->removeElement($coartistsList);
+        $coartistsList->setContract(null)->setArtist(null);
+    }
+
+    /**
+     * Get coartistsList
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoartistsList()
+    {
+        return $this->coartists_list;
     }
 }
