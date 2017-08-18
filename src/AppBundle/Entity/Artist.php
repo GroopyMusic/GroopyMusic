@@ -9,12 +9,17 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="artist")
+ * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\ArtistTranslation")
  */
-class Artist
+class Artist extends AbstractPersonalTranslatable implements TranslatableInterface
 {
     public function __toString()
     {
@@ -25,6 +30,17 @@ class Artist
     {
         $this->phase = $phase;
     }
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\Translations\ArtistTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
 
     /**
      * @ORM\Id
@@ -51,11 +67,13 @@ class Artist
 
     /**
      * @ORM\Column(name="short_description", type="string", length=255)
+     * @Gedmo\Translatable
      */
     private $short_description;
 
     /**
      * @ORM\Column(name="biography", type="text")
+     * @Gedmo\Translatable
      */
     private $biography;
 
@@ -236,5 +254,15 @@ class Artist
     public function getArtistsUser()
     {
         return $this->artists_user;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \AppBundle\Entity\Translations\ArtistTranslation $translation
+     */
+    public function removeTranslation(\AppBundle\Entity\Translations\ArtistTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

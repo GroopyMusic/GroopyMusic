@@ -3,15 +3,36 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * CounterPart
  *
  * @ORM\Table(name="counter_part")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CounterPartRepository")
+ * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\CounterPartTranslation")
  */
-class CounterPart
+class CounterPart extends AbstractPersonalTranslatable implements TranslatableInterface
 {
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\Translations\CounterPartTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
     /**
      * @var int
      *
@@ -32,6 +53,7 @@ class CounterPart
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Gedmo\Translatable
      */
     private $name;
 
@@ -43,6 +65,7 @@ class CounterPart
 
     /**
      * @ORM\Column(name="description", type="text")
+     * @Gedmo\Translatable
      */
     private $description;
 
@@ -179,5 +202,15 @@ class CounterPart
     public function getMaximumAmount()
     {
         return $this->maximum_amount;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \AppBundle\Entity\Translations\CounterPartTranslation $translation
+     */
+    public function removeTranslation(\AppBundle\Entity\Translations\CounterPartTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

@@ -45,16 +45,10 @@ class User extends BaseUser implements RecipientInterface
      */
     public function getDisplayName()
     {
-        $firstName = $this->getFirstName();
-        $lastName = $this->getLastName();
-        $username = $this->getUsername();
+        $firstName = $this->getFirstname();
+        $lastName = $this->getLastname();
 
-        $displayName = $username;
-        if ($firstName) {
-            $displayName = $firstName;
-        } elseif ($lastName) {
-            $displayName = $this->getSalutation()." ".$lastName;
-        }
+        $displayName = $firstName . ' ' . $lastName;
 
         return ucwords($displayName);
     }

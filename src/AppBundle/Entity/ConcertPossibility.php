@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ConcertPossibility extends ContractArtistPossibility
 {
+    public function __toString()
+    {
+        return 'Salle : ' . $this->hall . ' ; date : ' . $this->date;
+    }
+
     /**
      * @var \AppBundle\Entity\Hall
      * @ORM\ManyToOne(targetEntity="Hall")

@@ -13,12 +13,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SuggestionBox
 {
-
     public function __construct(){
         //default date of the suggestion
         $this->date = new \Datetime();
     }
-    
+
+    public function getDisplayName() {
+        return $this->firstname . ' ' . $this->name;
+    }
+
     /**
      * @var int
      *
@@ -40,7 +43,7 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\Length(min=2, minMessage="Le prénom doit faire au moins {{ limit }} caractères !")
+     * @Assert\Length(min=2, minMessage="Le nom doit faire au moins {{ limit }} caractères !")
      */
     private $name;
 
@@ -48,7 +51,7 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255)
-     * @Assert\Length(min=2, minMessage="Le nom doit faire au moins {{ limit }} caractères !")
+     * @Assert\Length(min=2, minMessage="Le prénom doit faire au moins {{ limit }} caractères !")
      */
     private $firstname;
 

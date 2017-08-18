@@ -3,19 +3,35 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Step
  *
  * @ORM\Table(name="step")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StepRepository")
+ * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\StepTranslation")
  */
-class Step
+class Step extends AbstractPersonalTranslatable implements TranslatableInterface
 {
     public function __toString()
     {
         return $this->name;
     }
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\Translations\StepTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
 
     /**
      * @var int
@@ -30,6 +46,7 @@ class Step
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Gedmo\Translatable
      */
     private $name;
 
@@ -67,6 +84,7 @@ class Step
 
     /**
      * @ORM\Column(name="description", type="text")
+     * @Gedmo\Translatable
      */
     private $description;
 
@@ -327,5 +345,15 @@ class Step
     public function getHalls()
     {
         return $this->halls;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \AppBundle\Entity\Translations\StepTranslation $translation
+     */
+    public function removeTranslation(\AppBundle\Entity\Translations\StepTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

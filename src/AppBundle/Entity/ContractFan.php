@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContractFan
 {
+    public function __toString()
+    {
+        return 'contrat fan #' . $this->id;
+    }
+
     public function __construct()
     {
         $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
@@ -21,6 +26,10 @@ class ContractFan
         return array_sum(array_map(function($purchase) {
             return $purchase->getAmount();
         }, $this->purchases->toArray()));
+    }
+
+    public function getPaid() {
+        return $this->cart->getPaid();
     }
 
     /**

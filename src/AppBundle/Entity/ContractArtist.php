@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,6 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ContractArtist
 {
+    const VOTES_TO_REFUND = 2;
+
     public function __toString()
     {
         return 'Crowdfunding #'.$this->id. ' de l\'artiste '. $this->artist . ' (palier : ' . $this->step . ')';
@@ -28,6 +31,23 @@ class ContractArtist
         $this->successful = false;
         $this->cart_reminder_sent = false;
         $this->refunded = false;
+        $this->asking_refund = new ArrayCollection();
+    }
+
+    public function isRefundReady() {
+        return count($this->asking_refund) >= self::VOTES_TO_REFUND;
+    }
+
+    public function isAskedRefundBy(User $user) {
+        return $this->asking_refund->contains($user);
+    }
+
+    public function isAskedRefundByOne() {
+        return count($this->asking_refund) >= 1;
+    }
+
+    public function isOneStepFromBeingRefunded() {
+        return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
     }
 
     public function addAmount($amount) {
@@ -164,6 +184,16 @@ class ContractArtist
      * @ORM\Column(name="refunded", type="boolean")
      */
     private $refunded;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="User")
+     */
+    private $asking_refund;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Artist")
+     */
+    private $coartists;
 
     // Conditions approval (form only)
     /**
@@ -594,5 +624,73 @@ class ContractArtist
     public function getRefunded()
     {
         return $this->refunded;
+    }
+
+    /**
+     * Add coartist
+     *
+     * @param \AppBundle\Entity\Artist $coartist
+     *
+     * @return ContractArtist
+     */
+    public function addCoartist(\AppBundle\Entity\Artist $coartist)
+    {
+        $this->coartists[] = $coartist;
+
+        return $this;
+    }
+
+    /**
+     * Remove coartist
+     *
+     * @param \AppBundle\Entity\Artist $coartist
+     */
+    public function removeCoartist(\AppBundle\Entity\Artist $coartist)
+    {
+        $this->coartists->removeElement($coartist);
+    }
+
+    /**
+     * Get coartists
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoartists()
+    {
+        return $this->coartists;
+    }
+
+    /**
+     * Add askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     *
+     * @return ContractArtist
+     */
+    public function addAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund[] = $askingRefund;
+
+        return $this;
+    }
+
+    /**
+     * Remove askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     */
+    public function removeAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund->removeElement($askingRefund);
+    }
+
+    /**
+     * Get askingRefund
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAskingRefund()
+    {
+        return $this->asking_refund;
     }
 }

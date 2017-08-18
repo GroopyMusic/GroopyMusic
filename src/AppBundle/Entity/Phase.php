@@ -3,27 +3,40 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Phase
  *
  * @ORM\Table(name="phase")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PhaseRepository")
+ * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\PhaseTranslation")
  */
-class Phase
+class Phase extends AbstractPersonalTranslatable implements TranslatableInterface
 {
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         $this->steps = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    // For forms
     public function __toString() {
         return $this->num . ' ' . $this->name;
     }
+
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\Translations\PhaseTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
 
     /**
      * @var int
@@ -38,6 +51,7 @@ class Phase
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Gedmo\Translatable
      */
     private $name;
 
@@ -144,5 +158,15 @@ class Phase
     public function getSteps()
     {
         return $this->steps;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \AppBundle\Entity\Translations\PhaseTranslation $translation
+     */
+    public function removeTranslation(\AppBundle\Entity\Translations\PhaseTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

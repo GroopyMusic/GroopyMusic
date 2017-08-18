@@ -1,0 +1,18 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+
+    <div>Es-tu sûr de vouloir rembourser tous les participants à ce crowdfunding ? {% if contract.isOneStepFromBeingRefunded %}(cela le remboursera immédiatement){% else %}(il y aura besoin de la validation d'autres admins avant le remboursement){% endif %}</div>
+
+    {% if not contract.failed %}
+        <div>Attention : le crowdfunding n'est pas un échec pour l'instant. Réfléchis bien avant de rembourser tous les participants !</div>
+    {% endif %}
+
+    {{ form_start(form) }}
+
+    {{ form_row(form.confirm) }}
+    {{ form_row(form.cancel) }}
+
+    {{ form_rest(form) }}
+
+{% endblock %}

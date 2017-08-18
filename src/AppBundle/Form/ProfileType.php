@@ -14,6 +14,7 @@ class ProfileType extends AbstractType
         $builder
             ->add('lastname')
             ->add('firstname')
+            ->add('newsletter')
             ->add('genres', Select2EntityType::class, [
                 'multiple' => true,
                 'remote_route' => 'select2_genres',

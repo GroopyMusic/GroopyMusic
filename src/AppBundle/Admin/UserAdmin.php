@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class UserAdmin extends BaseAdmin
 {
@@ -14,32 +15,34 @@ class UserAdmin extends BaseAdmin
         $collection
             ->remove('delete')
             ->remove('create')
+            ->remove('edit')
+
         ;
-    }
-
-    protected function configureFormFields(FormMapper $formMapper)
-    {
-        $formMapper->add('firstname', 'text')
-            ->add('lastname', 'text')
-            ;
-    }
-
-    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
-    {
-        $datagridMapper->add('lastname');
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
-        $listMapper->addIdentifier('firstname');
+        $listMapper
+            ->add('displayName')
+            ->add('_action', null, array(
+                'actions' => array(
+                    'show' => array(),
+                )))
+        ;
     }
 
-    public function getDashboardActions()
+    protected function configureShowFields(ShowMapper $show)
     {
-        $actions = parent::getDashboardActions();
-
-        unset($actions['create']);
-
-        return $actions;
+        $show
+            ->add('lastname')
+            ->add('firstname')
+            ->add('newsletter')
+            ->add('credits')
+            ->add('genres')
+            ->add('payments')
+            ->add('stripe_customer_id')
+            ->add('carts')
+            ->add('specialPurchases')
+        ;
     }
 }
