@@ -40,6 +40,10 @@ class User extends BaseUser implements RecipientInterface
         $this->credits -= $n;
     }
 
+    public function addCredits($n) {
+        $this->credits += $n;
+    }
+
     /**
      * @return string representation of this user
      */
