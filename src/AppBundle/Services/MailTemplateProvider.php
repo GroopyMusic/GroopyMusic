@@ -24,6 +24,9 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const SUCCESSFUL_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail:successful_contract_fan.txt.twig';
 
     const ONGOING_CART_TEMPLATE = 'AppBundle:Mail:ongoing_cart.txt.twig';
+
+    const NEWSLETTER_TEMPLATE = 'AppBundle:Mail:newsletter.txt.twig';
+
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
      * @param string $template

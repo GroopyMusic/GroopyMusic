@@ -110,7 +110,7 @@ class User extends BaseUser implements RecipientInterface
     protected $notification_mode;
 
     /**
-     * @var boolean
+     * @ORM\Column(name="newsletter", type="boolean")
      */
     protected $newsletter;
 

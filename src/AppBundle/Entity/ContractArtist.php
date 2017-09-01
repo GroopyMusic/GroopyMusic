@@ -202,6 +202,11 @@ class ContractArtist
      */
     private $coartists_list;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Newsletter", inversedBy="contracts")
+     */
+    private $newsletter;
+
     // Conditions approval (user form only)
     /**
      * @Assert\NotBlank(message="accept_conditions.notblank", groups={"user_creation"})
@@ -719,5 +724,29 @@ class ContractArtist
     public function getCoartistsList()
     {
         return $this->coartists_list;
+    }
+
+    /**
+     * Set newsletter
+     *
+     * @param \AppBundle\Entity\Newsletter $newsletter
+     *
+     * @return ContractArtist
+     */
+    public function setNewsletter(\AppBundle\Entity\Newsletter $newsletter = null)
+    {
+        $this->newsletter = $newsletter;
+
+        return $this;
+    }
+
+    /**
+     * Get newsletter
+     *
+     * @return \AppBundle\Entity\Newsletter
+     */
+    public function getNewsletter()
+    {
+        return $this->newsletter;
     }
 }

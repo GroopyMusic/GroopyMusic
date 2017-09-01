@@ -40,7 +40,6 @@ class MailWebViewService extends AzineWebViewService
         if ($template == ExampleTemplateProvider::VIP_INFO_MAIL_TEMPLATE) {
             $vipVars = array();
             $aUser = null;
-            $vipVars['vipInfos'] = $someService->getVipInfosFor($aUser);
             $vipVars['userTitle'] = "You majesty";
             $variables['contentItems'][] = array(ExampleTemplateProvider::VIP_INFO_MAIL_TEMPLATE, $vipVars);
 

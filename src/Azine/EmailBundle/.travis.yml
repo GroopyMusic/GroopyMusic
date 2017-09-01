@@ -1,0 +1,37 @@
+language: php
+
+php:
+  - 5.6
+
+env:
+  - SYMFONY_VERSION=2.7.*
+  - SYMFONY_VERSION=2.8.*
+  - SYMFONY_VERSION=3.0.*
+  - SYMFONY_VERSION=3.1.*
+  - SYMFONY_VERSION=3.2.*
+  - SYMFONY_VERSION=dev-master
+
+matrix:
+  allow_failures:
+    - env: SYMFONY_VERSION=dev-master
+
+sudo: false
+
+before_install:
+  - mv /home/travis/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/xdebug.ini
+  - composer self-update
+
+before_script:
+  - phpenv config-add travis.php.ini
+  - travis_wait composer require symfony/symfony:${SYMFONY_VERSION} --prefer-source --no-update -v
+  - travis_wait composer install --prefer-source
+  - mv ~/xdebug.ini /home/travis/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
+#  - ls -a /home/travis/build/azine/* -R
+
+script:
+  - travis_wait phpunit --coverage-clover=coverage.clover /home/travis/build/azine/email-bundle/Tests/
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+notifications:
+  email: travis@azine-it.ch
