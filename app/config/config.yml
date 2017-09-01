@@ -266,7 +266,6 @@ sonata_block:
 sonata_translation:
     locales: [fr, en]
     default_locale: fr
-    # here enable the types you need
     gedmo:
         enabled: true
 
@@ -280,7 +279,7 @@ jms_translation:
     routes:
       dirs: [%kernel.root_dir%, %kernel.root_dir%/../src]
       output_dir: "%kernel.root_dir%/Resources/translations"
-      output_format: yml
+      output_format: xliff
       excluded_dirs: [Tests]
       extractors: [jms_i18n_routing]
       domain: routes # run php bin/console translation:extract en --config=routes --output-format=xliff
@@ -294,11 +293,3 @@ tetranz_select2_entity:
     cache: false
     cache_timeout: 0
     scroll: false
-
-ensepar_html2pdf:
-    orientation: P
-    format: A4
-    lang: fr
-    unicode: true
-    encoding: UTF-8
-    margin: [10,15,10,15]

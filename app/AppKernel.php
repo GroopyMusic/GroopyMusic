@@ -38,7 +38,6 @@ class AppKernel extends Kernel
             new Sonata\TranslationBundle\SonataTranslationBundle(),
             new JMS\I18nRoutingBundle\JMSI18nRoutingBundle(),
             new JMS\TranslationBundle\JMSTranslationBundle(),
-            new Ensepar\Html2pdfBundle\EnseparHtml2pdfBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

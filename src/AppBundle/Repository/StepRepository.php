@@ -10,5 +10,14 @@ namespace AppBundle\Repository;
  */
 class StepRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findOrderedStepsWithoutPhases() {
+        return $this->createQueryBuilder('s')
+            ->join('s.phase', 'p')
+            ->orderBy('p.num', 'asc')
+            ->addOrderBy('s.num', 'asc')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
 }

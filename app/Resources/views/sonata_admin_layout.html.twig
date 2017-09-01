@@ -2,6 +2,10 @@
 
 {% block stylesheets %}
     {{  parent() }}
+
+    {% stylesheets '@SonataTranslationBundle/Resources/public/css/sonata-translation.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
 
 {% block logo %}
@@ -22,7 +26,7 @@
 {% endblock %}
 
 {% block side_bar_after_nav %}
-    {% if is_granted('ROLE_TRANSLATIONS_ADMIN') %}
+    {% if app.environment == 'dev' %}
         <p class="text-center" style="border-top: 1px solid #444444; padding-top: 10px">
             <a href="{{ path('jms_translation_index') }}">Traductions</a>
         </p>
