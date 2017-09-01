@@ -4,6 +4,7 @@
 
     <h1>Paliers</h1>
 
+    {#
     <div id="available-phases">
 
     {% set overleveled = false %}
@@ -15,20 +16,21 @@
             {% set overleveled = true %}
         {% endif %}
         Phase #{{ phase.num }} : {{ phase.name }} {% if overleveled %}(non débloquée){% endif %}
+        #}
         <ul>
-        {% for step in phase.steps %}
-            <li>Palier #{{ step.num }} : {{ step.name }} (type : {{ step.type.name }})
-                {% if not overleveled and currentContract is null %}
+        {% for step in steps %}
+            <li>Palier #{{ loop.index }} : {{ step.name }} (type : {{ step.type.name }})
+                {% if currentContract is null %}
                     <a href="{{ path('artist_new_contract', {'id': artist.id, 'step_id': step.id}) }}">viser</a>
-                {% elseif not overleveled and currentContract is not null and currentContract.step.id == step.id %}
-                    <a href="{{ path('user_see_contract', {'id': currentContract.id}) }}">EN COURS</a>
+                {% elseif currentContract is not null and currentContract.step.id == step.id %}
+                    <a href="{{ path('fan_see_contract', {'id': currentContract.id}) }}">EN COURS</a>
                 {% endif %}
                     <a href="{{ path('step', {'id': step.id}) }}">infos</a>
             </li>
         {% endfor %}
         </ul>
-
-    {% endfor %}
-
-    </div>
+    {#
+        {% endfor %}
+        </div>
+    #}
 {% endblock %}

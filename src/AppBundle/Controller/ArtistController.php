@@ -65,11 +65,13 @@ class ArtistController extends Controller
     public function stepsAction(UserInterface $user, Artist $artist) {
 
         $em = $this->getDoctrine()->getManager();
-        $phases = $em->getRepository('AppBundle:Phase')->findAllWithSteps();
+        //$phases = $em->getRepository('AppBundle:Phase')->findAllWithSteps();
+        $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
         $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($artist);
 
         return $this->render('@App/Artist/steps.html.twig', array(
-            'phases' => $phases,
+            //'phases' => $phases,
+            'steps' => $steps,
             'currentContract' => $currentContract,
             'artist' => $artist,
         ));
@@ -81,11 +83,11 @@ class ArtistController extends Controller
      */
     public function newContractAction(Step $step, UserInterface $user, Artist $artist, Request $request) {
 
-        // Only unlocked phases are allowed
-        $phase = $step->getPhase();
+        // Only unlocked phases are allowed (for later)
+        /*$phase = $step->getPhase();
         if($phase->getNum() > $artist->getPhase()->getNum()) {
             throw $this->createAccessDeniedException("Ce palier appartient à une phase que vous n'avez pas encore débloquée.");
-        }
+        }*/
 
         $em = $this->getDoctrine()->getManager();
 

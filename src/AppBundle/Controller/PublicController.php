@@ -58,32 +58,37 @@ class PublicController extends Controller
     /**
      * @Route("/suggestions", name="suggestionBox")
      */
-    public function suggestionBoxAction(Request $request, UserInterface $user=null){
+    public function suggestionBoxAction(Request $request, UserInterface $user = null){
 
         $em = $this->getDoctrine()->getManager();
 
-        // Création de la suggestion box
         $suggestionBox = new SuggestionBox();
 
         if($user != null){
-            $suggestionBox->setName($user->getLastName());
-            $suggestionBox->setFirstName($user->getFirstName());
+            $suggestionBox->setName($user->getLastname());
+            $suggestionBox->setFirstname($user->getFirstname());
             $suggestionBox->setEmail($user->getEmail());
             $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox);
         }else{
             $form = $this->createForm(SuggestionBoxType::class, $suggestionBox);
         }
-        
-        if($request->isMethod('POST')){
 
-            $form->handleRequest($request);
+        $form->handleRequest($request);
 
-            if($form->isValid()){
-                $em->persist($suggestionBox);
-                $em->flush();
-                $request->getSession()->getFlashBag()->add('notice', 'Suggestion bien envoyée. Merci !');
-                return $this->redirectToRoute('homepage');
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($suggestionBox);
+            $em->flush();
+
+            $this->addFlash('notice', 'Suggestion bien envoyée. Merci !');
+
+            if($suggestionBox->getMailCopy()) {
+                $recipient = $suggestionBox->getEmail();
+                $recipientName = $suggestionBox->getDisplayName();
+
+                // TODO envoi de l'e-mail
             }
+
+            return $this->redirectToRoute('homepage');
         }
 
         return $this->render('AppBundle:Public:suggestionBox.html.twig', array('form' => $form->createView(),));

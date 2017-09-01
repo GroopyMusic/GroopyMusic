@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Spipu\Html2Pdf\Html2Pdf;
 
 class UserController extends Controller
 {
@@ -39,7 +40,7 @@ class UserController extends Controller
 
         $params = [];
 
-        $html2pdf = $this->get('html2pdf_factory')->create();
+        $html2pdf = new Html2Pdf();
         $html2pdf->writeHTML($this->renderView('AppBundle:PDF:contract_artist.html.twig', array()));
         $html2pdf->Output('pdf/contracts/contrat-x.pdf', 'F');
 
