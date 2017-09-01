@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
+use AppBundle\Services\MailNotifierService;
 use AppBundle\Services\MailTemplateProvider;
 use Azine\EmailBundle\Entity\Notification;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,9 +26,8 @@ class UserController extends Controller
         $recipientId = $user->getId();
 
         // get your implementation of the AzineNotifierService
-        $notifierService = $this->get('email.notifier_service');
+        $notifierService = $this->get(MailNotifierService::class);
         $notifierService->addNotificationMessage($recipientId, $title, $content);
-
 
         $from = "no-reply@un-mute.be";
         $fromName = "Un-Mute";
@@ -41,7 +41,7 @@ class UserController extends Controller
         $params = [];
 
         $html2pdf = new Html2Pdf();
-        $html2pdf->writeHTML($this->renderView('AppBundle:PDF:contract_artist.html.twig', array()));
+        $html2pdf->writeHTML($this->renderView('AppBundle:PDF:ticket.html.twig', array()));
         $html2pdf->Output('pdf/contracts/contrat-x.pdf', 'F');
 
         $attachments = ['votreContrat.pdf' => $this->get('kernel')->getRootDir() . '\..\web\pdf\contracts\contrat-x.pdf'];

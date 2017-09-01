@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Services\MailNotifierService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +16,7 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('reminders:contract:artist')
+            ->setName('reminders:crowdfunding:artist')
             ->setDescription('Reminds an artist that one of its contract is almost over')
             ->setHelp('Reminds an artist that one of its contract is almost over')
 
@@ -47,7 +48,7 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
         $mailer = $container->get('azine_email.default.template_twig_swift_mailer');
-        $notifier = $container->get('email.notifier_service');
+        $notifier = $container->get(MailNotifierService::class);
 
         $currentContracts = $em->getRepository('AppBundle:ContractArtist')->findCurrents();
         $currentDate = new \DateTime();
@@ -57,7 +58,7 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
         foreach($currentContracts as $contract) {
             $reminder = false;
 
-            if((($contract->getReminders() < 1 && $days == 30) || ($contract->getReminders() < 2 && $days == 15))
+            if((($contract->getRemindersArtist() < 1 && $days == 30) || ($contract->getRemindersArtist() < 2 && $days == 15))
                 && $currentDate->diff($contract->getDateEnd())->days <= $days ) {
                 $reminder = true;
             }
@@ -79,8 +80,8 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
                     $result['notifs']++;
                 }
 
-                $from = "no-reply@un-mute.be";
-                $fromName = "Un-Mute";
+                $from = $this->getContainer()->getParameter('email_from_address');
+                $fromName = $this->getContainer()->getParameter('email_from_name');
 
                 $bcc = "gonzyer@gmail.com";
                 $bccName = "Webmaster";
@@ -95,7 +96,7 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
 
                 $result['mails']++;
 
-                $contract->setReminders($contract->getReminders() + 1);
+                $contract->setRemindersArtist($contract->getRemindersArtist() + 1);
                 $em->persist($contract);
             }
         }

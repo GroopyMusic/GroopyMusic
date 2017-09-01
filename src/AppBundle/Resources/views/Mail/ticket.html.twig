@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}Votre ticket{% endblock %}
+
+        {% block content %}
+            <div>
+                En pièces jointes
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

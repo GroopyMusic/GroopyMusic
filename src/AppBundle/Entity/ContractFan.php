@@ -20,6 +20,11 @@ class ContractFan
     public function __construct()
     {
         $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ticket_sent = false;
+    }
+
+    public function generateBarCode() {
+        $this->barcode_text = 'c'.$this->id . uniqid();
     }
 
     public function getAmount() {
@@ -57,6 +62,16 @@ class ContractFan
      * @ORM\OneToMany(targetEntity="Purchase", mappedBy="contractFan", cascade={"remove", "persist"})
      */
     private $purchases;
+
+    /**
+     * @ORM\Column(name="ticket_sent", type="boolean")
+     */
+    private $ticket_sent;
+
+    /**
+     * @ORM\Column(name="barcode_text", type="string", length=255, nullable=true)
+     */
+    private $barcode_text;
 
     /**
      * Get id
@@ -148,5 +163,53 @@ class ContractFan
     public function getCart()
     {
         return $this->cart;
+    }
+
+    /**
+     * Set ticketSent
+     *
+     * @param boolean $ticketSent
+     *
+     * @return ContractFan
+     */
+    public function setTicketSent($ticketSent)
+    {
+        $this->ticket_sent = $ticketSent;
+
+        return $this;
+    }
+
+    /**
+     * Get ticketSent
+     *
+     * @return boolean
+     */
+    public function getTicketSent()
+    {
+        return $this->ticket_sent;
+    }
+
+    /**
+     * Set barcodeText
+     *
+     * @param string $barcodeText
+     *
+     * @return ContractFan
+     */
+    public function setBarcodeText($barcodeText)
+    {
+        $this->barcode_text = $barcodeText;
+
+        return $this;
+    }
+
+    /**
+     * Get barcodeText
+     *
+     * @return string
+     */
+    public function getBarcodeText()
+    {
+        return $this->barcode_text;
     }
 }

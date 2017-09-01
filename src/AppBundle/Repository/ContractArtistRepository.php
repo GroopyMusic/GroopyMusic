@@ -13,6 +13,17 @@ use AppBundle\Entity\Artist;
  */
 class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findSuccessful() {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.contractsFan', 'cf')
+            ->join('c.reality', 'r')
+            ->addSelect('cf')
+            ->addSelect('r')
+            ->where('c.successful = 1')
+            ->andWhere('r.date > NOW()')
+        ;
+    }
+
     public function findCurrentForArtist(Artist $artist) {
         return $this->createQueryBuilder('c')
             ->where('c.artist = :artist')

@@ -27,6 +27,11 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
 
     const NEWSLETTER_TEMPLATE = 'AppBundle:Mail:newsletter.txt.twig';
 
+    const TICKET_TEMPLATE = 'AppBundle:Mail:ticket.txt.twig';
+
+    // Admin mails templates
+    const REMINDER_CONTRACT_ADMIN_TEMPLATE = 'AppBundle:Mail:Admin:reminder_contract_admin.txt.twig';
+
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
      * @param string $template

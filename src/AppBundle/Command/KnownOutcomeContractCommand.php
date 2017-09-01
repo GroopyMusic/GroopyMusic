@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Services\MailTemplateProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -59,8 +60,11 @@ class KnownOutcomeContractCommand extends ContainerAwareCommand
         }
 
         foreach($contracts as $contract) {
+            /* @var ContractArtist $contract */
+
             $artist_users = $contract->getArtistProfiles();
             $fan_users = $contract->getFanProfiles();
+            $fan_contracts = $contract->getContractsFan();
 
             $from = "no-reply@un-mute.be";
             $fromName = "Un-Mute";
@@ -88,6 +92,9 @@ class KnownOutcomeContractCommand extends ContainerAwareCommand
             }
 
             if($success) {
+                foreach($fan_contracts as $fc) {
+                    $fc->getFan()->addCredits($fc->getAmount());
+                }
                 $contract->setSuccessful(true);
             } else {
                 $contract->setFailed(true);

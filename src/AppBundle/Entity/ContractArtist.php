@@ -23,7 +23,8 @@ class ContractArtist
 
     public function __construct() {
         $this->accept_conditions = false;
-        $this->reminders = 0;
+        $this->reminders_artist = 0;
+        $this->reminders_admin = 0;
         $this->date = new \DateTime();
         $this->preferences = new ContractArtistPossibility();
         $this->collected_amount = 0;
@@ -146,9 +147,9 @@ class ContractArtist
     private $payments;
 
     /**
-     * @ORM\Column(name="reminders", type="smallint")
+     * @ORM\Column(name="reminders_artist", type="smallint")
      */
-    private $reminders;
+    private $reminders_artist;
 
     /**
      * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
@@ -206,6 +207,11 @@ class ContractArtist
      * @ORM\ManyToOne(targetEntity="Newsletter", inversedBy="contracts")
      */
     private $newsletter;
+
+    /**
+     * @ORM\Column(name="reminders_admin", type="smallint")
+     */
+    private $reminders_admin;
 
     // Conditions approval (user form only)
     /**
@@ -419,9 +425,9 @@ class ContractArtist
      *
      * @return ContractArtist
      */
-    public function setReminders($reminders)
+    public function setRemindersArtist($reminders)
     {
-        $this->reminders = $reminders;
+        $this->reminders_artist = $reminders;
 
         return $this;
     }
@@ -431,9 +437,9 @@ class ContractArtist
      *
      * @return integer
      */
-    public function getReminders()
+    public function getRemindersArtist()
     {
-        return $this->reminders;
+        return $this->reminders_artist;
     }
 
     /**
@@ -748,5 +754,29 @@ class ContractArtist
     public function getNewsletter()
     {
         return $this->newsletter;
+    }
+
+    /**
+     * Set remindersAdmin
+     *
+     * @param integer $remindersAdmin
+     *
+     * @return ContractArtist
+     */
+    public function setRemindersAdmin($remindersAdmin)
+    {
+        $this->reminders_admin = $remindersAdmin;
+
+        return $this;
+    }
+
+    /**
+     * Get remindersAdmin
+     *
+     * @return integer
+     */
+    public function getRemindersAdmin()
+    {
+        return $this->reminders_admin;
     }
 }
