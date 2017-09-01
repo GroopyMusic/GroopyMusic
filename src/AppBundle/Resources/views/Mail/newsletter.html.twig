@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}Newsletter Un-Mute{% endblock %}
+
+        {% block content %}
+            <div>
+                <h2>{{ newsletter.title }}</h2>
+
+                {% for contract in newsletter.contracts %}
+                    <h3>{{ contract.artist.artistName }} for step {{ contract.step.name }}</h3>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

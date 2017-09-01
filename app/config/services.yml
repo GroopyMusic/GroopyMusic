@@ -4,174 +4,29 @@ parameters:
 #    parameter_name: value
 
 services:
+
+    # Apparently needed for Symfony 3.3.6 to work...
+    resolve_controller_name_subscriber:
+      public: true
+      abstract: true
+
+    console.error_listener:
+      public: true
+      abstract: true
+
+    # The following line blocks an error in the AzineEmailBundle which references a non-existent "immediatemailer" service
+    swiftmailer.mailer.immediatemailer: "@mailer"
+
+    # Defaults, which will allow Symfony to use autowiring and autoconfiguring
+    _defaults:
+        autowire: true # automatically injects dependencies in the
+        autoconfigure: true # automatically registers services as commands, event subscribers, etc.
+        public: true
+
+    # Registration
     app.form.registration:
         class: AppBundle\Form\RegistrationType
         tags:
             - { name: form.type, alias: app_user_registration }
 
-    ######################################## AZINE EMAIL SERVICES ##########################################
-    email.web_view_service:
-        class: AppBundle\Services\MailWebViewService
-        arguments:
-          router:       "@router"
 
-    email.template_provider:
-          class: AppBundle\Services\MailTemplateProvider
-          arguments:
-            router:       "@router"
-            translator:   "@translator.default"
-            parameters:
-              image_dir:  "%azine_email_image_dir%"
-              allowed_images_folders: "%azine_email_allowed_images_folders%"
-              tracking_params_campaign_name: "%azine_email_tracking_params_campaign_name%"
-              tracking_params_campaign_term: "%azine_email_tracking_params_campaign_term%"
-              tracking_params_campaign_content: "%azine_email_tracking_params_campaign_content%"
-              tracking_params_campaign_medium: "%azine_email_tracking_params_campaign_medium%"
-              tracking_params_campaign_source: "%azine_email_tracking_params_campaign_source%"
-
-    email.notifier_service:
-            class: AppBundle\Services\MailNotifierService
-            arguments:
-              mailer:             "@azine_email_template_twig_swift_mailer"
-              twig:               "@twig"
-              router:             "@router"
-              managerRegistry:    "@doctrine"
-              templateProvider:   "@email.template_provider"
-              recipientProvider:  "@azine_email_recipient_provider"
-              translatorService:  "@translator.default"
-              parameters:
-                newsletter_interval :     "%azine_email_newsletter_interval%"
-                newsletter_send_time:     "%azine_email_newsletter_send_time%"
-                templates_newsletter:     "%azine_email_templates_newsletter%"
-                templates_notifications:  "%azine_email_templates_notifications%"
-                templates_content_item:   "%azine_email_templates_content_item%"
-
-    # The following line blocks an error in the AzineEmailBundle which references a non-existent "immediatemailer" service
-    swiftmailer.mailer.immediatemailer: "@mailer"
-
-    ######################################## SONATA ADMIN SERVICES ##########################################
-    app.admin.suggestionbox:
-        class: AppBundle\Admin\SuggestionBoxAdmin
-        arguments: [~, AppBundle\Entity\SuggestionBox, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.suggestionBox }
-        public: true
-
-    app.admin.user:
-        class: AppBundle\Admin\UserAdmin
-        arguments: [~, AppBundle\Entity\User, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.user }
-        public: true
-
-    app.admin.step:
-        class: AppBundle\Admin\StepAdmin
-        arguments: [~, AppBundle\Entity\Step, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.step }
-        public: true
-
-    app.admin.genre:
-        class: AppBundle\Admin\GenreAdmin
-        arguments: [~, AppBundle\Entity\Genre, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.genre }
-        public: true
-
-    app.admin.partner:
-        class: AppBundle\Admin\PartnerAdmin
-        arguments: [~, AppBundle\Entity\Partner, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.partner }
-        public: true
-
-    app.admin.artist:
-        class: AppBundle\Admin\ArtistAdmin
-        arguments: [~, AppBundle\Entity\Artist, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.artist }
-        public: true
-
-    app.admin.cart:
-        class: AppBundle\Admin\CartAdmin
-        arguments: [~, AppBundle\Entity\Cart, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.cart }
-        public: true
-
-    app.admin.contractartist:
-        class: AppBundle\Admin\ContractArtistAdmin
-        arguments: [~, AppBundle\Entity\ContractArtist, AppBundle:ContractArtistAdmin]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.contractartist }
-        public: true
-
-    app.admin.contractartistartist:
-        class: AppBundle\Admin\ContractArtistArtistAdmin
-        arguments: [~, AppBundle\Entity\ContractArtist_Artist, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.contractartistartist }
-        public: true
-
-    app.admin.contractfan:
-        class: AppBundle\Admin\ContractFanAdmin
-        arguments: [~, AppBundle\Entity\ContractFan, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.contractfan }
-        public: true
-
-    app.admin.payment:
-        class: AppBundle\Admin\PaymentAdmin
-        arguments: [~, AppBundle\Entity\Payment, AppBundle:PaymentAdmin]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.payment }
-        public: true
-
-    app.admin.phase:
-        class: AppBundle\Admin\PhaseAdmin
-        arguments: [~, AppBundle\Entity\Phase, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.phase }
-        public: true
-
-    app.admin.specialadvantage:
-        class: AppBundle\Admin\SpecialAdvantageAdmin
-        arguments: [~, AppBundle\Entity\SpecialAdvantage, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.specialadvantage }
-        public: true
-
-    app.admin.specialpurchase:
-        class: AppBundle\Admin\SpecialPurchaseAdmin
-        arguments: [~, AppBundle\Entity\SpecialPurchase, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.specialpurchase }
-        public: true
-
-    app.admin.concertpossibility:
-        class: AppBundle\Admin\ConcertPossibilityAdmin
-        arguments: [~, AppBundle\Entity\ConcertPossibility, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.concertpossibility }
-        public: true
-
-    app.admin.hall:
-        class: AppBundle\Admin\HallAdmin
-        arguments: [~, AppBundle\Entity\Hall, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.hall }
-        public: true
-
-    app.admin.contactperson:
-        class: AppBundle\Admin\ContactPersonAdmin
-        arguments: [~, AppBundle\Entity\ContactPerson, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.contactperson }
-        public: true
-
-    app.admin.address:
-        class: AppBundle\Admin\AddressAdmin
-        arguments: [~, AppBundle\Entity\Address, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.address }
-        public: true
