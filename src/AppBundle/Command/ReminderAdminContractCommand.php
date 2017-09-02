@@ -20,6 +20,7 @@ class ReminderAdminContractCommand extends ContainerAwareCommand
         6 => 59,
         7 => 60,
     ];
+
     /**
      * {@inheritdoc}
      */
