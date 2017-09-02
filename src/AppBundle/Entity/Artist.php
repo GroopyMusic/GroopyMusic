@@ -83,6 +83,14 @@ class Artist extends AbstractPersonalTranslatable implements TranslatableInterfa
     private $artists_user;
 
     /**
+     * @ORM\OneToMany(targetEntity="ArtistOwnershipRequest", mappedBy="artist", cascade={"persist"})
+     */
+    private $ownership_requests;
+
+    // Form only
+    public $ownership_requests_form;
+
+    /**
      * Set artistname
      *
      * @param string $artistname
@@ -264,5 +272,65 @@ class Artist extends AbstractPersonalTranslatable implements TranslatableInterfa
     public function removeTranslation(\AppBundle\Entity\Translations\ArtistTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Add ownershipRequest
+     *
+     * @param \AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest
+     *
+     * @return Artist
+     */
+    public function addOwnershipRequest(\AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest)
+    {
+        $this->ownership_requests[] = $ownershipRequest;
+        $ownershipRequest->setArtist($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove ownershipRequest
+     *
+     * @param \AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest
+     */
+    public function removeOwnershipRequest(\AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest)
+    {
+        $this->ownership_requests->removeElement($ownershipRequest);
+    }
+
+    /**
+     * Get ownershipRequests
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOwnershipRequests()
+    {
+        return $this->ownership_requests;
+    }
+
+    /**
+     * Add ownershipRequest
+     *
+     * @param \AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest
+     *
+     * @return Artist
+     */
+    public function addOwnershipRequestForm(\AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest)
+    {
+        $this->ownership_requests_form[] = $ownershipRequest;
+        $ownershipRequest->setArtist($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove ownershipRequest
+     *
+     * @param \AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest
+     */
+    public function removeOwnershipRequestForm(\AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest)
+    {
+        $this->ownership_requests_form->removeElement($ownershipRequest);
     }
 }

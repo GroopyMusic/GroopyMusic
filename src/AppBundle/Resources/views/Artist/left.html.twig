@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    {% if lastOne %}
+        <div>Vous êtes le dernier membre de ce groupe donc vous ne pouvez pas le quitter. Pour supprimer le groupe du catalogue Un-Mute,
+        contactez un administrateur.</div>
+    {% else %}
+        <div>Vous avez bien quitté l'artiste {{ artist.artistname }}</div>
+    {% endif %}
+{% endblock %}

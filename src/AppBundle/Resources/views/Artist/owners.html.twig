@@ -1,0 +1,50 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div>
+        Votre rôle pour l'artiste "{{ artist.artistname }}" :
+        {{ form(form1) }}
+    </div>
+
+    {% if owners|length > 1 or requests|length > 0 %}
+    <h2>Autres propriétaires</h2>
+    <ul>
+    {% for owner in owners if owner.user.id != currentOwner.user.id %}
+        <li>{{ owner.user.displayName }}
+            <br> Rôle : {% if owner.role is not null %}{{ owner.role }}{% endif %}
+        </li>
+    {% endfor %}
+    {% for request in requests %}
+        <li>{{ request.email }} - en attente de confirmation (ajouté par {{ request.demander.displayName }})</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2>Ajouter des propriétaires</h2>
+
+    {% form_theme form2 'AppBundle:Themes:ownerships_collection.html.twig' 'jquery.collection.html.twig' %}
+    {{ form_start(form2) }}
+        {{ form_widget(form2.ownership_requests_form) }}
+    {{ form_rest(form2) }}
+
+    <h2>Quitter l'artiste</h2>
+
+    <form method="post" action="{{ path('artist_leave', {'id': artist.id}) }}">
+        <button type="submit" class="btn btn-danger">Je quitte le groupe</button>
+    </form>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jquery.collection.js') }}"></script>
+    <script type="text/javascript">
+        $('.ownership').collection({
+            up: '',
+            down: '',
+            add_at_the_end: true,
+            add: '<a href="#">Ajouter</a>'
+        });
+    </script>
+{% endblock %}

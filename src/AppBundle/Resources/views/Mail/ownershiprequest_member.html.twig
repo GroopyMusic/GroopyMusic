@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}subject{% endblock %}
+
+        {% block content %}
+            <h2>Quelqu'un pense que vous appartenez à un groupe</h2>
+
+            <div>Groupe : {{ artist.artistname }}</div>
+
+            <div>
+                Cliquez ici pour valider ou invalider cette requête : <a href="{{ absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code})) }}">ici</a>
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}
