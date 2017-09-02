@@ -45,7 +45,8 @@
         "twbs/bootstrap": "4.0.0-beta",
         "spipu/html2pdf": "^5.0",
         "ramsey/uuid": "3.7.0",
-        "yellowskies/QR-code-bundle": "^1.2"
+        "yellowskies/QR-code-bundle": "^1.2",
+        "azine/email-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
