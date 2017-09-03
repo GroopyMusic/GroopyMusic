@@ -32,3 +32,5 @@ monolog:
 
 swiftmailer:
     delivery_address: "%dev_delivery_address%"
+assetic:
+    use_controller: false
