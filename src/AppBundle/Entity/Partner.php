@@ -31,6 +31,7 @@ class Partner
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(name="name", type="string", length=255)
      */
     protected $name;

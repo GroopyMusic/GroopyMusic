@@ -8,6 +8,12 @@ src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
 integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
 crossorigin="anonymous"></script>
 
+{# Multiple dates picker UI #}
+{# Todo move to better place @Gounzy #}
+<script src="{{ asset('bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.js') }}"></script>
+<script type="text/javascript">$('.multiDatesPicker').multiDatesPicker({addDates: [$('.multiDatesPicker').val()]});</script>
+{# End multidatespicker#}
+
 <script src="https://js.stripe.com/v3/"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>

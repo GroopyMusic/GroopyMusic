@@ -7,8 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{{ asset('bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.css') }}" />
 
         {% block stylesheets %}
             {% stylesheets filter='scssphp, ?uglifycss' output="css/layout.min.css"
