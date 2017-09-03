@@ -1,0 +1,15 @@
+{% block OwnershipCollection_label %}{% endblock %}
+
+{% block OwnershipCollection_widget %}
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_widget(form.email) }}
+        </div>
+        <div class="col-md-6">
+            <a href="#" class="collection-remove btn btn-default" title="Supprimer e-mail">Supprimer</a>
+            <a href="#" class="collection-add btn btn-default" title="Ajouter e-mail">Ajouter</a>
+        </div>
+    </div>
+
+{% endblock %}

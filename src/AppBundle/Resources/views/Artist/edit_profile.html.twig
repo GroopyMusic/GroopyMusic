@@ -4,9 +4,11 @@
 
     <h1>Edition du profil de l'artiste {{ artist.artistname }}</h1>
 
+    <div>
+        <a href="{{ path('artist_owners', {'id': artist.id}) }}">Propriétaires</a>
+    </div>
+
     {{ form_start(form) }}
-
     {{ form_widget(form) }}
-
-
+    {{ form_rest(form) }}
 {% endblock  %}
