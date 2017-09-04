@@ -25,40 +25,40 @@ sonata_admin:
                label: app.admin.group.user
                label_catalogue: SonataAdminBundle
                items:
-                   - app.admin.user
-                   - app.admin.artist
-                   - app.admin.suggestionbox
+                   - AppBundle\Admin\UserAdmin
+                   - AppBundle\Admin\ArtistAdmin
+                   - AppBundle\Admin\SuggestionBoxAdmin
            app.admin.group.evolution:
                label: app.admin.group.evolution
                label_catalogue: SonataAdminBundle
                items:
-                   - app.admin.phase
-                   - app.admin.step
+                   - AppBundle\Admin\PhaseAdmin
+                   - AppBundle\Admin\StepAdmin
            app.admin.group.content:
                label: app.admin.group.content
                label_catalogue: SonataAdminBundle
                items:
-                   - app.admin.genre
-                   - app.admin.partner
-                  # - app.admin.hall
+                   - AppBundle\Admin\GenreAdmin
+                   - AppBundle\Admin\PartnerAdmin
+                   - AppBundle\Admin\HallAdmin
            app.admin.group.crowdfunding:
                label: app.admin.group.crowdfunding
                label_catalogue: SonataAdminBundle
                items:
-                   - app.admin.contractartist
-                   - app.admin.contractfan
-                   - app.admin.cart
+                   - AppBundle\Admin\ContractArtistAdmin
+                   - AppBundle\Admin\ContractFanAdmin
+                   - AppBundle\Admin\CartAdmin
            app.admin.group.special:
                label: app.admin.group.special
                label_catalogue: SonataAdminBundle
                items:
-                   - app.admin.specialadvantage
-                   - app.admin.specialpurchase
+                   - AppBundle\Admin\SpecialAdvantageAdmin
+                   - AppBundle\Admin\SpecialPurchaseAdmin
            app.admin.group.payment:
                label: app.admin.group.payment
                label_catalogue: SonataAdminBundle
                items:
-                   - app.admin.payment
+                   - AppBundle\Admin\PaymentAdmin
                roles: [ROLE_PAYMENTS_ADMIN]
 
 sonata_block:
@@ -83,6 +83,7 @@ services:
         autowire: true # automatically injects dependencies in the
         autoconfigure: true # automatically registers services as commands, event subscribers, etc.
         public: true
+
     AppBundle\Admin\SuggestionBoxAdmin:
         arguments: [~, AppBundle\Entity\SuggestionBox, ~]
         tags:

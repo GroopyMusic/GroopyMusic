@@ -37,7 +37,7 @@ class Partner
     protected $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="Address")
+     * @ORM\OneToOne(targetEntity="Address", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $address;
@@ -48,7 +48,7 @@ class Partner
     protected $website;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ContactPerson")
+     * @ORM\ManyToOne(targetEntity="ContactPerson", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $contact_person;

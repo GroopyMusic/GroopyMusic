@@ -3,9 +3,17 @@
 {% block stylesheets %}
     {{  parent() }}
 
-    {% stylesheets '@SonataTranslationBundle/Resources/public/css/sonata-translation.css' %}
+    {% stylesheets '@SonataTranslationBundle/Resources/public/css/sonata-translation.css'
+                    'bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.css'
+                    output='css/compiled/sonata-admin-custom.css' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
+
+{% endblock %}
+
+{% block sonata_javascript_pool %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.js') }}"></script>
 {% endblock %}
 
 {% block logo %}
@@ -31,4 +39,15 @@
             <a href="{{ path('jms_translation_index') }}">Traductions</a>
         </p>
     {% endif %}
+{% endblock %}
+
+
+{% block sonata_wrapper %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            var $multiDatesPicker = $('.multiDatesPicker');
+            $multiDatesPicker.multiDatesPicker({dateFormat: "mm/dd/yy",separator: ","});
+        });
+    </script>
 {% endblock %}

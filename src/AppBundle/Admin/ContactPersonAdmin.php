@@ -12,7 +12,7 @@ class ContactPersonAdmin extends BaseAdmin {
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('fistname', 'text')
+            ->add('firstname', 'text')
             ->add('lastname', 'text')
             ->add('phone', 'text')
             ->add('mail', 'text')

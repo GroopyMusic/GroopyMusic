@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,15 +19,32 @@ class Hall extends Partner
 
     public function __toString()
     {
-        return $this->name;
+        return 'Salle : ' . $this->name;
     }
 
     public function __construct()
     {
-        $yesterday = (new \DateTime('yesterday'))->format(self::DATE_FORMAT);
-        $this->available_dates = array();
-        $this->cron_automatic_days = array();
-        $this->cron_explored_dates = array($yesterday, $yesterday, $yesterday, $yesterday, $yesterday, $yesterday, $yesterday);
+        $base_day = (new \DateTime())->add(new \DateInterval('P'.self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING.'D'))->format(self::DATE_FORMAT);
+
+        $this->available_dates = [];
+        $this->cron_automatic_days = array(
+            'days_0' => false,
+            'days_1' => false,
+            'days_2' => false,
+            'days_3' => false,
+            'days_4' => false,
+            'days_5' => false,
+            'days_6' => false
+        );
+        $this->cron_explored_dates = array(
+            'days_0' => $base_day,
+            'days_1' => $base_day,
+            'days_2' => $base_day,
+            'days_3' => $base_day,
+            'days_4' => $base_day,
+            'days_5' => $base_day,
+            'days_6' => $base_day,
+        );
     }
 
     public function refreshDates() {
@@ -44,11 +62,11 @@ class Hall extends Partner
         // For each possible day
         foreach($this->cron_explored_dates as $i => $current_cursor) {
             // There is a rule -> refresh dates & update cursor
-            if(in_array($i, $this->cron_automatic_days)) {
+            if($this->cron_automatic_days[$i]) {
                 while($current_cursor != $max_cursor) {
                     $current_date = new \DateTime($current_cursor);
                     // It must be the right day of the week & not yet in the array to be added
-                    if(intval($current_date->format('w')) == $i && !in_array($current_cursor, $this->available_dates)) {
+                    if(intval($current_date->format('w')) == array_search($i, array_keys($this->cron_automatic_days)) && !in_array($current_cursor, $this->available_dates)) {
                         $this->available_dates[] = $current_cursor;
                     }
                     $current_cursor = $current_date->add(new \DateInterval('P1D'))->format(self::DATE_FORMAT);
@@ -85,19 +103,24 @@ class Hall extends Partner
 
     /**
      * @var array
-     * @ORM\Column(name="available_dates", type="simple_array")
+     * @ORM\Column(name="available_dates", type="array", nullable=true)
      */
     private $available_dates;
 
     /**
+     * @var string
+     */
+    private $available_dates_string;
+
+    /**
      * @var array
-     * @ORM\Column(name="cron_explored_dates", type="simple_array")
+     * @ORM\Column(name="cron_explored_dates", type="array")
      */
     private $cron_explored_dates;
 
     /**
      * @var array
-     * @ORM\Column(name="cron_automatic_days", type="simple_array")
+     * @ORM\Column(name="cron_automatic_days", type="array")
      */
     private $cron_automatic_days;
 
@@ -216,6 +239,15 @@ class Hall extends Partner
      */
     public function setCronAutomaticDays($cronAutomaticDays)
     {
+        foreach($cronAutomaticDays as $i => $day) {
+            if($day) {
+                $this->cron_automatic_days[$i] = $day;
+            }
+            else {
+                $this->cron_automatic_days[$i] = false;
+            }
+        }
+
         $this->cron_automatic_days = $cronAutomaticDays;
 
         return $this;
@@ -230,4 +262,22 @@ class Hall extends Partner
     {
         return $this->cron_automatic_days;
     }
+
+    /**
+     * @return string
+     */
+    public function getAvailableDatesString()
+    {
+        return $this->available_dates_string = implode(',', $this->available_dates);
+    }
+
+    /**
+     * @param string $available_dates_string
+     */
+    public function setAvailableDatesString($available_dates_string)
+    {
+        $this->available_dates_string = $available_dates_string;
+        $this->available_dates = explode(',', $available_dates_string);
+    }
+
 }
