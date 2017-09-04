@@ -1,5 +1,9 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    {{ form(form) }}
+    {% if request.cancelled %}
+        <p>Cette requête a été annulée par son émetteur.</p>
+    {% else %}
+        {{ form(form) }}
+    {% endif %}
 {% endblock %}

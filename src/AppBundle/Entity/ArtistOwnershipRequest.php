@@ -17,6 +17,7 @@ class ArtistOwnershipRequest
         $this->date = new \DateTime();
         $this->accepted = false;
         $this->refused = false;
+        $this->cancelled = false;
     }
 
     public function generateUniqueCode() {
@@ -74,6 +75,11 @@ class ArtistOwnershipRequest
      * @ORM\ManyToOne(targetEntity="User")
      */
     private $demander;
+
+    /**
+     * @ORM\Column(name="cancelled", type="boolean")
+     */
+    private $cancelled;
 
     /**
      * Get id
@@ -251,5 +257,29 @@ class ArtistOwnershipRequest
     public function getDemander()
     {
         return $this->demander;
+    }
+
+    /**
+     * Set cancelled
+     *
+     * @param boolean $cancelled
+     *
+     * @return ArtistOwnershipRequest
+     */
+    public function setCancelled($cancelled)
+    {
+        $this->cancelled = $cancelled;
+
+        return $this;
+    }
+
+    /**
+     * Get cancelled
+     *
+     * @return boolean
+     */
+    public function getCancelled()
+    {
+        return $this->cancelled;
     }
 }

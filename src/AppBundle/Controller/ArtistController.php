@@ -179,7 +179,7 @@ class ArtistController extends Controller
 
         $currentOwner = $em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]);
         $owners = $artist->getArtistsUser();
-        $requests = $artist->getOwnershipRequests();
+        $requests = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist, 'cancelled' => false, 'refused' => false, 'accepted' => false]);
 
         $form1 = $this->createForm(Artist_UserType::class, $currentOwner);
         $form2 = $this->createForm(ArtistOwnershipsType::class, $artist);
@@ -267,7 +267,11 @@ class ArtistController extends Controller
         $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
 
         if($req == null) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('There is no request with such code');
+        }
+
+        if($req->getAccepted() || $req->getRefused()) {
+            throw $this->createAccessDeniedException('Request is already accepted or refused');
         }
 
         $mailUser = $em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
@@ -306,7 +310,7 @@ class ArtistController extends Controller
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
+        if($form->isSubmitted() && !$req->getCancelled()) {
             if($form->get('accept')->isClicked()) {
                 $req->setAccepted(true);
 
@@ -326,6 +330,27 @@ class ArtistController extends Controller
         }
         return $this->render('@App/Artist/validate_ownership.html.twig', array(
             'form' => $form->createView(),
+            'request' => $req,
+        ));
+    }
+
+    /**
+     * @Route("/cancel-request/{request_id}", name="artist_cancel_ownership_request")
+     * @ParamConverter("o_request", class="AppBundle:ArtistOwnershipRequest", options={"id" = "request_id"})
+     */
+    public function cancelOwnershipRequestAction(UserInterface $user, Artist $artist, ArtistOwnershipRequest $o_request) {
+        if(!$user->owns($artist) || $o_request->getDemander() != $user) {
+            throw $this->createAccessDeniedException("You don't own this artist, or you didn't emit this ownership request.");
+        }
+
+        $o_request->setCancelled(true);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($o_request);
+        $em->flush();
+        $this->addFlash('notice', 'Requête supprimée');
+
+        return $this->redirectToRoute('artist_owners', array(
+            'id' => $artist->getId(),
         ));
     }
 
