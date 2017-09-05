@@ -9,8 +9,10 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\SpecialPurchase;
+use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
 use AppBundle\Form\ArtistType;
+use AppBundle\Form\ContractArtistType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -19,6 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Entity\ContractFan;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class FanController extends Controller
 {
@@ -193,6 +196,52 @@ class FanController extends Controller
             'form' => $form->createView(),
         ));
     }
+
+    /**
+     * @Route("/step/new-contract-{step_id}", name="fan_new_contract_artist")
+     * @ParamConverter("step", class="AppBundle:Step", options={"id" = "step_id"})
+     */
+    public function newContractAction(Step $step, UserInterface $user, Request $request) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        // New contract creation
+        $contract = new ContractArtist();
+        $contract->setStep($step); // This needs to be done here as it is used in the formBuilder
+
+        $th_date = new \DateTime;
+        $th_date->modify('+ ' . $step->getDeadlineDuration() . ' days');
+        $contract->setTheoriticalDeadline($th_date);
+
+        $form = $this->createForm(ContractArtistType::class, $contract, array('user' => $user));
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $deadline = new \DateTime();
+            $deadline->modify('+ ' . $step->getDeadlineDuration() . ' days');
+            $contract->setDateEnd($deadline);
+
+            // We check that there doesn't exist another contract for that artist before DB insertion
+            $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($contract->getArtist());
+            if($currentContract != null) {
+                throw $this->createAccessDeniedException("Interdit de s'inscrire à deux paliers en même temps !");
+            }
+
+            $em->persist($contract);
+            $em->flush();
+
+            $this->addFlash('notice', 'Bien reçu');
+
+            return $this->redirectToRoute('fan_see_contract', ['id' => $contract->getId()]);
+        }
+
+        return $this->render('@App/Artist/new_contract.html.twig', array(
+            'form' => $form->createView(),
+            'contract' => $contract,
+        ));
+    }
+
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 

@@ -15,7 +15,8 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
-/web/pdf/
+!/web/pdf
+/web/pdf/*
 /.idea/
 /.DS_Store
 **/.DS_Store

@@ -26,7 +26,6 @@ class ContractArtist
         $this->reminders_artist = 0;
         $this->reminders_admin = 0;
         $this->date = new \DateTime();
-        $this->preferences = new ContractArtistPossibility();
         $this->collected_amount = 0;
         $this->failed = false;
         $this->successful = false;

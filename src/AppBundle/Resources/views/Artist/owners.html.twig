@@ -10,13 +10,16 @@
     {% if owners|length > 1 or requests|length > 0 %}
     <h2>Autres propriétaires</h2>
     <ul>
-    {% for owner in owners if owner.user.id != currentOwner.user.id %}
+    {% for owner in owners if owner.user.id != app.user.id %}
         <li>{{ owner.user.displayName }}
             <br> Rôle : {% if owner.role is not null %}{{ owner.role }}{% endif %}
         </li>
     {% endfor %}
     {% for request in requests %}
-        <li>{{ request.email }} - en attente de confirmation (ajouté par {{ request.demander.displayName }})</li>
+        <li>{{ request.email }} - en attente de confirmation
+            (ajouté par {{ request.demander.displayName }})
+            {% if request.demander.id == app.user.id %}<a href="{{ path('artist_cancel_ownership_request', {'id': artist.id, 'request_id': request.id}) }}">annuler</a>{% endif %}
+        </li>
     {% endfor %}
     </ul>
     {% endif %}

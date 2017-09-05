@@ -85,59 +85,6 @@ class ArtistController extends Controller
     }
 
     /**
-     * @Route("/steps/new-contract-{step_id}", name="artist_new_contract")
-     * @ParamConverter("step", class="AppBundle:Step", options={"id" = "step_id"})
-     */
-    public function newContractAction(Step $step, UserInterface $user, Artist $artist, Request $request) {
-
-        // Only unlocked phases are allowed (for later)
-        /*$phase = $step->getPhase();
-        if($phase->getNum() > $artist->getPhase()->getNum()) {
-            throw $this->createAccessDeniedException("Ce palier appartient à une phase que vous n'avez pas encore débloquée.");
-        }*/
-
-        $em = $this->getDoctrine()->getManager();
-
-        // New contract creation
-        $contract = new ContractArtist();
-        $contract->setArtist($artist)
-            ->setStep($step); // This needs to be done here as it is used in the formBuilder
-
-        $th_date = new \DateTime;
-        $th_date->modify('+ ' . $step->getDeadlineDuration() . ' days');
-        $contract->setTheoriticalDeadline($th_date);
-
-        $form = $this->createForm(ContractArtistType::class, $contract);
-
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-
-            $deadline = new \DateTime();
-            $deadline->modify('+ ' . $step->getDeadlineDuration() . ' days');
-            $contract->setDateEnd($deadline);
-
-            // We check that there doesn't exist another contract for that artist before DB insertion
-            $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($artist);
-            if($currentContract != null) {
-                throw $this->createAccessDeniedException("Interdit de s'inscrire à deux paliers en même temps !");
-            }
-
-            $em->persist($contract);
-            $em->flush();
-
-            $this->addFlash('notice', 'Bien reçu');
-
-            return $this->redirectToRoute('user_see_contract', ['id' => $contract->getId()]);
-        }
-
-        return $this->render('@App/Artist/new_contract.html.twig', array(
-            'form' => $form->createView(),
-            'contract' => $contract,
-            'artist' => $artist,
-        ));
-    }
-
-    /**
      * @Route("/contracts", name="artist_contracts")
      */
     public function contractsAction(UserInterface $user, Artist $artist) {
@@ -179,7 +126,7 @@ class ArtistController extends Controller
 
         $currentOwner = $em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]);
         $owners = $artist->getArtistsUser();
-        $requests = $artist->getOwnershipRequests();
+        $requests = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist, 'cancelled' => false, 'refused' => false, 'accepted' => false]);
 
         $form1 = $this->createForm(Artist_UserType::class, $currentOwner);
         $form2 = $this->createForm(ArtistOwnershipsType::class, $artist);
@@ -267,7 +214,11 @@ class ArtistController extends Controller
         $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
 
         if($req == null) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('There is no request with such code');
+        }
+
+        if($req->getAccepted() || $req->getRefused()) {
+            throw $this->createAccessDeniedException('Request is already accepted or refused');
         }
 
         $mailUser = $em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
@@ -306,7 +257,7 @@ class ArtistController extends Controller
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
+        if($form->isSubmitted() && !$req->getCancelled()) {
             if($form->get('accept')->isClicked()) {
                 $req->setAccepted(true);
 
@@ -326,6 +277,27 @@ class ArtistController extends Controller
         }
         return $this->render('@App/Artist/validate_ownership.html.twig', array(
             'form' => $form->createView(),
+            'request' => $req,
+        ));
+    }
+
+    /**
+     * @Route("/cancel-request/{request_id}", name="artist_cancel_ownership_request")
+     * @ParamConverter("o_request", class="AppBundle:ArtistOwnershipRequest", options={"id" = "request_id"})
+     */
+    public function cancelOwnershipRequestAction(UserInterface $user, Artist $artist, ArtistOwnershipRequest $o_request) {
+        if(!$user->owns($artist) || $o_request->getDemander() != $user) {
+            throw $this->createAccessDeniedException("You don't own this artist, or you didn't emit this ownership request.");
+        }
+
+        $o_request->setCancelled(true);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($o_request);
+        $em->flush();
+        $this->addFlash('notice', 'Requête supprimée');
+
+        return $this->redirectToRoute('artist_owners', array(
+            'id' => $artist->getId(),
         ));
     }
 

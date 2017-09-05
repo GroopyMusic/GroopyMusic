@@ -47,7 +47,7 @@ class ContractArtistPossibility
      *
      * @ORM\Column(name="additional_info", type="text", nullable=true)
      */
-    protected $additionalInfo;
+    protected $additional_info;
 
     /**
      * Get id
@@ -64,7 +64,7 @@ class ContractArtistPossibility
      *
      * @param \DateTime $date
      *
-     * @return ContractArtistPreferences
+     * @return ContractArtistPossibility
      */
     public function setDate($date)
     {
@@ -88,11 +88,11 @@ class ContractArtistPossibility
      *
      * @param string $additionalInfo
      *
-     * @return ContractArtistPreferences
+     * @return ContractArtistPossibility
      */
     public function setAdditionalInfo($additionalInfo)
     {
-        $this->additionalInfo = $additionalInfo;
+        $this->additional_info = $additionalInfo;
 
         return $this;
     }
@@ -104,30 +104,6 @@ class ContractArtistPossibility
      */
     public function getAdditionalInfo()
     {
-        return $this->additionalInfo;
-    }
-
-    /**
-     * Set hall
-     *
-     * @param \AppBundle\Entity\Hall $hall
-     *
-     * @return ContractArtistPreferences
-     */
-    public function setHall(\AppBundle\Entity\Hall $hall = null)
-    {
-        $this->hall = $hall;
-
-        return $this;
-    }
-
-    /**
-     * Get hall
-     *
-     * @return \AppBundle\Entity\Hall
-     */
-    public function getHall()
-    {
-        return $this->hall;
+        return $this->additional_info;
     }
 }

@@ -19,7 +19,8 @@ class ContractArtistPossibilityType extends AbstractType
     {
         $builder
             ->add('date')
-            ->add('additionalInfo');
+            ->add('additional_info')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver) {
