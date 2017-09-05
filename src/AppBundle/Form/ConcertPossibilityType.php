@@ -30,7 +30,7 @@ class ConcertPossibilityType extends AbstractType
             ->remove('date')
             ->add('date', DateType::class, array(
                 'widget' => 'single_text',
-                'format' => 'dd/MM/yyyy',
+                'format' => 'MM/dd/yyyy',
                 'html5' => false,
                 'attr' => ['class' => 'datePicker', 'available-dates' => $step->getAvailableDatesFormatted()],
             ))

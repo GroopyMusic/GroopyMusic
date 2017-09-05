@@ -52,10 +52,10 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
 
         // Test contracts
 
-        $c1 = new ContractArtist();
-        $c1->setDate(new \DateTime())->setArtist($artist)->setDateEnd(new \DateTime("2018-6-30"))->setMotivations("")->setStep($this->getReference('step11'));
+        //$c1 = new ContractArtist();
+        //$c1->setDate(new \DateTime())->setArtist($artist)->setDateEnd(new \DateTime("2018-6-30"))->setMotivations("")->setStep($this->getReference('step11'));
 
-        $manager->persist($c1);
+        //$manager->persist($c1);
 
         // Fan test account (credentials : fan@un-mute.be - test)
         $userF = new User();

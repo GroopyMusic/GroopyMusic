@@ -12,6 +12,16 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class HallAdmin extends PartnerAdmin  {
 
+    public function configureListFields(ListMapper $listMapper)
+    {
+        parent::configureListFields($listMapper);
+        $listMapper
+            ->remove('type')
+            ->add('step')
+            ->add('capacity')
+        ;
+    }
+
     public function configureFormFields(FormMapper $form)
     {
         parent::configureFormFields($form);

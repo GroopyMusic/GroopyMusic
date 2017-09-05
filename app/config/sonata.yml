@@ -39,7 +39,7 @@ sonata_admin:
                label_catalogue: SonataAdminBundle
                items:
                    - AppBundle\Admin\GenreAdmin
-                   - AppBundle\Admin\PartnerAdmin
+                   #- AppBundle\Admin\PartnerAdmin
                    - AppBundle\Admin\HallAdmin
            app.admin.group.crowdfunding:
                label: app.admin.group.crowdfunding

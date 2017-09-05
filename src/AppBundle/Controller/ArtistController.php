@@ -85,59 +85,6 @@ class ArtistController extends Controller
     }
 
     /**
-     * @Route("/steps/new-contract-{step_id}", name="artist_new_contract")
-     * @ParamConverter("step", class="AppBundle:Step", options={"id" = "step_id"})
-     */
-    public function newContractAction(Step $step, UserInterface $user, Artist $artist, Request $request) {
-
-        // Only unlocked phases are allowed (for later)
-        /*$phase = $step->getPhase();
-        if($phase->getNum() > $artist->getPhase()->getNum()) {
-            throw $this->createAccessDeniedException("Ce palier appartient à une phase que vous n'avez pas encore débloquée.");
-        }*/
-
-        $em = $this->getDoctrine()->getManager();
-
-        // New contract creation
-        $contract = new ContractArtist();
-        $contract->setArtist($artist)
-            ->setStep($step); // This needs to be done here as it is used in the formBuilder
-
-        $th_date = new \DateTime;
-        $th_date->modify('+ ' . $step->getDeadlineDuration() . ' days');
-        $contract->setTheoriticalDeadline($th_date);
-
-        $form = $this->createForm(ContractArtistType::class, $contract);
-
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-
-            $deadline = new \DateTime();
-            $deadline->modify('+ ' . $step->getDeadlineDuration() . ' days');
-            $contract->setDateEnd($deadline);
-
-            // We check that there doesn't exist another contract for that artist before DB insertion
-            $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($artist);
-            if($currentContract != null) {
-                throw $this->createAccessDeniedException("Interdit de s'inscrire à deux paliers en même temps !");
-            }
-
-            $em->persist($contract);
-            $em->flush();
-
-            $this->addFlash('notice', 'Bien reçu');
-
-            return $this->redirectToRoute('user_see_contract', ['id' => $contract->getId()]);
-        }
-
-        return $this->render('@App/Artist/new_contract.html.twig', array(
-            'form' => $form->createView(),
-            'contract' => $contract,
-            'artist' => $artist,
-        ));
-    }
-
-    /**
      * @Route("/contracts", name="artist_contracts")
      */
     public function contractsAction(UserInterface $user, Artist $artist) {

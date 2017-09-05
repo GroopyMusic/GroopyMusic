@@ -1,4 +1,4 @@
-{% extends "AppBundle:Bases:base_artist.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block body %}
 
@@ -13,4 +13,48 @@
 
     Date de fin du contrat : {{ contract.theoriticalDeadline|date('d/m') }}
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $('document').ready(function() {
+            var $datePicker = $('.datePicker');
+            var availableDates = $datePicker.attr('available-dates').toString().split(',');
+
+            function available(d) {
+                var mdy = ("0"+(d.getMonth()+1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2) + "/" +
+                        d.getFullYear();
+
+                if($.inArray(mdy, availableDates) < 0) {
+                    return false;
+                }
+                return true;
+            }
+
+            function get_default_date() {
+                var date = new Date();
+                var i = 0;
+                var stop = false;
+                while(!available(date) && !stop) {
+                    date.setDate(date.getDate()+1);
+                    i++;
+                    if(i == 120) {
+                        stop = true;
+                    }
+                }
+                if(stop) { return new Date(); }
+                return date;
+            }
+
+            $datePicker.datepicker({
+                beforeShowDay: function(d) {
+                    return [available(d), ''];
+                },
+                defaultDate: get_default_date(),
+                dateFormat: 'mm/dd/yy'
+            });
+        });
+    </script>
 {% endblock %}

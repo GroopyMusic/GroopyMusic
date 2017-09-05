@@ -14,6 +14,14 @@
 {% block sonata_javascript_pool %}
     {{ parent() }}
     <script src="{{ asset('bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.js') }}"></script>
+    <script type="text/javascript">
+        $('document').ready(function() {
+            var $multiDatesPicker = $('.multiDatesPicker');
+            $multiDatesPicker.multiDatesPicker({dateFormat: "mm/dd/yy",separator: ","});
+            var $datePicker = $('.datePicker');
+            $datePicker.datepicker({dateFormat: 'mm/dd/yy'});
+        });
+    </script>
 {% endblock %}
 
 {% block logo %}
@@ -44,10 +52,4 @@
 
 {% block sonata_wrapper %}
     {{ parent() }}
-    <script type="text/javascript">
-        $(function() {
-            var $multiDatesPicker = $('.multiDatesPicker');
-            $multiDatesPicker.multiDatesPicker({dateFormat: "mm/dd/yy",separator: ","});
-        });
-    </script>
 {% endblock %}

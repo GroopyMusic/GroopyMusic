@@ -53,8 +53,16 @@ class ContractArtistAdmin extends BaseAdmin
     {
         $show
             ->add('id')
-            ->add('date')
-            ->add('dateEnd')
+            ->add('date', 'date', array(
+                'pattern' => 'dd MMM y',
+                'locale' => 'fr',
+                'timezone' => 'Europe/Paris',
+            ))
+            ->add('dateEnd', 'date', array(
+                'pattern' => 'dd MMM y',
+                'locale' => 'fr',
+                'timezone' => 'Europe/Paris',
+            ))
             ->add('step', null, array(
                 'route' => array('name' => 'show'),
             ))
@@ -66,9 +74,13 @@ class ContractArtistAdmin extends BaseAdmin
                 'route' => array('name' => 'show'),
             ))
             ->add('reminders')
-            ->add('preferences')
+            ->add('preferences' , 'sonata_type_admin', array(
+                'admin_code' => ConcertPossibilityAdmin::class,
+            ))
             ->add('coartists_list')
-            ->add('reality')
+            ->add('reality', 'sonata_type_admin', array(
+                'admin_code' => ConcertPossibilityAdmin::class,
+            ))
             ->add('collected_amount')
             ->add('failed')
             ->add('successful')
@@ -84,15 +96,21 @@ class ContractArtistAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('dateEnd')
+            ->add('dateEnd', 'date', array(
+                'html5' => false,
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
+                'attr' => ['class' => 'datePicker'],
+            ))
             ->add('motivations')
-            ->end();
+            ->end()
+        ;
 
         if($this->getSubject()->getStep()->getType()->getName() == StepType::TYPE_CONCERT) {
             $form
                 ->with('Réalité')
                     ->add('reality', 'sonata_type_admin', array('required' => false), array(
-                        'admin_code' => 'app.admin.concertpossibility',
+                        'admin_code' => ConcertPossibilityAdmin::class,
                     ))
                 ->end();
         }
@@ -102,12 +120,11 @@ class ContractArtistAdmin extends BaseAdmin
             ->add( 'coartists_list', 'sonata_type_collection', array(
                 'by_reference' => false,
             ), array(
-
                     'edit'            => 'inline',
                     'inline'          => 'table',
                     'sortable'        => 'position',
                     'link_parameters' => array( 'context' => 'define context from which you want to select media or else just add default' ),
-                    'admin_code'      => 'app.admin.contractartistartist'
+                    'admin_code'      => ContractArtistArtistAdmin::class,
                 )
             )
             ->end()

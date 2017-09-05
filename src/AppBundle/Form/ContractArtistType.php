@@ -2,6 +2,10 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Artist;
+use AppBundle\Entity\StepType;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -27,6 +31,15 @@ class ContractArtistType extends AbstractType
 
         $builder
             ->add('motivations', TextareaType::class)
+            ->add('artist', EntityType::class, array(
+                'class' => Artist::class,
+                'query_builder' => function(EntityRepository $er) use ($options) {
+                    return $er->createQueryBuilder('a')
+                        ->join('a.artists_user', 'au')
+                        ->where('au.user = :user')
+                        ->setParameter('user', $options['user']);
+                }
+            ))
             ->add('accept_conditions', CheckboxType::class, array('required' => true))
             ->add('submit', SubmitType::class)
         ;
@@ -44,6 +57,7 @@ class ContractArtistType extends AbstractType
     {
         $resolver->setDefaults(array(
             'validation_groups' => array('user_creation'),
+            'user' => null,
         ));
     }
 

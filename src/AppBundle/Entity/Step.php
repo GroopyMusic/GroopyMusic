@@ -22,6 +22,30 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
         return $this->name;
     }
 
+    public function getAvailableDates() {
+        $dates = array();
+
+        foreach($this->getHalls() as $hall) {
+            $dates = array_merge($dates, $hall->getAvailableDates());
+        }
+
+        return array_unique($dates);
+    }
+
+    public function getAvailableDatesFormatted() {
+        $availableDates = $this->getAvailableDates();
+
+        $display = '';
+        $count = count($availableDates);
+        for($i = 0; $i < $count; $i++) {
+            $display .= $availableDates[$i];
+            if($i != $count - 1) {
+                $display .= ',';
+            }
+        }
+        return $display ;
+    }
+
     /**
      * @var ArrayCollection
      *
