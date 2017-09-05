@@ -19,19 +19,4 @@ class ConcertPossibilityAdmin extends BaseAdmin
             ))
         ;
     }
-
-    public function configureShowFields(ShowMapper $showMapper) {
-
-        $showMapper
-            ->add('date', 'date', array(
-                'pattern' => 'dd MMM y',
-                'locale' => 'fr',
-                'timezone' => 'Europe/Paris',
-            ))
-            ->add('hall')
-        ;
-
-    }
-
-
 }

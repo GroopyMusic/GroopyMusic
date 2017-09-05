@@ -74,13 +74,9 @@ class ContractArtistAdmin extends BaseAdmin
                 'route' => array('name' => 'show'),
             ))
             ->add('reminders')
-            ->add('preferences' , 'sonata_type_admin', array(
-                'admin_code' => ConcertPossibilityAdmin::class,
-            ))
+            ->add('preferences')
             ->add('coartists_list')
-            ->add('reality', 'sonata_type_admin', array(
-                'admin_code' => ConcertPossibilityAdmin::class,
-            ))
+            ->add('reality')
             ->add('collected_amount')
             ->add('failed')
             ->add('successful')
