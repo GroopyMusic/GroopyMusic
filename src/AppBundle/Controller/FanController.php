@@ -7,6 +7,7 @@ use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\Province;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\SpecialPurchase;
 use AppBundle\Entity\Step;
@@ -198,16 +199,17 @@ class FanController extends Controller
     }
 
     /**
-     * @Route("/step/new-contract-{step_id}", name="fan_new_contract_artist")
+     * @Route("/step/new-contract-{step_id}-{province_id}", name="fan_new_contract_artist")
      * @ParamConverter("step", class="AppBundle:Step", options={"id" = "step_id"})
+     * @ParamConverter("province", class="AppBundle:Province", options={"id" = "province_id"})
      */
-    public function newContractAction(Step $step, UserInterface $user, Request $request) {
+    public function newContractAction(Step $step, Province $province, UserInterface $user, Request $request) {
 
         $em = $this->getDoctrine()->getManager();
 
         // New contract creation
         $contract = new ContractArtist();
-        $contract->setStep($step); // This needs to be done here as it is used in the formBuilder
+        $contract->setStep($step)->setProvince($province); // This needs to be done here as it is used in the formBuilder
 
         $th_date = new \DateTime;
         $th_date->modify('+ ' . $step->getDeadlineDuration() . ' days');

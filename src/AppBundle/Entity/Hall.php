@@ -1,17 +1,16 @@
 <?php
 
 // TODO ajouter champs :
-// description (partner) (text)
 // Specs technique (PDF)
 // Délais demandés (string 255)
 // Province (entité)
 // Prix
-// Adresse -> possibilité de 2 salles à la même adresse (réfléchir à la meilleure façon)
 // Personne de contact -> ManyToMany !!
 // Des photos (array?)
 
 namespace AppBundle\Entity;
 
+use Application\Sonata\MediaBundle\Entity\Gallery;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -133,6 +132,26 @@ class Hall extends Partner
      * @ORM\Column(name="cron_automatic_days", type="array")
      */
     private $cron_automatic_days;
+
+    /**
+     * @ORM\Column(name="price", type="decimal", precision=7, scale=2)
+     */
+    private $price;
+
+    /**
+     * @var Gallery
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\MediaBundle\Entity\Gallery")
+     * @ORM\JoinColumns({
+     *     @ORM\JoinColumn(name="gallery", referencedColumnName="id")
+     * })
+     */
+    private $gallery;
+
+    /**
+     * @ORM\Column(name="delay", type="smallint")
+     */
+    private $delay;
 
     /**
      * Get id
@@ -290,4 +309,148 @@ class Hall extends Partner
         $this->available_dates = explode(',', $available_dates_string);
     }
 
+
+    /**
+     * Set province
+     *
+     * @param \AppBundle\Entity\Province $province
+     *
+     * @return Hall
+     */
+    public function setProvince(\AppBundle\Entity\Province $province = null)
+    {
+        $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * Get province
+     *
+     * @return \AppBundle\Entity\Province
+     */
+    public function getProvince()
+    {
+        return $this->province;
+    }
+
+    /**
+     * Set price
+     *
+     * @param string $price
+     *
+     * @return Hall
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Hall
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set gallery
+     *
+     * @param \Application\Sonata\MediaBundle\Entity\Gallery $gallery
+     *
+     * @return Hall
+     */
+    public function setGallery(\Application\Sonata\MediaBundle\Entity\Gallery $gallery = null)
+    {
+        $this->gallery = $gallery;
+
+        return $this;
+    }
+
+    /**
+     * Get gallery
+     *
+     * @return \Application\Sonata\MediaBundle\Entity\Gallery
+     */
+    public function getGallery()
+    {
+        return $this->gallery;
+    }
+
+    /**
+     * Set delay
+     *
+     * @param integer $delay
+     *
+     * @return Hall
+     */
+    public function setDelay($delay)
+    {
+        $this->delay = $delay;
+
+        return $this;
+    }
+
+    /**
+     * Get delay
+     *
+     * @return integer
+     */
+    public function getDelay()
+    {
+        return $this->delay;
+    }
+
+    /**
+     * Add contactPerson
+     *
+     * @param \AppBundle\Entity\ContactPerson $contactPerson
+     *
+     * @return Hall
+     */
+    public function addContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
+    {
+        $this->contact_person[] = $contactPerson;
+
+        return $this;
+    }
+
+    /**
+     * Remove contactPerson
+     *
+     * @param \AppBundle\Entity\ContactPerson $contactPerson
+     */
+    public function removeContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
+    {
+        $this->contact_person->removeElement($contactPerson);
+    }
 }

@@ -62,7 +62,16 @@ class PartnerAdmin extends BaseAdmin
             ->add('comment')
             ->end()
             ->with('Point de contact')
-                ->add('contact_person', 'sonata_type_admin')
+                ->add('contact_person', 'sonata_type_collection', array(
+                        'by_reference' => false,
+                    ), array(
+                        'edit'            => 'inline',
+                        'inline'          => 'table',
+                        'sortable'        => 'position',
+                        'link_parameters' => array( 'context' => 'define context from which you want to select media or else just add default' ),
+                        'admin_code'      => ContactPersonAdmin::class,
+                    )
+                )
             ->end()
             ->with('Adresse')
                 ->add('address', 'sonata_type_admin')

@@ -36,18 +36,19 @@ class Step implements TranslatableInterface
         return '' . $this->getName();
     }
 
-    public function getAvailableDates() {
+    public function getAvailableDates(Province $province) {
         $dates = array();
 
         foreach($this->getHalls() as $hall) {
-            $dates = array_merge($dates, $hall->getAvailableDates());
+            if($province == $hall->getProvince())
+                $dates = array_merge($dates, $hall->getAvailableDates());
         }
 
         return array_unique($dates);
     }
 
-    public function getAvailableDatesFormatted() {
-        $availableDates = $this->getAvailableDates();
+    public function getAvailableDatesFormatted(Province $province) {
+        $availableDates = $this->getAvailableDates($province);
 
         $display = '';
         $count = count($availableDates);

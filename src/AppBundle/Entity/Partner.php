@@ -48,7 +48,7 @@ class Partner
     protected $website;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ContactPerson", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="ContactPerson", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $contact_person;
@@ -57,6 +57,16 @@ class Partner
      * @ORM\Column(name="comment", type="text", nullable=true)
      */
     protected $comment;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Province")
+     */
+    protected $province;
+
+    /**
+     * @ORM\Column(name="description", type="text")
+     */
+    protected $description;
 
     /**
      * Get id
@@ -186,5 +196,84 @@ class Partner
     public function getContactPerson()
     {
         return $this->contact_person;
+    }
+
+    /**
+     * Set province
+     *
+     * @param \AppBundle\Entity\Province $province
+     *
+     * @return Partner
+     */
+    public function setProvince(\AppBundle\Entity\Province $province = null)
+    {
+        $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * Get province
+     *
+     * @return \AppBundle\Entity\Province
+     */
+    public function getProvince()
+    {
+        return $this->province;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Partner
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->contact_person = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add contactPerson
+     *
+     * @param \AppBundle\Entity\ContactPerson $contactPerson
+     *
+     * @return Partner
+     */
+    public function addContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
+    {
+        $this->contact_person[] = $contactPerson;
+
+        return $this;
+    }
+
+    /**
+     * Remove contactPerson
+     *
+     * @param \AppBundle\Entity\ContactPerson $contactPerson
+     */
+    public function removeContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
+    {
+        $this->contact_person->removeElement($contactPerson);
     }
 }

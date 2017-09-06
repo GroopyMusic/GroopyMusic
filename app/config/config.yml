@@ -46,6 +46,7 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
       - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
+      - 'SonataMediaBundle:Form:media_widgets.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -57,11 +58,19 @@ doctrine:
         user:     "%database_user%"
         password: "%database_password%"
         charset:  UTF8
+        types:
+          json: Sonata\Doctrine\Types\JsonType
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
+        entity_managers:
+          default:
+            auto_mapping: true
+            naming_strategy: doctrine.orm.naming_strategy.underscore
+            mappings:
+              SonataMediaBundle: ~
+              ApplicationSonataMediaBundle: ~
+
 
 knp_doctrine_behaviors:
   translatable: true

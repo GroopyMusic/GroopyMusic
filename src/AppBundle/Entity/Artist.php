@@ -1,7 +1,6 @@
 <?php
 
 // TODO ajouter :
-// Région (OBLIGATOIRE)
 // Photos
 // Vidéos
 // Musiques qu'ils uploadent
@@ -81,6 +80,12 @@ class Artist implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="Artist_User", mappedBy="artist")
      */
     private $artists_user;
+
+    /**
+     * @var Province
+     * @ORM\ManyToOne(targetEntity="Province")
+     */
+    private $province;
 
     /**
      * @ORM\OneToMany(targetEntity="ArtistOwnershipRequest", mappedBy="artist", cascade={"persist"})
@@ -274,5 +279,29 @@ class Artist implements TranslatableInterface
     public function removeOwnershipRequestForm(\AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest)
     {
         $this->ownership_requests_form->removeElement($ownershipRequest);
+    }
+
+    /**
+     * Set province
+     *
+     * @param \AppBundle\Entity\Province $province
+     *
+     * @return Artist
+     */
+    public function setProvince(\AppBundle\Entity\Province $province = null)
+    {
+        $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * Get province
+     *
+     * @return \AppBundle\Entity\Province
+     */
+    public function getProvince()
+    {
+        return $this->province;
     }
 }

@@ -39,6 +39,11 @@ class HallAdmin extends PartnerAdmin  {
                 'attr' => ['class' => 'multiDatesPicker'],
             ))
             ->add('step', 'sonata_type_model')
+
+            ->add('gallery', 'sonata_type_admin', array(
+                'required' => false,
+            ))
+
         ;
     }
 

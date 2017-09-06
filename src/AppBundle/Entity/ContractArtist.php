@@ -1,7 +1,5 @@
 <?php
 
-// TODO add région sélectionnée
-
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -213,6 +211,11 @@ class ContractArtist
      * @ORM\Column(name="reminders_admin", type="smallint")
      */
     private $reminders_admin;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Province")
+     */
+    private $province;
 
     // Conditions approval (user form only)
     /**
@@ -779,5 +782,29 @@ class ContractArtist
     public function getRemindersAdmin()
     {
         return $this->reminders_admin;
+    }
+
+    /**
+     * Set province
+     *
+     * @param \AppBundle\Entity\Province $province
+     *
+     * @return ContractArtist
+     */
+    public function setProvince(\AppBundle\Entity\Province $province = null)
+    {
+        $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * Get province
+     *
+     * @return \AppBundle\Entity\Province
+     */
+    public function getProvince()
+    {
+        return $this->province;
     }
 }

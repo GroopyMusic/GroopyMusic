@@ -28,7 +28,7 @@ class Phase implements TranslatableInterface
 
     public function __construct()
     {
-        $this->steps = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->steps = new ArrayCollection();
     }
 
     public function __toString() {

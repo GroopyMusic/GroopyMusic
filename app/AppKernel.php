@@ -25,20 +25,23 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new \Azine\EmailBundle\AzineEmailBundle(),
-            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
-            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
+            new Sonata\MediaBundle\SonataMediaBundle(),
+            new Application\Sonata\MediaBundle\ApplicationSonataMediaBundle(),
+            new Sonata\EasyExtendsBundle\SonataEasyExtendsBundle(),
+            new Sonata\TranslationBundle\SonataTranslationBundle(),
             new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
             new JMose\CommandSchedulerBundle\JMoseCommandSchedulerBundle(),
-            new Sonata\TranslationBundle\SonataTranslationBundle(),
             new JMS\I18nRoutingBundle\JMSI18nRoutingBundle(),
             new JMS\TranslationBundle\JMSTranslationBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
             new Skies\QRcodeBundle\SkiesQRcodeBundle(),
             new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
+            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new A2lix\TranslationFormBundle\A2lixTranslationFormBundle(),
         ];
 
@@ -49,6 +52,7 @@ class AppKernel extends Kernel
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             $bundles[] = new JMS\DiExtraBundle\JMSDiExtraBundle($this);
             $bundles[] = new JMS\AopBundle\JMSAopBundle();
+            $bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
         }
 
         return $bundles;
