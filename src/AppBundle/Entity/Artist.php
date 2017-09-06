@@ -1,29 +1,41 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Gonzague
- * Date: 05-02-17
- * Time: 18:46
- */
+
+// TODO ajouter :
+// Région (OBLIGATOIRE)
+// Photos
+// Vidéos
+// Musiques qu'ils uploadent
+// Site Web
+// Lien vers Facebook
+// Lien vers twitter
 
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="artist")
- * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\ArtistTranslation")
  */
-class Artist extends AbstractPersonalTranslatable implements TranslatableInterface
+class Artist implements TranslatableInterface
 {
+    use ORMBehaviors\Translatable\Translatable;
+
+    public function __call($method, $arguments)
+    {
+        return $this->proxyCurrentLocaleTranslation($method, $arguments);
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
     public function __toString()
     {
-        return $this->artistname;
+        return '' . $this->artistname;
     }
 
     public function __construct(Phase $phase)
@@ -31,16 +43,16 @@ class Artist extends AbstractPersonalTranslatable implements TranslatableInterfa
         $this->phase = $phase;
     }
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="AppBundle\Entity\Translations\ArtistTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
-     */
-    protected $translations;
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
 
     /**
      * @ORM\Id
@@ -64,18 +76,6 @@ class Artist extends AbstractPersonalTranslatable implements TranslatableInterfa
      * @ORM\ManyToMany(targetEntity="Genre")
      */
     private $genres;
-
-    /**
-     * @ORM\Column(name="short_description", type="string", length=255)
-     * @Gedmo\Translatable
-     */
-    private $short_description;
-
-    /**
-     * @ORM\Column(name="biography", type="text")
-     * @Gedmo\Translatable
-     */
-    private $biography;
 
     /**
      * @ORM\OneToMany(targetEntity="Artist_User", mappedBy="artist")
@@ -183,54 +183,6 @@ class Artist extends AbstractPersonalTranslatable implements TranslatableInterfa
     }
 
     /**
-     * Set shortDescription
-     *
-     * @param string $shortDescription
-     *
-     * @return Artist
-     */
-    public function setShortDescription($shortDescription)
-    {
-        $this->short_description = $shortDescription;
-
-        return $this;
-    }
-
-    /**
-     * Get shortDescription
-     *
-     * @return string
-     */
-    public function getShortDescription()
-    {
-        return $this->short_description;
-    }
-
-    /**
-     * Set biography
-     *
-     * @param string $biography
-     *
-     * @return Artist
-     */
-    public function setBiography($biography)
-    {
-        $this->biography = $biography;
-
-        return $this;
-    }
-
-    /**
-     * Get biography
-     *
-     * @return string
-     */
-    public function getBiography()
-    {
-        return $this->biography;
-    }
-
-    /**
      * Add artistsUser
      *
      * @param \AppBundle\Entity\Artist_User $artistsUser
@@ -262,16 +214,6 @@ class Artist extends AbstractPersonalTranslatable implements TranslatableInterfa
     public function getArtistsUser()
     {
         return $this->artists_user;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param \AppBundle\Entity\Translations\ArtistTranslation $translation
-     */
-    public function removeTranslation(\AppBundle\Entity\Translations\ArtistTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 
     /**

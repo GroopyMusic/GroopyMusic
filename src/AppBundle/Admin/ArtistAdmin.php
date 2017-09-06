@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -21,7 +22,7 @@ class ArtistAdmin extends BaseAdmin
     {
         $list
             ->add('artistname')
-            ->add('_action', null, array(
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -39,16 +40,19 @@ class ArtistAdmin extends BaseAdmin
             ->add('artists_user', null, array(
                 'associated_property' => 'userToString'
             ))
-            ->add('short_description')
-            ->add('biography')
+            ->add('getShortDescription', null, array(
+                'label' => 'Description courte',
+            ))
+            ->add('getBiography', null, array(
+                'label' => 'Biographie',
+            ))
         ;
     }
 
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('short_description')
-            ->add('biography')
+            ->add('translations', TranslationsType::class)
         ;
     }
 }

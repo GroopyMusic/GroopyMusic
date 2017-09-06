@@ -3,6 +3,7 @@
 namespace AppBundle\Admin;
 
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -20,10 +21,12 @@ class PhaseAdmin extends BaseAdmin
     public function configureListFields(ListMapper $list)
     {
         $list
-            ->add('name')
+            ->add('getName', null, array(
+                'label' => 'Nom'
+            ))
             ->add('num')
             ->add('steps')
-            ->add('_action', null, array(
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -35,7 +38,9 @@ class PhaseAdmin extends BaseAdmin
     public function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('name')
+            ->add('getName', null, array(
+                'label' => 'Nom'
+            ))
             ->add('num')
             ->add('steps')
         ;
@@ -44,7 +49,7 @@ class PhaseAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('name')
+            ->add('translations', TranslationsType::class)
             ->add('num')
             ->add('steps')
         ;

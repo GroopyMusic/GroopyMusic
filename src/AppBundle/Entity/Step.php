@@ -1,25 +1,39 @@
 <?php
 
+// TODO
+// Capacité +/-
+// Délai de confirmation
+// nombre de tickets nécessaire, dérivé de thune nécessaire (required_amount)
+// deadline_duration = 30 jours tout le temps pour l'instant
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Doctrine\Common\Collections\ArrayCollection;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 
 /**
  * Step
  *
  * @ORM\Table(name="step")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StepRepository")
- * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\StepTranslation")
  */
-class Step extends AbstractPersonalTranslatable implements TranslatableInterface
+class Step implements TranslatableInterface
 {
+    use ORMBehaviors\Translatable\Translatable;
+
+    public function __call($method, $arguments)
+    {
+        return $this->proxyCurrentLocaleTranslation($method, $arguments);
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
     public function __toString()
     {
-        return $this->name;
+        return '' . $this->getName();
     }
 
     public function getAvailableDates() {
@@ -46,16 +60,16 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
         return $display ;
     }
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="AppBundle\Entity\Translations\StepTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
-     */
-    protected $translations;
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
 
     /**
      * @var int
@@ -65,14 +79,6 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     * @Gedmo\Translatable
-     */
-    private $name;
 
     /**
      * @var int
@@ -107,12 +113,6 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
     private $requiredAmount;
 
     /**
-     * @ORM\Column(name="description", type="text")
-     * @Gedmo\Translatable
-     */
-    private $description;
-
-    /**
      * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
      */
     private $halls;
@@ -125,30 +125,6 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Step
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -314,30 +290,6 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
     }
 
     /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Step
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
      * Add hall
      *
      * @param \AppBundle\Entity\Hall $hall
@@ -369,15 +321,5 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
     public function getHalls()
     {
         return $this->halls;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param \AppBundle\Entity\Translations\StepTranslation $translation
-     */
-    public function removeTranslation(\AppBundle\Entity\Translations\StepTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 }

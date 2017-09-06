@@ -1,5 +1,7 @@
 <?php
 
+// TODO add région sélectionnée
+
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;

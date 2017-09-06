@@ -38,7 +38,6 @@
         "jmose/command-scheduler-bundle": "^1.2",
         "leafo/scssphp": "^0.6.7",
         "patchwork/jsqueeze": "^2.0",
-        "stof/doctrine-extensions-bundle": "1.2.*",
         "sonata-project/translation-bundle": "^2.1",
         "jms/i18n-routing-bundle": "^2.0",
         "jms/translation-bundle": "^1.3",
@@ -47,7 +46,9 @@
         "ramsey/uuid": "3.7.0",
         "yellowskies/QR-code-bundle": "^1.2",
         "azine/email-bundle": "dev-master",
-        "ninsuo/symfony-collection": "^2.1"
+        "ninsuo/symfony-collection": "^2.1",
+        "a2lix/translation-form-bundle": "^2.1",
+        "knplabs/doctrine-behaviors": "^1.4"
     },
     "scripts": {
         "post-install-cmd": [

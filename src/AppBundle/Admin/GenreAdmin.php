@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -14,15 +15,24 @@ class GenreAdmin extends BaseAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
+            ->add('translations', TranslationsType::class, array(
+                'locales' => array('fr', 'en'),
+                'fields' => array(
+                    'name' => array(
+                        'label' => 'name',
+                    )
+                )
+            ))
         ;
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('name')
-            ->add('_action', null, array(
+            ->addIdentifier('getName', null, array(
+                'label' => 'Nom',
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -35,7 +45,9 @@ class GenreAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name')
+            ->add('getName', null, array(
+                'label' => 'Nom'
+            ))
         ;
     }
 }

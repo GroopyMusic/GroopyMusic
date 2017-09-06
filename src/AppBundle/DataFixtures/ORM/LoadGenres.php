@@ -24,6 +24,7 @@ class LoadGenres extends AbstractFixture implements OrderedFixtureInterface
             $genre->setName($gs);
             $genres[] = $genre;
             $manager->persist($genre);
+            $genre->mergeNewTranslations();
         }
 
         $manager->flush();

@@ -1,5 +1,15 @@
 <?php
 
+// TODO ajouter champs :
+// description (partner) (text)
+// Specs technique (PDF)
+// Délais demandés (string 255)
+// Province (entité)
+// Prix
+// Adresse -> possibilité de 2 salles à la même adresse (réfléchir à la meilleure façon)
+// Personne de contact -> ManyToMany !!
+// Des photos (array?)
+
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;

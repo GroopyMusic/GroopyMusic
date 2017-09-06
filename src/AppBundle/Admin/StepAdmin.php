@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -20,15 +21,18 @@ class StepAdmin extends BaseAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('name', null, array(
+            ->addIdentifier('getName', null, array(
+                'label' => 'Nom',
                 'route' => array('name' => 'show'),
             ))
             ->add('phase', null, array(
                 'route' => array('name' => 'show'),
             ))
             ->add('type')
-            ->add('description')
-            ->add('_action', null, array(
+            ->add('getDescription', null, array(
+                'label' => 'Description'
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -40,8 +44,12 @@ class StepAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name')
-            ->add('description', 'text')
+            ->add('getName', null, array(
+                'label' => 'Nom'
+            ))
+            ->add('getDescription', 'text', array(
+                'label' => 'Description',
+            ))
             ->add('num', 'integer')
             ->add('type')
             ->add('phase')
@@ -51,8 +59,7 @@ class StepAdmin extends BaseAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
-            ->add('description', 'text')
+            ->add('translations', TranslationsType::class)
             ->add('num', 'integer')
             ->add('type', 'entity', array(
                 'class' => 'AppBundle:StepType'

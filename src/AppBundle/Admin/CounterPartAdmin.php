@@ -9,7 +9,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-class SpecialAdvantageAdmin extends BaseAdmin
+class CounterPartAdmin extends BaseAdmin
 {
     protected function configureListFields(ListMapper $listMapper)
     {
@@ -17,9 +17,9 @@ class SpecialAdvantageAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Nom'
             ))
-            ->add('availableQuantity')
-            ->add('priceCredits')
-            ->add('available')
+            ->add('price')
+            ->add('step')
+            ->add('maximum_amount')
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
@@ -34,12 +34,9 @@ class SpecialAdvantageAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Name',
             ))
-            ->add('getDescription', null, array(
-                'label' => 'Description',
-            ))
-            ->add('availableQuantity')
-            ->add('priceCredits')
-            ->add('available')
+            ->add('price')
+            ->add('step')
+            ->add('maximum_amount')
         ;
     }
 
@@ -47,9 +44,9 @@ class SpecialAdvantageAdmin extends BaseAdmin
     {
         $formMapper
             ->add('translations', TranslationsType::class)
-            ->add('availableQuantity')
-            ->add('priceCredits')
-            ->add('available')
+            ->add('price')
+            ->add('step')
+            ->add('maximum_amount')
         ;
     }
 }

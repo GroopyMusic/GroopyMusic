@@ -34,6 +34,7 @@ sonata_admin:
                items:
                    - AppBundle\Admin\PhaseAdmin
                    - AppBundle\Admin\StepAdmin
+                   - AppBundle\Admin\CounterPartAdmin
            app.admin.group.content:
                label: app.admin.group.content
                label_catalogue: SonataAdminBundle
@@ -66,15 +67,17 @@ sonata_block:
      blocks:
          # enable the SonataAdminBundle block
          sonata.admin.block.admin_list:
-             contexts: [admin]
+            contexts: [admin]
          sonata.admin.block.stats:
-             contexts:   [admin]
+            contexts:   [admin]
+         sonata_translation.block.locale_switcher:
+            contexts: [admin]
 
 sonata_translation:
    locales: [fr, en]
-   default_locale: fr
-   gedmo:
-       enabled: true
+   default_locale: "%locale%"
+   knplabs:
+     enabled: true
 
 ########################################################### Services
 services:
@@ -190,4 +193,10 @@ services:
         arguments: [~, AppBundle\Entity\Address, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.address }
+        public: true
+
+    AppBundle\Admin\CounterPartAdmin:
+        arguments: [~, AppBundle\Entity\CounterPart, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.counterpart }
         public: true

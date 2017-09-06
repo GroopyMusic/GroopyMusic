@@ -1,5 +1,12 @@
 <?php
 
+// Virer pseudo
+// newsletter -> form
+// Adresse facultative
+// Historique fan
+// "moto"
+// Date d'inscription
+
 namespace AppBundle\Entity;
 
 use Azine\EmailBundle\Entity\RecipientInterface;
