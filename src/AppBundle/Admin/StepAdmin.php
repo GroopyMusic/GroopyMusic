@@ -29,11 +29,11 @@ class StepAdmin extends BaseAdmin
                 'label' => 'Phase',
                 'route' => array('name' => 'show'),
             ))
-            ->add('type', null, array(
-                'label' => 'Type',
-            ))
             ->add('getDescription', null, array(
                 'label' => 'Description'
+            ))
+            ->add('approximate_capacity', null, array(
+                'label' => 'Capacité approximative',
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(
@@ -47,51 +47,99 @@ class StepAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('getName', null, array(
-                'label' => 'Nom'
-            ))
-            ->add('getDescription', 'text', array(
-                'label' => 'Description',
-            ))
-            ->add('num', 'integer', array(
-                'label' => "Numéro d'ordre dans la phase",
-            ))
-            ->add('type', null, array(
-                'label' => 'Type',
-            ))
-            ->add('phase', null, array(
-                'label' => 'phase',
-            ))
+            ->with('Infos générales')
+                ->add('getName', null, array(
+                    'required' => true,
+                    'label' => 'Nom'
+                ))
+                ->add('getDescription', 'text', array(
+                    'required' => true,
+                    'label' => 'Description',
+                ))
+                ->add('phase', null, array(
+                    'required' => true,
+                    'label' => 'phase',
+                ))
+                ->add('num', 'integer', array(
+                    'required' => true,
+                    'label' => "Numéro d'ordre dans la phase",
+                ))
+            ->end()
+            ->with('Infos par rapport aux concerts & crowdfundings')
+                ->add('approximate_capacity', null, array(
+                    'required' => true,
+                    'label' => 'Capacité approximative',
+                ))
+                ->add('delay', null, array(
+                    'required' => true,
+                    'label' => 'Délai de confirmation',
+                ))
+                ->add('delay_margin', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de jours ouverts pour le choix de date après le délai de confirmation (= fenêtre de shotgun pour les artistes)'
+                ))
+                ->add('min_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets min à vendre pour réussite',
+                ))
+                ->add('max_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets max à vendre',
+                ))
+            ->end()
         ;
     }
 
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('num', 'integer', array(
-                'required' => true,
-                'label' => 'Numéro d\'ordre dans la phase',
-            ))
-            ->add('type', 'entity', array(
-                'label' => 'Type',
-                'class' => 'AppBundle:StepType'
-            ))
-            ->add('phase', 'entity', array(
-                'label' => 'Phase',
-                'class' => 'AppBundle:Phase'
+
+            ->with('Champs traductibles')
+            ->add('translations', TranslationsType::class, array(
+                'label' => false,
+                'fields' => [
+                    'name' => [
+                        'label' => 'Nom',
+                    ],
+                    'description' => [
+                        'label' => 'Description',
+                    ],
+                ],
             ))
             ->end()
-            ->with('Champs traductibles')
-                ->add('translations', TranslationsType::class, array(
-                    'label' => false,
-                    'fields' => [
-                        'name' => [
-                            'label' => 'Nom',
-                        ],
-                        'description' => [
-                            'label' => 'Description',
-                        ],
-                    ],
+
+            ->with('Phase')
+                ->add('phase', null, array(
+                    'required' => true,
+                    'label' => 'Phase',
+                ))
+                ->add('num', 'integer', array(
+                    'required' => true,
+                    'label' => "Numéro d'ordre dans la phase",
+                ))
+            ->end()
+
+
+            ->with('Infos par rapport aux concerts & crowdfundings')
+                ->add('approximate_capacity', null, array(
+                    'required' => true,
+                    'label' => 'Capacité approximative',
+                ))
+                ->add('delay', null, array(
+                    'required' => true,
+                    'label' => 'Délai de confirmation',
+                ))
+                ->add('delay_margin', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de jours ouverts pour le choix de date après le délai de confirmation (= fenêtre de shotgun pour les artistes)'
+                ))
+                ->add('min_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets min à vendre pour réussite',
+                ))
+                ->add('max_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets max à vendre',
                 ))
             ->end()
         ;

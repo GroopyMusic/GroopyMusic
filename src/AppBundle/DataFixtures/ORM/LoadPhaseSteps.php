@@ -8,7 +8,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\Phase;
 use AppBundle\Entity\Step;
-use AppBundle\Entity\StepType;
 
 class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
 {
@@ -20,9 +19,9 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
         $phase1->setName("Initiation");
 
         $step11 = new Step();
-        $step11->setNum(1)->setDeadlineDuration(30)->setRequiredAmount(300)->setName("Concert 1")->setDescription("Blablabla");
+        $step11->setNum(1)->setDeadlineDuration(30)->setRequiredAmount(300)->setApproximateCapacity(100)->setMinTickets(100)->setMaxTickets(200)->setName("Concert 1")->setDescription("Blablabla");
         $step12 = new Step();
-        $step12->setNum(2)->setDeadlineDuration(35)->setRequiredAmount(500)->setName("Concert 2")->setDescription("Blablabla");
+        $step12->setNum(2)->setDeadlineDuration(35)->setRequiredAmount(500)->setApproximateCapacity(100)->setMinTickets(100)->setMaxTickets(200)->setName("Concert 2")->setDescription("Blablabla");
 
 
         $phase1->addStep($step11);
@@ -33,17 +32,12 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
         $phase2->setNum(2)->setName("Expertise");
 
         $step21 = new Step();
-        $step21->setNum(1)->setDeadlineDuration(40)->setRequiredAmount(800)->setName("Concert 3")->setDescription("Blablabla");
+        $step21->setNum(1)->setDeadlineDuration(40)->setRequiredAmount(800)->setApproximateCapacity(100)->setMinTickets(100)->setMaxTickets(200)->setName("Concert 3")->setDescription("Blablabla");
         $step22 = new Step();
-        $step22->setDeadlineDuration(50)->setRequiredAmount(1000)->setNum(2)->setName("Concert 4")->setDescription("Blablabla");
+        $step22->setDeadlineDuration(50)->setRequiredAmount(1000)->setNum(2)->setApproximateCapacity(100)->setMinTickets(100)->setMaxTickets(200)->setName("Concert 4")->setDescription("Blablabla");
 
         $phase2->addStep($step21);
         $phase2->addStep($step22);
-
-        // Step type : for example "Concert"
-        $st1 = new StepType();
-        $st1->setName("Concert")->setDescription("blablabla");
-        $st1->addStep($step11)->addStep($step12)->addStep($step21)->addStep($step22);
 
         // Counterparts
         $cp11 = new CounterPart();
@@ -73,8 +67,6 @@ class LoadPhaseSteps extends AbstractFixture implements OrderedFixtureInterface
             ->setName("Place de concert normale")
         ;
 
-        $manager->persist($st1);
-        $st1->mergeNewTranslations();
         $manager->persist($phase1);
         $phase1->mergeNewTranslations();
         $manager->persist($phase2);

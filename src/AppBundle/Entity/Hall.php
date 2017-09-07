@@ -14,8 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Hall extends Partner
 {
-    const MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING = 90;
-    const DAYS_MARGIN_FOR_CROWDFUNDING = 10;
     const DATE_FORMAT = 'm/d/Y';
 
     public function __toString()
@@ -41,7 +39,7 @@ class Hall extends Partner
     {
         parent::__construct();
 
-        $base_day = (new \DateTime())->add(new \DateInterval('P'.self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING.'D'))->format(self::DATE_FORMAT);
+        $base_day = (new \DateTime())->format(self::DATE_FORMAT);
 
         $this->available_dates = [];
         $this->cron_automatic_days = array(
@@ -73,11 +71,15 @@ class Hall extends Partner
             }
         }
 
-        $max_cursor = (new \DateTime())->add(new \DateInterval('P'.(self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING + self::DAYS_MARGIN_FOR_CROWDFUNDING).'D'))->format(self::DATE_FORMAT);
-        $default_cursor = (new \DateTime())->add(new \DateInterval('P'.self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING.'D'))->format(self::DATE_FORMAT);
+        $minimum_days_from_today_for_crowdfunding = $this->getStep()->getDeadlineDuration() + $this->getStep()->getDelay();
+        $days_margin_for_crowdfunding = $this->getStep()->getDelayMargin();
+
+        $max_cursor = (new \DateTime())->add(new \DateInterval('P'.($minimum_days_from_today_for_crowdfunding + $days_margin_for_crowdfunding).'D'))->format(self::DATE_FORMAT);
+        $default_cursor = (new \DateTime())->add(new \DateInterval('P'.$minimum_days_from_today_for_crowdfunding.'D'))->format(self::DATE_FORMAT);
 
         // For each possible day
         foreach($this->cron_explored_dates as $i => $current_cursor) {
+            $current_cursor = max($default_cursor, $current_cursor);
             // There is a rule -> refresh dates & update cursor
             if($this->cron_automatic_days[$i]) {
                 while($current_cursor != $max_cursor) {
@@ -92,7 +94,7 @@ class Hall extends Partner
             }
             // No rule -> just set the cursor right
             else {
-                $this->cron_explored_dates[$i] = $default_cursor;
+                $this->cron_explored_dates[$i] = $current_cursor;
             }
         }
     }

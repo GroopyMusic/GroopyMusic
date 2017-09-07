@@ -10,6 +10,7 @@ class PartnerContactPersonAdmin extends BaseAdmin
     {
         $form
             ->add('contact_person', 'sonata_type_model', array(
+                'label' => 'Nom',
             ))
         ;
     }

@@ -3,120 +3,21 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
-use Sonata\TranslationBundle\Model\TranslatableInterface;
 
 /**
- * Step
- *
  * @ORM\Table(name="step")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StepRepository")
  */
-class Step implements TranslatableInterface
+class Step extends BaseStep
 {
-    use ORMBehaviors\Translatable\Translatable;
-
-    public function __call($method, $arguments)
-    {
-        try {
-            return $this->proxyCurrentLocaleTranslation($method, $arguments);
-        } catch(\Exception $e) {
-            $method = 'get' . ucfirst($method);
-            return $this->proxyCurrentLocaleTranslation($method, $arguments);
-        }
-    }
-
     public function __construct()
     {
-        $this->counterParts = new \Doctrine\Common\Collections\ArrayCollection();
+        parent::__construct();
+        $this->type = 'concert';
+        $this->delay = 60;
+        $this->delay_margin = 30;
         $this->deadline_duration = 30;
     }
-
-    public function getDefaultLocale() {
-        return 'fr';
-    }
-
-    public function __toString()
-    {
-        return '' . $this->getName();
-    }
-
-    public function getAvailableDates(Province $province) {
-        $dates = array();
-
-        foreach($this->getHalls() as $hall) {
-            if($province == $hall->getProvince())
-                $dates = array_merge($dates, $hall->getAvailableDates());
-        }
-
-        return array_unique($dates);
-    }
-
-    public function getAvailableDatesFormatted(Province $province) {
-        $availableDates = $this->getAvailableDates($province);
-
-        $display = '';
-        $count = count($availableDates);
-        for($i = 0; $i < $count; $i++) {
-            $display .= $availableDates[$i];
-            if($i != $count - 1) {
-                $display .= ',';
-            }
-        }
-        return $display ;
-    }
-
-    public function setLocale($locale)
-    {
-        $this->setCurrentLocale($locale);
-        return $this;
-    }
-
-    public function getLocale()
-    {
-        return $this->getCurrentLocale();
-    }
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="num", type="smallint")
-     */
-    private $num;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Phase", inversedBy="steps")
-     */
-    private $phase;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="StepType", inversedBy="steps")
-     */
-    private $type;
-
-    /**
-     * @ORM\Column(name="deadline_duration", type="smallint")
-     */
-    private $deadline_duration;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="step")
-     */
-    private $counterParts;
-
-    /**
-     * @ORM\Column(name="required_amount", type="integer")
-     */
-    private $requiredAmount;
 
     /**
      * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
@@ -148,169 +49,125 @@ class Step implements TranslatableInterface
      */
     private $max_tickets;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
-     * Set num
+     * Set approximateCapacity
      *
-     * @param integer $num
+     * @param integer $approximateCapacity
      *
      * @return Step
      */
-    public function setNum($num)
+    public function setApproximateCapacity($approximateCapacity)
     {
-        $this->num = $num;
+        $this->approximate_capacity = $approximateCapacity;
 
         return $this;
     }
 
     /**
-     * Get num
-     *
-     * @return int
-     */
-    public function getNum()
-    {
-        return $this->num;
-    }
-
-    /**
-     * Set phase
-     *
-     * @param \AppBundle\Entity\Phase $phase
-     *
-     * @return Step
-     */
-    public function setPhase(\AppBundle\Entity\Phase $phase = null)
-    {
-        $this->phase = $phase;
-
-        return $this;
-    }
-
-    /**
-     * Get phase
-     *
-     * @return \AppBundle\Entity\Phase
-     */
-    public function getPhase()
-    {
-        return $this->phase;
-    }
-
-    /**
-     * Set type
-     *
-     * @param \AppBundle\Entity\StepType $type
-     *
-     * @return Step
-     */
-    public function setType(\AppBundle\Entity\StepType $type = null)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return \AppBundle\Entity\StepType
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Set deadlineDuration
-     *
-     * @param integer $deadlineDuration
-     *
-     * @return Step
-     */
-    public function setDeadlineDuration($deadlineDuration)
-    {
-        $this->deadline_duration = $deadlineDuration;
-
-        return $this;
-    }
-
-    /**
-     * Get deadlineDuration
+     * Get approximateCapacity
      *
      * @return integer
      */
-    public function getDeadlineDuration()
+    public function getApproximateCapacity()
     {
-        return $this->deadline_duration;
+        return $this->approximate_capacity;
     }
 
     /**
-     * Add counterPart
+     * Set delay
      *
-     * @param \AppBundle\Entity\CounterPart $counterPart
+     * @param integer $delay
      *
      * @return Step
      */
-    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    public function setDelay($delay)
     {
-        $this->counterParts[] = $counterPart;
-        $counterPart->setStep($this);
+        $this->delay = $delay;
 
         return $this;
     }
 
     /**
-     * Remove counterPart
-     *
-     * @param \AppBundle\Entity\CounterPart $counterPart
-     */
-    public function removeCounterPart(\AppBundle\Entity\CounterPart $counterPart)
-    {
-        $this->counterParts->removeElement($counterPart);
-    }
-
-    /**
-     * Get counterParts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCounterParts()
-    {
-        return $this->counterParts;
-    }
-
-    /**
-     * Set requiredAmount
-     *
-     * @param integer $requiredAmount
-     *
-     * @return Step
-     */
-    public function setRequiredAmount($requiredAmount)
-    {
-        $this->requiredAmount = $requiredAmount;
-
-        return $this;
-    }
-
-    /**
-     * Get requiredAmount
+     * Get delay
      *
      * @return integer
      */
-    public function getRequiredAmount()
+    public function getDelay()
     {
-        return $this->requiredAmount;
+        return $this->delay;
+    }
+
+    /**
+     * Set delayMargin
+     *
+     * @param integer $delayMargin
+     *
+     * @return Step
+     */
+    public function setDelayMargin($delayMargin)
+    {
+        $this->delay_margin = $delayMargin;
+
+        return $this;
+    }
+
+    /**
+     * Get delayMargin
+     *
+     * @return integer
+     */
+    public function getDelayMargin()
+    {
+        return $this->delay_margin;
+    }
+
+    /**
+     * Set minTickets
+     *
+     * @param integer $minTickets
+     *
+     * @return Step
+     */
+    public function setMinTickets($minTickets)
+    {
+        $this->min_tickets = $minTickets;
+
+        return $this;
+    }
+
+    /**
+     * Get minTickets
+     *
+     * @return integer
+     */
+    public function getMinTickets()
+    {
+        return $this->min_tickets;
+    }
+
+    /**
+     * Set maxTickets
+     *
+     * @param integer $maxTickets
+     *
+     * @return Step
+     */
+    public function setMaxTickets($maxTickets)
+    {
+        $this->max_tickets = $maxTickets;
+
+        return $this;
+    }
+
+    /**
+     * Get maxTickets
+     *
+     * @return integer
+     */
+    public function getMaxTickets()
+    {
+        return $this->max_tickets;
     }
 
     /**

@@ -8,7 +8,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 /**
  * @ORM\Entity
  */
-class StepTranslation
+class BaseStepTranslation
 {
     use ORMBehaviors\Translatable\Translation;
 
@@ -30,7 +30,7 @@ class StepTranslation
      *
      * @param string $name
      *
-     * @return StepTranslation
+     * @return BaseStepTranslation
      */
     public function setName($name)
     {
@@ -54,7 +54,7 @@ class StepTranslation
      *
      * @param string $description
      *
-     * @return StepTranslation
+     * @return BaseStepTranslation
      */
     public function setDescription($description)
     {

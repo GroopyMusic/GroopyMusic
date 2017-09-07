@@ -81,7 +81,7 @@ class PartnerAdmin extends BaseAdmin
                     'required' => false,
                 ))
                 ->add('contactpersons_list', 'sonata_type_collection', array(
-                    'label' => false,
+                    'label' => 'Personnes de contact',
                     'by_reference' => false,
                 ), array(
                         'edit'            => 'inline',
