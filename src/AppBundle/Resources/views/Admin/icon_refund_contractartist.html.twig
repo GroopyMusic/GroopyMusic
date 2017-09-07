@@ -1,7 +1,7 @@
 {% if object.isAskedRefundBy(app.user) %}
     <a class="btn btn-sm btn-default disabled">remboursement demandé</a>
 {% elseif not object.refunded %}
-    <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('refund', object) }}">rembourser</a>
+    <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('refund', object) }}">Rembourser</a>
     {% if object.isAskedRefundByOne %}
         {% set askings = object.askingrefund %}
         (remboursement proposé par {% for asking in askings %}asking.displayName {% endfor %})

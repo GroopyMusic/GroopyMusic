@@ -21,15 +21,22 @@ class ContractFanAdmin extends BaseAdmin
     {
         $list
             ->add('id')
-            ->add('user')
+            ->add('cart.user', null, array(
+                'label' => 'Membre',
+                'route' => array('name' => 'show'),
+            ))
             ->add('contractArtist', null, array(
+                'label' => 'Crowdfunding',
                 'route' => array('name' => 'show'),
             ))
-            ->add('paid', 'boolean')
+            ->add('paid', 'boolean', array(
+                'label' => 'Payé'
+            ))
             ->add('cart', null, array(
+                'label' => 'Panier correspondant',
                 'route' => array('name' => 'show'),
             ))
-            ->add('_action', null, array(
+            ->add('_action', 'actions', array(
                     'actions' => array(
                         'show' => array(),
                     )
@@ -41,11 +48,36 @@ class ContractFanAdmin extends BaseAdmin
     public function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('user')
-            ->add('cart')
-            ->add('paid', 'boolean')
-            ->add('contractArtist')
-            ->add('purchases')
+            ->with('Infos')
+                    ->add('id')
+                ->add('cart.user', null, array(
+                    'label' => 'Membre',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('contractArtist', null, array(
+                    'label' => 'Crowdfunding',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('cart', null, array(
+                    'label' => 'Panier correspondant',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('date', 'datetime', array(
+                    'label' => 'Date de création',
+                    'format' => 'd/m/y H:i:s',
+                ))
+                ->add('purchases', null, array(
+                    'label' => 'Achats',
+                ))
+            ->end()
+            ->with('État')
+                ->add('paid', 'boolean', array(
+                    'label' => 'Payé'
+                ))
+                ->add('ticket_sent', 'boolean', array(
+                    'label' => 'Ticket envoyé',
+                ))
+            ->end()
         ;
     }
 }

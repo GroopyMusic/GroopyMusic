@@ -17,18 +17,14 @@ class Province implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
     public function __call($method, $arguments)
     {
-        return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
     }
 
     public function __toString() {
@@ -49,6 +45,16 @@ class Province implements TranslatableInterface
     {
         return $this->getCurrentLocale();
     }
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
 
     /**
      * Get id

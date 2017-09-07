@@ -43,11 +43,10 @@
 
 {% endblock %}
 
-{% block javascripts_with_jquery %}
+{% block javascripts %}
     {{ parent() }}
 
     <script>
-
         $('#card-form-row').hide();
 
         $('#accept_conditions').change(function(){

@@ -19,7 +19,7 @@ security:
             remember_me:
                 secret:   '%secret%'
                 lifetime: 2419200 # 4 weeks in seconds
-                name: "%session.remember_me.name%"
+                name: '%session.remember_me.name%'
             pattern: ^/
             form_login:
                 provider: fos_userbundle

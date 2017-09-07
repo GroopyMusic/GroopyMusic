@@ -17,9 +17,12 @@ class CounterPartAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Nom'
             ))
-            ->add('price')
-            ->add('step')
-            ->add('maximum_amount')
+            ->add('price', null, array(
+                'label' => 'Prix'
+            ))
+            ->add('step', null, array(
+                'label' => 'Palier'
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
@@ -34,19 +37,44 @@ class CounterPartAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Name',
             ))
-            ->add('price')
-            ->add('step')
-            ->add('maximum_amount')
+            ->add('price', null, array(
+                'label' => 'Prix'
+            ))
+            ->add('step', null, array(
+                'label' => 'Palier'
+            ))
+            ->add('maximum_amount', null, array(
+                'label' => 'Nombre max de ventes'
+            ))
         ;
     }
 
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('translations', TranslationsType::class)
-            ->add('price')
-            ->add('step')
-            ->add('maximum_amount')
+            ->with('Champs traductibles')
+                ->add('translations', TranslationsType::class, array(
+                    'fields' => [
+                        'name' => [
+                            'label' => 'Nom',
+                        ],
+                    ],
+                ))
+            ->end()
+            ->with('Autres')
+                ->add('price', null, array(
+                    'label' => 'Prix',
+                    'required' => true,
+                ))
+                ->add('step', null, array(
+                    'label' => 'Palier',
+                    'required' => true,
+                ))
+                ->add('maximum_amount', null, array(
+                    'label' => 'Nombre max de ventes',
+                    'required' => true,
+                ))
+            ->end()
         ;
     }
 }

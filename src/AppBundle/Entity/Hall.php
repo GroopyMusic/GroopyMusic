@@ -39,6 +39,8 @@ class Hall extends Partner
 
     public function __construct()
     {
+        parent::__construct();
+
         $base_day = (new \DateTime())->add(new \DateInterval('P'.self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING.'D'))->format(self::DATE_FORMAT);
 
         $this->available_dates = [];
@@ -442,30 +444,6 @@ class Hall extends Partner
     }
 
     /**
-     * Add contactPerson
-     *
-     * @param \AppBundle\Entity\ContactPerson $contactPerson
-     *
-     * @return Hall
-     */
-    public function addContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
-    {
-        $this->contact_person[] = $contactPerson;
-
-        return $this;
-    }
-
-    /**
-     * Remove contactPerson
-     *
-     * @param \AppBundle\Entity\ContactPerson $contactPerson
-     */
-    public function removeContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
-    {
-        $this->contact_person->removeElement($contactPerson);
-    }
-
-    /**
      * Set technicalSpecs
      *
      * @param \Application\Sonata\MediaBundle\Entity\Media $technicalSpecs
@@ -489,13 +467,4 @@ class Hall extends Partner
         return $this->technical_specs;
     }
 
-    /**
-     * Get contactPerson
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getContactPerson()
-    {
-        return $this->contact_person;
-    }
 }

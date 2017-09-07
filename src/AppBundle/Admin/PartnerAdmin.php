@@ -18,9 +18,11 @@ class PartnerAdmin extends BaseAdmin
                 'label' => 'Nom',
             ))
             ->add('comment', null, array(
-                'Commentaire interne'
+                'label' => 'Commentaire interne',
             ))
-            ->add('type')
+            ->add('type', null, array(
+                'label' => 'Type',
+            ) )
             ->add('_action', null, array(
                     'actions' => array(
                         'show' => array(),
@@ -47,7 +49,8 @@ class PartnerAdmin extends BaseAdmin
                 ->add('comment', null, array(
                     'label' => 'Commentaire (interne)',
                 ))
-                ->add('contact_persons', null, array(
+                ->add('contactpersons_list', null, array(
+                    'associated_property' => 'contact_person',
                     'label' => 'Personnes de contact',
                 ))
                 ->add('address', 'sonata_type_admin', array(
@@ -59,8 +62,6 @@ class PartnerAdmin extends BaseAdmin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $subject = $this->getSubject();
-
         $formMapper
             ->with('Données générales du partenaire')
                 ->add('name', null, array(
@@ -79,16 +80,15 @@ class PartnerAdmin extends BaseAdmin
                     'label' => 'Commentaire (interne)',
                     'required' => false,
                 ))
-                ->add('contact_persons', 'sonata_type_native_collection', array(
-                    'required' => true,
-                    'label' => 'Personnes de contact',
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'entry_type' => 'entity',
-                    'entry_options' => array(
-                        'class' => ContactPerson::class,
+                ->add('contactpersons_list', 'sonata_type_collection', array(
+                    'label' => false,
+                    'by_reference' => false,
+                ), array(
+                        'edit'            => 'inline',
+                        'inline'          => 'table',
+                        'sortable'        => 'position',
+                        'admin_code'      => PartnerContactPersonAdmin::class,
                     )
-                )
                 )
             ->end()
             ->with('Adresse')

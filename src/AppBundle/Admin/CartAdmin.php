@@ -21,12 +21,19 @@ class CartAdmin extends BaseAdmin
     {
         $list
             ->add('user', null, array(
+                'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
-            ->add('confirmed')
-            ->add('paid')
-            ->add('amount')
-            ->add('_action', null, array(
+            ->add('confirmed', null, array(
+                'label' => 'Confirmé',
+            ))
+            ->add('paid', null, array(
+                'label' => 'Payé',
+            ))
+            ->add('amount', null, array(
+                'label' => 'Montant',
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                 )))
@@ -35,15 +42,27 @@ class CartAdmin extends BaseAdmin
 
     public function configureShowFields(ShowMapper $showMapper) {
         $showMapper
-            ->add('user', null, array(
-                'route' => array('name' => 'show'),
-            ))
-            ->add('confirmed')
-            ->add('paid')
-            ->add('amount')
-            ->add('contracts', null, array(
-                'route' => array('name' => 'show'),
-            ))
+            ->with('Infos')
+                ->add('user', null, array(
+                    'label' => 'Membre',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('amount', null, array(
+                    'label' => 'Montant'
+                ))
+                ->add('contracts', null, array(
+                    'label' => 'Contrats pour l\'utilisateur',
+                    'route' => array('name' => 'show'),
+                ))
+            ->end()
+            ->with('État')
+                ->add('confirmed', null, array(
+                    'label' => 'Confirmé',
+                ))
+                ->add('paid', null, array(
+                    'label' => 'Payé',
+                ))
+            ->end()
         ;
     }
 

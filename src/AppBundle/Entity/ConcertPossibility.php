@@ -11,7 +11,15 @@ class ConcertPossibility extends ContractArtistPossibility
 {
     public function __toString()
     {
-        return 'Salle : ' . $this->hall . ' ; date : ' . $this->date->format('d/m/y');
+        $string = '';
+
+        if($this->hall != null)
+            $string .= 'Salle : ' . $this->hall . ' ';
+
+        if($this->date != null)
+            $string .= 'Date : ' . $this->date->format('d/m/y');
+
+        return $string;
     }
 
     /**

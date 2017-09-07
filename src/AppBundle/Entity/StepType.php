@@ -20,7 +20,12 @@ class StepType implements TranslatableInterface
 
     public function __call($method, $arguments)
     {
-        return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
     }
 
     public function getDefaultLocale() {

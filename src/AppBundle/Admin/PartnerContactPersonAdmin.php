@@ -4,14 +4,13 @@ namespace AppBundle\Admin;
 
 use Sonata\AdminBundle\Form\FormMapper;
 
-class ContractArtistArtistAdmin extends BaseAdmin
+class PartnerContactPersonAdmin extends BaseAdmin
 {
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('artist', 'sonata_type_model', array(
+            ->add('contact_person', 'sonata_type_model', array(
             ))
         ;
-
     }
 }

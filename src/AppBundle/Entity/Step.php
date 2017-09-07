@@ -1,11 +1,5 @@
 <?php
 
-// TODO
-// Capacité +/-
-// Délai de confirmation
-// nombre de tickets nécessaire, dérivé de thune nécessaire (required_amount)
-// deadline_duration = 30 jours tout le temps pour l'instant
-
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +18,18 @@ class Step implements TranslatableInterface
 
     public function __call($method, $arguments)
     {
-        return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
+    }
+
+    public function __construct()
+    {
+        $this->counterParts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->deadline_duration = 30;
     }
 
     public function getDefaultLocale() {
@@ -99,7 +104,7 @@ class Step implements TranslatableInterface
     private $type;
 
     /**
-     * @ORM\Column(name="deadline_duration", type="integer")
+     * @ORM\Column(name="deadline_duration", type="smallint")
      */
     private $deadline_duration;
 
@@ -117,6 +122,31 @@ class Step implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
      */
     private $halls;
+
+    /**
+     * @ORM\Column(name="approximate_capacity", type="smallint")
+     */
+    private $approximate_capacity;
+
+    /**
+     * @ORM\Column(name="delay", type="smallint")
+     */
+    private $delay;
+
+    /**
+     * @ORM\Column(name="delay_margin", type="smallint")
+     */
+    private $delay_margin;
+
+    /**
+     * @ORM\Column(name="min_tickets", type="smallint")
+     */
+    private $min_tickets;
+
+    /**
+     * @ORM\Column(name="max_tickets", type="smallint")
+     */
+    private $max_tickets;
 
     /**
      * Get id
@@ -222,13 +252,6 @@ class Step implements TranslatableInterface
     public function getDeadlineDuration()
     {
         return $this->deadline_duration;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->counterParts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

@@ -23,7 +23,6 @@ class ArtistAdmin extends BaseAdmin
         $list
             ->add('artistname', null, array(
                 'label' => "Nom de l'artiste",
-                'required' => true,
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(
@@ -37,10 +36,17 @@ class ArtistAdmin extends BaseAdmin
     public function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('artistname')
-            ->add('phase')
-            ->add('genres')
+            ->add('artistname', null, array(
+                'label' => "Nom de l'artiste",
+            ))
+            ->add('phase', null, array(
+                'label' => "Phase de l'artiste",
+            ))
+            ->add('genres', null, array(
+                'label' => "Genres musicaux",
+            ))
             ->add('artists_user', null, array(
+                'label' => 'Propriétaires',
                 'associated_property' => 'userToString'
             ))
             ->add('getShortDescription', null, array(
@@ -55,7 +61,19 @@ class ArtistAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('translations', TranslationsType::class)
+            ->with('Champs traductibles')
+                ->add('translations', TranslationsType::class, array(
+                    'label' => false,
+                    'fields' => [
+                        'short_description' => [
+                            'label' => 'Description courte',
+                        ],
+                        'biography' => [
+                            'label' => 'Biographie',
+                        ],
+                    ],
+                ))
+            ->end()
         ;
     }
 }

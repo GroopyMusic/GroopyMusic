@@ -26,9 +26,12 @@ class StepAdmin extends BaseAdmin
                 'route' => array('name' => 'show'),
             ))
             ->add('phase', null, array(
+                'label' => 'Phase',
                 'route' => array('name' => 'show'),
             ))
-            ->add('type')
+            ->add('type', null, array(
+                'label' => 'Type',
+            ))
             ->add('getDescription', null, array(
                 'label' => 'Description'
             ))
@@ -50,23 +53,47 @@ class StepAdmin extends BaseAdmin
             ->add('getDescription', 'text', array(
                 'label' => 'Description',
             ))
-            ->add('num', 'integer')
-            ->add('type')
-            ->add('phase')
+            ->add('num', 'integer', array(
+                'label' => "Numéro d'ordre dans la phase",
+            ))
+            ->add('type', null, array(
+                'label' => 'Type',
+            ))
+            ->add('phase', null, array(
+                'label' => 'phase',
+            ))
         ;
     }
 
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('translations', TranslationsType::class)
-            ->add('num', 'integer')
+            ->add('num', 'integer', array(
+                'required' => true,
+                'label' => 'Numéro d\'ordre dans la phase',
+            ))
             ->add('type', 'entity', array(
+                'label' => 'Type',
                 'class' => 'AppBundle:StepType'
             ))
             ->add('phase', 'entity', array(
+                'label' => 'Phase',
                 'class' => 'AppBundle:Phase'
             ))
+            ->end()
+            ->with('Champs traductibles')
+                ->add('translations', TranslationsType::class, array(
+                    'label' => false,
+                    'fields' => [
+                        'name' => [
+                            'label' => 'Nom',
+                        ],
+                        'description' => [
+                            'label' => 'Description',
+                        ],
+                    ],
+                ))
+            ->end()
         ;
     }
 

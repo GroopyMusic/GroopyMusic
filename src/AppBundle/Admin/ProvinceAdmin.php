@@ -34,7 +34,9 @@ class ProvinceAdmin extends BaseAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('translations', TranslationsType::class)
+            ->with('Champs traductibles')
+                ->add('translations', TranslationsType::class)
+            ->end()
         ;
     }
 

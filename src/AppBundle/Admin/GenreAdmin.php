@@ -12,20 +12,6 @@ use Sonata\TranslationBundle\Filter\TranslationFieldFilter;
 
 class GenreAdmin extends BaseAdmin
 {
-    protected function configureFormFields(FormMapper $formMapper)
-    {
-        $formMapper
-            ->add('translations', TranslationsType::class, array(
-                'locales' => array('fr', 'en'),
-                'fields' => array(
-                    'name' => array(
-                        'label' => 'name',
-                    )
-                )
-            ))
-        ;
-    }
-
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -48,6 +34,22 @@ class GenreAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Nom'
             ))
+        ;
+    }
+
+    protected function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->with('Champs traductibles')
+            ->add('translations', TranslationsType::class, array(
+                'locales' => array('fr', 'en'),
+                'fields' => [
+                    'name' => [
+                        'label' => 'name',
+                    ]
+                ]
+            ))
+            ->end()
         ;
     }
 }

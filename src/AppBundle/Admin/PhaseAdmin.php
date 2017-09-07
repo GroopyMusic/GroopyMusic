@@ -24,8 +24,12 @@ class PhaseAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Nom'
             ))
-            ->add('num')
-            ->add('steps')
+            ->add('num', null, array(
+                'label' => "Numéro d'ordre",
+            ))
+            ->add('steps', null, array(
+                'label' => 'Paliers',
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
@@ -41,17 +45,35 @@ class PhaseAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Nom'
             ))
-            ->add('num')
-            ->add('steps')
+            ->add('num', null, array(
+                'label' => "Numéro d'ordre",
+            ))
+            ->add('steps', null, array(
+                'label' => 'Paliers',
+            ))
         ;
     }
 
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('translations', TranslationsType::class)
-            ->add('num')
-            ->add('steps')
+                ->add('num', null, array(
+                    'label' => "Numéro d'ordre de la phase",
+                ))
+                ->add('steps', null, array(
+                    'label' => 'Paliers',
+                ))
+            ->end()
+            ->with('Champs traductibles')
+                ->add('translations', TranslationsType::class, array(
+                    'fields' => [
+                        'name' => [
+                            'label' => 'Nom de la phase'
+                        ]
+                    ],
+                    'label' => false,
+                ))
+            ->end()
         ;
     }
 

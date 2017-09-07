@@ -6,7 +6,7 @@
         <h2>Contrat #{{ contract.id }}</h2>
         <ul>
             <li>Artist : {{ contract.artist.artistname }}</li>
-            <li>Step : {{ contract.step.name }}</li>
+            <li>Step : {{ contract.step.getName }}</li>
             <li><a href="{{ path('fan_see_contract', {'id': contract.id}) }}">Soutenir</a></li>
         </ul>
     {% endfor %}

@@ -10,7 +10,9 @@ class ConcertPossibilityAdmin extends BaseAdmin
 {
     public function configureFormFields(FormMapper $form) {
         $form
-            ->add('hall', 'sonata_type_model')
+            ->add('hall', 'sonata_type_model', array(
+                'btn_add' => false,
+            ))
             ->add('date', 'date', array(
                 'html5' => false,
                 'widget' => 'single_text',

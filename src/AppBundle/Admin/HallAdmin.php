@@ -18,9 +18,17 @@ class HallAdmin extends PartnerAdmin  {
         parent::configureListFields($listMapper);
         $listMapper
             ->remove('type')
+            ->remove('_action')
             ->add('step', null, array(
                 'label' => 'Palier',
             ))
+            ->add('_action', null, array(
+                    'actions' => array(
+                        'show' => array(),
+                        'edit' => array(),
+                    )
+                )
+            )
         ;
     }
 
@@ -51,12 +59,17 @@ class HallAdmin extends PartnerAdmin  {
                 ->add('available_dates_string', 'text', array(
                     'label' => 'Dates disponibles (calculé automatiquement mais modifiable)',
                 ))
-                ->add('technical_specs', 'sonata_type_model', array(
-                    'label' => 'Spécifications techniques (PDF)'
+                ->add('technical_specs', 'sonata_media_type', array(
+                    'label' => 'Spécifications techniques (PDF)',
+                    'provider' => 'sonata.media.provider.file',
+                    'context' => 'hall',
                 ))
-                ->add('gallery', 'sonata_type_model', array(
-                    'label' => 'Galerie photos'
-                ))
+                ->add('gallery', 'sonata_type_model_list', array(
+                    'label' => 'Galerie',
+                    'required' => false,
+                ), array(
+                    'link_parameters' => array('context' => 'hall'))
+                )
             ->end()
         ;
     }

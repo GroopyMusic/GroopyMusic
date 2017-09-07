@@ -22,16 +22,26 @@ class PaymentAdmin extends BaseAdmin
     {
         $list
             ->add('user', null, array(
+                'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
             ->add('contractArtist', null, array(
+                'label' => 'Crowdfunding',
                 'route' => array('name' => 'show'),
             ))
-            ->add('date')
-            ->add('chargeId')
-            ->add('amount')
-            ->add('refunded')
-            ->add('_action', null, array(
+            ->add('date', null, array(
+                'format' => 'd/m/y H:i:s',
+            ))
+            ->add('chargeId', null, array(
+                'label' => 'Identifiant paiement Stripe',
+            ))
+            ->add('amount', null, array(
+                'label' => 'Montant',
+            ))
+            ->add('refunded', null, array(
+                'label' => 'Remboursé'
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'refund' => array(
@@ -44,19 +54,32 @@ class PaymentAdmin extends BaseAdmin
     public function configureShowFields(ShowMapper $showMapper) {
         $showMapper
             ->add('user', null, array(
+                'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
-            ->add('date')
-            ->add('chargeId')
-            ->add('amount')
-            ->add('refunded')
             ->add('contractArtist', null, array(
+                'label' => 'Crowdfunding',
                 'route' => array('name' => 'show'),
+            ))
+            ->add('date', null, array(
+                'format' => 'd/m/y H:i:s',
+            ))
+            ->add('chargeId', null, array(
+                'label' => 'Identifiant paiement Stripe',
+            ))
+            ->add('amount', null, array(
+                'label' => 'Montant',
+            ))
+            ->add('refunded', null, array(
+                'label' => 'Remboursé',
             ))
             ->add('contractFan', null, array(
+                'label' => 'Contrat fan',
                 'route' => array('name' => 'show'),
             ))
-            ->add('asking_refund')
+            ->add('asking_refund', null, array(
+                'label' => 'Demandes de remboursement',
+            ))
         ;
     }
 }
