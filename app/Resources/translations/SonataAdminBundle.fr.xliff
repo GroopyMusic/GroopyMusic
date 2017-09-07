@@ -96,6 +96,21 @@
                 <source>app.admin.specialpurchase</source>
                 <target>Achat spécial</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.contactperson">
+                <source>app.admin.contactperson</source>
+                <target>Personne de contact</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.hall">
+                <source>app.admin.hall</source>
+                <target>Salle</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.province">
+                <source>app.admin.province</source>
+                <target>Province</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

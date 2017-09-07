@@ -21,7 +21,10 @@ class ArtistAdmin extends BaseAdmin
     public function configureListFields(ListMapper $list)
     {
         $list
-            ->add('artistname')
+            ->add('artistname', null, array(
+                'label' => "Nom de l'artiste",
+                'required' => true,
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),

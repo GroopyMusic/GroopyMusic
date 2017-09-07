@@ -48,10 +48,9 @@ class Partner
     protected $website;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ContactPerson", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\ManyToMany(targetEntity="ContactPerson", inversedBy="partners", cascade={"persist"})
      */
-    protected $contact_person;
+    protected $contact_persons;
 
     /**
      * @ORM\Column(name="comment", type="text", nullable=true)
@@ -64,7 +63,7 @@ class Partner
     protected $province;
 
     /**
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;
 
@@ -175,30 +174,6 @@ class Partner
     }
 
     /**
-     * Set contactPerson
-     *
-     * @param \AppBundle\Entity\ContactPerson $contactPerson
-     *
-     * @return Partner
-     */
-    public function setContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
-    {
-        $this->contact_person = $contactPerson;
-
-        return $this;
-    }
-
-    /**
-     * Get contactPerson
-     *
-     * @return \AppBundle\Entity\ContactPerson
-     */
-    public function getContactPerson()
-    {
-        return $this->contact_person;
-    }
-
-    /**
      * Set province
      *
      * @param \AppBundle\Entity\Province $province
@@ -250,7 +225,7 @@ class Partner
      */
     public function __construct()
     {
-        $this->contact_person = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contact_persons = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -262,7 +237,8 @@ class Partner
      */
     public function addContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
     {
-        $this->contact_person[] = $contactPerson;
+        $this->contact_persons[] = $contactPerson;
+        $contactPerson->addPartner($this);
 
         return $this;
     }
@@ -274,6 +250,16 @@ class Partner
      */
     public function removeContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
     {
-        $this->contact_person->removeElement($contactPerson);
+        $this->contact_persons->removeElement($contactPerson);
+    }
+
+    /**
+     * Get contactPerson
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContactPersons()
+    {
+        return $this->contact_persons;
     }
 }

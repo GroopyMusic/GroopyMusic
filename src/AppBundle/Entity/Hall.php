@@ -1,13 +1,5 @@
 <?php
 
-// TODO ajouter champs :
-// Specs technique (PDF)
-// Délais demandés (string 255)
-// Province (entité)
-// Prix
-// Personne de contact -> ManyToMany !!
-// Des photos (array?)
-
 namespace AppBundle\Entity;
 
 use Application\Sonata\MediaBundle\Entity\Gallery;
@@ -29,6 +21,20 @@ class Hall extends Partner
     public function __toString()
     {
         return 'Salle : ' . $this->name;
+    }
+
+    public function getCronAutomaticDaysFormatted() {
+        // TODO export this logic to use the translations in xliff
+        $translations = array(
+            'days_0' => 'Dimanche', 'days_1' => 'Lundi', 'days_2' => 'Mardi', 'days_3' => 'Mercredi', 'days_4' => 'Jeudi', 'days_5' => 'Vendredi', 'days_6' => 'Samedi'
+        );
+
+        $string = '';
+        foreach($this->cron_automatic_days as $i => $day) {
+            if($day)
+                $string .= $translations[$i] . ' ';
+        }
+        return $string;
     }
 
     public function __construct()
@@ -147,6 +153,11 @@ class Hall extends Partner
      * })
      */
     private $gallery;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\MediaBundle\Entity\Media")
+     */
+    private $technical_specs;
 
     /**
      * @ORM\Column(name="delay", type="smallint")
@@ -452,5 +463,39 @@ class Hall extends Partner
     public function removeContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
     {
         $this->contact_person->removeElement($contactPerson);
+    }
+
+    /**
+     * Set technicalSpecs
+     *
+     * @param \Application\Sonata\MediaBundle\Entity\Media $technicalSpecs
+     *
+     * @return Hall
+     */
+    public function setTechnicalSpecs(\Application\Sonata\MediaBundle\Entity\Media $technicalSpecs = null)
+    {
+        $this->technical_specs = $technicalSpecs;
+
+        return $this;
+    }
+
+    /**
+     * Get technicalSpecs
+     *
+     * @return \Application\Sonata\MediaBundle\Entity\Media
+     */
+    public function getTechnicalSpecs()
+    {
+        return $this->technical_specs;
+    }
+
+    /**
+     * Get contactPerson
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContactPerson()
+    {
+        return $this->contact_person;
     }
 }

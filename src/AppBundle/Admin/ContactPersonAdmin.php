@@ -17,8 +17,10 @@ class ContactPersonAdmin extends BaseAdmin {
             ->add('phone', 'text')
             ->add('mail', 'text')
             ->add('_action', 'actions', array(
-                'edit' => array(),
-                'delete' => array(),
+                'actions' => array(
+                    'edit' => array(),
+                    'delete' => array(),
+                )
             ))
         ;
     }

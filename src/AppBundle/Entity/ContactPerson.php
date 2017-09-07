@@ -12,6 +12,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContactPerson
 {
+    public function __toString()
+    {
+        return $this->getDisplayName();
+    }
+
+    public function getDisplayName() {
+        return $this->getFirstname() . ' ' . $this->getLastname();
+    }
+
     /**
      * @var int
      *
@@ -49,6 +58,10 @@ class ContactPerson
      */
     private $mail;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Partner", mappedBy="contact_persons")
+     */
+    private $partners;
 
     /**
      * Get id
@@ -154,5 +167,46 @@ class ContactPerson
     public function getMail()
     {
         return $this->mail;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->partners = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add partner
+     *
+     * @param \AppBundle\Entity\Partner $partner
+     *
+     * @return ContactPerson
+     */
+    public function addPartner(\AppBundle\Entity\Partner $partner)
+    {
+        $this->partners[] = $partner;
+
+        return $this;
+    }
+
+    /**
+     * Remove partner
+     *
+     * @param \AppBundle\Entity\Partner $partner
+     */
+    public function removePartner(\AppBundle\Entity\Partner $partner)
+    {
+        $this->partners->removeElement($partner);
+    }
+
+    /**
+     * Get partners
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPartners()
+    {
+        return $this->partners;
     }
 }
