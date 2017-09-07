@@ -21,9 +21,18 @@ class SuggestionBoxAdmin extends BaseAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('displayName')
-            ->add('date')
-            ->add('object')
+            ->add('displayName', null, array(
+               'label' => 'Nom complet',
+            ))
+            ->add('date', null, array(
+                'label' => 'Date',
+            ))
+            ->add('object', null, array(
+                'label' => 'Objet'
+            ))
+            ->add('email', null, array(
+                'label' => 'E-mail',
+            ))
             ->add('_action', null, array(
                 'actions' => array(
                     'show' => array(),
@@ -35,13 +44,27 @@ class SuggestionBoxAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('name')
-            ->add('lastname')
-            ->add('email')
-            ->add('date')
-            ->add('mailCopy')
-            ->add('object')
-            ->add('message')
+            ->add('name', null, array(
+                'label' => 'Prénom',
+            ))
+            ->add('lastname', null, array(
+                'label' => 'Nom de famille',
+            ))
+            ->add('email', null, array(
+                'label' => 'Adresse e-mail',
+            ))
+            ->add('date', null, array(
+                'label' => "Date d'envoi",
+            ))
+            ->add('mailCopy', null, array(
+                'label' => 'A souhaité une copie par mail',
+            ))
+            ->add('object', null, array(
+                'label' => 'Objet',
+            ))
+            ->add('message', null, array(
+                'label' => 'Message',
+            ))
         ;
     }
 }

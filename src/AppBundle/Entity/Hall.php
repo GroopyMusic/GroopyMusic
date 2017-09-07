@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Application\Sonata\MediaBundle\Entity\Gallery;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,8 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Hall extends Partner
 {
-    const MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING = 90;
-    const DAYS_MARGIN_FOR_CROWDFUNDING = 10;
     const DATE_FORMAT = 'm/d/Y';
 
     public function __toString()
@@ -22,9 +21,25 @@ class Hall extends Partner
         return 'Salle : ' . $this->name;
     }
 
+    public function getCronAutomaticDaysFormatted() {
+        // TODO export this logic to use the translations in xliff
+        $translations = array(
+            'days_0' => 'Dimanche', 'days_1' => 'Lundi', 'days_2' => 'Mardi', 'days_3' => 'Mercredi', 'days_4' => 'Jeudi', 'days_5' => 'Vendredi', 'days_6' => 'Samedi'
+        );
+
+        $string = '';
+        foreach($this->cron_automatic_days as $i => $day) {
+            if($day)
+                $string .= $translations[$i] . ' ';
+        }
+        return $string;
+    }
+
     public function __construct()
     {
-        $base_day = (new \DateTime())->add(new \DateInterval('P'.self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING.'D'))->format(self::DATE_FORMAT);
+        parent::__construct();
+
+        $base_day = (new \DateTime())->format(self::DATE_FORMAT);
 
         $this->available_dates = [];
         $this->cron_automatic_days = array(
@@ -56,11 +71,15 @@ class Hall extends Partner
             }
         }
 
-        $max_cursor = (new \DateTime())->add(new \DateInterval('P'.(self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING + self::DAYS_MARGIN_FOR_CROWDFUNDING).'D'))->format(self::DATE_FORMAT);
-        $default_cursor = (new \DateTime())->add(new \DateInterval('P'.self::MINIMUM_DAYS_FROM_TODAY_FOR_CROWDFUNDING.'D'))->format(self::DATE_FORMAT);
+        $minimum_days_from_today_for_crowdfunding = $this->getStep()->getDeadlineDuration() + $this->getStep()->getDelay();
+        $days_margin_for_crowdfunding = $this->getStep()->getDelayMargin();
+
+        $max_cursor = (new \DateTime())->add(new \DateInterval('P'.($minimum_days_from_today_for_crowdfunding + $days_margin_for_crowdfunding).'D'))->format(self::DATE_FORMAT);
+        $default_cursor = (new \DateTime())->add(new \DateInterval('P'.$minimum_days_from_today_for_crowdfunding.'D'))->format(self::DATE_FORMAT);
 
         // For each possible day
         foreach($this->cron_explored_dates as $i => $current_cursor) {
+            $current_cursor = max($default_cursor, $current_cursor);
             // There is a rule -> refresh dates & update cursor
             if($this->cron_automatic_days[$i]) {
                 while($current_cursor != $max_cursor) {
@@ -75,7 +94,7 @@ class Hall extends Partner
             }
             // No rule -> just set the cursor right
             else {
-                $this->cron_explored_dates[$i] = $default_cursor;
+                $this->cron_explored_dates[$i] = $current_cursor;
             }
         }
     }
@@ -123,6 +142,31 @@ class Hall extends Partner
      * @ORM\Column(name="cron_automatic_days", type="array")
      */
     private $cron_automatic_days;
+
+    /**
+     * @ORM\Column(name="price", type="decimal", precision=7, scale=2)
+     */
+    private $price;
+
+    /**
+     * @var Gallery
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\MediaBundle\Entity\Gallery")
+     * @ORM\JoinColumns({
+     *     @ORM\JoinColumn(name="gallery", referencedColumnName="id")
+     * })
+     */
+    private $gallery;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\MediaBundle\Entity\Media")
+     */
+    private $technical_specs;
+
+    /**
+     * @ORM\Column(name="delay", type="smallint")
+     */
+    private $delay;
 
     /**
      * Get id
@@ -278,6 +322,151 @@ class Hall extends Partner
     {
         $this->available_dates_string = $available_dates_string;
         $this->available_dates = explode(',', $available_dates_string);
+    }
+
+
+    /**
+     * Set province
+     *
+     * @param \AppBundle\Entity\Province $province
+     *
+     * @return Hall
+     */
+    public function setProvince(\AppBundle\Entity\Province $province = null)
+    {
+        $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * Get province
+     *
+     * @return \AppBundle\Entity\Province
+     */
+    public function getProvince()
+    {
+        return $this->province;
+    }
+
+    /**
+     * Set price
+     *
+     * @param string $price
+     *
+     * @return Hall
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Hall
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set gallery
+     *
+     * @param \Application\Sonata\MediaBundle\Entity\Gallery $gallery
+     *
+     * @return Hall
+     */
+    public function setGallery(\Application\Sonata\MediaBundle\Entity\Gallery $gallery = null)
+    {
+        $this->gallery = $gallery;
+
+        return $this;
+    }
+
+    /**
+     * Get gallery
+     *
+     * @return \Application\Sonata\MediaBundle\Entity\Gallery
+     */
+    public function getGallery()
+    {
+        return $this->gallery;
+    }
+
+    /**
+     * Set delay
+     *
+     * @param integer $delay
+     *
+     * @return Hall
+     */
+    public function setDelay($delay)
+    {
+        $this->delay = $delay;
+
+        return $this;
+    }
+
+    /**
+     * Get delay
+     *
+     * @return integer
+     */
+    public function getDelay()
+    {
+        return $this->delay;
+    }
+
+    /**
+     * Set technicalSpecs
+     *
+     * @param \Application\Sonata\MediaBundle\Entity\Media $technicalSpecs
+     *
+     * @return Hall
+     */
+    public function setTechnicalSpecs(\Application\Sonata\MediaBundle\Entity\Media $technicalSpecs = null)
+    {
+        $this->technical_specs = $technicalSpecs;
+
+        return $this;
+    }
+
+    /**
+     * Get technicalSpecs
+     *
+     * @return \Application\Sonata\MediaBundle\Entity\Media
+     */
+    public function getTechnicalSpecs()
+    {
+        return $this->technical_specs;
     }
 
 }

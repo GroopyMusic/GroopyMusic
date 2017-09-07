@@ -21,6 +21,7 @@ class ContractFan
     {
         $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ticket_sent = false;
+        $this->date = new \DateTime();
     }
 
     public function generateBarCode() {
@@ -72,6 +73,11 @@ class ContractFan
      * @ORM\Column(name="barcode_text", type="string", length=255, nullable=true)
      */
     private $barcode_text;
+
+    /**
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
 
     /**
      * Get id
@@ -211,5 +217,29 @@ class ContractFan
     public function getBarcodeText()
     {
         return $this->barcode_text;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return ContractFan
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 }

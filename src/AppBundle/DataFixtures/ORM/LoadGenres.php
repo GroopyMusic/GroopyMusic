@@ -2,14 +2,10 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
-use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Genre;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use AppBundle\Entity\Phase;
-use AppBundle\Entity\Step;
-use AppBundle\Entity\StepType;
 
 class LoadGenres extends AbstractFixture implements OrderedFixtureInterface
 {
@@ -24,6 +20,7 @@ class LoadGenres extends AbstractFixture implements OrderedFixtureInterface
             $genre->setName($gs);
             $genres[] = $genre;
             $manager->persist($genre);
+            $genre->mergeNewTranslations();
         }
 
         $manager->flush();

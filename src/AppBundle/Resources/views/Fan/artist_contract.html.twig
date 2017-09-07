@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.name }}"</h1>
+<h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.getName }}"</h1>
 
     {% if artist is not defined and app.user.owns(contract.artist) %}
         <a href="{{ path('artist_contract', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
@@ -16,7 +16,7 @@
         Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y') }}
     </li>
     <li>
-        Palier : <a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.name }}</a>
+        Palier : <a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.getName }}</a>
     </li>
     <li>
         État du crowdfunding : {{ contract.collectedAmount }} € / {{ contract.step.requiredAmount }} €
@@ -38,7 +38,7 @@
 
 {% for article in contract.step.counterParts %}
     {% set tickets_left = contract.nbAvailable(article) %}
-    Contrepartie "{{ article.name }}" (prix : {{ article.price }} €, nombre restant : {{ tickets_left }}) :
+    Contrepartie "{{ article.getName }}" (prix : {{ article.price }} €, nombre restant : {{ tickets_left }}) :
     <select>
         {% set max_to_purchase = min(tickets_left, 10) %}
         {% for i in 0..max_to_purchase %}
@@ -62,7 +62,7 @@
     </div>
 {% endblock %}
 
-{% block javascripts_with_jquery %}
+{% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('js/cart.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/step.js') }}"></script>

@@ -3,6 +3,7 @@
 namespace AppBundle\Admin;
 
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -20,10 +21,16 @@ class PhaseAdmin extends BaseAdmin
     public function configureListFields(ListMapper $list)
     {
         $list
-            ->add('name')
-            ->add('num')
-            ->add('steps')
-            ->add('_action', null, array(
+            ->add('getName', null, array(
+                'label' => 'Nom'
+            ))
+            ->add('num', null, array(
+                'label' => "Numéro d'ordre",
+            ))
+            ->add('steps', null, array(
+                'label' => 'Paliers',
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -35,18 +42,38 @@ class PhaseAdmin extends BaseAdmin
     public function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('name')
-            ->add('num')
-            ->add('steps')
+            ->add('getName', null, array(
+                'label' => 'Nom'
+            ))
+            ->add('num', null, array(
+                'label' => "Numéro d'ordre",
+            ))
+            ->add('steps', null, array(
+                'label' => 'Paliers',
+            ))
         ;
     }
 
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('name')
-            ->add('num')
-            ->add('steps')
+                ->add('num', null, array(
+                    'label' => "Numéro d'ordre de la phase",
+                ))
+                ->add('steps', null, array(
+                    'label' => 'Paliers',
+                ))
+            ->end()
+            ->with('Champs traductibles')
+                ->add('translations', TranslationsType::class, array(
+                    'fields' => [
+                        'name' => [
+                            'label' => 'Nom de la phase'
+                        ]
+                    ],
+                    'label' => false,
+                ))
+            ->end()
         ;
     }
 

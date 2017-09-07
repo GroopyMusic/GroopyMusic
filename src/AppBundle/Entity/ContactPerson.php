@@ -12,6 +12,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContactPerson
 {
+    public function __toString()
+    {
+        return $this->getDisplayName();
+    }
+
+    public function __construct()
+    {
+    }
+
+    public function getDisplayName() {
+        return $this->getFirstname() . ' ' . $this->getLastname();
+    }
+
     /**
      * @var int
      *
@@ -48,7 +61,6 @@ class ContactPerson
      * @ORM\Column(name="mail", type="string", length=255)
      */
     private $mail;
-
 
     /**
      * Get id

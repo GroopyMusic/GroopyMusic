@@ -21,6 +21,34 @@
         <target state="new">txt.email.head.link.to.web.view.text.%url%</target>
         <jms:reference-file line="54">\..\..\..\..\..\./src\AppBundle\Resources\views\Mail\baseEmailLayout.txt.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit>
+        <source>Days 0</source>
+        <target>Dimanche</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Days 1</source>
+        <target>Lundi</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Days 2</source>
+        <target>Mardi</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Days 3</source>
+        <target>Mercredi</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Days 4</source>
+        <target>Jeudi</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Days 5</source>
+        <target>Vendredi</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Days 6</source>
+        <target>Samedi</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

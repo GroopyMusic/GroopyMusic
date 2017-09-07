@@ -3,9 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -13,25 +12,35 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="genre")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenreRepository")
- * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\GenreTranslation")
  */
-class Genre extends AbstractPersonalTranslatable implements TranslatableInterface
+class Genre implements TranslatableInterface
 {
-    public function __toString()
+    use ORMBehaviors\Translatable\Translatable;
+
+    public function __call($method, $arguments)
     {
-        return 'Genre : ' . $this->name;
+        return $this->proxyCurrentLocaleTranslation($method, $arguments);
     }
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="AppBundle\Entity\Translations\GenreTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
-     */
-    protected $translations;
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
+    public function __toString()
+    {
+        return '' . $this->getName();
+    }
+
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
 
     /**
      * @var int
@@ -42,13 +51,6 @@ class Genre extends AbstractPersonalTranslatable implements TranslatableInterfac
      */
     private $id;
 
-    /**
-     * @var string
-     *
-     * @Gedmo\Translatable
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
-    private $name;
 
     /**
      * Get id
@@ -58,39 +60,5 @@ class Genre extends AbstractPersonalTranslatable implements TranslatableInterfac
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Genre
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param \AppBundle\Entity\Translations\GenreTranslation $translation
-     */
-    public function removeTranslation(\AppBundle\Entity\Translations\GenreTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 }

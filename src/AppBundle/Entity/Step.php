@@ -3,114 +3,21 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Step
- *
  * @ORM\Table(name="step")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StepRepository")
- * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\StepTranslation")
  */
-class Step extends AbstractPersonalTranslatable implements TranslatableInterface
+class Step extends BaseStep
 {
-    public function __toString()
+    public function __construct()
     {
-        return $this->name;
+        parent::__construct();
+        $this->type = 'concert';
+        $this->delay = 60;
+        $this->delay_margin = 30;
+        $this->deadline_duration = 30;
     }
-
-    public function getAvailableDates() {
-        $dates = array();
-
-        foreach($this->getHalls() as $hall) {
-            $dates = array_merge($dates, $hall->getAvailableDates());
-        }
-
-        return array_unique($dates);
-    }
-
-    public function getAvailableDatesFormatted() {
-        $availableDates = $this->getAvailableDates();
-
-        $display = '';
-        $count = count($availableDates);
-        for($i = 0; $i < $count; $i++) {
-            $display .= $availableDates[$i];
-            if($i != $count - 1) {
-                $display .= ',';
-            }
-        }
-        return $display ;
-    }
-
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="AppBundle\Entity\Translations\StepTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
-     */
-    protected $translations;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     * @Gedmo\Translatable
-     */
-    private $name;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="num", type="smallint")
-     */
-    private $num;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Phase", inversedBy="steps")
-     */
-    private $phase;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="StepType", inversedBy="steps")
-     */
-    private $type;
-
-    /**
-     * @ORM\Column(name="deadline_duration", type="integer")
-     */
-    private $deadline_duration;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="step")
-     */
-    private $counterParts;
-
-    /**
-     * @ORM\Column(name="required_amount", type="integer")
-     */
-    private $requiredAmount;
-
-    /**
-     * @ORM\Column(name="description", type="text")
-     * @Gedmo\Translatable
-     */
-    private $description;
 
     /**
      * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
@@ -118,223 +25,149 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
     private $halls;
 
     /**
-     * Get id
-     *
-     * @return int
+     * @ORM\Column(name="approximate_capacity", type="smallint")
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    private $approximate_capacity;
 
     /**
-     * Set name
+     * @ORM\Column(name="delay", type="smallint")
+     */
+    private $delay;
+
+    /**
+     * @ORM\Column(name="delay_margin", type="smallint")
+     */
+    private $delay_margin;
+
+    /**
+     * @ORM\Column(name="min_tickets", type="smallint")
+     */
+    private $min_tickets;
+
+    /**
+     * @ORM\Column(name="max_tickets", type="smallint")
+     */
+    private $max_tickets;
+
+
+    /**
+     * Set approximateCapacity
      *
-     * @param string $name
+     * @param integer $approximateCapacity
      *
      * @return Step
      */
-    public function setName($name)
+    public function setApproximateCapacity($approximateCapacity)
     {
-        $this->name = $name;
+        $this->approximate_capacity = $approximateCapacity;
 
         return $this;
     }
 
     /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set num
-     *
-     * @param integer $num
-     *
-     * @return Step
-     */
-    public function setNum($num)
-    {
-        $this->num = $num;
-
-        return $this;
-    }
-
-    /**
-     * Get num
-     *
-     * @return int
-     */
-    public function getNum()
-    {
-        return $this->num;
-    }
-
-    /**
-     * Set phase
-     *
-     * @param \AppBundle\Entity\Phase $phase
-     *
-     * @return Step
-     */
-    public function setPhase(\AppBundle\Entity\Phase $phase = null)
-    {
-        $this->phase = $phase;
-
-        return $this;
-    }
-
-    /**
-     * Get phase
-     *
-     * @return \AppBundle\Entity\Phase
-     */
-    public function getPhase()
-    {
-        return $this->phase;
-    }
-
-    /**
-     * Set type
-     *
-     * @param \AppBundle\Entity\StepType $type
-     *
-     * @return Step
-     */
-    public function setType(\AppBundle\Entity\StepType $type = null)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return \AppBundle\Entity\StepType
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Set deadlineDuration
-     *
-     * @param integer $deadlineDuration
-     *
-     * @return Step
-     */
-    public function setDeadlineDuration($deadlineDuration)
-    {
-        $this->deadline_duration = $deadlineDuration;
-
-        return $this;
-    }
-
-    /**
-     * Get deadlineDuration
+     * Get approximateCapacity
      *
      * @return integer
      */
-    public function getDeadlineDuration()
+    public function getApproximateCapacity()
     {
-        return $this->deadline_duration;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->counterParts = new \Doctrine\Common\Collections\ArrayCollection();
+        return $this->approximate_capacity;
     }
 
     /**
-     * Add counterPart
+     * Set delay
      *
-     * @param \AppBundle\Entity\CounterPart $counterPart
+     * @param integer $delay
      *
      * @return Step
      */
-    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    public function setDelay($delay)
     {
-        $this->counterParts[] = $counterPart;
-        $counterPart->setStep($this);
+        $this->delay = $delay;
 
         return $this;
     }
 
     /**
-     * Remove counterPart
-     *
-     * @param \AppBundle\Entity\CounterPart $counterPart
-     */
-    public function removeCounterPart(\AppBundle\Entity\CounterPart $counterPart)
-    {
-        $this->counterParts->removeElement($counterPart);
-    }
-
-    /**
-     * Get counterParts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCounterParts()
-    {
-        return $this->counterParts;
-    }
-
-    /**
-     * Set requiredAmount
-     *
-     * @param integer $requiredAmount
-     *
-     * @return Step
-     */
-    public function setRequiredAmount($requiredAmount)
-    {
-        $this->requiredAmount = $requiredAmount;
-
-        return $this;
-    }
-
-    /**
-     * Get requiredAmount
+     * Get delay
      *
      * @return integer
      */
-    public function getRequiredAmount()
+    public function getDelay()
     {
-        return $this->requiredAmount;
+        return $this->delay;
     }
 
     /**
-     * Set description
+     * Set delayMargin
      *
-     * @param string $description
+     * @param integer $delayMargin
      *
      * @return Step
      */
-    public function setDescription($description)
+    public function setDelayMargin($delayMargin)
     {
-        $this->description = $description;
+        $this->delay_margin = $delayMargin;
 
         return $this;
     }
 
     /**
-     * Get description
+     * Get delayMargin
      *
-     * @return string
+     * @return integer
      */
-    public function getDescription()
+    public function getDelayMargin()
     {
-        return $this->description;
+        return $this->delay_margin;
+    }
+
+    /**
+     * Set minTickets
+     *
+     * @param integer $minTickets
+     *
+     * @return Step
+     */
+    public function setMinTickets($minTickets)
+    {
+        $this->min_tickets = $minTickets;
+
+        return $this;
+    }
+
+    /**
+     * Get minTickets
+     *
+     * @return integer
+     */
+    public function getMinTickets()
+    {
+        return $this->min_tickets;
+    }
+
+    /**
+     * Set maxTickets
+     *
+     * @param integer $maxTickets
+     *
+     * @return Step
+     */
+    public function setMaxTickets($maxTickets)
+    {
+        $this->max_tickets = $maxTickets;
+
+        return $this;
+    }
+
+    /**
+     * Get maxTickets
+     *
+     * @return integer
+     */
+    public function getMaxTickets()
+    {
+        return $this->max_tickets;
     }
 
     /**
@@ -369,15 +202,5 @@ class Step extends AbstractPersonalTranslatable implements TranslatableInterface
     public function getHalls()
     {
         return $this->halls;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param \AppBundle\Entity\Translations\StepTranslation $translation
-     */
-    public function removeTranslation(\AppBundle\Entity\Translations\StepTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 }

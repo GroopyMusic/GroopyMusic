@@ -3,36 +3,54 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Doctrine\Common\Collections\ArrayCollection;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 
 /**
  * SpecialAdvantage
  *
  * @ORM\Table(name="special_advantage")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SpecialAdvantageRepository")
- * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\SpecialAdvantageTranslation")
  */
-class SpecialAdvantage extends AbstractPersonalTranslatable implements TranslatableInterface
+class SpecialAdvantage implements TranslatableInterface
 {
+    use ORMBehaviors\Translatable\Translatable;
+
+    public function __toString()
+    {
+        return '' . $this->getName();
+    }
+
+    public function __call($method, $arguments)
+    {
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
     public function __construct()
     {
         $this->available = false;
         $this->availableQuantity = 0;
     }
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="AppBundle\Entity\Translations\SpecialAdvantageTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
-     */
-    protected $translations;
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
 
     /**
      * @var int
@@ -42,22 +60,6 @@ class SpecialAdvantage extends AbstractPersonalTranslatable implements Translata
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Gedmo\Translatable
-     */
-    private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text")
-     * @Gedmo\Translatable
-     */
-    private $description;
 
     /**
      * @var int
@@ -86,54 +88,6 @@ class SpecialAdvantage extends AbstractPersonalTranslatable implements Translata
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return SpecialAdvantage
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return SpecialAdvantage
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**
@@ -206,15 +160,5 @@ class SpecialAdvantage extends AbstractPersonalTranslatable implements Translata
     public function getAvailable()
     {
         return $this->available;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param \AppBundle\Entity\Translations\SpecialAdvantageTranslation $translation
-     */
-    public function removeTranslation(\AppBundle\Entity\Translations\SpecialAdvantageTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 }

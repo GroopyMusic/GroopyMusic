@@ -2,12 +2,7 @@
 
 namespace AppBundle\Admin;
 
-use AppBundle\Entity\StepType;
-use AppBundle\Form\ConcertPossibilityType;
-use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
 
 class ContractArtistArtistAdmin extends BaseAdmin
 {

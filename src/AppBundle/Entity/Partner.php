@@ -21,6 +21,20 @@ class Partner
         }
     }
 
+    public function getContactPersons() {
+        return array_map(function($elem) {
+            return $elem->getContactPerson();
+        }, $this->contact_persons_list->toArray());
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->contact_persons_list = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     /**
      * @var int
      *
@@ -48,15 +62,24 @@ class Partner
     protected $website;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ContactPerson", cascade={"all"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\OneToMany(targetEntity="Partner_ContactPerson", mappedBy="partner", cascade={"all"}, orphanRemoval=true)
      */
-    protected $contact_person;
+    protected $contactpersons_list;
 
     /**
      * @ORM\Column(name="comment", type="text", nullable=true)
      */
     protected $comment;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Province")
+     */
+    protected $province;
+
+    /**
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    protected $description;
 
     /**
      * Get id
@@ -165,26 +188,85 @@ class Partner
     }
 
     /**
-     * Set contactPerson
+     * Set province
      *
-     * @param \AppBundle\Entity\ContactPerson $contactPerson
+     * @param \AppBundle\Entity\Province $province
      *
      * @return Partner
      */
-    public function setContactPerson(\AppBundle\Entity\ContactPerson $contactPerson)
+    public function setProvince(\AppBundle\Entity\Province $province = null)
     {
-        $this->contact_person = $contactPerson;
+        $this->province = $province;
 
         return $this;
     }
 
     /**
-     * Get contactPerson
+     * Get province
      *
-     * @return \AppBundle\Entity\ContactPerson
+     * @return \AppBundle\Entity\Province
      */
-    public function getContactPerson()
+    public function getProvince()
     {
-        return $this->contact_person;
+        return $this->province;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Partner
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Add contactpersonsList
+     *
+     * @param \AppBundle\Entity\Partner_ContactPerson $contactpersonsList
+     *
+     * @return Partner
+     */
+    public function addContactpersonsList(\AppBundle\Entity\Partner_ContactPerson $contactpersonsList)
+    {
+        $this->contactpersons_list[] = $contactpersonsList;
+        $contactpersonsList->setPartner($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove contactpersonsList
+     *
+     * @param \AppBundle\Entity\Partner_ContactPerson $contactpersonsList
+     */
+    public function removeContactpersonsList(\AppBundle\Entity\Partner_ContactPerson $contactpersonsList)
+    {
+        $this->contactpersons_list->removeElement($contactpersonsList);
+    }
+
+    /**
+     * Get contactpersonsList
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContactpersonsList()
+    {
+        return $this->contactpersons_list;
     }
 }

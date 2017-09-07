@@ -8,13 +8,13 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: en
+    locale: fr
     email_from_address: no-reply@un-mute.be
     email_from_name: Un-Mute
 
 framework:
     #esi:             ~
-    translator:      { fallbacks: [fr] }
+    translator:      { fallbacks: ["%locale%"] }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -46,6 +46,7 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
       - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
+      - 'SonataMediaBundle:Form:media_widgets.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -57,24 +58,29 @@ doctrine:
         user:     "%database_user%"
         password: "%database_password%"
         charset:  UTF8
+        types:
+          json: Sonata\Doctrine\Types\JsonType
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
-        mappings:
-            gedmo_translatable:
-                type: annotation
-                prefix: Gedmo\Translatable\Entity
-                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
-                alias: GedmoTranslatable # (optional) it will default to the name set for the mapping
-                is_bundle: false
+        entity_managers:
+          default:
+            auto_mapping: true
+            naming_strategy: doctrine.orm.naming_strategy.underscore
+            mappings:
+              SonataMediaBundle: ~
+              ApplicationSonataMediaBundle: ~
 
-stof_doctrine_extensions:
-    default_locale: fr_FR
-    orm:
-        default:
-          translatable: true
+
+knp_doctrine_behaviors:
+  translatable: true
+
+a2lix_translation_form:
+  locale_provider: default
+  locales: [fr, en]
+  default_locale : "%locale%"
+  required_locales: ["%locale%"]
+  templating: "A2lixTranslationFormBundle::default.html.twig"
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -129,7 +135,7 @@ assetic:
                 - "%kernel.root_dir%/../vendor/twbs/bootstrap/dist/js/bootstrap.js"
 
 jms_i18n_routing:
-    default_locale: fr
+    default_locale: "%locale%"
     locales: [fr, en]
     strategy: prefix_except_default
 
@@ -148,7 +154,7 @@ tetranz_select2_entity:
     page_limit: 8
     allow_clear: false
     delay: 500
-    language: fr
+    language: "%locale%"
     cache: false
     cache_timeout: 0
     scroll: false

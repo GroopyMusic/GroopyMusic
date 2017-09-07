@@ -1,5 +1,11 @@
 <?php
 
+// TODO
+// Virer pseudo -> form
+// newsletter -> form
+// Adresse facultative -> form
+// Historique fan -> profil
+
 namespace AppBundle\Entity;
 
 use Azine\EmailBundle\Entity\RecipientInterface;
@@ -25,6 +31,7 @@ class User extends BaseUser implements RecipientInterface
         $this->setNewsletter(true);
         $this->credits = 0;
         $this->addRole("ROLE_FAN");
+        $this->inscription_date = new \DateTime();
     }
 
     public function owns(Artist $artist) {
@@ -138,6 +145,16 @@ class User extends BaseUser implements RecipientInterface
      */
     private $genres;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Address")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(name="inscription_date", type="datetime")
+     */
+    private $inscription_date;
 
     /**
      * @param mixed $salutation
@@ -481,5 +498,53 @@ class User extends BaseUser implements RecipientInterface
     public function getGenres()
     {
         return $this->genres;
+    }
+
+    /**
+     * Set inscriptionDate
+     *
+     * @param \DateTime $inscriptionDate
+     *
+     * @return User
+     */
+    public function setInscriptionDate($inscriptionDate)
+    {
+        $this->inscription_date = $inscriptionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get inscriptionDate
+     *
+     * @return \DateTime
+     */
+    public function getInscriptionDate()
+    {
+        return $this->inscription_date;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return User
+     */
+    public function setAddress(\AppBundle\Entity\Address $address = null)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 }

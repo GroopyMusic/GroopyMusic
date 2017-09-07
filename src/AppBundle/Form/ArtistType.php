@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Province;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -16,8 +18,11 @@ class ArtistType extends AbstractType
     {
         $builder
             ->add('artistname', TextType::class)
-            ->add('short_description', TextareaType::class)
-            ->add('biography', TextareaType::class)
+            ->add('province', EntityType::class, array(
+                'class' => Province::class,
+            ))
+            ->add('translations.short_description', TextareaType::class)
+            ->add('translations.biography', TextareaType::class)
             ->add('genres', Select2EntityType::class, [
                 'multiple' => true,
                 'remote_route' => 'select2_genres',

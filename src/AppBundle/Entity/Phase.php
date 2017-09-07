@@ -3,9 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -13,30 +12,44 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="phase")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PhaseRepository")
- * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\PhaseTranslation")
  */
-class Phase extends AbstractPersonalTranslatable implements TranslatableInterface
+class Phase implements TranslatableInterface
 {
+    use ORMBehaviors\Translatable\Translatable;
+
+    public function __call($method, $arguments)
+    {
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
     public function __construct()
     {
-        $this->steps = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->steps = new ArrayCollection();
     }
 
     public function __toString() {
-        return $this->num . ' ' . $this->name;
+        return $this->num . ' ' . $this->getName();
     }
 
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="AppBundle\Entity\Translations\PhaseTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
-     */
-    protected $translations;
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
 
     /**
      * @var int
@@ -46,14 +59,6 @@ class Phase extends AbstractPersonalTranslatable implements TranslatableInterfac
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     * @Gedmo\Translatable
-     */
-    private $name;
 
     /**
      * @var int
@@ -75,30 +80,6 @@ class Phase extends AbstractPersonalTranslatable implements TranslatableInterfac
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Phase
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -158,15 +139,5 @@ class Phase extends AbstractPersonalTranslatable implements TranslatableInterfac
     public function getSteps()
     {
         return $this->steps;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param \AppBundle\Entity\Translations\PhaseTranslation $translation
-     */
-    public function removeTranslation(\AppBundle\Entity\Translations\PhaseTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 }

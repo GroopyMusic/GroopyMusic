@@ -25,20 +25,32 @@ class ContractArtistAdmin extends BaseAdmin
     {
         $list
             ->add('id')
-            ->add('date')
+            ->add('date', 'date', array(
+                'label' => 'Date de création',
+                'format' => 'd/m/Y',
+            ))
             ->add('artist', null, array(
+                'label' => 'Artiste',
                 'route' => array('name' => 'show'),
             ))
             ->add('step', null, array(
+                'label' => 'Palier',
                 'route' => array('name' => 'show'),
             ))
-            ->add('date_end', 'datetime', array(
+            ->add('date_end', 'date', array(
+                'label' => 'Échéance',
                 'format' => 'd/m/Y',
             ))
-            ->add('failed')
-            ->add('successful')
-            ->add('refunded')
-            ->add('_action', null, array(
+            ->add('failed', null, array(
+                'label' => 'Échec',
+            ))
+            ->add('successful', null, array(
+                'label' => 'Réussi',
+            ))
+            ->add('refunded', null, array(
+                'label' => 'Remboursé',
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -52,40 +64,86 @@ class ContractArtistAdmin extends BaseAdmin
     public function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('id')
-            ->add('date', 'date', array(
-                'pattern' => 'dd MMM y',
-                'locale' => 'fr',
-                'timezone' => 'Europe/Paris',
-            ))
-            ->add('dateEnd', 'date', array(
-                'pattern' => 'dd MMM y',
-                'locale' => 'fr',
-                'timezone' => 'Europe/Paris',
-            ))
-            ->add('step', null, array(
-                'route' => array('name' => 'show'),
-            ))
-            ->add('artist', null, array(
-                'route' => array('name' => 'show'),
-            ))
-            ->add('motivations')
-            ->add('payments', null, array(
-                'route' => array('name' => 'show'),
-            ))
-            ->add('reminders')
-            ->add('preferences')
-            ->add('coartists_list')
-            ->add('reality')
-            ->add('collected_amount')
-            ->add('failed')
-            ->add('successful')
-            ->add('cart_reminder_sent')
-            ->add('refunded')
-            ->add('contractsFan', null, array(
-                'route' => array('name' => 'show'),
-            ))
-            ->add('asking_refund')
+            ->with('Infos générales')
+                ->add('id')
+                ->add('date', 'date', array(
+                    'label' => 'Date de création',
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr',
+                    'timezone' => 'Europe/Paris',
+                ))
+                ->add('dateEnd', 'date', array(
+                    'label' => 'Échéance',
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr',
+                    'timezone' => 'Europe/Paris',
+                ))
+                ->add('step', null, array(
+                    'label' => 'Palier',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('artist', null, array(
+                    'label' => 'Artiste',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('province', null, array(
+                    'label' => 'Province',
+                ))
+                ->add('motivations', null, array(
+                    'label' => 'Motivations',
+                ))
+                ->add('newsletter', null, array(
+                    'label' => 'Newsletter associée',
+                ))
+            ->end()
+            ->with('État')
+                ->add('collected_amount', null, array(
+                    'label' => 'Montant collecté',
+                ))
+                ->add('failed', null, array(
+                    'label' => 'Échec',
+                ))
+                ->add('successful', null, array(
+                    'label' => 'Réussi',
+                ))
+                ->add('cart_reminder_sent', null, array(
+                    'label' => 'Rappel envoyé pour les paniers non payés qui le référencent',
+                ))
+                ->add('refunded', null, array(
+                    'label' => 'Remboursé',
+                ))
+                ->add('asking_refund', null, array(
+                    'label' => 'Demandes de remboursement',
+                ))
+                ->add('reminders_artist', null, array(
+                    'label' => "Rappels envoyés à l'artiste",
+                ))
+                ->add('reminders_admin', null, array(
+                    'label' => "Rappels envoyés aux admins",
+                ))
+            ->end()
+            ->with('Concrétisation')
+                ->add('preferences', null, array(
+                    'label' => 'Préférences',
+                ))
+                ->add('reality', null, array(
+                    'label' => 'Réalité associée'
+                ))
+                ->add('coartists_list', null, array(
+                    'associated_property' => 'artist',
+                    'label' => 'Premières parties',
+                ))
+            ->end()
+            ->with('Soutien')
+                ->add('payments', null, array(
+                    'label' => 'Paiements',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('contractsFan', null, array(
+                    'label' => 'Contrats fan',
+                    'route' => array('name' => 'show'),
+                ))
+            ->end()
         ;
     }
 
@@ -93,19 +151,31 @@ class ContractArtistAdmin extends BaseAdmin
     {
         $form
             ->add('dateEnd', 'date', array(
+                'required' => true,
+                'label' => 'Échéance',
                 'html5' => false,
                 'widget' => 'single_text',
                 'format' => 'MM/dd/yyyy',
                 'attr' => ['class' => 'datePicker'],
             ))
-            ->add('motivations')
+            ->add('motivations', null, array(
+                'required' => false,
+                'label' => 'Motivations du groupe',
+            ))
+            ->add('province', null, array(
+                'required' => true,
+                'label' => 'Province',
+            ))
             ->end()
         ;
 
         if($this->getSubject()->getStep()->getType()->getName() == StepType::TYPE_CONCERT) {
             $form
                 ->with('Réalité')
-                    ->add('reality', 'sonata_type_admin', array('required' => false), array(
+                    ->add('reality', 'sonata_type_admin', array(
+                        'label' => false,
+                        'required' => false,
+                    ), array(
                         'admin_code' => ConcertPossibilityAdmin::class,
                     ))
                 ->end();
@@ -113,16 +183,16 @@ class ContractArtistAdmin extends BaseAdmin
 
         $form
             ->with('Premières parties')
-            ->add( 'coartists_list', 'sonata_type_collection', array(
-                'by_reference' => false,
-            ), array(
-                    'edit'            => 'inline',
-                    'inline'          => 'table',
-                    'sortable'        => 'position',
-                    'link_parameters' => array( 'context' => 'define context from which you want to select media or else just add default' ),
-                    'admin_code'      => ContractArtistArtistAdmin::class,
+                ->add( 'coartists_list', 'sonata_type_collection', array(
+                    'label' => false,
+                    'by_reference' => false,
+                ), array(
+                        'edit'            => 'inline',
+                        'inline'          => 'table',
+                        'sortable'        => 'position',
+                        'admin_code'      => ContractArtistArtistAdmin::class,
+                    )
                 )
-            )
             ->end()
         ;
 

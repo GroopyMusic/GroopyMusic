@@ -16,15 +16,19 @@ class UserAdmin extends BaseAdmin
             ->remove('delete')
             ->remove('create')
             ->remove('edit')
-
         ;
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('displayName')
-            ->add('_action', null, array(
+            ->add('displayName', null, array(
+                'label' => 'Nom complet',
+            ))
+            ->add('email', null, array(
+                'label' => 'Adresse e-mail',
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                 )))
@@ -34,15 +38,44 @@ class UserAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('lastname')
-            ->add('firstname')
-            ->add('newsletter')
-            ->add('credits')
-            ->add('genres')
-            ->add('payments')
-            ->add('stripe_customer_id')
-            ->add('carts')
-            ->add('specialPurchases')
+            ->with('Profil')
+                ->add('id', null)
+                ->add('inscription_date', null, array(
+                    'label' => "Date d'inscription"
+                ))
+                ->add('lastname', null, array(
+                    'label' => 'Nom de famille',
+                ))
+                ->add('firstname', null, array(
+                    'label' => 'Prénom',
+                ))
+                ->add('newsletter', null, array(
+                    'label' => 'Inscrit à la newsletter',
+                ))
+                ->add('genres', null, array(
+                    'label' => 'Genres musicaux',
+                ))
+                ->add('address', null, array(
+                    'label' => 'Adresse',
+                ))
+            ->end()
+            ->with('Activité')
+                ->add('payments', null, array(
+                    'label' => 'Paiements',
+                ))
+                ->add('carts', null, array(
+                    'label' => 'Paniers',
+                ))
+                ->add('stripe_customer_id', null, array(
+                    'label' => 'Stripe customer ID',
+                ))
+                ->add('credits', null, array(
+                    'label' => 'Crédits obtenus',
+                ))
+                ->add('specialPurchases', null, array(
+                    'label' => 'Achats avec crédits bonus',
+                ))
+            ->end()
         ;
     }
 }

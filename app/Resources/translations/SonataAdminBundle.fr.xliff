@@ -74,7 +74,7 @@
 
             <trans-unit id="app.admin.contractfan">
                 <source>app.admin.contractfan</source>
-                <target>Achat fan</target>
+                <target>Contrat fan</target>
             </trans-unit>
 
             <trans-unit id="app.admin.cart">
@@ -95,6 +95,26 @@
             <trans-unit id="app.admin.specialpurchase">
                 <source>app.admin.specialpurchase</source>
                 <target>Achat spécial</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.contactperson">
+                <source>app.admin.contactperson</source>
+                <target>Personne de contact</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.hall">
+                <source>app.admin.hall</source>
+                <target>Salle</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.province">
+                <source>app.admin.province</source>
+                <target>Province</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.counterpart">
+                <source>app.admin.counterpart</source>
+                <target>Contrepartie</target>
             </trans-unit>
         </body>
     </file>

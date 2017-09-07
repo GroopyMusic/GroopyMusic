@@ -3,9 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslatable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -13,25 +12,40 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="counter_part")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CounterPartRepository")
- * @Gedmo\TranslationEntity(class="AppBundle\Entity\Translations\CounterPartTranslation")
  */
-class CounterPart extends AbstractPersonalTranslatable implements TranslatableInterface
+class CounterPart implements TranslatableInterface
 {
-    public function __toString()
+    use ORMBehaviors\Translatable\Translatable;
+
+    public function __call($method, $arguments)
     {
-        return $this->name;
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
     }
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="AppBundle\Entity\Translations\CounterPartTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
-     */
-    protected $translations;
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
+    public function __toString()
+    {
+        return '' . $this->getName();
+    }
+
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
 
     /**
      * @var int
@@ -50,24 +64,10 @@ class CounterPart extends AbstractPersonalTranslatable implements TranslatableIn
     private $price;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Gedmo\Translatable
-     */
-    private $name;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Step", inversedBy="counterParts")
      * @ORM\JoinColumn(nullable=false)
      */
     private $step;
-
-    /**
-     * @ORM\Column(name="description", type="text")
-     * @Gedmo\Translatable
-     */
-    private $description;
 
     /**
      * @ORM\Column(name="maximum_amount", type="smallint")
@@ -109,30 +109,6 @@ class CounterPart extends AbstractPersonalTranslatable implements TranslatableIn
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return CounterPart
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * Set step
      *
      * @param \AppBundle\Entity\Step $step
@@ -157,30 +133,6 @@ class CounterPart extends AbstractPersonalTranslatable implements TranslatableIn
     }
 
     /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return CounterPart
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
      * Set maximumAmount
      *
      * @param integer $maximumAmount
@@ -202,15 +154,5 @@ class CounterPart extends AbstractPersonalTranslatable implements TranslatableIn
     public function getMaximumAmount()
     {
         return $this->maximum_amount;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param \AppBundle\Entity\Translations\CounterPartTranslation $translation
-     */
-    public function removeTranslation(\AppBundle\Entity\Translations\CounterPartTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 }

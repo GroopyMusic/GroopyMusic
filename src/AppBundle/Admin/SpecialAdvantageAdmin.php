@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\Hall;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -13,11 +14,13 @@ class SpecialAdvantageAdmin extends BaseAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('name')
+            ->add('getName', null, array(
+                'label' => 'Nom'
+            ))
             ->add('availableQuantity')
             ->add('priceCredits')
             ->add('available')
-            ->add('_action', null, array(
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -28,8 +31,12 @@ class SpecialAdvantageAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name')
-            ->add('description')
+            ->add('getName', null, array(
+                'label' => 'Name',
+            ))
+            ->add('getDescription', null, array(
+                'label' => 'Description',
+            ))
             ->add('availableQuantity')
             ->add('priceCredits')
             ->add('available')
@@ -39,8 +46,7 @@ class SpecialAdvantageAdmin extends BaseAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
-            ->add('description')
+            ->add('translations', TranslationsType::class)
             ->add('availableQuantity')
             ->add('priceCredits')
             ->add('available')

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -20,15 +21,21 @@ class StepAdmin extends BaseAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('name', null, array(
+            ->addIdentifier('getName', null, array(
+                'label' => 'Nom',
                 'route' => array('name' => 'show'),
             ))
             ->add('phase', null, array(
+                'label' => 'Phase',
                 'route' => array('name' => 'show'),
             ))
-            ->add('type')
-            ->add('description')
-            ->add('_action', null, array(
+            ->add('getDescription', null, array(
+                'label' => 'Description'
+            ))
+            ->add('approximate_capacity', null, array(
+                'label' => 'Capacité approximative',
+            ))
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
@@ -40,26 +47,101 @@ class StepAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name')
-            ->add('description', 'text')
-            ->add('num', 'integer')
-            ->add('type')
-            ->add('phase')
+            ->with('Infos générales')
+                ->add('getName', null, array(
+                    'required' => true,
+                    'label' => 'Nom'
+                ))
+                ->add('getDescription', 'text', array(
+                    'required' => true,
+                    'label' => 'Description',
+                ))
+                ->add('phase', null, array(
+                    'required' => true,
+                    'label' => 'phase',
+                ))
+                ->add('num', 'integer', array(
+                    'required' => true,
+                    'label' => "Numéro d'ordre dans la phase",
+                ))
+            ->end()
+            ->with('Infos par rapport aux concerts & crowdfundings')
+                ->add('approximate_capacity', null, array(
+                    'required' => true,
+                    'label' => 'Capacité approximative',
+                ))
+                ->add('delay', null, array(
+                    'required' => true,
+                    'label' => 'Délai de confirmation',
+                ))
+                ->add('delay_margin', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de jours ouverts pour le choix de date après le délai de confirmation (= fenêtre de shotgun pour les artistes)'
+                ))
+                ->add('min_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets min à vendre pour réussite',
+                ))
+                ->add('max_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets max à vendre',
+                ))
+            ->end()
         ;
     }
 
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
-            ->add('description', 'text')
-            ->add('num', 'integer')
-            ->add('type', 'entity', array(
-                'class' => 'AppBundle:StepType'
+
+            ->with('Champs traductibles')
+            ->add('translations', TranslationsType::class, array(
+                'label' => false,
+                'fields' => [
+                    'name' => [
+                        'label' => 'Nom',
+                    ],
+                    'description' => [
+                        'label' => 'Description',
+                    ],
+                ],
             ))
-            ->add('phase', 'entity', array(
-                'class' => 'AppBundle:Phase'
-            ))
+            ->end()
+
+            ->with('Phase')
+                ->add('phase', null, array(
+                    'required' => true,
+                    'label' => 'Phase',
+                ))
+                ->add('num', 'integer', array(
+                    'required' => true,
+                    'label' => "Numéro d'ordre dans la phase",
+                ))
+            ->end()
+
+
+            ->with('Infos par rapport aux concerts & crowdfundings')
+                ->add('approximate_capacity', null, array(
+                    'required' => true,
+                    'label' => 'Capacité approximative',
+                ))
+                ->add('delay', null, array(
+                    'required' => true,
+                    'label' => 'Délai de confirmation',
+                ))
+                ->add('delay_margin', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de jours ouverts pour le choix de date après le délai de confirmation (= fenêtre de shotgun pour les artistes)'
+                ))
+                ->add('min_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets min à vendre pour réussite',
+                ))
+                ->add('max_tickets', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de tickets max à vendre',
+                ))
+            ->end()
         ;
     }
 

@@ -16,6 +16,7 @@ class ConcertPossibilityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $step = $options['step'];
+        $province = $options['province'];
 
         $builder
             /*->add('hall', EntityType::class, array(
@@ -32,7 +33,7 @@ class ConcertPossibilityType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'MM/dd/yyyy',
                 'html5' => false,
-                'attr' => ['class' => 'datePicker', 'available-dates' => $step->getAvailableDatesFormatted()],
+                'attr' => ['class' => 'datePicker', 'available-dates' => $step->getAvailableDatesFormatted($province)],
             ))
         ;
     }
@@ -40,6 +41,7 @@ class ConcertPossibilityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults(array(
             'step' => null,
+            'province' => null,
             'data_class' => \AppBundle\Entity\ConcertPossibility::class,
         ));
     }

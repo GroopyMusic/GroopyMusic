@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Address
 {
+    public function __toString()
+    {
+        return $this->getStreet() . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city . ' (' . $this->country . ')';
+    }
+
     /**
      * @var int
      *
