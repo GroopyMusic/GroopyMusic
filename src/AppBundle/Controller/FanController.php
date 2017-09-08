@@ -71,10 +71,10 @@ class FanController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         // TODO algorithm
-        $artists = $em->getRepository('AppBundle:Artist')->findAll();
+        $artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false]);
 
         return $this->render('@App/Fan/artists.html.twig', array(
-
+            'artists' => $artists,
         ));
     }
 

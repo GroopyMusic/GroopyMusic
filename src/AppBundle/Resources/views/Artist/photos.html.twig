@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h2>Photo de profil</h2>
+    <div id="dropzone-1">
+        <div id="artist_edit_pp" class="dropzone needsclick dz-clickable"></div>
+    </div>
+
+    <h2>Autres photos (max 5)</h2>
+    <div id="dropzone-2">
+        <div id="artist_edit_photos" class="dropzone needsclick dz-clickable"></div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset('js/dropzone.js') }}"></script>
+
+    <script>
+        $('document').ready(function() {
+
+            var $ppzone =  $("div#artist_edit_pp");
+
+            {% if artist.profilepic is not null %}
+                var ppmock = {
+                    name: "{{ artist.profilepic.filename }}",
+                    url: "{{ absolute_url(asset(artist.profilepic.webPath)) }}"
+                };
+            {% endif %}
+            {#
+            $ppzone.dropzone({
+                url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
+                resizeWidth: 500,
+                maxFiles: 1,
+                addRemoveLinks: true,
+                params: {
+                    pp: 1,
+                    artist: "{{ artist.id }}"
+                },
+                accept: function (file, done) {
+                    console.log(file);
+                    if ((file.type).toLowerCase() != "image/jpg" &&
+                            (file.type).toLowerCase() != "image/gif" &&
+                            (file.type).toLowerCase() != "image/jpeg" &&
+                            (file.type).toLowerCase() != "image/png"
+                    ) {
+                        done("Invalid file");
+                    }
+                    else {
+                        done();
+                    }
+                },
+                removedfile: function(file) {
+                    $.ajax({
+                        method: 'get',
+                        url: "{{ path('artist_ajax_remove_photo', {'id': artist.id}) }}",
+                        data: {
+                            pp: true,
+                            filename: file.name
+                        },
+                        complete: function() {
+                            file.previewElement.remove();
+                        }
+                    });
+                },
+                init: function() {
+                    {% if artist.profilepic is not null %}
+                        ppmock.accepted = true;
+                        this.files.push(ppmock);
+                        this.emit('addedfile', ppmock);
+                        this.options.thumbnail.call(this, ppmock, ppmock.url);
+                        this.emit('complete', ppmock);
+                        $ppzone.options.maxFiles = 0;
+                    {% endif %}
+                }
+            });
+            #}
+
+            var $dropzone = $("div#artist_edit_photos");
+            var mocks = [];
+            {% for photo in artist.photos %}
+                mocks.push({
+                    name: "{{ photo.filename }}",
+                    url: "{{ absolute_url(asset(photo.webPath)) }}"
+                });
+            {% endfor %}
+
+            $dropzone.dropzone({
+                url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
+                resizeWidth: 500,
+                maxFiles: 5,
+                addRemoveLinks: true,
+                 params: {
+                    pp: 0,
+                    artist: "{{ artist.id }}"
+                },
+                accept: function (file, done) {
+                    console.log(file);
+                    if ((file.type).toLowerCase() != "image/jpg" &&
+                            (file.type).toLowerCase() != "image/gif" &&
+                            (file.type).toLowerCase() != "image/jpeg" &&
+                            (file.type).toLowerCase() != "image/png"
+                            ) {
+                        done("Invalid file");
+                    }
+                    else {
+                        done();
+                    }
+                },
+                removedfile: function(file) {
+                    $.ajax({
+                        method: 'get',
+                        url: "{{ path('artist_ajax_remove_photo', {'id': artist.id}) }}",
+                        data: {
+                            filename: file.name
+                        },
+                        complete: function() {
+                            file.previewElement.remove();
+                        }
+                    });
+                },
+                init: function() {
+                    var i = 0;
+                    while(i < mocks.length) {
+                        var mock = mocks[i];
+                        mock.accepted = true;
+
+                        this.files.push(mock);
+                        this.emit('addedfile', mock);
+                        this.options.thumbnail.call(this, mock, mock.url);
+                        this.emit('complete', mock);
+                        i++;
+                    }
+                    $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
+                    alert( $dropzone.options.maxFiles);
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

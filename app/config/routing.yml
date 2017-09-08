@@ -20,6 +20,10 @@ app_select2:
   type: annotation
   prefix: /select2
 
+oneup_uploader:
+  resource: .
+  type: uploader
+
 admin_area:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
     prefix: /admin

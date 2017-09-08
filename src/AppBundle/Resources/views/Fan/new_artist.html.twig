@@ -4,8 +4,26 @@
 
     <h1>Nouvel artiste</h1>
 
+    {% form_theme form 'jquery.collection.html.twig' %}
+
     {{ form_start(form) }}
 
     {{ form_row(form) }}
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jquery.collection.js') }}"></script>
+    <script type="text/javascript">
+        $('document').ready(function() {
+            alert('ready');
+            $('.artist_video_collection').collection({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>'
+            });
+        });
+    </script>
 {% endblock %}
