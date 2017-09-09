@@ -14,9 +14,11 @@ use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
 use AppBundle\Form\ArtistType;
 use AppBundle\Form\ContractArtistType;
+use AppBundle\Form\UserEmailType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -244,6 +246,92 @@ class FanController extends Controller
         ));
     }
 
+    /**
+     * @Route("change-email", name="user_change_email")
+     */
+    public function changeEmailAction(Request $request, UserInterface $user) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm(UserEmailType::class, $user);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $email = $user->getAskedEmail();
+
+            $error_detect = $em->getRepository('AppBundle:User')->findOneBy(['email' => $email]);
+            if($error_detect != null) {
+                $form->get('email')->addError(new FormError('user.askemail.alreadyinuse'));
+            }
+
+            else {
+                $user->setConfirmationToken($this->get('fos_user.util.token_generator')->generateToken());
+                $em->persist($user);
+                $this->get('AppBundle\Services\MailDispatcher')->sendEmailChangeConfirmation($user);
+                $em->flush();
+
+                $this->addFlash('notice', 'Bien reçu votre demande, regardez vos mails');
+
+                return $this->redirectToRoute('user_change_email');
+            }
+        }
+
+        return $this->render('@App/Fan/change_email.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/change-email-token-{token}", name="user_change_email_check")
+     */
+    public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token) {
+
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AppBundle:User')->findOneBy(['confirmationToken' => $token]);
+
+        if(!$user) {
+            $this->addFlash('error', 'Ce jeton est expiré');
+            return $this->redirectToRoute('homepage');
+        }
+
+        $asked_email = $user->getAskedEmail();
+
+        $error_detector = $em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
+        if($error_detector != null) {
+            $this->addFlash('error', "L'adresse e-mail demandée est déjà prise par un autre membre depuis votre demande.");
+            return $this->redirectToRoute('homepage');
+        }
+
+        // Everything ok -> let's change email
+        $user->setEmail($asked_email);
+        $user->setEmailCanonical($asked_email);
+
+        $user->setAskedEmail(null);
+        $user->setConfirmationToken(null);
+
+        // Logout (in case another user was logged in)
+        if($current_user != null && $current_user->getId() != $user->getId()) {
+            $this->get('security.token_storage')->setToken(null);
+
+            // Invalidating the session.
+            $session = $request->getSession();
+            $session->invalidate();
+
+            $this->addFlash('notice', "Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.");
+        }
+
+        else {
+            $this->addFlash('notice', "Votre e-mail a bien été modifié.");
+        }
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
+
+    }
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 

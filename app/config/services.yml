@@ -36,3 +36,4 @@ services:
     AppBundle\Services\DropzoneUploadNamer:
       arguments: ["@logger", "@doctrine.orm.entity_manager", "@request_stack"]
 
+    AppBundle\Services\MailDispatcher: ~

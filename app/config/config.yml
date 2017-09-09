@@ -103,12 +103,14 @@ fos_user:
     registration:
         form:
             type: AppBundle\Form\RegistrationType
+           # validations_groups: [AppRegistration] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
         confirmation:
             enabled: true
             template: AppBundle:Mail:registration_confirmation.txt.twig
     profile:
         form:
           type: AppBundle\Form\ProfileType
+         # validation_groups: [AppProfile] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
     from_email:
         address:        no-reply@un-mute.be
         sender_name:    'Un-Mute'

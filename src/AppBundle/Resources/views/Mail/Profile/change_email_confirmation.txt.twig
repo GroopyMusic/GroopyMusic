@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}Subject{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
+    Hello,
+    {{ txtH2Style }}
+
+    Link : {{ absolute_url(path('user_change_email_check', {'token': user.confirmationToken})) }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Profile:change_email_confirmation.html.twig' %}
+{% endblock %}

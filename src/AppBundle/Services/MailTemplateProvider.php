@@ -32,6 +32,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const OWNERSHIPREQUEST_MEMBER_TEMPLATE = 'AppBundle:Mail:ownershiprequest_member.txt.twig';
     const OWNERSHIPREQUEST_NONMEMBER_TEMPLATE = 'AppBundle:Mail:ownershiprequest_nonmember.txt.twig';
 
+    const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/Profile:change_email_confirmation.txt.twig';
+
     // Admin mails templates
     const REMINDER_CONTRACT_ADMIN_TEMPLATE = 'AppBundle:Mail:Admin:reminder_contract_admin.txt.twig';
 

@@ -6,11 +6,6 @@
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
-      <trans-unit id="6362bc7b7a8f72b782ffd590744ab069327bbe4a" resname="registration.email.message">
-        <source>registration.email.message</source>
-        <target state="new">registration.email.message</target>
-        <jms:reference-file line="12">\..\..\..\..\..\./src\AppBundle\Resources\views\Mail\registration_confirmation.html.twig</jms:reference-file>
-      </trans-unit>
     </body>
   </file>
 </xliff>
