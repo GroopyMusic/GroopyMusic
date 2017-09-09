@@ -163,3 +163,4 @@ oneup_uploader:
     mappings:
         artist_gallery:
             frontend: dropzone # or any uploader you use in the frontend
+            namer: AppBundle\Services\DropzoneUploadNamer

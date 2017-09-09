@@ -33,4 +33,6 @@ services:
       tags:
             - { name: kernel.event_listener, event: oneup_uploader.post_persist, method: onUpload }
 
+    AppBundle\Services\DropzoneUploadNamer:
+      arguments: ["@logger", "@doctrine.orm.entity_manager", "@request_stack"]
 

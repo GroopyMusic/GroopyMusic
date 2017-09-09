@@ -29,6 +29,7 @@ class UploadListener
         $photo = new \AppBundle\Entity\Photo();
         /** @var UploadedFile $file */
         $file = $event->getFile();
+
         $photo->setFilename($file->getFilename());
 
         if($pp) {
@@ -44,6 +45,7 @@ class UploadListener
 
         $response = $event->getResponse();
         $response['success'] = true;
+        $response['newfilename'] = $photo->getFilename();
         return $response;
     }
 

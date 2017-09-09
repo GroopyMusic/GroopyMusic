@@ -8,12 +8,12 @@
 {% block body %}
     <h2>Photo de profil</h2>
     <div id="dropzone-1">
-        <div id="artist_edit_pp" class="dropzone needsclick dz-clickable"></div>
+        <div id="artist_edit_pp" class="dropzone"></div>
     </div>
 
     <h2>Autres photos (max 5)</h2>
     <div id="dropzone-2">
-        <div id="artist_edit_photos" class="dropzone needsclick dz-clickable"></div>
+        <div id="artist_edit_photos" class="dropzone"></div>
     </div>
 {% endblock %}
 
@@ -25,62 +25,7 @@
     <script>
         $('document').ready(function() {
 
-            var $ppzone =  $("div#artist_edit_pp");
-
-            {% if artist.profilepic is not null %}
-                var ppmock = {
-                    name: "{{ artist.profilepic.filename }}",
-                    url: "{{ absolute_url(asset(artist.profilepic.webPath)) }}"
-                };
-            {% endif %}
-            {#
-            $ppzone.dropzone({
-                url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
-                resizeWidth: 500,
-                maxFiles: 1,
-                addRemoveLinks: true,
-                params: {
-                    pp: 1,
-                    artist: "{{ artist.id }}"
-                },
-                accept: function (file, done) {
-                    console.log(file);
-                    if ((file.type).toLowerCase() != "image/jpg" &&
-                            (file.type).toLowerCase() != "image/gif" &&
-                            (file.type).toLowerCase() != "image/jpeg" &&
-                            (file.type).toLowerCase() != "image/png"
-                    ) {
-                        done("Invalid file");
-                    }
-                    else {
-                        done();
-                    }
-                },
-                removedfile: function(file) {
-                    $.ajax({
-                        method: 'get',
-                        url: "{{ path('artist_ajax_remove_photo', {'id': artist.id}) }}",
-                        data: {
-                            pp: true,
-                            filename: file.name
-                        },
-                        complete: function() {
-                            file.previewElement.remove();
-                        }
-                    });
-                },
-                init: function() {
-                    {% if artist.profilepic is not null %}
-                        ppmock.accepted = true;
-                        this.files.push(ppmock);
-                        this.emit('addedfile', ppmock);
-                        this.options.thumbnail.call(this, ppmock, ppmock.url);
-                        this.emit('complete', ppmock);
-                        $ppzone.options.maxFiles = 0;
-                    {% endif %}
-                }
-            });
-            #}
+            Dropzone.autoDiscover = false;
 
             var $dropzone = $("div#artist_edit_photos");
             var mocks = [];
@@ -98,7 +43,7 @@
                 addRemoveLinks: true,
                  params: {
                     pp: 0,
-                    artist: "{{ artist.id }}"
+                    artist: {{ artist.id }}
                 },
                 accept: function (file, done) {
                     console.log(file);
@@ -118,7 +63,7 @@
                         method: 'get',
                         url: "{{ path('artist_ajax_remove_photo', {'id': artist.id}) }}",
                         data: {
-                            filename: file.name
+                            filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
                         },
                         complete: function() {
                             file.previewElement.remove();
@@ -138,9 +83,73 @@
                         i++;
                     }
                     $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
-                    alert( $dropzone.options.maxFiles);
+                },
+                success: function(file, serverResponse) {
+                    var fileuploded = file.previewElement.querySelector("[data-dz-name]");
+                    fileuploded.innerHTML = serverResponse.newfilename;
                 }
             });
+
+            alert('mdr');
+
+
+            var $ppzone =  $("div#artist_edit_pp");
+
+            {% if artist.profilepic is not null %}
+                var ppmock = {
+                    name: "{{ artist.profilepic.filename }}",
+                    url: "{{ absolute_url(asset(artist.profilepic.webPath)) }}"
+                };
+            {% endif %}
+
+            $ppzone.dropzone({
+                url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
+                resizeWidth: 500,
+                maxFiles: 1,
+                addRemoveLinks: true,
+                params: {
+                    pp: 1,
+                    artist: {{ artist.id }}
+                },
+                accept: function (file, done) {
+                    console.log(file);
+                    if ((file.type).toLowerCase() != "image/jpg" &&
+                            (file.type).toLowerCase() != "image/gif" &&
+                            (file.type).toLowerCase() != "image/jpeg" &&
+                            (file.type).toLowerCase() != "image/png"
+                    ) {
+                        done("Invalid file");
+                    }
+                    else {
+                        done();
+                    }
+                },
+                removedfile: function(file) {
+                    $.ajax({
+                        method: 'get',
+                        url: "{{ path('artist_ajax_remove_photo', {'id': artist.id}) }}",
+                        data: {
+                            filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
+                        },
+                        complete: function() {
+                            file.previewElement.remove();
+                        }
+                    });
+                },
+                init: function() {
+                    this.files.push(ppmock);
+                    this.emit('addedfile', ppmock);
+                    this.options.thumbnail.call(this, ppmock, pmock.url);
+                    this.emit('complete', ppmock);
+
+                    $ppzone.options.maxFiles = 0;
+                },
+                success: function(file, serverResponse) {
+                    var fileuploded = file.previewElement.querySelector("[data-dz-name]");
+                    fileuploded.innerHTML = serverResponse.newfilename;
+                }
+            });
+
         });
 
     </script>

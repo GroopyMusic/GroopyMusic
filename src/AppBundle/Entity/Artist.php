@@ -57,6 +57,10 @@ class Artist implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
+    public function getSafename() {
+        return urlencode($this->artistname);
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
