@@ -52,8 +52,7 @@ class ArtistAdmin extends BaseAdmin
                 ))
                 ->add('artists_user', null, array(
                     'label' => 'Propriétaires',
-                    'associated_property' => 'userToString',
-                    // TODO 'route' => array('name' => 'show'),
+                    'template' => 'AppBundle:Admin/Artist:owners.html.twig',
                 ))
                 ->add('getShortDescription', null, array(
                     'label' => 'Description courte',
@@ -105,6 +104,13 @@ class ArtistAdmin extends BaseAdmin
                             'label' => 'Biographie',
                         ],
                     ],
+                ))
+            ->end()
+
+            ->with('Autres')
+                ->add('deleted', null, array(
+                    'required' => false,
+                    'label' => "Cacher l'artiste (il ne sera plus visible sur la plateforme)",
                 ))
             ->end()
         ;

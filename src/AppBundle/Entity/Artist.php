@@ -65,6 +65,13 @@ class Artist implements TranslatableInterface
         return !$this->deleted;
     }
 
+    public function getOwners() {
+        return array_map(function($elem) {
+                return $elem->getUser();
+        }, $this->artists_user->toArray());
+    }
+
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

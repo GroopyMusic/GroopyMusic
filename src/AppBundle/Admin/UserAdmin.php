@@ -41,6 +41,7 @@ class UserAdmin extends BaseAdmin
             ->with('Profil')
                 ->add('id', null)
                 ->add('inscription_date', null, array(
+                    'format' => 'd/m/y H:i:s',
                     'label' => "Date d'inscription"
                 ))
                 ->add('lastname', null, array(
