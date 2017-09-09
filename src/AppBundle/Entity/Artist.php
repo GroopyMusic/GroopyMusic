@@ -61,6 +61,10 @@ class Artist implements TranslatableInterface
         return urlencode($this->artistname);
     }
 
+    public function isActive() {
+        return !$this->deleted;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

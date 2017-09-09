@@ -38,7 +38,7 @@ class ArtistType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
-                'attr' => ['class' => 'artist_video_collection'],
+                'attr' => ['class' => 'collection'],
                 'label' => false,
             ))
             ->add('website')

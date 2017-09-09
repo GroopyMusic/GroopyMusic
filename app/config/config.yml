@@ -47,6 +47,7 @@ twig:
     form_themes:
       - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
       - 'SonataMediaBundle:Form:media_widgets.html.twig'
+      - 'jquery.collection.html.twig'
 
 # Doctrine Configuration
 doctrine:

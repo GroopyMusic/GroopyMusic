@@ -1,0 +1,9 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% block field_value %}
+        {% for video in object.videos %}
+           {{ video.embedVideo|raw }}
+        {% endfor %}
+    {% endblock %}
+{% endblock %}

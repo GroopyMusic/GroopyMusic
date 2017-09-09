@@ -1,0 +1,9 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+
+    {% block field_value %}
+        <img src="{{ asset(object.profilepic.webPath) }}" />
+    {% endblock %}
+
+{% endblock %}

@@ -5,19 +5,19 @@ app_public:
 app_user:
     resource: "@AppBundle/Controller/UserController.php"
     type:     annotation
-    prefix: /secure
+    prefix: /
 
 app_fan:
     resource: "@AppBundle/Controller/FanController.php"
     type:     annotation
-    prefix: /secure/fan
+    prefix: /
 
 app_artist:
     resource: "@AppBundle/Controller/ArtistController.php"
     type:     annotation
-    prefix: /secure/artist/{id}
+    prefix: /artist/{id}
 
 app_payment:
     resource: "@AppBundle/Controller/PaymentController.php"
     type:     annotation
-    prefix: /secure/payment-zone
+    prefix: /secure-zone

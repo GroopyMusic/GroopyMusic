@@ -8,4 +8,16 @@
         <a href="{{ path('artist_profile_edit', {'id': artist.id}) }}">Modifier le profil</a>
     {% endif %}
 
+    {% if artist.profilepic is not null %}
+        <img src="{{ asset(artist.profilepic.webPath) }}" />
+    {% endif %}
+
+    {% for photo in artist.photos %}
+        <img src="{{ asset(photo.webPath) }}" />
+    {% endfor %}
+
+    {% for video in artist.videos %}
+        {{ video.embedVideo|raw }}
+    {% endfor %}
+
 {% endblock %}
