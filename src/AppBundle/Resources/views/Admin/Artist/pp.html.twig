@@ -3,7 +3,9 @@
 {% block field %}
 
     {% block field_value %}
-        <img src="{{ asset(object.profilepic.webPath) }}" />
+        {% if object.profilepic is not null %}
+            <img src="{{ asset(object.webPath(object.profilepic)) }}" />
+        {% endif %}
     {% endblock %}
 
 {% endblock %}

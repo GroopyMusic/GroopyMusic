@@ -408,7 +408,7 @@ class ArtistController extends Controller
         }
 
         $filesystem = new Filesystem();
-        $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . $photo->getWebPath());
+        $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Artist::getWebPath($photo));
 
         $em->persist($artist);
         $em->flush();

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\Hall;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -10,6 +11,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\TranslationBundle\Filter\TranslationFieldFilter;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class HallAdmin extends PartnerAdmin  {
 
@@ -59,17 +61,14 @@ class HallAdmin extends PartnerAdmin  {
                 ->add('available_dates_string', 'text', array(
                     'label' => 'Dates disponibles (calculé automatiquement mais modifiable)',
                 ))
-                ->add('technical_specs', 'sonata_media_type', array(
+                ->add('technical_specs', null, array(
                     'label' => 'Spécifications techniques (PDF)',
-                    'provider' => 'sonata.media.provider.file',
-                    'context' => 'hall',
+                    'template' => 'AppBundle:Admin/Hall:technical_specs.html.twig',
                 ))
-                ->add('gallery', 'sonata_type_model_list', array(
-                    'label' => 'Galerie',
-                    'required' => false,
-                ), array(
-                    'link_parameters' => array('context' => 'hall'))
-                )
+                ->add('photos', null, array(
+                    'label' => 'Photos',
+                    'template' => 'AppBundle:Admin/Hall:photos.html.twig',
+                ))
             ->end()
         ;
     }
@@ -77,6 +76,8 @@ class HallAdmin extends PartnerAdmin  {
     public function configureFormFields(FormMapper $form)
     {
         parent::configureFormFields($form);
+        $container = $this->getConfigurationPool()->getContainer();
+
         $form
             ->with('Données de la salle')
                 ->add('step', 'sonata_type_model', array(
@@ -115,13 +116,18 @@ class HallAdmin extends PartnerAdmin  {
                     'required' => false,
                     'attr' => ['class' => 'multiDatesPicker'],
                 ))
-                ->add('technical_specs', 'sonata_type_model', array(
+
+                ->add('technical_specs_file', VichFileType::class, array(
                     'required' => false,
-                    'label' => 'Spécifications techniques (PDF)'
+                    'allow_delete' => true,
+                    'label' => 'Spécifications techniques (PDF)',
+                    'download_uri' => function(Hall $hall) use ($container) {
+                        return $container->get('assets.packages')->getUrl($container->get('vich_uploader.templating.helper.uploader_helper')->asset($hall, 'technical_specs_file'));
+                    },
+                    'download_label' => 'Télécharger',
                 ))
-                ->add('gallery', 'sonata_type_model', array(
-                    'required' => false,
-                    'label' => 'Galerie photos'
+                ->add('photos', null, array(
+                    'label' => 'Photos',
                 ))
             ->end()
         ;

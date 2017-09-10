@@ -21,3 +21,8 @@ app_payment:
     resource: "@AppBundle/Controller/PaymentController.php"
     type:     annotation
     prefix: /secure-zone
+
+admin_ajax:
+    resource: "@AppBundle/Controller/AdminAjaxController.php"
+    type:     annotation
+    prefix: /admin/ajax/

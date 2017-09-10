@@ -16,6 +16,12 @@ class Artist implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
 
+    const PHOTOS_DIR = 'uploads/artist_gallery/';
+
+    public static function getWebPath(Photo $photo) {
+        return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
     public function __call($method, $arguments)
     {
         try {

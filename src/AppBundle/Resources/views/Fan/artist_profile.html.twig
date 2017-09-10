@@ -9,11 +9,11 @@
     {% endif %}
 
     {% if artist.profilepic is not null %}
-        <img src="{{ asset(artist.profilepic.webPath) }}" />
+        <img src="{{ asset(artist.webPath(artist.profilepic)) }}" />
     {% endif %}
 
     {% for photo in artist.photos %}
-        <img src="{{ asset(photo.webPath) }}" />
+        <img src="{{ asset(artist.webPath(photo)) }}" />
     {% endfor %}
 
     {% for video in artist.videos %}

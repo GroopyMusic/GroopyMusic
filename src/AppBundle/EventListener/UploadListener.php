@@ -21,26 +21,29 @@ class UploadListener
     public function onUpload(PostPersistEvent $event)
     {
         $request = $event->getRequest();
-        $artist_id = $request->get('artist');
-        $pp = boolval($request->get('pp', 0));
-
-        $artist = $this->om->getRepository('AppBundle:Artist')->find($artist_id);
 
         $photo = new \AppBundle\Entity\Photo();
         /** @var UploadedFile $file */
         $file = $event->getFile();
-
         $photo->setFilename($file->getFilename());
 
-        if($pp) {
-            $artist->setProfilepic($photo);
+        if($artist_id = $request->get('artist')) {
+            $pp = boolval($request->get('pp', 0));
+            $artist = $this->om->getRepository('AppBundle:Artist')->find($artist_id);
+
+            if ($pp) {
+                $artist->setProfilepic($photo);
+            } else {
+                $artist->addPhoto($photo);
+            }
+            $this->om->persist($artist);
         }
 
-        else {
-            $artist->addPhoto($photo);
+        elseif($hall_id = $request->get('hall')) {
+            $hall = $this->om->getRepository('AppBundle:Hall')->find($hall_id);
+            $hall->addPhoto($photo);
+            $this->om->persist($hall);
         }
-
-        $this->om->persist($artist);
         $this->om->flush();
 
         $response = $event->getResponse();

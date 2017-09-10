@@ -30,20 +30,17 @@ class AppKernel extends Kernel
             new Sonata\BlockBundle\SonataBlockBundle(),
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
-            new Sonata\MediaBundle\SonataMediaBundle(),
-            new Application\Sonata\MediaBundle\ApplicationSonataMediaBundle(),
-            new Sonata\EasyExtendsBundle\SonataEasyExtendsBundle(),
             new Sonata\TranslationBundle\SonataTranslationBundle(),
             new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
             new JMose\CommandSchedulerBundle\JMoseCommandSchedulerBundle(),
             new JMS\I18nRoutingBundle\JMSI18nRoutingBundle(),
             new JMS\TranslationBundle\JMSTranslationBundle(),
-            new JMS\SerializerBundle\JMSSerializerBundle(),
             new Skies\QRcodeBundle\SkiesQRcodeBundle(),
             new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new A2lix\TranslationFormBundle\A2lixTranslationFormBundle(),
             new Oneup\UploaderBundle\OneupUploaderBundle(),
+            new Vich\UploaderBundle\VichUploaderBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

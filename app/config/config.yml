@@ -46,7 +46,6 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
       - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
-      - 'SonataMediaBundle:Form:media_widgets.html.twig'
       - 'jquery.collection.html.twig'
 
 # Doctrine Configuration
@@ -68,10 +67,6 @@ doctrine:
           default:
             auto_mapping: true
             naming_strategy: doctrine.orm.naming_strategy.underscore
-            mappings:
-              SonataMediaBundle: ~
-              ApplicationSonataMediaBundle: ~
-
 
 knp_doctrine_behaviors:
   translatable: true
@@ -166,4 +161,20 @@ oneup_uploader:
     mappings:
         artist_gallery:
             frontend: dropzone # or any uploader you use in the frontend
-            namer: AppBundle\Services\DropzoneUploadNamer
+            namer: AppBundle\Services\ArtistPhotoUploadNamer
+        hall_gallery:
+            frontend: dropzone
+            namer: AppBundle\Services\HallPhotoUploadNamer
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+      hall_technical_specs:
+          uri_prefix:         uploads/hall_technicalspecs
+          upload_destination: '%kernel.root_dir%/../web/uploads/hall_technicalspecs'
+          delete_on_update:   true
+          delete_on_remove:   true
+          inject_on_load:     false
+          namer:
+            service: vich_uploader.namer_property
+            options: { property: 'technicalSpecsFileName'}

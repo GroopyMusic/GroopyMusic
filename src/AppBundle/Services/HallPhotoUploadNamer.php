@@ -2,15 +2,15 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Entity\Artist;
+use AppBundle\Entity\Hall;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Oneup\UploaderBundle\Uploader\File\FileInterface;
 use Oneup\UploaderBundle\Uploader\Naming\NamerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class DropzoneUploadNamer implements NamerInterface
+class HallPhotoUploadNamer implements NamerInterface
 {
     /**
      * @var LoggerInterface
@@ -27,7 +27,7 @@ class DropzoneUploadNamer implements NamerInterface
      */
     private $requestStack;
 
-    public function __construct(LoggerInterface $logger, EntityManager $em, RequestStack $requestStack)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $em, RequestStack $requestStack)
     {
         $this->logger = $logger;
         $this->em = $em;
@@ -37,7 +37,7 @@ class DropzoneUploadNamer implements NamerInterface
     public function name(FileInterface $file)
     {
         $request = $this->requestStack->getCurrentRequest();
-        $artist = $this->em->getRepository('AppBundle:Artist')->find($request->get('artist'));
-        return sprintf('%s.%s', $artist->getSafename() . '-' . uniqid(), $file->getExtension());
+        $hall = $this->em->getRepository('AppBundle:Hall')->find($request->get('hall'));
+        return sprintf('%s.%s', 'hg-' . $hall->getSafename() . '-' . uniqid(), $file->getExtension());
     }
 }

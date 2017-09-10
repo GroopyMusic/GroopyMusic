@@ -12,8 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Photo
 {
-    public function getWebPath() {
-        return 'uploads/artist_gallery/' . $this->filename;
+
+    public function __toString()
+    {
+        return $this->filename;
     }
 
     public function __construct()

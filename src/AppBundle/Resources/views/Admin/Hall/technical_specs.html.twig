@@ -1,0 +1,11 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+
+    {% block field_value %}
+
+       {% if object.technicalSpecsName is not null %} <a href="{{ asset(vich_uploader_asset(object, 'technical_specs_file')) }}">Télécharger</a> {% endif %}
+
+    {% endblock %}
+
+{% endblock %}
