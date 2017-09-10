@@ -1,0 +1,13 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% block field_value %}
+        {% if object.owners|length > 0 %}
+            <ul>
+            {% for owner in object.owners %}
+                <li><a href="{{ path('admin_app_user_show', {'id': owner.id}) }}">{{ owner }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endblock %}
+{% endblock %}

@@ -1,27 +1,26 @@
 <?php
 
-// TODO ajouter :
-// Photos
-// Vidéos
-// Musiques qu'ils uploadent
-// Site Web
-// Lien vers Facebook
-// Lien vers twitter
-
 namespace AppBundle\Entity;
 
+use Application\Sonata\MediaBundle\Entity\Gallery;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ArtistRepository")
  * @ORM\Table(name="artist")
  */
 class Artist implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
+
+    const PHOTOS_DIR = 'uploads/artist_gallery/';
+
+    public static function getWebPath(Photo $photo) {
+        return self::PHOTOS_DIR . $photo->getFilename();
+    }
 
     public function __call($method, $arguments)
     {
@@ -45,6 +44,12 @@ class Artist implements TranslatableInterface
     public function __construct(Phase $phase)
     {
         $this->phase = $phase;
+        $this->deleted = false;
+        $this->genres = new ArrayCollection();
+        $this->artists_user = new ArrayCollection();
+        $this->ownership_requests = new ArrayCollection();
+        $this->photos = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function setLocale($locale)
@@ -57,6 +62,21 @@ class Artist implements TranslatableInterface
     {
         return $this->getCurrentLocale();
     }
+
+    public function getSafename() {
+        return urlencode($this->artistname);
+    }
+
+    public function isActive() {
+        return !$this->deleted;
+    }
+
+    public function getOwners() {
+        return array_map(function($elem) {
+                return $elem->getUser();
+        }, $this->artists_user->toArray());
+    }
+
 
     /**
      * @ORM\Id
@@ -77,11 +97,13 @@ class Artist implements TranslatableInterface
     private $phase;
 
     /**
+     * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="Genre")
      */
     private $genres;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="Artist_User", mappedBy="artist")
      */
     private $artists_user;
@@ -93,9 +115,61 @@ class Artist implements TranslatableInterface
     private $province;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="ArtistOwnershipRequest", mappedBy="artist", cascade={"persist"})
      */
     private $ownership_requests;
+
+    /**
+     * @ORM\Column(name="deleted", type="boolean")
+     */
+    private $deleted;
+
+    /**
+     * @var Photo
+     *
+     * @ORM\OneToOne(targetEntity="Photo", cascade={"all"})
+     */
+    private $profilepic;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Photo", cascade={"all"})
+     */
+    private $photos;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Video", cascade={"all"})
+     */
+    private $videos;
+
+    /**
+     * @var string
+     * @ORM\Column(name="website", type="string", length=255, nullable=true)
+     */
+    private $website;
+
+    /**
+     * @var string
+     * @ORM\Column(name="facebook", type="string", length=255, nullable=true)
+     */
+    private $facebook;
+
+    /**
+     * @var string
+     * @ORM\Column(name="twitter", type="string", length=255, nullable=true)
+     */
+    private $twitter;
+
+    /**
+     * @var string
+     * @ORM\Column(name="spotify", type="string", length=255, nullable=true)
+     */
+    private $spotify;
+
 
     // Form only
     public $ownership_requests_form;
@@ -105,7 +179,7 @@ class Artist implements TranslatableInterface
      *
      * @param string $artistname
      *
-     * @return UserArtist
+     * @return Artist
      */
     public function setArtistname($artistname)
     {
@@ -129,7 +203,7 @@ class Artist implements TranslatableInterface
      *
      * @param \AppBundle\Entity\Phase $phase
      *
-     * @return UserArtist
+     * @return Artist
      */
     public function setPhase(\AppBundle\Entity\Phase $phase)
     {
@@ -308,5 +382,217 @@ class Artist implements TranslatableInterface
     public function getProvince()
     {
         return $this->province;
+    }
+
+    /**
+     * Set deleted
+     *
+     * @param boolean $deleted
+     *
+     * @return Artist
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * Get deleted
+     *
+     * @return boolean
+     */
+    public function getDeleted()
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * Set website
+     *
+     * @param string $website
+     *
+     * @return Artist
+     */
+    public function setWebsite($website)
+    {
+        $this->website = $website;
+
+        return $this;
+    }
+
+    /**
+     * Get website
+     *
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    /**
+     * Set facebook
+     *
+     * @param string $facebook
+     *
+     * @return Artist
+     */
+    public function setFacebook($facebook)
+    {
+        $this->facebook = $facebook;
+
+        return $this;
+    }
+
+    /**
+     * Get facebook
+     *
+     * @return string
+     */
+    public function getFacebook()
+    {
+        return $this->facebook;
+    }
+
+    /**
+     * Set twitter
+     *
+     * @param string $twitter
+     *
+     * @return Artist
+     */
+    public function setTwitter($twitter)
+    {
+        $this->twitter = $twitter;
+
+        return $this;
+    }
+
+    /**
+     * Get twitter
+     *
+     * @return string
+     */
+    public function getTwitter()
+    {
+        return $this->twitter;
+    }
+
+    /**
+     * Set spotify
+     *
+     * @param string $spotify
+     *
+     * @return Artist
+     */
+    public function setSpotify($spotify)
+    {
+        $this->spotify = $spotify;
+
+        return $this;
+    }
+
+    /**
+     * Get spotify
+     *
+     * @return string
+     */
+    public function getSpotify()
+    {
+        return $this->spotify;
+    }
+
+    /**
+     * Add photo
+     *
+     * @param \AppBundle\Entity\Photo $photo
+     *
+     * @return Artist
+     */
+    public function addPhoto(\AppBundle\Entity\Photo $photo)
+    {
+        $this->photos[] = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Remove photo
+     *
+     * @param \AppBundle\Entity\Photo $photo
+     */
+    public function removePhoto(\AppBundle\Entity\Photo $photo)
+    {
+        $this->photos->removeElement($photo);
+    }
+
+    /**
+     * Add video
+     *
+     * @param \AppBundle\Entity\Video $video
+     *
+     * @return Artist
+     */
+    public function addVideo(\AppBundle\Entity\Video $video)
+    {
+        $this->videos[] = $video;
+
+        return $this;
+    }
+
+    /**
+     * Remove video
+     *
+     * @param \AppBundle\Entity\Video $video
+     */
+    public function removeVideo(\AppBundle\Entity\Video $video)
+    {
+        $this->videos->removeElement($video);
+    }
+
+    /**
+     * Set profilepic
+     *
+     * @param \AppBundle\Entity\Photo $profilepic
+     *
+     * @return Artist
+     */
+    public function setProfilepic(\AppBundle\Entity\Photo $profilepic = null)
+    {
+        $this->profilepic = $profilepic;
+
+        return $this;
+    }
+
+    /**
+     * Get profilepic
+     *
+     * @return \AppBundle\Entity\Photo
+     */
+    public function getProfilepic()
+    {
+        return $this->profilepic;
+    }
+
+    /**
+     * Get photos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPhotos()
+    {
+        return $this->photos;
+    }
+
+    /**
+     * Get videos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVideos()
+    {
+        return $this->videos;
     }
 }

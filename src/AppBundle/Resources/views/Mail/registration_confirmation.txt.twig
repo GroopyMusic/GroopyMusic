@@ -7,14 +7,9 @@
 {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
 {% block contentHead %}{# override this block for emails that do contain "contentItems" => e.g. NewsLetter or Notifications #}
     Hello,
-    {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
 
-    Add some content here
+    {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
 
-    This is just the default content-block.
-
-    Best regards,
-    the azine team
 {% endblock %}
 {% endblock %}
 

@@ -12,7 +12,9 @@ use AppBundle\Form\ArtistType;
 use AppBundle\Form\ContractArtistType;
 use AppBundle\Services\MailTemplateProvider;
 use Genemu\Bundle\FormBundle\Form\JQuery\Type\Select2Type;
+use Spipu\Html2Pdf\Tag\Sub;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -304,29 +306,60 @@ class ArtistController extends Controller
     /**
      * @Route("/leave", name="artist_leave")
      */
-    public function leaveAction(UserInterface $user, Artist $artist) {
+    public function leaveAction(Request $request, UserInterface $user, Artist $artist) {
 
         if(!$user->owns($artist)) {
             throw $this->createAccessDeniedException();
         }
 
-        if(count($artist->getArtistsUser()) == 0) {
-            $lastOne = true;
-        }
-        else {
-            $lastOne = false;
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]));
-            $em->flush();
+        $lastOne = count($artist->getArtistsUser()) == 1;
 
-            return $this->redirectToRoute('homepage');
+        $form = $this->createFormBuilder()
+            ->add('confirm', SubmitType::class)
+            ->add('cancel', SubmitType::class)
+            ->getForm()
+        ;
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+            if($form->get('confirm')->isClicked()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]));
+                if($lastOne) {
+                    $artist->setDeleted(true);
+                    $em->persist($artist);
+                }
+                $em->flush();
+
+                if($lastOne) {
+                    $this->addFlash('notice', 'Bien reçu. Vous êtiez le dernier propriétaire de ' . $artist->getArtistname() . ' donc l\'artiste a été supprimé.');
+                }
+                else {
+                    $this->addFlash('notice', 'Bien reçu.');
+                }
+                return $this->redirectToRoute('homepage');
+            }
+            elseif($form->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('artist_owners', ['id' => $artist->getId()]);
+            }
         }
 
-        return $this->render('@App/Artist/left.html.twig', array(
+        return $this->render('@App/Artist/leave.html.twig', array(
             'lastOne' => $lastOne,
             'artist' => $artist,
+            'form' => $form->createView(),
         ));
 
+    }
+
+    /**
+     * @Route("/photos", name="artist_edit_photos")
+     */
+    public function photosAction(Artist $artist) {
+        return $this->render('@App/Artist/photos.html.twig', array(
+            'artist' => $artist,
+        ));
     }
 
     // AJAX ------------------------------------------------------------------------------------------------
@@ -351,5 +384,35 @@ class ArtistController extends Controller
         $em->flush();
 
         return new Response($motivations);
+    }
+
+    /**
+     * @Route("/api/remove-photo", name="artist_ajax_remove_photo")
+     */
+    public function removePhotoAction(Request $request, UserInterface $user, Artist $artist) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $filename = $request->get('filename');
+        $pp = boolval($request->get('pp', false));
+
+        $photo = $em->getRepository('AppBundle:Photo')->findOneBy(['filename' => $filename]);
+
+        $em->remove($photo);
+
+        if($pp) {
+            $artist->setProfilepic(null);
+        }
+        else {
+            $artist->removePhoto($photo);
+        }
+
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Artist::getWebPath($photo));
+
+        $em->persist($artist);
+        $em->flush();
+
+        return new Response();
     }
 }

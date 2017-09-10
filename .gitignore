@@ -17,6 +17,10 @@
 /web/bundles/
 !/web/pdf
 /web/pdf/*
+!web/uploads/artist_gallery
+!web/uploads/hall_gallery
+web/uploads/artist_gallery/*
+web/uploads/hall_gallery/*
 /.idea/
 /.DS_Store
 **/.DS_Store

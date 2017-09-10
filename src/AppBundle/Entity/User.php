@@ -1,9 +1,6 @@
 <?php
 
 // TODO
-// Virer pseudo -> form
-// newsletter -> form
-// Adresse facultative -> form
 // Historique fan -> profil
 
 namespace AppBundle\Entity;
@@ -49,6 +46,18 @@ class User extends BaseUser implements RecipientInterface
 
     public function addCredits($n) {
         $this->credits += $n;
+    }
+
+    /**
+     * @override
+     */
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+
+        return $this;
     }
 
     /**
@@ -155,6 +164,12 @@ class User extends BaseUser implements RecipientInterface
      * @ORM\Column(name="inscription_date", type="datetime")
      */
     private $inscription_date;
+
+    /**
+     * @ORM\Column(name="asked_email", type="string", length=255, nullable=true)
+     */
+    private $asked_email;
+
 
     /**
      * @param mixed $salutation
@@ -546,5 +561,29 @@ class User extends BaseUser implements RecipientInterface
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Set askedEmail
+     *
+     * @param string $askedEmail
+     *
+     * @return User
+     */
+    public function setAskedEmail($askedEmail)
+    {
+        $this->asked_email = $askedEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get askedEmail
+     *
+     * @return string
+     */
+    public function getAskedEmail()
+    {
+        return $this->asked_email;
     }
 }

@@ -9,6 +9,13 @@
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 
+    <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
+    <style>
+        .dz-image img {
+            width: 100%; /*else huge display bug */
+        }
+    </style>
+
 {% endblock %}
 
 {% block sonata_javascript_pool %}
@@ -23,6 +30,7 @@
         });
     </script>
     <script src="{{ asset('bundles/a2lixtranslationform/js/a2lix_translation_bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/dropzone.js') }}"></script>
 {% endblock %}
 
 {% block logo %}

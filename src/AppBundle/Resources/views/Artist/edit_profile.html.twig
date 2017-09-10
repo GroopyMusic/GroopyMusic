@@ -5,7 +5,8 @@
     <h1>Edition du profil de l'artiste {{ artist.artistname }}</h1>
 
     <div>
-        <a href="{{ path('artist_owners', {'id': artist.id}) }}">Propriétaires</a>
+        <a href="{{ path('artist_owners', {'id': artist.id}) }}">Propriétaires</a> <br />
+        <a href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Photos</a>
     </div>
 
     {{ form_start(form) }}

@@ -21,6 +21,7 @@ class ArtistAdmin extends BaseAdmin
     public function configureListFields(ListMapper $list)
     {
         $list
+            ->add('id')
             ->add('artistname', null, array(
                 'label' => "Nom de l'artiste",
             ))
@@ -36,25 +37,56 @@ class ArtistAdmin extends BaseAdmin
     public function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('artistname', null, array(
-                'label' => "Nom de l'artiste",
-            ))
-            ->add('phase', null, array(
-                'label' => "Phase de l'artiste",
-            ))
-            ->add('genres', null, array(
-                'label' => "Genres musicaux",
-            ))
-            ->add('artists_user', null, array(
-                'label' => 'Propriétaires',
-                'associated_property' => 'userToString'
-            ))
-            ->add('getShortDescription', null, array(
-                'label' => 'Description courte',
-            ))
-            ->add('getBiography', null, array(
-                'label' => 'Biographie',
-            ))
+            ->with('Généralités')
+                ->add('artistname', null, array(
+                    'label' => "Nom de l'artiste",
+                ))
+                ->add('active', 'boolean', array(
+                    'label' => 'Actif',
+                ))
+                ->add('phase', null, array(
+                    'label' => "Phase de l'artiste",
+                ))
+                ->add('genres', null, array(
+                    'label' => "Genres musicaux",
+                ))
+                ->add('artists_user', null, array(
+                    'label' => 'Propriétaires',
+                    'template' => 'AppBundle:Admin/Artist:owners.html.twig',
+                ))
+                ->add('getShortDescription', null, array(
+                    'label' => 'Description courte',
+                ))
+                ->add('getBiography', null, array(
+                    'label' => 'Biographie',
+                ))
+            ->end()
+            ->with('Médias')
+                ->add('website', null, array(
+                    'label' => 'Site Web'
+                ))
+                ->add('facebook', null, array(
+                    'label' => 'Facebook'
+                ))
+                ->add('twitter', null, array(
+                    'label' => 'Twitter'
+                ))
+                ->add('spotify', null, array(
+                    'label' => 'Spotify'
+                ))
+                ->add('profilepic', null, array(
+                    'label' => 'Photo de profil',
+                    'template' => 'AppBundle:Admin/Artist:pp.html.twig',
+                ))
+                ->add('photos', null, array(
+                    'label' => 'Autres photos',
+                    'template' => 'AppBundle:Admin/Artist:photos.html.twig',
+                ))
+                ->add('videos', null, array(
+                    'label' => 'Vidéos',
+                    'template' => 'AppBundle:Admin/Artist:videos.html.twig',
+                ))
+            ->end()
         ;
     }
 
@@ -72,6 +104,13 @@ class ArtistAdmin extends BaseAdmin
                             'label' => 'Biographie',
                         ],
                     ],
+                ))
+            ->end()
+
+            ->with('Autres')
+                ->add('deleted', null, array(
+                    'required' => false,
+                    'label' => "Cacher l'artiste (il ne sera plus visible sur la plateforme)",
                 ))
             ->end()
         ;

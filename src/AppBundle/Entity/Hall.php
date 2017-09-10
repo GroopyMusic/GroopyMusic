@@ -2,23 +2,46 @@
 
 namespace AppBundle\Entity;
 
-use Application\Sonata\MediaBundle\Entity\Gallery;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Hall
  *
  * @ORM\Table(name="hall")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\HallRepository")
+ *
+ * @Vich\Uploadable
  */
 class Hall extends Partner
 {
     const DATE_FORMAT = 'm/d/Y';
 
+    const PHOTOS_DIR = 'uploads/hall_gallery/';
+    const FILES_DIR = 'uploads/hall_technicalspecs/';
+
+    public static function getWebPath(Photo $photo) {
+        return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
+    public function getTechnicalSpecsFileName() {
+        try {
+            return urlencode($this->getName()) . '-' . uniqid();
+        } catch(Exception $e) {
+            return uniqid();
+        }
+    }
+
+    public function getSafename() {
+        return urlencode($this->getName());
+    }
+
     public function __toString()
     {
-        return 'Salle : ' . $this->name;
+        return 'Salle : ' . $this->getName();
     }
 
     public function getCronAutomaticDaysFormatted() {
@@ -149,19 +172,10 @@ class Hall extends Partner
     private $price;
 
     /**
-     * @var Gallery
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Sonata\MediaBundle\Entity\Gallery")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="gallery", referencedColumnName="id")
-     * })
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="Photo", cascade={"all"})
      */
-    private $gallery;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Sonata\MediaBundle\Entity\Media")
-     */
-    private $technical_specs;
+    private $photos;
 
     /**
      * @ORM\Column(name="delay", type="smallint")
@@ -169,13 +183,78 @@ class Hall extends Partner
     private $delay;
 
     /**
-     * Get id
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
-     * @return int
+     * @Vich\UploadableField(mapping="hall_technical_specs", fileNameProperty="technical_specs_name")
+     *
+     * @var File
      */
-    public function getId()
+    private $technical_specs_file;
+
+    /**
+     * @ORM\Column(name="technical_specs_name", type="string", length=255)
+     *
+     * @var string
+     */
+    private $technical_specs_name;
+
+    /**
+     * @ORM\Column(type="datetime")
+     *
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     *
+     * @return Hall
+     */
+    public function setTechnicalSpecsFile(File $file = null)
     {
-        return $this->id;
+        $this->technical_specs_file = $file;
+
+        if ($file) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getTechnicalSpecsFile()
+    {
+        return $this->technical_specs_file;
+    }
+
+    /**
+     * @param string $imageName
+     *
+     * @return Hall
+     */
+    public function setTechnicalSpecsName($technicalSpecsName)
+    {
+        $this->technical_specs_name = $technicalSpecsName;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTechnicalSpecsName()
+    {
+        return $this->technical_specs_name;
     }
 
     /**
@@ -397,29 +476,6 @@ class Hall extends Partner
         return $this->description;
     }
 
-    /**
-     * Set gallery
-     *
-     * @param \Application\Sonata\MediaBundle\Entity\Gallery $gallery
-     *
-     * @return Hall
-     */
-    public function setGallery(\Application\Sonata\MediaBundle\Entity\Gallery $gallery = null)
-    {
-        $this->gallery = $gallery;
-
-        return $this;
-    }
-
-    /**
-     * Get gallery
-     *
-     * @return \Application\Sonata\MediaBundle\Entity\Gallery
-     */
-    public function getGallery()
-    {
-        return $this->gallery;
-    }
 
     /**
      * Set delay
@@ -445,28 +501,38 @@ class Hall extends Partner
         return $this->delay;
     }
 
+
     /**
-     * Set technicalSpecs
+     * Add photo
      *
-     * @param \Application\Sonata\MediaBundle\Entity\Media $technicalSpecs
+     * @param \AppBundle\Entity\Photo $photo
      *
      * @return Hall
      */
-    public function setTechnicalSpecs(\Application\Sonata\MediaBundle\Entity\Media $technicalSpecs = null)
+    public function addPhoto(\AppBundle\Entity\Photo $photo)
     {
-        $this->technical_specs = $technicalSpecs;
+        $this->photos[] = $photo;
 
         return $this;
     }
 
     /**
-     * Get technicalSpecs
+     * Remove photo
      *
-     * @return \Application\Sonata\MediaBundle\Entity\Media
+     * @param \AppBundle\Entity\Photo $photo
      */
-    public function getTechnicalSpecs()
+    public function removePhoto(\AppBundle\Entity\Photo $photo)
     {
-        return $this->technical_specs;
+        $this->photos->removeElement($photo);
     }
 
+    /**
+     * Get photos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPhotos()
+    {
+        return $this->photos;
+    }
 }

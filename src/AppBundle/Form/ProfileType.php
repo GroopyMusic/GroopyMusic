@@ -12,6 +12,7 @@ class ProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->remove('username')
             ->add('lastname')
             ->add('firstname')
             ->add('newsletter')
@@ -20,9 +21,11 @@ class ProfileType extends AbstractType
                 'remote_route' => 'select2_genres',
                 'class' => 'AppBundle\Entity\Genre',
                 'primary_key' => 'id',
-                'text_property' => 'name',
             ])
             ->remove('current_password')
+            ->add('address', AddressType::class, array(
+                'required' => false,
+            ))
         ;
     }
 

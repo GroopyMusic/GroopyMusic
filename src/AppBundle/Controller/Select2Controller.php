@@ -19,7 +19,7 @@ class Select2Controller extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $q = $request->get('q');
-        $genres = $em->getRepository('AppBundle:Genre')->findForString($q);
+        $genres = $em->getRepository('AppBundle:Genre')->findForString($q, $request->getLocale());
 
         $genresArray = [];
 
