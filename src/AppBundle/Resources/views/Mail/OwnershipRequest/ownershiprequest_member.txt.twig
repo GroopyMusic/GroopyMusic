@@ -4,15 +4,17 @@
 
 {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
 
-   Votre ticket
+   Quelqu'un pense que vous appartenez à un groupe
    ==================
 
-   en pièces jointes
+    - Groupe : {{ artist.artistname }}
+
+    - Cliquez ici pour valider ou invalider cette requête : {{ absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code})) }}
 
 {% endblock %}
 
 {% endautoescape %}
 
 {% block body_html %}
-    {% include 'AppBundle:Mail:ticket.html.twig' %}
+    {% include 'AppBundle:Mail/OwnershipRequest:ownershiprequest_member.html.twig' %}
 {% endblock %}

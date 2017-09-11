@@ -8,11 +8,10 @@
     Hello,
     {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
 
-    Best regards,
 {% endblock %}
 
 {% endautoescape %}
 
 {% block body_html %}
-    {% include 'AppBundle:Mail:failed_contract_artist.html.twig' %}
+    {% include 'AppBundle:Mail/Fan:successful_contract_fan.html.twig' %}
 {% endblock %}

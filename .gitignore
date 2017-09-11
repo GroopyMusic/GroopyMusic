@@ -17,10 +17,13 @@
 /web/bundles/
 !/web/pdf
 /web/pdf/*
+!web/uploads
 !web/uploads/artist_gallery
 !web/uploads/hall_gallery
+!web/uploads/hall_technicalspecs
 web/uploads/artist_gallery/*
 web/uploads/hall_gallery/*
+web/uploads/hall_technicalspecs/*
 /.idea/
 /.DS_Store
 **/.DS_Store

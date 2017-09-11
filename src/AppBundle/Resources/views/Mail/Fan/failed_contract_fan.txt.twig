@@ -1,20 +1,17 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
+{% block subject %}Subject{% endblock %}
+
 {% autoescape false %}
 
 {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
-
-   {{ newsletter.title }}
-   ==================
-
-    {% for contract in newsletter.contracts %}
-        {{ contract.artist.artistName }} for step {{ contract.step.name }}
-    {% endfor %}
+    Hello,
+    {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
 
 {% endblock %}
 
 {% endautoescape %}
 
 {% block body_html %}
-    {% include 'AppBundle:Mail:newsletter.html.twig' %}
+    {% include 'AppBundle:Mail/Fan:failed_contract_fan.html.twig' %}
 {% endblock %}

@@ -3,9 +3,11 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Notification;
 use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
+use AppBundle\Services\NotificationDispatcher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +22,7 @@ class PublicController extends Controller
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, UserInterface $user)
     {
         return $this->render('AppBundle:Public:home.html.twig');
     }
@@ -82,10 +84,7 @@ class PublicController extends Controller
             $this->addFlash('notice', 'Suggestion bien envoyée. Merci !');
 
             if($suggestionBox->getMailCopy()) {
-                $recipient = $suggestionBox->getEmail();
-                $recipientName = $suggestionBox->getDisplayName();
-
-                // TODO envoi de l'e-mail
+                $this->get('AppBundle\Services\MailDispatcher')->sendSuggestionBoxCopy($suggestionBox);
             }
 
             return $this->redirectToRoute('homepage');

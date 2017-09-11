@@ -5,7 +5,7 @@
         {% for notif in notifs %}
         <tr>
             <td>
-                <a href="{{ path('user_notification', {'id': notif.id}) }}">{{ notif.title }}</a>
+                {{ preview_notification(notif)|raw }}
             </td>
         </tr>
 

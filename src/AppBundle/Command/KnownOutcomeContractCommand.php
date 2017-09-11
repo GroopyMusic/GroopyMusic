@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\MailTemplateProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,27 +37,21 @@ class KnownOutcomeContractCommand extends ContainerAwareCommand
         ]);
 
         $success = $input->getArgument('success') == 'success';
-        $result = $this->sendMailsWhenKnownOutcome($success);
+        $this->sendMailsWhenKnownOutcome($success);
 
-        $output->writeln('Done ; ' . $result . ' e-mails sent');
+        $output->writeln('Done');
     }
 
     private function sendMailsWhenKnownOutcome($success) {
 
         $container = $this->getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
-        $mailer = $container->get('azine_email_template_twig_swift_mailer');
-
-        $nb_emails_sent = 0;
+        $mailer = $container->get(MailDispatcher::class);
 
         if($success) {
             $contracts = $em->getRepository('AppBundle:ContractArtist')->findNewlySuccessful();
-            $template_artist = MailTemplateProvider::SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE;
-            $template_fan = MailTemplateProvider::SUCCESSFUL_CONTRACT_FAN_TEMPLATE;
         } else {
             $contracts = $em->getRepository('AppBundle:ContractArtist')->findNewlyFailed();
-            $template_artist = MailTemplateProvider::FAILED_CONTRACT_ARTIST_TEMPLATE;
-            $template_fan = MailTemplateProvider::FAILED_CONTRACT_FAN_TEMPLATE;
         }
 
         foreach($contracts as $contract) {
@@ -66,30 +61,7 @@ class KnownOutcomeContractCommand extends ContainerAwareCommand
             $fan_users = $contract->getFanProfiles();
             $fan_contracts = $contract->getContractsFan();
 
-            $from = "no-reply@un-mute.be";
-            $fromName = "Un-Mute";
-
-            $params = ['contract' => $contract, 'artist' => $contract->getArtist()->getArtistName()];
-
-            // mail 1
-            $bcc = array_map(function($elem) {
-                return $elem->getEmail();
-            }, $artist_users);
-
-            $mailer->sendEmail($failedRecipients, "Sujet", $from, $fromName, array(), '', array(), '',
-                $bcc, '', array(), '', $params, $template_artist);
-            $nb_emails_sent++;
-
-            // mail 2
-            if(!empty($fan_users)) {
-                $bcc = array_unique(array_map(function($elem) {
-                    return $elem->getEmail();
-                }, $fan_users));
-
-                $mailer->sendEmail($failedRecipients, "Sujet", $from, $fromName, array(), '', array(), '',
-                    $bcc, '', array(), '', $params, $template_fan);
-                $nb_emails_sent++;
-            }
+            $mailer->sendKnownOutcomeContract($contract, $success, $artist_users, $fan_users);
 
             if($success) {
                 foreach($fan_contracts as $fc) {
@@ -102,7 +74,5 @@ class KnownOutcomeContractCommand extends ContainerAwareCommand
         }
 
         $em->flush();
-
-        return $nb_emails_sent;
     }
 }

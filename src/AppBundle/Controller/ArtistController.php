@@ -167,29 +167,12 @@ class ArtistController extends Controller
 
             $em->flush();
 
-            $mailer = $this->get('azine_email_template_twig_swift_mailer');
-            $from = "no-reply@un-mute.be";
-            $fromName = "Un-Mute";
+            $mailer = $this->get('AppBundle\Services\MailDispatcher');
 
             // Unique code is based on the id so we need this loop
             foreach($reqs as $req) {
-                $params = ['artist' => $artist, 'request' => $req];
-
                 $req->generateUniqueCode();
-                $toName = '';
-
-                $possible_user = $em->getRepository('AppBundle:User')->findOneBy(['email'=>$req->getEmail()]);
-                if($possible_user != null) {
-                    $template = MailTemplateProvider::OWNERSHIPREQUEST_MEMBER_TEMPLATE;
-                    $params['user'] = $possible_user->getEmail();
-                    $toName = $possible_user->getDisplayName();
-                }
-                else {
-                    $template = MailTemplateProvider::OWNERSHIPREQUEST_NONMEMBER_TEMPLATE;
-                }
-
-                $mailer->sendEmail($failedRecipients, "Sujet", $from, $fromName, $req->getEmail(), $toName, array(), '',
-                    [], '', [], '', $params, $template);
+                $mailer->sendNewOwnershipRequest($artist, $req);
             }
 
             $em->flush(); // For unique code !!

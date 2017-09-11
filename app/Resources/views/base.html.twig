@@ -28,8 +28,7 @@
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
                         <a href="{{ path('fos_user_profile_show') }}">Profil</a>
-                        <a href="{{ path('user_notifications') }}">Inbox</a>
-                        <a href="{{ path('testmail') }}">Test mail</a>
+                        <a href="{{ path('user_notifications') }}">Inbox {% set unseen_nb = unseen_notifs_nb() %}{% if unseen_nb > 0 %}({{ unseen_nb }}){% endif %}</a>
 
                     {% if is_granted('ROLE_FAN') %}
                         <a href="{{ path('fan_artist_contracts') }}">Contrats en cours</a>
