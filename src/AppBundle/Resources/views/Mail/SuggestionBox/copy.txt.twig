@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    Hello,
+    {{ txtH2Style }}
+
+
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/SuggestionBox:copy.html.twig' %}
+{% endblock %}

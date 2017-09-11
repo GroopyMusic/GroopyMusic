@@ -267,7 +267,7 @@ class FanController extends Controller
             }
 
             else {
-                $user->setConfirmationToken($this->get('fos_user.util.token_generator')->generateToken());
+                $user->setAskedEmailToken($this->get('fos_user.util.token_generator')->generateToken());
                 $em->persist($user);
                 $this->get('AppBundle\Services\MailDispatcher')->sendEmailChangeConfirmation($user);
                 $em->flush();
@@ -289,7 +289,7 @@ class FanController extends Controller
     public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token) {
 
         $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')->findOneBy(['confirmationToken' => $token]);
+        $user = $em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
 
         if(!$user) {
             $this->addFlash('error', 'Ce jeton est expiré');
@@ -309,7 +309,7 @@ class FanController extends Controller
         $user->setEmailCanonical($asked_email);
 
         $user->setAskedEmail(null);
-        $user->setConfirmationToken(null);
+        $user->setAskedEmailToken(null);
 
         // Logout (in case another user was logged in)
         if($current_user != null && $current_user->getId() != $user->getId()) {

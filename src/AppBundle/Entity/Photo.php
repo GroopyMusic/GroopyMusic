@@ -72,4 +72,3 @@ class Photo
         return $this->filename;
     }
 }
-

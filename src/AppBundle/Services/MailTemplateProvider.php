@@ -13,29 +13,25 @@ use Azine\EmailBundle\Services\TemplateProviderInterface;
  */
 class MailTemplateProvider extends AzineTemplateProvider implements TemplateProviderInterface
 {
-    const VIP_INFO_MAIL_TEMPLATE		= 'AppBundle:Mail:vip.txt.twig';
+    const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:reminder_contract_artist.txt.twig';
+    const FAILED_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:failed_contract_artist.txt.twig';
+    const SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:successful_contract_artist.txt.twig';
 
-    const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:reminder_contract_artist.txt.twig';
+    const FAILED_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:failed_contract_fan.txt.twig';
+    const SUCCESSFUL_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:successful_contract_fan.txt.twig';
+    const ONGOING_CART_TEMPLATE = 'AppBundle:Mail/Fan:ongoing_cart.txt.twig';
+    const TICKET_TEMPLATE = 'AppBundle:Mail/Fan:ticket.txt.twig';
 
-    const FAILED_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:failed_contract_artist.txt.twig';
-    const FAILED_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail:failed_contract_fan.txt.twig';
+    const NEWSLETTER_TEMPLATE = 'AppBundle:Mail/User:newsletter.txt.twig';
+    const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/User:change_email_confirmation.txt.twig';
 
-    const SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail:successful_contract_artist.txt.twig';
-    const SUCCESSFUL_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail:successful_contract_fan.txt.twig';
+    const OWNERSHIPREQUEST_MEMBER_TEMPLATE = 'AppBundle:Mail/OwnershipRequest:ownershiprequest_member.txt.twig';
+    const OWNERSHIPREQUEST_NONMEMBER_TEMPLATE = 'AppBundle:Mail/OwnershipRequest:ownershiprequest_nonmember.txt.twig';
 
-    const ONGOING_CART_TEMPLATE = 'AppBundle:Mail:ongoing_cart.txt.twig';
-
-    const NEWSLETTER_TEMPLATE = 'AppBundle:Mail:newsletter.txt.twig';
-
-    const TICKET_TEMPLATE = 'AppBundle:Mail:ticket.txt.twig';
-
-    const OWNERSHIPREQUEST_MEMBER_TEMPLATE = 'AppBundle:Mail:ownershiprequest_member.txt.twig';
-    const OWNERSHIPREQUEST_NONMEMBER_TEMPLATE = 'AppBundle:Mail:ownershiprequest_nonmember.txt.twig';
-
-    const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/Profile:change_email_confirmation.txt.twig';
+    const SUGGESTIONBOXCOPY_TEMPLATE = 'AppBundle:Mail/SuggestionBox:copy.txt.twig';
 
     // Admin mails templates
-    const REMINDER_CONTRACT_ADMIN_TEMPLATE = 'AppBundle:Mail:Admin:reminder_contract_admin.txt.twig';
+    const REMINDER_CONTRACT_ADMIN_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract_admin.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
@@ -137,8 +133,19 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     public function getTemplatesToStoreForWebView()
     {
         $include = parent::getTemplatesToStoreForWebView();
-        $include[] = self::VIP_INFO_MAIL_TEMPLATE;
-
+        $include = array_merge($include, [
+            self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,
+            self::FAILED_CONTRACT_ARTIST_TEMPLATE,
+            self::FAILED_CONTRACT_FAN_TEMPLATE,
+            self::NEWSLETTER_TEMPLATE,
+            self::ONGOING_CART_TEMPLATE,
+            self::OWNERSHIPREQUEST_MEMBER_TEMPLATE,
+            self::REMINDER_CONTRACT_ADMIN_TEMPLATE,
+            self::REMINDER_CONTRACT_ARTIST_TEMPLATE,
+            self::SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE,
+            self::SUCCESSFUL_CONTRACT_FAN_TEMPLATE,
+            self::TICKET_TEMPLATE,
+        ]);
         return $include;
     }
 

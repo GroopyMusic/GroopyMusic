@@ -37,3 +37,6 @@ services:
     AppBundle\Services\HallPhotoUploadNamer: ~
 
     AppBundle\Services\MailDispatcher: ~
+    AppBundle\Services\NotificationDispatcher: ~
+    AppBundle\Services\NotificationRenderer: ~
+    AppBundle\Services\NotificationExtension: ~

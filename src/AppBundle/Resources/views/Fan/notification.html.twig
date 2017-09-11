@@ -1,13 +1,5 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <h2>
-        {{ notif.title }}
-    </h2>
-
-    <div>On {{ notif.created|date('d/m/Y') }}</div>
-
-    <p>
-        {{ notif.content }}
-    </p>
+    {{ render_notification(notif)|raw }}
 {% endblock %}

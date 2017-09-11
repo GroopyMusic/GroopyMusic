@@ -19,11 +19,9 @@ class AdminAjaxController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $filename = $request->get('filename');
-
         $photo = $em->getRepository('AppBundle:Photo')->findOneBy(['filename' => $filename]);
 
         $em->remove($photo);
-
         $hall->removePhoto($photo);
 
         $filesystem = new Filesystem();

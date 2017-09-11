@@ -2,7 +2,10 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\ContractArtist;
+use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\MailNotifierService;
+use AppBundle\Services\NotificationDispatcher;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,9 +40,9 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
             '============',
         ]);
 
-        $result = $this->sendMailsForXDays($days);
+        $this->sendMailsForXDays($days);
 
-        $output->writeln('Done ; ' . $result['notifs'] . ' notifications and ' . $result['mails'] . ' e-mails sent.');
+        $output->writeln('Done.');
     }
 
 
@@ -47,15 +50,14 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
 
         $container = $this->getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
-        $mailer = $container->get('azine_email.default.template_twig_swift_mailer');
-        $notifier = $container->get(MailNotifierService::class);
+
+        $mailer = $container->get(MailDispatcher::class);
 
         $currentContracts = $em->getRepository('AppBundle:ContractArtist')->findCurrents();
         $currentDate = new \DateTime();
 
-        $result = ['notifs' => 0, 'mails' => 0];
-
         foreach($currentContracts as $contract) {
+            /** @var ContractArtist $contract */
             $reminder = false;
 
             if((($contract->getRemindersArtist() < 1 && $days == 30) || ($contract->getRemindersArtist() < 2 && $days == 15))
@@ -65,36 +67,8 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
 
             if($reminder) {
                 $artist_users = $contract->getArtist()->getArtistsUser();
-                $users = array();
 
-                foreach($artist_users as $au) {
-                    $user = $au->getUser();
-                    $users[] = $user->getEmail();
-
-                    // Notification creation
-                    $title = $days . " days until mdrz !";
-                    $content = "Wouhouuu";
-                    $recipientId = $user->getId();
-
-                    $notifier->addNotificationMessage($recipientId, $title, $content);
-                    $result['notifs']++;
-                }
-
-                $from = $this->getContainer()->getParameter('email_from_address');
-                $fromName = $this->getContainer()->getParameter('email_from_name');
-
-                $bcc = "gonzyer@gmail.com";
-                $bccName = "Webmaster";
-
-                $replyTo = "gonzyer@gmail.com";
-                $replyToName = "Webmaster";
-
-                $params = ['contract' => $contract, 'days' => $days, 'artist' => $contract->getArtist()->getArtistName()];
-
-                $mailer->sendEmail($failedRecipients, "Sujet", $from, $fromName, $users, '', '', '',
-                    $bcc, $bccName, $replyTo, $replyToName, $params, MailTemplateProvider::REMINDER_CONTRACT_ARTIST_TEMPLATE);
-
-                $result['mails']++;
+                $mailer->sendArtistReminderContract($artist_users->toArray(), $contract, $days);
 
                 $contract->setRemindersArtist($contract->getRemindersArtist() + 1);
                 $em->persist($contract);
@@ -102,6 +76,5 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
         }
 
         $em->flush();
-        return $result;
     }
 }

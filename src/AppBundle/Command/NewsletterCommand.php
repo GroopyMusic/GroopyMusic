@@ -3,6 +3,8 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Newsletter;
+use AppBundle\Entity\User;
+use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\MailTemplateProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,29 +45,16 @@ class NewsletterCommand extends ContainerAwareCommand
                 $newsletter->addContract($nc);
             }
 
-            $recipients = array_map(function($elem) {
+            $recipients = array_map(function(User $elem) {
                 return $elem->getEmail();
             }, $em->getRepository('AppBundle:User')->findBy(array('newsletter' => true)));
 
 
-            $mailer = $this->getContainer()->get('azine_email_template_twig_swift_mailer');
-
-            $from = $this->getContainer()->getParameter('email_from_address');
-            $fromName = $this->getContainer()->getParameter('email_from_name');
-
-            $bcc = $recipients;
-            $subject = "subject";
-
-            $params = ['newsletter' => $newsletter];
-
-            $mailer->sendEmail($failedRecipients, $subject, $from, $fromName, array(), '', array(), '',
-                $bcc, '', array(), '', $params, MailTemplateProvider::NEWSLETTER_TEMPLATE);
+            $mailer = $this->getContainer()->get(MailDispatcher::class);
+            $mailer->sendNewsletter($newsletter, $recipients);
 
             $em->persist($newsletter);
-
             $em->flush();
         }
-
-
     }
 }

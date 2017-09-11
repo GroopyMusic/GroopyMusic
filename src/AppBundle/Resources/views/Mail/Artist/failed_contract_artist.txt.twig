@@ -8,15 +8,11 @@
     Hello,
     {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
 
-    Hi there ! In {{ days }} days there is a concert for your artist {{ artist }}.
-
-    The contract id is : {{ contract.id }}
-
     Best regards,
 {% endblock %}
 
 {% endautoescape %}
 
 {% block body_html %}
-    {% include 'AppBundle:Mail:reminder_contract_artist.html.twig' %}
+    {% include 'AppBundle:Mail/Artist:failed_contract_artist.html.twig' %}
 {% endblock %}

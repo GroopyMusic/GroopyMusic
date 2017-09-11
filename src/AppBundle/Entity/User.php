@@ -24,7 +24,7 @@ class User extends BaseUser implements RecipientInterface
     public function __construct()
     {
         parent::__construct();
-        $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY);
+        $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY); // For Azine but not actually used
         $this->setNewsletter(true);
         $this->credits = 0;
         $this->addRole("ROLE_FAN");
@@ -170,6 +170,15 @@ class User extends BaseUser implements RecipientInterface
      */
     private $asked_email;
 
+    /**
+     * @ORM\Column(name="asked_email_token", type="text", nullable=true)
+     */
+    private $asked_email_token;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Notification", mappedBy="user")
+     */
+    private $notifications;
 
     /**
      * @param mixed $salutation
@@ -360,7 +369,7 @@ class User extends BaseUser implements RecipientInterface
      *
      * @param \AppBundle\Entity\SpecialPurchase $specialPurchase
      *
-     * @return UserFan
+     * @return User
      */
     public function addSpecialPurchase(\AppBundle\Entity\SpecialPurchase $specialPurchase)
     {
@@ -394,7 +403,7 @@ class User extends BaseUser implements RecipientInterface
      *
      * @param \AppBundle\Entity\Cart $cart
      *
-     * @return UserFan
+     * @return User
      */
     public function addCart(\AppBundle\Entity\Cart $cart)
     {
@@ -428,7 +437,7 @@ class User extends BaseUser implements RecipientInterface
      *
      * @param integer $credits
      *
-     * @return UserFan
+     * @return User
      */
     public function setCredits($credits)
     {
@@ -585,5 +594,64 @@ class User extends BaseUser implements RecipientInterface
     public function getAskedEmail()
     {
         return $this->asked_email;
+    }
+
+    /**
+     * Add notification
+     *
+     * @param \AppBundle\Entity\Notification $notification
+     *
+     * @return User
+     */
+    public function addNotification(\AppBundle\Entity\Notification $notification)
+    {
+        $this->notifications[] = $notification;
+        $notification->setUser($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove notification
+     *
+     * @param \AppBundle\Entity\Notification $notification
+     */
+    public function removeNotification(\AppBundle\Entity\Notification $notification)
+    {
+        $this->notifications->removeElement($notification);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * Set askedEmailToken
+     *
+     * @param string $askedEmailToken
+     *
+     * @return User
+     */
+    public function setAskedEmailToken($askedEmailToken)
+    {
+        $this->asked_email_token = $askedEmailToken;
+
+        return $this;
+    }
+
+    /**
+     * Get askedEmailToken
+     *
+     * @return string
+     */
+    public function getAskedEmailToken()
+    {
+        return $this->asked_email_token;
     }
 }

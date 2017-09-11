@@ -2,13 +2,15 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\Cart;
+use AppBundle\Entity\ContractArtist;
+use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\MailTemplateProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-// TODO add notifications
 
 class OngoingCartsCommand extends ContainerAwareCommand
 {
@@ -34,48 +36,35 @@ class OngoingCartsCommand extends ContainerAwareCommand
         ]);
 
         $days = intval($input->getArgument('days'));
-        $result = $this->sendMailsWhenOngoingCart($days, $output);
+        $this->sendMailsWhenOngoingCart($days, $output);
 
-        $output->writeln('Done ; ' . $result . ' e-mails sent');
-
+        $output->writeln('Done.');
     }
 
     private function sendMailsWhenOngoingCart($days, $output) {
 
         $container = $this->getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
-        $mailer = $container->get('azine_email_template_twig_swift_mailer');
+        $mailer = $container->get(MailDispatcher::class);
 
         $contracts = $em->getRepository('AppBundle:ContractArtist')->findCurrents();
 
         $currentDate = new \DateTime();
 
-        $nb_emails_sent = 0;
-
         foreach($contracts as $contract) {
-
+            /** @var ContractArtist $contract */
             if(!$contract->getCartReminderSent() && $currentDate->diff($contract->getDateEnd())->days <= $days) {
 
                 $carts = $em->getRepository('AppBundle:Cart')->findOngoingForContract($contract);
 
-                $bcc = array_unique(array_map(function ($elem) {
-                    return $elem->getUser()->getEmail();
-                }, $carts));
+                $users = array_map(function (Cart $elem) {
+                    return $elem->getUser();
+                }, $carts);
 
-                $from = "no-reply@un-mute.be";
-                $fromName = "Un-Mute";
-
-                $params = ['contract' => $contract, 'artist' => $contract->getArtist()->getArtistName()];
-
-                $mailer->sendEmail($failedRecipients, "Sujet", $from, $fromName, array(), '', array(), '',
-                    $bcc, '', array(), '', $params, MailTemplateProvider::ONGOING_CART_TEMPLATE);
-                $nb_emails_sent++;
-
+                $mailer->sendOngoingCart($users, $contract);
                 $contract->setCartReminderSent(true);
             }
         }
         $em->flush();
-
-        return $nb_emails_sent;
     }
 }

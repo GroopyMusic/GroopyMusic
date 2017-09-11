@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Services\NotificationDispatcher;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,19 +29,17 @@ class ProblematicCartsCommand extends ContainerAwareCommand
             '============',
         ]);
 
-        $result = $this->notifyWhenProblematicCart();
+        $this->notifyWhenProblematicCart();
 
-        $output->writeln('Done ; ' . $result . ' notifications sent');
+        $output->writeln('Done.');
     }
 
     private function notifyWhenProblematicCart() {
         $container = $this->getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
-        $notifier = $container->get('email.notifier_service');
+        $notifier = $container->get(NotificationDispatcher::class);
 
         $carts = $em->getRepository('AppBundle:Cart')->findWithUsersAndContracts();
-
-        $nb_notifs = 0;
 
         foreach($carts as $cart) {
 
@@ -73,16 +72,10 @@ class ProblematicCartsCommand extends ContainerAwareCommand
 
             if($changeDone) {
                 // Notification creation
-                $title = "Panier modifié";
-                $content = "Wouhouuu";
-                $recipientId = $cart->getUser()->getId();
-
-                $notifier->addNotificationMessage($recipientId, $title, $content);
-                $nb_notifs++;
+                $notifier->notifyProblematicCart($cart);
             }
         }
         $em->flush();
 
-        return $nb_notifs;
     }
 }

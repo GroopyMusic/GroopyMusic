@@ -1,0 +1,20 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}Subject{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+{% block contentHead %}
+    Hello,
+
+    {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
+
+{% endblock %}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/User:registration_confirmation.html.twig' %}
+{% endblock %}

@@ -1,18 +1,18 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
-{% block subject %}Subject{% endblock %}
-
 {% autoescape false %}
 
 {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
-    Hello,
-    {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
 
-    Best regards,
+   Votre ticket
+   ==================
+
+   en pièces jointes
+
 {% endblock %}
 
 {% endautoescape %}
 
 {% block body_html %}
-    {% include 'AppBundle:Mail:successful_contract_artist.html.twig' %}
+    {% include 'AppBundle:Mail/Fan:ticket.html.twig' %}
 {% endblock %}
