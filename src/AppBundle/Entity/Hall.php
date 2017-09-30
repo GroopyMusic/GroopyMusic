@@ -83,6 +83,8 @@ class Hall extends Partner
             'days_5' => $base_day,
             'days_6' => $base_day,
         );
+
+        $this->updatedAt = new \DateTime();
     }
 
     public function refreshDates() {
@@ -192,7 +194,7 @@ class Hall extends Partner
     private $technical_specs_file;
 
     /**
-     * @ORM\Column(name="technical_specs_name", type="string", length=255)
+     * @ORM\Column(name="technical_specs_name", type="string", length=255, nullable=true)
      *
      * @var string
      */

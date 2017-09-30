@@ -1,17 +1,31 @@
 {% extends "base.html.twig" %}
 
+{% block stylesheets %}
+    {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
+        <link type="text/css" rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
 {% block body %}
+    <h2>Lancer un nouveau crowdfunding - étape {{ flow.currentStepNumber }} / {{ flow.lastStepNumber }} : {{ flow.currentStepLabel }}</h2>
 
-    <h1>Viser un palier</h1>
-    <p>Vous vous apprêtez à lancer un crowdfunding pour le palier suivant :</p>
+    {% if flow.currentStepNumber == flow.lastStepNumber %}
+        <div>
+            Artiste : {{ contract.artist }}<br />/
+            Province : {{ contract.province is empty ? 'Sans importance' : contract.province }}<br />
+            Date choisie : {{ contract.preferences.date|date('d/m/Y') }}
 
-    {% include "AppBundle:Entity:step.html.twig" with {'step': contract.step} %}
+        </div>
+    {% endif %}
 
-    <p>En validant le formulaire suivant, vous vous engagez à lire et respecter les <a href="{{ path('conditions') }}">conditions générales</a>.</p>
+    {{ form_start(form) }}
 
-    {{ form(form) }}
-
-    Date de fin du contrat : {{ contract.theoriticalDeadline|date('d/m') }}
+    {{ form_rest(form) }}
+    {% include '@CraueFormFlow/FormFlow/buttons.html.twig' with {
+        craue_formflow_button_class_last: 'btn btn-primary',
+        craue_formflow_button_class_back: 'btn',
+        craue_formflow_button_class_reset: 'btn btn-warning',
+        } %}
 
 {% endblock %}
 

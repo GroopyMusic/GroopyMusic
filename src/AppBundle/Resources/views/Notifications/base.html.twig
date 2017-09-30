@@ -1,4 +1,14 @@
-<div class="notification">
-    <h3>{% block title %}Notification{% endblock %}</h3>
-    <p>{% block content %}{% endblock %}</p>
-</div>
+{% import "@App/Notifications/macros.html.twig" as macros %}
+
+{% set title = '', content = '' %}
+
+{% if preview %}
+    {% block preview %}
+        {{ macros.preview(notification, title, content) }}
+    {% endblock %}
+{% else %}
+    {% block complete %}
+        {{ macros.complete(notification, title, content) }}
+    {% endblock %}
+{% endif %}
+

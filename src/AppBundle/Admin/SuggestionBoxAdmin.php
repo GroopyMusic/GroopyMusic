@@ -27,6 +27,9 @@ class SuggestionBoxAdmin extends BaseAdmin
             ->add('date', null, array(
                 'label' => 'Date',
             ))
+            ->add('type', null, array(
+                'label' => 'Type',
+            ))
             ->add('object', null, array(
                 'label' => 'Objet'
             ))
@@ -55,6 +58,13 @@ class SuggestionBoxAdmin extends BaseAdmin
             ))
             ->add('date', null, array(
                 'label' => "Date d'envoi",
+            ))
+            ->add('type', null, array(
+                'label' => 'Type',
+            ))
+            ->add('user', null, array(
+                'label' => 'Membre',
+                'route' => array('name' => 'show'),
             ))
             ->add('mailCopy', null, array(
                 'label' => 'A souhaité une copie par mail',

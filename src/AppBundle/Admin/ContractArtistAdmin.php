@@ -55,7 +55,7 @@ class ContractArtistAdmin extends BaseAdmin
                     'show' => array(),
                     'edit' => array(),
                     'refund' => array(
-                        'template' => 'AppBundle:Admin:icon_refund_contractartist.html.twig',
+                        'template' => 'AppBundle:Admin/ContractArtist:icon_refund.html.twig',
                     ),
                 )))
         ;

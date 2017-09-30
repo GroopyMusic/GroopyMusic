@@ -36,7 +36,7 @@ class LoadUser extends AbstractFixture implements OrderedFixtureInterface, Conta
 
         // Artist test account (credentials : artist@un-mute.be - test)
         $userA = new User();
-        $userA->setUsername("artist")->setPlainPassword("test")->setEmail("artist@un-mute.be")->setFirstname("John")->setLastname("Doe")->setEnabled(true);
+        $userA->setUsername("artist")->setPlainPassword("test")->setEmail("artist@un-mute.be")->setFirstname("John")->setLastname("Doe")->setEnabled(true)->addRole('ROLE_SUPER_ADMIN');
         $userManager->updateUser($userA, true);
 
         $artist = new Artist($this->getReference('phase1'));

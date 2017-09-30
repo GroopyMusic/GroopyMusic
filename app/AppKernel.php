@@ -41,6 +41,7 @@ class AppKernel extends Kernel
             new A2lix\TranslationFormBundle\A2lixTranslationFormBundle(),
             new Oneup\UploaderBundle\OneupUploaderBundle(),
             new Vich\UploaderBundle\VichUploaderBundle(),
+            new Craue\FormFlowBundle\CraueFormFlowBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

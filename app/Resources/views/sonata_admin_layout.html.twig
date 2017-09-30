@@ -35,7 +35,7 @@
 
 {% block logo %}
     {% spaceless %}
-        <a class="logo" href="{{ path('sonata_admin_dashboard') }}">
+        <a class="logo" href="{{ path('homepage') }}">
             {% if 'single_image' == sonata_admin.adminPool.getOption('title_mode') or 'both' == sonata_admin.adminPool.getOption('title_mode') %}
                 <img src="{{ asset(sonata_admin.adminPool.titlelogo) }}" alt="{{ sonata_admin.adminPool.title }}">
             {% endif %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h2>Salles partenaires</h2>
+
+    {% for hall in halls %}
+        {% include 'AppBundle:Public/Card:hall.html.twig' %}
+    {% endfor %}
+
+{% endblock %}

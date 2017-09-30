@@ -27,25 +27,19 @@
                 <nav id="menu">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
-                        <a href="{{ path('fos_user_profile_show') }}">Profil</a>
+                        <a href="{{ path('fos_user_profile_edit') }}">Profil</a>
                         <a href="{{ path('user_notifications') }}">Inbox {% set unseen_nb = unseen_notifs_nb() %}{% if unseen_nb > 0 %}({{ unseen_nb }}){% endif %}</a>
-
-                    {% if is_granted('ROLE_FAN') %}
-                        <a href="{{ path('fan_artist_contracts') }}">Contrats en cours</a>
-                        <a href="{{ path('fan_cart') }}">Panier</a>
-                        <a href="{{ path('fan_paid_carts') }}">Paniers payés</a>
-                        <a href="{{ path('fan_special_advantages') }}">Avantages spéciaux</a>
-                        <a href="{{ path('fan_special_purchases') }}">Achats spéciaux</a>
-                        <a href="{{ path('fan_my_artists') }}">Mes artistes</a>
-                        <a href="{{ path('fan_artists') }}">Tous les artistes</a>
-                    {% endif %}
-
+                        <a href="{{ path('user_cart') }}">Panier</a>
+                        <a href="{{ path('user_my_artists') }}">Mes artistes</a>
                     {% else %}
                         <a href="{{ path('fos_user_registration_register') }}">Inscription</a>
                         <a href="{{ path('fos_user_security_login') }}">Connexion</a>
                         <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a>
                     {% endif %}
                      <a href="{{ path('suggestionBox') }}">Boite à idées</a>
+                     <a href="{{ path('catalog_crowdfundings') }}">Catalogue de crowdfundings</a>
+                     <a href="{{ path('catalog_artists') }}">Catalogue d'artistes</a>
+                     <a href="{{ path('catalog_halls') }}">Catalogue de salles</a>
                 </nav>
             {% endblock %}
         </header>

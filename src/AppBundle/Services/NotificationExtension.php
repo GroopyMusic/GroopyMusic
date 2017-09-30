@@ -35,12 +35,12 @@ class NotificationExtension extends \Twig_Extension
 
     public function render_notification(Notification $notification) {
         $locale = $this->requestStack->getCurrentRequest()->getLocale();
-        return $this->renderer->renderNotif($notification, $locale);
+        return $this->renderer->renderNotif($notification, $locale, false);
     }
 
     public function preview_notification(Notification $notification) {
         $locale = $this->requestStack->getCurrentRequest()->getLocale();
-        return $this->renderer->renderPreviewNotif($notification, $locale);
+        return $this->renderer->renderNotif($notification, $locale, true);
     }
 
     public function unseen_notifs_nb(User $user = null) {

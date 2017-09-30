@@ -18,23 +18,13 @@ class NotificationRenderer
         $this->requestStack = $requestStack;
     }
 
-    public function renderNotif(Notification $notification, $locale) {
-        $params = array_merge(['notification' => $notification], $notification->getParams());
+    public function renderNotif(Notification $notification, $locale, $preview = false) {
+        $params = array_merge(['notification' => $notification, 'preview' => $preview], $notification->getParams());
 
         try {
             return $this->twig->render('AppBundle:Notifications:' . $notification->getType() . '.' . $locale . '.html.twig', $params);
         } catch(\Exception $e) {
             return $this->twig->render('AppBundle:Notifications:' . $notification->getType() . '.' . $this->requestStack->getCurrentRequest()->getDefaultLocale() . '.html.twig', $params);
-        }
-    }
-
-    public function renderPreviewNotif(Notification $notification, $locale) {
-        $params = array_merge(['notification' => $notification], $notification->getParams());
-
-        try {
-            return $this->twig->render('AppBundle:Notifications/Previews:' . $notification->getType() . '.' . $locale . '.html.twig', $params);
-        } catch(Exception $e) {
-            return $this->twig->render('AppBundle:Notifications/Previews:' . $notification->getType() . '.' . $this->requestStack->getCurrentRequest()->getDefaultLocale() . '.html.twig', $params);
         }
     }
 }

@@ -22,6 +22,7 @@ class ContractFan
         $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ticket_sent = false;
         $this->date = new \DateTime();
+        $this->refunded = false;
     }
 
     public function generateBarCode() {
@@ -29,13 +30,19 @@ class ContractFan
     }
 
     public function getAmount() {
-        return array_sum(array_map(function($purchase) {
+        return array_sum(array_map(function(Purchase $purchase) {
             return $purchase->getAmount();
         }, $this->purchases->toArray()));
     }
 
     public function getPaid() {
         return $this->cart->getPaid();
+    }
+
+    public function getCounterPartsQuantity() {
+        return array_sum(array_map(function(Purchase $purchase) {
+            return $purchase->getQuantity();
+        }, $this->purchases->toArray()));
     }
 
     /**
@@ -48,13 +55,15 @@ class ContractFan
     private $id;
 
     /**
+     * @var Cart
+     *
      * @ORM\ManyToOne(targetEntity="Cart", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
      */
     private $cart;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ContractArtist", inversedBy="contractsFan")
+     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="contractsFan")
      * @ORM\JoinColumn(nullable=false)
      */
     private $contractArtist;
@@ -78,6 +87,11 @@ class ContractFan
      * @ORM\Column(name="date", type="datetime")
      */
     private $date;
+
+    /**
+     * @ORM\Column(name="refunded", type="boolean")
+     */
+    private $refunded;
 
     /**
      * Get id
@@ -241,5 +255,29 @@ class ContractFan
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * Set refunded
+     *
+     * @param boolean $refunded
+     *
+     * @return ContractFan
+     */
+    public function setRefunded($refunded)
+    {
+        $this->refunded = $refunded;
+
+        return $this;
+    }
+
+    /**
+     * Get refunded
+     *
+     * @return boolean
+     */
+    public function getRefunded()
+    {
+        return $this->refunded;
     }
 }

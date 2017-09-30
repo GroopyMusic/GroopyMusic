@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    {% if artists is empty %}
+
+        <p>Pas encore d'artiste sur la plateforme</p>
+
+    {% else %}
+
+        <h2>Artistes inscrits sur Un-Mute</h2>
+
+        {% for artist in artists %}
+            {% include 'AppBundle:Public/Card:artist.html.twig' %}
+        {% endfor %}
+
+    {% endif %}
+
+{% endblock %}

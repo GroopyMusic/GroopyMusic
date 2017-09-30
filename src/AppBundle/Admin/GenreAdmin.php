@@ -45,7 +45,7 @@ class GenreAdmin extends BaseAdmin
                 'locales' => array('fr', 'en'),
                 'fields' => [
                     'name' => [
-                        'label' => 'name',
+                        'label' => 'Nom du genre',
                     ]
                 ]
             ))

@@ -19,6 +19,31 @@ class Step extends BaseStep
         $this->deadline_duration = 30;
     }
 
+    public function getAvailableDates(Province $province = null) {
+        $dates = array();
+
+        foreach($this->getHalls() as $hall) {
+            if($province == null || $province == $hall->getProvince())
+                $dates = array_merge($dates, $hall->getAvailableDates());
+        }
+
+        return array_unique($dates);
+    }
+
+    public function getAvailableDatesFormatted(Province $province = null) {
+        $availableDates = $this->getAvailableDates($province);
+
+        $display = '';
+        $count = count($availableDates);
+        for($i = 0; $i < $count; $i++) {
+            $display .= $availableDates[$i];
+            if($i != $count - 1) {
+                $display .= ',';
+            }
+        }
+        return $display ;
+    }
+
     /**
      * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
      */
