@@ -50,6 +50,7 @@ class Artist implements TranslatableInterface
         $this->ownership_requests = new ArrayCollection();
         $this->photos = new ArrayCollection();
         $this->videos = new ArrayCollection();
+        $this->date_creation = new \DateTime();
     }
 
     public function setLocale($locale)
@@ -75,6 +76,20 @@ class Artist implements TranslatableInterface
         return array_map(function($elem) {
                 return $elem->getUser();
         }, $this->artists_user->toArray());
+    }
+
+    public function getScore(User $user) {
+        if(mt_rand(1,2) == 1) { return 0; }
+
+        $score = 0;
+        foreach($user->getGenres() as $genre) {
+            if($this->genres->contains($genre)) {
+                if(mt_rand(1,3) > 1) {
+                   $score++;
+                }
+            }
+        }
+        return $score;
     }
 
 
@@ -169,6 +184,16 @@ class Artist implements TranslatableInterface
      * @ORM\Column(name="spotify", type="string", length=255, nullable=true)
      */
     private $spotify;
+
+    /**
+     * @ORM\Column(name="date_creation", type="datetime")
+     */
+    private $date_creation;
+
+    /**
+     * @ORM\OneToMany(targetEntity="BaseContractArtist", mappedBy="artist")
+     */
+    private $contracts;
 
 
     // Form only
@@ -594,5 +619,29 @@ class Artist implements TranslatableInterface
     public function getVideos()
     {
         return $this->videos;
+    }
+
+    /**
+     * Set dateCreation
+     *
+     * @param \DateTime $dateCreation
+     *
+     * @return Artist
+     */
+    public function setDateCreation($dateCreation)
+    {
+        $this->date_creation = $dateCreation;
+
+        return $this;
+    }
+
+    /**
+     * Get dateCreation
+     *
+     * @return \DateTime
+     */
+    public function getDateCreation()
+    {
+        return $this->date_creation;
     }
 }

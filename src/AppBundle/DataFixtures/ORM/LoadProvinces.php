@@ -2,6 +2,8 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
+use AppBundle\Entity\Address;
+use AppBundle\Entity\Hall;
 use AppBundle\Entity\Province;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -23,6 +25,23 @@ class LoadProvinces extends AbstractFixture implements OrderedFixtureInterface
             $province->mergeNewTranslations();
         }
 
+        // Halls
+        $address = new Address();
+        $address->setCity('Brussels')
+            ->setCountry('Belgium')
+            ->setNumber(20)
+            ->setStreet('Rue de la Fontaine Dieu')
+            ->setZipcode('5310');
+        $hall1 = new Hall();
+        $hall1->setName('Salle2')
+            ->setAddress($address)
+            ->setCapacity(100)
+            ->setDelay(60)
+            ->setPrice(300)
+            ->setStep($this->getReference('step11'))
+            ->setProvince($provinces[1]);
+
+        $manager->persist($hall1);
         $manager->flush();
     }
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -16,6 +17,7 @@ class PaymentAdminController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Payment $payment */
         $payment = $this->admin->getSubject();
 
         if (!$payment) {
@@ -60,6 +62,11 @@ class PaymentAdminController extends Controller
 
                     $payment->setRefunded(true);
 
+                    // Concert
+                    if($payment->getContractArtist() instanceof ContractArtist) {
+                        $payment->getContractArtist()->removeTicketsSold($payment->getContractFan()->getCounterPartsQuantity());
+                    }
+
                     $message = 'Paiement remboursé !';
                 }
 
@@ -72,7 +79,7 @@ class PaymentAdminController extends Controller
             }
         }
 
-        return $this->render('@App/Admin/action_refund_payment.html.twig', array(
+        return $this->render('@App/Admin/Payment/action_refund.html.twig', array(
             'form' => $form->createView(),
             'payment' => $payment,
         ));

@@ -40,3 +40,9 @@ services:
     AppBundle\Services\NotificationDispatcher: ~
     AppBundle\Services\NotificationRenderer: ~
     AppBundle\Services\NotificationExtension: ~
+
+    AppBundle\Form\ContractArtistFlow:
+      parent: craue.form.flow
+      autowire: true
+      autoconfigure: false
+      public: true

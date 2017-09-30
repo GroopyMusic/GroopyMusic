@@ -1,0 +1,13 @@
+{% macro preview(notification, title, content) %}
+    <div class="notification_preview">
+        <h3><a>{{ title }}</a>{% if notification.unseen %} - non lu {% endif %}</h3>
+        <div>{{ content|striptags|length > 50 ? content|striptags|slice(0, 50) ~ '...' : content|striptags }}</div>
+    </div>
+{% endmacro %}
+
+{% macro complete(notification, title, content) %}
+    <div class="notification">
+        <h3>{{ title|raw }}</h3>
+        <p>{{ content|raw }}</p>
+    </div>
+{% endmacro %}

@@ -2,10 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ConcertPossibility;
-use AppBundle\Entity\ContractArtistPossibility;
-use AppBundle\Form\ConcertPossibilityType;
-use AppBundle\Form\ContractArtistPossibilityType;
+use AppBundle\Entity\Payment;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
@@ -56,6 +53,7 @@ class ContractArtistAdminController extends Controller
                     $payments = $contract->getPayments();
 
                     foreach ($payments as $payment) {
+                        /** @var Payment $payment */
                         if (!$payment->getRefunded()) {
                             \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
 
@@ -69,7 +67,7 @@ class ContractArtistAdminController extends Controller
                     }
 
                     $message = 'Crowdfunding remboursé !';
-                    $contract->setRefunded(true);
+                    $contract->setRefunded(true)->setFailed(true);
                 }
 
                 $em->persist($contract);
@@ -81,7 +79,7 @@ class ContractArtistAdminController extends Controller
             }
         }
 
-        return $this->render('@App/Admin/action_refund_contractartist.html.twig', array(
+        return $this->render('@App/Admin/ContractArtist/action_refund.html.twig', array(
             'form' => $form->createView(),
             'contract' => $contract,
         ));

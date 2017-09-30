@@ -45,7 +45,7 @@ class PaymentAdmin extends BaseAdmin
                 'actions' => array(
                     'show' => array(),
                     'refund' => array(
-                        'template' => 'AppBundle:Admin:icon_refund_payment.html.twig'
+                        'template' => 'AppBundle:Admin/Payment:icon_refund.html.twig'
                     ),
                 )))
         ;

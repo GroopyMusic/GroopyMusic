@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <h2>Soutenez-les !</h2>
+    {% for contract in current_contracts %}
+        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract} %}
+    {% endfor %}
+
+    <h2>Ils sont confirmés</h2>
+    {% for contract in successful_contracts %}
+        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract} %}
+    {% endfor %}
+{% endblock %}

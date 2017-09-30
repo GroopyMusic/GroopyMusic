@@ -7,11 +7,6 @@ app_user:
     type:     annotation
     prefix: /
 
-app_fan:
-    resource: "@AppBundle/Controller/FanController.php"
-    type:     annotation
-    prefix: /
-
 app_artist:
     resource: "@AppBundle/Controller/ArtistController.php"
     type:     annotation

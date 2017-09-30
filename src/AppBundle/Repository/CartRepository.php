@@ -12,11 +12,11 @@ use AppBundle\Entity\User;
  */
 class CartRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findCurrentForFan(User $fan) {
+    public function findCurrentForUser(User $user) {
         return $this->createQueryBuilder('c')
-            ->where('c.user = :fan')
+            ->where('c.user = :user')
             ->andWhere('c.confirmed = 0')
-            ->setParameter('fan', $fan)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult()
             ;

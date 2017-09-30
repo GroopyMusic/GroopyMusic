@@ -28,6 +28,7 @@ sonata_admin:
                    - AppBundle\Admin\UserAdmin
                    - AppBundle\Admin\ArtistAdmin
                    - AppBundle\Admin\SuggestionBoxAdmin
+                   - AppBundle\Admin\SuggestionTypeEnumAdmin
            app.admin.group.evolution:
                label: app.admin.group.evolution
                label_catalogue: SonataAdminBundle
@@ -215,4 +216,10 @@ services:
         arguments: [~, AppBundle\Entity\Partner_ContactPerson, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.partnercontactperson }
+        public: true
+
+    AppBundle\Admin\SuggestionTypeEnumAdmin:
+        arguments: [~, AppBundle\Entity\SuggestionTypeEnum, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.suggestiontypeenum }
         public: true

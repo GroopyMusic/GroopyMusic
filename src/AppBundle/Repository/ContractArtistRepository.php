@@ -20,7 +20,10 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('cf')
             ->addSelect('r')
             ->where('c.successful = 1')
-            ->andWhere('r.date > NOW()')
+            ->andWhere('r.date > :now')
+            ->setParameter('now', new \DateTime('now'))
+            ->getQuery()
+            ->getResult()
         ;
     }
 
@@ -36,16 +39,54 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findCurrents() {
-        return $this->createQueryBuilder('c')
+    /**
+     * Returns 0-$limit contracts for which the deadline is not passed AND not enough money is raised at the moment
+     */
+    public function findNotSuccessfulYet($limit = null) {
+        $qb = $this->createQueryBuilder('c')
             ->where('c.dateEnd > :now')
+            ->andWhere('c.collected_amount < s.requiredAmount')
             ->join('c.artist', 'a')
             ->addSelect('a')
             ->join('c.step', 's')
             ->addSelect('s')
             ->setParameter('now', new \DateTime('now'))
+        ;
+
+        if($limit != null) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Returns 0-$limit contracts for which there are tickets to buy
+     */
+    public function findWithAvailableCounterParts($limit = null) {
+        $qb = $this->createQueryBuilder('c')
+            ->join('c.artist', 'a')
+            ->join('c.step', 's')
+            ->leftJoin('c.reality', 'r')
+            ->addSelect('a')
+            ->addSelect('s')
+            ->addSelect('r')
+            ->where('r.date is null OR r.date > :now')
+            ->andWhere('c.tickets_sold < s.max_tickets')
+        ;
+
+        if($limit != null) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb
+            ->setParameter('now', new \DateTime('now'))
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     /**

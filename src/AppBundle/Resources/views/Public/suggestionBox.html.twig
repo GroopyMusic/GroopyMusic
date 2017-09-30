@@ -1,13 +1,80 @@
 {% extends "base.html.twig" %}
 
-{% block headtitle %}
-    Boite à idées - {{ parent() }}
-{% endblock %}
-
 {% block body %}
 
-    <h1>ICI tu vas donner tes idées sinon ça ne va pas aller !</h1>
+    <h2>Contact & boîte à idées</h2>
 
-	{{ form(form) }}
+    <div id="suggestionbox_form">
+        {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <!-- content of the modal itself ➡️ in this case the form -->
+                <div class="modal-body">
+                    <div class="container">
+                        <!-- design of the modal header -->
+                        <div class="login-header">
+                            <div class="login-header-line"></div>
+                            <!-- titre de la section -->
+                            <div class="login-header-title">
+                                <h6>Vous êtes sûrs ?</h6>
+                            </div>
+                        </div>
+                        <form>
+                            <button id="validate-sb-send" class="btn btn-primary sharp text-uppercase">Valider</button>
+                            <button id="cancel-sb-send" class="btn btn-warning">Annuler</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+
+        $('#exampleModal').modal({ show: false});
+
+        $('#cancel-sb-send').click(function() {
+            $('#exampleModal').modal('hide');
+        });
+
+        $('#validate-sb-send').click(function() {
+           ajaxSendForm();
+            $('#exampleModal').modal('hide');
+        });
+
+
+        function ajaxSendForm() {
+            var url = "{{ path('suggestionBox_form') }}";
+            var formSerialize = $('form').serialize();
+            // TODO loader
+            $.post(url, formSerialize, function(response) {
+                $('#suggestionbox_form').html(response);
+            }, 'HTML');
+        }
+
+        $('form').submit(function(e) {
+            e.preventDefault();
+
+
+            if($('.suggestion_form_email').length && !$('.suggestion_form_email').val()) {
+                $('#exampleModal').modal('show');
+            }
+
+            else {
+                ajaxSendForm();
+            }
+
+        });
+    </script>
 
 {% endblock %}

@@ -1,4 +1,6 @@
 # app/config/routing.yml
+app_all:
+    resource: "@AppBundle/Resources/config/routing.yml"
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
@@ -9,11 +11,6 @@ azine_email_bundle:
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
-
-app_sec:
-    resource: "@AppBundle/Controller/SecurityController.php"
-    type:     annotation
-    prefix: /secure
 
 app_select2:
   resource: "@AppBundle/Controller/Select2Controller.php"
@@ -36,7 +33,4 @@ _sonata_admin:
 jmose_command_scheduler:
     resource: "@JMoseCommandSchedulerBundle/Resources/config/routing.yml"
     prefix:   /
-
-app_all:
-    resource: "@AppBundle/Resources/config/routing.yml"
 

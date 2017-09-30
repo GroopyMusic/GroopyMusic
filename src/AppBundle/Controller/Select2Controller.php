@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Select2Controller extends Controller
 {
-
     /**
      * @Route("/genres", name="select2_genres")
      */

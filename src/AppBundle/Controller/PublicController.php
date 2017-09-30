@@ -3,6 +3,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Artist;
+use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
@@ -10,8 +12,10 @@ use AppBundle\Entity\SuggestionBox;
 use AppBundle\Services\NotificationDispatcher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\MailTemplateProvider;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 //Uses for the form (suggestionBox)
 use AppBundle\Form\SuggestionBoxType;
@@ -22,9 +26,75 @@ class PublicController extends Controller
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request, UserInterface $user)
+    public function indexAction(Request $request, UserInterface $user = null)
     {
-        return $this->render('AppBundle:Public:home.html.twig');
+        $em = $this->getDoctrine()->getManager();
+
+        $NB_MAX_NEWS = 4;
+        $NB_MAX_CROWDS = 4;
+
+        $new_artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false], ['date_creation' => 'DESC'], $NB_MAX_NEWS);
+        $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findBy(['successful' => false, 'failed' => false], ['date' => 'DESC'], $NB_MAX_NEWS);
+
+        $news = [];
+        $i = 0;
+        $j = 0;
+
+        while(count($news) < $NB_MAX_NEWS && ($i < count($new_artists) || $j < count($new_crowdfundings))) {
+            if($i >= count($new_artists)) {
+                $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
+                $j++;
+            }
+            elseif($j >= count($new_crowdfundings)) {
+                $news[] = ['type' => 'artist', 'object' => $new_artists[$i]];
+                $i++;
+            }
+            elseif($new_artists[$i]->getDateCreation() > $new_crowdfundings[$j]->getDate()) {
+                $news[] = ['type' => 'artist', 'object' => $new_artists[$i]];
+                $i++;
+            }
+            else {
+                $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
+                $j++;
+            }
+        }
+
+        $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findWithAvailableCounterParts();
+        $crowdfundings = [];
+
+        if($user != null && count($user->getGenres()) > 0) {
+            $genres = $user->getGenres()->toArray();
+            $genre = $genres[array_rand($genres, 1)];
+        }
+
+        else {
+            $genre = null;
+        }
+
+
+        // Efficient shuffle
+        for($i = 0; $i < $NB_MAX_CROWDS && count($all_crowdfundings) > 0; $i++) {
+
+            $randomKey = array_rand($all_crowdfundings, 1);
+
+            if($i < 2 && $genre != null) {
+                $genre_candidates = array_filter($all_crowdfundings, function($elem, $key) use ($genre) {
+                    return $elem->getArtist()->getGenres()->contains($genre);
+                }, ARRAY_FILTER_USE_BOTH);
+
+                if(count($genre_candidates) > 0) {
+                    $randomKey = array_rand($genre_candidates, 1);
+                }
+            }
+
+            $crowdfundings[] = $all_crowdfundings[$randomKey];
+            unset($all_crowdfundings[$randomKey]);
+        }
+
+        return $this->render('AppBundle:Public:home.html.twig', array(
+            'news' => $news,
+            'crowdfundings' => $crowdfundings,
+        ));
     }
 
     /**
@@ -35,41 +105,27 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/steps", name="steps")
+     * @Route("/about", name="about")
      */
-    public function stepsAction() {
-
-         $em = $this->getDoctrine()->getManager();
-         $phases = $em->getRepository('AppBundle:Phase')->findAllWithSteps();
-
-        return $this->render('@App/Public/steps.html.twig', array(
-            'phases' => $phases,
-        ));
-    }
-
-    /**
-     * @Route("/step-{id}", name="step")
-     */
-    public function stepAction(Step $step) {
-
-        return $this->render('@App/Public/step.html.twig', array(
-            'step' => $step,
-        ));
+    public function aboutAction() {
+        return $this->render('AppBundle:Public:about.html.twig');
     }
 
     /**
      * @Route("/suggestions", name="suggestionBox")
      */
-    public function suggestionBoxAction(Request $request, UserInterface $user = null){
+    public function suggestionBoxAction(){
+        return $this->render('AppBundle:Public:suggestionBox.html.twig');
+    }
 
-        $em = $this->getDoctrine()->getManager();
-
+    /**
+     * @Route("/suggestions/post", name="suggestionBox_form")
+     */
+    public function suggestionBoxFormAction(Request $request, UserInterface $user = null) {
         $suggestionBox = new SuggestionBox();
 
         if($user != null){
-            $suggestionBox->setName($user->getLastname());
-            $suggestionBox->setFirstname($user->getFirstname());
-            $suggestionBox->setEmail($user->getEmail());
+            $suggestionBox->setUser($user);
             $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox);
         }else{
             $form = $this->createForm(SuggestionBoxType::class, $suggestionBox);
@@ -78,18 +134,153 @@ class PublicController extends Controller
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
             $em->persist($suggestionBox);
             $em->flush();
-
-            $this->addFlash('notice', 'Suggestion bien envoyée. Merci !');
 
             if($suggestionBox->getMailCopy()) {
                 $this->get('AppBundle\Services\MailDispatcher')->sendSuggestionBoxCopy($suggestionBox);
             }
 
-            return $this->redirectToRoute('homepage');
+            return new Response($this->renderView('AppBundle:Public/Form:suggestionBox_ok.html.twig'));
+        }
+        return new Response($this->renderView('AppBundle:Public/Form:suggestionBox.html.twig', array(
+            'form' => $form->createView(),
+        )));
+    }
+
+    /**
+     * @Route("/halls", name="catalog_halls")
+     */
+    public function hallsAction() {
+        $em = $this->getDoctrine()->getManager();
+        $halls = $em->getRepository('AppBundle:Hall')->findAll();
+
+        return $this->render('@App/Public/catalog_halls.html.twig', array(
+            'halls' => $halls,
+        ));
+    }
+
+    /**
+     * @Route("/crowdfundings", name="catalog_crowdfundings")
+     */
+    public function artistContractsAction() {
+
+        $em = $this->getDoctrine()->getManager();
+        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findWithAvailableCounterParts();
+        $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
+
+        return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
+            'current_contracts' => $current_contracts,
+            'successful_contracts' => $succesful_contracts,
+        ));
+    }
+
+    /**
+     * @Route("/artists", name="catalog_artists")
+     */
+    public function artistsAction(Request $request, UserInterface $user = null) {
+        $em = $this->getDoctrine()->getManager();
+
+        $artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false]);
+
+        if($user != null && count($user->getGenres()) > 0) {
+            usort($artists, function(Artist $a, Artist $b) use ($user) {
+                if($a->getScore($user) == $b->getScore($user))
+                    return 0;
+                if($a->getScore($user) > $b->getScore($user))
+                    return 1;
+                return -1;
+            });
         }
 
-        return $this->render('AppBundle:Public:suggestionBox.html.twig', array('form' => $form->createView(),));
+        return $this->render('@App/Public/catalog_artists.html.twig', array(
+            'artists' => $artists,
+        ));
+    }
+
+    /**
+     * @Route("/artist-{id}", name="artist_profile")
+     */
+    public function artistProfileAction(Request $request, UserInterface $user, Artist $artist) {
+        return $this->render('@App/Fan/artist_profile.html.twig', array(
+            'artist' => $artist,
+        ));
+    }
+
+    /**
+     * @Route("/validate-ownership-{id}/{code}", name="artist_validate_ownership")
+     */
+    public function validateOwnershipAction(Request $request, UserInterface $user, Artist $artist, $code) {
+
+        $em = $this->getDoctrine()->getManager();
+        $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
+
+        if($req == null) {
+            throw $this->createNotFoundException('There is no request with such code');
+        }
+
+        if($req->getAccepted() || $req->getRefused()) {
+            throw $this->createAccessDeniedException('Request is already accepted or refused');
+        }
+
+        $mailUser = $em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
+        if($mailUser != null) {
+            // Manually log out if another user is logged in, then redirect to here
+            // see https://stackoverflow.com/questions/28827418/log-user-out-in-symfony-2-application-when-remember-me-is-enabled/28828377#28828377
+            if($mailUser->getId() != $user->getId()) {
+                // Logging user out.
+                $this->get('security.token_storage')->setToken(null);
+
+                // Invalidating the session.
+                $session = $request->getSession();
+                $session->invalidate();
+
+                // Redirecting user to login page in the end.
+                $response = $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+
+                // Clearing the cookies.
+                $cookieNames = [
+                    $this->container->getParameter('session.name'),
+                    $this->container->getParameter('session.remember_me.name'),
+                ];
+                foreach ($cookieNames as $cookieName) {
+                    $response->headers->clearCookie($cookieName);
+                }
+
+                return $response;
+            }
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('accept', SubmitType::class)
+            ->add('refuse', SubmitType::class)
+            ->getForm()
+        ;
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && !$req->getCancelled()) {
+            if($form->get('accept')->isClicked()) {
+                $req->setAccepted(true);
+
+                $artist_user = new Artist_User();
+                $artist_user
+                    ->setArtist($artist)
+                    ->setUser($user);
+                $em->persist($artist_user);
+                $em->flush();
+            }
+            elseif($form->get('refuse')->isClicked()) {
+                $req->setRefused(true);
+            }
+
+            $this->addFlash('notice', 'bien reçu');
+            return $this->redirectToRoute('homepage');
+        }
+        return $this->render('@App/User/Artist/validate_ownership.html.twig', array(
+            'form' => $form->createView(),
+            'request' => $req,
+        ));
     }
 }

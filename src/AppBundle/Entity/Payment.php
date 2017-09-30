@@ -188,6 +188,8 @@ class Payment
     {
         $this->refunded = $refunded;
 
+        $this->getContractFan()->setRefunded(true);
+
         return $this;
     }
 
@@ -305,5 +307,13 @@ class Payment
     public function getAskingRefund()
     {
         return $this->asking_refund;
+    }
+
+    /**
+     * @param mixed $asking_refund
+     */
+    public function setAskingRefund($asking_refund)
+    {
+        $this->asking_refund = $asking_refund;
     }
 }

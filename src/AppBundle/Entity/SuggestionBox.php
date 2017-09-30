@@ -42,24 +42,21 @@ class SuggestionBox
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\Length(min=2, minMessage="Le nom doit faire au moins {{ limit }} caractères !")
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="firstname", type="string", length=255)
-     * @Assert\Length(min=2, minMessage="Le prénom doit faire au moins {{ limit }} caractères !")
+     * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
      */
     private $firstname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
-     * @Assert\Email(message="Email non valide !")
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      */
     private $email;
 
@@ -86,6 +83,15 @@ class SuggestionBox
      */
     private $mailCopy;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="SuggestionTypeEnum")
+     */
+    private $type;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     */
+    private $user;
 
     /**
      * Get id
@@ -263,5 +269,57 @@ class SuggestionBox
     public function getMailCopy()
     {
         return $this->mailCopy;
+    }
+
+    /**
+     * Set type
+     *
+     * @param \AppBundle\Entity\SuggestionTypeEnum $type
+     *
+     * @return SuggestionBox
+     */
+    public function setType(\AppBundle\Entity\SuggestionTypeEnum $type = null)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \AppBundle\Entity\SuggestionTypeEnum
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return SuggestionBox
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        $this->name = $user->getLastname();
+        $this->firstname = $user->getFirstname();
+        $this->email = $user->getEmail();
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

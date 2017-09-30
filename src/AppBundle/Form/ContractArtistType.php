@@ -3,6 +3,8 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Artist;
+use AppBundle\Entity\Province;
+use AppBundle\Entity\Step;
 use AppBundle\Entity\StepType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -20,29 +22,39 @@ class ContractArtistType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $contract = $builder->getData();
-        $step = $contract->getStep();
-
-        if ($step != null && $step->getType()->getName() == StepType::TYPE_CONCERT) {
-            $builder->add('preferences', ConcertPossibilityType::class, array(
-                'step' => $step,
-            ));
+        switch ($options['flow_step']) {
+            case 1:
+                $builder
+                    ->add('artist', EntityType::class, array(
+                        'class' => Artist::class,
+                        'query_builder' => function(EntityRepository $er) use ($options) {
+                            return $er->queryNotCurrentlyBusy();
+                        }
+                    ))
+                    ->add('province', EntityType::class, array(
+                        'required' => false,
+                        'class' => Province::class,
+                        'placeholder' => 'Sans importance',
+                    ))
+                    ->add('step', EntityType::class, array(
+                        'class' => Step::class,
+                    ))
+                ;
+                break;
+            case 2:
+                $builder
+                    ->add('preferences', ConcertPossibilityType::class, array(
+                        'available-dates' => $options['available-dates'],
+                    ))
+                    ->add('motivations', TextareaType::class)
+                ;
+                break;
+            case 3:
+                $builder
+                    ->add('accept_conditions', CheckboxType::class, array('required' => true))
+                ;
+                break;
         }
-
-        $builder
-            ->add('motivations', TextareaType::class)
-            ->add('artist', EntityType::class, array(
-                'class' => Artist::class,
-                'query_builder' => function(EntityRepository $er) use ($options) {
-                    return $er->createQueryBuilder('a')
-                        ->join('a.artists_user', 'au')
-                        ->where('au.user = :user')
-                        ->setParameter('user', $options['user']);
-                }
-            ))
-            ->add('accept_conditions', CheckboxType::class, array('required' => true))
-            ->add('submit', SubmitType::class)
-        ;
     }
 
     /**
@@ -56,8 +68,8 @@ class ContractArtistType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'validation_groups' => array('user_creation'),
             'user' => null,
+            'available-dates' => null,
         ));
     }
 

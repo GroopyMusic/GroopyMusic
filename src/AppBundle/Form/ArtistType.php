@@ -29,7 +29,6 @@ class ArtistType extends AbstractType
                 'remote_route' => 'select2_genres',
                 'class' => 'AppBundle\Entity\Genre',
                 'primary_key' => 'id',
-                'text_property' => 'name',
             ])
             ->add('videos', CollectionType::class, array(
                 'entry_type' => VideoType::class,

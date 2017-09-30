@@ -42,31 +42,6 @@ class BaseStep implements TranslatableInterface
         return '' . $this->getName();
     }
 
-    public function getAvailableDates(Province $province) {
-        $dates = array();
-
-        foreach($this->getHalls() as $hall) {
-            if($province == $hall->getProvince())
-                $dates = array_merge($dates, $hall->getAvailableDates());
-        }
-
-        return array_unique($dates);
-    }
-
-    public function getAvailableDatesFormatted(Province $province) {
-        $availableDates = $this->getAvailableDates($province);
-
-        $display = '';
-        $count = count($availableDates);
-        for($i = 0; $i < $count; $i++) {
-            $display .= $availableDates[$i];
-            if($i != $count - 1) {
-                $display .= ',';
-            }
-        }
-        return $display ;
-    }
-
     public function setLocale($locale)
     {
         $this->setCurrentLocale($locale);
