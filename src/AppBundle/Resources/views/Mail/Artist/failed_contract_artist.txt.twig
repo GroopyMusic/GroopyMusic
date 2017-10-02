@@ -1,14 +1,12 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
-{% block subject %}Subject{% endblock %}
-
 {% autoescape false %}
 
-{% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
-    Hello,
-    {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
+{% set subject = "" %}
+{% block subject %}{{ subject }}{% endblock %}
 
-    Best regards,
+{% block content %}
+
 {% endblock %}
 
 {% endautoescape %}

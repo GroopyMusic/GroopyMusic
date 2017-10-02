@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% autoescape false %}
+
+{% set subject = "" %}
+{% block subject %}{{ subject }}{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Artist:contract_details_known_artist.html.twig' %}
+{% endblock %}

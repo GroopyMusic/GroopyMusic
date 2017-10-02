@@ -2,14 +2,13 @@
 
 {% autoescape false %}
 
-{% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
+{% set subject = "Rappel automatique - concrétisation de concert" %}
+{% block subject %}{{ subject }}{% endblock %}
 
+{% block content %}
    Rappel
    ==================
-
-    Il faut encore fournir une concrétisation (salle + date) au contrat {{ contractArtist.id }} parce que ça fait {{ nbDays }} jours qu'il est validé.
-
-
+   Il faut encore fournir une concrétisation (salle + date) au contrat {{ contractArtist.id }} parce que ça fait {{ nbDays }} jours qu'il est validé.
 {% endblock %}
 
 {% endautoescape %}

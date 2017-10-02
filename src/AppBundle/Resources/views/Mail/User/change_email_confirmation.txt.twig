@@ -1,6 +1,7 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
-{% block subject %}{% endblock %}
+{% set subject = "" %}
+{% block subject %}{{ subject }}{% endblock %}
 
 {% autoescape false %}
 

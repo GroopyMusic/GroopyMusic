@@ -1,16 +1,9 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
 {% autoescape false %}
     {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
 
-        {% block title %}Title{% endblock %}
-
-        {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
-
-                <p>Hi there ! In {{ days }} days there is a concert for your artist {{ artist }}.</p>
-
-                <p>The contract id is : {{ contract.id }}</p>
-
-                <p>Best regards,</p>
+        {% block content %}
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

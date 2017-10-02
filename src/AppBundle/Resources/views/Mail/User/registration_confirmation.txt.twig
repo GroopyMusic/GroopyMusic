@@ -1,16 +1,14 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
-{% block subject %}Subject{% endblock %}
+{% set subject = "" %}
+{% block subject %}{{ subject }}{% endblock %}
 
 {% autoescape false %}
 
 {% block content %}
-{% block contentHead %}
     Hello,
 
     {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
-
-{% endblock %}
 {% endblock %}
 
 {% endautoescape %}

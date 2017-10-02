@@ -1,18 +1,15 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
-{% block subject %}Subject{% endblock %}
+{% set subject = "" %}
+{% block subject %}{{ subject }}{% endblock %}
 
 {% autoescape false %}
 
-{% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
+{% block content %}
     Hello,
     {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
 
-    Hi there ! In {{ days }} days there is a concert for your artist {{ artist }}.
-
-    The contract id is : {{ contract.id }}
-
-    Best regards,
+    Dans {{ days }} jours il y a un concert pour votre artiste {{ artist }}. Plus d'infos sur Un-Mute.be
 {% endblock %}
 
 {% endautoescape %}
