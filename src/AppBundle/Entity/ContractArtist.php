@@ -66,17 +66,39 @@ class ContractArtist extends BaseContractArtist
     }
 
     /**
+     * @Assert\Callback(groups={"flow_createcontract_step2"})
+     */
+    public function validatePreferences(ExecutionContextInterface $context, $payload)
+    {
+        $step = $this->step;
+        $province = $this->province;
+        $date = $this->preferences->getDate()->format(Hall::DATE_FORMAT);
+
+        $availableDates = $step->getAvailableDates($province);
+
+        if(!in_array($date, $availableDates)) {
+            $context->buildViolation("Date non disponible")
+                ->atPath('preferences')
+                ->addViolation();
+        }
+    }
+
+    /**
      * @ORM\OneToMany(targetEntity="ContractArtist_Artist", mappedBy="contract", cascade={"all"}, orphanRemoval=true)
      */
     private $coartists_list;
 
     /**
+     * @var Province
+     *
      * @ORM\ManyToOne(targetEntity="Province")
      * @ORM\JoinColumn(nullable=true)
      */
     private $province;
 
     /**
+     * @var Step
+     *
      * @ORM\ManyToOne(targetEntity="Step")
      * @ORM\JoinColumn(nullable=false)
      */

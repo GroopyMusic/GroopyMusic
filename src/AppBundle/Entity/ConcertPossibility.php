@@ -3,12 +3,19 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ConcertPossibilityRepository")
  */
 class ConcertPossibility extends ContractArtistPossibility
 {
+    public function setContract(ContractArtist $contract)
+    {
+        return parent::setContract($contract);
+    }
+
     public function __toString()
     {
         $string = '';

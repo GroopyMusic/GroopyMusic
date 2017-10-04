@@ -14,7 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SuggestionBox
 {
     public function __construct(){
-        //default date of the suggestion
         $this->date = new \Datetime();
     }
 
@@ -64,7 +63,6 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="object", type="string", length=255)
-     * @Assert\Length(min=5, minMessage="L'objet du message doit faire au moins {{ limit }} caractères !")
      */
     private $object;
 
@@ -72,7 +70,6 @@ class SuggestionBox
      * @var string
      *
      * @ORM\Column(name="message", type="text")
-     * @Assert\Length(min=20, minMessage="Le message doit faire au moins {{ limit }} caractères !")
      */
     private $message;
 

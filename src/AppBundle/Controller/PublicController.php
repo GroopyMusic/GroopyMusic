@@ -5,21 +5,17 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
-use AppBundle\Entity\Notification;
-use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
-use AppBundle\Services\NotificationDispatcher;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Services\MailTemplateProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
-//Uses for the form (suggestionBox)
 use AppBundle\Form\SuggestionBoxType;
 use AppBundle\Form\UserSuggestionBoxType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class PublicController extends Controller
 {
@@ -210,6 +206,7 @@ class PublicController extends Controller
 
     /**
      * @Route("/validate-ownership-{id}/{code}", name="artist_validate_ownership")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function validateOwnershipAction(Request $request, UserInterface $user, Artist $artist, $code) {
 
@@ -282,5 +279,54 @@ class PublicController extends Controller
             'form' => $form->createView(),
             'request' => $req,
         ));
+    }
+
+    /**
+     * @Route("/change-email-token-{token}", name="user_change_email_check")
+     */
+    public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token) {
+
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
+
+        if(!$user) {
+            $this->addFlash('error', 'Ce jeton est expiré');
+            return $this->redirectToRoute('homepage');
+        }
+
+        $asked_email = $user->getAskedEmail();
+
+        $error_detector = $em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
+        if($error_detector != null) {
+            $this->addFlash('error', "L'adresse e-mail demandée est déjà prise par un autre membre depuis votre demande.");
+            return $this->redirectToRoute('homepage');
+        }
+
+        // Everything ok -> let's change email
+        $user->setEmail($asked_email);
+        $user->setEmailCanonical($asked_email);
+
+        $user->setAskedEmail(null);
+        $user->setAskedEmailToken(null);
+
+        // Logout (in case another user was logged in)
+        if($current_user != null && $current_user->getId() != $user->getId()) {
+            $this->get('security.token_storage')->setToken(null);
+
+            // Invalidating the session.
+            $session = $request->getSession();
+            $session->invalidate();
+
+            $this->addFlash('notice', "Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.");
+        }
+
+        else {
+            $this->addFlash('notice', "Votre e-mail a bien été modifié.");
+        }
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
     }
 }

@@ -4,28 +4,35 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Notification;
-use AppBundle\Entity\Step;
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\Cart;
-use AppBundle\Entity\Province;
 use AppBundle\Entity\Purchase;
 use AppBundle\Form\ArtistType;
-use AppBundle\Form\ContractArtistType;
 use AppBundle\Form\UserEmailType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\ContractFan;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+/**
+ * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
+ */
 class UserController extends Controller
 {
+    private function createCartForUser($user) {
+        $cart = new Cart();
+        $cart->setUser($user);
+        $this->getDoctrine()->getManager()->persist($cart);
+        return $cart;
+    }
+
     /**
      * @Route("/inbox", name="user_notifications")
      */
@@ -66,9 +73,7 @@ class UserController extends Controller
         $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForFan($user);
 
         if($cart == null) {
-            $cart = new Cart();
-            $cart->setUser($user);
-            $em->persist($cart);
+            $cart = $this->createCartForUser($user);
             $em->flush();
         }
 
@@ -94,8 +99,6 @@ class UserController extends Controller
      * @Route("/my-artists", name="user_my_artists")
      */
     public function myArtistsAction(UserInterface $fan) {
-
-        $em = $this->getDoctrine()->getManager();
 
         $artists_user = $fan->getArtistsUser();
 
@@ -139,7 +142,6 @@ class UserController extends Controller
 
     /**
      * @Route("/new-crowdfunding", name="user_new_contract_artist")
-     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function newContractAction(UserInterface $user, Request $request) {
 
@@ -200,7 +202,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("change-email", name="user_change_email")
+     * @Route("/change-email", name="user_change_email")
      */
     public function changeEmailAction(Request $request, UserInterface $user) {
 
@@ -216,11 +218,11 @@ class UserController extends Controller
 
             $error_detect = $em->getRepository('AppBundle:User')->findOneBy(['email' => $email]);
             if($error_detect != null) {
-                $form->get('email')->addError(new FormError('user.askemail.alreadyinuse'));
+                $form->get('email')->addError(new FormError('Cette adresse e-mail est déjà associée à un compte Un-Mute.'));
             }
 
             else {
-                $user->setAskedEmailToken($this->get('fos_user.util.token_generator')->generateToken());
+                $user->setAskedEmailToken($this->get('fos_user.util.token_generator.default')->generateToken());
                 $em->persist($user);
                 $this->get('AppBundle\Services\MailDispatcher')->sendEmailChangeConfirmation($user);
                 $em->flush();
@@ -236,54 +238,6 @@ class UserController extends Controller
         ));
     }
 
-    /**
-     * @Route("/change-email-token-{token}", name="user_change_email_check")
-     */
-    public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token) {
-
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
-
-        if(!$user) {
-            $this->addFlash('error', 'Ce jeton est expiré');
-            return $this->redirectToRoute('homepage');
-        }
-
-        $asked_email = $user->getAskedEmail();
-
-        $error_detector = $em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
-        if($error_detector != null) {
-            $this->addFlash('error', "L'adresse e-mail demandée est déjà prise par un autre membre depuis votre demande.");
-            return $this->redirectToRoute('homepage');
-        }
-
-        // Everything ok -> let's change email
-        $user->setEmail($asked_email);
-        $user->setEmailCanonical($asked_email);
-
-        $user->setAskedEmail(null);
-        $user->setAskedEmailToken(null);
-
-        // Logout (in case another user was logged in)
-        if($current_user != null && $current_user->getId() != $user->getId()) {
-            $this->get('security.token_storage')->setToken(null);
-
-            // Invalidating the session.
-            $session = $request->getSession();
-            $session->invalidate();
-
-            $this->addFlash('notice', "Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.");
-        }
-
-        else {
-            $this->addFlash('notice', "Votre e-mail a bien été modifié.");
-        }
-
-        $em->persist($user);
-        $em->flush();
-
-        return $this->redirectToRoute('homepage');
-    }
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 
@@ -307,8 +261,7 @@ class UserController extends Controller
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
         if($cart == null) {
-            $cart = new Cart();
-            $cart->setUser($user);
+            $cart = $this->createCartForUser($user);
         }
 
         $fanContracts = $cart->getContracts();
@@ -349,7 +302,6 @@ class UserController extends Controller
 
         $em->persist($contract);
         $em->persist($purchase);
-        $em->persist($cart);
 
         $em->flush();
 
@@ -370,10 +322,7 @@ class UserController extends Controller
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
         if($cart == null) {
-            $cart = new Cart();
-            $cart->setUser($user);
-
-            $em->persist($cart);
+            $cart = $this->createCartForUser($user);
             $em->flush();
             return new Response("OK");
         }

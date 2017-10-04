@@ -6,20 +6,30 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Services\MailDispatcher;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+/**
+ * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
+ */
 class PaymentController extends Controller
 {
     /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
-    public function cartAction(UserInterface $user, Request $request)
+    public function cartAction(Request $request,UserInterface $user, KernelInterface $kernel)
     {
         $em = $this->getDoctrine()->getManager();
         $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        /** @var Cart $cart */
 
         if($cart == null || count($cart->getContracts()) == 0) {
             throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
@@ -27,9 +37,18 @@ class PaymentController extends Controller
 
         if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
 
-            // TODO
             if($cart->isProblematic()) {
-                return $this->createAccessDeniedException("Panier problématique");
+                $this->addFlash('error', 'Votre panier contenait des articles expirés ; nous nous chargeons de le remettre à jour');
+
+                $application = new Application($kernel);
+                $application->setAutoExit(false);
+                $input = new ArrayInput(array(
+                    'command' => 'infos:carts:problematic',
+                ));
+                $output = new NullOutput();
+                $application->run($input, $output);
+
+                return $this->redirectToRoute('homepage');
             }
 
             // Set your secret key: remember to change this to your live secret key in production
@@ -41,16 +60,25 @@ class PaymentController extends Controller
             $token = $_POST['stripeToken'];
 
             // Charge the user's card:
-
-
             try {
 
-                $stripe_customer = \Stripe\Customer::create(array(
-                    "description" => "Customer for " . $user->getEMail(),
-                    "source" => $token
-                ));
+                try {
+                    if ($user->getStripeCustomerId() != null) {
+                        $stripe_customer = \Stripe\Customer::retrieve($user->getStripeCustomerId());
+                        $stripe_customer->source = $token;
+                    }
+                    else {
+                        throw new \Exception();
+                    }
+                }
+                catch(\Exception $e) {
+                    $stripe_customer = \Stripe\Customer::create(array(
+                        "description" => "Customer for " . $user->getEmail(),
+                        "source" => $token,
+                    ));
 
-                $user->setStripeCustomerId($stripe_customer->id);
+                    $user->setStripeCustomerId($stripe_customer->id);
+                }
 
                 $charges = array();
                 $payments = array();
@@ -86,36 +114,23 @@ class PaymentController extends Controller
 
                 $em->flush();
 
-                // TODO
-                // Si c'est le x-ième panier du fan dans les 24h, nous envoyer une notif : ça pourrait être une fraude
-                // + lui envoyer un mail automatique (ou manuel)
-                // + nous permettre d'annuler dans l'espace d'admin un paiement
-
-                return $this->redirectToRoute('fan_cart_payment_stripe_success', array());
+                return $this->redirectToRoute('user_cart_payment_stripe_success', array());
 
             } catch(\Stripe\Error\Card $e) {
-                $body = $e->getJsonBody();
-                $err  = $body['error'];
-
-                print('Status is:' . $e->getHttpStatus() . "\n");
-                print('Type is:' . $err['type'] . "\n");
-                print('Code is:' . $err['code'] . "\n");
-                // param is '' in this case
-                print('Param is:' . $err['param'] . "\n");
-                print('Message is:' . $err['message'] . "\n");
+                $this->addFlash('error', 'Une erreur est survenue avec votre carte, veuillez réessayer');
             } catch (\Stripe\Error\RateLimit $e) {
-                // Too many requests made to the API too quickly
+                $this->addFlash('error', 'Trop de requêtes simultanées, veuillez réessayer');
             } catch (\Stripe\Error\InvalidRequest $e) {
-                // Invalid parameters were supplied to Stripe's API
+                $this->addFlash('error', 'Paramètres invalides, veuillez réessayer');
             } catch (\Stripe\Error\Authentication $e) {
-                // Authentication with Stripe's API failed
-                // (maybe you changed API keys recently)
+                $this->addFlash('error', "L'authentification Stripe a échoué, veuillez réessayer");
             } catch (\Stripe\Error\ApiConnection $e) {
-                // Network communication with Stripe failed
+                $this->addFlash('error', 'Une erreur est survenue avec le système de paiement, veuillez réessayer');
             } catch (\Stripe\Error\Base $e) {
-                // Display a very generic error to the user, and maybe send
-                // yourself an email
+                $this->addFlash('error', 'Une erreur est survenue avec le système de paiement, veuillez réessayer (nous avons alerté les administrateurs de cette erreur, ils s\'en occupent au plus tôt');
+                $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             }
+            return $this->redirectToRoute($request->get('_route'));
         }
 
         return $this->render('@App/User/pay_cart.html.twig', array(
@@ -127,7 +142,7 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment/success", name="user_cart_payment_stripe_success")
      */
-    public function cartSuccessAction(UserInterface $user, Request $request) {
+    public function cartSuccessAction() {
         $this->addFlash('notice', 'Paiement reçu');
         return $this->redirectToRoute('user_cart');
     }

@@ -2,15 +2,16 @@
 
 namespace AppBundle\Entity;
 
-use Application\Sonata\MediaBundle\Entity\Gallery;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ArtistRepository")
  * @ORM\Table(name="artist")
+ * @UniqueEntity("artistname", repositoryMethod="findNotDeletedBy()")
  */
 class Artist implements TranslatableInterface
 {

@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Artist;
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Province;
 use AppBundle\Entity\Step;
 use AppBundle\Entity\StepType;
@@ -44,14 +45,19 @@ class ContractArtistType extends AbstractType
             case 2:
                 $builder
                     ->add('preferences', ConcertPossibilityType::class, array(
+                        'required' => true,
                         'available-dates' => $options['available-dates'],
                     ))
-                    ->add('motivations', TextareaType::class)
+                    ->add('motivations', TextareaType::class, array(
+                        'required' => false,
+                    ))
                 ;
                 break;
             case 3:
                 $builder
-                    ->add('accept_conditions', CheckboxType::class, array('required' => true))
+                    ->add('accept_conditions', CheckboxType::class, array(
+                        'required' => true
+                    ))
                 ;
                 break;
         }
@@ -70,6 +76,7 @@ class ContractArtistType extends AbstractType
         $resolver->setDefaults(array(
             'user' => null,
             'available-dates' => null,
+            'data_class' => ContractArtist::class,
         ));
     }
 

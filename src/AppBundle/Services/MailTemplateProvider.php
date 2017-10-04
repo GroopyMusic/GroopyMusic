@@ -31,7 +31,9 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const SUGGESTIONBOXCOPY_TEMPLATE = 'AppBundle:Mail/SuggestionBox:copy.txt.twig';
 
     // Admin mails templates
-    const REMINDER_CONTRACT_ADMIN_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract_admin.txt.twig';
+    const ADMIN_REMINDER_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract.txt.twig';
+    const ADMIN_ENORMOUS_PAYER_TEMPLATE = 'AppBundle:Mail/Admin:enormous_payer.txt.twig';
+    const ADMIN_STRIPE_ERROR_TEMPLATE  = 'AppBundle:Mail/Admin:stripe_error.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()

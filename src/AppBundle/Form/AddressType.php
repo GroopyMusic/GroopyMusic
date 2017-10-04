@@ -3,8 +3,12 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Country;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AddressType extends AbstractType
 {
@@ -14,11 +18,28 @@ class AddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('street')
-            ->add('number')
-            ->add('zipcode')
-            ->add('country')
-            ->add('city')
+            ->add('street', TextType::class, array(
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                ]
+            ))
+            ->add('number', TextType::class, array(
+                'required' => true,
+            ))
+            ->add('zipcode', TextType::class, array(
+                'required' => true,
+            ))
+            ->add('city', TextType::class, array(
+                'required' => true,
+            ))
+            ->add('country', CountryType::class, array(
+                'required' => true,
+                'constraints' => [
+                    new Country(),
+                ]
+            ))
+
         ;
     }
     

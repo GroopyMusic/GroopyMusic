@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User extends BaseUser implements RecipientInterface
 {
+    // TODO suppression de compte ==> suppression des ownership requests !!!
     public function __toString()
     {
         return $this->getDisplayName();
@@ -33,6 +34,7 @@ class User extends BaseUser implements RecipientInterface
 
     public function owns(Artist $artist) {
         foreach($this->artists_user as $au) {
+            /** @var Artist_User $au */
             if($au->getArtist() == $artist) {
                 return true;
             }

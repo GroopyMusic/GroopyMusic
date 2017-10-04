@@ -126,6 +126,8 @@ class BaseContractArtist
     protected $dateEnd;
 
     /**
+     * @var Artist
+     *
      * @ORM\ManyToOne(targetEntity="Artist", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -147,12 +149,16 @@ class BaseContractArtist
     protected $reminders_artist;
 
     /**
+     * @var ContractArtistPossibility
+     *
      * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     protected $preferences;
 
     /**
+     * @var ContractArtistPossibility
+     *
      * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
@@ -421,6 +427,7 @@ class BaseContractArtist
     public function setPreferences(\AppBundle\Entity\ContractArtistPossibility $preferences = null)
     {
         $this->preferences = $preferences;
+        $preferences->setContract($this);
 
         return $this;
     }
@@ -517,6 +524,7 @@ class BaseContractArtist
     public function setReality(\AppBundle\Entity\ContractArtistPossibility $reality = null)
     {
         $this->reality = $reality;
+        $reality->setContract($this);
 
         return $this;
     }

@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            <div>
+                L'utilisateur {{ user.displayName }} (id : {{ user.id }}) a fait beaucoup de paiements dans les 30 derniers jours. Peut-être jeter un coup d'oeil ?
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}
