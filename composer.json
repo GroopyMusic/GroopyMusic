@@ -84,6 +84,9 @@
         "branch-alias": null
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "platform": {
+            "php": "7.0"
+        }
     }
 }
