@@ -54,7 +54,7 @@
         "vich/uploader-bundle": "^1.6",
         "craue/formflow-bundle": "~3.0",
         "fp/jsformvalidator-bundle": "^1.5",
-        "andres-montanez/magallanes": "^3.3",
+        "andres-montanez/magallanes": "dev-master",
         "deployer/deployer": "~3.0"
     },
     "scripts": {
