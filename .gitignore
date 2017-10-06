@@ -27,3 +27,4 @@ web/uploads/hall_technicalspecs/*
 /.idea/
 /.DS_Store
 **/.DS_Store
+/deploy.php
