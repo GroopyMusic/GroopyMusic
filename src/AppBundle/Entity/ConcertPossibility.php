@@ -11,11 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ConcertPossibility extends ContractArtistPossibility
 {
-    public function setContract(ContractArtist $contract)
-    {
-        return parent::setContract($contract);
-    }
-
     public function __toString()
     {
         $string = '';

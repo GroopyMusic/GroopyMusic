@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Country;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AddressType extends AbstractType
@@ -22,21 +23,34 @@ class AddressType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                ]
+                    new Length(['max' => 255, 'maxMessage' => 'Le nom de rue ne peut excéder {{ limit }} caractères.'])
+                ],
             ))
             ->add('number', TextType::class, array(
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(['max' => 10, 'maxMessage' => 'Le numéro de rue ne peut excéder {{ limit }} caractères.'])
+                ],
             ))
             ->add('zipcode', TextType::class, array(
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(['max' => 10, 'maxMessage' => 'Le code postal ne peut excéder {{ limit }} caractères.'])
+                ],
             ))
             ->add('city', TextType::class, array(
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(['max' => 50, 'maxMessage' => 'Le nom de la ville ne peut excéder {{ limit }} caractères.'])
+                ],
             ))
             ->add('country', CountryType::class, array(
                 'required' => true,
                 'constraints' => [
-                    new Country(),
+                    new Country()
                 ]
             ))
 
