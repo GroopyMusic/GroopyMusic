@@ -54,8 +54,6 @@
         "vich/uploader-bundle": "^1.6",
         "craue/formflow-bundle": "~3.0",
         "fp/jsformvalidator-bundle": "^1.5",
-        "andres-montanez/magallanes": "dev-master",
-        "deployer/deployer": "~3.0"
     },
     "scripts": {
         "post-install-cmd": [
@@ -69,7 +67,8 @@
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
-        "jms/di-extra-bundle": "^1.8"
+        "jms/di-extra-bundle": "^1.8",
+        "deployer/deployer": "~3.0"
     },
     "extra": {
         "symfony-app-dir": "app",
