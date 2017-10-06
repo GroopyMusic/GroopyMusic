@@ -53,7 +53,7 @@
         "sonata-project/doctrine-extensions": "^1.0",
         "vich/uploader-bundle": "^1.6",
         "craue/formflow-bundle": "~3.0",
-        "fp/jsformvalidator-bundle": "^1.5",
+        "fp/jsformvalidator-bundle": "^1.5"
     },
     "scripts": {
         "post-install-cmd": [
