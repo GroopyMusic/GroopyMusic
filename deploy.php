@@ -102,7 +102,7 @@ task('deploy', [
     'deploy:update_code',
     'deploy:create_cache_dir',
     'deploy:shared',
-    'deploy:assets',
+    //'deploy:assets',
     'deploy:vendors',
     'deploy:assetic:dump',
     'deploy:cache:warmup',
