@@ -25,7 +25,6 @@ class ContractArtistPossibility
         }
     }
 
-
     /**
      * @var int
      *
@@ -48,6 +47,12 @@ class ContractArtistPossibility
      * @ORM\Column(name="additional_info", type="text", nullable=true)
      */
     protected $additional_info;
+
+    // Unmapped (set by BaseContractArtist setters)
+    /** @var BaseContractArtist $contract */
+    protected $contract;
+    public function getContract() {return $this->contract;}
+    public function setContract(BaseContractArtist $contract) {$this->contract = $contract; return $this;}
 
     /**
      * Get id

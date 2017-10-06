@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\SuggestionTypeEnum;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -13,6 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SuggestionBoxType extends AbstractType
 {
@@ -27,24 +31,54 @@ class SuggestionBoxType extends AbstractType
             ))
             ->add('name', TextType::class, array(
                 'required' => false,
-                'attr' => ['class' => 'suggestion_form_name']
+                'attr' => ['class' => 'suggestion_form_name'],
+                'constraints' => [
+                    new Length(['max' => 64, 'maxMessage' => 'Le nom ne peut dépasser {{ limit }} caractères.']),
+                ]
             ))
             ->add('firstname', TextType::class, array(
                 'required' => false,
-                'attr' => ['class' => 'suggestion_form_firstname']
+                'attr' => ['class' => 'suggestion_form_firstname'],
+                'constraints' => [
+                    new Length(['max' => 64, 'maxMessage' => 'Le prénom ne peut dépasser {{ limit }} caractères.']),
+                ]
             ))
             ->add('email', TextType::class, array(
                 'required' => false,
-                'attr' => ['class' => 'suggestion_form_email']
+                'attr' => ['class' => 'suggestion_form_email'],
+                'constraints' => [
+                    new Email(['message' => 'Cette adresse e-mail est invalide.']),
+                ]
             ))
-            ->add('object', TextType::class)
-            ->add('message', TextareaType::class)
+            ->add('object', TextType::class, array(
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Merci de renseigner un objet.']),
+                    new Length(['max' => 64, 'maxMessage' => "L'objet ne peut dépasser {{ limit }} caractères"]),
+                ]
+            ))
+            ->add('message', TextareaType::class, array(
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Merci de renseigner un message.']),
+                    new Length(['min' => 20, 'minMessage' => "Le message doit contenir au moins {{ limit }} caractères."]),
+                ]
+            ))
             ->add('mailCopy', CheckboxType::class, array(
-                'required' => false
+                'required' => false,
             ))
             ->add('submit', SubmitType::class);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => SuggestionBox::class,
+        ));
+    }
 
      /**
       * {@inheritdoc}

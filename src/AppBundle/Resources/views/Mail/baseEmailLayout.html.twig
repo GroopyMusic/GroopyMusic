@@ -57,27 +57,15 @@
 	    		<a name="top" ></a>
 	  			{% block content %}
 	  				{% block contentHead %}
-					<span {{ salutationStyle }}>Hello,</span>
-					<p>
-						Add some html content here
-					</p>
-					<p>
-						This is just the default content-block.
-					</p>
-					<p>
-						Best regards,
-						<br/>
-						<span style="color:#024d84;">the azine team</span>
-					</p>
-					{% endblock %}{# end block contentHead #}
+					{% endblock %}
 					{% if contentItems is defined %}
-{#
-the contentItems-array has the following structure
+					{#
+					the contentItems-array has the following structure
 
-array(0 => array(templateX => varsForX), 1 => array(templateY => varsForY), 2 => array(templateZ => varsForZ));
+					array(0 => array(templateX => varsForX), 1 => array(templateY => varsForY), 2 => array(templateZ => varsForZ));
 
-the first loop get's all the arrays, the second loop get's the template from the key and the vars from the value of the inner array.
-#}
+					the first loop get's all the arrays, the second loop get's the template from the key and the vars from the value of the inner array.
+					#}
 						{% for contentItemArrays in contentItems  %}
 							{% for contentItemTemplate, contentItemParams in contentItemArrays %}
 								{{ cellSeparator }}{# You can split your content into sections with the cellSepartor-variable. #}
@@ -93,25 +81,25 @@ the first loop get's all the arrays, the second loop get's the template from the
 		{{ leftShadow}}
 	        	<td class="contentWidth" width="{{ contentWidth }}" bgcolor="white" style="text-align:center;">
 	        		{% block footerLogo %}
-	        		<a href="http://example.com" target="_blank" style="color: {{ azGreen }}; font: 36px bold; text-decoration: none; position:relative; top:1px;">
-			    		<img height="24" width="116" src="{{ logo_png }}" alt="azine" />
-			    	</a>
-			    	{% endblock %}{# end block footerLogo #}
+						<a href="{{ absolute_url(path('homepage')) }}" target="_blank" style="color: {{ azGreen }}; font: 36px bold; text-decoration: none; position:relative; top:1px;">
+							<img height="24" width="116" src="{{ logo_png }}" alt="Un-Mute" />
+						</a>
+			    	{% endblock %}
 	            </td>
     	{{ rightShadow}}
 		{{ leftShadow}}
             	<td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="{{ footerBackgroundColor }}" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid #b1c800; text-align:center;" >
                 	{% block footerInfoText %}
             		<p style="color:white;">
-	            		The Symfony-Bundle this email was created with is brought to you by Azine IT Services AG.
+	            		Un-Mute asbl
             		</p>
             		<p style="color:white;">
-            			Add "<a href="mailto:{{ sendMailAccountName }}&lt;{{ sendMailAccountAddress }}&gt;">{{ sendMailAccountAddress }}</a>" to your address book to ensure delivery of azine emails.
+            			Add "<a href="mailto:{{ sendMailAccountName }}&lt;{{ sendMailAccountAddress }}&gt;">{{ sendMailAccountAddress }}</a>" to your address book to ensure delivery of our emails.
             		</p>
                 	{% endblock %}{# end block footerInfoText #}
             		{% block footerCopyrightText %}
             		<p style="color:white;">
-            			&copy; 2013
+            			&copy; 2017
 					</p>
 					{% endblock %}{# end block footerCopyrightText #}
                     <p style="color:#acacac;">

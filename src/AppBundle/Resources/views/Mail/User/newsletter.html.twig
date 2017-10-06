@@ -1,7 +1,7 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
 {% autoescape false %}
     {% spaceless %}
-        {% block title %}Newsletter Un-Mute{% endblock %}
+        {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
             <div>

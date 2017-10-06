@@ -42,6 +42,7 @@ class AppKernel extends Kernel
             new Oneup\UploaderBundle\OneupUploaderBundle(),
             new Vich\UploaderBundle\VichUploaderBundle(),
             new Craue\FormFlowBundle\CraueFormFlowBundle(),
+            new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

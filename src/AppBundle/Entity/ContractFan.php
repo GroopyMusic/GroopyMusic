@@ -45,6 +45,10 @@ class ContractFan
         }, $this->purchases->toArray()));
     }
 
+    public function getFan() {
+        return $this->getCart()->getUser();
+    }
+
     /**
      * @var int
      *

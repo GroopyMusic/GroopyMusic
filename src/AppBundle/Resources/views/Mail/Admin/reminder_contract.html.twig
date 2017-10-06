@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            <div>
+                Il faut encore fournir une concrétisation (salle + date) au contrat {{ contractArtist.id }} parce que ça fait {{ nbDays }} jours qu'il est validé.
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

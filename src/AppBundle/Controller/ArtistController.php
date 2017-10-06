@@ -12,12 +12,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Entity\Artist;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+/**
+ * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
+ */
 class ArtistController extends Controller
 {
     private function assertOwns(UserInterface $user, Artist $artist) {
@@ -215,6 +219,7 @@ class ArtistController extends Controller
      */
     public function editPhotosAction(UserInterface $user, Artist $artist) {
         $this->assertOwns($user, $artist);
+
         return $this->render('@App/User/Artist/edit_photos.html.twig', array(
             'artist' => $artist,
         ));

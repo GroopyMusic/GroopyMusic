@@ -4,15 +4,22 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\ArtistOwnershipRequest;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
 
 class OwnerShipRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email');
+            ->add('email', EmailType::class, array(
+                'required' => true,
+                'constraints' => [
+                    new Email(['message' => 'Cette adresse e-mail est invalide.']),
+                ]
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

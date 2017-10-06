@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% autoescape false %}
+
+{% set subject = "Un payeur énorme" %}
+{% block subject %}{{ subject }}{% endblock %}
+
+{% block content %}
+   L'utilisateur {{ user.displayName }} (id : {{ user.id }}) a fait beaucoup de paiements dans les 30 derniers jours. Peut-être jeter un coup d'oeil ?
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Admin:enormous_payer.html.twig' %}
+{% endblock %}

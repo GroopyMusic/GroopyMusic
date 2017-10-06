@@ -4,6 +4,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\ArtistOwnershipRequest;
+use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Newsletter;
@@ -18,6 +19,9 @@ class MailDispatcher
 {
     const FROM = "no-reply@un-mute.be";
     const FROM_NAME = "Un-Mute";
+
+    const ADMIN_TO = "gonzyer@gmail.com";
+    const ADMIN_TO_NAME = "Admin Un-Mute";
 
     private $mailer;
     private $translator;
@@ -35,6 +39,11 @@ class MailDispatcher
     private function sendEmail($template, $subject, array $params, $bcc_emails, $bcc_name, array $attachments = []) {
         $this->mailer->sendEmail($failedRecipients, $subject, self::FROM, self::FROM_NAME, [],'' , [], '',
             $bcc_emails, $bcc_name, [], '', $params, $template, $attachments);
+        return $failedRecipients;
+    }
+
+    private function sendAdminEmail($template, $subject, array $params, array $attachments = []) {
+        return $this->sendEmail($template, $subject, $params, self::ADMIN_TO, self::ADMIN_TO_NAME, $attachments);
     }
 
     public function sendEmailChangeConfirmation(User $user) {
@@ -115,13 +124,6 @@ class MailDispatcher
         $this->notification_dispatcher->notifyOngoingCart($users, $contract);
     }
 
-    public function sendAdminReminderContract(ContractArtist $contract, $nb_days) {
-        $to = 'gonzyer@gmail.com';
-        $toName = 'admin';
-        $params = ['contractArtist' => $contract, 'nbDays' => $nb_days];
-        $this->sendEmail(MailTemplateProvider::REMINDER_CONTRACT_ADMIN_TEMPLATE, 'subject', $params, $to, $toName);
-    }
-
     public function sendArtistReminderContract($users, ContractArtist $contract, $nb_days) {
         $recipients = array_map(function(User $elem) {
             return $elem->getEmail();
@@ -145,5 +147,23 @@ class MailDispatcher
 
         $this->sendEmail(MailTemplateProvider::TICKET_TEMPLATE, $subject, $params, $to, $toName, $attachments);
         $this->notification_dispatcher->notifyTicket($contractFan->getFan(), $contractFan);
+    }
+
+    public function sendAdminReminderContract(ContractArtist $contract, $nb_days) {
+        $subject = "Rappel : un contrat doit être concrétisé";
+        $params = ['contractArtist' => $contract, 'nbDays' => $nb_days];
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_REMINDER_CONTRACT_TEMPLATE, $subject, $params);
+    }
+
+    public function sendAdminEnormousPayer(User $user) {
+        $subject = "Payeur énorme spotted";
+        $params = ['user' => $user];
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_ENORMOUS_PAYER_TEMPLATE, $subject, $params);
+    }
+
+    public function sendAdminStripeError(\Stripe\Error\Base $e, User $user, Cart $cart) {
+        $subject = "Payeur énorme spotted";
+        $params = ['stripe_error' => $e];
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_STRIPE_ERROR_TEMPLATE, $subject, $params);
     }
 }

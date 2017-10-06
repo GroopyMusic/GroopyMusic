@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-08-15T15:32:49Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-10-02T13:47:20Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
+      <trans-unit id="e57bac706b0b4e9e911cfcfebd52a9ca40d61be0" resname="Days 0">
+        <source>Days 0</source>
+        <target>Dimanche</target>
+      </trans-unit>
+      <trans-unit id="f4dfcf38c14edb5ad934729e0cfe7aef8e13510f" resname="Days 1">
+        <source>Days 1</source>
+        <target>Lundi</target>
+      </trans-unit>
+      <trans-unit id="37be3d4f2aad8389758dccb1b62aa24c90067396" resname="Days 2">
+        <source>Days 2</source>
+        <target>Mardi</target>
+      </trans-unit>
+      <trans-unit id="751b8475213e5acfe19d53d2fcb01bc557aec4c7" resname="Days 3">
+        <source>Days 3</source>
+        <target>Mercredi</target>
+      </trans-unit>
+      <trans-unit id="1a3633474b9743257dea98d611e5e394f2bc90f4" resname="Days 4">
+        <source>Days 4</source>
+        <target>Jeudi</target>
+      </trans-unit>
+      <trans-unit id="c0d475e719a8374ef75b35023487aaf727432606" resname="Days 5">
+        <source>Days 5</source>
+        <target>Vendredi</target>
+      </trans-unit>
+      <trans-unit id="83b5403ceb863d181d03b937328624223c803c22" resname="Days 6">
+        <source>Days 6</source>
+        <target>Samedi</target>
+      </trans-unit>
       <trans-unit id="5830417c0a11c62b3d0a1c70c7bbee336b9bb195" resname="html.email.head.link.to.web.view.text.%url%">
         <source>html.email.head.link.to.web.view.text.%url%</source>
-        <target state="new">html.email.head.link.to.web.view.text.%url%</target>
+        <target>Voir dans le navigateur</target>
         <jms:reference-file line="30">\..\..\..\..\..\./src\AppBundle\Resources\views\Mail\baseEmailLayout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="64a50932049ddff830412e0fd9edb30198bf17f3" resname="mdr">
         <source>mdr</source>
-        <target state="new">mdr</target>
+        <target>mdr</target>
         <jms:reference-file line="4">\..\..\..\..\..\./src\AppBundle\Resources\views\Public\home.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4a37a6d25203364276a96bb0ec6f15734864c7d5" resname="txt.email.head.link.to.web.view.text.%url%">
         <source>txt.email.head.link.to.web.view.text.%url%</source>
-        <target state="new">txt.email.head.link.to.web.view.text.%url%</target>
+        <target>Voir dans le navigateur</target>
         <jms:reference-file line="54">\..\..\..\..\..\./src\AppBundle\Resources\views\Mail\baseEmailLayout.txt.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit>
-        <source>Days 0</source>
-        <target>Dimanche</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Days 1</source>
-        <target>Lundi</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Days 2</source>
-        <target>Mardi</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Days 3</source>
-        <target>Mercredi</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Days 4</source>
-        <target>Jeudi</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Days 5</source>
-        <target>Vendredi</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Days 6</source>
-        <target>Samedi</target>
       </trans-unit>
     </body>
   </file>

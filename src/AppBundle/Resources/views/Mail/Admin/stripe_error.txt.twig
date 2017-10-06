@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% autoescape false %}
+
+{% set subject = "Erreur lors d'un paiement" %}
+{% block subject %}{{ subject }}{% endblock %}
+
+{% block content %}
+   Erreur lors d'un paiement. Utilisateur : {{ user.displayName }} (id {{ user.id }}), numéro du panier : {{ cart.id }}. Infos de l'erreur Stripe :  {{ dump(stripe_error) }}.
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Admin:stripe_error.html.twig' %}
+{% endblock %}

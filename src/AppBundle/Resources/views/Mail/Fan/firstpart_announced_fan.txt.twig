@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% set subject = "" %}
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    Hello,
+    {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
+
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Fan:firstpart_announced_fan.html.twig' %}
+{% endblock %}

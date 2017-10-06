@@ -116,6 +116,12 @@
                 <source>app.admin.counterpart</source>
                 <target>Contrepartie</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.suggestiontypeenum">
+                <source>app.admin.suggestiontypeenum</source>
+                <target>Type de suggestion</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
