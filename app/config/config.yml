@@ -118,14 +118,14 @@ fos_user:
 assetic:
     debug:          '%kernel.debug%'
     use_controller: '%kernel.debug%'
-    node: "%path_to_node%"
+    #node: "%path_to_node%"
     filters:
         cssrewrite: ~
         jsqueeze: ~
-        uglifyjs2:
-            bin: "%path_to_uglifyjs%"
-        uglifycss:
-            bin: "%path_to_uglifycss%"
+        #uglifyjs2:
+        #    bin: "%path_to_uglifyjs%"
+        #uglifycss:
+        #    bin: "%path_to_uglifycss%"
         scssphp:
             formatter: 'Leafo\ScssPhp\Formatter\Compressed'
     assets:

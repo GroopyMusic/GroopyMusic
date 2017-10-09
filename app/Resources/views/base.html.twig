@@ -11,7 +11,7 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
         {% block stylesheets %}
-            {% stylesheets filter='scssphp, ?uglifycss' output="css/compiled/layout.min.css"
+            {% stylesheets filter='scssphp, cssrewrite' output="css/layout.min.css"
                 "scss/layout.scss"
             %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
