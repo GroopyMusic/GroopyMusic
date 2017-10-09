@@ -35,7 +35,8 @@ framework:
         save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
     fragments:       ~
     http_method_override: true
-    assets: ~
+    assets:
+      version: "%assets_version%"
     php_errors:
         log: true
 
@@ -121,10 +122,10 @@ assetic:
     filters:
         cssrewrite: ~
         jsqueeze: ~
-#        uglifyjs2:
-#            bin: "%path_to_uglifyjs%"
-#        uglifycss:
-#            bin: "%path_to_uglifycss%"
+        uglifyjs2:
+            bin: "%path_to_uglifyjs%"
+        uglifycss:
+            bin: "%path_to_uglifycss%"
         scssphp:
             formatter: 'Leafo\ScssPhp\Formatter\Compressed'
     assets:
