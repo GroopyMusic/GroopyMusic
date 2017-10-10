@@ -186,3 +186,6 @@ vich_uploader:
           namer:
             service: vich_uploader.namer_property
             options: { property: 'technicalSpecsFileName'}
+
+jmose_command_scheduler:
+    log_path: '%kernel.root_dir%/../var/logs/'

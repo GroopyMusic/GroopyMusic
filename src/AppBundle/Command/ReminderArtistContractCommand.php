@@ -53,7 +53,7 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
 
         $mailer = $container->get(MailDispatcher::class);
 
-        $currentContracts = $em->getRepository('AppBundle:ContractArtist')->findCurrents();
+        $currentContracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $currentDate = new \DateTime();
 
         foreach($currentContracts as $contract) {

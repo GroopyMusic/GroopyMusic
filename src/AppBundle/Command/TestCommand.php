@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\Genre;
 use AppBundle\Services\MailDispatcher;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,6 +25,17 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $mailDispatcher = $this->getContainer()->get(MailDispatcher::class)->sendTestEmail();
+        $output->writeln('On y va');
+
+        //$mailDispatcher = $this->getContainer()->get(MailDispatcher::class)->sendTestEmail();
+        $genre = new Genre();
+        $genre->setLocale('fr');
+        $genre->setName('Rap français');
+        $genre->mergeNewTranslations();
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $em->persist($genre);
+        $em->flush();
+
+        $output->writeln('fini');
     }
 }
