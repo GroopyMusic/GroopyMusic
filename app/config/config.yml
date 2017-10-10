@@ -109,17 +109,17 @@ fos_user:
            # validations_groups: [AppRegistration] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
         confirmation:
             enabled: true
-            template: AppBundle:Mail:registration_confirmation.txt.twig
+            template: AppBundle:Mail/User:registration_confirmation.txt.twig
     profile:
         form:
           type: AppBundle\Form\ProfileType
          # validation_groups: [AppProfile] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
     from_email:
-        address:        no-reply@un-mute.be
-        sender_name:    'Un-Mute'
+        address:        "%email_from_address%"
+        sender_name:    "%email_from_name%"
     resetting:
         email:
-            template:  AppBundle:Mail:password_resetting.txt.twig
+            template:  AppBundle:Mail/User:password_resetting.txt.twig
 
 # Assetic config
 assetic:

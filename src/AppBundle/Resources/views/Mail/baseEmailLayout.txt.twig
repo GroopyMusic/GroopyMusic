@@ -1,4 +1,5 @@
-{% block subject %}Subject{% endblock %}
+
+{% block subject %}{{ subject|default("Nouveau message de Un-Mute") }}{% endblock %}
 
 {% block body_text %}
 {% autoescape false %}
