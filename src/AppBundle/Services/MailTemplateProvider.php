@@ -13,6 +13,9 @@ use Azine\EmailBundle\Services\TemplateProviderInterface;
  */
 class MailTemplateProvider extends AzineTemplateProvider implements TemplateProviderInterface
 {
+
+    // TODO mettre à jour les trucs à garder pour webview (voir + bas)
+
     const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:reminder_contract_artist.txt.twig';
     const FAILED_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:failed_contract_artist.txt.twig';
     const SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:successful_contract_artist.txt.twig';
@@ -31,6 +34,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const SUGGESTIONBOXCOPY_TEMPLATE = 'AppBundle:Mail/SuggestionBox:copy.txt.twig';
 
     // Admin mails templates
+    const ADMIN_TEST_TEMPLATE = 'AppBundle:Mail/Admin:test.txt.twig';
     const ADMIN_REMINDER_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract.txt.twig';
     const ADMIN_ENORMOUS_PAYER_TEMPLATE = 'AppBundle:Mail/Admin:enormous_payer.txt.twig';
     const ADMIN_STRIPE_ERROR_TEMPLATE  = 'AppBundle:Mail/Admin:stripe_error.txt.twig';
@@ -45,18 +49,11 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
         // get the style-params from the parent (if you like)
         $newVars = parent::getParamArrayFor($template);
 
-        // If you configured two SwiftMailers, one with spooling and one without, then
-        // all templates that have set the "SEND_IMMEDIATELY_FLAG = true" will be sent with the
-        // mailer that does not use spooling => faster email delivery => e.g. for the Reset-Password-Email.
-        if($template == self::VIP_INFO_MAIL_TEMPLATE){
-            $newVars[self::SEND_IMMEDIATELY_FLAG] = true;
-        }
-
         // add template specific stuff
-        if ($template == self::NOTIFICATIONS_TEMPLATE) {
-            $newVars['%someUrl%'] = "http://example.com"; 				//$this->router->generate("your_route", $routeParamArray, UrlGeneratorInterface::ABSOLUTE_URL);
-            $newVars['%someOtherUrl%'] = "http://example.com/other";	//$this->router->generate("your_route", $routeParamArray, UrlGeneratorInterface::ABSOLUTE_URL);
-        }
+       // if ($template == self::NOTIFICATIONS_TEMPLATE) {
+       //     $newVars['%someUrl%'] = "http://example.com"; 				//$this->router->generate("your_route", $routeParamArray, UrlGeneratorInterface::ABSOLUTE_URL);
+        //    $newVars['%someOtherUrl%'] = "http://example.com/other";	//$this->router->generate("your_route", $routeParamArray, UrlGeneratorInterface::ABSOLUTE_URL);
+        //}
 
         // override some generic stuff needed for all templates
         $newVars["h2Style"]	= "style='padding:0; margin:0; font:bold 24px Arial; color:red; text-decoration:none;'";
@@ -136,17 +133,22 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     {
         $include = parent::getTemplatesToStoreForWebView();
         $include = array_merge($include, [
-            self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,
-            self::FAILED_CONTRACT_ARTIST_TEMPLATE,
-            self::FAILED_CONTRACT_FAN_TEMPLATE,
-            self::NEWSLETTER_TEMPLATE,
-            self::ONGOING_CART_TEMPLATE,
-            self::OWNERSHIPREQUEST_MEMBER_TEMPLATE,
-            self::REMINDER_CONTRACT_ADMIN_TEMPLATE,
             self::REMINDER_CONTRACT_ARTIST_TEMPLATE,
+            self::FAILED_CONTRACT_ARTIST_TEMPLATE,
             self::SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE,
+            self::FAILED_CONTRACT_FAN_TEMPLATE,
             self::SUCCESSFUL_CONTRACT_FAN_TEMPLATE,
+            self::ONGOING_CART_TEMPLATE,
             self::TICKET_TEMPLATE,
+
+            self::NEWSLETTER_TEMPLATE,
+            self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,
+
+            self::OWNERSHIPREQUEST_MEMBER_TEMPLATE,
+            self::OWNERSHIPREQUEST_NONMEMBER_TEMPLATE,
+
+            self::SUGGESTIONBOXCOPY_TEMPLATE,
+
         ]);
         return $include;
     }

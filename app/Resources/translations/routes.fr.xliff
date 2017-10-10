@@ -676,7 +676,7 @@
       </trans-unit>
       <trans-unit id="e33cc56c226adb625998728b77c6d7989d693f61" resname="fos_user_security_login">
         <source>/login</source>
-        <target>/connexion</target>
+        <target>/login</target>
       </trans-unit>
       <trans-unit id="00fb021cee4fd738a7b66a0f5deb9f30bf059593" resname="fos_user_security_logout">
         <source>/logout</source>

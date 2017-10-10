@@ -20,10 +20,10 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
     {
         $this
             ->setName('reminders:crowdfunding:artist')
-            ->setDescription('Reminds an artist that one of its contract is almost over')
-            ->setHelp('Reminds an artist that one of its contract is almost over')
+            ->setDescription('Reminds an artist that one of its contract is almost on deadline')
+            ->setHelp('Reminds an artist that one of its contract is almost on deadline')
 
-            ->addArgument('days', InputArgument::REQUIRED, 'The number of days to the concert to remind')
+            ->addArgument('days', InputArgument::REQUIRED, 'The number of days to the event deadline to remind (10 OR 20)')
 
         ;
     }
@@ -60,12 +60,12 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
             /** @var ContractArtist $contract */
             $reminder = false;
 
-            if((($contract->getRemindersArtist() < 1 && $days == 30) || ($contract->getRemindersArtist() < 2 && $days == 15))
+            if((($contract->getRemindersArtist() < 1 && $days == 20) || ($contract->getRemindersArtist() < 2 && $days == 10))
                 && $currentDate->diff($contract->getDateEnd())->days <= $days ) {
                 $reminder = true;
             }
 
-            if($reminder) {
+            if($reminder && !$contract->getSuccessful()) {
                 $artist_users = $contract->getArtist()->getArtistsUser();
 
                 $mailer->sendArtistReminderContract($artist_users->toArray(), $contract, $days);
