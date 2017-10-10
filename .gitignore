@@ -28,3 +28,4 @@ web/uploads/hall_technicalspecs/*
 /.DS_Store
 **/.DS_Store
 /deploy.php
+!DoctrineMigrations

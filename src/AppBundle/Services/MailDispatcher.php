@@ -38,12 +38,16 @@ class MailDispatcher
 
     private function sendEmail($template, $subject, array $params, $bcc_emails, $bcc_name, array $attachments = []) {
         $this->mailer->sendEmail($failedRecipients, $subject, self::FROM, self::FROM_NAME, [],'' , [], '',
-            $bcc_emails, $bcc_name, [], '', $params, $template, $attachments);
+            $bcc_emails, $bcc_name, [], '', array_merge(['subject' => $subject], $params), $template, $attachments);
         return $failedRecipients;
     }
 
-    private function sendAdminEmail($template, $subject, array $params, array $attachments = []) {
+    private function sendAdminEmail($template, $subject, array $params = [], array $attachments = []) {
         return $this->sendEmail($template, $subject, $params, self::ADMIN_TO, self::ADMIN_TO_NAME, $attachments);
+    }
+
+    public function sendTestEmail() {
+        return $this->sendAdminEmail(MailTemplateProvider::ADMIN_TEST_TEMPLATE, 'test');
     }
 
     public function sendEmailChangeConfirmation(User $user) {
