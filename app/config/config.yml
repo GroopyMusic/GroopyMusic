@@ -69,6 +69,13 @@ doctrine:
             auto_mapping: true
             naming_strategy: doctrine.orm.naming_strategy.underscore
 
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/DoctrineMigrations"
+    namespace: Application\Migrations
+    table_name: migration_versions
+    name: Application Migrations
+    organize_migrations: "BY_YEAR_AND_MONTH" # Version >=1.2 Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
+
 knp_doctrine_behaviors:
   translatable: true
 
