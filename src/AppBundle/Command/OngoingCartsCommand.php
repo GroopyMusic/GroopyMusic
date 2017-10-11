@@ -47,7 +47,7 @@ class OngoingCartsCommand extends ContainerAwareCommand
         $em = $container->get('doctrine.orm.entity_manager');
         $mailer = $container->get(MailDispatcher::class);
 
-        $contracts = $em->getRepository('AppBundle:ContractArtist')->findCurrents();
+        $contracts = $em->getRepository('AppBundle:ContractArtist')->findWithAvailableCounterParts();
 
         $currentDate = new \DateTime();
 

@@ -95,6 +95,7 @@ swiftmailer:
     spool:     { type: memory }
     auth_mode:  "%mailer_auth_mode%"
     port:       "%mailer_port%"
+    encryption: "%mailer_encryption%"
 
 # friendsofsymfony/userbundle
 fos_user:
@@ -186,3 +187,6 @@ vich_uploader:
           namer:
             service: vich_uploader.namer_property
             options: { property: 'technicalSpecsFileName'}
+
+jmose_command_scheduler:
+    log_path: '%kernel.root_dir%/../var/logs/'
