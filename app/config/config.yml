@@ -95,6 +95,7 @@ swiftmailer:
     spool:     { type: memory }
     auth_mode:  "%mailer_auth_mode%"
     port:       "%mailer_port%"
+    encryption: "%mailer_encryption%"
 
 # friendsofsymfony/userbundle
 fos_user:

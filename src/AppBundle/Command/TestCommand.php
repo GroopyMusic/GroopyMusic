@@ -17,7 +17,8 @@ class TestCommand extends ContainerAwareCommand
     {
         $this
             ->setName('app:test_command')
-            ->setDescription('Hello PhpStorm');
+            ->setDescription('Hello PhpStorm')
+        ->addOption('mail');
     }
 
     /**
@@ -27,7 +28,16 @@ class TestCommand extends ContainerAwareCommand
     {
         $output->writeln('On y va');
 
-        //$mailDispatcher = $this->getContainer()->get(MailDispatcher::class)->sendTestEmail();
+        $logger = $this->getContainer()->get('logger');
+
+        $logger->addDebug("Beginning test command...");
+
+        $mail = $input->getOption('mail');
+        if($mail)
+            $this->getContainer()->get(MailDispatcher::class)->sendTestEmail();
+
+        $logger->addCritical("Mail is prepared...");
+
         $genre = new Genre();
         $genre->setLocale('fr');
         $genre->setName('Rap français');
@@ -37,5 +47,7 @@ class TestCommand extends ContainerAwareCommand
         $em->flush();
 
         $output->writeln('fini');
+
+        $logger->addError("Test command done !!!!!!!!!!");
     }
 }
