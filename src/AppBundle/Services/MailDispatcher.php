@@ -37,6 +37,7 @@ class MailDispatcher
     }
 
     private function sendEmail($template, $subject, array $params, $bcc_emails, $bcc_name, array $attachments = []) {
+
         $this->mailer->sendEmail($failedRecipients, $subject, self::FROM, self::FROM_NAME, [],'' , [], '',
             $bcc_emails, $bcc_name, [], '', array_merge(['subject' => $subject], $params), $template, $attachments);
         return $failedRecipients;
@@ -47,7 +48,7 @@ class MailDispatcher
     }
 
     public function sendTestEmail() {
-        return $this->sendAdminEmail(MailTemplateProvider::ADMIN_TEST_TEMPLATE, 'test');
+        return $this->sendEmail(MailTemplateProvider::ADMIN_TEST_TEMPLATE, 'test', [], ['gonzyer@gmail.com'], '', []);
     }
 
     public function sendEmailChangeConfirmation(User $user) {

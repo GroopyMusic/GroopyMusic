@@ -205,7 +205,7 @@
             var replaceWith = settings.name_prefix + '[' + newIndex + ']';
 
             if (settings.children) {
-                $.each(settings.children, function(key, child) {
+                $.each(settings.children, function (key, child) {
                     var childCollection = collection.find(child.selector).eq(index);
                     var childSettings = childCollection.data('collection-settings');
                     if (childSettings) {
@@ -254,10 +254,7 @@
 
             var settings = collection.data('collection-settings');
 
-            if (settings.position_field_selector) {
-                putFieldValue(elements.eq(newIndex).find(settings.position_field_selector), oldIndex);
-                putFieldValue(elements.eq(oldIndex).find(settings.position_field_selector), newIndex);
-            } else {
+            if (!settings.position_field_selector) {
                 changeElementIndex(collection, elements, settings, oldIndex, oldIndex, '__swap__');
                 changeElementIndex(collection, elements, settings, newIndex, newIndex, oldIndex);
                 changeElementIndex(collection, elements, settings, oldIndex, '__swap__', newIndex);
@@ -352,6 +349,10 @@
             elements.each(function (index) {
                 var element = $(this);
 
+                if (isInitialization) {
+                    element.data('index', index);
+                }
+
                 var actions = element.find('.' + settings.prefix + '-actions').addBack().filter('.' + settings.prefix + '-actions');
                 if (actions.length === 0) {
                     actions = $('<div class="' + settings.prefix + '-actions"></div>');
@@ -373,7 +374,7 @@
                         'enabled': settings.allow_up,
                         'selector': settings.prefix + '-up',
                         'html': settings.up,
-                        'condition': elements.length - delta > 1 && elements.index(element) !== 0
+                        'condition': elements.length - delta > 1 && elements.index(element) - delta > 0
                     }, {
                         'enabled': settings.allow_down,
                         'selector': settings.prefix + '-down',
@@ -475,12 +476,24 @@
         var doAdd = function (container, that, collection, settings, elements, element, index, isDuplicate) {
             if (elements.length < settings.max && (isDuplicate && trueOrUndefined(settings.before_duplicate(collection, element)) || trueOrUndefined(settings.before_add(collection, element)))) {
                 var prototype = collection.data('prototype');
+
                 var freeIndex = elements.length;
+                if (settings.position_field_selector) {
+                    var maxIndex = -1;
+                    elements.each(function () {
+                        var currentIndex = $(this).data('index');
+                        if (currentIndex > maxIndex) {
+                            maxIndex = currentIndex;
+                        }
+                    });
+                    freeIndex = maxIndex + 1;
+                }
+
                 if (index === -1) {
                     index = elements.length - 1;
                 }
                 var regexp = new RegExp(pregQuote(settings.prototype_name), 'g');
-                var code = $(prototype.replace(regexp, freeIndex));
+                var code = $(prototype.replace(regexp, freeIndex)).data('index', freeIndex);
                 var elementsParent = $(settings.elements_parent_selector);
                 var tmp = elementsParent.find('> .' + settings.prefix + '-tmp');
                 var id = $(code).find('[id]').first().attr('id');
@@ -501,11 +514,8 @@
                     tmp.before(code);
                 }
 
-                if (settings.position_field_selector) {
-                    putFieldValue(code.find(settings.position_field_selector), freeIndex);
-                }
-
                 elements = collection.find(settings.elements_selector);
+
                 var action = code.find('.' + settings.prefix + '-add, .' + settings.prefix + '-duplicate');
                 if (action.length > 0) {
                     action.addClass(settings.prefix + '-action').data('collection', collection.attr('id'));
@@ -528,7 +538,15 @@
             }
 
             if (code !== undefined && settings.fade_in) {
-                code.fadeIn('fast');
+                code.fadeIn('fast', function () {
+                    if (settings.position_field_selector) {
+                        doRewritePositions(settings, elements);
+                    }
+                });
+            } else {
+                if (settings.position_field_selector) {
+                    return doRewritePositions(settings, elements);
+                }
             }
 
             return elements;
@@ -548,6 +566,9 @@
                         elementsParent.find('> .' + settings.prefix + '-tmp').before(backup);
                         elements = collection.find(settings.elements_selector);
                         elements = shiftElementsDown(collection, elements, settings, index - 1);
+                    }
+                    if (settings.position_field_selector) {
+                        doRewritePositions(settings, elements);
                     }
                 };
                 if (settings.fade_out) {
@@ -572,6 +593,10 @@
                 }
             }
 
+            if (settings.position_field_selector) {
+                return doRewritePositions(settings, elements);
+            }
+
             return elements;
         };
 
@@ -583,6 +608,10 @@
                 if (!trueOrUndefined(settings.after_down(collection, elements))) {
                     elements = swapElements(collection, elements, index + 1, index);
                 }
+            }
+
+            if (settings.position_field_selector) {
+                return doRewritePositions(settings, elements);
             }
 
             return elements;
@@ -610,8 +639,21 @@
             }
             dumpCollectionActions(collection, settings, false);
 
+            if (settings.position_field_selector) {
+                return doRewritePositions(settings, elements);
+            }
+
             return elements;
         };
+
+        var doRewritePositions = function (settings, elements) {
+            $(elements).each(function () {
+                var element = $(this);
+                putFieldValue(element.find(settings.position_field_selector), elements.index(element));
+            });
+
+            return elements;
+        }
 
         // we're in a $.fn., so in $('.collection').collection(), $(this) equals $('.collection')
         var elems = $(this);
@@ -813,9 +855,9 @@
                 };
                 array.sort(sorter);
 
-                $.each(array, function(newIndex, object) {
+                $.each(array, function (newIndex, object) {
                     var ids = [];
-                    $(elements).each(function(index) {
+                    $(elements).each(function (index) {
                         ids.push($(this).attr('id'));
                     });
 
@@ -824,7 +866,7 @@
 
                     if (newIndex !== oldIndex) {
                         elements = doMove(collection, settings, elements, element, oldIndex, newIndex);
-                        putFieldValue(element.find(settings.position_field_selector), newIndex);
+                        putFieldValue(element.find(settings.position_field_selector), elements.index(element));
                     }
                 });
             } // if (settings.position_field_selector) {

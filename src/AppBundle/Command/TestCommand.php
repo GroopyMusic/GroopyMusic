@@ -28,26 +28,21 @@ class TestCommand extends ContainerAwareCommand
     {
         $output->writeln('On y va');
 
-        $logger = $this->getContainer()->get('logger');
-
-        $logger->addDebug("Beginning test command...");
-
         $mail = $input->getOption('mail');
-        if($mail)
-            $this->getContainer()->get(MailDispatcher::class)->sendTestEmail();
+        if($mail) {
+            for($i = 0; $i < 20; $i++) {
+                $this->getContainer()->get(MailDispatcher::class)->sendTestEmail();
+            }
+        }
 
-        $logger->addCritical("Mail is prepared...");
-
-        $genre = new Genre();
-        $genre->setLocale('fr');
-        $genre->setName('Rap français');
-        $genre->mergeNewTranslations();
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $em->persist($genre);
-        $em->flush();
+//        $genre = new Genre();
+//        $genre->setLocale('fr');
+//        $genre->setName('Rap français');
+//        $genre->mergeNewTranslations();
+//        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+//        $em->persist($genre);
+//        $em->flush();
 
         $output->writeln('fini');
-
-        $logger->addError("Test command done !!!!!!!!!!");
     }
 }
