@@ -22,6 +22,7 @@ class Cart
         $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->confirmed = false;
         $this->paid = false;
+        $this->date_creation = new \Datetime();
     }
 
     public function isProblematic() {
@@ -74,6 +75,11 @@ class Cart
      * @ORM\ManyToOne(targetEntity="User", inversedBy="carts")
      */
     private $user;
+
+    /**
+     * @ORM\Column(name="date_creation", type="datetime")
+     */
+    private $date_creation;
 
     /**
      * Get id
