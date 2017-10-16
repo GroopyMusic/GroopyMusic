@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 
 class MailDispatcher
 {
-    const FROM = "no-reply@un-mute.be";
+    const FROM = "no-reply@mg.un-mute.be";
     const FROM_NAME = "Un-Mute";
 
     const ADMIN_TO = "gonzyer@gmail.com";

@@ -8,6 +8,7 @@ use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Services\MailDispatcher;
+use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,13 +26,9 @@ class PublicController extends Controller
      * @Security("has_role('ROLE_SUPER_ADMIN')")
      */
     public function testMailAction() {
-        try {
-            $this->get(MailDispatcher::class)->sendTestEmail();
-        }
-        catch(Exception $e) {
-            return new Response($e->getMessage());
-        }
-        return new Response('OK');
+# Instantiate the client.
+        $this->get(MailDispatcher::class)->sendTestEmail();
+        return $this->render('@App/Public/about.html.twig');
     }
 
     /**

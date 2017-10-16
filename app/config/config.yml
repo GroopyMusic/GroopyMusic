@@ -9,7 +9,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: fr
-    email_from_address: no-reply@un-mute.be
+    email_from_address: no-reply@mg.un-mute.be
     email_from_name: Un-Mute
 
 framework:
@@ -89,13 +89,7 @@ a2lix_translation_form:
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
     spool:     { type: memory }
-    auth_mode:  "%mailer_auth_mode%"
-    port:       "%mailer_port%"
-    encryption: "%mailer_encryption%"
 
 # friendsofsymfony/userbundle
 fos_user:
@@ -189,4 +183,9 @@ vich_uploader:
             options: { property: 'technicalSpecsFileName'}
 
 jmose_command_scheduler:
-    log_path: '%kernel.root_dir%/../var/logs/'
+    log_path: '%kernel.root_dir%/../var/logs/commands/'
+
+cspoo_swiftmailer_mailgun:
+    key: "%mailgun_api_secret%"
+    domain: "%mailgun_domain%"
+    http_client: ~ # Optional. Defaults to null and uses discovery to find client.
