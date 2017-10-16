@@ -20,9 +20,9 @@ azine_email:
 
     no_reply:             # Required
         # the no-reply email-address
-        email:                "%email_from_address%" # Required
+        email:                "%mailer_from_address%" # Required
         # the name to appear with the 'no-reply'-address.
-        name:                 '%email_from_name%' # Required
+        name:                 '%mailer_from_name%' # Required
 
     # absolute path to the image-folder containing the images used in your templates.
     image_dir:            '%kernel.root_dir%/../web/mail/images/'

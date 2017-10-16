@@ -9,8 +9,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: fr
-    email_from_address: no-reply@mg.un-mute.be
-    email_from_name: Un-Mute
+    mailer_from_name: "Un-Mute"
 
 framework:
     #esi:             ~
@@ -116,8 +115,8 @@ fos_user:
           type: AppBundle\Form\ProfileType
          # validation_groups: [AppProfile] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
     from_email:
-        address:        "%email_from_address%"
-        sender_name:    "%email_from_name%"
+        address:        "%mailer_from_address%"
+        sender_name:    "%mailer_from_name%"
     resetting:
         email:
             template:  AppBundle:Mail/User:password_resetting.txt.twig

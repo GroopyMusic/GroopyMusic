@@ -17,9 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 
 class MailDispatcher
 {
-    const FROM = "no-reply@mg.un-mute.be";
-    const FROM_NAME = "Un-Mute";
-
     const TO = "no-reply@un-mute.be";
 
     const REPLY_TO = "info@un-mute.be";
@@ -29,21 +26,24 @@ class MailDispatcher
     const ADMIN_TO_NAME = "Admin Un-Mute";
 
     private $mailer;
+    private $from_address;
+    private $from_name;
     private $translator;
     private $notification_dispatcher;
     private $em;
 
-    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em)
+    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name)
     {
         $this->mailer = $mailer;
         $this->translator = $translator;
         $this->notification_dispatcher = $notificationDispatcher;
         $this->em = $em;
+        $this->from_address = $from_address;
+        $this->from_name = $from_name;
     }
 
     private function sendEmail($template, $subject, array $params, $bcc_emails, array $attachments = [], $to = self::TO, $to_name = '') {
-
-        $this->mailer->sendEmail($failedRecipients, $subject, self::FROM, self::FROM_NAME, $to, $to_name, [], '',
+        $this->mailer->sendEmail($failedRecipients, $subject, $this->from_address, $this->from_name, $to, $to_name, [], '',
             $bcc_emails, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
         return $failedRecipients;
     }
