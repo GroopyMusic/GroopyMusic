@@ -20,6 +20,11 @@ class MailDispatcher
     const FROM = "no-reply@mg.un-mute.be";
     const FROM_NAME = "Un-Mute";
 
+    const TO = "no-reply@un-mute.be";
+
+    const REPLY_TO = "info@un-mute.be";
+    const REPLY_TO_NAME = "Un-Mute ASBL";
+
     const ADMIN_TO = "gonzyer@gmail.com";
     const ADMIN_TO_NAME = "Admin Un-Mute";
 
@@ -36,19 +41,19 @@ class MailDispatcher
         $this->em = $em;
     }
 
-    private function sendEmail($template, $subject, array $params, $bcc_emails, $bcc_name, array $attachments = []) {
+    private function sendEmail($template, $subject, array $params, $bcc_emails, array $attachments = [], $to = self::TO, $to_name = '') {
 
-        $this->mailer->sendEmail($failedRecipients, $subject, self::FROM, self::FROM_NAME, [],'' , [], '',
-            $bcc_emails, $bcc_name, [], '', array_merge(['subject' => $subject], $params), $template, $attachments);
+        $this->mailer->sendEmail($failedRecipients, $subject, self::FROM, self::FROM_NAME, $to, $to_name, [], '',
+            $bcc_emails, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
         return $failedRecipients;
     }
 
     private function sendAdminEmail($template, $subject, array $params = [], array $attachments = []) {
-        return $this->sendEmail($template, $subject, $params, self::ADMIN_TO, self::ADMIN_TO_NAME, $attachments);
+        return $this->sendEmail($template, $subject, $params, [], $attachments, self::ADMIN_TO, self::ADMIN_TO_NAME);
     }
 
     public function sendTestEmail() {
-        return $this->sendEmail(MailTemplateProvider::ADMIN_TEST_TEMPLATE, 'test', [], ['gonzyer@gmail.com'], '', []);
+        return $this->sendEmail(MailTemplateProvider::ADMIN_TEST_TEMPLATE, 'test', [], ['gonzyer@gmail.com']);
     }
 
     public function sendEmailChangeConfirmation(User $user) {
@@ -56,7 +61,7 @@ class MailDispatcher
 
         $params = ['user' => $user];
 
-        $this->sendEmail($template, "Changement d'e-mail", $params, $user->getAskedEmail(), $user->getDisplayName());
+        $this->sendEmail($template, "Changement d'e-mail", $params, [], [], $user->getAskedEmail(), $user->getDisplayName());
     }
 
 
@@ -75,13 +80,13 @@ class MailDispatcher
             $template = MailTemplateProvider::OWNERSHIPREQUEST_NONMEMBER_TEMPLATE;
         }
 
-        $this->sendEmail($template, "Quelqu'un a dit que vous possédiez un artiste sur Un-Mute", $params, $req->getEmail(), $toName);
+        $this->sendEmail($template, "Quelqu'un a dit que vous possédiez un artiste sur Un-Mute", $params, [], [], $req->getEmail(), $toName);
     }
 
     public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox) {
         $recipient = $suggestionBox->getEmail();
         $recipientName = $suggestionBox->getDisplayName();
-        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), ['suggestionBox' => $suggestionBox], $recipient, $recipientName);
+        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / Votre formulaire de contact' . $suggestionBox->getObject(), ['suggestionBox' => $suggestionBox], [], '', [], $recipient, $recipientName);
     }
 
     public function sendKnownOutcomeContract(ContractArtist $contract, $success, $artist_users, $fan_users) {
@@ -100,7 +105,7 @@ class MailDispatcher
             return $elem->getEmail();
         }, $artist_users);
 
-        $this->sendEmail($template_artist, 'Subject', $params, $bcc, '');
+        $this->sendEmail($template_artist, 'Subject', $params, $bcc);
 
         // mail to fans
         if(!empty($fan_users)) {
@@ -108,7 +113,7 @@ class MailDispatcher
                 return $elem->getEmail();
             }, $fan_users));
 
-            $this->sendEmail($template_fan, 'Subject', $params, $bcc, '');
+            $this->sendEmail($template_fan, 'Subject', $params, $bcc);
         }
 
         $this->notification_dispatcher->notifyArtistsKnownOutcomeContract($artist_users, $contract, $success);
@@ -117,7 +122,7 @@ class MailDispatcher
 
     public function sendNewsletter(Newsletter $newsletter, $recipients) {
         $params = ['newsletter' => $newsletter];
-        $this->sendEmail(MailTemplateProvider::NEWSLETTER_TEMPLATE, $newsletter->getTitle(), $params, $recipients, '');
+        $this->sendEmail(MailTemplateProvider::NEWSLETTER_TEMPLATE, $newsletter->getTitle(), $params, $recipients);
     }
 
     public function sendOngoingCart($users, ContractArtist $contract) {
@@ -125,7 +130,7 @@ class MailDispatcher
             return $elem->getEmail();
         }, $users);
         $params = ['contract' => $contract, 'artist' => $contract->getArtist()->getArtistname()];
-        $this->sendEmail(MailTemplateProvider::ONGOING_CART_TEMPLATE, 'subject', $params, $recipients, '');
+        $this->sendEmail(MailTemplateProvider::ONGOING_CART_TEMPLATE, 'subject', $params, $recipients);
         $this->notification_dispatcher->notifyOngoingCart($users, $contract);
     }
 
@@ -134,11 +139,11 @@ class MailDispatcher
             return $elem->getEmail();
         }, $users);
         $params = ['contract' => $contract, 'nbDays' => $nb_days, 'artist' => $contract->getArtist()->getArtistname()];
-        $this->sendEmail(MailTemplateProvider::REMINDER_CONTRACT_ARTIST_TEMPLATE, 'subject', $params, $recipients, '');
+        $this->sendEmail(MailTemplateProvider::REMINDER_CONTRACT_ARTIST_TEMPLATE, 'subject', $params, $recipients);
         $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days);
     }
 
-    public function sendTicket($ticket_html, ContractFan $contractFan, ContractArtist $contractArtist) {
+    public function sendTicket($ticket_html, ContractFan $contractFan) {
         $html2pdf = new Html2Pdf();
         $html2pdf->writeHTML($ticket_html);
         $html2pdf->output('pdf/tickets/'.$contractFan->getBarcodeText().'.pdf', 'F');
@@ -150,7 +155,7 @@ class MailDispatcher
         $subject = "subject";
         $params = [];
 
-        $this->sendEmail(MailTemplateProvider::TICKET_TEMPLATE, $subject, $params, $to, $toName, $attachments);
+        $this->sendEmail(MailTemplateProvider::TICKET_TEMPLATE, $subject, $params, [], $attachments, $to, $toName);
         $this->notification_dispatcher->notifyTicket($contractFan->getFan(), $contractFan);
     }
 

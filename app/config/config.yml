@@ -88,8 +88,14 @@ a2lix_translation_form:
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport: "%mailer_transport%"
-    spool:     { type: memory }
+    transport:  "%mailer_transport%"
+    spool:      { type: memory }
+    host:       "%mailer_host%"
+    port:       "%mailer_port%"
+    auth_mode:  "%mailer_auth_mode%"
+    encryption: "%mailer_encryption%"
+    username:   "%mailer_user%"
+    password:   "%mailer_password%"
 
 # friendsofsymfony/userbundle
 fos_user:
