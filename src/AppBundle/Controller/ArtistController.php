@@ -134,7 +134,7 @@ class ArtistController extends Controller
             $this->addFlash('notice', 'ok2');
         }
 
-        return $this->render('@App/Admin/Artist/owners.html.twig', array(
+        return $this->render('@App/User/Artist/owners.html.twig', array(
             'currentOwner' => $currentOwner,
             'artist' => $artist,
             'owners' => $owners,

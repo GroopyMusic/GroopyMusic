@@ -344,6 +344,9 @@
                 }
             }
 
+            // Track last index
+            collection.data('last-index', elements.length - 1);
+
             // make buttons appear/disappear in each elements of the collection according to options
             // (enabled, min/max...) and logic (for example, do not put a move up button on the first
             // element of the collection)
@@ -477,18 +480,9 @@
         var doAdd = function (container, that, collection, settings, elements, element, index, isDuplicate) {
             if (elements.length < settings.max && (isDuplicate && trueOrUndefined(settings.before_duplicate(collection, element)) || trueOrUndefined(settings.before_add(collection, element)))) {
                 var prototype = collection.data('prototype');
+                var freeIndex = collection.data('last-index') + 1;
 
-                var freeIndex = elements.length;
-                if (settings.position_field_selector) {
-                    var maxIndex = -1;
-                    elements.each(function () {
-                        var currentIndex = $(this).data('index');
-                        if (currentIndex > maxIndex) {
-                            maxIndex = currentIndex;
-                        }
-                    });
-                    freeIndex = maxIndex + 1;
-                }
+                collection.data('last-index', freeIndex);
 
                 if (index === -1) {
                     index = elements.length - 1;
@@ -795,7 +789,7 @@
             // drag & drop support: this is a bit more complex than pressing "up" or
             // "down" buttons because we can move elements more than one place ahead
             // or below...
-            if ((typeof jQuery.ui !== 'undefined' || typeof jQuery.ui.sortable !== 'undefined')
+            if ((typeof jQuery.ui !== 'undefined' && typeof jQuery.ui.sortable !== 'undefined')
                 && collection.hasClass('ui-sortable')) {
                 collection.sortable('disable');
             }
@@ -804,7 +798,6 @@
                 var newPosition;
                 if (typeof jQuery.ui === 'undefined' || typeof jQuery.ui.sortable === 'undefined') {
                     settings.drag_drop = false;
-                    collection.sortable('disable');
                 } else {
                     collection.sortable($.extend(true, {}, {
                         start: function (event, ui) {

@@ -134,9 +134,9 @@ class PublicController extends Controller
 
         if($user != null){
             $suggestionBox->setUser($user);
-            $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox);
+            $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox, ['action' => $this->generateUrl('suggestionBox_form')]);
         }else{
-            $form = $this->createForm(SuggestionBoxType::class, $suggestionBox);
+            $form = $this->createForm(SuggestionBoxType::class, $suggestionBox, ['action' => $this->generateUrl('suggestionBox_form')]);
         }
 
         $form->handleRequest($request);
@@ -211,7 +211,7 @@ class PublicController extends Controller
      * @Route("/artist-{id}", name="artist_profile")
      */
     public function artistProfileAction(Request $request, UserInterface $user, Artist $artist) {
-        return $this->render('@App/Fan/artist_profile.html.twig', array(
+        return $this->render('@App/Public/artist_profile.html.twig', array(
             'artist' => $artist,
         ));
     }

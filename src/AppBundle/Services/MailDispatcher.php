@@ -86,7 +86,7 @@ class MailDispatcher
     public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox) {
         $recipient = $suggestionBox->getEmail();
         $recipientName = $suggestionBox->getDisplayName();
-        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / Votre formulaire de contact' . $suggestionBox->getObject(), ['suggestionBox' => $suggestionBox], [], '', [], $recipient, $recipientName);
+        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), ['suggestionBox' => $suggestionBox], [], [], $recipient, $recipientName);
     }
 
     public function sendKnownOutcomeContract(ContractArtist $contract, $success, $artist_users, $fan_users) {
