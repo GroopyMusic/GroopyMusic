@@ -70,7 +70,7 @@ class UserController extends Controller
     public function cartAction(UserInterface $user) {
 
         $em = $this->getDoctrine()->getManager();
-        $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForFan($user);
+        $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
         if($cart == null) {
             $cart = $this->createCartForUser($user);

@@ -48,6 +48,7 @@ class AddressType extends AbstractType
                 ],
             ))
             ->add('country', CountryType::class, array(
+                'placeholder' => 'Pays',
                 'required' => true,
                 'constraints' => [
                     new Country()

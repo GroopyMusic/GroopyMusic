@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -43,8 +44,16 @@ class ProfileType extends AbstractType
                 'primary_key' => 'id',
             ])
             ->remove('current_password')
-            ->add('address', AddressType::class, array(
-                'required' => false,
+            ->add('address', CollectionType::class, array(
+                'entry_type' => AddressType::class,
+                'entry_options' => array(
+                    'label' => false,
+                ),
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'attr' => ['class' => 'collection'],
+                'label' => false,
             ))
         ;
     }

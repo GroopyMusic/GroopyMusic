@@ -5,7 +5,7 @@
     <h1>Panier</h1>
 
     <div id="cart-content">
-        {% include "@App/Fan/cart_content.html.twig" %}
+        {% include "@App/User/cart_content.html.twig" %}
     </div>
 
     {% block js_vars %}
@@ -14,8 +14,8 @@
         </div>
         <div
             id="js-vars"
-            data-vars="{{ {'ajax_path_remove_all': path('fan_ajax_remove_all_from_cart'),
-                           'ajax_path_remove_one': path('fan_ajax_remove_from_contract')}|json_encode|e('html_attr') }}">
+            data-vars="{{ {'ajax_path_remove_all': path('user_ajax_remove_all_from_cart'),
+                           'ajax_path_remove_one': path('user_ajax_remove_from_contract')}|json_encode|e('html_attr') }}">
         </div>
     {% endblock %}
 
