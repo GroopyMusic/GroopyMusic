@@ -29,7 +29,7 @@ class ContractArtistType extends AbstractType
                     ->add('artist', EntityType::class, array(
                         'class' => Artist::class,
                         'query_builder' => function(EntityRepository $er) use ($options) {
-                            return $er->queryNotCurrentlyBusy();
+                            return $er->queryNotCurrentlyBusy($options['user']);
                         }
                     ))
                     ->add('province', EntityType::class, array(

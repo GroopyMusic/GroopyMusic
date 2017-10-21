@@ -145,12 +145,15 @@ class UserController extends Controller
      */
     public function newContractAction(UserInterface $user, Request $request) {
 
-        // TODO autres subtilités
-        if(count($user->getArtistsUser()) == 0) {
-            // erreur, faut avoir un artiste
-        }
-
         $em = $this->getDoctrine()->getManager();
+
+        $av_artists = $em->getRepository('AppBundle:Artist')->findNotCurrentlyBusy($user);
+
+        if(count($av_artists) == 0) {
+            return $this->render('@App/User/Artist/new_contract.html.twig', array(
+                'no_artist' => true,
+            ));
+        }
 
         // New contract creation
         $contract = new ContractArtist();

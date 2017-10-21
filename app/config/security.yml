@@ -27,7 +27,8 @@ security:
                 csrf_parameter:       _csrf_token
                 csrf_token_id:        authenticate
                 csrf_token_generator: security.csrf.token_manager
-            logout:       true
+            logout:
+              path: /logout
             anonymous:    true
 
     access_control:

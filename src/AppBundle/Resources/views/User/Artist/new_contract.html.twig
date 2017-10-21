@@ -7,26 +7,32 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Lancer un nouveau crowdfunding - étape {{ flow.currentStepNumber }} / {{ flow.lastStepNumber }} : {{ flow.currentStepLabel }}</h2>
 
-    {% if flow.currentStepNumber == flow.lastStepNumber %}
-        <div>
-            Artiste : {{ contract.artist }}<br />/
-            Province : {{ contract.province is empty ? 'Sans importance' : contract.province }}<br />
-            Date choisie : {{ contract.preferences.date|date('d/m/Y') }}
+    {% if no_artist is not defined %}
+        <h2>Lancer un nouveau crowdfunding - étape {{ flow.currentStepNumber }} / {{ flow.lastStepNumber }} : {{ flow.currentStepLabel }}</h2>
 
-        </div>
+        {% if flow.currentStepNumber == flow.lastStepNumber %}
+            <div>
+                Artiste : {{ contract.artist }}<br />/
+                Province : {{ contract.province is empty ? 'Sans importance' : contract.province }}<br />
+                Date choisie : {{ contract.preferences.date|date('d/m/Y') }}
+
+            </div>
+        {% endif %}
+
+        {{ form_start(form) }}
+
+        {{ form_rest(form) }}
+        {% include '@CraueFormFlow/FormFlow/buttons.html.twig' with {
+            craue_formflow_button_class_last: 'btn btn-primary',
+            craue_formflow_button_class_back: 'btn',
+            craue_formflow_button_class_reset: 'btn btn-warning',
+            } %}
+
+    {% else %}
+        {# No artist #}
+        <h2>Vous n'avez pas d'artiste disponible pour lancer un nouveau crowdfunding</h2>
     {% endif %}
-
-    {{ form_start(form) }}
-
-    {{ form_rest(form) }}
-    {% include '@CraueFormFlow/FormFlow/buttons.html.twig' with {
-        craue_formflow_button_class_last: 'btn btn-primary',
-        craue_formflow_button_class_back: 'btn',
-        craue_formflow_button_class_reset: 'btn btn-warning',
-        } %}
-
 {% endblock %}
 
 {% block javascripts %}

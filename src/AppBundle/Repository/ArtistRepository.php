@@ -3,17 +3,28 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\User;
+
 class ArtistRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function queryNotCurrentlyBusy() {
+    public function queryNotCurrentlyBusy(User $user) {
         $nots = $this->createQueryBuilder('a')
             ->select('a.id')
             ->innerJoin('a.contracts', 'c')
-            ->where('c.dateEnd > ' . (new \DateTime('now'))->format('d/m/Y'));
+            ->andWhere('c.dateEnd > ' . (new \DateTime('now'))->format('d/m/Y'))
+        ;
 
         $qb = $this->createQueryBuilder('a2');
 
-        return $qb->where($qb->expr()->notIn('a2.id', $nots->getDQL()));
+        return $qb
+            ->innerJoin('a2.artists_user', 'au')
+            ->where('au.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere($qb->expr()->notIn('a2.id', $nots->getDQL()));
+    }
+
+    public function findNotCurrentlyBusy(User $user) {
+        return $this->queryNotCurrentlyBusy($user)->getQuery()->getResult();
     }
 
     public function findNotDeletedBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
