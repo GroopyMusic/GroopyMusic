@@ -5,6 +5,7 @@
 
     {% stylesheets '@SonataTranslationBundle/Resources/public/css/sonata-translation.css'
                     'bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.css'
+                    filter='scssphp, cssrewrite'
                     output='css/compiled/sonata-admin-custom.css' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -20,7 +21,16 @@
 
 {% block sonata_javascript_pool %}
     {{ parent() }}
-    <script src="{{ asset('bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.js') }}"></script>
+
+    {% javascripts 'bundles/app/dubrox/multidatespicker/jquery-ui.multidatespicker.js'
+        'bundles/a2lixtranslationform/js/a2lix_translation_bootstrap.js'
+        'js/general/dropzone.js'
+        filter='jsqueeze'
+        output='js/sonata_admin_custom.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
     <script type="text/javascript">
         $('document').ready(function() {
             var $multiDatesPicker = $('.multiDatesPicker');
@@ -29,8 +39,6 @@
             $datePicker.datepicker({dateFormat: 'mm/dd/yy'});
         });
     </script>
-    <script src="{{ asset('bundles/a2lixtranslationform/js/a2lix_translation_bootstrap.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/dropzone.js') }}"></script>
 {% endblock %}
 
 {% block logo %}

@@ -2,6 +2,7 @@
     <div class="notification_preview">
         <h3><a>{{ title }}</a>{% if notification.unseen %} - non lu {% endif %}</h3>
         <div>{{ content|striptags|length > 50 ? content|striptags|slice(0, 50) ~ '...' : content|striptags }}</div>
+        {# content must first be decoded with html_entity_decode() #}
     </div>
 {% endmacro %}
 
