@@ -210,7 +210,7 @@ class PublicController extends Controller
     /**
      * @Route("/artist-{id}", name="artist_profile")
      */
-    public function artistProfileAction(Request $request, UserInterface $user, Artist $artist) {
+    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist) {
         return $this->render('@App/Public/artist_profile.html.twig', array(
             'artist' => $artist,
         ));
@@ -220,7 +220,7 @@ class PublicController extends Controller
      * @Route("/validate-ownership-{id}/{code}", name="artist_validate_ownership")
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function validateOwnershipAction(Request $request, UserInterface $user, Artist $artist, $code) {
+    public function validateOwnershipAction(Request $request, UserInterface $user = null, Artist $artist, $code) {
 
         $em = $this->getDoctrine()->getManager();
         $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);

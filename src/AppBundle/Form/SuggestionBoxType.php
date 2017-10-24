@@ -31,21 +31,18 @@ class SuggestionBoxType extends AbstractType
             ))
             ->add('name', TextType::class, array(
                 'required' => false,
-                'attr' => ['class' => 'suggestion_form_name'],
                 'constraints' => [
                     new Length(['max' => 64, 'maxMessage' => 'Le nom ne peut dépasser {{ limit }} caractères.']),
                 ]
             ))
             ->add('firstname', TextType::class, array(
                 'required' => false,
-                'attr' => ['class' => 'suggestion_form_firstname'],
                 'constraints' => [
                     new Length(['max' => 64, 'maxMessage' => 'Le prénom ne peut dépasser {{ limit }} caractères.']),
                 ]
             ))
             ->add('email', TextType::class, array(
                 'required' => false,
-                'attr' => ['class' => 'suggestion_form_email'],
                 'constraints' => [
                     new Email(['message' => 'Cette adresse e-mail est invalide.']),
                 ]

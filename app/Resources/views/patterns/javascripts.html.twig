@@ -1,9 +1,11 @@
 {# partial created to include javascripts #}
 <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
 
-<script>window.jQuery || document.write('<script type="text/javascript" src="{{ asset('js/lib/jquery-3.2.0.min.js') }}"><\/script>')</script>
+<script>window.jQuery || document.write('<script type="text/javascript" src="{{ asset('js/backup/jquery-3.2.0.min.js') }}"><\/script>')</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 <script
@@ -31,3 +33,9 @@ crossorigin="anonymous"></script>
 
 {# Client form validation #}
 {{ include('FpJsFormValidatorBundle::javascripts.html.twig') }}
+
+<script>
+    $('button[type="submit"]').click(function(event){
+        $(this).closest('form').jsFormValidator('submitForm', event);
+    });
+</script>

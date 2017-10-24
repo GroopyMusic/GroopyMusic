@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e3de26a339fd824ad1d75b10be13b8f",
+    "content-hash": "4c8055dd16b0f988b9921ad50874e7df",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1307,16 +1307,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "v2.5.11",
+            "version": "v2.5.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "249b737094f1e7cba4f0a8d19acf5be6cf3ed504"
+                "reference": "984535cadc609e9eef8c89414aa3568ee97aa79f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/249b737094f1e7cba4f0a8d19acf5be6cf3ed504",
-                "reference": "249b737094f1e7cba4f0a8d19acf5be6cf3ed504",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/984535cadc609e9eef8c89414aa3568ee97aa79f",
+                "reference": "984535cadc609e9eef8c89414aa3568ee97aa79f",
                 "shasum": ""
             },
             "require": {
@@ -1327,11 +1327,11 @@
                 "doctrine/instantiator": "^1.0.1",
                 "ext-pdo": "*",
                 "php": ">=5.4",
-                "symfony/console": "~2.5|~3.0"
+                "symfony/console": "~2.5|~3.0|~4.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.0",
-                "symfony/yaml": "~2.3|~3.0"
+                "symfony/yaml": "~2.3|~3.0|~4.0"
             },
             "suggest": {
                 "symfony/yaml": "If you want to use YAML Metadata Mapping Driver"
@@ -1379,7 +1379,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2017-09-18T06:50:20+00:00"
+            "time": "2017-10-23T18:21:04+00:00"
         },
         {
             "name": "fig/link-util",
@@ -1437,22 +1437,21 @@
         },
         {
             "name": "fp/jsformvalidator-bundle",
-            "version": "1.5.1",
+            "version": "1.5",
             "target-dir": "Fp/JsFormValidatorBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/formapro/JsFormValidatorBundle.git",
-                "reference": "c5cf9e58533589fffa6a47bb6c1b7fab8807ff95"
+                "reference": "ff22da484cd8e2132a27f91f0b08db306949ea77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/formapro/JsFormValidatorBundle/zipball/c5cf9e58533589fffa6a47bb6c1b7fab8807ff95",
-                "reference": "c5cf9e58533589fffa6a47bb6c1b7fab8807ff95",
+                "url": "https://api.github.com/repos/formapro/JsFormValidatorBundle/zipball/ff22da484cd8e2132a27f91f0b08db306949ea77",
+                "reference": "ff22da484cd8e2132a27f91f0b08db306949ea77",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.9",
-                "symfony/assetic-bundle": ">=2.5",
                 "symfony/form": "^2.7|^3.0",
                 "symfony/validator": "^2.7|^3.0"
             },
@@ -1465,6 +1464,7 @@
                 "ptcong/php-image-uploader": "^6.0",
                 "satooshi/php-coveralls": "1.0.*",
                 "se/selenium-server-standalone": "2.*",
+                "symfony/assetic-bundle": ">=2.5",
                 "symfony/symfony": "^3.1"
             },
             "suggest": {
@@ -1506,7 +1506,7 @@
                 "symfony",
                 "validation"
             ],
-            "time": "2017-07-07T14:04:39+00:00"
+            "time": "2017-02-14T10:53:12+00:00"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -5331,16 +5331,16 @@
         },
         {
             "name": "symfony/swiftmailer-bundle",
-            "version": "v2.6.3",
+            "version": "v2.6.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/swiftmailer-bundle.git",
-                "reference": "11555c338f3c367b0a1bd2f024a53aa813f4ce00"
+                "reference": "c4808f5169efc05567be983909d00f00521c53ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/swiftmailer-bundle/zipball/11555c338f3c367b0a1bd2f024a53aa813f4ce00",
-                "reference": "11555c338f3c367b0a1bd2f024a53aa813f4ce00",
+                "url": "https://api.github.com/repos/symfony/swiftmailer-bundle/zipball/c4808f5169efc05567be983909d00f00521c53ec",
+                "reference": "c4808f5169efc05567be983909d00f00521c53ec",
                 "shasum": ""
             },
             "require": {
@@ -5386,7 +5386,7 @@
             ],
             "description": "Symfony SwiftmailerBundle",
             "homepage": "http://symfony.com",
-            "time": "2017-07-22T07:18:13+00:00"
+            "time": "2017-10-19T01:06:41+00:00"
         },
         {
             "name": "symfony/symfony",
@@ -6914,16 +6914,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.6",
+            "version": "2.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "34a7699e6f31b1ef4035ee36444407cecf9f56aa"
+                "reference": "f4b6a522dfa1fd1e477c9cfe5909d5b31f098c0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/34a7699e6f31b1ef4035ee36444407cecf9f56aa",
-                "reference": "34a7699e6f31b1ef4035ee36444407cecf9f56aa",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/f4b6a522dfa1fd1e477c9cfe5909d5b31f098c0b",
+                "reference": "f4b6a522dfa1fd1e477c9cfe5909d5b31f098c0b",
                 "shasum": ""
             },
             "require": {
@@ -7002,7 +7002,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2017-06-05T06:31:10+00:00"
+            "time": "2017-10-23T05:04:54+00:00"
         },
         {
             "name": "react/cache",
