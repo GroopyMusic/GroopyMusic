@@ -35,7 +35,7 @@
                         <a href="{{ path('user_my_artists') }}">Mes artistes</a>
                     {% else %}
                         <a href="{{ path('fos_user_registration_register') }}">Inscription</a>
-                        <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+                        {% block header_login_link %}<a data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
                         <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a>
                     {% endif %}
                      <a href="{{ path('suggestionBox') }}">Boite à idées</a>
@@ -47,6 +47,12 @@
         </header>
 
         <main>
+            {% block modal_login_form %}
+                {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    {% include '@FOSUser/Security/login_content.html.twig' %}
+                {% endif %}
+            {% endblock %}
+
             {% block flashes %}
                 {% include ":patterns:notices.html.twig" %}
             {% endblock %}
@@ -66,9 +72,21 @@
         </main>
 
 
-        <footer>
-            {% block footer %}{# page footer comes here #}{% endblock %}
-        </footer>
+        {% block footer %}
+            <footer class="footer">
+                <div class="footer-links">
+                    <ul class="list-inline">
+                        <!-- set as many as items as you want -->
+                        <li class="list-inline-item">a propos</li>
+                        <li class="list-inline-item"><a href="#">contact</a></li>
+                        <li class="list-inline-item">plan du site</li>
+                    </ul>
+                </div>
+                <div class="copyright">
+                    <span class="text-uppercase">© Un-Mute</span>
+                </div>
+            </footer>
+        {% endblock %}
 
         {% block javascripts %}
             {% include 'patterns/javascripts.html.twig' %}

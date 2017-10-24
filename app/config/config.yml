@@ -47,6 +47,8 @@ twig:
     form_themes:
       - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
       - 'jquery.collection.html.twig'
+    globals:
+      fos_csrf_provider: "@security.csrf.token_manager"
 
 # Doctrine Configuration
 doctrine:

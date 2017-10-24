@@ -1,5 +1,14 @@
 {% extends "@FOSUser/layout.html.twig" %}
 
+{% block modal_login_form %}{% endblock %}
+
 {% block fos_user_content %}
-    {{ include('@FOSUser/Security/login_content.html.twig') }}
+    {{ include('@FOSUser/Security/login_content.html.twig', {'login_fixed': true}) }}
 {% endblock fos_user_content %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('#loginModal').modal('show');
+    </script>
+{% endblock %}
