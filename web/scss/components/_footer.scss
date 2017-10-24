@@ -1,0 +1,32 @@
+$footer-height: 100px;
+
+.footer{
+  border-top: 2px solid $main-color;
+  height: $footer-height;
+  &-links{
+    margin-top: $main-margin;
+    & ul.list-inline{
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      text-transform: uppercase;
+      & li a{
+        color: black;
+      }
+    }
+  }
+  
+  & .copyright{
+    display: flex;
+    justify-content: space-around;
+    margin-top: $main-margin;
+    text-align: center;
+    color: black;
+  }
+}
+
+// footer stick on bottom
+// ⚠️ the rest of the content of the page, specifically needs to be in a class .main
+.main{
+  min-height: calc(100vh - #{$footer-height});
+}

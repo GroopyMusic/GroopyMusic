@@ -1,0 +1,58 @@
+.um-card {
+  height: 12rem;
+  background-size: cover !important;
+  background-position: center;
+  color: white;
+  position: relative;
+}
+
+.um-card-span{
+  position: absolute;
+  bottom: 0;
+}
+
+.um-card-content{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-top: 10px;
+  text-align: center;
+  background-color: rgba(2550, 255, 255, 0.8);
+
+  & span{
+    height: 20px;
+    position: absolute;
+    bottom: calc(100% - 10px);
+    left: 0;
+    right: 0;
+    // background-color: transparent;
+    text-align: center;
+  }
+
+  & h2{
+    color: $main-color;
+    font-size: 2rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  & p{
+    color: black;
+    font-size: 12px;
+  }
+}
+
+.um-card-link {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  z-index: 2;
+  background: black;
+  opacity: 0;
+
+  &:hover {
+    opacity: 0.1;
+  }
+}

@@ -137,6 +137,8 @@ assetic:
             formatter: 'Leafo\ScssPhp\Formatter\Compressed'
     bundles:
         - FpJsFormValidatorBundle
+        - AppBundle
+        - FOSUserBundle
 
 jms_i18n_routing:
     default_locale: "%locale%"

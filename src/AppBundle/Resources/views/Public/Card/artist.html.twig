@@ -1,1 +1,14 @@
-<a href="{{ path('artist_profile', {'id': artist.id}) }}">{{ artist.artistname }}</a>
+<div class="col-4 margin-top">
+    <div class="um-card" style="background-image: url({{ asset('images/card-bg.jpg') }});">
+
+        <!-- this is the content of the card with an optionnal span for ⭐ -->
+        <div class="um-card-content">
+            <span>⭐⭐⭐</span>
+            <h2>{{ artist.artistname }}</h2>
+            <p>Here is some card content, please, not too long</p>
+        </div>
+
+        <!-- this is the link that the card need to take to -->
+        <a class="um-card-link" href="{{ path('artist_profile', {'id': artist.id}) }}"></a>
+    </div>
+</div>

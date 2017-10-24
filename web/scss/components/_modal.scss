@@ -1,0 +1,67 @@
+.modal-content{
+  border-radius: 0 !important;
+}
+
+.modal-header{
+  border-bottom: none !important;
+  background-size: cover;
+  background-position: 50% 50%;
+  min-height: 300px;
+}
+
+.modal-footer{
+  border-top: none !important;
+}
+
+.modal-title{
+  min-width: 50%;
+  max-width: 80%;
+  min-height: 70px;
+  background-color: $main-background;
+  margin: 0 auto;
+  margin-top: -50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & h3{
+    color: $main-color;
+    text-transform: uppercase;
+  }
+}
+
+// every section inside a modal. 1 title -> line around and the rest of the section, border black
+.modal-section{
+  &-header{
+    height: 100px;
+    position: relative;
+    &-title{
+      color: black;
+      text-transform: uppercase;
+      background-color: white;
+      min-width: 35%;
+      max-width: 50%;
+      margin: 0 auto;
+      text-align: center;
+      height: 50px;
+      margin-top: -25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    &-line{
+      margin: 0 auto;
+      width: 80%;
+      border-bottom: black solid 1px;
+      margin-top: 20px;
+      background-color: transparent;
+      height: 50px;
+    }
+  }
+  &-content{
+    margin: 0 auto;
+    border: black 1px solid;
+    max-width: 90%;
+    padding: 15px;
+  }
+}

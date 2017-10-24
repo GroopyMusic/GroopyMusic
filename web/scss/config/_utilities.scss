@@ -1,0 +1,58 @@
+.sharp{
+  border-radius: 0 !important;
+}
+
+.margin{
+  &-vertical{
+    margin-top: $main-margin;
+    margin-bottom: $main-margin;
+  }
+  &-horisontal{
+    margin-left: $main-margin;
+    margin-right: $main-margin;
+  }
+  &-left{
+    margin-left: $main-margin;
+  }
+  &-right{
+    margin-right: $main-margin;
+  }
+  &-top{
+    margin-top: $main-margin;
+  }
+  &-bottom{
+    margin-bottom: $main-margin;
+  }
+}
+
+.padding{
+  &-vertical{
+    padding-top: $main-padding;
+    padding-bottom: $main-padding;
+  }
+  &-horisontal{
+    padding-left: $main-padding;
+    padding-right: $main-padding;
+  }
+  &-left{
+    padding-left: $main-padding;
+  }
+  &-right{
+    padding-right: $main-padding;
+  }
+  &-top{
+    padding-top: $main-padding;
+  }
+  &-bottom{
+    padding-bottom: $main-padding;
+  }
+}
+
+// utilities for dev
+.color{
+  background-color: #B0BEC5;
+}
+
+.color-secondary{
+  background-color: #FFAB91;
+}
