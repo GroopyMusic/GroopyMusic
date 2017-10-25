@@ -18,6 +18,7 @@ class RegistrationType extends AbstractType
             ->remove('username')
             // Duplicated from ProfileType
             ->add('lastname', TextType::class, array(
+                'label' => 'labels.user.lastname',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(['message' => 'Merci de renseigner un nom de famille.']),
@@ -25,6 +26,7 @@ class RegistrationType extends AbstractType
                 ]
             ))
             ->add('firstname', TextType::class, array(
+                'label' => 'labels.user.firstname',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(['message' => 'Merci de renseigner un prénom.']),
@@ -33,6 +35,7 @@ class RegistrationType extends AbstractType
             ))
             // end duplicated
             ->add('newsletter', CheckboxType::class, array(
+                'label' => 'labels.user.newsletter',
                 'required' => false,
             ))
         ;

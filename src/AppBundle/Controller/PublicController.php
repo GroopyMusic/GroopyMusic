@@ -134,9 +134,9 @@ class PublicController extends Controller
 
         if($user != null){
             $suggestionBox->setUser($user);
-            $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox, ['action' => $this->generateUrl('suggestionBox_form')]);
+            $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox, ['attr' => ['class' => 'suggestionBoxForm'], 'action' => $this->generateUrl('suggestionBox_form')]);
         }else{
-            $form = $this->createForm(SuggestionBoxType::class, $suggestionBox, ['action' => $this->generateUrl('suggestionBox_form')]);
+            $form = $this->createForm(SuggestionBoxType::class, $suggestionBox, ['attr' => ['class' => 'suggestionBoxForm'], 'action' => $this->generateUrl('suggestionBox_form')]);
         }
 
         $form->handleRequest($request);

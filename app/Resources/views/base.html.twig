@@ -90,6 +90,41 @@
 
         {% block javascripts %}
             {% include 'patterns/javascripts.html.twig' %}
+            {% block jsValidatorInit %}
+                {# Client form validation #}
+                {{ include('FpJsFormValidatorBundle::javascripts.html.twig') }}
+
+                {{ js_validator_config() }}
+                {{ init_js_validation() }}
+
+                <script>
+                    $('button[type="submit"]').click(function(event){
+                        $(this).closest('form').jsFormValidator('submitForm', event, {
+                            showErrors: function(errors, sourceId) {
+                                var list = $(this).prev('ul.form-errors');
+                                var div;
+                                if (!list.length) {
+                                    div = $('<div class="invalid-feedback"></div>');
+                                    list = $('<ul class="form-errors list-unstyled mb-0"></ul>');
+                                    div.append(list);
+                                    $(this).before(div);
+                                }
+                                list.find('.' + sourceId).remove();
+
+                                for (var i in errors) {
+                                    var li = $('<li></li>', {
+                                        'class': sourceId,
+                                        'text': 'custom_'+ errors[i]
+                                    });
+                                    list.append(li);
+                                }
+                            }
+                        });
+                        $(this).closest('form').jsFormValidator('submitForm', event);
+                    });
+                </script>
+            {% endblock %}
+            {% block additional_javascripts %}{% endblock %}
         {% endblock %}
 
     </body>

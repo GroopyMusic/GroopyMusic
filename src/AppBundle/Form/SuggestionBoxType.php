@@ -27,27 +27,32 @@ class SuggestionBoxType extends AbstractType
     {
         $builder
             ->add('type', EntityType::class, array(
+                'label' => 'labels.suggestionbox.type',
                 'class' => SuggestionTypeEnum::class,
             ))
             ->add('name', TextType::class, array(
+                'label' => 'labels.suggestionbox.name',
                 'required' => false,
                 'constraints' => [
                     new Length(['max' => 64, 'maxMessage' => 'Le nom ne peut dépasser {{ limit }} caractères.']),
                 ]
             ))
             ->add('firstname', TextType::class, array(
+                'label' => 'labels.suggestionbox.firstname',
                 'required' => false,
                 'constraints' => [
                     new Length(['max' => 64, 'maxMessage' => 'Le prénom ne peut dépasser {{ limit }} caractères.']),
                 ]
             ))
             ->add('email', TextType::class, array(
+                'label' => 'labels.suggestionbox.email',
                 'required' => false,
                 'constraints' => [
                     new Email(['message' => 'Cette adresse e-mail est invalide.']),
                 ]
             ))
             ->add('object', TextType::class, array(
+                'label' => 'labels.suggestionbox.object',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(['message' => 'Merci de renseigner un objet.']),
@@ -55,6 +60,7 @@ class SuggestionBoxType extends AbstractType
                 ]
             ))
             ->add('message', TextareaType::class, array(
+                'label' => 'labels.suggestionbox.message',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(['message' => 'Merci de renseigner un message.']),
@@ -62,9 +68,12 @@ class SuggestionBoxType extends AbstractType
                 ]
             ))
             ->add('mailCopy', CheckboxType::class, array(
+                'label' => 'labels.suggestionbox.mailcopy',
                 'required' => false,
             ))
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, array(
+                'label' => 'labels.suggestionbox.submit',
+            ));
     }
 
     /**

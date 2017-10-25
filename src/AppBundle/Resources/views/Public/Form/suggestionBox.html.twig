@@ -1,1 +1,37 @@
-{{ form(form) }}
+
+{{  form_start(form) }}
+
+<div class="form-group form-row">
+    <div class="col-12">
+        {{ form_row(form.type) }}
+    </div>
+</div>
+
+{% if form.firstname is defined %}
+<div class="form-group form-row">
+    <div class="col-12 col-lg-6">
+        {{ form_row(form.name) }}
+    </div>
+    <div class="col-12 col-lg-6">
+        {{ form_row(form.firstname) }}
+    </div>
+</div>
+{% endif %}
+
+<div class="form-group form-row">
+    {% if form.email is defined %}
+        <div class="col-12 col-lg-6">
+            {{ form_row(form.email) }}
+        </div>
+    {% endif %}
+    <div class="col-12{% if form.email is defined %} col-lg-6{% endif %}">
+        {{ form_row(form.object) }}
+    </div>
+</div>
+
+<div class="form-group form-row">
+    <div class="col-12">{{ form_row(form.message) }}</div>
+    <div class="col-12">{{ form_row(form.mailCopy) }}</div>
+</div>
+
+{{ form_end(form) }}

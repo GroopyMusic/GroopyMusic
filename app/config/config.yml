@@ -46,7 +46,8 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
       - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
-      - 'jquery.collection.html.twig'
+      - ':Form:jquery.collection.html.twig'
+      - ':Form:bootstrap_4_horizontal_layout.html.twig'
     globals:
       fos_csrf_provider: "@security.csrf.token_manager"
 

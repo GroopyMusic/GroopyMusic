@@ -1,0 +1,7 @@
+ul.form-errors {
+  @extend
+    .alert ul,
+    .alert-danger ul,
+    .list-unstyled,
+    .mb-0;
+}

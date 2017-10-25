@@ -1,7 +1,8 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-<div class="modal fade" {% if login_fixed is defined and login_fixed %}data-backdrop="static" data-keyboard="false"{% endif %} id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+{% if login_fixed is not defined %}
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+ {% endif %}   <div class="modal-dialog" role="document">
         <div class="modal-content">
             {% if error is defined and error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -12,10 +13,10 @@
                 <div class="container">
                     <!-- design of the modal header -->
                     <div class="login-header">
-                        <div class="login-header-line"></div>
+                        <div class="h-line"></div>
                         <!-- titre de la section -->
                         <div class="login-header-title">
-                            <h6>Connexion</h6>
+                            <h4 class="login-rounded-title">Connexion</h4>
                         </div>
                     </div>
                     <form action="{{ path("fos_user_security_check") }}" method="post">
@@ -39,4 +40,6 @@
             </div>
         </div>
     </div>
+    {% if login_fixed is not defined %}
 </div>
+{% endif %}

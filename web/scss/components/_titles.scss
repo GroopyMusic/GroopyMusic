@@ -1,0 +1,28 @@
+
+.rounded-title, .login-rounded-title {
+  width: 110px;
+  height: 110px;
+  color: white;
+  text-transform: uppercase;
+  background-color: $main-color;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -55px;
+  text-align: center;
+
+  h2&, h3&, h4&, h5&, h6& {
+    font-size: 1rem;
+  }
+}
+
+.h {
+  &-line{
+    margin: 0 auto;
+    border-bottom: $main-color solid 3px;
+    background-color: transparent;
+    height: 50%;
+  }
+}

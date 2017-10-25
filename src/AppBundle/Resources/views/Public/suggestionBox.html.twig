@@ -2,43 +2,43 @@
 
 {% block body %}
 
-    <h2>Contact & boîte à idées</h2>
+    <div class="container">
+    <h2 class="rounded-title">Contact & boîte à idées</h2>
 
-    <div id="suggestionbox_form">
-        {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
-    </div>
+        <div id="suggestionbox_form">
+            {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+        </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="suggestionmodal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+        <!-- Modal -->
+        <div class="modal fade" id="suggestionmodal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
 
-                <!-- content of the modal itself ➡️ in this case the form -->
-                <div class="modal-body">
-                    <div class="container">
-                        <!-- design of the modal header -->
-                        <div class="login-header">
-                            <div class="login-header-line"></div>
-                            <!-- titre de la section -->
-                            <div class="login-header-title">
-                                <h6>Vous êtes sûrs ?</h6>
+                    <!-- content of the modal itself ➡️ in this case the form -->
+                    <div class="modal-body">
+                        <div class="container">
+                            <!-- design of the modal header -->
+                            <div class="login-header">
+                                <div class="login-header-line"></div>
+                                <!-- titre de la section -->
+                                <div class="login-header-title">
+                                    <h6>Vous êtes sûrs ?</h6>
+                                </div>
                             </div>
+                            <form>
+                                <button id="validate-sb-send" class="btn btn-primary sharp text-uppercase">Valider</button>
+                                <button id="cancel-sb-send" class="btn btn-warning">Annuler</button>
+                            </form>
                         </div>
-                        <form>
-                            <button id="validate-sb-send" class="btn btn-primary sharp text-uppercase">Valider</button>
-                            <button id="cancel-sb-send" class="btn btn-warning">Annuler</button>
-                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
 
+{% block additional_javascripts %}
     <script>
         $('#suggestionmodal').modal({'show': false});
         $('#cancel-sb-send').click(function() {
@@ -52,7 +52,7 @@
 
         function ajaxSendForm() {
             var url = "{{ path('suggestionBox_form') }}";
-            var formSerialize = $('form').serialize();
+            var formSerialize = $('form.suggestionBoxForm').serialize();
             // TODO loader
             $.post(url, formSerialize, function(response) {
                 $('#suggestionbox_form').html(response);
@@ -61,7 +61,7 @@
         }
 
         function initform() {
-            $('form').submit(function(e) {
+            $('.suggestionBoxForm').submit(function(e) {
                 e.preventDefault();
 
                 if($('.suggestion_form_email').length && !$('.suggestion_form_email').val()) {

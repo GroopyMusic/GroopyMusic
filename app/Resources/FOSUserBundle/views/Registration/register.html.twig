@@ -1,5 +1,12 @@
 {% extends "@FOSUser/layout.html.twig" %}
 
 {% block fos_user_content %}
-{% include "@FOSUser/Registration/register_content.html.twig" %}
+    <div class="container">
+
+        <h3 class="rounded-title">Inscription</h3>
+
+        {% include "@FOSUser/Registration/register_content.html.twig" %}
+
+    </div>
+
 {% endblock fos_user_content %}

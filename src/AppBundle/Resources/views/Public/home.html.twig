@@ -2,6 +2,9 @@
 
 {% block body %}
 
+    {% include "@App/Themes/modal.html.twig" %}
+    <a data-toggle="modal" data-target="#defaultModal" href="{{ path('fos_user_security_login') }}">Modal test</a>
+
     <div class="container">
         <h2>News</h2>
         <div class="row">

@@ -1,0 +1,81 @@
+<div class="modal fade"
+     id="{% block modal_id %}defaultModal{% endblock %}"
+     tabindex="-1" role="dialog"
+     aria-labelledby="{{  block('modal_id') }}Label"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header" style="background-image: url({% block modal_image_url %}'https://source.unsplash.com/random'{% endblock %});">
+            </div>
+
+            <!-- titre du modal -->
+            <div class="modal-title">
+                <h3>{% block modal_title %}Un-Mute{% endblock %}</h3>
+            </div>
+
+            <!-- contenu du modal -->
+            <div class="modal-body">
+
+                {% block modal_sections %}
+                    <!-- à utiliser si on veut des sections -->
+                    <div class="modal-section">
+                        <div class="modal-section-header">
+                            <!-- ligne du titre -->
+                            <div class="modal-section-header-line"></div>
+                            <!-- titre de la section -->
+                            <div class="modal-section-header-title">
+                                <h3>Objectifs</h3>
+                            </div>
+                        </div>
+                        <!-- contenu de la section, entouré d'un border, peut s'utiliser avec bs grid -->
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <div class="modal-section-content">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit non laborum quaerat dignissimos quasi sunt, voluptatum repellat odio, fugiat omnis id, voluptas sequi? Neque ut nesciunt necessitatibus numquam saepe in.
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="modal-section-content">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit non laborum quaerat dignissimos quasi sunt, voluptatum repellat odio, fugiat omnis id, voluptas sequi? Neque ut nesciunt necessitatibus numquam saepe in.
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="modal-section-content">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit non laborum quaerat dignissimos quasi sunt, voluptatum repellat odio, fugiat omnis id, voluptas sequi? Neque ut nesciunt necessitatibus numquam saepe in.
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- fin section -->
+                    <!-- à utiliser si on veut des sections -->
+                    <div class="modal-section">
+                        <div class="modal-section-header">
+                            <!-- ligne du titre -->
+                            <div class="modal-section-header-line"></div>
+                            <!-- titre de la section -->
+                            <div class="modal-section-header-title">
+                                <h3>Vos motivations</h3>
+                            </div>
+                        </div>
+                        <!-- contenu de la section, entouré d'un border, peut s'utiliser avec bs grid -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="modal-section-content">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit non laborum quaerat dignissimos quasi sunt, voluptatum repellat odio, fugiat omnis id, voluptas sequi? Neque ut nesciunt necessitatibus numquam saepe in.
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- fin section -->
+                {% endblock %}
+
+            </div>
+            <div class="modal-footer">
+                {% block modal_footer %}
+                    <button type="button" class="btn btn-primary sharp mx-auto">Contacter les fans miseurs</button>
+                    <button type="button" class="btn btn-primary sharp mx-auto">Contacter les fans précédents</button>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
