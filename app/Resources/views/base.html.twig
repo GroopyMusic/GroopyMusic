@@ -26,22 +26,62 @@
     <body>
         <header>
             {% block header %}
-                <nav id="menu">
-                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
-                        <a href="{{ path('fos_user_profile_edit') }}">Profil</a>
-                        <a href="{{ path('user_notifications') }}">Inbox {% set unseen_nb = unseen_notifs_nb() %}{% if unseen_nb > 0 %}({{ unseen_nb }}){% endif %}</a>
-                        <a href="{{ path('user_cart') }}">Panier</a>
-                        <a href="{{ path('user_my_artists') }}">Mes artistes</a>
-                    {% else %}
-                        <a href="{{ path('fos_user_registration_register') }}">Inscription</a>
-                        {% block header_login_link %}<a data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
-                        <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a>
-                    {% endif %}
-                     <a href="{{ path('suggestionBox') }}">Boite à idées</a>
-                     <a href="{{ path('catalog_crowdfundings') }}">Catalogue de crowdfundings</a>
-                     <a href="{{ path('catalog_artists') }}">Catalogue d'artistes</a>
-                     <a href="{{ path('catalog_halls') }}">Catalogue de salles</a>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                    <a href="{{ path('fos_user_profile_edit') }}">Profil</a>
+                    <a href="{{ path('user_notifications') }}">Inbox {% set unseen_nb = unseen_notifs_nb() %}{% if unseen_nb > 0 %}({{ unseen_nb }}){% endif %}</a>
+                    <a href="{{ path('user_cart') }}">Panier</a>
+                    <a href="{{ path('user_my_artists') }}">Mes artistes</a>
+                {% else %}
+                    <div id="not-auth-perma-links">
+                        <a class="btn btn-primary sharp text-uppercase" href="{{ path('fos_user_registration_register') }}">Inscription</a>
+                        {% block header_login_link %}<a class="btn btn-primary sharp text-uppercase" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
+                    </div>
+                {% endif %}
+                <div class="jumbotron jumbotron-fluid">
+                    <div class="container h-100 justify-content-center align-items-center text-center">
+                           <a href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo.png') }}" /></a>
+                    </div>
+                </div>
+
+                <nav id="mainNav" class="navbar navbar-inverse navbar-toggleable-sm">
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    {#
+                    <a class="navbar-brand mx-auto" href="#">NavBar</a>
+                    <div class="navbar-collapse collapse">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">Événements</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('catalog_artists') }}">Artistes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('catalog_halls') }}">Salles</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About</a>
+                            </li>
+                        </ul>
+                    </div>
+                    #}
+                    <div class="navbar-collapse collapse">
+                        <ul class="navbar-nav mx-auto text-center">
+                            <li class="nav-item left-nav-item">
+                                <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">Événements</a>
+                            </li>
+                            <li class="nav-item right-nav-item">
+                                <a class="nav-link" href="{{ path('catalog_artists') }}">Artistes</a>
+                            </li>
+                            <li class="nav-item right-nav-item">
+                                <a class="nav-link" href="{{ path('catalog_halls') }}">Salles</a>
+                            </li>
+                        </ul>
+                    </div>
                 </nav>
             {% endblock %}
         </header>
@@ -77,8 +117,8 @@
                 <div class="footer-links">
                     <ul class="list-inline">
                         <!-- set as many as items as you want -->
-                        <li class="list-inline-item">a propos</li>
-                        <li class="list-inline-item"><a href="#">contact</a></li>
+                        <li class="list-inline-item"><a href="{{ path('about') }}">à propos</a></li>
+                        <li class="list-inline-item"><a href="{{ path('suggestionBox') }}">contact</a></li>
                         <li class="list-inline-item">plan du site</li>
                     </ul>
                 </div>
