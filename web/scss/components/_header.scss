@@ -10,11 +10,34 @@
 
   .nav-item {
     border-left: 1px solid whitesmoke;
-    position: relative;
-  }
 
-  .nav-item:last-of-type {
-    border-right: 1px solid whitesmoke;
+    &:last-of-type {
+      border-right: 1px solid whitesmoke;
+    }
+
+    position: relative;
+
+    transition:All 2s ease;
+    -webkit-transition:All 2s ease;
+    -moz-transition:All 2s ease;
+    -o-transition:All 2s ease;
+
+    &.stickytop {
+      border: 0;
+    }
+
+    &.left-nav-item {
+      right: 0;
+      &.stickytop {
+        right:35px;
+      }
+    }
+    &.right-nav-item {
+      left: 0;
+      &.stickytop {
+        left: 35px;
+      }
+    }
   }
 }
 
@@ -47,18 +70,31 @@ header {
   min-height: 50px;
 }
 
-#logo.stickytop {
-  @extend .fixed-top;
-  left: 50%;
-}
-
 #mainNav.stickytop {
   @extend .fixed-top;
   background-color: rgba(0,0,0,1);
 }
 
+#menuLogo {
+  display: none;
+  position:relative;
+}
+
+#menuLogo img {
+  position:absolute;
+  width: 70px;
+  top: -20px;
+  left: -35px;
+}
+
 #logo {
-  padding-bottom: 30px;
-  position: relative;
-  z-index: 1000;
+  transition:opacity 2s ease;
+  -webkit-transition:opacity  2s ease;
+  -moz-transition:opacity  2s ease;
+  -o-transition:opacity  2s ease;
+  opacity: 1;
+
+  &.hiddenLogo {
+    opacity: 0;
+  }
 }

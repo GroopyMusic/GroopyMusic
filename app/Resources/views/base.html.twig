@@ -72,13 +72,23 @@
                     <div class="navbar-collapse collapse">
                         <ul class="navbar-nav mx-auto text-center">
                             <li class="nav-item left-nav-item">
-                                <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">Événements</a>
+                                <a class="nav-link" href="{{ path('about') }}">à propos</a>
+                            </li>
+
+                            <li class="nav-item left-nav-item">
+                                <a class="nav-link" href="{{ path('catalog_artists') }}">artistes</a>
+                            </li>
+
+                            <li id="menuLogo">
+                                <img src="{{ asset('images/logo.png') }}" />
+                            </li>
+
+                            <li class="nav-item right-nav-item">
+                                <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">événements</a>
+
                             </li>
                             <li class="nav-item right-nav-item">
-                                <a class="nav-link" href="{{ path('catalog_artists') }}">Artistes</a>
-                            </li>
-                            <li class="nav-item right-nav-item">
-                                <a class="nav-link" href="{{ path('catalog_halls') }}">Salles</a>
+                                <a class="nav-link" href="{{ path('catalog_halls') }}">salles</a>
                             </li>
                         </ul>
                     </div>
