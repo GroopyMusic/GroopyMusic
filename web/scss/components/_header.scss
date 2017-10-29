@@ -98,3 +98,30 @@ header {
     opacity: 0;
   }
 }
+
+
+@media(max-width:47.9em) {
+  .navbar .collapse .dropdown-menu {
+    position: relative;
+    float: none;
+    background:none;
+    border:none;
+  }
+}
+
+.navbar-nav .dropdown-menu {
+  position: absolute !important;
+  background-color: black;
+  padding-bottom: 0;
+}
+
+.dropdown-menu .dropdown-item {
+  border-radius: 10%;
+  background-color: black;
+  color: white;
+  padding-left: 10px;
+  &:hover {
+    background-color: $main-color;
+    color: black;
+  }
+}

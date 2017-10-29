@@ -1,0 +1,13 @@
+{% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+    <div id="not-auth-perma-links">
+        <a class="btn btn-primary sharp text-uppercase" href="{{ path('fos_user_registration_register') }}">Inscription</a>
+        {% block header_login_link %}<a class="btn btn-primary sharp text-uppercase" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
+    </div>
+{% endif %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container h-100 justify-content-center align-items-center text-center">
+        <a href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo.png') }}" /></a>
+    </div>
+</div>
+
+{% include ':patterns:header_nav.html.twig' %}

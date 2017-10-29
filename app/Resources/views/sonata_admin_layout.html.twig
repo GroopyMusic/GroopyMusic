@@ -16,7 +16,6 @@
             width: 100%; /*else huge display bug */
         }
     </style>
-
 {% endblock %}
 
 {% block sonata_javascript_pool %}
@@ -39,6 +38,10 @@
             $datePicker.datepicker({dateFormat: 'mm/dd/yy'});
         });
     </script>
+{% endblock %}
+
+{% block sonata_header_noscript_warning %}
+    {{ parent() }}
 {% endblock %}
 
 {% block logo %}

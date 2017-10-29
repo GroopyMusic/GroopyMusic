@@ -3,5 +3,9 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 {% block fos_user_content %}
-    <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
+    <div class="container">
+        <h3 class="rounded-title">Inscription</h3>
+
+        <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
+    </div>
 {% endblock fos_user_content %}

@@ -14,3 +14,10 @@ $('.rounded-title').each(function() {
     $(this).css('margin-top', '-' + tw/2 + 'px');
     $(this).before('<div class="h-line" style="margin-top:'+tw/2+'px;"></div>');
 });
+
+$(".scroll").click(function(e) {
+    e.preventDefault();
+    $('html, body').animate({
+        scrollTop: $($(this).attr('href')).offset().top
+    }, 1000);
+});
