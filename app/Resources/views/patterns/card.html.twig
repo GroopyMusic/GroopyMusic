@@ -1,0 +1,8 @@
+{% set xs = xs|default(6) %}
+{% set md = md|default(4) %}
+
+<div class="col-xs-{{ xs }} col-md-{{ md }} margin-top">
+    {% block card_content %}
+        {#<span>⭐⭐⭐</span>#}
+    {% endblock %}
+</div>

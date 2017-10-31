@@ -1,7 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'FOSUserBundle:Profile:layout.html.twig' %}
 
-{% block body %}
-
+{% block user_profile_content %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+    <h3>Changer mon e-mail</h3>
     {{ form(form) }}
-
 {% endblock %}

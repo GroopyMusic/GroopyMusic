@@ -1,6 +1,6 @@
 {% macro menu_logo() %}
     <li id="menuLogo">
-        <a class="scroll" href="#header"><img src="{{ asset('images/logo.png') }}" /></a>
+        <a class="scroll" href="#header"><img id="nav-logo" src="{{ asset('images/logo.png') }}" /></a>
     </li>
 {% endmacro %}
 
@@ -62,9 +62,10 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mon compte</a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="{{ path('user_my_artists') }}">Mes artistes</a>
-                        <a class="dropdown-item" href="{{ path('fos_user_profile_edit') }}">Mon profil</a>
+                        <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">Mon profil</a>
                         <a class="dropdown-item" href="{{ path('user_notifications') }}">Notifications {% set unseen_nb = unseen_notifs_nb() %}{% if unseen_nb > 0 %}({{ unseen_nb }}){% endif %}</a>
                         <a class="dropdown-item" href="{{ path('user_cart') }}">Panier</a>
+                        {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
                         <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
                     </div>
                 </li>

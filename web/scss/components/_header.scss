@@ -41,8 +41,10 @@
   }
 }
 
-.navbar-inverse .nav-item {
+#mainNav .nav-item {
   text-transform: uppercase;
+  padding-left: 10px;
+  padding-right: 10px;
   .nav-link {
     color: white;
   }
@@ -66,6 +68,11 @@ header {
 }
 
 #mainNav {
+  transition:background-color 2s ease;
+  -webkit-transition:background-color  2s ease;
+  -moz-transition:background-color  2s ease;
+  -o-transition:background-color  2s ease;
+
   background-color: rgba(0, 0, 0, 0.6);
   min-height: 50px;
 }
@@ -123,5 +130,12 @@ header {
   &:hover {
     background-color: $main-color;
     color: black;
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (max-width: 768px) {
+  #nav-logo {
+    display: none !important;
   }
 }

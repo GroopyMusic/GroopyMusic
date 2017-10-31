@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
         <link type="text/css" rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -8,6 +9,7 @@
 
 {% block body %}
 
+    <div class="container">
     {% if no_artist is not defined %}
         <h2>Lancer un nouveau crowdfunding - étape {{ flow.currentStepNumber }} / {{ flow.lastStepNumber }} : {{ flow.currentStepLabel }}</h2>
 
@@ -33,6 +35,8 @@
         {# No artist #}
         <h2>Vous n'avez pas d'artiste disponible pour lancer un nouveau crowdfunding</h2>
     {% endif %}
+
+    </div>
 {% endblock %}
 
 {% block javascripts %}

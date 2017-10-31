@@ -23,7 +23,7 @@
         <header id="header">
             <noscript>
                 <div class="noscript-warning">
-                    {{ 'noscript_warning'|trans({}, 'SonataAdminBundle') }}
+                    {{ "noscript.warning"|trans }}
                 </div>
             </noscript>
             {% block header %}
@@ -59,13 +59,10 @@
 
         {% block footer %}
             <footer class="footer">
-                <div class="footer-links">
-                    <ul class="list-inline">
-                        <!-- set as many as items as you want -->
-                        <li class="list-inline-item"><a href="{{ path('about') }}">à propos</a></li>
-                        <li class="list-inline-item"><a href="{{ path('suggestionBox') }}">contact</a></li>
-                        <li class="list-inline-item">plan du site</li>
-                    </ul>
+                <div class="footer-links row text-center">
+                    <div class="col-xs-12 col-sm-4"><a href="{{ path('about') }}">à propos</a></div>
+                    <div class="col-xs-12 col-sm-4"><a href="{{ path('suggestionBox') }}">contact</a></div>
+                    <div class="col-xs-12 col-sm-4"><a href="{{ path('conditions') }}">conditions générales</a></div>
                 </div>
                 <div class="copyright">
                     <span class="text-uppercase">© Un-Mute</span>

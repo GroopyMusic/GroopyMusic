@@ -3,12 +3,17 @@
 {% block body %}
 
     <div class="container">
-        <h2>Salles partenaires</h2>
-        <div class="row">
+        <h3 class="rounded-title">Salles partenaires</h3>
+
+        {% if halls is not empty %}
+            <div class="row">
             {% for hall in halls %}
                 {% include 'AppBundle:Public/Card:hall.html.twig' %}
             {% endfor %}
-        </div>
+            </div>
+        {% else %}
+            <p>Il n'y a pas encore de salle partenaire sur la plateforme.</p>
+        {% endif %}
     </div>
 
 {% endblock %}

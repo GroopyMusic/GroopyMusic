@@ -19,6 +19,8 @@ class UserEmailType extends AbstractType
     {
         $builder
             ->add('asked_email', RepeatedType::class, array(
+                'first_options' => ['label' => 'labels.user.askedEmail.first'],
+                'second_options' => ['label' => 'labels.user.askedEmail.second'],
                 'required' => true,
                 'constraints' => [
                     new Email(['message' => 'Cette adresse e-mail est invalide.']),

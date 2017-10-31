@@ -102,8 +102,21 @@ class UserController extends Controller
 
         $artists_user = $fan->getArtistsUser();
 
+        $artists = array_map(function(Artist_User $elem) {
+            return $elem->getArtist();
+        }, $artists_user->toArray());
+
+        $available_artist = false;
+        foreach($artists as $artist) {
+            if($artist->isAvailable()) {
+                $available_artist = true;
+                break;
+            }
+        }
+
         return $this->render('@App/User/my_artists.html.twig', array(
-            'artists_user' => $artists_user,
+            'artists' => $artists,
+            'available_artist' => $available_artist,
         ));
     }
 

@@ -1,57 +1,31 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-
-    {% include "@App/Themes/modal.html.twig" %}
-    <a data-toggle="modal" data-target="#defaultModal" href="{{ path('fos_user_security_login') }}">Modal test</a>
-
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-6">
-                <h2>News</h2>
-                <div class="row">
-                {% for new in news %}
-                    {% if new.type == 'artist' %}
-                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object} %}
-                    {% elseif new.type == 'contract' %}
-                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': new.object} %}
-                    {% endif %}
-                {% endfor %}
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6">
-                <h2>Concerts à venir</h2>
-                <div class="row">
-                    {% for crowdfunding in crowdfundings %}
-                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding} %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <h2>News</h2>
-                <div class="row">
+                <div class="col-12">
+                    <h3 class="rounded-title">News</h3>
+                    <div class="row">
                     {% for new in news %}
                         {% if new.type == 'artist' %}
-                            {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object} %}
+                            {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object, 'md':6, 'xs': 12} %}
                         {% elseif new.type == 'contract' %}
-                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': new.object} %}
+                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': new.object, 'md':6, 'xs': 12} %}
                         {% endif %}
                     {% endfor %}
+                    </div>
                 </div>
             </div>
 
             <div class="col-12 col-md-6">
-                <h2>Concerts à venir</h2>
-                <div class="row">
-                    {% for crowdfunding in crowdfundings %}
-                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding} %}
-                    {% endfor %}
+                <div class="col-12">
+                    <h3 class="rounded-title">Concerts à venir</h3>
+                    <div class="row">
+                        {% for crowdfunding in crowdfundings %}
+                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':6, 'xs': 12} %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

@@ -55,6 +55,15 @@ col-sm-2
     </div>
 {%- endblock submit_row %}
 
+{% block checkbox_row -%}
+    <div class="form-group row">
+        <div class="{{ block('form_label_class') }}"></div>
+        <div class="{{ block('form_group_class') }}">
+            {{- form_widget(form) -}}
+        </div>
+    </div>
+{%- endblock checkbox_row %}
+
 {% block reset_row -%}
     <div class="form-group row">
         <div class="{{ block('form_label_class') }}"></div>

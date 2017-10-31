@@ -6,14 +6,9 @@ $footer-height: 100px;
   height: $footer-height;
   &-links{
     margin-top: $main-margin;
-    & ul.list-inline{
-      display: flex;
-      justify-content: space-around;
-      text-align: center;
+    & a {
       text-transform: uppercase;
-      & li a{
-        color: black;
-      }
+      color: black;
     }
   }
   

@@ -20,6 +20,7 @@ class AddressType extends AbstractType
     {
         $builder
             ->add('street', TextType::class, array(
+                'label' => 'labels.address.street',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
@@ -27,6 +28,7 @@ class AddressType extends AbstractType
                 ],
             ))
             ->add('number', TextType::class, array(
+                'label' => 'labels.address.number',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
@@ -34,6 +36,7 @@ class AddressType extends AbstractType
                 ],
             ))
             ->add('zipcode', TextType::class, array(
+                'label' => 'labels.address.zipcode',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
@@ -41,6 +44,7 @@ class AddressType extends AbstractType
                 ],
             ))
             ->add('city', TextType::class, array(
+                'label' => 'labels.address.city',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
@@ -48,6 +52,7 @@ class AddressType extends AbstractType
                 ],
             ))
             ->add('country', CountryType::class, array(
+                'label' => 'labels.address.country',
                 'placeholder' => 'Pays',
                 'required' => true,
                 'constraints' => [

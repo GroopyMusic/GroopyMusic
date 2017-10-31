@@ -7,6 +7,18 @@ use AppBundle\Entity\User;
 
 class ArtistRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findForUser(User $user) {
+        return $this->createQueryBuilder('a')
+            ->innerJoin('a.artists_user', 'au')
+            ->leftJoin('a.contracts', 'c')
+            ->where('a.artists_user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('a.deleted = 0')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function queryNotCurrentlyBusy(User $user) {
         $nots = $this->createQueryBuilder('a')
             ->select('a.id')
@@ -19,6 +31,7 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         return $qb
             ->innerJoin('a2.artists_user', 'au')
             ->where('au.user = :user')
+            ->andWhere('a2.deleted = 0')
             ->setParameter('user', $user)
             ->andWhere($qb->expr()->notIn('a2.id', $nots->getDQL()));
     }

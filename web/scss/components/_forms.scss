@@ -5,3 +5,7 @@ ul.form-errors {
     .list-unstyled,
     .mb-0;
 }
+
+input[type=submit], button[type=submit] {
+  cursor: pointer;
+}

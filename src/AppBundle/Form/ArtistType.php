@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,7 +36,18 @@ class ArtistType extends AbstractType
                 'class' => Province::class,
             ))
             ->add('translations', TranslationsType::class, array(
-                // TODO
+                'label' => 'labels.artist.translations',
+                'locales' => ['fr'],
+                'fields' => [
+                    'short_description' => [
+                        'field_type' => TextareaType::class,
+                        'label' => 'labels.artist.short_description',
+                    ],
+                    'biography' => [
+                        'field_type' => TextareaType::class,
+                        'label' => 'labels.artist.biography'
+                    ]
+                ]
             ))
             ->add('genres', Select2EntityType::class, [
                 'multiple' => true,

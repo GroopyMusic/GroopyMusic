@@ -1,5 +1,6 @@
-{% extends "@FOSUser/layout.html.twig" %}
+{% extends "FOSUserBundle:Profile:layout.html.twig" %}
 
-{% block fos_user_content %}
+{% block user_profile_content %}
+    <h3>Mon profil</h3>
     {% include "@FOSUser/Profile/show_content.html.twig" %}
-{% endblock fos_user_content %}
+{% endblock %}

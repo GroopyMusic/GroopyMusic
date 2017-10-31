@@ -2,52 +2,69 @@
 
 {% block body %}
 
-<h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.getName }}"</h1>
+    <div class="container">
+        <h2>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.getName }}"</h2>
 
-    {# TODO if artist is not defined and app.user.owns(contract.artist) %}
-        <a href="{{ path('artist', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
-    {% endif #}
 
-<ul>
-    <li>
-        Date de début du contrat : {{ contract.date|date('d/m/Y') }}
-    </li>
-    <li>
-        Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y') }}
-    </li>
-    <li>
-        Palier : {{ contract.step.getName }}
-    </li>
-    <li>
-        État du crowdfunding : {{ contract.ticketsSold }} / {{ contract.step.minTickets }}
-    </li>
+        <div class="row">
+            <div class="col-xs-12 col-md-8">
+                <div class="col-12">
+                    <h3 class="rounded-title">Infos</h3>
+                </div>
+                {# TODO if artist is not defined and app.user.owns(contract.artist) %}
+                    <a href="{{ path('artist', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
+                {% endif #}
 
-    {% if contract.motivations is not null or is_granted('ROLE_ARTIST') %}
-        <li>
-        {% if artist is defined %}
-            <textarea id="motivations-textarea">{#
-                #}{{ contract.motivations }}{#
-            #}</textarea>
-            <button type="submit" id="update-motivations-button" contract="{{ contract.id }}">Mettre à jour</button>
-        {% else %}
-            <div>{{ contract.motivations }}</div>
-        {% endif %}
-        </li>
-    {% endif %}
-</ul>
+                <ul>
+                    <li>
+                        Date de début du contrat : {{ contract.date|date('d/m/Y') }}
+                    </li>
+                    <li>
+                        Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y') }}
+                    </li>
+                    <li>
+                        Palier : {{ contract.step.getName }}
+                    </li>
+                    <li>
+                        Tickets vendus : {{ contract.ticketsSold }} / {{ contract.step.minTickets }}
+                    </li>
 
-{% for article in contract.step.counterParts %}
-    {% set tickets_left = contract.nbAvailable(article) %}
-    Contrepartie "{{ article.getName }}" (prix : {{ article.price }} €, nombre restant : {{ tickets_left }}) :
-    <select>
-        {% set max_to_purchase = min(tickets_left, 10) %}
-        {% for i in 0..max_to_purchase %}
-            <option value="{{ i }}" {% if loop.first %}selected="selected"{% endif %}>{{ i }}</option>
-        {% endfor %}
-    </select>
-    <button class="add-to-cart-button" type="submit" counterpart="{{ article.id }}" contract="{{ contract.id }}" id="submit_counterpart_{{ article.id }}">Ajouter au panier</button>
-    <br /><br />
-{% endfor %}
+                    {% if contract.motivations is not null or is_granted('ROLE_ARTIST') %}
+                        <li>
+                            {% if artist is defined %}
+                                <textarea id="motivations-textarea">{#
+                        #}{{ contract.motivations }}{#
+                    #}</textarea>
+                                <button type="submit" id="update-motivations-button" contract="{{ contract.id }}">Mettre à jour</button>
+                            {% else %}
+                                <div>{{ contract.motivations }}</div>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        <div class="col-xs-12 col-md-4">
+            {% if app.user %}
+                <div class="col-12">
+                    <h3 class="rounded-title">Acheter un ticket</h3>
+                </div>
+                    {% for article in contract.step.counterParts %}
+                        {% set tickets_left = contract.nbAvailable(article) %}
+                        {{ article.getName }} (prix : {{ article.price }} €, nombre restant : {{ tickets_left }}) :
+                        <select>
+                            {% set max_to_purchase = min(tickets_left, 10) %}
+                            {% for i in 0..max_to_purchase %}
+                                <option value="{{ i }}" {% if loop.first %}selected="selected"{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="add-to-cart-button" type="submit" counterpart="{{ article.id }}" contract="{{ contract.id }}" id="submit_counterpart_{{ article.id }}">Ajouter au panier</button>
+                        <br /><br />
+                    {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 

@@ -4,34 +4,29 @@
     <p>{{ 'profile.show.email'|trans }} : {{ user.email }}</p>
     <p>{{ 'profile.show.firstname'|trans }} : {{ user.firstName }} </p>
     <p>{{ 'profile.show.lastname'|trans }} : {{ user.lastName }} </p>
+    {% if user.address is not null %}
+        <p>
+            {{ 'profile.show.address'|trans }} : {{ user.address }}
+        </p>
+    {% endif %}
+
+    {% if user.artistsUser is not empty %}
     <p>{{ 'profile.show.artists'|trans }} :
-        {% if user.artistsUser is not empty %}
         <ul>
             {% for a in user.artistsUser %}
-                <li><a href="{{ path('artist_home', {'id': a.artist.id}) }}">{{ a.artist.artistname }}</a></li>
+                <li><a href="{{ path('artist_profile', {'id': a.artist.id}) }}">{{ a.artist.artistname }}</a></li>
             {% endfor %}
         </ul>
-        {% endif %}
     </p>
-    <p>{{ 'profile.show.genres'|trans }} :
-        {% if user.genres is not empty %}
-        <ul>
-            {% for g in user.genres %}
-                <li>{{ g.name }}</li>
-            {% endfor %}
-        </ul>
     {% endif %}
-    </p>
-</div>
 
-<div>
-    <a href="{{ path('fos_user_profile_edit') }}">Modifier mon profil</a>
-</div>
-
-<div>
-    <a href="{{ path('fos_user_change_password') }}">Changer de mot de passe</a>
-</div>
-
-<div>
-    <a href="{{ path('user_change_email') }}">Changer d'e-mail</a>
+    {% if user.genres is not empty %}
+        <p>{{ 'profile.show.genres'|trans }} :
+            <ul>
+                {% for g in user.genres %}
+                    <li>{{ g.name }}</li>
+                {% endfor %}
+            </ul>
+        </p>
+    {% endif %}
 </div>

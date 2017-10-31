@@ -11,8 +11,8 @@ $('.rounded-title').each(function() {
     var tw = $(this).textWidth();
     $(this).width(tw + 4);
     $(this).height(tw);
-    $(this).css('margin-top', '-' + tw/2 + 'px');
-    $(this).before('<div class="h-line" style="margin-top:'+tw/2+'px;"></div>');
+    $(this).css('margin-top', '-' + $(this).outerHeight()/2 + 'px');
+    $(this).before('<div class="h-line" style="margin-top:'+ $(this).outerHeight()/2 +'px;"></div>');
 });
 
 $(".scroll").click(function(e) {

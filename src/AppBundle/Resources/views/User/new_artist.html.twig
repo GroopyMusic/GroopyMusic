@@ -2,12 +2,33 @@
 
 {% block body %}
 
-    <h1>Nouvel artiste</h1>
+    <div class="container">
+        <h3 class="rounded-title">Nouvel artiste</h3>
 
-    {% form_theme form 'jquery.collection.html.twig' %}
+        {% form_theme form 'jquery.collection.html.twig' %}
 
-    {{ form_start(form) }}
+        {{ form_start(form) }}
 
-    {{ form_row(form) }}
+        <div class="form-group">
+            {{ form_row(form.artistname) }}
+            {{ form_row(form.province) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_row(form.province) }}
+            {{ form_row(form.genres) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_row(form.website) }}
+            {{ form_row(form.facebook) }}
+            {{ form_row(form.twitter) }}
+            {{ form_row(form.spotify) }}
+        </div>
+
+
+        {{ form_end(form) }}
+
+    </div>
 
 {% endblock %}

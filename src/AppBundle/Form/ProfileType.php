@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,6 +19,7 @@ class ProfileType extends AbstractType
     {
         $builder
             ->remove('username')
+            ->remove('email')
             // Duplicated from RegistrationType
             ->add('lastname', TextType::class, array(
                 'required' => true,
@@ -35,16 +37,18 @@ class ProfileType extends AbstractType
             ))
             // End duplicated
             ->add('newsletter', CheckboxType::class, array(
+                'label' => 'labels.user.newsletter',
                 'required' => false,
             ))
             ->add('genres', Select2EntityType::class, [
+                'label' => 'labels.user.genres',
                 'multiple' => true,
                 'remote_route' => 'select2_genres',
                 'class' => 'AppBundle\Entity\Genre',
                 'primary_key' => 'id',
             ])
             ->remove('current_password')
-            ->add('address', CollectionType::class, array(
+            ->add('addressForm', CollectionType::class, array(
                 'entry_type' => AddressType::class,
                 'entry_options' => array(
                     'label' => false,
@@ -53,7 +57,10 @@ class ProfileType extends AbstractType
                 'allow_delete' => true,
                 'prototype' => true,
                 'attr' => ['class' => 'collection'],
-                'label' => false,
+                'label' => 'labels.user.address',
+            ))
+            ->add('submit', SubmitType::class, array(
+                'label' => 'labels.user.profile.submit'
             ))
         ;
     }

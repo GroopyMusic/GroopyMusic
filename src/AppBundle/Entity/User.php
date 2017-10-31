@@ -161,7 +161,7 @@ class User extends BaseUser implements RecipientInterface
     private $genres;
 
     /**
-     * @ORM\OneToOne(targetEntity="Address")
+     * @ORM\OneToOne(targetEntity="Address", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
@@ -561,7 +561,7 @@ class User extends BaseUser implements RecipientInterface
      *
      * @return User
      */
-    public function setAddress(\AppBundle\Entity\Address $address = null)
+    public function setAddress($address = null)
     {
         $this->address = $address;
 
@@ -576,6 +576,38 @@ class User extends BaseUser implements RecipientInterface
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return User
+     */
+    public function setAddressForm($address = null)
+    {
+        if(is_array($address))
+            if(empty($address)){
+                $this->address = null;
+            }
+            else {
+                $this->address = array_pop($address);
+            }
+        else
+            $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddressForm()
+    {
+        return $this->address == null ? null : array($this->address);
     }
 
     /**

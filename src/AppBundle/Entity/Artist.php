@@ -94,6 +94,19 @@ class Artist implements TranslatableInterface
         return $score;
     }
 
+    public function isAvailable() {
+        if(empty($this->contracts))
+            return false;
+        else {
+            foreach($this->contracts as $contract) {
+                /** @var ContractArtist $contract */
+                if($contract->getDateEnd() <= (new \DateTime())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * @ORM\Id

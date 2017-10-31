@@ -6,3 +6,13 @@ main {
   padding-top: 35px;
   padding-bottom: 70px;
 }
+
+.noscript-warning {
+  width: 100%;
+  background: black;
+  color: white;
+  min-height: 30px;
+  line-height: 30px;
+  text-align: center;
+  position: fixed;
+}

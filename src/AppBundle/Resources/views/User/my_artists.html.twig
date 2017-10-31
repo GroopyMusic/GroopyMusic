@@ -1,21 +1,21 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+    <div class="container">
+        <h3 class="rounded-title">Mes artistes</h3>
+            <div class="text-center">
+                {% if available_artist %}
+                    <a class="btn btn-primary" href="{{ path('user_new_contract_artist') }}">Lancer un nouveau crowdfunding</a>
+                {% endif %}
+                <a class="btn btn-primary" href="{{ path('user_new_artist') }}">Créer un artiste</a>
+            </div>
 
-    {% if artists_user is empty %}
-
-        <p>Vous n'avez pas de groupe. Souhaitez-vous en <a href="{{ path('user_new_artist') }}">créer un</a> ?</p>
-
-    {% else %}
-
-        <h2>Mes groupes</h2>
-        {% for artist_u in artists_user %}
-            {% include "AppBundle:Public/Card:artist.html.twig" with {'artist': artist_u.artist} %}
-        {% endfor %}
-        Souhaitez-vous en <a href="{{ path('user_new_artist') }}">créer un</a> ?
-    {% endif %}
-
-    <p>
-        Lancer un <a href="{{ path('user_new_contract_artist') }}">nouveau crowdfunding</a> ?
-    </p>
+            {% if artists is not empty %}
+                <div class="row">
+                    {% for artist in artists %}
+                        {% include "AppBundle:Public/Card:artist.html.twig" %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+    </div>
 {% endblock %}
