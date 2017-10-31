@@ -83,7 +83,7 @@ knp_doctrine_behaviors:
 
 a2lix_translation_form:
   locale_provider: default
-  locales: [fr, en]
+  locales: [fr, en, nl]
   default_locale : "%locale%"
   required_locales: ["%locale%"]
   templating: "A2lixTranslationFormBundle::default.html.twig"

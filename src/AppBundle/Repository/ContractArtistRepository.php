@@ -45,7 +45,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function findNotSuccessfulYet($limit = null) {
         $qb = $this->createQueryBuilder('c')
             ->where('c.dateEnd > :now')
-            ->andWhere('c.collected_amount < s.requiredAmount')
+            ->andWhere('c.tickets_sold < s.min_tickets')
             ->join('c.artist', 'a')
             ->addSelect('a')
             ->join('c.step', 's')
@@ -103,7 +103,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->where('c.dateEnd < :now')
             ->andWhere('c.successful = 0')
             ->andWhere('c.failed = 0') // Not marked as failed yet
-            ->andWhere('c.collected_amount < s.requiredAmount')
+            ->andWhere('c.tickets_sold < s.min_tickets')
             ->setParameter('now', new \DateTime('now'))
             ->getQuery()
             ->getResult();
@@ -122,7 +122,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('s')
             ->andWhere('c.failed = 0')
             ->andWhere('c.successful = 0') // Not marked as successful yet
-            ->andWhere('c.collected_amount >= s.requiredAmount')
+            ->andWhere('c.tickets_sold s.min_tickets')
             ->getQuery()
             ->getResult();
     }

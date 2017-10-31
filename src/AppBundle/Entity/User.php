@@ -30,6 +30,7 @@ class User extends BaseUser implements RecipientInterface
         $this->credits = 0;
         $this->addRole("ROLE_FAN");
         $this->inscription_date = new \DateTime();
+        $this->accept_conditions = false;
     }
 
     public function owns(Artist $artist) {
@@ -74,6 +75,9 @@ class User extends BaseUser implements RecipientInterface
 
         return ucwords($displayName);
     }
+
+    // Form only
+    public $accept_conditions;
 
     /**
      * @ORM\Id

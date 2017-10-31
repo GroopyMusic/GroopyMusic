@@ -88,7 +88,7 @@ class BaseStep implements TranslatableInterface
     protected $counterParts;
 
     /**
-     * @ORM\Column(name="required_amount", type="integer")
+     * @ORM\Column(name="required_amount", type="integer", nullable=true)
      */
     protected $requiredAmount;
 

@@ -60,9 +60,6 @@ class PhaseAdmin extends BaseAdmin
                 ->add('num', null, array(
                     'label' => "Numéro d'ordre de la phase",
                 ))
-                ->add('steps', null, array(
-                    'label' => 'Paliers',
-                ))
             ->end()
             ->with('Champs traductibles')
                 ->add('translations', TranslationsType::class, array(

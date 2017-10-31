@@ -15,6 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Artist implements TranslatableInterface
 {
+
     use ORMBehaviors\Translatable\Translatable;
 
     const PHOTOS_DIR = 'uploads/artist_gallery/';

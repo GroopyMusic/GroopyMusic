@@ -5,7 +5,7 @@
     <h1>Payer le contenu du panier</h1>
 
     {% for contract in cart.contracts %}
-        Contrat de fan #{{ contract.id }} : en lien avec le contrat d'artiste <a href="{{ path('fan_see_contract', {'id': contract.contractArtist.id}) }}">#{{ contract.contractArtist.id }}</a>
+        Contrat de fan #{{ contract.id }} : en lien avec le contrat d'artiste <a href="{{ path('artist_contract', {'id': contract.contractArtist.id}) }}">#{{ contract.contractArtist.id }}</a>
         <br />
         Achats :
         <ul>

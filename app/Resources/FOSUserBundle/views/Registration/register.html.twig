@@ -3,10 +3,13 @@
 {% block fos_user_content %}
     <div class="container">
 
+
         <h3 class="rounded-title">Inscription</h3>
-
-        {% include "@FOSUser/Registration/register_content.html.twig" %}
-
+        {% if app.user %}
+            <p>Vous êtes connecté, impossible de s'inscrire</p>
+        {% else %}
+            {% include "@FOSUser/Registration/register_content.html.twig" %}
+        {% endif %}
     </div>
 
 {% endblock fos_user_content %}

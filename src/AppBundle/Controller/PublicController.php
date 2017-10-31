@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Services\MailDispatcher;
@@ -181,6 +182,17 @@ class PublicController extends Controller
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
             'successful_contracts' => $succesful_contracts,
+        ));
+    }
+
+    /**
+     * @Route("/crowdfunding-{id}", name="artist_contract")
+     */
+    public function artistContractAction(ContractArtist $contract) {
+        // TODO secure
+
+        return $this->render('@App/Public/artist_contract.html.twig', array(
+            'contract' => $contract,
         ));
     }
 

@@ -25,8 +25,10 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
-    public function cartAction(Request $request,UserInterface $user, KernelInterface $kernel)
+    public function cartAction(Request $request,UserInterface $user)
     {
+        $kernel = $this->get('kernel');
+
         $em = $this->getDoctrine()->getManager();
         $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
         /** @var Cart $cart */

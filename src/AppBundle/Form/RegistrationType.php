@@ -34,6 +34,13 @@ class RegistrationType extends AbstractType
                 ]
             ))
             // end duplicated
+            ->add('accept_conditions', CheckboxType::class, array(
+                'label' => 'labels.user.accept_conditions',
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Vous devez accepter les conditions d\'utilisation pour continuer.']),
+                ],
+            ))
             ->add('newsletter', CheckboxType::class, array(
                 'label' => 'labels.user.newsletter',
                 'required' => false,

@@ -103,16 +103,16 @@ $(document).ready(function() {
                         $("#modal-dialog").html("<p>Requête AJAX en cours...</p>");
                     },
                     success: function(response) {
-                        if(response == "OK") {
-                            $('#modal-dialog').html("<p>C'est fait !</p>");
-                        }
-
-                        else if(response == "MAX_QTY") {
+                        if(response == "MAX_QTY") {
                             $('#modal-dialog').html("<p>Impossible : quantité maximale déjà atteinte pour cet article</p>");
                         }
 
                         else if(response == "TO_MAX_QTY") {
                             $('#modal-dialog').html("<p>C'est fait ! (Quantité maximale atteinte pour cet article)</p>");
+                        }
+
+                        else{
+                            $('#modal-dialog').html("<p>C'est fait !</p>");
                         }
 
                         select.val(0);

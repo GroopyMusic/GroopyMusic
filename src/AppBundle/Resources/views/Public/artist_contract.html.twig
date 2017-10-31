@@ -4,9 +4,9 @@
 
 <h1>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.getName }}"</h1>
 
-    {% if artist is not defined and app.user.owns(contract.artist) %}
-        <a href="{{ path('artist_contract', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
-    {% endif %}
+    {# TODO if artist is not defined and app.user.owns(contract.artist) %}
+        <a href="{{ path('artist', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
+    {% endif #}
 
 <ul>
     <li>
@@ -16,10 +16,10 @@
         Date de fin du contrat : {{ contract.dateEnd|date('d/m/Y') }}
     </li>
     <li>
-        Palier : <a href="{{ path('step', {'id': contract.step.id}) }}">{{ contract.step.getName }}</a>
+        Palier : {{ contract.step.getName }}
     </li>
     <li>
-        État du crowdfunding : {{ contract.collectedAmount }} € / {{ contract.step.requiredAmount }} €
+        État du crowdfunding : {{ contract.ticketsSold }} / {{ contract.step.minTickets }}
     </li>
 
     {% if contract.motivations is not null or is_granted('ROLE_ARTIST') %}
@@ -57,13 +57,13 @@
     </div>
     <div
         id="js-vars"
-        data-vars="{{ {'ajax_path_add_to_cart': path('fan_ajax_add_to_cart'),
+        data-vars="{{ {'ajax_path_add_to_cart': path('user_ajax_add_to_cart'),
                        'ajax_path_update_motivations': path_artist}|json_encode|e('html_attr') }}">
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('js/cart.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/step.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/general/cart.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/general/step.js') }}"></script>
 {% endblock %}
