@@ -19,6 +19,31 @@ class Partner
     use ORMBehaviors\Translatable\Translatable;
     use ORMBehaviors\Sluggable\Sluggable;
 
+    public function __call($method, $arguments)
+    {
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
+
     public function getSluggableFields() {
         return ['name'];
     }
