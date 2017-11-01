@@ -212,11 +212,6 @@ class Hall extends Partner
     private $updatedAt;
 
     /**
-     * @ORM\Column(name="short_description", type="string", length=255)
-     */
-    private $short_description;
-
-    /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
      * of 'UploadedFile' is injected into this setter to trigger the  update. If this
      * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
@@ -593,29 +588,5 @@ class Hall extends Partner
     public function getVisible()
     {
         return $this->visible;
-    }
-
-    /**
-     * Set shortDescription
-     *
-     * @param string $shortDescription
-     *
-     * @return Hall
-     */
-    public function setShortDescription($shortDescription)
-    {
-        $this->short_description = $shortDescription;
-
-        return $this;
-    }
-
-    /**
-     * Get shortDescription
-     *
-     * @return string
-     */
-    public function getShortDescription()
-    {
-        return $this->short_description;
     }
 }
