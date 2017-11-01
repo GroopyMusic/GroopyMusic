@@ -565,4 +565,28 @@ class Hall extends Partner
     {
         return $this->updatedAt;
     }
+
+    /**
+     * Set visible
+     *
+     * @param boolean $visible
+     *
+     * @return Hall
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Get visible
+     *
+     * @return boolean
+     */
+    public function getVisible()
+    {
+        return $this->visible;
+    }
 }

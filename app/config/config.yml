@@ -80,6 +80,7 @@ doctrine_migrations:
 
 knp_doctrine_behaviors:
   translatable: true
+  sluggable: true
 
 a2lix_translation_form:
   locale_provider: default

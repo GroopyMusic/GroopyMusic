@@ -23,6 +23,9 @@ class PartnerAdmin extends BaseAdmin
             ->add('type', null, array(
                 'label' => 'Type',
             ) )
+            ->add('visible', null, array(
+                'label' => 'Visible sur la plateforme',
+            ))
             ->add('_action', null, array(
                     'actions' => array(
                         'show' => array(),
@@ -48,6 +51,9 @@ class PartnerAdmin extends BaseAdmin
                 ))
                 ->add('comment', null, array(
                     'label' => 'Commentaire (interne)',
+                ))
+                ->add('visible', null, array(
+                    'label' => 'Visible sur la plateforme',
                 ))
                 ->add('contactpersons_list', null, array(
                     'associated_property' => 'contact_person',
@@ -79,6 +85,9 @@ class PartnerAdmin extends BaseAdmin
                 ->add('comment', null, array(
                     'label' => 'Commentaire (interne)',
                     'required' => false,
+                ))
+                ->add('visible', null, array(
+                    'label' => 'Visible sur la plateforme',
                 ))
                 ->add('contactpersons_list', 'sonata_type_collection', array(
                     'label' => 'Personnes de contact',

@@ -163,7 +163,7 @@ class PublicController extends Controller
      */
     public function hallsAction() {
         $em = $this->getDoctrine()->getManager();
-        $halls = $em->getRepository('AppBundle:Hall')->findAll();
+        $halls = $em->getRepository('AppBundle:Hall')->findBy(array('visible' => true));
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(
             'halls' => $halls,

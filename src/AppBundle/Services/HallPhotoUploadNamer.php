@@ -38,6 +38,6 @@ class HallPhotoUploadNamer implements NamerInterface
     {
         $request = $this->requestStack->getCurrentRequest();
         $hall = $this->em->getRepository('AppBundle:Hall')->find($request->get('hall'));
-        return sprintf('%s.%s', 'hg-' . $hall->getSafename() . '-' . uniqid(), $file->getExtension());
+        return sprintf('%s.%s', 'hg-' . $hall->getSlug() . '-' . uniqid(), $file->getExtension());
     }
 }

@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
  * Partner
@@ -15,6 +16,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Partner
 {
+
+    use ORMBehaviors\Sluggable\Sluggable;
+
+    public function getSluggableFields() {
+        return ['name'];
+    }
+
     public function getType() {
         if($this instanceof Hall) {
             return 'hall';
@@ -33,6 +41,7 @@ class Partner
     public function __construct()
     {
         $this->contact_persons_list = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->visible = true;
     }
 
     /**
@@ -80,6 +89,11 @@ class Partner
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;
+
+    /**
+     * @ORM\Column(name="visible", type="boolean")
+     */
+    protected $visible;
 
     /**
      * Get id
@@ -268,5 +282,29 @@ class Partner
     public function getContactpersonsList()
     {
         return $this->contactpersons_list;
+    }
+
+    /**
+     * Set visible
+     *
+     * @param boolean $visible
+     *
+     * @return Partner
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Get visible
+     *
+     * @return boolean
+     */
+    public function getVisible()
+    {
+        return $this->visible;
     }
 }

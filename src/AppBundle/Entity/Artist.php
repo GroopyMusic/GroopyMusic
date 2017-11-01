@@ -659,4 +659,38 @@ class Artist implements TranslatableInterface
     {
         return $this->date_creation;
     }
+
+    /**
+     * Add contract
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $contract
+     *
+     * @return Artist
+     */
+    public function addContract(\AppBundle\Entity\BaseContractArtist $contract)
+    {
+        $this->contracts[] = $contract;
+
+        return $this;
+    }
+
+    /**
+     * Remove contract
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $contract
+     */
+    public function removeContract(\AppBundle\Entity\BaseContractArtist $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
+    }
 }

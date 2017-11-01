@@ -23,7 +23,7 @@ class Step extends BaseStep
         $dates = array();
 
         foreach($this->getHalls() as $hall) {
-            if($province == null || $province == $hall->getProvince())
+            if($hall->getVisible() && ($province == null || $province == $hall->getProvince()))
                 $dates = array_merge($dates, $hall->getAvailableDates());
         }
 
