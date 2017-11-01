@@ -1,15 +1,37 @@
 {% extends ':patterns:card.html.twig' %}
 
 {% block card_content %}
-    <div class="um-card" style="background-image: url({{ asset('images/card-bg.jpg') }});">
 
-        <!-- this is the content of the card with an optionnal span for ⭐ -->
-        <div class="um-card-content">
-            <h5>{{ hall.name }}</h5>
-            <p>Here is some card content, please, not too long</p>
+    {% set rotation = false %}
+    {% set src = asset('images/card-bg.jpg') %}
+
+    {% if hall.photos is not empty %}
+        {% set rotation = true %}
+        {% set imgstring = '[' %}
+        {% for photo in hall.photos %}
+            {% if loop.first %}
+                {% set src = absolute_url(asset(hall.webPath(photo))) %}
+            {% endif %}
+            {% set imgstring = imgstring ~ '"' ~ absolute_url(asset(hall.webPath(photo))) ~ '"' %}
+            {% if not loop.last %}
+                {% set imgstring = imgstring ~ "," %}
+            {% else %}
+                {% set imgstring = imgstring ~ ']' %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div {% if rotation %}class="images-rotation" data-images='{{ imgstring }}'{% endif %}>
+        <div class="um-card" style="background-image: url({{ src }});">
+
+            <!-- this is the content of the card with an optionnal span for ⭐ -->
+            <div class="um-card-content">
+                <h5>{{ hall.name }}</h5>
+                <p>{{ hall.shortDescription }}</p>
+            </div>
+
+            <!-- this is the link that the card need to take to -->
+            <a class="um-card-link" href="{{ path('hall', {'id':hall.id}) }}"></a>
         </div>
-
-        <!-- this is the link that the card need to take to -->
-        <a class="um-card-link" href="#"></a>
     </div>
 {% endblock %}

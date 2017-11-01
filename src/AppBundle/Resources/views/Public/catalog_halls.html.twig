@@ -17,3 +17,15 @@
     </div>
 
 {% endblock %}
+
+{% block additional_javascripts %}
+    <script>
+        $('.images-rotation').imagesRotation(
+            {
+                imgSelector: '.um-card',
+                interval: 2000,
+                intervalFirst: 0
+            }
+        );
+    </script>
+{% endblock %}

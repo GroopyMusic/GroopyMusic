@@ -43,11 +43,6 @@ header {
   background-color: rgba(0,0,0,1);
 }
 
-#menuLogo {
-  display: none !important;
-  position:relative;
-}
-
 #logo {
   padding-top: 40px;
   max-width: 30%;
@@ -86,7 +81,19 @@ header {
 
 #not-auth-perma-links {
   img {
-    max-height: 40px;
+    max-height: 36px;
+  }
+}
+
+#menuLogo {
+  position: relative;
+  display: none;
+}
+
+@media (max-width:576px) {
+  #menuLogo {
+    display: none !important;
+    position:relative;
   }
 }
 
@@ -158,5 +165,4 @@ header {
     top: -20px;
     left: -35px;
   }
-
 }

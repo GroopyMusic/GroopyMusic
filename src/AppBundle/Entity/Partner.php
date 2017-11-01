@@ -16,7 +16,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  */
 class Partner
 {
-
+    use ORMBehaviors\Translatable\Translatable;
     use ORMBehaviors\Sluggable\Sluggable;
 
     public function getSluggableFields() {
@@ -84,11 +84,6 @@ class Partner
      * @ORM\ManyToOne(targetEntity="Province")
      */
     protected $province;
-
-    /**
-     * @ORM\Column(name="description", type="text", nullable=true)
-     */
-    protected $description;
 
     /**
      * @ORM\Column(name="visible", type="boolean")
@@ -223,30 +218,6 @@ class Partner
     public function getProvince()
     {
         return $this->province;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Partner
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**

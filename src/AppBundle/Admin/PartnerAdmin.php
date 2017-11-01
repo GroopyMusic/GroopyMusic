@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\ContactPerson;
 use AppBundle\Entity\Hall;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -20,11 +21,15 @@ class PartnerAdmin extends BaseAdmin
             ->add('comment', null, array(
                 'label' => 'Commentaire interne',
             ))
+            ->add('getShortDescription', null, array(
+                'label' => 'Description courte',
+            ))
             ->add('type', null, array(
                 'label' => 'Type',
-            ) )
+            ))
             ->add('visible', null, array(
                 'label' => 'Visible sur la plateforme',
+                'editable' => true,
             ))
             ->add('_action', null, array(
                     'actions' => array(
@@ -43,8 +48,11 @@ class PartnerAdmin extends BaseAdmin
                 ->add('name', null, array(
                     'label' => 'Nom',
                 ))
-                ->add('description', null, array(
+                ->add('getDescription', null, array(
                     'label' => 'Description publique',
+                ))
+                ->add('getShortDescription', null, array(
+                    'label' => 'Description courte',
                 ))
                 ->add('website', null, array(
                     'label' => 'Site Web',
@@ -74,9 +82,17 @@ class PartnerAdmin extends BaseAdmin
                     'label' => 'Nom',
                     'required' => true,
                 ))
-                ->add('description', null, array(
-                    'label' => 'Description publique',
-                    'required' => false,
+                ->add('translations', TranslationsType::class, array(
+                    'label' => 'Champs traductibles',
+                    'fields' => [
+                        'short_description' => [
+                            'label' => 'Description courte (max 255 caractères)',
+                        ],
+                        'description' => [
+                            'label' => 'Description détaillée',
+                            'required' => false,
+                        ]
+                    ],
                 ))
                 ->add('website', null, array(
                     'label' => 'Site Web',

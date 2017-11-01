@@ -16,15 +16,17 @@ $(window).scroll(function() {
             stickyoffset = $mainNav.offset().top;
         }
     }
-    else if($mainNav.hasClass('stickytop')) {
-        $mainNav.removeClass('stickytop');
-
-        $('#logo').removeClass('hiddenLogo');
+    else {
         $('#menuLogo').fadeOut();
 
-        $('.nav-item').each(function() {
-            $(this).removeClass('stickytop')
-        });
+        if($mainNav.hasClass('stickytop')) {
+            $mainNav.removeClass('stickytop');
 
+            $('#logo').removeClass('hiddenLogo');
+
+            $('.nav-item').each(function () {
+                $(this).removeClass('stickytop')
+            });
+        }
     }
 });

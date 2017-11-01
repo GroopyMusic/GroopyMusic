@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\Hall;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Services\MailDispatcher;
@@ -167,6 +168,19 @@ class PublicController extends Controller
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(
             'halls' => $halls,
+        ));
+    }
+
+    /**
+     * @Route("/hall-{id}", name="hall")
+     */
+    public function hallAction(Hall $hall) {
+        if(!$hall->getVisible()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('@App/Public/hall.html.twig', array(
+            'hall' => $hall,
         ));
     }
 

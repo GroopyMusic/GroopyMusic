@@ -33,7 +33,7 @@ class Hall extends Partner
 
     public function getTechnicalSpecsFileName() {
         try {
-            return urlencode($this->getName()) . '-' . uniqid();
+            return $this->slug . '-' . uniqid();
         } catch(Exception $e) {
             return uniqid();
         }
@@ -210,6 +210,11 @@ class Hall extends Partner
      * @var \DateTime
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(name="short_description", type="string", length=255)
+     */
+    private $short_description;
 
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -588,5 +593,29 @@ class Hall extends Partner
     public function getVisible()
     {
         return $this->visible;
+    }
+
+    /**
+     * Set shortDescription
+     *
+     * @param string $shortDescription
+     *
+     * @return Hall
+     */
+    public function setShortDescription($shortDescription)
+    {
+        $this->short_description = $shortDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get shortDescription
+     *
+     * @return string
+     */
+    public function getShortDescription()
+    {
+        return $this->short_description;
     }
 }

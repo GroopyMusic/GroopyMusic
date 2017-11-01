@@ -96,7 +96,7 @@ class Artist implements TranslatableInterface
 
     public function isAvailable() {
         if(empty($this->contracts))
-            return false;
+            return true;
         else {
             foreach($this->contracts as $contract) {
                 /** @var ContractArtist $contract */
