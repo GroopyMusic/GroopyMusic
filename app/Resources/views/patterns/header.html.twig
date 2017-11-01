@@ -1,9 +1,38 @@
-{% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
     <div id="not-auth-perma-links">
-        <a class="btn btn-primary sharp text-uppercase" href="{{ path('fos_user_registration_register') }}">Inscription</a>
-        {% block header_login_link %}<a class="btn btn-primary sharp text-uppercase" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
+        {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <a class="btn btn-primary sharp text-uppercase inscription-link" href="{{ path('fos_user_registration_register') }}">Inscription</a>
+            {% block header_login_link %}<a class="btn btn-primary sharp text-uppercase" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
+        {% else %}
+
+            {% set cart_nb = cart_articles_nb() %}
+            {% if cart_nb > 0 %}
+                <a href="{{ path('user_cart') }}" class="btn btn-primary py-0 pl-0 pr-1 mr-1 color-secondary">
+                    <img src="{{ asset('images/cart.png') }}" />
+                    <span class="color-secondary p-1 rounded-circle">{{ cart_nb }}</span>
+                </a>
+            {% endif %}
+            {% set unseen_nb = unseen_notifs_nb() %}
+            <a href="{{ path('user_notifications') }}" class="btn btn-primary py-0 pl-0 pr-1 mr-1 color-secondary">
+                <img  src="{{ asset('images/notif.png') }}" />
+                {% if unseen_nb > 0 %}
+                    <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
+                {% endif %}
+            </a>
+
+            <div class="dropdown d-inline-block">
+                <a id="dropdownMenuButton" class="btn btn-primary sharp uppercase dropdown-toggle px-1 px-md-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mon compte</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="{{ path('user_my_artists') }}">Mes artistes</a>
+                    <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">Mon profil</a>
+                    <a class="dropdown-item" href="{{ path('user_cart') }}">Panier</a>
+                    {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
+                    <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                </div>
+            </div>
+        {% endif %}
     </div>
-{% endif %}
+
 <div class="jumbotron jumbotron-fluid">
     <div class="container h-100 justify-content-center align-items-center text-center">
         <a href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo.png') }}" /></a>

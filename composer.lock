@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8dcc656184039390c046a3fd95d9b096",
+    "content-hash": "fefd2c018173502dc2a2add1a444469b",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -2516,7 +2516,7 @@
         },
         {
             "name": "mtdowling/cron-expression",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mtdowling/cron-expression.git",
@@ -5394,12 +5394,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "996f6ef3cb4c95ccbcbb2aa87b5a345813325b5c"
+                "reference": "782dc947dc0f8684d517f3f73b8ead727740c7d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/996f6ef3cb4c95ccbcbb2aa87b5a345813325b5c",
-                "reference": "996f6ef3cb4c95ccbcbb2aa87b5a345813325b5c",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/782dc947dc0f8684d517f3f73b8ead727740c7d5",
+                "reference": "782dc947dc0f8684d517f3f73b8ead727740c7d5",
                 "shasum": ""
             },
             "require": {
@@ -5541,7 +5541,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-10-30T22:52:56+00:00"
+            "time": "2017-10-31T17:50:48+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -5655,16 +5655,16 @@
         },
         {
             "name": "twbs/bootstrap",
-            "version": "v4.0.0-beta",
+            "version": "v4.0.0-beta.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "35f80bb12e4e71fd777ee60ffa43711d8f84b1a6"
+                "reference": "fc94de5b8b5b329a298eeeb76174b146ff17af2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/35f80bb12e4e71fd777ee60ffa43711d8f84b1a6",
-                "reference": "35f80bb12e4e71fd777ee60ffa43711d8f84b1a6",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/fc94de5b8b5b329a298eeeb76174b146ff17af2d",
+                "reference": "fc94de5b8b5b329a298eeeb76174b146ff17af2d",
                 "shasum": ""
             },
             "replace": {
@@ -5702,7 +5702,7 @@
                 "sass",
                 "web"
             ],
-            "time": "2017-08-11T03:56:35+00:00"
+            "time": "2017-10-19T19:23:29+00:00"
         },
         {
             "name": "twig/extensions",

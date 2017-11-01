@@ -126,7 +126,7 @@ class HallAdmin extends PartnerAdmin  {
                     },
                     'download_label' => 'Télécharger',
                 ))
-                ->add('photos', null, array(
+                ->add('dummyForm', 'text', array(
                     'label' => 'Photos',
                 ))
             ->end()

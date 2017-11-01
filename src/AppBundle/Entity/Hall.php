@@ -18,6 +18,10 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class Hall extends Partner
 {
+    private $dummyForm;
+    public function setDummyForm($dummyForm){$this->dummyForm = $dummyForm;}
+    public function getDummyForm() {return $this->dummyForm;}
+
     const DATE_FORMAT = 'm/d/Y';
 
     const PHOTOS_DIR = 'uploads/hall_gallery/';

@@ -8,10 +8,8 @@
 
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-
         {% block stylesheets %}
             {% include ':patterns:stylesheets.html.twig' %}
         {% endblock %}
@@ -26,6 +24,11 @@
                     {{ "noscript.warning"|trans }}
                 </div>
             </noscript>
+            <!--[if lte IE 8]>
+                <div class="noscript-warning">
+                    {{ "ie.warning"|trans }}
+                </div>
+            <![endif]-->
             {% block header %}
                 {% include ':patterns:header.html.twig' %}
             {% endblock %}

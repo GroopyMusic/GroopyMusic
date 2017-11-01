@@ -1,4 +1,98 @@
-@media (min-width: 768px) {
+#not-auth-perma-links {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  z-index: 4000;
+  .inscription-link {
+    display: none;
+  }
+}
+
+#mainNav .nav-item {
+  text-transform: uppercase;
+  padding-left: 10px;
+  padding-right: 10px;
+  .nav-link {
+    color: white;
+  }
+}
+
+header {
+  background-image: url('../images/jumbotron-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.jumbotron {
+  background-color: transparent !important;
+  padding-bottom: 0 !important;
+}
+
+#mainNav {
+  transition:background-color 2s ease;
+  -webkit-transition:background-color  2s ease;
+  -moz-transition:background-color  2s ease;
+  -o-transition:background-color  2s ease;
+
+  background-color: rgba(0, 0, 0, 0.6);
+  min-height: 50px;
+}
+
+#mainNav.stickytop {
+  @extend .fixed-top;
+  background-color: rgba(0,0,0,1);
+}
+
+#menuLogo {
+  display: none !important;
+  position:relative;
+}
+
+#logo {
+  padding-top: 40px;
+  max-width: 30%;
+
+  transition:opacity 2s ease;
+  -webkit-transition:opacity  2s ease;
+  -moz-transition:opacity  2s ease;
+  -o-transition:opacity  2s ease;
+  opacity: 1;
+
+  &.hiddenLogo {
+    opacity: 0;
+  }
+}
+
+.dropdown-menu {
+  position: absolute !important;
+  background-color: black;
+  padding-bottom: 0;
+  max-width: initial;
+}
+
+.dropdown-menu .dropdown-item {
+  background-color: black;
+  color: white;
+  padding-left: 10px;
+  &:hover {
+    background-color: $main-color;
+    color: black;
+  }
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+#not-auth-perma-links {
+  img {
+    max-height: 40px;
+  }
+}
+
+// > SMall
+// If you change this, you shoulf also change toggleable breakpoint of #mainNav
+@media (min-width: 576px) {
   .navbar-brand
   {
     position: absolute;
@@ -9,10 +103,10 @@
   }
 
   .nav-item {
-    border-left: 1px solid whitesmoke;
+    border-right: 1px solid whitesmoke;
 
-    &:last-of-type {
-      border-right: 1px solid whitesmoke;
+    &:first-of-type {
+      border-left: 1px solid whitesmoke;
     }
 
     position: relative;
@@ -39,103 +133,30 @@
       }
     }
   }
-}
-
-#mainNav .nav-item {
-  text-transform: uppercase;
-  padding-left: 10px;
-  padding-right: 10px;
-  .nav-link {
-    color: white;
+  .navbar .inscription-link {
+    display: none;
   }
-}
 
-header {
-  background-image: url('../images/jumbotron-bg.jpg');
-  background-size: cover;
-  background-position: center;
-}
+  #not-auth-perma-links {
+    position: absolute;
+    top: 20px;
+    right: 20px;
 
-.jumbotron {
-  background-color: transparent !important;
-  padding-bottom: 0 !important;
-}
-
-#not-auth-perma-links {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-
-#mainNav {
-  transition:background-color 2s ease;
-  -webkit-transition:background-color  2s ease;
-  -moz-transition:background-color  2s ease;
-  -o-transition:background-color  2s ease;
-
-  background-color: rgba(0, 0, 0, 0.6);
-  min-height: 50px;
-}
-
-#mainNav.stickytop {
-  @extend .fixed-top;
-  background-color: rgba(0,0,0,1);
-}
-
-#menuLogo {
-  display: none;
-  position:relative;
-}
-
-#menuLogo img {
-  position:absolute;
-  width: 70px;
-  top: -20px;
-  left: -35px;
-}
-
-#logo {
-  transition:opacity 2s ease;
-  -webkit-transition:opacity  2s ease;
-  -moz-transition:opacity  2s ease;
-  -o-transition:opacity  2s ease;
-  opacity: 1;
-
-  &.hiddenLogo {
-    opacity: 0;
+    .inscription-link {
+      display: inline-block;
+    }
   }
-}
 
-
-@media(max-width:47.9em) {
-  .navbar .collapse .dropdown-menu {
-    position: relative;
-    float: none;
-    background:none;
-    border:none;
+  #logo {
+    padding-top: 0;
+    max-width: initial;
   }
-}
 
-.navbar-nav .dropdown-menu {
-  position: absolute !important;
-  background-color: black;
-  padding-bottom: 0;
-}
-
-.dropdown-menu .dropdown-item {
-  border-radius: 10%;
-  background-color: black;
-  color: white;
-  padding-left: 10px;
-  &:hover {
-    background-color: $main-color;
-    color: black;
+  #menuLogo img {
+    position:absolute;
+    width: 70px;
+    top: -20px;
+    left: -35px;
   }
-}
 
-// Medium devices (tablets, 768px and up)
-@media (max-width: 768px) {
-  #nav-logo {
-    display: none !important;
-  }
 }

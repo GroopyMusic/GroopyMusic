@@ -15,10 +15,9 @@
 
         {% if flow.currentStepNumber == flow.lastStepNumber %}
             <div>
-                Artiste : {{ contract.artist }}<br />/
+                Artiste : {{ contract.artist }}<br />
                 Province : {{ contract.province is empty ? 'Sans importance' : contract.province }}<br />
                 Date choisie : {{ contract.preferences.date|date('d/m/Y') }}
-
             </div>
         {% endif %}
 

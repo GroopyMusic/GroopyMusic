@@ -1,5 +1,6 @@
 body {
   padding-right: 0 !important;
+  overflow-x: hidden !important;
 }
 
 main {
@@ -15,4 +16,5 @@ main {
   line-height: 30px;
   text-align: center;
   position: fixed;
+  z-index: 9999;
 }

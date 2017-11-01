@@ -39,7 +39,15 @@ class Cart
 
     public function getAmount() {
         return array_sum(array_map(function($contract) {
+            /** @var ContractFan $contract */
             return $contract->getAmount();
+        }, $this->contracts->toArray()));
+    }
+
+    public function getNbArticles() {
+        return array_sum(array_map(function($contract) {
+            /** @var ContractFan $contract */
+            return count($contract->getPurchases());
         }, $this->contracts->toArray()));
     }
 

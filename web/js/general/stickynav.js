@@ -13,6 +13,7 @@ $(window).scroll(function() {
 
             $('#menuLogo').fadeIn();
             $('#logo').addClass('hiddenLogo');
+            stickyoffset = $mainNav.offset().top;
         }
     }
     else if($mainNav.hasClass('stickytop')) {

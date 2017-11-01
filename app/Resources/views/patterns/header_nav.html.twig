@@ -6,8 +6,8 @@
 
 {% import _self as nav_macros %}
 
-<nav id="mainNav" class="navbar navbar-inverse navbar-toggleable-sm">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+<nav id="mainNav" class="navbar navbar-inverse navbar-expand-sm">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbar-inverse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     {#
@@ -31,8 +31,8 @@
         </ul>
     </div>
     #}
-    <div class="navbar-collapse collapse">
-        <ul class="navbar-nav mx-auto text-center">
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mx-auto text-center pt-3 pt-md-0">
             <li class="nav-item left-nav-item">
                 <a class="nav-link" href="{{ path('about') }}">à propos</a>
             </li>
@@ -41,33 +41,19 @@
                 <a class="nav-link" href="{{ path('catalog_artists') }}">artistes</a>
             </li>
 
-            {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                {{ nav_macros.menu_logo() }}
-            {% endif %}
+            {{ nav_macros.menu_logo() }}
 
-            <li class="nav-item {{ is_granted('IS_AUTHENTICATED_REMEMBERED') ? 'left-nav-item' : 'right-nav-item'}}">
+            <li class="nav-item right-nav-item">
                 <a class="nav-link" href="{{ path('catalog_halls') }}">salles</a>
             </li>
-
-            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                {{ nav_macros.menu_logo() }}
-            {% endif %}
 
             <li class="nav-item right-nav-item">
                 <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">événements</a>
             </li>
 
-            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                <li class="nav-item dropdown right-nav-item">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mon compte</a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ path('user_my_artists') }}">Mes artistes</a>
-                        <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">Mon profil</a>
-                        <a class="dropdown-item" href="{{ path('user_notifications') }}">Notifications {% set unseen_nb = unseen_notifs_nb() %}{% if unseen_nb > 0 %}({{ unseen_nb }}){% endif %}</a>
-                        <a class="dropdown-item" href="{{ path('user_cart') }}">Panier</a>
-                        {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
-                        <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
-                    </div>
+            {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <li class="nav-item inscription-link">
+                    <a class="nav-link" href="{{ path('fos_user_registration_register') }}">Inscription</a>
                 </li>
             {% endif %}
         </ul>

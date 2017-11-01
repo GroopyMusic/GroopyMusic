@@ -44,6 +44,7 @@ services:
     AppBundle\Services\NotificationDispatcher: ~
     AppBundle\Services\NotificationRenderer: ~
     AppBundle\Services\NotificationExtension: ~
+    AppBundle\Services\CartExtension: ~
 
     AppBundle\Form\ContractArtistFlow:
       parent: craue.form.flow
