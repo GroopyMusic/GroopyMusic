@@ -122,7 +122,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('s')
             ->andWhere('c.failed = 0')
             ->andWhere('c.successful = 0') // Not marked as successful yet
-            ->andWhere('c.tickets_sold s.min_tickets')
+            ->andWhere('c.tickets_sold >= s.min_tickets')
             ->getQuery()
             ->getResult();
     }
