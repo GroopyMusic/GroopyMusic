@@ -2,25 +2,72 @@
 
 {% block body %}
 
-    <div class="container">
-        <h1>Profil de l'artiste {{ artist.artistname }}</h1>
+    <div class="container container-large-margins w-75 mx-auto">
+            <div id="artist-profile-photos-carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner h-100">
+                    {% if artist.profilepic is not null %}
+                        <div class="carousel-item active h-100 w-100">
+                            <div class="mx-auto d-block h-100 w-100 artist-profile-carousel-photo" style="background-image:url('{{ asset(artist.webPath(artist.profilepic)) }}')">
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% for photo in artist.photos %}
+                        <div class="carousel-item {% if artist.profilepic is null and loop.first %}active{% endif %} h-100 w-100">
+                            <div class="mx-auto d-block h-100 w-100 artist-profile-carousel-photo" style="background-image:url('{{ asset(artist.webPath(photo)) }}')">
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="artist-profile-title"><h3>{{ artist.artistname }}</h3></div>
+            </div>
 
-        {% if app.user is not null and app.user.owns(artist) %}
-            <a href="{{ path('artist_profile_edit', {'id': artist.id}) }}">Modifier le profil</a>
-        {% endif %}
+        <ul class="nav nav-tabs nav-justified artist-profile-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="home" aria-expanded="true" href="#artist-profile-home">Profil</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="bio" aria-expanded="false"  href="#artist-profile-bio">Biographie</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="details" aria-expanded="false"  href="#artist-profile-details">Détails</a>
+            </li>
+            {% if app.user is not null and app.user.owns(artist) %}
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="{{ path('artist_profile_edit', {'id':artist.id}) }}">Édition</a>
+                </li>
+            {% endif %}
+        </ul>
 
-        {% if artist.profilepic is not null %}
-            <img src="{{ asset(artist.webPath(artist.profilepic)) }}" />
-        {% endif %}
+        <div class="tab-content artist-profile-content">
+            <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
+                <h3>Profil</h3>
+                <p>{{ artist.shortDescription }}</p>
+                {% set currentContract = artist.currentContract %}
+                {% if currentContract is not null %}
+                    <h3>Crowdfunding en cours</h3>
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
+                {% endif %}
 
-        {% for photo in artist.photos %}
-            <img src="{{ asset(artist.webPath(photo)) }}" />
-        {% endfor %}
+                {% for contract in artist.otherSuccessfulContracts(currentContract) %}
+                    {% if loop.first %}
+                        <h3>Crowdfundings accomplis par le passé</h3>
+                    {% endif %}
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' %}
+                {% endfor %}
+            </div>
 
-        {% for video in artist.videos %}
-            {{ video.embedVideo|raw }}
-        {% endfor %}
+            <div id="artist-profile-bio" class="tab-pane" role="tabpanel">
+                <h3>Biographie</h3>
+                <p>{{ artist.biography }}</p>
+                {% for video in artist.videos %}
+                    {{ video.embedVideo|raw }}
+                {% endfor %}
+            </div>
 
+            <div id="artist-profile-details" class="tab-pane" role="tabpanel">
+                <h3>Détails</h3>
+            </div>
+        </div>
     </div>
 
 {% endblock %}

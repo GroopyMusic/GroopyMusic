@@ -1,6 +1,7 @@
 
 var $mainNav = $('#mainNav');
-var stickyoffset = $mainNav.offset().top;
+var $main = $('main');
+var stickyoffset = $main.offset().top - $mainNav.outerHeight();
 
 $(window).scroll(function() {
     if ($(this).scrollTop() >= stickyoffset) {
@@ -13,7 +14,7 @@ $(window).scroll(function() {
 
             $('#menuLogo').fadeIn();
             $('#logo').addClass('hiddenLogo');
-            stickyoffset = $mainNav.offset().top;
+            stickyoffset = $main.offset().top - $mainNav.outerHeight();
         }
     }
     else {

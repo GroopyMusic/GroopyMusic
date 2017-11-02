@@ -1,14 +1,6 @@
-{% extends "base.html.twig" %}
+{% extends '@App/User/Artist/edit_profile_layout.html.twig' %}
 
-{% block body %}
-
-    <h1>Edition du profil de l'artiste {{ artist.artistname }}</h1>
-
-    <div>
-        <a href="{{ path('artist_owners', {'id': artist.id}) }}">Propriétaires</a> <br />
-        <a href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Photos</a>
-    </div>
-
+{% block artist_edit_profile_content %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_rest(form) }}

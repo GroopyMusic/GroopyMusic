@@ -1,0 +1,43 @@
+#artist-profile-photos-carousel {
+  border-bottom: none !important;
+  height: 200px;
+  z-index: 500;
+
+  .artist-profile-carousel-photo {
+    background-color: $secondary-background;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+.artist-profile-title {
+  min-width: 50%;
+  max-width: 80%;
+  min-height: 70px;
+  background-color: $main-background;
+  margin: 0 auto;
+  margin-top: -50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  & h3{
+    z-index: inherit;
+    background-color: inherit;
+    color: $main-color;
+    text-transform: uppercase;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    padding-top: 20px;
+  }
+}
+
+.artist-profile-tabs {
+    margin-top: 30px;
+}
+
+.artist-profile-content {
+  margin-top: 2.7rem;
+}

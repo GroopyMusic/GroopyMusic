@@ -108,6 +108,34 @@ class Artist implements TranslatableInterface
         return false;
     }
 
+    public function currentContract() {
+        if(empty($this->contracts))
+            return null;
+        else {
+            foreach($this->contracts as $contract) {
+                /** @var ContractArtist $contract */
+                if($contract->getDateEnd() >= (new \DateTime())) {
+                    return $contract;
+                }
+            }
+        }
+        return null;
+    }
+
+    public function getOtherSuccessfulContracts(ContractArtist $firstContract = null) {
+        $contracts = [];
+
+        foreach($this->contracts as $contract) {
+            if($firstContract == null || ($contract->getId() != $firstContract->getId())) {
+                if(!$contract->getFailed()) {
+                    $contracts[] = $contract;
+                }
+            }
+        }
+
+        return $contracts;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

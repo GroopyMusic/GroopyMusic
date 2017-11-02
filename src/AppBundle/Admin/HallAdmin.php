@@ -78,6 +78,9 @@ class HallAdmin extends PartnerAdmin  {
         parent::configureFormFields($form);
         $container = $this->getConfigurationPool()->getContainer();
 
+        $subject = $this->getSubject();
+        $download_label = $subject->getTechnicalSpecsName() == null ? false : $subject->getTechnicalSpecsName();
+
         $form
             ->with('Données de la salle')
                 ->add('step', 'sonata_type_model', array(
@@ -117,6 +120,7 @@ class HallAdmin extends PartnerAdmin  {
                     'attr' => ['class' => 'multiDatesPicker'],
                 ))
 
+
                 ->add('technical_specs_file', VichFileType::class, array(
                     'required' => false,
                     'allow_delete' => true,
@@ -124,7 +128,7 @@ class HallAdmin extends PartnerAdmin  {
                     'download_uri' => function(Hall $hall) use ($container) {
                         return $container->get('assets.packages')->getUrl($container->get('vich_uploader.templating.helper.uploader_helper')->asset($hall, 'technical_specs_file'));
                     },
-                    'download_label' => 'Télécharger',
+                    'download_label' => $download_label,
                 ))
                 ->add('dummyForm', 'text', array(
                     'label' => 'Photos',

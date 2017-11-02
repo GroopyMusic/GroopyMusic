@@ -6,35 +6,33 @@
 {% endblock %}
 
 {% block artist_edit_profile_content %}
-    <h3>Photos supplémentaires (max 5)</h3>
-    <div id="dropzone-2">
-        <div id="artist_edit_photos" class="dropzone"></div>
+    <h3>Photo de profil</h3>
+    <div id="dropzone-1">
+        <div id="artist_edit_pp" class="dropzone"></div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+
     <script>
         $('document').ready(function() {
-            Dropzone.autoDiscover = false;
+            var $ppzone =  $("div#artist_edit_pp");
 
-            var $dropzone = $("div#artist_edit_photos");
-            var mocks = [];
-            {% for photo in artist.photos %}
-                mocks.push({
-                    name: "{{ photo.filename }}",
-                    url: "{{ absolute_url(asset(artist.webPath(photo))) }}",
-                    size: 12345
-                });
-            {% endfor %}
+            {% if artist.profilepic is not null %}
+            var ppmock = {
+                name: "{{ artist.profilepic.filename }}",
+                url: "{{ absolute_url(asset(artist.webPath(artist.profilepic))) }}"
+            };
+            {% endif %}
 
-            $dropzone.dropzone({
+            $ppzone.dropzone({
                 url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
                 resizeWidth: 800,
-                maxFiles: 5,
+                maxFiles: 1,
                 addRemoveLinks: true,
-                 params: {
-                    pp: 0,
+                params: {
+                    pp: 1,
                     artist: {{ artist.id }}
                 },
                 accept: function (file, done) {
@@ -43,7 +41,7 @@
                             (file.type).toLowerCase() != "image/gif" &&
                             (file.type).toLowerCase() != "image/jpeg" &&
                             (file.type).toLowerCase() != "image/png"
-                            ) {
+                    ) {
                         done("Invalid file");
                     }
                     else {
@@ -63,19 +61,13 @@
                     });
                 },
                 init: function() {
-                    var i = 0;
-                    while(i < mocks.length) {
-                        var mock = mocks[i];
-                        mock.accepted = true;
+                    this.files.push(ppmock);
+                    this.createThumbnailFromUrl(ppmock, mppock.url);
+                    this.emit('addedfile', ppmock);
+                    this.emit("thumbnail", ppmock, ppmock.url);
+                    this.emit('complete', ppmock);
 
-                        this.files.push(mock);
-                        this.createThumbnailFromUrl(mock, mock.url);
-                        this.emit('addedfile', mock);
-                        this.emit("thumbnail", mock, mock.url);
-                        this.emit('complete', mock);
-                        i++;
-                    }
-                    $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
+                    $ppzone.options.maxFiles = 0;
                 },
                 success: function(file, serverResponse) {
                     file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;

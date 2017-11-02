@@ -215,6 +215,17 @@ class ArtistController extends Controller
     }
 
     /**
+     * @Route("/edit-profile-picture", name="artist_edit_profilepic")
+     */
+    public function editProfilepicAction(UserInterface $user, Artist $artist) {
+        $this->assertOwns($user, $artist);
+
+        return $this->render('@App/User/Artist/edit_profilepic.html.twig', array(
+            'artist' => $artist,
+        ));
+    }
+
+    /**
      * @Route("/edit-photos", name="artist_edit_photos")
      */
     public function editPhotosAction(UserInterface $user, Artist $artist) {

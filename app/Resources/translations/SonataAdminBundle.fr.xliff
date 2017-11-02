@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-01T10:47:03Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-02T13:15:22Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -8,17 +8,17 @@
     <body>
       <trans-unit id="39ea4f0b5c776b7d6de2bae82726e5bb8838b8b7" resname="flash_edit_error">
         <source>flash_edit_error</source>
-        <target state="new">flash_edit_error</target>
+        <target>Une erreur est survenue lors de l'édition de l'objet.</target>
         <jms:reference-file line="228">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Controller\ContractArtistAdminController.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="56a33e6716d3edf658818b9b407d9a8f3aff4a76" resname="flash_edit_success">
         <source>flash_edit_success</source>
-        <target state="new">flash_edit_success</target>
+        <target>Modifications enregistrées.</target>
         <jms:reference-file line="201">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Controller\ContractArtistAdminController.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="e0954c853d9d65c7d49bffab7a8b814a2d52b5b2" resname="flash_lock_error">
         <source>flash_lock_error</source>
-        <target state="new">flash_lock_error</target>
+        <target>Une erreur est survenue...</target>
         <jms:reference-file line="215">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Controller\ContractArtistAdminController.php\</jms:reference-file>
       </trans-unit>
     </body>

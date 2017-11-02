@@ -7,7 +7,7 @@
                 <span {{ salutationStyle }}>Hello,</span>
 
                 <p>
-                {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
+                {{ 'registration.email.message'|trans({'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
                 </p>
         {% endblock %}
     {% endspaceless %}

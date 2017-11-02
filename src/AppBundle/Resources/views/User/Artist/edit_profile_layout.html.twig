@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div class="container">
+        <h3>Edition du profil de l'artiste {{ artist.artistname }}</h3>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link " href="{{ path('artist_edit_profilepic', {'id': artist.id}) }}">Photo de profil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Gérer les photos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-danger" href="{{ path('artist_leave', {'id': artist.id}) }}">Quitter l'artiste</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id}) }}">Voir le profil</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-xs-12 col-md-8">
+                    {% block artist_edit_profile_content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock  %}

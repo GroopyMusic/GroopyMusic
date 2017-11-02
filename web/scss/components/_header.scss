@@ -2,7 +2,7 @@
   position: fixed;
   right: 10px;
   top: 10px;
-  z-index: 4000;
+  z-index: 1041;
   .inscription-link {
     display: none;
   }
@@ -79,12 +79,6 @@ header {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
 }
 
-#not-auth-perma-links {
-  img {
-    max-height: 36px;
-  }
-}
-
 #menuLogo {
   position: relative;
   display: none;
@@ -151,6 +145,9 @@ header {
 
     .inscription-link {
       display: inline-block;
+    }
+    img {
+      max-height: 36px;
     }
   }
 

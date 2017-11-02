@@ -1,11 +1,14 @@
 {% extends ':patterns:card.html.twig' %}
 
 {% block card_content %}
-    <div class="um-card" style="background-image: url({{ asset('images/card-bg.jpg') }});">
+    {% set background_url = contract.artist.profilepic is not null ? asset(contract.artist.webPath(contract.artist.profilepic)) :
+        (contract.artist.photos is not empty ? asset(contract.artist.webPath(contract.artist.photos[0])) : asset('images/card-bg.jpg') )
+    %}
+    <div class="um-card" style="background-image: url({{ background_url }});">
 
         <!-- this is the content of the card with an optionnal span for ⭐ -->
         <div class="um-card-content">
-            <h5>Concert de {{ contract.artist.artistname }}</h5>
+            <h5>{% if news is defined and news %}NOUVEAU - {% endif %} Concert de {{ contract.artist.artistname }}</h5>
             <p>Here is some card content, please, not too long</p>
         </div>
 

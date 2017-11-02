@@ -75,18 +75,30 @@
 
         {% block javascripts %}
             {% include 'patterns/javascripts.html.twig' %}
-            {# block jsValidatorInit %}
-                {{ include('FpJsFormValidatorBundle::javascripts.html.twig') }}
-
-                {{ js_validator_config() }}
-                {{ init_js_validation() }}
-
+            {% if app.environment == 'prod' %}
+                <!-- Global site tag (gtag.js) - Google Analytics -->
+                <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109142671-1"></script>
                 <script>
-                    $('button[type="submit"]').click(function(event) {
-                            $(this).closest('form').jsFormValidator('submitForm', event);
-                    });
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+
+                    gtag('config', 'UA-109142671-1');
                 </script>
-            {% endblock #}
+            {% endif %}
+
+        {# block jsValidatorInit %}
+            {{ include('FpJsFormValidatorBundle::javascripts.html.twig') }}
+
+            {{ js_validator_config() }}
+            {{ init_js_validation() }}
+
+            <script>
+                $('button[type="submit"]').click(function(event) {
+                        $(this).closest('form').jsFormValidator('submitForm', event);
+                });
+            </script>
+        {% endblock #}
             {% block additional_javascripts %}{% endblock %}
         {% endblock %}
 
