@@ -5394,12 +5394,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "782dc947dc0f8684d517f3f73b8ead727740c7d5"
+                "reference": "e973c247c8acd032a5ee72418452c3a255d5e321"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/782dc947dc0f8684d517f3f73b8ead727740c7d5",
-                "reference": "782dc947dc0f8684d517f3f73b8ead727740c7d5",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e973c247c8acd032a5ee72418452c3a255d5e321",
+                "reference": "e973c247c8acd032a5ee72418452c3a255d5e321",
                 "shasum": ""
             },
             "require": {
@@ -5541,7 +5541,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-10-31T17:50:48+00:00"
+            "time": "2017-11-03T14:14:19+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
