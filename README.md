@@ -37,7 +37,7 @@ Nous utilisons Composer pour gérer les dépendances *third-party* du projet. Il
 Ensuite, il faut disposer d’un fichier `composer.json` qui contient toutes les dépendances du projet. Ce fichier est partagé pour que nous ayons tous les mêmes dépendances ; il se trouve à la racine du projet.
 
 Pour installer les mises-à-jour, exécuter la commande
-`php chemin/vers/composer.phar update`
+`php chemin/vers/composer.phar install`
 (cette commande doit être lancée depuis le dossier qui contient `composer.json`).
 
 Pour mettre à jour Composer, exécuter
