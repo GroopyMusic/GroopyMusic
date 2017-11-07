@@ -12,8 +12,8 @@ $dev-bg-color: #BDBDBD;
 // =================
 // Main colors for =
 // =================
-
-$main-color: rgb(252, 204, 34);
+$main-color: #FFAE07;
+$danger-color: #982615;
 $main-background: rgb(248, 248, 248);
 $secondary-background: #4a4b4d;
 
@@ -24,10 +24,11 @@ $secondary-background: #4a4b4d;
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 @import url('https://fonts.googleapis.com/css?family=Lato');
-
+@import url('https://fonts.googleapis.com/css?family=Exo+2');
 @import url('https://fonts.googleapis.com/css?family=Bad+Script');
 
 $headline-font: 'Bad Script', cursive;
+$secondary-font: 'Exo 2', sans-serif;
 
 // main paddings/margins
 

@@ -6,6 +6,7 @@ use AppBundle\Entity\ArtistOwnershipRequest;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Artist_User;
 use AppBundle\Form\Artist_UserType;
+use AppBundle\Form\ArtistMediasType;
 use AppBundle\Form\ArtistOwnershipsType;
 use AppBundle\Form\ArtistType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -176,8 +177,10 @@ class ArtistController extends Controller
         $lastOne = count($artist->getArtistsUser()) == 1;
 
         $form = $this->createFormBuilder()
-            ->add('confirm', SubmitType::class)
-            ->add('cancel', SubmitType::class)
+            ->add('confirm', SubmitType::class, [
+                'label' => 'Quitter ' . $artist->getArtistname(),
+                'attr' => ['class' => 'btn btn-danger'],
+            ])
             ->getForm()
         ;
 
@@ -233,6 +236,20 @@ class ArtistController extends Controller
 
         return $this->render('@App/User/Artist/edit_photos.html.twig', array(
             'artist' => $artist,
+        ));
+    }
+
+    /**
+     * @Route("/edit-medias", name="artist_edit_medias")
+     */
+    public function editMediasAction(UserInterface $user, Artist $artist) {
+        $this->assertOwns($user, $artist);
+
+        $form = $this->createForm(ArtistMediasType::class, $artist);
+
+        return $this->render('@App/User/Artist/edit_medias.html.twig', array(
+            'artist' => $artist,
+            'form' => $form->createView(),
         ));
     }
 

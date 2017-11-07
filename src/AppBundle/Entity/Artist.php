@@ -95,17 +95,28 @@ class Artist implements TranslatableInterface
     }
 
     public function isAvailable() {
-        if(empty($this->contracts))
-            return true;
-        else {
-            foreach($this->contracts as $contract) {
-                /** @var ContractArtist $contract */
-                if($contract->getDateEnd() <= (new \DateTime())) {
-                    return true;
-                }
+        foreach($this->contracts as $contract) {
+            /** @var ContractArtist $contract */
+            if(!$contract->getFailed() && $contract->getDateEnd() > (new \DateTime())) {
+                return false;
             }
         }
-        return false;
+
+        return true;
+    }
+
+
+    public function getAllPhotos() {
+        $photos = array();
+
+        if($this->profilepic != null) {
+            $photos[] = $this->profilepic;
+        }
+        foreach($this->photos as $p) {
+            $photos[] = $p;
+        }
+
+        return $photos;
     }
 
     public function currentContract() {

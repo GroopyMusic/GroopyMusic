@@ -9,17 +9,23 @@
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                        <li class="nav-item{% if active_link == 'infos' %} active{% endif %}">
+                            <a class="nav-link " href="{{ path('artist_profile_edit', {'id': artist.id}) }}">Infos générales</a>
+                        </li>
+                        <li class="nav-item{% if active_link == 'pp' %} active{% endif %}">
                             <a class="nav-link " href="{{ path('artist_edit_profilepic', {'id': artist.id}) }}">Photo de profil</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Gérer les photos</a>
+                        <li class="nav-item{% if active_link == 'photos' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Autres photos</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-danger" href="{{ path('artist_leave', {'id': artist.id}) }}">Quitter l'artiste</a>
+                        <li class="nav-item{% if active_link == 'medias' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('artist_edit_medias', {'id': artist.id}) }}">Vidéos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id}) }}">Voir le profil</a>
+                        </li>
+                        <li class="nav-item{% if active_link == 'leave' %} active{% endif %}">
+                            <a class="nav-link danger-color" href="{{ path('artist_leave', {'id': artist.id}) }}">Quitter l'artiste</a>
                         </li>
                     </ul>
                 </div>

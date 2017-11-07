@@ -77,6 +77,20 @@ $.fn.imagesRotation = function (options) {
         }
     }).on('mouseleave.imagesRotation', function () {
         clearRotationInterval($(this));
+
+        $img = settings.imgSelector ? $(settings.imgSelector, $this) : null;
+
+        $this.data('imagesRotationIndex', 0);
+        if ($img && $img.length > 0) {
+            if ($img.is('img')) {
+                $img.attr('src', images[0]);
+            }
+            else {
+                $img.css('background-image', 'url(' + images[0] + ')');
+            }
+        }
+
+
     }).on('imagesRotationRemove', function () {
         var $this = $(this);
         $this.off('.imagesRotation');

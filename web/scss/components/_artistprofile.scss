@@ -41,3 +41,10 @@
 .artist-profile-content {
   margin-top: 2.7rem;
 }
+
+.nav-item.active {
+  background-color: $main-color;
+  a {
+    color: white;
+  }
+}

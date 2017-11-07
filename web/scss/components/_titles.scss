@@ -1,5 +1,6 @@
 
 .rounded-title, .login-rounded-title {
+  font-family: $secondary-font;
   min-width: 110px;
   min-height: 110px;
   width: 110px;
@@ -15,15 +16,16 @@
   margin-top: -55px;
   text-align: center;
 
+
   h2&, h3&, h4&, h5&, h6& {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 }
 
 .h {
   &-line{
     margin: 0 auto;
-    border-bottom: $main-color solid 3px;
+    border-bottom: $main-color solid 2px;
     background-color: transparent;
     height: 50%;
   }

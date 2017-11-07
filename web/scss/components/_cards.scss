@@ -18,7 +18,7 @@
   right: 0;
   padding-top: 10px;
   text-align: center;
-  background-color: rgba(2550, 255, 255, 0.8);
+  background-color: rgba(2550, 255, 255, 0.87);
 
   & span{
     height: 20px;
@@ -32,7 +32,7 @@
 
   & h5{
     color: $main-color;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    text-shadow: 0.5px 0 0.5px rgba(0,0,0,0.2);
   }
 
   & p{

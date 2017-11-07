@@ -1,6 +1,8 @@
-{% extends 'base.html.twig' %}
+{% set active_link = 'leave' %}
 
-{% block body %}
+{% extends '@App/User/Artist/edit_profile_layout.html.twig' %}
+
+{% block artist_edit_profile_content %}
 
     <p>Quitter l'artiste {{ artist.artistname }}</p>
     {{ form(form) }}

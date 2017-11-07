@@ -36,7 +36,7 @@ class ArtistType extends AbstractType
                 'class' => Province::class,
             ))
             ->add('translations', TranslationsType::class, array(
-                'label' => 'labels.artist.translations',
+                'label' => false, //'labels.artist.translations',
                 'locales' => ['fr'],
                 'fields' => [
                     'short_description' => [
@@ -55,16 +55,6 @@ class ArtistType extends AbstractType
                 'class' => Genre::class,
                 'primary_key' => 'id',
             ])
-            ->add('videos', CollectionType::class, array(
-                'entry_type' => VideoType::class,
-                'entry_options' => array(
-                ),
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-                'attr' => ['class' => 'collection'],
-                'label' => false,
-            ))
             ->add('website', UrlType::class, array(
                 'required' => false,
                 'constraints' => [
