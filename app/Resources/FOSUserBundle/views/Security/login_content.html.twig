@@ -30,10 +30,13 @@
                             {#<label for="password">{{ 'security.login.password'|trans }}</label>#}
                             <input type="password" class="form-control" id="password" name="_password" required="required" placeholder="{{ 'security.login.password'|trans }}" />
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mb-0">
                             <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
                             <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
                         </div>
+
+                        <a class="d-block mb-2" href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a>
+
                         <button class="btn btn-primary sharp text-uppercase" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
                     </form>
                 </div>

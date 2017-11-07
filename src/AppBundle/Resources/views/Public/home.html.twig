@@ -2,7 +2,39 @@
 
 {% block body %}
     <div class="container">
+        <div id="headline" class="col-12 text-center">Découvrez. Soutenez. Produisez les artistes belges de demain.</div>
+
+        <div id="custom-search-input" class="col-12 col-md-8 mx-auto">
+            <div class="input-group">
+                <input class="form-control"
+                       placeholder="Rechercher un artiste ou un concert...">
+                <div class="input-group-addon" ><button type="submit" class="btn btn-primary h-100 w-100">Recherche</button></div>
+            </div>
+        </div>
+
         <div class="row">
+            <div class="col-12">
+                <div class="col-12">
+                    <h3 class="rounded-title">Notre concept</h3>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="col-12">
+                    <p>
+                        Vous souhaitez participer à l'émancipation de la scène musicale belge ? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique ?
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="col-12">
+                    <p>
+                        <a href="{{ path('about') }}">Un-Mute ASBL </a> sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur",
+                        vous êtes acteur dans la construction de la scène musicale belge de demain via un système de financement participatif
+                        qui ne vous fait prendre aucun risque.
+                    </p>
+                </div>
+            </div>
+
             <div class="col-12 col-md-6">
                 <div class="col-12">
                     <h3 class="rounded-title">News</h3>
@@ -27,6 +59,17 @@
                         {% endfor %}
                     </div>
                 </div>
+            </div>
+
+            <div class="col-12">
+                <div class="col-12">
+                    <h3 class="rounded-title">Nous rejoindre</h3>
+                </div>
+                <p>
+                    Vous désirez devenir producteur (lien avantages) et soutenir un artiste ? Découvrez <a href="{{ path('catalog_artists') }}">le catalogue des artistes</a>
+                    <br />Vous êtes artiste (lien avantages) intéressé par le concept ? Rejoignez gratuitement le <a href="{{ path('fos_user_registration_register') }}">réseau Un-Mute</a>
+                    <br />Plus d'infos sur <a href="{{ path('about') }}">notre projet</a>
+                </p>
             </div>
         </div>
     </div>

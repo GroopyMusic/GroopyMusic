@@ -27,7 +27,7 @@ class SpecialPurchaseAdmin extends BaseAdmin
             ->add('availableQuantity')
             ->add('priceCredits')
             ->add('available')
-            ->add('_action', null, array(
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                 )))

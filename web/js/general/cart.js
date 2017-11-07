@@ -85,7 +85,7 @@ $(document).ready(function() {
         if (quantity > 0) {
 
             $("#modal-dialog").dialog('open').html("<p>Étes-vous sûr d'ajouter "+ quantity + " fois cet élément au panier ?</p>" +
-                "                               <button id='confirm-add-to-cart'>Ajouter au panier</button>");
+                "                               <button class='btn btn-primary' id='confirm-add-to-cart'>Ajouter au panier</button>");
 
             $('#confirm-add-to-cart').on('click', function() {
 
@@ -100,25 +100,19 @@ $(document).ready(function() {
                     },
                     method: 'get',
                     beforeSend: function(){
-                        $("#modal-dialog").html("<p>Requête AJAX en cours...</p>");
+                        $("#modal-dialog").html('<div class="loader"><div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></svg></div></div>');
                     },
                     success: function(response) {
                         if(response == "MAX_QTY") {
                             $('#modal-dialog').html("<p>Impossible : quantité maximale déjà atteinte pour cet article</p>");
                         }
-
-                        else if(response == "TO_MAX_QTY") {
-                            $('#modal-dialog').html("<p>C'est fait ! (Quantité maximale atteinte pour cet article)</p>");
-                        }
-
                         else{
-                            $('#modal-dialog').html("<p>C'est fait !</p>");
+                            $('#modal-dialog').html("<p>Cette commande a bien été ajoutée à votre panier.</p>");
                         }
-
                         select.val(0);
                     },
                     error: function() {
-                        $('#modal-dialog').html("<p>OUPS, erreur imprévue</p>");
+                        $('#modal-dialog').html("<p class='alert-danger'>Une erreur inconnue s'est produite. Si cela se reproduit, merci de nous en avertir !</p>");
                     }
                 });
             });

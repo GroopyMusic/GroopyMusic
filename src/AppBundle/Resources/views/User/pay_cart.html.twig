@@ -2,44 +2,50 @@
 
 {% block body %}
 
-    <h1>Payer le contenu du panier</h1>
+    <div class="container">
+        <h3>Payer le contenu du panier</h3>
 
-    {% for contract in cart.contracts %}
-        Contrat de fan #{{ contract.id }} : en lien avec le contrat d'artiste <a href="{{ path('artist_contract', {'id': contract.contractArtist.id}) }}">#{{ contract.contractArtist.id }}</a>
-        <br />
-        Achats :
-        <ul>
-            {% for purchase in contract.purchases %}
-                <li>{{ purchase.counterpart.name }} (quantité : {{ purchase.quantity }}, prix unitaire : {{ purchase.counterpart.price }} €)</li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+        <p>
+            Bienvenue dans l'espace sécurisé d'Un-Mute, {{ app.user.firstname }}. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
+            vous ont convaincu lors de votre visite.
+        </p>
 
-    <p>En procédant au paiement de votre panier, vous assurez avoir lu les <a href="{{ path('conditions') }}">conditions d'utilisation</a>.</p>
 
-    <form method="post" id="payment-form">
+        <p>Votre panier est constitué des éléments suivants :</p>
 
-        <div class="form-row">
-            {% if error_conditions %}
-                erreur
-            {% endif %}
-            <label for="accept_conditions">J'ai lu et j'accepte</label><input id="accept_conditions" name="accept_conditions" type="checkbox" />
-        </div>
+        {% include "@App/User/cart_content.html.twig" with {'editable_cart': false} %}
 
-        <div class="form-row" id="card-form-row">
-            <label for="card-element">
-                Credit or debit card
-            </label>
-            <div id="card-element">
-                <!-- a Stripe Element will be inserted here. -->
+        <p>
+            En procédant au paiement de votre panier, vous assurez avoir lu les <a href="{{ path('conditions') }}">conditions d'utilisation</a>.
+            Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez de producteurs qui soutiennent cet artiste.
+            Sinon, si cet événement a assez de succès, vous recevrez vos tickets par mail, et sur Un-Mute, quelques jours avant le concert.
+        </p>
+
+        <form method="post" id="payment-form">
+
+            <div class="form-row">
+                {% if error_conditions %}
+                    Une erreur est survenue.
+                {% endif %}
+                <label for="accept_conditions" class="pr-3">J'ai lu et j'accepte</label> <input id="accept_conditions" name="accept_conditions" type="checkbox" />
+            </div>
+            <div class="form-row" id="card-form-row">
+                <label for="card-element">
+                    Carte de crédit ou de débit <button data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Les cartes autorisées sont les cartes de crédit et de débit.">??</button>
+
+                </label>
+                <div id="card-element">
+                    <!-- a Stripe Element will be inserted here. -->
+                </div>
+
+                <!-- Used to display Element errors -->
+                <div id="card-errors" role="alert"></div>
             </div>
 
-            <!-- Used to display Element errors -->
-            <div id="card-errors" role="alert"></div>
-        </div>
+            <button class="btn btn-primary mt-3">Payer le panier</button>
+        </form>
 
-        <button>Submit Payment</button>
-    </form>
+    </div>
 
 {% endblock %}
 

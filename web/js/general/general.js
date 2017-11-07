@@ -21,3 +21,7 @@ $(".scroll").click(function(e) {
         scrollTop: $($(this).attr('href')).offset().top
     }, 1000);
 });
+
+$(function () {
+    $('[data-toggle="popover"]').popover()
+})

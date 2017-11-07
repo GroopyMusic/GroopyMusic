@@ -1,24 +1,11 @@
-
-{% if cart.contracts is empty %}
-    Pas d'article dans le panier pour l'instant
-{% else %}
-    {% for contract in cart.contracts %}
-        Contrat de fan #{{ contract.id }} : en lien avec le contrat d'artiste <a href="{{ path('artist_contract', {'id': contract.contractArtist.id}) }}">#{{ contract.contractArtist.id }}</a>
-        <br />
-        Achats :
-        <ul>
-            {% for purchase in contract.purchases %}
-                <li>{{ purchase.counterpart.name }} (quantité : {{ purchase.quantity }}, prix unitaire : {{ purchase.counterpart.price }} €, prix total : {{ purchase.amount }} €)
-                    <button class="remove-from-cart-button" purchase="{{ purchase.id }}">supprimer</button> </li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
-
-    <p>Prix total du panier : {{ cart.amount }} €</p>
-
-    <p>Vos options :
-        <a href="{{ path('user_cart_payment_stripe') }}">Payer le panier</a>
-        <button type="submit" id="remove-all-from-cart">Remettre le panier à zéro</button>
-    </p>
-
-{% endif %}
+{% for contract in cart.contracts %}
+    <ul>
+        {% for purchase in contract.purchases %}
+            <li>
+                {{ purchase.counterpart.name }} (quantité : {{ purchase.quantity }}, prix unitaire : {{ purchase.counterpart.price }} €, prix total : {{ purchase.amount }} €)
+                <br /> Événement soutenu : {% if editable_cart %}<a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">{% endif %}concert de {{ contract.contractArtist.artist.artistname }}{% if editable_cart %}</a>{% endif %}
+                {% if editable_cart %}<button class="btn btn-secondary remove-from-cart-button" purchase="{{ purchase.id }}">supprimer du panier</button>{% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endfor %}

@@ -2,7 +2,7 @@
 
 {% block card_content %}
     {% set background_url = contract.artist.profilepic is not null ? asset(contract.artist.webPath(contract.artist.profilepic)) :
-        (contract.artist.photos is not empty ? asset(contract.artist.webPath(contract.artist.photos[0])) : asset('images/card-bg.jpg') )
+        (contract.artist.photos is not empty ? asset(contract.artist.webPath(contract.artist.photos[0])) : asset('images/contract-card-default.jpg') )
     %}
     <div class="um-card" style="background-image: url({{ background_url }});">
 

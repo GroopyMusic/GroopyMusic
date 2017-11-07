@@ -1,3 +1,6 @@
+
+<div class="container">
 {% for message in app.request.session.flashbag.get('notice') %}
-    <p class="confirm">{{ message }}</p>
+    <p class="alert alert-success alert-dismissible fade show">{{ message }}</p>
 {% endfor%}
+</div>

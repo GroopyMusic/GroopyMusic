@@ -14,7 +14,7 @@ $dev-bg-color: #BDBDBD;
 // =================
 
 $main-color: rgb(252, 204, 34);
-$main-background: white;
+$main-background: rgb(248, 248, 248);
 $secondary-background: #4a4b4d;
 
 
@@ -25,6 +25,9 @@ $secondary-background: #4a4b4d;
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
+@import url('https://fonts.googleapis.com/css?family=Bad+Script');
+
+$headline-font: 'Bad Script', cursive;
 
 // main paddings/margins
 
@@ -38,3 +41,5 @@ $l-color-3: #008744;
 $l-color-4: #ffa700;
 $l-width: 60px;
 
+$footer-height: 100px;
+$footer-background-color: white;

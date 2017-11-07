@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
@@ -46,6 +47,31 @@ class Hall extends Partner
     public function __toString()
     {
         return 'Salle : ' . $this->getName();
+    }
+
+    private function max_date($date1, $date2) {
+        $date1_elems = explode('/', $date1);
+        $date2_elems = explode('/', $date2);
+
+        if(intval($date1_elems[2]) > intval($date2_elems[2])) {
+            return $date1;
+        }
+        if(intval($date1_elems[2]) < intval($date2_elems[2])) {
+            return $date2;
+        }
+        if(intval($date1_elems[0]) > intval($date2_elems[0])) {
+            return $date1;
+        }
+        if(intval($date1_elems[0]) < intval($date2_elems[0])) {
+            return $date2;
+        }
+        if(intval($date1_elems[1]) > intval($date2_elems[1])) {
+            return $date1;
+        }
+        if(intval($date1_elems[1]) < intval($date2_elems[1])) {
+            return $date2;
+        }
+        return $date1;
     }
 
     public function getCronAutomaticDaysFormatted() {
@@ -108,7 +134,8 @@ class Hall extends Partner
 
         // For each possible day
         foreach($this->cron_explored_dates as $i => $current_cursor) {
-            $current_cursor = max($default_cursor, $current_cursor);
+            $current_cursor = $this->max_date($default_cursor, $current_cursor);
+
             // There is a rule -> refresh dates & update cursor
             if($this->cron_automatic_days[$i]) {
                 while($current_cursor != $max_cursor) {

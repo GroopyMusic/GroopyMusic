@@ -1,0 +1,25 @@
+#headline {
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  margin-top: 3rem;
+  font-family: $headline-font;
+  color: $main-color;
+}
+
+#custom-search-input {
+
+  margin-bottom: 5rem;
+
+  .input-group {
+    min-height: 3rem;
+  }
+
+  .input-group-addon {
+    padding: 0 ;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    button.btn {
+      border-radius:inherit;
+    }
+  }
+}

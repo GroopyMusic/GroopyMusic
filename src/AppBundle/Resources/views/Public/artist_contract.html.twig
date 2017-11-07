@@ -5,7 +5,6 @@
     <div class="container">
         <h2>Soutenir le groupe {{ contract.artist.artistname }} dans sa tentative de réaliser le palier "{{ contract.step.getName }}"</h2>
 
-
         <div class="row">
             <div class="col-xs-12 col-md-8">
                 <div class="col-12">
@@ -29,12 +28,12 @@
                         Tickets vendus : {{ contract.ticketsSold }} / {{ contract.step.minTickets }}
                     </li>
 
-                    {% if contract.motivations is not null or is_granted('ROLE_ARTIST') %}
+                    {% if contract.motivations is not empty %}
                         <li>
-                            {% if artist is defined %}
+                            {% if app.user.owns(contract.artist) %}
                                 <textarea id="motivations-textarea">{#
-                        #}{{ contract.motivations }}{#
-                    #}</textarea>
+                                    #}{{ contract.motivations }}{#
+                                #}</textarea>
                                 <button type="submit" id="update-motivations-button" contract="{{ contract.id }}">Mettre à jour</button>
                             {% else %}
                                 <div>{{ contract.motivations }}</div>
@@ -58,7 +57,7 @@
                                 <option value="{{ i }}" {% if loop.first %}selected="selected"{% endif %}>{{ i }}</option>
                             {% endfor %}
                         </select>
-                        <button class="add-to-cart-button" type="submit" counterpart="{{ article.id }}" contract="{{ contract.id }}" id="submit_counterpart_{{ article.id }}">Ajouter au panier</button>
+                        <button class="btn btn-primary add-to-cart-button" type="submit" counterpart="{{ article.id }}" contract="{{ contract.id }}" id="submit_counterpart_{{ article.id }}">Ajouter au panier</button>
                         <br /><br />
                     {% endfor %}
             {% endif %}
@@ -69,7 +68,7 @@
 {% endblock %}
 
 {% block js_vars %}
-    {% set path_artist = artist is defined ? path('artist_ajax_update_motivations', {'id': artist.id}) : "" %}
+    {% set path_artist = app.user.owns(contract.artist) ? path('artist_ajax_update_motivations', {'id': contract.artist.id}) : "" %}
     <div id="modal-dialog">
     </div>
     <div
@@ -77,10 +76,4 @@
         data-vars="{{ {'ajax_path_add_to_cart': path('user_ajax_add_to_cart'),
                        'ajax_path_update_motivations': path_artist}|json_encode|e('html_attr') }}">
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript" src="{{ asset('js/general/cart.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/general/step.js') }}"></script>
 {% endblock %}

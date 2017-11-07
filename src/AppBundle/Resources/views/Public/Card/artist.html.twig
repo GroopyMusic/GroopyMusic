@@ -1,7 +1,7 @@
 {% extends ":patterns:card.html.twig" %}
 
 {% block card_content %}
-    {% set background_url = artist.profilepic is not null ? absolute_url(asset(artist.webPath(profilepic))) : asset('images/card-bg.jpg') %}
+    {% set background_url = artist.profilepic is not null ? absolute_url(asset(artist.webPath(profilepic))) : asset('images/artist-card-default.jpg') %}
     <div class="um-card" style="background-image: url({{ background_url }});">
 
         <!-- this is the content of the card with an optionnal span for ⭐ -->

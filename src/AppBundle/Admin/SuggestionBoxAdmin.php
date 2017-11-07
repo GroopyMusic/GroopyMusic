@@ -36,7 +36,7 @@ class SuggestionBoxAdmin extends BaseAdmin
             ->add('email', null, array(
                 'label' => 'E-mail',
             ))
-            ->add('_action', null, array(
+            ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                 )

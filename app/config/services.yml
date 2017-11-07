@@ -33,7 +33,8 @@ services:
       tags:
             - { name: kernel.event_listener, event: oneup_uploader.post_persist, method: onUpload }
 
-    AppBundle\Services: ~
+    AppBundle\Services\:
+      resource: '../../src/AppBundle/Services/*'
 
     AppBundle\Services\MailDispatcher:
       arguments:

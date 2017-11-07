@@ -1,165 +1,164 @@
-#not-auth-perma-links {
-  position: fixed;
-  right: 10px;
-  top: 10px;
-  z-index: 1041;
-  .inscription-link {
-    display: none;
-  }
-}
-
-#mainNav .nav-item {
-  text-transform: uppercase;
-  padding-left: 10px;
-  padding-right: 10px;
-  .nav-link {
-    color: white;
-  }
-}
-
 header {
   background-image: url('../images/jumbotron-bg.jpg');
   background-size: cover;
   background-position: center;
-}
-
-.jumbotron {
-  background-color: transparent !important;
-  padding-bottom: 0 !important;
-}
-
-#mainNav {
-  transition:background-color 2s ease;
-  -webkit-transition:background-color  2s ease;
-  -moz-transition:background-color  2s ease;
-  -o-transition:background-color  2s ease;
-
-  background-color: rgba(0, 0, 0, 0.6);
-  min-height: 50px;
-}
-
-#mainNav.stickytop {
-  @extend .fixed-top;
-  background-color: rgba(0,0,0,1);
-}
-
-#logo {
-  padding-top: 40px;
-  max-width: 30%;
-
-  transition:opacity 2s ease;
-  -webkit-transition:opacity  2s ease;
-  -moz-transition:opacity  2s ease;
-  -o-transition:opacity  2s ease;
-  opacity: 1;
-
-  &.hiddenLogo {
-    opacity: 0;
-  }
-}
-
-.dropdown-menu {
-  position: absolute !important;
-  background-color: black;
-  padding-bottom: 0;
-  max-width: initial;
-}
-
-.dropdown-menu .dropdown-item {
-  background-color: black;
-  color: white;
-  padding-left: 10px;
-  &:hover {
-    background-color: $main-color;
-    color: black;
-  }
-}
-
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
-}
-
-#menuLogo {
-  position: relative;
-  display: none;
-}
-
-@media (max-width:576px) {
-  #menuLogo {
-    display: none !important;
-    position:relative;
-  }
-}
-
-// > SMall
-// If you change this, you shoulf also change toggleable breakpoint of #mainNav
-@media (min-width: 576px) {
-  .navbar-brand
-  {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    text-align: center;
-    margin:0 auto;
-  }
-
-  .nav-item {
-    border-right: 1px solid whitesmoke;
-
-    &:first-of-type {
-      border-left: 1px solid whitesmoke;
-    }
-
-    position: relative;
-
-    transition:All 2s ease;
-    -webkit-transition:All 2s ease;
-    -moz-transition:All 2s ease;
-    -o-transition:All 2s ease;
-
-    &.stickytop {
-      border: 0;
-    }
-
-    &.left-nav-item {
-      right: 0;
-      &.stickytop {
-        right:35px;
-      }
-    }
-    &.right-nav-item {
-      left: 0;
-      &.stickytop {
-        left: 35px;
-      }
-    }
-  }
-  .navbar .inscription-link {
-    display: none;
-  }
 
   #not-auth-perma-links {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    z-index: 1041;
     .inscription-link {
-      display: inline-block;
+      display: none;
     }
     img {
       max-height: 36px;
     }
   }
 
+  #mainNav .nav-item {
+    text-transform: uppercase;
+    padding-left: 10px;
+    padding-right: 10px;
+    .nav-link {
+      color: white;
+    }
+  }
+
+  .jumbotron {
+    background-color: transparent !important;
+    padding-bottom: 0 !important;
+  }
+
+  #mainNav {
+    transition: background-color 2s ease;
+    -webkit-transition: background-color 2s ease;
+    -moz-transition: background-color 2s ease;
+    -o-transition: background-color 2s ease;
+
+    background-color: rgba(0, 0, 0, 0.6);
+    min-height: 50px;
+  }
+
+  #mainNav.stickytop {
+    @extend .fixed-top;
+    background-color: rgba(0, 0, 0, 1);
+  }
+
   #logo {
-    padding-top: 0;
+    padding-top: 40px;
+    max-width: 30%;
+
+    transition: opacity 2s ease;
+    -webkit-transition: opacity 2s ease;
+    -moz-transition: opacity 2s ease;
+    -o-transition: opacity 2s ease;
+    opacity: 1;
+
+    &.hiddenLogo {
+      opacity: 0;
+    }
+  }
+
+  .dropdown-menu {
+    position: absolute !important;
+    background-color: black;
+    padding-bottom: 0;
     max-width: initial;
   }
 
-  #menuLogo img {
-    position:absolute;
-    width: 70px;
-    top: -20px;
-    left: -35px;
+  .dropdown-menu .dropdown-item {
+    background-color: black;
+    color: white;
+    padding-left: 10px;
+    &:hover {
+      background-color: $main-color;
+      color: black;
+    }
+  }
+
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+  }
+
+  #menuLogo {
+    position: relative;
+    display: none;
+  }
+
+  @media (max-width: 576px) {
+    #menuLogo {
+      display: none !important;
+      position: relative;
+    }
+  }
+
+  // > SMall
+  // If you change this, you shoulf also change toggleable breakpoint of #mainNav
+  @media (min-width: 576px) {
+    .navbar-brand {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    .nav-item {
+      border-right: 1px solid whitesmoke;
+
+      &:first-of-type {
+        border-left: 1px solid whitesmoke;
+      }
+
+      position: relative;
+
+      transition: All 2s ease;
+      -webkit-transition: All 2s ease;
+      -moz-transition: All 2s ease;
+      -o-transition: All 2s ease;
+
+      &.stickytop {
+        border: 0;
+      }
+
+      &.left-nav-item {
+        right: 0;
+        &.stickytop {
+          right: 35px;
+        }
+      }
+      &.right-nav-item {
+        left: 0;
+        &.stickytop {
+          left: 35px;
+        }
+      }
+    }
+    .navbar .inscription-link {
+      display: none;
+    }
+
+    #not-auth-perma-links {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+
+      .inscription-link {
+        display: inline-block;
+      }
+    }
+
+    #logo {
+      padding-top: 0;
+      max-width: initial;
+    }
+
+    #menuLogo img {
+      position: absolute;
+      width: 70px;
+      top: -20px;
+      left: -35px;
+    }
   }
 }

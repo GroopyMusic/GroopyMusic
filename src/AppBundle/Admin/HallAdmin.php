@@ -24,7 +24,7 @@ class HallAdmin extends PartnerAdmin  {
             ->add('step', null, array(
                 'label' => 'Palier',
             ))
-            ->add('_action', null, array(
+            ->add('_action', 'actions', array(
                     'actions' => array(
                         'show' => array(),
                         'edit' => array(),

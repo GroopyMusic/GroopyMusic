@@ -1,0 +1,28 @@
+#toc-nav {
+    padding-top: 4rem;
+    li.nav-item {
+       display: block;
+    }
+}
+
+.static-content {
+  position:relative;
+
+  h3 {
+    padding-top: 4rem;
+  }
+
+}
+
+// >= Medium
+// If you change this, you shoulf also change toggleable breakpoint of TOC
+@media (min-width: 768px) {
+  #toc-nav {
+    position:relative;
+    &.fixed-toc {
+      position: fixed;
+      top: 4rem;
+    }
+  }
+
+}
