@@ -1,3 +1,9 @@
+<div class="container">
+    {% for message in app.request.session.flashbag.get('error') %}
+        <p class="alert alert-danger alert-dismissible fade show">{{ message }}</p>
+    {% endfor%}
+</div>
+
 {% spaceless %}
     {% if (errors is defined and errors|length > 0) or (form is defined and not form.vars.valid) %}
         <div id="errors">

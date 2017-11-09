@@ -19,16 +19,16 @@
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <div class="col-12">
+                <div class="col-12 mb-5">
                     <p>
                         Vous souhaitez participer à l'émancipation de la scène musicale belge ? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique ?
                     </p>
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <div class="col-12">
+                <div class="col-12 mb-5">
                     <p>
-                        <a href="{{ path('about') }}">Un-Mute ASBL </a> sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur",
+                        <a href="{{ path('about') }}">Un-Mute ASBL</a> sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur",
                         vous êtes acteur dans la construction de la scène musicale belge de demain via un système de financement participatif
                         qui ne vous fait prendre aucun risque.
                     </p>
@@ -61,14 +61,18 @@
                 </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 mt-5">
                 <div class="col-12">
                     <h3 class="rounded-title">Nous rejoindre</h3>
                 </div>
-                <p>
-                    Vous désirez devenir producteur (lien avantages) et soutenir un artiste ? Découvrez <a href="{{ path('catalog_artists') }}">le catalogue des artistes</a>
-                    <br />Vous êtes artiste (lien avantages) intéressé par le concept ? Rejoignez gratuitement le <a href="{{ path('fos_user_registration_register') }}">réseau Un-Mute</a>
-                    <br />Plus d'infos sur <a href="{{ path('about') }}">notre projet</a>
+                <p class="text-center">
+                    Vous désirez devenir <a href="{{ path('about') ~ '#advantages-producers' }}">producteur</a> et soutenir un artiste ? Découvrez <a href="{{ path('catalog_artists') }}">le catalogue des artistes</a>
+                </p>
+                <p class="text-center">
+                    Vous êtes <a href="{{ path('about') ~ '#advantages-producers' }}">artiste</a> intéressé par le concept ? Rejoignez gratuitement le <a href="{{ path('fos_user_registration_register') }}">réseau Un-Mute</a>
+                </p>
+                <p class="text-center">
+                    Plus d'infos sur <a href="{{ path('about') }}">notre projet</a>
                 </p>
             </div>
         </div>

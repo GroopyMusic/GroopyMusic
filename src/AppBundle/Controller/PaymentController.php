@@ -23,6 +23,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class PaymentController extends Controller
 {
     /**
+     * @Route("/cart/3DS/payment", name="user_cart_3DS_payment_stripe")
+     */
+    public function ThreeDSAction($source, $user) {
+
+
+
+    }
+
+    /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
     public function cartAction(Request $request,UserInterface $user)
@@ -30,16 +39,16 @@ class PaymentController extends Controller
         $kernel = $this->get('kernel');
 
         $em = $this->getDoctrine()->getManager();
-        $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
         /** @var Cart $cart */
 
-        if($cart == null || count($cart->getContracts()) == 0) {
+        if ($cart == null || count($cart->getContracts()) == 0) {
             throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
         }
 
         if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
 
-            if($cart->isProblematic()) {
+            if ($cart->isProblematic()) {
                 $this->addFlash('error', 'Votre panier contenait des articles expirés ; nous nous chargeons de le remettre à jour');
 
                 $application = new Application($kernel);
@@ -59,24 +68,26 @@ class PaymentController extends Controller
 
             // Token is created using Stripe.js or Checkout!
             // Get the payment token submitted by the form:
-            $token = $_POST['stripeToken'];
+            $source = $_POST['stripeSource'];
+            $source_object = \Stripe\Source::retrieve($source);
+
+            $source_type = $source_object['type'];
+            $limit = $source_type == 'bancontact' ? 1 : 1000;
 
             // Charge the user's card:
             try {
-
                 try {
                     if ($user->getStripeCustomerId() != null) {
-                        $stripe_customer = \Stripe\Customer::retrieve($user->getStripeCustomerId());
-                        $stripe_customer->source = $token;
-                    }
-                    else {
+                        throw new \Exception();
+                        //$stripe_customer = \Stripe\Customer::retrieve($user->getStripeCustomerId());
+                        //$stripe_customer->source = $source;
+                    } else {
                         throw new \Exception();
                     }
-                }
-                catch(\Exception $e) {
+                } catch (\Exception $e) {
                     $stripe_customer = \Stripe\Customer::create(array(
                         "description" => "Customer for " . $user->getEmail(),
-                        "source" => $token,
+                        "source" => $source,
                     ));
 
                     $user->setStripeCustomerId($stripe_customer->id);
@@ -84,31 +95,36 @@ class PaymentController extends Controller
 
                 $charges = array();
                 $payments = array();
+                $i = 0;
 
-                foreach($cart->getContracts() as $key => $contract) {
-                    /** @var ContractFan $contract */
-                    $charges[$key] = \Stripe\Charge::create(array(
-                        // TODO assurer que cet amount ne peut pas être changé au cours du processus, par ex. avec un hach
-                        "amount" => $contract->getAmount() * 100,
-                        "currency" => "eur",
-                        "description" => "Paiement du contrat numéro " . $contract->getId(),
-                        "customer" => $stripe_customer->id
-                    ));
+                foreach ($cart->getContracts() as $key => $contract) {
 
-                    $contract_artist = $contract->getContractArtist();
+                    $i++;
+                    if ($i <= $limit) {
+                        /** @var ContractFan $contract */
+                        $charges[$key] = \Stripe\Charge::create(array(
+                            // TODO assurer que cet amount ne peut pas être changé au cours du processus, par ex. avec un hach
+                            "amount" => $contract->getAmount() * 100,
+                            "currency" => "eur",
+                            "description" => "Paiement du contrat numéro " . $contract->getId(),
+                            "customer" => $stripe_customer->id
+                        ));
 
-                    $payments[$key] = new Payment();
-                    $payments[$key]->setChargeId($charges[$key]->id)->setDate(new \DateTime())->setUser($user)
-                        ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());
+                        $contract_artist = $contract->getContractArtist();
 
-                    $contract_artist->addAmount($contract->getAmount());
+                        $payments[$key] = new Payment();
+                        $payments[$key]->setChargeId($charges[$key]->id)->setDate(new \DateTime())->setUser($user)
+                            ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());
 
-                    if($contract_artist instanceof ContractArtist) {
-                        $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
+                        $contract_artist->addAmount($contract->getAmount());
+
+                        if ($contract_artist instanceof ContractArtist) {
+                            $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
+                        }
+
+                        $em->persist($payments[$key]);
+                        $em->flush();
                     }
-
-                    $em->persist($payments[$key]);
-                    $em->flush();
                 }
 
                 $cart->setConfirmed(true)->setPaid(true);
@@ -118,7 +134,7 @@ class PaymentController extends Controller
 
                 return $this->redirectToRoute('user_cart_payment_stripe_success', array());
 
-            } catch(\Stripe\Error\Card $e) {
+            } catch (\Stripe\Error\Card $e) {
                 $this->addFlash('error', 'Une erreur est survenue avec votre carte, veuillez réessayer');
             } catch (\Stripe\Error\RateLimit $e) {
                 $this->addFlash('error', 'Trop de requêtes simultanées, veuillez réessayer');
@@ -132,7 +148,6 @@ class PaymentController extends Controller
                 $this->addFlash('error', 'Une erreur est survenue avec le système de paiement, veuillez réessayer (nous avons alerté les administrateurs de cette erreur, ils s\'en occupent au plus tôt');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             }
-            return $this->redirectToRoute($request->get('_route'));
         }
 
         return $this->render('@App/User/pay_cart.html.twig', array(

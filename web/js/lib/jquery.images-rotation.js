@@ -76,9 +76,12 @@ $.fn.imagesRotation = function (options) {
             $this.data('imagesRotaionTimeout', timeout);
         }
     }).on('mouseleave.imagesRotation', function () {
+
         clearRotationInterval($(this));
 
-        $img = settings.imgSelector ? $(settings.imgSelector, $this) : null;
+        var $img = settings.imgSelector ? $(settings.imgSelector, $this) : null;
+        var $this = $(this);
+        var images = getImagesArray($this);
 
         $this.data('imagesRotationIndex', 0);
         if ($img && $img.length > 0) {

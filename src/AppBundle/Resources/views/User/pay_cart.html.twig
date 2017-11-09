@@ -25,36 +25,63 @@
 
             <div class="form-row">
                 {% if error_conditions %}
-                    Une erreur est survenue.
+                    <p class="alert alert-danger">Vous devez accepter les conditions d'utilisation pour continuer.</p>
                 {% endif %}
                 <label for="accept_conditions" class="pr-3">J'ai lu et j'accepte</label> <input id="accept_conditions" name="accept_conditions" type="checkbox" />
             </div>
             <div class="form-row" id="card-form-row">
-                <label for="card-element">
-                    Carte de crédit ou de débit <button data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Les cartes autorisées sont les cartes de crédit et de débit.">??</button>
 
-                </label>
-                <div id="card-element">
-                    <!-- a Stripe Element will be inserted here. -->
+                <div class="form-row form-group">
+                    <div class="col-12">
+                        <input type="radio" name="payment-method" value="credit-card">Carte de crédit
+                    </div>
+                    <div class="col-12">
+                        <input type="radio" name="payment-method" value="debit-card">Bancontact
+                    </div>
+                </div>
+
+
+                <div id="credit-card" class="payment-method w-100" style="display:none;">
+                    <label for="card-element">
+                        Carte de crédit <button data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Les cartes autorisées sont les cartes de crédit et de débit.">??</button>
+
+                    </label>
+                    <div id="card-element">
+                        <!-- a Stripe Element will be inserted here. -->
+                    </div>
+                </div>
+
+                <div id="debit-card" class="payment-method w-100" style="display:none;">
+                    <label for="bc-card-element">
+                        Carte Bancontact <button data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Les cartes autorisées sont les cartes de crédit et de débit.">??</button>
+                    </label>
+                    <div id="bc-card-element">
+                        <button id="choose-bancontact">
+                            Payer par Bancontact
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Used to display Element errors -->
-                <div id="card-errors" role="alert"></div>
+                <div class="stripe-error alert alert-danger" role="alert"></div>
             </div>
 
-            <button class="btn btn-primary mt-3">Payer le panier</button>
+            <input type="submit" class="btn btn-primary mt-3" value="Payer le panier" />
         </form>
 
-    </div>
+        <div>
+            {{ utils.hidden_loader() }}
+        </div>
+  </div>
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-
     <script>
-        $('#card-form-row').hide();
+        hideError();
 
+        $('#card-form-row').hide();
         $('#accept_conditions').change(function(){
             if(this.checked) {
                 $('#card-form-row').show();
@@ -62,71 +89,207 @@
             else {
                 $('#card-form-row').hide();
             }
-        })
+        });
+
+        $('input[type=radio]').change(function() {
+            if ($(this).val() == 'debit-card') {
+                $('.payment-method').hide();
+                $('#debit-card').show();
+            }
+            else if ($(this).val() == 'credit-card') {
+                $('.payment-method').hide();
+                $('#credit-card').show();
+            }
+        });
 
         var stripe = Stripe('pk_test_X1amQwEQval7q4Ay1po0QOXe');
         var elements = stripe.elements();
 
-        var style = {
-            base: {
-                color: '#32325d',
-                lineHeight: '24px',
-                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                fontSmoothing: 'antialiased',
-                fontSize: '16px',
-                '::placeholder': {
-                    color: '#aab7c4'
+        // set publishable key for V2
+        Stripe.setPublishableKey('pk_test_X1amQwEQval7q4Ay1po0QOXe');
+
+        $('#choose-bancontact').click(function(e) {
+            e.preventDefault();
+
+            stripe.createSource({
+                type: 'bancontact',
+                amount: 1099,
+                currency: 'eur',
+                bancontact: {
+                    preferred_language: 'fr'
+                },
+                owner: {
+                    name: '{{ app.user.displayName }}',
+                    email: '{{ app.user.email }}'
+                },
+                redirect: {
+                    return_url: 'https://un-mute.be/'
                 }
-            },
-            invalid: {
-                color: '#fa755a',
-                iconColor: '#fa755a'
-            }
-        };
+            }).then(function(result) {
+                displayLoader();
+                hideError();
+                Stripe.source.poll(
+                    result.source.id,
+                    result.source.client_secret,
+                    onChargeableBC);
 
-        // Create an instance of the card Element
-        var card = elements.create('card', {style: style});
-
-        // Add an instance of the card Element into the `card-element` <div>
-        card.mount('#card-element');
-
-        card.addEventListener('change', function(event) {
-            var displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
-
-        // Create a token or display an error when the form is submitted.
-        var form = document.getElementById('payment-form');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            stripe.createToken(card).then(function(result) {
-                if (result.error) {
-                    // Inform the user if there was an error
-                    var errorElement = document.getElementById('card-errors');
-                    errorElement.textContent = result.error.message;
-                } else {
-                    // Send the token to your server
-                    stripeTokenHandler(result.token);
-                }
+                $.featherlight({
+                    iframe: result.source.redirect.url,
+                    iframeWidth: '100%',
+                    iframeHeight: '100%'
+                });
             });
         });
 
-        function stripeTokenHandler(token) {
+        var card = elements.create('card', {
+            hidePostalCode: true,
+            style: {
+                base: {
+                    iconColor: '#666EE8',
+                    color: '#31325F',
+                    lineHeight: '40px',
+                    fontWeight: 300,
+                    fontFamily: 'Helvetica Neue',
+                    fontSize: '15px',
+
+                    '::placeholder': {
+                        color: '#CFD7E0',
+                    }
+                }
+            }
+        });
+        card.mount('#card-element');
+
+        function onToken(result) {
+            if (result.token) {
+                Stripe.source.create({
+                    type: 'card',
+                    token: result.token.id
+                }, onCardSource);
+            } else if (result.error) {
+                displayForm();
+                displayError(result.error.message);
+            }
+        }
+
+        function onCardSource(status, result) {
+
+            if(result.error) {
+                displayForm();
+                displayError(result.error.message);
+            }
+
+            if(result.card.three_d_secure == 'required') {
+                Stripe.source.create({
+                    type: 'three_d_secure',
+                    amount: 1099,
+                    currency: "eur",
+                    three_d_secure: {
+                        card: result.id
+                    },
+                    redirect: {
+                        return_url: "https://jsfiddle.net/"
+                    }
+                }, on3DSSource);
+            }
+            else {
+                stripeTokenHandler(result);
+            }
+        }
+
+        function on3DSSource(status, result) {
+            hideError();
+
+            console.log('3D Secure Source:', result);
+
+            Stripe.source.poll(
+                result.id,
+                result.client_secret,
+                onChargeable);
+
+            $.featherlight({
+                iframe: result.redirect.url,
+                iframeWidth: '800',
+                iframeHeight: '600'
+              });
+        }
+
+        function onChargeable(status, source) {
+
+            if (source.status == 'chargeable') {
+                $.featherlight.current().close();
+                stripeTokenHandler(source);
+            }
+            else if (source.status == 'failed') {
+                $.featherlight.current().close();
+                displayError('3D Secure authentication failed.');
+            }
+            else if (source.status != 'pending') {
+                $.featherlight.current().close();
+                displayError("Unexpected 3D Secure status: " + source.status);
+            }
+        }
+
+        function onChargeableBC(status, source) {
+            if (source.status == 'chargeable') {
+                $.featherlight.current().close();
+                alert('chargeable');
+                stripeTokenHandler(source);
+            }
+            else if (source.status == 'failed') {
+                $.featherlight.current().close();
+                displayError('3D Secure authentication failed.');
+            }
+            else if (source.status != 'pending') {
+                $.featherlight.current().close();
+                displayError("Unexpected 3D Secure status: " + source.status);
+            }
+        }
+
+        card.on('change', onToken);
+
+        $('#payment-form').submit(function(e) {
+            e.preventDefault();
+
+            displayLoader();
+            var extraDetails = {
+                name: '{{ app.user.displayName }}',
+                email: '{{ app.user.username }}'
+            };
+            stripe.createToken(card, extraDetails).then(onToken);
+        });
+
+        function displayLoader() {
+            $('.loader').show();
+            $('form').hide();
+            hideError();
+        }
+
+        function displayForm() {
+            $('form').show();
+            $('.loader').hide();
+        }
+
+        function displayError(txt) {
+            $('.stripe-error').text(txt);
+            $('.stripe-error').show();
+        }
+
+        function hideError() {
+            $('.stripe-error').hide();
+        }
+
+        function stripeTokenHandler(source) {
             // Insert the token ID into the form so it gets submitted to the server
             var form = document.getElementById('payment-form');
             var hiddenInput = document.createElement('input');
             hiddenInput.setAttribute('type', 'hidden');
-            hiddenInput.setAttribute('name', 'stripeToken');
-            hiddenInput.setAttribute('value', token.id);
+            hiddenInput.setAttribute('name', 'stripeSource');
+            hiddenInput.setAttribute('value', source.id);
             form.appendChild(hiddenInput);
-
             // Submit the form
             form.submit();
+
         }
 
     </script>

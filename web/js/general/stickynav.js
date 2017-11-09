@@ -2,12 +2,12 @@
 var $mainNav = $('#mainNav');
 var $main = $('main');
 var stickyoffset = $main.offset().top - $mainNav.outerHeight();
-$('header').css('height', $('header').outerHeight());
+$('header').css('min-height', $('header').outerHeight());
 
 
 $(window).resize(function() {
-    $('header').css('height', 'auto');
-    $('header').css('height', $('header').outerHeight());
+    $('header').css('min-height', 'auto');
+    $('header').css('min-height', $('header').outerHeight());
 });
 
 
@@ -35,8 +35,8 @@ $(window).scroll(function() {
         if($mainNav.hasClass('stickytop')) {
             $mainNav.removeClass('stickytop');
 
-            $('header').css('height', 'auto');
-            $('header').css('height', $('header').outerHeight());
+            $('header').css('min-height', 'auto');
+            $('header').css('min-height', $('header').outerHeight());
 
             $('#logo').removeClass('hiddenLogo');
 
