@@ -5,20 +5,20 @@
         <div class="row">
             <div class="col-xs-12 col-md-4">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    <li class="nav-item{% if active_link == 'show' %} active{% endif %}">
                         <a class="nav-link" href="{{ path('fos_user_profile_show') }}">Voir le profil</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item{% if active_link == 'edit' %} active{% endif %}">
                         <a class="nav-link" href="{{ path('fos_user_profile_edit') }}">Modifier le profil</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item{% if active_link == 'password' %} active{% endif %}">
                         <a class="nav-link" href="{{ path('fos_user_change_password') }}">Changer mon mot de passe</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item{% if active_link == 'email' %} active{% endif %}">
                         <a class="nav-link" href="{{ path('user_change_email') }}">Changer mon e-mail</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-danger" href="#">Options avancées</a>
+                    <li class="nav-item{% if active_link == 'advanced' %} active{% endif %}">
+                        <a class="nav-link danger-color" href="{{ path('user_advanced_options') }}">Options avancées</a>
                     </li>
                 </ul>
             </div>

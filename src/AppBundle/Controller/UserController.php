@@ -6,6 +6,7 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Entity\Artist;
@@ -254,6 +255,35 @@ class UserController extends Controller
         ));
     }
 
+    /**
+     * @Route("/advanced-options", name="user_advanced_options")
+     */
+    public function advancedAction(Request $request, UserInterface $user) {
+
+        $form = $this->createFormBuilder(['submit' => false])
+            ->add('submit', SubmitType::class, array(
+                'label' => 'Supprimer mon compte',
+                'attr' => ['class' => 'btn btn-danger'],
+            ))->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->get('submit')->isClicked()) {
+            $em = $this->getDoctrine()->getManager();
+            // TODO supprimer compte
+
+            $em->persist($user);
+            $em->flush();
+
+            // TODO supprimer session
+
+            return $this->redirectToRoute('homepage');
+        }
+
+        return $this->render('@App/User/advanced.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 
