@@ -77,10 +77,11 @@ $.fn.imagesRotation = function (options) {
         }
     }).on('mouseleave.imagesRotation', function () {
 
-        clearRotationInterval($(this));
+        var $this = $(this);
+
+        clearRotationInterval($this);
 
         var $img = settings.imgSelector ? $(settings.imgSelector, $this) : null;
-        var $this = $(this);
         var images = getImagesArray($this);
 
         $this.data('imagesRotationIndex', 0);
