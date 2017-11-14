@@ -15,6 +15,42 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class ContractArtist extends BaseContractArtist
 {
+    public function isUncrowdable() {
+        return in_array($this->getState(), $this->getUncrowdableStates());
+    }
+
+    public static function getUncrowdableStates() {
+        return [
+            'state.refunded',
+            'state.failed',
+            'state.success-soldout',
+            'state.success',
+            'state.pending',
+        ];
+    }
+
+    public function getState() {
+        if($this->refunded) {
+            return "state.refunded";
+        }
+        if($this->failed) {
+            return "state.failed";
+        }
+        if($this->dateEnd > (new \DateTime())) {
+            if($this->tickets_sold > $this->step->getMinTickets())
+                return "state.success-ongoing";
+            if($this->tickets_sold >= $this->step->getMaxTickets())
+                return "state.success-soldout";
+            return "state.ongoing";
+        }
+        if($this->successful) {
+            return "state.success";
+        }
+        else {
+            return "state.pending";
+        }
+    }
+
     public function __construct()
     {
         parent::__construct();

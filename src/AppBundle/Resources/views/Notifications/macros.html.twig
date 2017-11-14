@@ -1,8 +1,8 @@
 {% macro preview(notification, title, content) %}
+    {% import 'macros.html.twig' as utils %}
     <div class="notification_preview">
         <h3><a>{{ title }}</a>{% if notification.unseen %} - non lu {% endif %}</h3>
-        <div>{{ content|striptags|length > 50 ? content|striptags|slice(0, 50) ~ '...' : content|striptags }}</div>
-        {# content must first be decoded with html_entity_decode() #}
+        <div>{{ utils.preview(content, 50) }}</div>
     </div>
 {% endmacro %}
 
@@ -11,4 +11,14 @@
         <h3>{{ title|raw }}</h3>
         <p>{{ content|raw }}</p>
     </div>
+{% endmacro %}
+
+{% macro menu_preview(notification, title, content) %}
+    {% import 'macros.html.twig' as utils %}
+    <a class="notification-menu-preview-content{% if notification.unseen %} unseen{% endif %}" href="{{ path('user_notification', {'id': notification.id}) }}">
+        <div class="notification-menu-preview-item">
+            <h6 class="notification-menu-preview-title">{{ title|raw }}</h6>
+            <p class="notification-menu-preview-preview">{{ utils.preview(content, 50) }}</p>
+        </div>
+    </a>
 {% endmacro %}

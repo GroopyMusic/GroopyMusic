@@ -300,6 +300,10 @@ class UserController extends Controller
         $counterpart = $em->getRepository('AppBundle:CounterPart')->find($id_counterpart);
         $contractArtist = $em->getRepository('AppBundle:ContractArtist')->find($id_contract_artist);
 
+        if($contractArtist->isUncrowdable()) {
+            return new Response("KO");
+        }
+
         if($contractArtist->getNbAvailable($counterpart) < $quantity) {
             return new Response("MAX_QTY");
         }

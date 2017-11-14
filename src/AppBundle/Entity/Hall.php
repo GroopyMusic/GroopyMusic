@@ -486,31 +486,6 @@ class Hall extends Partner
     }
 
     /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Hall
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-
-    /**
      * Set delay
      *
      * @param integer $delay

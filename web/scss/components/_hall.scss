@@ -1,0 +1,9 @@
+#hallCarousel .carousel-inner {
+  border-radius: 15px;
+}
+
+table#hall-infos tr td:first-child {
+  color: $secondary-background;
+  font-weight: bold;
+  @extend .pr-3;
+}

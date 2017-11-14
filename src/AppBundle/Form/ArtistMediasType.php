@@ -15,6 +15,7 @@ class ArtistMediasType extends AbstractType
     {
         $builder
             ->add('videos', CollectionType::class, array(
+                'label' => false,
                 'entry_type' => VideoType::class,
                 'entry_options' => array(
                     'label' => false,
@@ -23,9 +24,11 @@ class ArtistMediasType extends AbstractType
                 'allow_delete' => true,
                 'prototype' => true,
                 'attr' => ['class' => 'collection'],
-                'label' => 'labels.artist.videos',
             ))
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, array(
+                'attr' => ['class' => 'btn btn-primary'],
+                'label' => 'Enregistrer les modifications'
+            ))
         ;
     }
 

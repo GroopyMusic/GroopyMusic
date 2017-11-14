@@ -13,12 +13,29 @@
                 </a>
             {% endif %}
             {% set unseen_nb = unseen_notifs_nb() %}
-            <a href="{{ path('user_notifications') }}" class="btn btn-primary py-0 pl-0 pr-1 mr-1 color-secondary">
-                <img  src="{{ asset('images/notif.png') }}" />
-                {% if unseen_nb > 0 %}
-                    <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
+            {% set last_notifs = last_notifs(5) %}
+
+            <div class="dropdown d-inline-block">
+
+                <a id="notifs-toggler" href="{{ path('user_notifications') }}" {% if last_notifs is not empty %}role="button" data-toggle="dropdown" data-target="#"{% endif %} class="btn btn-primary py-0 pl-0 pr-1 mr-1 color-secondary">
+                    <img  src="{{ asset('images/notif.png') }}" />
+                    {% if unseen_nb > 0 %}
+                        <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
+                    {% endif %}
+                </a>
+                {% if last_notifs is not empty %}
+                    <ul class="dropdown-menu notifications-menu-preview" role="menu" aria-labelledby="notifs-toggler">
+
+                        <div class="notifications-menu-preview-heading"><h4 class="menu-title">Notifications</h4><h4 class="menu-title pull-right"><a href="{{ path('user_notifications') }}">Tout voir</a></h4>
+                        </div>
+                        <div class="notifications-menu-preview-wrapper">
+                            {% for notif in last_notifs %}
+                                {{ preview_menu_notification(notif)|raw }}
+                            {% endfor %}
+                        </div>
+                    </ul>
                 {% endif %}
-            </a>
+            </div>
 
             <div class="dropdown d-inline-block">
                 <a id="dropdownMenuButton" class="btn btn-primary sharp uppercase dropdown-toggle px-1 px-md-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mon compte</a>

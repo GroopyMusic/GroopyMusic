@@ -59,17 +59,17 @@ class NotificationDispatcher
     }
 
     public function notifyReminderArtistContract($users, ContractArtist $contract, $nb_days) {
-        $this->addNotification($users, self::REMINDER_ARTIST_CONTRACT_TYPE, ['nbDays' => $nb_days, 'contract' => $contract]);
+        $this->addNotifications($users, self::REMINDER_ARTIST_CONTRACT_TYPE, ['nbDays' => $nb_days, 'contract' => $contract]);
     }
 
     public function notifyArtistsKnownOutcomeContract($users, ContractArtist $contract, $success) {
         $type = $success ? self::SUCCESSFUL_CONTRACT_ARTIST_TYPE : self::FAILED_CONTRACT_ARTIST_TYPE;
-        $this->addNotification($users, $type, ['contract' => $contract]);
+        $this->addNotifications($users, $type, ['contract' => $contract]);
     }
 
     public function notifyFansKnownOutcomeContract($users, ContractArtist $contract, $success) {
         $type = $success ? self::SUCCESSFUL_CONTRACT_FAN_TYPE : self::FAILED_CONTRACT_FAN_TYPE;
-        $this->addNotification($users, $type, ['contract' => $contract]);
+        $this->addNotifications($users, $type, ['contract' => $contract]);
     }
 
     public function notifyTicket(User $user, ContractFan $contractFan) {

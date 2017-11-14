@@ -44,7 +44,7 @@ class PublicController extends Controller
         $NB_MAX_CROWDS = 4;
 
         $new_artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false], ['date_creation' => 'DESC'], $NB_MAX_NEWS);
-        $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findBy(['successful' => false, 'failed' => false], ['date' => 'DESC'], $NB_MAX_NEWS);
+        $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findNewContracts($NB_MAX_CROWDS);
 
         $news = [];
         $i = 0;

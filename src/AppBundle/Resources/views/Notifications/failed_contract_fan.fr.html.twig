@@ -1,4 +1,13 @@
 {% extends "AppBundle:Notifications:base.html.twig" %}
 
-{% set title = '' %}
-{% set content = '' %}
+{% set title = 'Concert annulé' %}
+{%- set content -%}
+    <p>Cher producteur,<br /> <br />
+    L’artiste {{ contract.artist.artistName }} que vous aviez décidé de soutenir n’a pas pu récolter assez de fonds pour permettre l’organisation d’un concert.<br /> <br />
+    Il n’y aura donc pas de concert organisé et vous serez remboursé(s) de l’entièreté du prix des places achetées.<br /> <br />
+    Envie de voir nom de l’artiste en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !<br /> <br />
+    Envie de soutenir d’autres artistes ? Rendez-vous sur le catalogue de groupes lien vers le catalogue<br /> <br />
+    A bientôt,<br /> <br />
+    L’équipe Un-Mute
+    </p>
+{%- endset -%}

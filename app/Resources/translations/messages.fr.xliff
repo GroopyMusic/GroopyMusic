@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-02T13:14:18Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-14T11:56:40Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -29,8 +29,8 @@
       <trans-unit id="522e146679608203fc36e220c4e176063c0733f2" resname="Adresse">
         <source>Adresse</source>
         <target>Adresse</target>
-        <jms:reference-file line="57">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
-        <jms:reference-file line="97">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="122">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="71">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
         <jms:reference-file line="60">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\UserAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="e0edc016bdc9a8f054224d266bd3e2133a8ca3a9" resname="Adresse e-mail">
@@ -68,7 +68,7 @@
         <source>Capacité (en nombre de personnes)</source>
         <target>Capacité (en nombre de personnes)</target>
         <jms:reference-file line="50">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
-        <jms:reference-file line="94">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="97">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="360f2311605e478e2c57d7a7fbfd5c8cda2ec9a7" resname="Capacité approximative">
         <source>Capacité approximative</source>
@@ -76,6 +76,11 @@
         <jms:reference-file line="126">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\StepAdmin.php\</jms:reference-file>
         <jms:reference-file line="36">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\StepAdmin.php\</jms:reference-file>
         <jms:reference-file line="71">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\StepAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0a94347803868c2c92c6fa6428bf45a8e6422fd1" resname="Champs traductibles">
+        <source>Champs traductibles</source>
+        <target>Champs traductibles</target>
+        <jms:reference-file line="86">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="a93ea138c9a9ccd649d40356abc4e56ae4f1a477" resname="Choix de la date">
         <source>Choix de la date</source>
@@ -90,13 +95,13 @@
       <trans-unit id="bef0e5f5b8b2d78f1f4c768b06d70235f68fede8" resname="Commentaire (interne)">
         <source>Commentaire (interne)</source>
         <target>Commentaire (interne)</target>
-        <jms:reference-file line="50">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
-        <jms:reference-file line="80">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="102">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="61">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bb33160fa7234f1a137ce340f32b82f825a8129" resname="Commentaire interne">
         <source>Commentaire interne</source>
         <target>Commentaire interne</target>
-        <jms:reference-file line="21">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="22">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="3424edc2354c7c55f6eb740b673d349b02d27c8d" resname="Confirmation">
         <source>Confirmation</source>
@@ -162,7 +167,7 @@
       <trans-unit id="14dde74df5e3aa29f8bef74c9fba8d5899df0ccd" resname="Dates disponibles (calculé automatiquement mais modifiable)">
         <source>Dates disponibles (calculé automatiquement mais modifiable)</source>
         <target>Dates disponibles (calculé automatiquement mais modifiable)</target>
-        <jms:reference-file line="114">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="117">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
         <jms:reference-file line="62">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="dbe7d612cf5fd1d8b8f7afd46b2485296eeef50c" resname="Demandes de remboursement">
@@ -184,12 +189,23 @@
         <target>Description courte</target>
         <jms:reference-file line="101">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
         <jms:reference-file line="58">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+        <jms:reference-file line="25">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="55">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4bafc5f8d7cede578de80f5d1395c137af872a0b" resname="Description courte (max 255 caractères)">
+        <source>Description courte (max 255 caractères)</source>
+        <target>Description courte (max 255 caractères)</target>
+        <jms:reference-file line="89">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="45f1e7c85858d54dcee255bd6e46f38830ba7ea6" resname="Description détaillée">
+        <source>Description détaillée</source>
+        <target>Description détaillée</target>
+        <jms:reference-file line="92">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="fd7fe3f2846d593eacee0f85c8f2c377e529d79f" resname="Description publique">
         <source>Description publique</source>
         <target>Description publique</target>
-        <jms:reference-file line="44">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
-        <jms:reference-file line="72">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="52">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="2950cceb9ddf02b595b9f975b9b7ddc4622531f4" resname="Délai de confirmation">
         <source>Délai de confirmation</source>
@@ -200,13 +216,18 @@
       <trans-unit id="44754645e5e191d2671e5778f263f72e5d573665" resname="Délai demandé (en jours)">
         <source>Délai demandé (en jours)</source>
         <target>Délai demandé (en jours)</target>
+        <jms:reference-file line="101">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
         <jms:reference-file line="53">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
-        <jms:reference-file line="98">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="0d01e2e86669e98441ab4dce5520696c318b7098" resname="E-mail">
         <source>E-mail</source>
         <target>E-mail</target>
         <jms:reference-file line="37">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\SuggestionBoxAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2a945921280748d8d38184221fef75ed9772526a" resname="Enregistrer les modifications">
+        <source>Enregistrer les modifications</source>
+        <target>Enregistrer les modifications</target>
+        <jms:reference-file line="30">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistMediasType.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="82da67b211249624f24f3c7db5642a5112c9446f" resname="Facebook">
         <source>Facebook</source>
@@ -233,7 +254,7 @@
       <trans-unit id="6c2dd4c7a9fe468002dd0af019de62fbe9376005" resname="Jours automatiques">
         <source>Jours automatiques</source>
         <target>Jours automatiques</target>
-        <jms:reference-file line="107">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="110">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
         <jms:reference-file line="59">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="bbc7e79964cdb00f989d9ab73982ffd503437923" resname="Membre">
@@ -303,9 +324,9 @@
         <jms:reference-file line="59">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\CounterPartAdmin.php\</jms:reference-file>
         <jms:reference-file line="19">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\GenreAdmin.php\</jms:reference-file>
         <jms:reference-file line="35">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\GenreAdmin.php\</jms:reference-file>
-        <jms:reference-file line="18">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
-        <jms:reference-file line="41">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
-        <jms:reference-file line="68">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="19">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="49">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="82">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
         <jms:reference-file line="13">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerContactPersonAdmin.php\</jms:reference-file>
         <jms:reference-file line="25">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PhaseAdmin.php\</jms:reference-file>
         <jms:reference-file line="46">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PhaseAdmin.php\</jms:reference-file>
@@ -422,7 +443,7 @@
         <source>Palier correspondant</source>
         <target>Palier correspondant</target>
         <jms:reference-file line="44">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
-        <jms:reference-file line="84">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="87">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="d48097c327121f9851f2b6102613c247caa0d3b9" resname="Paliers">
         <source>Paliers</source>
@@ -457,8 +478,8 @@
       <trans-unit id="6145adb3c56ea15be7a776be6df3a71b163295eb" resname="Personnes de contact">
         <source>Personnes de contact</source>
         <target>Personnes de contact</target>
-        <jms:reference-file line="54">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
-        <jms:reference-file line="84">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="109">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="68">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="f6371a4980dacd0f821ddeb75bac77ae4886ba72" resname="Phase">
         <source>Phase</source>
@@ -479,7 +500,7 @@
       <trans-unit id="c8b2e864eccb38901097806819bf6aba2eed7ae1" resname="Photos">
         <source>Photos</source>
         <target>Photos</target>
-        <jms:reference-file line="130">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="134">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
         <jms:reference-file line="69">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="3ba697e91b6774e239729dadfeb89994b859460e" resname="Premières parties">
@@ -497,7 +518,7 @@
       <trans-unit id="67973af44e71846d2adf24dfa54d38b63da7c40b" resname="Prix demandé">
         <source>Prix demandé</source>
         <target>Prix demandé</target>
-        <jms:reference-file line="102">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="105">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
         <jms:reference-file line="56">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="85a8f61c7fdacf2483bad8a4d1f5c9613e9db747" resname="Propriétaires">
@@ -511,7 +532,7 @@
         <jms:reference-file line="167">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ContractArtistAdmin.php\</jms:reference-file>
         <jms:reference-file line="90">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ContractArtistAdmin.php\</jms:reference-file>
         <jms:reference-file line="47">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
-        <jms:reference-file line="89">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="92">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="90e121351174120810f8216596fc679ffd53ece9" resname="Préférences">
         <source>Préférences</source>
@@ -570,8 +591,8 @@
         <source>Site Web</source>
         <target>Site Web</target>
         <jms:reference-file line="66">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
-        <jms:reference-file line="47">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
-        <jms:reference-file line="76">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="58">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="98">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a0cb6b42add7808a6ab3619930fa7983c9ce7fe" resname="Spotify">
         <source>Spotify</source>
@@ -581,13 +602,18 @@
       <trans-unit id="308a834223a83f7b0b7e746c5e9ba4083cbf9341" resname="Spécifications techniques (PDF)">
         <source>Spécifications techniques (PDF)</source>
         <target>Spécifications techniques (PDF)</target>
-        <jms:reference-file line="123">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
+        <jms:reference-file line="127">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
         <jms:reference-file line="65">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\HallAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="b82611c50d70b313dc1f035f7de31d84b504a5bd" resname="Stripe customer ID">
         <source>Stripe customer ID</source>
         <target>Stripe customer ID</target>
         <jms:reference-file line="71">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\UserAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e894aea3c89b32b0a3904344bacc9784cb5f07ce" resname="Supprimer mon compte">
+        <source>Supprimer mon compte</source>
+        <target>Supprimer mon compte</target>
+        <jms:reference-file line="265">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Controller\UserController.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="4162126a1a4c30c4b605a1363407b847af09a620" resname="Ticket envoyé">
         <source>Ticket envoyé</source>
@@ -602,7 +628,7 @@
       <trans-unit id="3deb7456519697ecf4eefc455516c969a3681bae" resname="Type">
         <source>Type</source>
         <target>Type</target>
-        <jms:reference-file line="24">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="28">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
         <jms:reference-file line="31">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\SuggestionBoxAdmin.php\</jms:reference-file>
         <jms:reference-file line="63">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\SuggestionBoxAdmin.php\</jms:reference-file>
         <jms:reference-file line="43">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\SuggestionTypeEnumAdmin.php\</jms:reference-file>
@@ -612,10 +638,22 @@
         <target>Téléphone</target>
         <jms:reference-file line="68">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ContactPersonAdmin.php\</jms:reference-file>
       </trans-unit>
+      <trans-unit id="f19a0bdcfcb4d02957bb39412e12c4b582e917f2" resname="URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)">
+        <source>URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)</source>
+        <target>URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)</target>
+        <jms:reference-file line="17">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\VideoType.php\</jms:reference-file>
+      </trans-unit>
       <trans-unit id="ea129238fc5751a8b0d5b8795ad4febab0bd4bc5" resname="Vidéos">
         <source>Vidéos</source>
         <target>Vidéos</target>
         <jms:reference-file line="86">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1a11ca4f7dd5e3ddf73665b4197bc4646aac8001" resname="Visible sur la plateforme">
+        <source>Visible sur la plateforme</source>
+        <target>Visible sur la plateforme</target>
+        <jms:reference-file line="106">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="31">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+        <jms:reference-file line="64">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="5830417c0a11c62b3d0a1c70c7bbee336b9bb195" resname="html.email.head.link.to.web.view.text.%url%">
         <source>html.email.head.link.to.web.view.text.%url%</source>
@@ -661,11 +699,6 @@
         <source>labels.artist.short_description</source>
         <target>Description courte (moins de 255 caractères)</target>
         <jms:reference-file line="44">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="3f5790a76ee00c46e60eac7710f800f8b132dd32" resname="labels.artist.translations">
-        <source>labels.artist.translations</source>
-        <target>Descriptions</target>
-        <jms:reference-file line="39">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f4d9a205f73e171aca01fd8241043141bf9b9e9" resname="labels.suggestionbox.email">
         <source>labels.suggestionbox.email</source>
