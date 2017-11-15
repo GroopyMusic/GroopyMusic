@@ -16,12 +16,12 @@
         {% include "@App/User/cart_content.html.twig" with {'editable_cart': false} %}
 
         <p>
-            En procédant au paiement de votre panier, vous assurez avoir lu les <a href="{{ path('conditions') }}">conditions d'utilisation</a>.
+            En procédant au paiement de votre panier, vous assurez avoir lu les <a target="_blank" href="{{ path('conditions') }}">conditions d'utilisation</a>.
             Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez de producteurs qui soutiennent cet artiste.
             Sinon, si cet événement a assez de succès, vous recevrez vos tickets par mail, et sur Un-Mute, quelques jours avant le concert.
         </p>
 
-        <form method="post" id="payment-form">
+        <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
 
             <div class="form-row">
                 {% if error_conditions %}
@@ -113,7 +113,7 @@
 
             stripe.createSource({
                 type: 'bancontact',
-                amount: 1099,
+                amount: {{ cart.amount * 100 }},
                 currency: 'eur',
                 bancontact: {
                     preferred_language: 'fr'
@@ -135,8 +135,8 @@
 
                 $.featherlight({
                     iframe: result.source.redirect.url,
-                    iframeWidth: '100%',
-                    iframeHeight: '100%'
+                    iframeWidth: '800',
+                    iframeHeight: '600'
                 });
             });
         });
@@ -182,7 +182,7 @@
             if(result.card.three_d_secure == 'required') {
                 Stripe.source.create({
                     type: 'three_d_secure',
-                    amount: 1099,
+                    amount: {{ cart.amount * 100 }},
                     currency: "eur",
                     three_d_secure: {
                         card: result.id
@@ -289,7 +289,6 @@
             form.appendChild(hiddenInput);
             // Submit the form
             form.submit();
-
         }
 
     </script>

@@ -69,10 +69,6 @@ class PaymentController extends Controller
             // Token is created using Stripe.js or Checkout!
             // Get the payment token submitted by the form:
             $source = $_POST['stripeSource'];
-            $source_object = \Stripe\Source::retrieve($source);
-
-            $source_type = $source_object['type'];
-            $limit = $source_type == 'bancontact' ? 1 : 1000;
 
             // Charge the user's card:
             try {
@@ -93,46 +89,38 @@ class PaymentController extends Controller
                     $user->setStripeCustomerId($stripe_customer->id);
                 }
 
-                $charges = array();
-                $payments = array();
-                $i = 0;
+                $contract = $cart->getContracts()->first();
+                $contract_artist = $contract->getContractArtist();
 
-                foreach ($cart->getContracts() as $key => $contract) {
+                $payment = new Payment();
+                $payment->setDate(new \DateTime())->setUser($user)
+                    ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());
 
-                    $i++;
-                    if ($i <= $limit) {
-                        /** @var ContractFan $contract */
-                        $charges[$key] = \Stripe\Charge::create(array(
-                            // TODO assurer que cet amount ne peut pas être changé au cours du processus, par ex. avec un hach
-                            "amount" => $contract->getAmount() * 100,
-                            "currency" => "eur",
-                            "description" => "Paiement du contrat numéro " . $contract->getId(),
-                            "customer" => $stripe_customer->id
-                        ));
+                $contract_artist->addAmount($contract->getAmount());
 
-                        $contract_artist = $contract->getContractArtist();
-
-                        $payments[$key] = new Payment();
-                        $payments[$key]->setChargeId($charges[$key]->id)->setDate(new \DateTime())->setUser($user)
-                            ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());
-
-                        $contract_artist->addAmount($contract->getAmount());
-
-                        if ($contract_artist instanceof ContractArtist) {
-                            $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
-                        }
-
-                        $em->persist($payments[$key]);
-                        $em->flush();
-                    }
+                if ($contract_artist instanceof ContractArtist) {
+                    $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
                 }
+
+
+                /** @var ContractFan $contract */
+                $charge = \Stripe\Charge::create(array(
+                    // TODO assurer que cet amount ne peut pas être changé au cours du processus, par ex. avec un hach
+                    "amount" => $contract->getAmount() * 100,
+                    "currency" => "eur",
+                    "description" => "Paiement du contrat numéro " . $contract->getId(),
+                    "customer" => $stripe_customer->id
+                ));
+
+                $payment->setChargeId($charge->id);
+                $em->persist($payment);
 
                 $cart->setConfirmed(true)->setPaid(true);
                 $em->persist($cart);
 
                 $em->flush();
 
-                return $this->redirectToRoute('user_cart_payment_stripe_success', array());
+                return $this->redirectToRoute('user_cart_payment_stripe_success', array('id' => $contract_artist->getId()));
 
             } catch (\Stripe\Error\Card $e) {
                 $this->addFlash('error', 'Une erreur est survenue avec votre carte, veuillez réessayer');
@@ -148,6 +136,9 @@ class PaymentController extends Controller
                 $this->addFlash('error', 'Une erreur est survenue avec le système de paiement, veuillez réessayer (nous avons alerté les administrateurs de cette erreur, ils s\'en occupent au plus tôt');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             }
+            catch(\Exception $e) {
+                $this->addFlash('error', 'Une erreur est survenue');
+            }
         }
 
         return $this->render('@App/User/pay_cart.html.twig', array(
@@ -157,10 +148,10 @@ class PaymentController extends Controller
     }
 
     /**
-     * @Route("/cart/payment/success", name="user_cart_payment_stripe_success")
+     * @Route("/cart/payment/success/{id}", name="user_cart_payment_stripe_success")
      */
-    public function cartSuccessAction() {
+    public function cartSuccessAction(ContractArtist $contractArtist) {
         $this->addFlash('notice', 'Paiement reçu');
-        return $this->redirectToRoute('user_cart');
+        return $this->redirectToRoute('artist_contract', array('id' => $contractArtist->getId()));
     }
 }

@@ -17,9 +17,17 @@ class ContractFan
         return 'contrat fan #' . $this->id;
     }
 
-    public function __construct()
+    public function __construct(ContractArtist $ca)
     {
+        $this->contractArtist = $ca;
         $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
+
+        foreach($ca->getStep()->getCounterParts() as $cp) {
+            $purchase = new Purchase();
+            $purchase->setCounterpart($cp);
+            $this->addPurchase($purchase);
+        }
+
         $this->ticket_sent = false;
         $this->date = new \DateTime();
         $this->refunded = false;
@@ -73,7 +81,7 @@ class ContractFan
     private $contractArtist;
 
     /**
-     * @ORM\OneToMany(targetEntity="Purchase", mappedBy="contractFan", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="Purchase", mappedBy="contractFan", cascade={"all"})
      */
     private $purchases;
 
@@ -141,6 +149,7 @@ class ContractFan
     public function addPurchase(\AppBundle\Entity\Purchase $purchase)
     {
         $this->purchases[] = $purchase;
+        $purchase->setContractFan($this);
 
         return $this;
     }

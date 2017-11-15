@@ -1,12 +1,12 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-
-    <h1>Paniers payés</h1>
-    {% for cart in carts %}
-        <div style="border:1px solid black">
-            {% include "@App/Fan/cart_content.html.twig" %}
-        </div>
-    {% endfor %}
-
+    <div class="container">
+        <h3>Mes commandes</h3>
+        {% for cart in carts %}
+            <div class="paid_cart">
+                {% include "@App/Fan/cart_content.html.twig" with {'editable_cart': false} %}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

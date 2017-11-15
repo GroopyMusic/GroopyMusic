@@ -5,10 +5,13 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
+use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Hall;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
+use AppBundle\Form\ContractFanType;
 use AppBundle\Services\MailDispatcher;
 use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -23,6 +26,27 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class PublicController extends Controller
 {
+    // Duplicated from UserController
+    private function createCartForUser($user) {
+        $cart = new Cart();
+        $cart->setUser($user);
+        $this->getDoctrine()->getManager()->persist($cart);
+        return $cart;
+    }
+
+    private function cleanCart(Cart $cart, $em) {
+        if($cart->getPaid() && $cart->getConfirmed()) {
+            return $this->createCartForUser($cart->getUser());
+        }
+        else {
+            foreach($cart->getContracts() as $contract) {
+                $cart->removeContract($contract);
+                $em->remove($contract);
+            }
+            return $cart;
+        }
+    }
+
     /**
      * @Route("/test-mail", name="testmail")
      * @Security("has_role('ROLE_SUPER_ADMIN')")
@@ -202,11 +226,48 @@ class PublicController extends Controller
     /**
      * @Route("/crowdfunding-{id}", name="artist_contract")
      */
-    public function artistContractAction(ContractArtist $contract) {
-        // TODO secure
+    public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $cf = new ContractFan($contract);
+        $form = $this->createForm(ContractFanType::class, $cf);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) { // TODO && !$contract->isUncrowdable()
+
+            if($user == null) {
+                throw $this->createAccessDeniedException();
+            }
+
+            /** @var Cart $cart */
+            $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+
+            if($cart == null) {
+                $cart = $this->createCartForUser($user);
+            }
+            else {
+                $cart = $this->cleanCart($cart, $em);
+            }
+
+            foreach($cf->getPurchases() as $purchase) {
+                if($purchase->getQuantity() == 0) {
+                    $cf->removePurchase($purchase);
+                }
+            }
+            $cart->addContract($cf);
+
+            $em->flush();
+
+            return $this->render('@App/User/pay_cart.html.twig', array(
+                'cart' => $cart,
+                'error_conditions' => false,
+            ));
+        }
 
         return $this->render('@App/Public/artist_contract.html.twig', array(
             'contract' => $contract,
+            'form' => $form->createView(),
         ));
     }
 

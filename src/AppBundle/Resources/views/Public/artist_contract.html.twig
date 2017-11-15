@@ -43,24 +43,31 @@
                 </ul>
             </div>
 
-        <div class="col-xs-12 col-md-4">
-            {% if app.user %}
-                <div class="col-12">
-                    <h3 class="rounded-title">Acheter un ticket</h3>
-                </div>
-                    {% for article in contract.step.counterParts %}
-                        {% set tickets_left = contract.nbAvailable(article) %}
-                        {{ article.getName }} (prix : {{ article.price }} €, nombre restant : {{ tickets_left }}) :
-                        <select>
-                            {% set max_to_purchase = min(tickets_left, 10) %}
-                            {% for i in 0..max_to_purchase %}
-                                <option value="{{ i }}" {% if loop.first %}selected="selected"{% endif %}>{{ i }}</option>
-                            {% endfor %}
-                        </select>
-                        <button class="btn btn-primary add-to-cart-button" type="submit" counterpart="{{ article.id }}" contract="{{ contract.id }}" id="submit_counterpart_{{ article.id }}">Ajouter au panier</button>
-                        <br /><br />
+            <div class="col-xs-12 col-md-4">
+                {% if app.user %}
+                    {% set tickets_left = contract.step.maxTickets - contract.ticketsSold %}
+                    <div class="col-12">
+                        <h3 class="rounded-title">Acheter des tickets</h3>
+                        <p>Il reste encore {{ tickets_left }} tickets, faites votre choix !</p>
+                    </div>
+                    {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+                    {{ form_start(form) }}
+
+                    {% for purchase in form.purchases %}
+                        {% set counterpart = purchase.vars.value.counterpart %}
+                        <div class="counterpart-form">
+
+                            <div class="form-group">
+                                {{ form_errors(purchase) }}
+                                <label class="counterpart-label">{{ counterpart.name }} ({{ counterpart.price }}</label>
+                                <p>{{ counterpart.description|raw }}</p>
+                                {{ form_widget(purchase) }}
+                            </div>
+                        </div>
                     {% endfor %}
-            {% endif %}
+                    {{ form_widget(form.submit) }}
+                    {{ form_end(form) }}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -68,12 +75,11 @@
 {% endblock %}
 
 {% block js_vars %}
-    {% set path_artist = app.user.owns(contract.artist) ? path('artist_ajax_update_motivations', {'id': contract.artist.id}) : "" %}
+    {% set path_artist = app.user and app.user.owns(contract.artist) ? path('artist_ajax_update_motivations', {'id': contract.artist.id}) : "" %}
     <div id="modal-dialog">
     </div>
     <div
-        id="js-vars"
-        data-vars="{{ {'ajax_path_add_to_cart': path('user_ajax_add_to_cart'),
-                       'ajax_path_update_motivations': path_artist}|json_encode|e('html_attr') }}">
+            id="js-vars"
+            data-vars="{{ {'ajax_path_update_motivations': path_artist}|json_encode|e('html_attr') }}">
     </div>
 {% endblock %}

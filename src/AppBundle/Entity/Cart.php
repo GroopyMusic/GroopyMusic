@@ -25,6 +25,8 @@ class Cart
         $this->date_creation = new \Datetime();
     }
 
+
+
     public function isProblematic() {
         foreach($this->contracts as $contract) {
             $contract_artist = $contract->getContractArtist();
@@ -157,6 +159,7 @@ class Cart
     public function addContract(\AppBundle\Entity\ContractFan $contract)
     {
         $this->contracts[] = $contract;
+        $contract->setCart($this);
 
         return $this;
     }

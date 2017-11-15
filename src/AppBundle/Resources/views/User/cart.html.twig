@@ -8,31 +8,16 @@
         <div id="cart-content" class="row">
 
             <div class="col-12 col-md-8">
-            {% if cart.contracts is empty %}
-                <p>Il n'y a rien dans votre panier pour l'instant. C'est le moment de faire le tour des concerts à financer !</p>
-            {% else %}
                 {% include "@App/User/cart_content.html.twig" with {'editable_cart': true} %}
 
-                <p>Prix total du panier : {{ cart.amount }} €</p>
+                <p>Prix total : {{ cart.amount }} €</p>
             </div>
             <div class="col-12 col-md-4">
                 <h4 class="text-center">Vos options</h4>
-                <a class="btn btn-primary d-block mb-3" href="{{ path('user_cart_payment_stripe') }}">Payer le panier</a>
-                <button type="submit" class="btn btn-secondary d-block w-100" id="remove-all-from-cart">Remettre le panier à zéro</button>
-            {% endif %}
+                <a class="btn btn-primary d-block mb-3" href="{{ path('user_cart_payment_stripe') }}">Procéder au paiement</a>
+                <a href="{{ path('artist_contract', {'id': ccntract.id}) }}">Annuler</a>
             </div>
         </div>
-
-        {% block js_vars %}
-            <div id="modal-dialog">
-            </div>
-            <div
-                id="js-vars"
-                data-vars="{{ {'ajax_path_remove_all': path('user_ajax_remove_all_from_cart'),
-                               'ajax_path_remove_one': path('user_ajax_remove_from_contract')}|json_encode|e('html_attr') }}">
-            </div>
-        {% endblock %}
-
     </div>
 
 {% endblock %}
