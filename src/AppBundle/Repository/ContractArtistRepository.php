@@ -13,6 +13,19 @@ use AppBundle\Entity\Artist;
  */
 class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findNewContracts($max) {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.artist', 'a')
+            ->addSelect('a')
+            ->andWhere('a.deleted = 0')
+            ->andWhere('c.failed = 0')
+            ->orderBy('c.date', 'desc')
+            ->setMaxResults($max)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findSuccessful() {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.contractsFan', 'cf')
@@ -120,7 +133,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('a')
             ->addSelect('au')
             ->addSelect('s')
-            ->andWhere('c.failed = 0')
+            ->where('c.failed = 0')
             ->andWhere('c.successful = 0') // Not marked as successful yet
             ->andWhere('c.tickets_sold >= s.min_tickets')
             ->getQuery()

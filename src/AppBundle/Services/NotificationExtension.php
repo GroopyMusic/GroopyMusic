@@ -29,8 +29,16 @@ class NotificationExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('render_notification', array($this, 'render_notification')),
             new \Twig_SimpleFunction('preview_notification', array($this, 'preview_notification')),
+            new \Twig_SimpleFunction('preview_menu_notification', array($this, 'preview_menu_notification')),
             new \Twig_SimpleFunction('unseen_notifs_nb', array($this, 'unseen_notifs_nb')),
+            new \Twig_SimpleFunction('last_notifs', array($this, 'last_notifs')),
         );
+    }
+
+    // Returns last x notifs
+    public function last_notifs($x = 5) {
+        $user = $this->token_storage->getToken()->getUser();
+        return $this->em->getRepository('AppBundle:Notification')->findBy(['user' => $user], ['date' => 'desc'], $x);
     }
 
     public function render_notification(Notification $notification) {
@@ -41,6 +49,11 @@ class NotificationExtension extends \Twig_Extension
     public function preview_notification(Notification $notification) {
         $locale = $this->requestStack->getCurrentRequest()->getLocale();
         return $this->renderer->renderNotif($notification, $locale, true);
+    }
+
+    public function preview_menu_notification(Notification $notification) {
+        $locale = $this->requestStack->getCurrentRequest()->getLocale();
+        return $this->renderer->renderNotif($notification, $locale, false, true);
     }
 
     public function unseen_notifs_nb(User $user = null) {

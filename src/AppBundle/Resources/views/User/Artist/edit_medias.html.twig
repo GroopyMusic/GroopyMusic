@@ -7,11 +7,12 @@
     {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
 
     {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ form_row(form.videos) }}
+        {{ form_widget(form.submit) }}
     {{ form_rest(form) }}
 {% endblock  %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">um_collection({add:'<a href="#">Ajouter une vidéo</a>', remove:'<a href="#">Supprimer la vidéo</a>'});</script>
+    <script type="text/javascript">um_collection({add:'<a class="btn btn-secondary" href="#">Ajouter une vidéo</a>', remove:'<a class="danger-color" href="#">Supprimer la vidéo</a>'});</script>
 {% endblock %}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-02T13:14:48Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-14T11:58:39Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -566,9 +566,17 @@
         <source>/artist/{id}/all-contracts</source>
         <target>/artiste/{id}/crowdfundings</target>
       </trans-unit>
+      <trans-unit id="71e1fb487a78654de0f44ba5136e1a0b5284f211" resname="artist_edit_medias">
+        <source>/artist/{id}/edit-medias</source>
+        <target>/artist/{id}/medias</target>
+      </trans-unit>
       <trans-unit id="05e8c0be0d302313991bb72afc3d8392b1bc1cc8" resname="artist_edit_photos">
         <source>/artist/{id}/edit-photos</source>
         <target>/artiste/{id}/modifier-photos</target>
+      </trans-unit>
+      <trans-unit id="3152f026be4372b4a39cc7fe93f497ae7bec6583" resname="artist_edit_profilepic">
+        <source>/artist/{id}/edit-profile-picture</source>
+        <target>/artist/{id}/photo-de-profil</target>
       </trans-unit>
       <trans-unit id="4bdde5b0d7f719da74e204a351ed087fd620b2e8" resname="artist_leave">
         <source>/artist/{id}/leave</source>
@@ -690,6 +698,10 @@
         <source>/fp_js_form_validator/check_unique_entity</source>
         <target>/fp_js_form_validator/check_unique_entity</target>
       </trans-unit>
+      <trans-unit id="4b5fdc6e9d5042e74b6ba328922f6be5cf995bc9" resname="hall">
+        <source>/hall-{id}</source>
+        <target>/salle-{id}</target>
+      </trans-unit>
       <trans-unit id="568be0fa2023d1a447e7bd150dda7068ece26898" resname="homepage">
         <source>/</source>
         <target>/</target>
@@ -782,6 +794,10 @@
         <source>/test-mail</source>
         <target>/test-mail</target>
       </trans-unit>
+      <trans-unit id="e42c88b99d9215417146e97d04e8d4f705446ab9" resname="user_advanced_options">
+        <source>/advanced-options</source>
+        <target>/options-avancees</target>
+      </trans-unit>
       <trans-unit id="6b3012ba637e5006b35c20b4aa77d5360087fc00" resname="user_ajax_add_to_cart">
         <source>/api/add-to-cart</source>
         <target>/api/add-to-cart</target>
@@ -797,6 +813,10 @@
       <trans-unit id="5d040d256035ba8f6882515978fa0c64704c19b4" resname="user_cart">
         <source>/cart</source>
         <target>/panier</target>
+      </trans-unit>
+      <trans-unit id="358c3dda1dad22b74ae5ad9372cf0def8f74eb1f" resname="user_cart_3DS_payment_stripe">
+        <source>/secure-zone/cart/3DS/payment</source>
+        <target state="new">/secure-zone/cart/3DS/payment</target>
       </trans-unit>
       <trans-unit id="0c68d9bea72821aac4cd03238a1de097e725f528" resname="user_cart_payment_stripe">
         <source>/secure-zone/cart/payment</source>

@@ -1,8 +1,10 @@
 {% import "@App/Notifications/macros.html.twig" as macros %}
 
-{% set title, content = '', '' %}
-
-{% if preview %}
+{% if menu %}
+    {% block menu_preview %}
+        {{ macros.menu_preview(notification, title, content) }}
+    {% endblock %}
+{% elseif preview %}
     {% block preview %}
         {{ macros.preview(notification, title, content) }}
     {% endblock %}

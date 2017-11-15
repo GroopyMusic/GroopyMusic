@@ -4,7 +4,35 @@
 
 {% block artist_edit_profile_content %}
 
-    <p>Quitter l'artiste {{ artist.artistname }}</p>
-    {{ form(form) }}
+    <div class="modal fade" id="leaveArtistModal" tabindex="-1" role="dialog" aria-labelledby="leaveArtistModalLabel" aria-hidden="true">>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>Attention, cette action est irréversible !</p>
+                    {% if lastOne %}
+                        <p class="alert alert-warning">Vous êtes le dernier propriétaire de {{ artist.artistname }}. Si vous poursuivez, l'artiste sera supprimé du catalogue de la plateforme.</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    {{ form_start(form) }}
+                    {{ form_widget(form.confirm) }}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Options avancées</h3>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+    <input id="checkbox-leave-artist" class="mr-3" type="checkbox" data-toggle="collapse" data-target="#collapse-leave-artist"/><label for="checkbox-leave-artist">Je souhaite quitter la gestion de {{ artist.artistname }}</label>
+
+    <div class="collapse" id="collapse-leave-artist">
+        <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaveArtistModal">
+            Quitter {{ artist.artistname }}
+        </button>
+    </div>
 
 {% endblock %}

@@ -79,7 +79,10 @@ class ArtistType extends AbstractType
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ]
             ))
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, array(
+                'label' => 'Valider',
+                'attr' => ['class' => 'btn btn-primary']
+            ))
         ;
     }
 

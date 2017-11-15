@@ -1,4 +1,8 @@
 {% extends "AppBundle:Notifications:base.html.twig" %}
 
-{% set title = '' %}
-{% set content = '' %}
+{% set title = 'Votre concert va être organisé !' %}
+{%- set content -%}
+    <p>
+        Félicitations, le concert de {{ contract.artist.artistName }} a atteint suffisamment de fans pour être produit !
+    </p>
+{%- endset -%}

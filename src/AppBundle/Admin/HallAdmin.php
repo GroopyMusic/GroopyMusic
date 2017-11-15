@@ -61,7 +61,7 @@ class HallAdmin extends PartnerAdmin  {
                 ->add('available_dates_string', 'text', array(
                     'label' => 'Dates disponibles (calculé automatiquement mais modifiable)',
                 ))
-                ->add('technical_specs', null, array(
+                ->add('technicalSpecsName', 'text', array(
                     'label' => 'Spécifications techniques (PDF)',
                     'template' => 'AppBundle:Admin/Hall:technical_specs.html.twig',
                 ))

@@ -1,5 +1,8 @@
 {% extends "base.html.twig" %}
 
+{% set owns = app.user is not null ? app.user.owns(contract.artist) : false %}
+{% set state = contract.state %}
+
 {% block body %}
 
     <div class="container">
@@ -15,6 +18,23 @@
                 {% endif #}
 
                 <ul>
+                    <li> État du crowdfunding :
+                        {% if state == 'state.success' %}
+                            <div class="success">Passé (réussi)</div>
+                        {% elseif state == 'state.refunded' %}
+                            <div>Annulé</div>
+                        {% elseif state == 'state.failed' %}
+                            <div>Objectif non atteint</div>
+                        {% elseif state == 'state.success-ongoing' %}
+                            <div class="success">Objectif atteint ; places encore en vente !</div>
+                        {% elseif state == 'state.success-soldout' %}
+                            <div class="success">Objectif atteint (SOLD OUT)</div>
+                        {% elseif state == 'state.ongoing' %}
+                            <div>En cours</div>
+                        {% elseif state == 'state.pending' %}
+                            <div>En attente de confirmation d'un administrateur</div>
+                        {% endif %}
+                    </li>
                     <li>
                         Date de début du contrat : {{ contract.date|date('d/m/Y') }}
                     </li>
@@ -25,12 +45,15 @@
                         Palier : {{ contract.step.getName }}
                     </li>
                     <li>
+                        Province : {{ contract.province }}
+                    </li>
+                    <li>
                         Tickets vendus : {{ contract.ticketsSold }} / {{ contract.step.minTickets }}
                     </li>
 
                     {% if contract.motivations is not empty %}
                         <li>
-                            {% if app.user.owns(contract.artist) %}
+                            {% if owns %}
                                 <textarea id="motivations-textarea">{#
                                     #}{{ contract.motivations }}{#
                                 #}</textarea>
@@ -42,9 +65,8 @@
                     {% endif %}
                 </ul>
             </div>
-
             <div class="col-xs-12 col-md-4">
-                {% if app.user %}
+                {% if state not in contract.uncrowdableStates %}
                     {% set tickets_left = contract.step.maxTickets - contract.ticketsSold %}
                     <div class="col-12">
                         <h3 class="rounded-title">Acheter des tickets</h3>
@@ -65,17 +87,21 @@
                             </div>
                         </div>
                     {% endfor %}
-                    {{ form_widget(form.submit) }}
+                    {% if app.user %}
+                        {{ form_widget(form.submit) }}
+                    {% endif %}
                     {{ form_end(form) }}
                 {% endif %}
-            </div>
-        </div>
+                {% if not app.user %}
+                    <p class="text-italic">Vous devez être connecté pour acheter des tickets ! <a href="{{ path('fos_user_registration_register') }}">Pas encore inscrit ?</a></p>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</button>
+                {% endif %}
     </div>
 
 {% endblock %}
 
 {% block js_vars %}
-    {% set path_artist = app.user and app.user.owns(contract.artist) ? path('artist_ajax_update_motivations', {'id': contract.artist.id}) : "" %}
+    {% set path_artist = owns ? path('artist_ajax_update_motivations', {'id': contract.artist.id}) : "" %}
     <div id="modal-dialog">
     </div>
     <div

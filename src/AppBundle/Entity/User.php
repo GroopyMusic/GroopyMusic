@@ -26,7 +26,7 @@ class User extends BaseUser implements RecipientInterface
     {
         parent::__construct();
         $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY); // For Azine but not actually used
-        $this->setNewsletter(true);
+        $this->setNewsletter(false);
         $this->credits = 0;
         $this->addRole("ROLE_FAN");
         $this->inscription_date = new \DateTime();

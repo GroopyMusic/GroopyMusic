@@ -197,10 +197,10 @@ class ArtistController extends Controller
                 $em->flush();
 
                 if($lastOne) {
-                    $this->addFlash('notice', 'Bien reçu. Vous êtiez le dernier propriétaire de ' . $artist->getArtistname() . ' donc l\'artiste a été supprimé.');
+                    $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname() . '. Vous êtiez le dernier propriétaire de ' . $artist->getArtistname() . ' donc l\'artiste a été supprimé.');
                 }
                 else {
-                    $this->addFlash('notice', 'Bien reçu.');
+                    $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname());
                 }
                 return $this->redirectToRoute('homepage');
             }
@@ -242,10 +242,21 @@ class ArtistController extends Controller
     /**
      * @Route("/edit-medias", name="artist_edit_medias")
      */
-    public function editMediasAction(UserInterface $user, Artist $artist) {
+    public function editMediasAction(Request $request, UserInterface $user, Artist $artist) {
         $this->assertOwns($user, $artist);
 
         $form = $this->createForm(ArtistMediasType::class, $artist);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($artist);
+            $em->flush();
+
+            $this->addFlash('notice', 'Les modifications ont bien été enregistrées.');
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
 
         return $this->render('@App/User/Artist/edit_medias.html.twig', array(
             'artist' => $artist,
