@@ -3,72 +3,93 @@
 {% block body %}
 
     <div class="container">
-        <h3>Payer le contenu du panier</h3>
 
-        <p>
-            Bienvenue dans l'espace sécurisé d'Un-Mute, {{ app.user.firstname }}. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
-            vous ont convaincu lors de votre visite.
-        </p>
+        <h3>Paiement de votre commande</h3>
+        <div id="payment-intro">
+            <p>
+                Bienvenue dans l'espace sécurisé d'Un-Mute, {{ app.user.firstname }}. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
+                vous ont convaincu lors de votre visite.
+            </p>
 
 
-        <p>Votre panier est constitué des éléments suivants :</p>
+            <p>Vous avez décidé de commander les éléments suivants :</p>
 
-        {% include "@App/User/cart_content.html.twig" with {'editable_cart': false} %}
+            {% include "@App/User/cart_content.html.twig" with {'editable_cart': false} %}
 
-        <p>
-            En procédant au paiement de votre panier, vous assurez avoir lu les <a target="_blank" href="{{ path('conditions') }}">conditions d'utilisation</a>.
-            Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez de producteurs qui soutiennent cet artiste.
-            Sinon, si cet événement a assez de succès, vous recevrez vos tickets par mail, et sur Un-Mute, quelques jours avant le concert.
-        </p>
+            <p>
+                En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="{{ path('conditions') }}">conditions d'utilisation</a>.
+                Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres producteurs qui soutiennent cet artiste.
+                Sinon, si cet événement a assez de succès, vous recevrez vos tickets par mail, et sur Un-Mute, quelques jours avant le concert.
+                Dans le cas où l'artiste a déjà atteint le seuil de réussite du concert, alors vous recevrez vos tickets par e-mail dans la journée.
+            </p>
+        </div>
 
-        <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
+        <div class="row">
 
-            <div class="form-row">
-                {% if error_conditions %}
-                    <p class="alert alert-danger">Vous devez accepter les conditions d'utilisation pour continuer.</p>
-                {% endif %}
-                <label for="accept_conditions" class="pr-3">J'ai lu et j'accepte</label> <input id="accept_conditions" name="accept_conditions" type="checkbox" />
+            <div class="col-12">
+                <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
+                    <div class="form-row">
+                        {% if error_conditions %}
+                            <p class="alert alert-danger">Vous devez accepter les conditions d'utilisation pour continuer.</p>
+                        {% endif %}
+                        <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
+                            <input type="checkbox" id="accept_conditions" name="accept_conditions" class="custom-control-input">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">J'accepte les conditions d'utilisation et je souhaite procéder au paiement</span>
+                        </label>
+                    </div>
+
+                    <div class="form-row" id="card-form-row">
+                        <div class="form-row form-group">
+                            <div class="col-12">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="payment-method" value="credit-card" class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Carte de crédit</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="payment-method" value="debit-card" class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Bancontact</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="credit-card" class="form-row payment-method w-100" style="display:none;">
+                            <div class="col-12">
+                                <h5>
+                                    Carte de crédit <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.">+ d'infos</a>
+                                </h5>
+                                <p>Veuillez entrer votre numéro de carte de crédit, sa date d'expiration, ainsi que le cryptogramme visuel.</p>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <div id="card-element">
+                                    <!-- a Stripe Element will be inserted here. -->
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <input type="submit" class="btn btn-primary mt-3" value="Payer avec ma carte de crédit" />
+                            </div>
+                        </div>
+
+                        <div id="debit-card" class="payment-method w-100" style="display:none;">
+                            <h5>
+                               Payer par Bancontact <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.">+ d'infos</a>
+                            </h5>
+                            <p>Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.</p>
+                            <div id="bc-card-element">
+                                <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
+                                    Poursuivre avec Bancontact
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-row" id="card-form-row">
+        </div>
 
-                <div class="form-row form-group">
-                    <div class="col-12">
-                        <input type="radio" name="payment-method" value="credit-card">Carte de crédit
-                    </div>
-                    <div class="col-12">
-                        <input type="radio" name="payment-method" value="debit-card">Bancontact
-                    </div>
-                </div>
-
-
-                <div id="credit-card" class="payment-method w-100" style="display:none;">
-                    <label for="card-element">
-                        Carte de crédit <button data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Les cartes autorisées sont les cartes de crédit et de débit.">??</button>
-
-                    </label>
-                    <div id="card-element">
-                        <!-- a Stripe Element will be inserted here. -->
-                    </div>
-                </div>
-
-                <div id="debit-card" class="payment-method w-100" style="display:none;">
-                    <label for="bc-card-element">
-                        Carte Bancontact <button data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Les cartes autorisées sont les cartes de crédit et de débit.">??</button>
-                    </label>
-                    <div id="bc-card-element">
-                        <button id="choose-bancontact">
-                            Payer par Bancontact
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Used to display Element errors -->
-                <div class="stripe-error alert alert-danger" role="alert"></div>
-            </div>
-
-            <input type="submit" class="btn btn-primary mt-3" value="Payer le panier" />
-        </form>
-
+        <!-- Used to display Element errors -->
+        <div class="stripe-error alert alert-danger" role="alert"></div>
         <div>
             {{ utils.hidden_loader() }}
         </div>
@@ -92,6 +113,7 @@
         });
 
         $('input[type=radio]').change(function() {
+            hideError();
             if ($(this).val() == 'debit-card') {
                 $('.payment-method').hide();
                 $('#debit-card').show();
@@ -104,12 +126,17 @@
 
         var stripe = Stripe('pk_test_X1amQwEQval7q4Ay1po0QOXe');
         var elements = stripe.elements();
-
         // set publishable key for V2
         Stripe.setPublishableKey('pk_test_X1amQwEQval7q4Ay1po0QOXe');
 
+        var card = elements.create('card', {
+            hidePostalCode: true
+        });
+        card.mount('#card-element');
+
         $('#choose-bancontact').click(function(e) {
             e.preventDefault();
+            displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
 
             stripe.createSource({
                 type: 'bancontact',
@@ -123,45 +150,17 @@
                     email: '{{ app.user.email }}'
                 },
                 redirect: {
-                    return_url: 'https://un-mute.be/'
-                }
+                    return_url: '{{ absolute_url(path('user_cart_payment_pending')) }}'
+                },
+                statement_descriptor: 'Achat Un-Mute - contrat {{ contract_fan.id }}'
             }).then(function(result) {
-                displayLoader();
-                hideError();
-                Stripe.source.poll(
-                    result.source.id,
-                    result.source.client_secret,
-                    onChargeableBC);
-
-                $.featherlight({
-                    iframe: result.source.redirect.url,
-                    iframeWidth: '800',
-                    iframeHeight: '600'
-                });
+                on3DSSource(result);
             });
         });
 
-        var card = elements.create('card', {
-            hidePostalCode: true,
-            style: {
-                base: {
-                    iconColor: '#666EE8',
-                    color: '#31325F',
-                    lineHeight: '40px',
-                    fontWeight: 300,
-                    fontFamily: 'Helvetica Neue',
-                    fontSize: '15px',
-
-                    '::placeholder': {
-                        color: '#CFD7E0',
-                    }
-                }
-            }
-        });
-        card.mount('#card-element');
-
         function onToken(result) {
             if (result.token) {
+                console.log('RESULT', result);
                 Stripe.source.create({
                     type: 'card',
                     token: result.token.id
@@ -173,14 +172,15 @@
         }
 
         function onCardSource(status, result) {
-
             if(result.error) {
                 displayForm();
                 displayError(result.error.message);
             }
 
+            console.log('result', result);
             if(result.card.three_d_secure == 'required') {
-                Stripe.source.create({
+                displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
+                stripe.createSource({
                     type: 'three_d_secure',
                     amount: {{ cart.amount * 100 }},
                     currency: "eur",
@@ -188,65 +188,44 @@
                         card: result.id
                     },
                     redirect: {
-                        return_url: "https://jsfiddle.net/"
+                        return_url: '{{ absolute_url(path('user_cart_payment_pending')) }}'
                     }
-                }, on3DSSource);
+                }).then(function(result) {on3DSSource(result)});
             }
             else {
                 stripeTokenHandler(result);
             }
         }
 
-        function on3DSSource(status, result) {
+        function on3DSSource(result) {
             hideError();
-
-            console.log('3D Secure Source:', result);
-
             Stripe.source.poll(
-                result.id,
-                result.client_secret,
-                onChargeable);
+                    result.source.id,
+                    result.source.client_secret,
+                    onChargeable3DS);
 
             $.featherlight({
-                iframe: result.redirect.url,
-                iframeWidth: '800',
-                iframeHeight: '600'
-              });
+                iframe: result.source.redirect.url
+            });
+            displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
+
+            $('#payment-intro').hide();
         }
 
-        function onChargeable(status, source) {
-
+        function onChargeable3DS(status, source) {
             if (source.status == 'chargeable') {
                 $.featherlight.current().close();
                 stripeTokenHandler(source);
             }
             else if (source.status == 'failed') {
                 $.featherlight.current().close();
-                displayError('3D Secure authentication failed.');
+                displayError("L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href=\"{{ path('artist_contract', {'id': contract_fan.contractArtist.id}) }}\">ici</a> pour revenir en arrière. ");
             }
             else if (source.status != 'pending') {
                 $.featherlight.current().close();
-                displayError("Unexpected 3D Secure status: " + source.status);
+                displayError("Une erreur inconnue s'est produite lors de l'authentification 3D Secure : " + source.status);
             }
         }
-
-        function onChargeableBC(status, source) {
-            if (source.status == 'chargeable') {
-                $.featherlight.current().close();
-                alert('chargeable');
-                stripeTokenHandler(source);
-            }
-            else if (source.status == 'failed') {
-                $.featherlight.current().close();
-                displayError('3D Secure authentication failed.');
-            }
-            else if (source.status != 'pending') {
-                $.featherlight.current().close();
-                displayError("Unexpected 3D Secure status: " + source.status);
-            }
-        }
-
-        card.on('change', onToken);
 
         $('#payment-form').submit(function(e) {
             e.preventDefault();
@@ -259,10 +238,17 @@
             stripe.createToken(card, extraDetails).then(onToken);
         });
 
-        function displayLoader() {
+        function displayLoader(html) {
             $('.loader').show();
             $('form').hide();
             hideError();
+            if(html) {
+                $('#loader-explanation').show();
+                $('#loader-explanation').html(html);
+            }
+            else {
+                $('#loader-explanation').hide();
+            }
         }
 
         function displayForm() {
@@ -270,9 +256,11 @@
             $('.loader').hide();
         }
 
-        function displayError(txt) {
-            $('.stripe-error').text(txt);
+        function displayError(html) {
+            $('.stripe-error').html(html);
             $('.stripe-error').show();
+            $('.loader').hide();
+            $('#loader-explanation').hide();
         }
 
         function hideError() {
@@ -280,6 +268,10 @@
         }
 
         function stripeTokenHandler(source) {
+
+            $('#payment-intro').hide();
+            displayLoader("Paiement en cours...<b>Ne quittez pas cette page</b>");
+
             // Insert the token ID into the form so it gets submitted to the server
             var form = document.getElementById('payment-form');
             var hiddenInput = document.createElement('input');

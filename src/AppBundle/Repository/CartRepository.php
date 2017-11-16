@@ -12,6 +12,18 @@ use AppBundle\Entity\User;
  */
 class CartRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findConfirmedForUser(User $user) {
+        return $this->createQueryBuilder('c')
+            ->join('c.contracts', 'cf')
+            ->orderBy('cf.date', 'desc')
+            ->where('c.user = :user')
+            ->andWhere('c.confirmed = 1')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findCurrentForUser(User $user) {
         return $this->createQueryBuilder('c')
             ->where('c.user = :user')

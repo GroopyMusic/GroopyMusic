@@ -7,6 +7,7 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Services\MailDispatcher;
+use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -23,15 +24,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class PaymentController extends Controller
 {
     /**
-     * @Route("/cart/3DS/payment", name="user_cart_3DS_payment_stripe")
-     */
-    public function ThreeDSAction($source, $user) {
-
-
-
-    }
-
-    /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
     public function cartAction(Request $request,UserInterface $user)
@@ -40,11 +32,14 @@ class PaymentController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-        /** @var Cart $cart */
 
+        /** @var Cart $cart */
         if ($cart == null || count($cart->getContracts()) == 0) {
             throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
         }
+
+        /** @var ContractFan $contract */
+        $contract = $cart->getFirst();
 
         if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
 
@@ -72,6 +67,8 @@ class PaymentController extends Controller
 
             // Charge the user's card:
             try {
+                /*3DSecure doesn't work with this :
+
                 try {
                     if ($user->getStripeCustomerId() != null) {
                         throw new \Exception();
@@ -87,9 +84,8 @@ class PaymentController extends Controller
                     ));
 
                     $user->setStripeCustomerId($stripe_customer->id);
-                }
+                }*/
 
-                $contract = $cart->getContracts()->first();
                 $contract_artist = $contract->getContractArtist();
 
                 $payment = new Payment();
@@ -103,13 +99,12 @@ class PaymentController extends Controller
                 }
 
 
-                /** @var ContractFan $contract */
                 $charge = \Stripe\Charge::create(array(
                     // TODO assurer que cet amount ne peut pas être changé au cours du processus, par ex. avec un hach
                     "amount" => $contract->getAmount() * 100,
                     "currency" => "eur",
                     "description" => "Paiement du contrat numéro " . $contract->getId(),
-                    "customer" => $stripe_customer->id
+                    "source" => $source,
                 ));
 
                 $payment->setChargeId($charge->id);
@@ -120,38 +115,65 @@ class PaymentController extends Controller
 
                 $em->flush();
 
-                return $this->redirectToRoute('user_cart_payment_stripe_success', array('id' => $contract_artist->getId()));
+                return $this->redirectToRoute('user_cart_payment_stripe_success', array('id' => $contract->getId()));
 
             } catch (\Stripe\Error\Card $e) {
                 $this->addFlash('error', 'Une erreur est survenue avec votre carte, veuillez réessayer');
+                $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\RateLimit $e) {
                 $this->addFlash('error', 'Trop de requêtes simultanées, veuillez réessayer');
+                $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\InvalidRequest $e) {
                 $this->addFlash('error', 'Paramètres invalides, veuillez réessayer');
+                $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\Authentication $e) {
                 $this->addFlash('error', "L'authentification Stripe a échoué, veuillez réessayer");
+                $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\ApiConnection $e) {
                 $this->addFlash('error', 'Une erreur est survenue avec le système de paiement, veuillez réessayer');
+                $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\Base $e) {
                 $this->addFlash('error', 'Une erreur est survenue avec le système de paiement, veuillez réessayer (nous avons alerté les administrateurs de cette erreur, ils s\'en occupent au plus tôt');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             }
             catch(\Exception $e) {
                 $this->addFlash('error', 'Une erreur est survenue');
+                $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             }
         }
 
         return $this->render('@App/User/pay_cart.html.twig', array(
             'cart' => $cart,
             'error_conditions' => isset($_POST['accept_conditions']) && !$_POST['accept_conditions'],
+            'contract_fan' => $contract,
         ));
     }
 
     /**
      * @Route("/cart/payment/success/{id}", name="user_cart_payment_stripe_success")
      */
-    public function cartSuccessAction(ContractArtist $contractArtist) {
-        $this->addFlash('notice', 'Paiement reçu');
-        return $this->redirectToRoute('artist_contract', array('id' => $contractArtist->getId()));
+    public function cartSuccessAction(ContractFan $cf) {
+        $this->addFlash('notice', 'Votre paiement a bien été reçu. Vous allez recevoir un récapitulatif par e-mail. Vos tickets vous seront envoyés si l\'artiste ' . $cf->getContractArtist()->getArtist()->getArtistname() . ' parvient à débloquer ce concert.');
+
+        $cf->generateBarCode();
+        $order_html = $this->get('twig')->render('AppBundle:PDF:order.html.twig', array('cf' => $cf));
+        $html2pdf = new Html2Pdf();
+        $html2pdf->writeHTML($order_html);
+        $html2pdf->output($cf->getPdfPath(), 'F');
+
+        $this->get(MailDispatcher::class)->sendOrderRecap($cf);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($cf);
+        $em->flush();
+
+        return $this->redirectToRoute('user_paid_carts');
+    }
+
+    /**
+     * @Route("/cart/payment/pending", name="user_cart_payment_pending")
+     */
+    public function cartPendingAction() {
+        return $this->render('@App/User/threeds_pending.html.twig');
     }
 }

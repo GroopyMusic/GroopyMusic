@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-14T11:58:39Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-16T08:42:58Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -816,15 +816,15 @@
       </trans-unit>
       <trans-unit id="358c3dda1dad22b74ae5ad9372cf0def8f74eb1f" resname="user_cart_3DS_payment_stripe">
         <source>/secure-zone/cart/3DS/payment</source>
-        <target state="new">/secure-zone/cart/3DS/payment</target>
+        <target>/secure-zone/cart/3DS/payment</target>
       </trans-unit>
       <trans-unit id="0c68d9bea72821aac4cd03238a1de097e725f528" resname="user_cart_payment_stripe">
         <source>/secure-zone/cart/payment</source>
         <target>/zone-securisee/panier/paiement</target>
       </trans-unit>
       <trans-unit id="b30cefc482fd4cc548872875a381ef14a9201c3c" resname="user_cart_payment_stripe_success">
-        <source>/secure-zone/cart/payment/success</source>
-        <target>/zone-securisee/panier/paiement-reussi</target>
+        <source>/secure-zone/cart/payment/success/{id}</source>
+        <target>/zone-securisee/panier/paiement-reussi/{id}</target>
       </trans-unit>
       <trans-unit id="4c33bd738004c7093beb1b3266b8e5fca0378122" resname="user_change_email">
         <source>/change-email</source>

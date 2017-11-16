@@ -25,7 +25,22 @@ class Cart
         $this->date_creation = new \Datetime();
     }
 
+    public function getFirst() {
+        return $this->contracts->first();
+    }
 
+    // For single-contract cart
+    public function getState() {
+        $contractFan = $this->contracts->first();
+
+        if($contractFan->getRefunded()) {
+            return 'Remboursé';
+        }
+
+        else {
+            return 'Payé';
+        }
+    }
 
     public function isProblematic() {
         foreach($this->contracts as $contract) {

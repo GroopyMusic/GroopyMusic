@@ -88,7 +88,7 @@ class UserController extends Controller
      */
     public function paidCartsAction(UserInterface $user) {
         $em = $this->getDoctrine()->getManager();
-        $carts = $em->getRepository('AppBundle:Cart')->findBy(array('user' => $user, 'confirmed' => true));
+        $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
 
         return $this->render('@App/User/paid_carts.html.twig', array(
             'carts' => $carts,

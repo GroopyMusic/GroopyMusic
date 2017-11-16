@@ -49,6 +49,7 @@ class TicketingCommand extends ContainerAwareCommand
 
                         $cf->generateBarCode();
 
+                        // TODO should be per person
                         $ticket_html = $this->getContainer()->get('twig')->render('AppBundle:PDF:ticket.html.twig', array('contractFan' => $cf, 'contractArtist' => $sc));
                         $mailer->sendTicket($ticket_html, $cf, $sc);
 

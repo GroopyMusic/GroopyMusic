@@ -3,10 +3,47 @@
 {% block body %}
     <div class="container">
         <h3>Mes commandes</h3>
-        {% for cart in carts %}
-            <div class="paid_cart">
-                {% include "@App/Fan/cart_content.html.twig" with {'editable_cart': false} %}
-            </div>
-        {% endfor %}
+        <table class="table table-hover">
+            {% if carts is empty %}
+                <tr>
+                    <td>Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="{{ path('catalog_artists') }}">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !</td>
+                </tr>
+            {% else %}
+                <thead class="thead-light">
+                    <tr>
+                        <th>
+                            Détails de la commande
+                        </th>
+                        <th>
+                            État
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            PDF
+                        </th>
+                    </tr>
+                </thead>
+                {% for cart in carts %}
+                    <tr class="paid_cart">
+                        <td>
+                            {% include "@App/User/cart_content.html.twig" with {'editable_cart': true} %}
+                        </td>
+                        <td>
+                            {{ cart.state }}
+                        </td>
+                        <td>
+                            {{ cart.first.date|date('d/m/Y H:i:s') }}
+                        </td>
+                        <td>
+                            <a href="{{ asset(cart.first.pdfPath) }}"
+                               download="um_commande_{{ cart.first.id }}.pdf">PDF</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+
     </div>
 {% endblock %}

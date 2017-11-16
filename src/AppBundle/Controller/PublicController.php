@@ -262,6 +262,7 @@ class PublicController extends Controller
             return $this->render('@App/User/pay_cart.html.twig', array(
                 'cart' => $cart,
                 'error_conditions' => false,
+                'contract_fan' => $cf,
             ));
         }
 

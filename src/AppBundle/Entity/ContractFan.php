@@ -34,7 +34,11 @@ class ContractFan
     }
 
     public function generateBarCode() {
-        $this->barcode_text = 'c'.$this->id . uniqid();
+        $this->barcode_text = 'cf'.$this->id . uniqid();
+    }
+
+    public function getPdfPath() {
+        return 'pdf/orders/'.$this->getBarcodeText().'.pdf';
     }
 
     public function getAmount() {
@@ -108,6 +112,11 @@ class ContractFan
      * @ORM\Column(name="refunded", type="boolean")
      */
     private $refunded;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="contractFan")
+     */
+    private $payment;
 
     /**
      * Get id

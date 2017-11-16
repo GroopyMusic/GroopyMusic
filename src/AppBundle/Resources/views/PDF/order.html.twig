@@ -1,0 +1,31 @@
+<h1>Récapitulatif de votre commande</h1>
+
+<ul>
+    <li>Date : {{ cf.date|date('d/m/Y H:i:s') }}</li>
+    <li>Montant total : {{ cf.amount }} €</li>
+    <li>Nombre de tickets achetés : {{ cf.counterPartsQuantity }}</li>
+    <li>Evénement soutenu : {{ cf.contractArtist }}</li>
+</ul>
+
+<h2>Détails de la commande</h2>
+
+<table>
+    <tr>
+        <th>Article</th>
+        <th>Quantité</th>
+        <th>Prix</th>
+    </tr>
+    {% for purchase in cf.purchases %}
+        <tr>
+            <td>
+                {{ purchase.counterpart.name }}
+            </td>
+            <td>
+                {{ purchase.quantity }}
+            </td>
+            <td>
+                {{ purchase.amount }}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

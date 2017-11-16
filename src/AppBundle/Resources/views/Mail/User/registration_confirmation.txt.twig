@@ -1,9 +1,6 @@
-
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
-
-{% block subject %}{% set subject = "Confirmez votre inscription" %}
-                    {{ parent() }}{% endblock %}
+{% block subject %}{{ subject }}{% endblock %}
 
 {% autoescape false %}
 

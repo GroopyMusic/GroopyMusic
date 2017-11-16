@@ -9,8 +9,9 @@
     {% endif %}
 {% endmacro %}
 
-{% macro hidden_loader() %}
-    <div class="loader" style="display:none;">
+{% macro hidden_loader(hidden=true) %}
+    <p id="loader-explanation"></p>
+    <div class="loader"{% if hidden %} style="display:none;"{% endif %}>
         <div class="loader">
             <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
             </svg>

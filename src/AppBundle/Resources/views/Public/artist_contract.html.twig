@@ -45,7 +45,7 @@
                         Palier : {{ contract.step.getName }}
                     </li>
                     <li>
-                        Province : {{ contract.province }}
+                        Province : {{ contract.province ?: 'Sans préférence' }}
                     </li>
                     <li>
                         Tickets vendus : {{ contract.ticketsSold }} / {{ contract.step.minTickets }}
@@ -53,7 +53,7 @@
 
                     {% if contract.motivations is not empty %}
                         <li>
-                            {% if owns %}
+                            {% if owns and state not in contract.uncrowdableStates %}
                                 <textarea id="motivations-textarea">{#
                                     #}{{ contract.motivations }}{#
                                 #}</textarea>
@@ -81,7 +81,7 @@
 
                             <div class="form-group">
                                 {{ form_errors(purchase) }}
-                                <label class="counterpart-label">{{ counterpart.name }} ({{ counterpart.price }}</label>
+                                <label class="counterpart-label">{{ counterpart.name }} ({{ counterpart.price }} €)</label>
                                 <p>{{ counterpart.description|raw }}</p>
                                 {{ form_widget(purchase) }}
                             </div>
@@ -96,6 +96,8 @@
                     <p class="text-italic">Vous devez être connecté pour acheter des tickets ! <a href="{{ path('fos_user_registration_register') }}">Pas encore inscrit ?</a></p>
                     <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</button>
                 {% endif %}
+            </div>
+        </div>
     </div>
 
 {% endblock %}

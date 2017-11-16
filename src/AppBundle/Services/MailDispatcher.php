@@ -14,6 +14,7 @@ use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class MailDispatcher
 {
@@ -31,8 +32,9 @@ class MailDispatcher
     private $translator;
     private $notification_dispatcher;
     private $em;
+    private $kernel;
 
-    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name)
+    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel)
     {
         $this->mailer = $mailer;
         $this->translator = $translator;
@@ -40,6 +42,7 @@ class MailDispatcher
         $this->em = $em;
         $this->from_address = $from_address;
         $this->from_name = $from_name;
+        $this->kernel = $kernel;
     }
 
     private function sendEmail($template, $subject, array $params, $bcc_emails, array $attachments = [], $to = self::TO, $to_name = '') {
@@ -143,6 +146,18 @@ class MailDispatcher
         $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days);
     }
 
+    public function sendOrderRecap(ContractFan $contractFan) {
+        // TODO should be another way of getting pdf path
+        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '\..\web\pdf\orders\\' . $contractFan->getBarcodeText().'.pdf'];
+
+        $to = $contractFan->getFan()->getEmail();
+        $toName = $contractFan->getFan()->getDisplayName();
+        $subject = "Votre commande sur Un-Mute.be";
+        $params = [];
+
+        $this->sendEmail(MailTemplateProvider::ORDER_RECAP_TEMPLATE, $subject, $params, [], $attachments, $to, $toName);
+    }
+
     public function sendTicket($ticket_html, ContractFan $contractFan) {
         $html2pdf = new Html2Pdf();
         $html2pdf->writeHTML($ticket_html);
@@ -172,8 +187,8 @@ class MailDispatcher
     }
 
     public function sendAdminStripeError(\Stripe\Error\Base $e, User $user, Cart $cart) {
-        $subject = "Payeur énorme spotted";
-        $params = ['stripe_error' => $e];
+        $subject = "Erreur lors d'un paiement Stripe";
+        $params = ['stripe_error' => $e, 'user' => $user, 'cart' => $cart];
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_STRIPE_ERROR_TEMPLATE, $subject, $params);
     }
 }

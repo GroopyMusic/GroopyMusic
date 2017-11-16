@@ -42,6 +42,7 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="{{ path('user_my_artists') }}">Mes artistes</a>
                     <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">Mon profil</a>
+                    <a class="dropdown-item" href="{{ path('user_paid_carts') }}">Mes commandes</a>
                     {#<a class="dropdown-item" href="{{ path('user_cart') }}">Panier</a>#}
                     {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
                     <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
