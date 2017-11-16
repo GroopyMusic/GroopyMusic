@@ -60,9 +60,9 @@ class UserController extends Controller
         $em->persist($notif);
         $em->flush();
 
-        return $this->render('@App/User/notification.html.twig', array(
+        return new Response($this->renderView('@App/User/notification.html.twig', array(
             'notif' => $notif,
-        ));
+        )));
     }
 
     /**

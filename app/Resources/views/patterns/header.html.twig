@@ -24,9 +24,21 @@
                     {% endif %}
                 </a>
                 {% if last_notifs is not empty %}
+                    <div class="modal fade" id="notifs-modal" tabindex="-1" role="dialog" aria-labelledby="notifs-modal-label" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="modal-body">
+                                    {{ utils.hidden_loader(false) }}
+                                    <div id="notifs-modal-content"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <ul class="dropdown-menu notifications-menu-preview" role="menu" aria-labelledby="notifs-toggler">
-
-                        <div class="notifications-menu-preview-heading"><h4 class="menu-title">Notifications</h4><h4 class="menu-title pull-right"><a href="{{ path('user_notifications') }}">Tout voir</a></h4>
+                        <div class="notifications-menu-preview-heading"><h4 class="menu-title"><a href="{{ path('user_notifications') }}">Toutes les notifications</a></h4>
                         </div>
                         <div class="notifications-menu-preview-wrapper">
                             {% for notif in last_notifs %}

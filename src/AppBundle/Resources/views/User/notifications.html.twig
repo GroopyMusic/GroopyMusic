@@ -1,20 +1,26 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <table>
-        {% for notif in notifs %}
-        <tr>
-            <td>
-                {{ preview_notification(notif)|raw }}
-            </td>
-        </tr>
+    <div class="container">
+        <h3>Mes notifications</h3>
 
-        {% else %}
-           <tr>
-               <td>
-                   Il n'y a pas encore de notification pour l'instant
-               </td>
-           </tr>
-        {% endfor %}
-    </table>
+        <div class="row">
+            {% if notifs is empty %}
+                 <div class="col-12">
+                     <p>
+                         Vous n'avez pas encore reçu de notification.
+                     </p>
+                 </div>
+            {% else %}
+
+                <table class="table table-hover">
+                    {% for notif in notifs %}
+                        {{ preview_notification(notif)|raw }}
+                    {% endfor %}
+                </table>
+
+            {% endif %}
+        </div>
+
+    </div>
 {% endblock %}

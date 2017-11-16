@@ -32,5 +32,17 @@ $(function () {
             $('[data-toggle="popover"]').popover('hide');
         }
     });
+
+    $('.notification-trigger').click(function(e) {
+        e.preventDefault();
+        $('#notifs-modal .loader').show();
+        $('#notifs-modal-content').html('');
+        $('#notifs-modal').modal('show');
+        $.get($(this).attr('href'), function(html) {
+            $('.loader').hide();
+            $('#notifs-modal-content').html(html);
+            $(this).closest('tr.notification-preview').removeClass('table-warning');
+        });
+    })
 });
 

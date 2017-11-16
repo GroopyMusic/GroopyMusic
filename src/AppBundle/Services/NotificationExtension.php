@@ -38,7 +38,7 @@ class NotificationExtension extends \Twig_Extension
     // Returns last x notifs
     public function last_notifs($x = 5) {
         $user = $this->token_storage->getToken()->getUser();
-        return $this->em->getRepository('AppBundle:Notification')->findBy(['user' => $user], ['date' => 'desc'], $x);
+        return $this->em->getRepository('AppBundle:Notification')->findBy(['user' => $user], ['seen' => 'asc', 'date' => 'desc'], $x);
     }
 
     public function render_notification(Notification $notification) {
