@@ -33,16 +33,25 @@ $(function () {
         }
     });
 
-    $('.notification-trigger').click(function(e) {
-        e.preventDefault();
-        $('#notifs-modal .loader').show();
-        $('#notifs-modal-content').html('');
-        $('#notifs-modal').modal('show');
-        $.get($(this).attr('href'), function(html) {
-            $('.loader').hide();
-            $('#notifs-modal-content').html(html);
-            $(this).closest('tr.notification-preview').removeClass('table-warning');
-        });
-    })
+    $.fn.extend({
+        attach_notifications_behaviour: function() {
+            this.off();
+            return this.each(function() {
+                $(this).click(function(e) {
+                    e.preventDefault();
+                    $('#notifs-modal .loader').show();
+                    $('#notifs-modal-content').html('');
+                    $('#notifs-modal').modal('show');
+                    $.get($(this).attr('href'), function(html) {
+                        $('.loader').hide();
+                        $('#notifs-modal-content').html(html);
+                        $(this).closest('tr.notification-preview').removeClass('table-warning');
+                    });
+                });
+            })
+        }
+    });
+
+    $('.notification-trigger').attach_notifications_behaviour();
 });
 

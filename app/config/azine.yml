@@ -25,7 +25,7 @@ azine_email:
         name:                 '%mailer_from_name%' # Required
 
     # absolute path to the image-folder containing the images used in your templates.
-    image_dir:            '%kernel.root_dir%/../web/mail/images/'
+    image_dir:            '%kernel.root_dir%/../web/images/email/'
 
     # list of folders from which images are allowed to be embeded into emails
     allowed_images_folders:  []

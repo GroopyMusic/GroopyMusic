@@ -23,7 +23,6 @@ class InitCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $application = $this->getApplication();
 
         $output->writeln('-------------------------------');

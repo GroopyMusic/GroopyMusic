@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-14T11:56:40Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-15T18:10:01Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -548,6 +548,11 @@
         <jms:reference-file line="51">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\SuggestionBoxAdmin.php\</jms:reference-file>
         <jms:reference-file line="51">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\UserAdmin.php\</jms:reference-file>
       </trans-unit>
+      <trans-unit id="09a38fda7876065eea2d72d936a0c48eeacf42ce" resname="Quantité">
+        <source>Quantité</source>
+        <target state="new">Quantité</target>
+        <jms:reference-file line="21">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\PurchaseType.php\</jms:reference-file>
+      </trans-unit>
       <trans-unit id="72d07b9113030d4d8e38c02b884ef27932e369de" resname="Rappel envoyé pour les paniers non payés qui le référencent">
         <source>Rappel envoyé pour les paniers non payés qui le référencent</source>
         <target>Rappel envoyé pour les paniers non payés qui le référencent</target>
@@ -642,6 +647,16 @@
         <source>URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)</source>
         <target>URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)</target>
         <jms:reference-file line="17">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\VideoType.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="be4220f72059bf85bcfc9e3a0ecc3aa6d45776b4" resname="Valider">
+        <source>Valider</source>
+        <target state="new">Valider</target>
+        <jms:reference-file line="83">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="baf00e6c655c29a2f483a330dbf63e7114458c5f" resname="Valider la commande">
+        <source>Valider la commande</source>
+        <target state="new">Valider la commande</target>
+        <jms:reference-file line="31">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ContractFanType.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="ea129238fc5751a8b0d5b8795ad4febab0bd4bc5" resname="Vidéos">
         <source>Vidéos</source>

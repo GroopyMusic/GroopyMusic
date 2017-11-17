@@ -1,31 +1,51 @@
-<h1>Récapitulatif de votre commande</h1>
+{% extends '@App/PDF/layout.html.twig' %}
 
-<ul>
-    <li>Date : {{ cf.date|date('d/m/Y H:i:s') }}</li>
-    <li>Montant total : {{ cf.amount }} €</li>
-    <li>Nombre de tickets achetés : {{ cf.counterPartsQuantity }}</li>
-    <li>Evénement soutenu : {{ cf.contractArtist }}</li>
-</ul>
+{% block content %}
+    <h1>Récapitulatif de votre commande</h1>
 
-<h2>Détails de la commande</h2>
+    <p>Merci d'avoir passé une commande de tickets de concert avec Un-Mute.
+        Vous trouverez ci-dessous toutes les informations au sujet de votre commande.
+        Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
 
-<table>
-    <tr>
-        <th>Article</th>
-        <th>Quantité</th>
-        <th>Prix</th>
-    </tr>
-    {% for purchase in cf.purchases %}
+    </p>
+
+    <ul>
+        <li>Date : {{ cf.date|date('d/m/Y H:i:s') }}</li>
+        <li>Montant total : {{ cf.amount }} €</li>
+        <li>Nombre de tickets achetés : {{ cf.counterPartsQuantity }}</li>
+        <li>Evénement soutenu : {{ cf.contractArtist }}</li>
+    </ul>
+
+    <h2>Détails de la commande</h2>
+
+    <table>
         <tr>
-            <td>
-                {{ purchase.counterpart.name }}
-            </td>
-            <td>
-                {{ purchase.quantity }}
-            </td>
-            <td>
-                {{ purchase.amount }}
-            </td>
+            <th>Article</th>
+            <th>Quantité</th>
+            <th>Prix unitaire</th>
+            <th>Prix</th>
         </tr>
-    {% endfor %}
-</table>
+        {% for purchase in cf.purchases %}
+            <tr>
+                <td>
+                    {{ purchase.counterpart.name }}
+                </td>
+                <td>
+                    {{ purchase.quantity }}
+                </td>
+                <td>
+                    {{ purchase.counterpart.price }} €
+                </td>
+                <td>
+                    {{ purchase.amount }} €
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Conditions du processus d'achat Un-Mute</h2>
+
+    <p>
+        Vous serez remboursé si ...
+    </p>
+{% endblock %}

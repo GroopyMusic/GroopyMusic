@@ -39,10 +39,24 @@ class UserController extends Controller
      */
     public function notifsAction(Request $request, UserInterface $user)
     {
-        $notifs = $this->getDoctrine()->getRepository('AppBundle:Notification')->findBy(array('user' => $user));
+        $firstResult = $request->get('first_result', 0);
+        $nbPerPage = $request->get('nb_per_page', 5);
+        $notifs = $this->getDoctrine()->getRepository('AppBundle:Notification')->paginateForUser($user, $firstResult, $nbPerPage);
 
-        return $this->render('@App/User/notifications.html.twig', array(
+        $got_to_max = $firstResult + $nbPerPage >= count($notifs);
+        $max = count($notifs);
+
+        if($request->getMethod() == 'POST') {
+            $template = '@App/User/render_notifications_previews.html.twig';
+        }
+        else {
+            $template = '@App/User/notifications.html.twig';
+        }
+
+        return $this->render($template, array(
             'notifs' => $notifs,
+            'got_to_max' => $got_to_max,
+            'max' => $max,
         ));
     }
 

@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <div class="container">
+    <div class="container notifications-page">
         <h3>Mes notifications</h3>
 
         <div class="row">
@@ -13,14 +13,43 @@
                  </div>
             {% else %}
 
-                <table class="table table-hover">
-                    {% for notif in notifs %}
-                        {{ preview_notification(notif)|raw }}
-                    {% endfor %}
+                <table id="notifications-table" class="table table-hover">
+                    {% include '@App/User/render_notifications_previews.html.twig' with {'notifs': notifs} %}
                 </table>
 
+                {{ utils.hidden_loader() }}
+
+                {% if not got_to_max %}
+                    <a id="load-more-notifs" class="btn btn-primary">Voir plus</a>
+                {% endif %}
             {% endif %}
         </div>
 
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $('#load-more-notifs').click(function(e) {
+            e.preventDefault();
+            $(this).hide();
+            var $loader = $('.loader');
+            $loader.show();
+            var max = {{ max }};
+
+            $.post("{{ path('user_notifications') }}", { first_result: $('.notification-preview').length},
+                function(html) {
+                    $loader.hide();
+                    $('#notifications-table').append(html);
+                    if(max > $('.notification-preview').length) {
+                        $('#load-more-notifs').show();
+                    }
+                    $('.notification-trigger').attach_notifications_behaviour();
+                }
+            )
+        });
+    </script>
+
 {% endblock %}

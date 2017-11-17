@@ -60,7 +60,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
         $newVars["h2Style"]	= "style='padding:0; margin:0; font:bold 24px Arial; color:red; text-decoration:none;'";
 
         // add an image that should be embedded into the html-email.
-        $newVars['imageTest'] = $this->getTemplateImageDir()."test.png";
+        $newVars['logo'] = $this->getTemplateImageDir()."logo.png";
         // after the image has been added here, it will be base64-encoded so it can be embedded into a html-snippet
         // see self::getSnippetArrayFor()
 
@@ -80,7 +80,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
         // add a code snippet to reference the random image you added in the getParamArrayFor() method.
         // in the mean time it has been base64-encoded and attached as mime-part to your email.
         try {
-            $vars['sampleSnippetWithImage'] = "<img src='".$vars['imageTest']."'>";
+            $vars['sampleSnippetWithImage'] = "<img src='".$vars['logo']."'>";
         } catch(\Exception $e) {
         }
 

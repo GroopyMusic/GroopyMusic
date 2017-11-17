@@ -16,7 +16,10 @@
 /vendor/
 /web/bundles/
 !/web/pdf
-/web/pdf/*
+!/web/pdf/orders
+!/web/pdf/tickets
+/web/pdf/orders/*
+/web/pdf/tickets/*
 !web/uploads
 !web/uploads/artist_gallery
 !web/uploads/hall_gallery

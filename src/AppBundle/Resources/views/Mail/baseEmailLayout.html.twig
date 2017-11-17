@@ -17,6 +17,7 @@
             }
 		}
 		{% endblock %}
+
 		</style>
 	</head>
 	<body style=" color: {{ blackColor }}; margin:0; font: normal 12px/18px {{ fontFamily }}; background-color: {{ bodyBackgroundColor }};">
@@ -41,11 +42,11 @@
 				</tr>
 			<tr>
 				<td width="{{ shadowWidth }}">&nbsp;</td>
-				<td class="contentWidth" width="{{ contentWidth }}" bgcolor="{{ contentBackgroundColor }}" style="padding: 0px 20px;">
+				<td class="contentWidth" width="{{ contentWidth }}" bgcolor="{{ contentBackgroundColor }}" style="padding: 20px; text-align: center;">
 					{% block logo %}
-			    	<a href="http://example.com" target="_blank" style="color: green; font-size: 72px; font-weight: bold; text-decoration: none;">
-			    		<img src="{{ logo_png }}" alt="Un-Mute" height="35" width="169" />
-			    	</a>
+						<a href="{{ absolute_url(path('homepage')) }}" target="_blank" style="color: #FFAE07; font-size: 72px; font-weight: bold; text-decoration: none; text-align:center;">
+							<img src="{{ absolute_url(asset('images/logo.png')) }}" alt="Un-Mute" height="100" />
+						</a>
 			    	{% endblock %}{# end block logo #}
 			    </td>
 				<td width="{{ shadowWidth }}">&nbsp;</td>
@@ -55,7 +56,10 @@
 	 	{{ leftShadow}}
 		    	<td class="contentWidth" width="{{ contentWidth }}" bgcolor="white"  style="padding:10px 20px 20px 20px; border-top: 1px solid #EEEEEE;">
 	    		<a name="top" ></a>
-	  			{% block content %}
+
+					<h2 style="color: #FFAE07; tex-align:center;">{{ subject }}</h2>
+
+        		{% block content %}
 	  				{% block contentHead %}
 					{% endblock %}
 					{% if contentItems is defined %}
@@ -79,35 +83,32 @@
 			    </td>
 		{{ rightShadow }}
 		{{ leftShadow}}
-	        	<td class="contentWidth" width="{{ contentWidth }}" bgcolor="white" style="text-align:center;">
-	        		{% block footerLogo %}
-						<a href="{{ absolute_url(path('homepage')) }}" target="_blank" style="color: {{ azGreen }}; font: 36px bold; text-decoration: none; position:relative; top:1px;">
-							<img height="24" width="116" src="{{ logo_png }}" alt="Un-Mute" />
-						</a>
-			    	{% endblock %}
+	        	<td class="contentWidth" width="{{ contentWidth }}" bgcolor="white" style="padding-bottom: 30px;">
+	        		{% block signature %}
+						<p style="text-align:right;padding-right: 20px;">Musicalement vôtre,<br />
+							<br />
+						Un-Mute
+						</p>
+					{% endblock %}
 	            </td>
     	{{ rightShadow}}
 		{{ leftShadow}}
-            	<td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="{{ footerBackgroundColor }}" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid #b1c800; text-align:center;" >
+            	<td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#4a4b4d" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
                 	{% block footerInfoText %}
             		<p style="color:white;">
-	            		Un-Mute asbl
-            		</p>
-            		<p style="color:white;">
-            			Add "<a href="mailto:{{ sendMailAccountName }}&lt;{{ sendMailAccountAddress }}&gt;">{{ sendMailAccountAddress }}</a>" to your address book to ensure delivery of our emails.
+            			Ajoutez "<a href="mailto:{{ sendMailAccountName }}&lt;{{ sendMailAccountAddress }}&gt;" style="color:white;">{{ sendMailAccountAddress }}</a>" à votre carnet d'adresses pour vous assurer de recevoir tous nos e-mails.
             		</p>
                 	{% endblock %}{# end block footerInfoText #}
             		{% block footerCopyrightText %}
             		<p style="color:white;">
-            			&copy; 2017
+            			&copy; Un-Mute ASBL {{ "now"|date('Y') }}
 					</p>
 					{% endblock %}{# end block footerCopyrightText #}
                     <p style="color:#acacac;">
                     {% block footerLinks %}
-	               	    <a style="color:#acacac; text-decoration:none;" href="http://example.com#help">Help</a> |
-	                    <a style="color:#acacac; text-decoration:none;" href="http://example.com#tos">Terms of use</a> |
-	                    <a style="color:#acacac; text-decoration:none;" href="http://example.com#about">About</a> |
-	                    <a style="color:#acacac; text-decoration:none;" href="http://example.com#contact">Contact</a>
+	               	    <a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('homepage')) }}"> Accueil </a> -
+						<a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('about')) }}"> A propos </a> -
+						<a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('suggestionBox')) }}"> Contact </a>
 					{% endblock %}{# end block footerLinks #}
                     </p>
 				</td>

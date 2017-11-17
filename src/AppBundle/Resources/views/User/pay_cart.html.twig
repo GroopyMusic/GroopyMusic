@@ -160,7 +160,6 @@
 
         function onToken(result) {
             if (result.token) {
-                console.log('RESULT', result);
                 Stripe.source.create({
                     type: 'card',
                     token: result.token.id
@@ -177,7 +176,6 @@
                 displayError(result.error.message);
             }
 
-            console.log('result', result);
             if(result.card.three_d_secure == 'required') {
                 displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
                 stripe.createSource({
@@ -254,6 +252,7 @@
         function displayForm() {
             $('form').show();
             $('.loader').hide();
+            $('#loader-explanation').hide();
         }
 
         function displayError(html) {

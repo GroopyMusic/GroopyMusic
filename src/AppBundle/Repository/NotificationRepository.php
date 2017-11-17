@@ -2,6 +2,11 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\User;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Psr\Log\InvalidArgumentException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  * NotificationRepository
  *
@@ -10,4 +15,34 @@ namespace AppBundle\Repository;
  */
 class NotificationRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function paginateForUser(User $user, $firstResult, $nbPerPage) {
+
+        if (!is_numeric($firstResult)) {
+            throw new InvalidArgumentException(
+                'La valeur de l\'argument $firstResult est incorrecte (valeur : ' . $firstResult . ').'
+            );
+        }
+
+        if ($firstResult < 0) {
+            throw new NotFoundHttpException('La pagination demandée n\'existe pas');
+        }
+
+        if (!is_numeric($nbPerPage)) {
+            throw new InvalidArgumentException(
+                'La valeur de l\'argument $nbPerPage est incorrecte (valeur : ' . $nbPerPage . ').'
+            );
+        }
+
+        $qb = $this->createQueryBuilder('n')
+            ->where('n.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('n.date', 'DESC');
+
+        $query = $qb->getQuery();
+
+        $query->setFirstResult($firstResult)->setMaxResults($nbPerPage);
+        $paginator = new Paginator($query);
+
+        return $paginator;
+    }
 }

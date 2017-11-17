@@ -1,0 +1,54 @@
+{% block style %}
+    <style type="text/css">
+        #header {
+            text-align: center;
+            color: #FFAE07;
+            font-weight: bold;
+        }
+
+       #content {
+           margin-left: 20px;
+       }
+
+        h1 {
+            text-align:center;
+            color: #FFAE07;
+            border: dotted 1mm #4a4b4d;
+        }
+        td, th {
+            padding: 5px 10px;
+        }
+        #footer {
+            margin-top: 40px;
+            background-color: #4a4b4d;
+            width: 100%;
+            padding: 10px 20px;
+            color: white;
+        }
+        #footer p {
+            text-align:center;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block page %}
+    <div id="header">
+        {% block header %}
+            <img src="{{ absolute_url(asset('images/logo.png')) }}" height="100" alt="Un-Mute ASBL" />
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div id="footer">
+        {% block footer %}
+            <p>
+                Un-Mute ASBL - TVA xx xx xx - contact@un-mute.be - Place Saint-Antoine 3, 1040 Bruxelles
+            </p>
+        {% endblock %}
+    </div>
+{% endblock %}
