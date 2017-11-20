@@ -66,7 +66,7 @@
                     {% if contract.motivations is not empty or owns %}
                         <li> Motivations de l'artiste :
                             {% if not owns or state in contract.uncrowdableStates %}
-                                {% block contract_artist_motivations %}{% if contract.motivations is not empty %}<div class="contract-motivations">{{ contract.motivations }}</div>{% endif  %}{% endblock %}
+                                {% block contract_artist_motivations %}{% if contract.motivations is not empty %}<div class="contract-motivations">{{ contract.motivations|nl2br }}</div>{% endif  %}{% endblock %}
                             {% else %}
                                 <ul class="nav nav-tabs" id="contract-motivations-tab" role="tablist">
                                     <li class="nav-item">
