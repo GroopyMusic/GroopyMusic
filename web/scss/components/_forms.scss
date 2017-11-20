@@ -13,3 +13,21 @@ input[type=submit], button[type=submit] {
 .collection-actions {
   text-align: right;
 }
+
+.datePicker.hasDatepicker {
+  width: 0;
+  padding: 35px;
+  background-image: url('../images/calendar.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position:center;
+  cursor: pointer;
+}
+
+.a2lix_translationsLocales.nav-tabs {
+  border-bottom: 0;
+}
+
+.required:after {
+  content: "*";
+}

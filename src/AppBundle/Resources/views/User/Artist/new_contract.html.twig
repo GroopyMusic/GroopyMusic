@@ -9,30 +9,73 @@
 
 {% block body %}
 
+
+
     <div class="container">
     {% if no_artist is not defined %}
-        <h2>Lancer un nouveau crowdfunding - étape {{ flow.currentStepNumber }} / {{ flow.lastStepNumber }} : {{ flow.currentStepLabel }}</h2>
+
+        {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+
+        <h2 class="pb-4">Lancement d'un nouvel événement > {{ flow.currentStepLabel }}</h2>
+        <h3 class="rounded-title">étape {{ flow.currentStepNumber }}/{{ flow.lastStepNumber }} </h3>
 
         {% if flow.currentStepNumber == flow.lastStepNumber %}
-            <div>
-                Artiste : {{ contract.artist }}<br />
-                Province : {{ contract.province is empty ? 'Sans importance' : contract.province }}<br />
-                Date choisie : {{ contract.preferences.date|date('d/m/Y') }}
-            </div>
+            <ul>
+                <li>Artiste : {{ contract.artist }}</li>
+                <li>Province : {{ contract.province is empty ? 'Sans importance' : contract.province }}</li>
+                <li>Date choisie : {{ contract.preferences.date|date('d/m/Y') }}</li>
+                {% if contract.motivations is not empty %}
+                    <li>Motivations : <br />{{ contract.motivations|nl2br }}</li>
+                {% endif %}
+                {% if contract.preferences.additionalInfo is not empty %}
+                    <li>Informations pour Un-Mute : <br />{{ contract.preferences.additionalInfo|nl2br }}</li>
+                {% endif %}
+            </ul>
         {% endif %}
 
         {{ form_start(form) }}
+        {% if flow.currentStepNumber == 2 %}
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_errors(form.preferences.date) }}
+                    {{ form_label(form.preferences.date) }}
+                </div>
+                <div class="col-12">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="align-middle">
+                                {{ form_widget(form.preferences.date) }}
+                            </td>
+                            <td class="align-middle pl-4">
+                                <p id="datePicker-vis"></p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {{ form_row(form.motivations) }}
+            {{ form_row(form.preferences.additional_info) }}
+
+        {% elseif flow.currentStepNumber == flow.lastStepNumber %}
+
+            {{ form_errors(form.accept_conditions) }}
+            {{ form_widget(form.accept_conditions) }}
+
+        {% endif %}
 
         {{ form_rest(form) }}
         {% include '@CraueFormFlow/FormFlow/buttons.html.twig' with {
             craue_formflow_button_class_last: 'btn btn-primary',
-            craue_formflow_button_class_back: 'btn',
-            craue_formflow_button_class_reset: 'btn btn-warning',
+            craue_formflow_button_class_back: 'btn btn-secondary mr-3',
+            craue_formflow_button_class_reset: 'btn btn-outline-warning mr-3',
             } %}
 
     {% else %}
         {# No artist #}
-        <h2>Vous n'avez pas d'artiste disponible pour lancer un nouveau crowdfunding</h2>
+        <h2>Lancement d'un nouvel événement</h2>
+        <p>Vous n'avez pas d'artiste disponible pour lancer un nouvel événement. Souhaitez-vous <a href="{{ path('user_new_artist') }}">créer un nouvel artiste</a> ?</p>
     {% endif %}
 
     </div>
@@ -71,12 +114,21 @@
                 return date;
             }
 
+            function dateToText(date) {
+                var res = date.split('/');
+                return res[1] + ' / ' + res[0] + ' / ' + res[2];
+            }
+
             $datePicker.datepicker({
                 beforeShowDay: function(d) {
                     return [available(d), ''];
                 },
                 defaultDate: get_default_date(),
                 dateFormat: 'mm/dd/yy'
+            });
+
+            $datePicker.change(function() {
+                $('#datePicker-vis').text('Date choisie : ' + dateToText($datePicker.val()));
             });
         });
     </script>

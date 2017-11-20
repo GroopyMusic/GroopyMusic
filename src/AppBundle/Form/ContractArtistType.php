@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ContractArtistType extends AbstractType
 {
@@ -27,28 +29,39 @@ class ContractArtistType extends AbstractType
             case 1:
                 $builder
                     ->add('artist', EntityType::class, array(
+                        'label' => 'labels.contractartist.artist',
                         'class' => Artist::class,
                         'query_builder' => function(EntityRepository $er) use ($options) {
                             return $er->queryNotCurrentlyBusy($options['user']);
-                        }
+                        },
+                        'constraints' => [
+                            new NotBlank(['message' => 'Merci de renseigner un artiste.']),
+                        ],
                     ))
                     ->add('province', EntityType::class, array(
+                        'label' => 'labels.contractartist.province',
                         'required' => false,
                         'class' => Province::class,
                         'placeholder' => 'Sans importance',
                     ))
                     ->add('step', EntityType::class, array(
+                        'label' => 'labels.contractartist.step',
                         'class' => Step::class,
+                        'constraints' => [
+                            new NotBlank(['message' => 'Merci de renseigner un type de concert.']),
+                        ],
                     ))
                 ;
                 break;
             case 2:
                 $builder
                     ->add('preferences', ConcertPossibilityType::class, array(
+                        'label' => false,
                         'required' => true,
                         'available-dates' => $options['available-dates'],
                     ))
                     ->add('motivations', TextareaType::class, array(
+                        'label' => 'labels.contractartist.motivations',
                         'required' => false,
                     ))
                 ;
@@ -56,7 +69,11 @@ class ContractArtistType extends AbstractType
             case 3:
                 $builder
                     ->add('accept_conditions', CheckboxType::class, array(
-                        'required' => true
+                        'label' => 'labels.contractartist.accept_conditions',
+                        'required' => true,
+                        'constraints' => [
+                            new IsTrue(['message' => 'Vous devez accepter les conditions d\'utilisation pour poursuivre.']),
+                        ],
                     ))
                 ;
                 break;

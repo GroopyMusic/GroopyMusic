@@ -38,7 +38,7 @@ class ArtistController extends Controller
 
         $this->assertOwns($user, $artist);
 
-        $form = $this->createForm(ArtistType::class, $artist);
+        $form = $this->createForm(ArtistType::class, $artist, ['edit' => true]);
 
         $form->handleRequest($request);
 
@@ -265,30 +265,6 @@ class ArtistController extends Controller
     }
 
     // AJAX ------------------------------------------------------------------------------------------------
-
-    /**
-     * @Route("/api/update-motivations", name="artist_ajax_update_motivations")
-     */
-    public function updateMotivations(Request $request, UserInterface $user, Artist $artist) {
-        $this->assertOwns($user, $artist);
-
-        $em = $this->getDoctrine()->getManager();
-
-        $motivations = $request->request->get('motivations');
-        $contract_id = $request->request->get('id_contract');
-
-        $contract = $em->getRepository('AppBundle:ContractArtist')->find($contract_id);
-
-        if($contract->getArtist()->getId() != $artist->getId()) {
-            throw $this->createAccessDeniedException("Interdit, vous n'êtes pas l'artiste à l'origine de ce contrat.");
-        }
-
-        $contract->setMotivations($motivations);
-        $em->persist($contract);
-        $em->flush();
-
-        return new Response($motivations);
-    }
 
     /**
      * @Route("/api/remove-photo", name="artist_ajax_remove_photo")

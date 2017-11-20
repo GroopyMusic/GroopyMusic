@@ -26,6 +26,7 @@ class ArtistType extends AbstractType
     {
         $builder
             ->add('artistname', TextType::class, array(
+                'label' => 'labels.artist.artistname',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(['message' => 'Merci de renseigner le nom de l\'artiste.']),
@@ -33,10 +34,11 @@ class ArtistType extends AbstractType
                 ]
             ))
             ->add('province', EntityType::class, array(
+                'label' => 'labels.artist.province',
                 'class' => Province::class,
             ))
             ->add('translations', TranslationsType::class, array(
-                'label' => false, //'labels.artist.translations',
+                'label' => $options['edit'] ? false : 'labels.artist.translations',
                 'locales' => ['fr'],
                 'fields' => [
                     'short_description' => [
@@ -54,33 +56,38 @@ class ArtistType extends AbstractType
                 'remote_route' => 'select2_genres',
                 'class' => Genre::class,
                 'primary_key' => 'id',
+                'label' => 'labels.artist.genres',
             ])
             ->add('website', UrlType::class, array(
+                'label' => 'labels.artist.website',
                 'required' => false,
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ]
             ))
             ->add('facebook', UrlType::class, array(
+                'label' => 'labels.artist.facebook',
                 'required' => false,
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ]
             ))
             ->add('twitter', UrlType::class, array(
+                'label' => 'labels.artist.twitter',
                 'required' => false,
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ]
             ))
             ->add('spotify', UrlType::class, array(
+                'label' => 'labels.artist.spotify',
                 'required' => false,
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ]
             ))
             ->add('submit', SubmitType::class, array(
-                'label' => 'Valider',
+                'label' => 'labels.artist.submit',
                 'attr' => ['class' => 'btn btn-primary']
             ))
         ;
@@ -90,6 +97,7 @@ class ArtistType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => Artist::class,
+            'edit' => false,
         ));
     }
 

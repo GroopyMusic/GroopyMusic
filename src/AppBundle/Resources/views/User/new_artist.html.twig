@@ -5,6 +5,15 @@
     <div class="container">
         <h3 class="rounded-title">Nouvel artiste</h3>
 
+        <p>
+            Pour créer un artiste sur Un-Mute, merci de remplir le formulaire suivant.
+            Une fois votre artiste créé, il apparaîtra dans le <a href="{{ path('catalog_artists') }}">catalogue des artistes Un-Mute</a>
+            et vous pourrez ajouter des photos et vidéos de cet artiste.
+        </p>
+        <p>
+            <strong>En créant un artiste, vous certifiez en être le propriétaire ou un des membres, s'il s'agit d'un groupe.</strong>
+        </p>
+
         {% form_theme form 'jquery.collection.html.twig' %}
 
         {{ form_start(form) }}

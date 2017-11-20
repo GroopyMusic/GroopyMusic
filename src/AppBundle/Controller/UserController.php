@@ -146,7 +146,7 @@ class UserController extends Controller
 
         $artist = new Artist($phase);
 
-        $form = $this->createForm(ArtistType::class, $artist);
+        $form = $this->createForm(ArtistType::class, $artist, ['edit' => false]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -220,8 +220,8 @@ class UserController extends Controller
 
                 $flow->reset(); // remove step data from the session
 
-                $this->addFlash('notice', 'Bien reçu');
-                return $this->redirectToRoute('user_new_contract_artist'); // redirect when done
+                $this->addFlash('notice', 'Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans l\'organisation de celui-ci !');
+                return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]); // redirect when done
             }
         }
 
@@ -300,6 +300,26 @@ class UserController extends Controller
     }
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @Route("/api/update-motivations/{id}", name="user_ajax_update_motivations")
+     */
+    public function updateMotivations(Request $request, UserInterface $user, ContractArtist $contract) {
+        $artist = $contract->getArtist();
+        if(!$user->owns($artist)) {
+            throw $this->createAccessDeniedException("You don't own this artist!");
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $motivations = $request->request->get('motivations');
+
+        $contract->setMotivations($motivations);
+        $em->persist($contract);
+        $em->flush();
+
+        return new Response($motivations);
+    }
 
     /**
      * @Route("/api/add-to-cart", name="user_ajax_add_to_cart")

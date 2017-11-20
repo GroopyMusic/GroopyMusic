@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-14T11:58:39Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-20T13:01:19Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -814,9 +814,9 @@
         <source>/cart</source>
         <target>/panier</target>
       </trans-unit>
-      <trans-unit id="358c3dda1dad22b74ae5ad9372cf0def8f74eb1f" resname="user_cart_3DS_payment_stripe">
-        <source>/secure-zone/cart/3DS/payment</source>
-        <target>/secure-zone/cart/3DS/payment</target>
+      <trans-unit id="22fa95178e9a5c4af3d19db107d49489ba48fb58" resname="user_cart_payment_pending">
+        <source>/secure-zone/cart/payment/pending</source>
+        <target>/zone-securisee/paiement-en-attente</target>
       </trans-unit>
       <trans-unit id="0c68d9bea72821aac4cd03238a1de097e725f528" resname="user_cart_payment_stripe">
         <source>/secure-zone/cart/payment</source>

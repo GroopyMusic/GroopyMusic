@@ -36,6 +36,11 @@
                 <source>Days 6</source>
                 <target>Samedi</target>
             </trans-unit>
+
+            <trans-unit id="labels.artist.translations">
+                <source>labels.artist.translations</source>
+                <target>Descriptions</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -22,6 +22,7 @@ class ContractArtistPossibilityType extends AbstractType
         $builder
             ->add('additional_info', TextareaType::class, array(
                 'required' => false,
+                'label' => 'labels.contractartistpossibility.additional_info',
             ))
         ;
     }
