@@ -1,3 +1,5 @@
+Dropzone.autoDiscover = false;
+
 $.fn.textWidth = function(){
     var html_org = $(this).html();
     var html_calc = '<span>' + html_org + '</span>';
@@ -24,6 +26,7 @@ $(".scroll").click(function(e) {
 
 $(function () {
     $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
 
     $('body').on('click', function (e) {
         //only buttons

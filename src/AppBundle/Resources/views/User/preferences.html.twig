@@ -1,0 +1,57 @@
+{% set active_link = 'preferences' %}
+
+{% extends "FOSUserBundle:Profile:layout.html.twig" %}
+
+{% form_theme form ':Form:bootstrap_4_layout.html.twig' '::jquery.collection.html.twig' %}
+
+{% block user_profile_content %}
+
+    <h3>Préférences</h3>
+
+    {{ form_start(form) }}
+
+        <div class="form-group">
+            <h4>Goûts musicaux</h4>
+            <p>En remplissant le champ suivant avec les styles musicaux qui vous plaisent, vous permettez à Un-Mute Asbl de vous proposer, sur son site Web,
+                en priorité les concerts d'artistes qui correspondent à ces styles musicaux.
+                <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Cela ne nous permet pas d'utiliser ces informations à d'autres fins commerciales.">plus d'infos</button>
+            </p>
+            {{ form_row(form.genres) }}
+        </div>
+
+        <div class="form_group">
+            <h4>Adresse</h4>
+            <p>
+                En nous fournissant votre adresse par le formulaire ci-dessous, vous permettez à Un-Mute Asbl de vous proposer, sur son site Web, en priorté les concerts d'artistes qui auront lieu près de cette adresse.
+                <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Cela ne nous permet pas d'utiliser ces informations à d'autres fins commerciales.">plus d'infos</button>
+            </p>
+            {{ form_widget(form.addressForm) }}
+        </div>
+
+        <div class="form-group">
+            <h4>Date de naissance</h4>
+            <p>
+                En remplissant le champ suivant avec votre date de naissance, vous permettez à Un-Mute Asbl de vous proposer, sur son site Web,
+                en priorité les concerts d'artistes qui correspondent à votre tranche d'âge.
+                <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Cela ne nous permet pas d'utiliser ces informations à d'autres fins commerciales.">plus d'infos</button>
+            </p>
+            {{ form_row(form.birthday) }}
+        </div>
+
+        <div class="form-group">
+            <h4>Communications commerciales</h4>
+            <p>
+                En cochant la case suivante, vous permettez à Un-Mute Asbl de vous faire parvenir des newsletters et autres informations commerciales en lien avec ses activités par e-mail.
+                <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Vous pouvez vous désinscrire de notre mailing-list à tout moment en décochant cette case.">plus d'infos</button>
+            </p>
+            {{ form_widget(form.newsletter) }}
+        </div>
+
+    {{ form_rest(form) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">um_collection({max:1, add:'<a href="#">Ajouter une adresse</a>', remove:'<a href="#">Supprimer l\'adresse</a>'});</script>
+{% endblock %}

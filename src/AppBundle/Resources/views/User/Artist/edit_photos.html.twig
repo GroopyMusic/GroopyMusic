@@ -18,8 +18,6 @@
     {{ parent() }}
     <script>
         $('document').ready(function() {
-            Dropzone.autoDiscover = false;
-
             var $dropzone = $("div#artist_edit_photos");
             var mocks = [];
             {% for photo in artist.photos %}

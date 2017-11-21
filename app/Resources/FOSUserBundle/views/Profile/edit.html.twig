@@ -7,8 +7,4 @@
     {% include "@FOSUser/Profile/edit_content.html.twig" %}
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript">um_collection({max:1, add:'<a href="#">Ajouter une adresse</a>', remove:'<a href="#">Supprimer l\'adresse</a>'});</script>
-{% endblock %}
 

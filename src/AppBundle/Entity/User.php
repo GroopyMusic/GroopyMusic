@@ -88,15 +88,6 @@ class User extends BaseUser implements RecipientInterface
 
     /**
      * @ORM\Column(name="lastname", type="string", length=255)
-     * TODO traduire
-     * @Assert\NotBlank(message="Please enter your last name.", groups={"Registration", "Profile"})
-     * @Assert\Length(
-     *     min=3,
-     *     max=255,
-     *     minMessage="The last name is too short.",
-     *     maxMessage="The last name is too long.",
-     *     groups={"Registration", "Profile"}
-     * )
      */
     protected $lastname;
 
@@ -185,6 +176,11 @@ class User extends BaseUser implements RecipientInterface
      * @ORM\OneToMany(targetEntity="Notification", mappedBy="user")
      */
     private $notifications;
+
+    /**
+     * @ORM\Column(name="birthday", type="date", nullable=true)
+     */
+    private $birthday;
 
     /**
      * @param mixed $salutation
@@ -691,5 +687,29 @@ class User extends BaseUser implements RecipientInterface
     public function getAskedEmailToken()
     {
         return $this->asked_email_token;
+    }
+
+    /**
+     * Set birthday
+     *
+     * @param \DateTime $birthday
+     *
+     * @return User
+     */
+    public function setBirthday($birthday)
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    /**
+     * Get birthday
+     *
+     * @return \DateTime
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
     }
 }

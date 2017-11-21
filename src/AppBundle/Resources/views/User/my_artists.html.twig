@@ -10,6 +10,12 @@
                 <a class="btn btn-primary" href="{{ path('user_new_artist') }}">Créer un artiste</a>
             </div>
 
+            {% if not available_artist and artists is not empty %}
+                <p class="p-info">
+                    Note : vous ne pouvez pas créer de nouvel événement pour votre/vos artiste(s) parce que tous vos artistes sont déjà lancés sur un autre événement.
+                </p>
+            {% endif %}
+
             {% if artists is not empty %}
                 <div class="row">
                     {% for artist in artists %}

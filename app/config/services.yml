@@ -4,6 +4,15 @@ parameters:
 #    parameter_name: value
 
 services:
+    # Avoid deprecation for private service
+    vich_uploader.namer_property.hall_technical_specs:
+      public: true
+      abstract: true
+
+    swiftmailer.transport.real:
+      public: true
+      abstract: true
+
     # Apparently needed for Symfony 3.3.6 to work...
     resolve_controller_name_subscriber:
       public: true

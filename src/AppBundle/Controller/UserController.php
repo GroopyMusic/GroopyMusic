@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
+use AppBundle\Form\ProfilePreferencesType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -158,7 +159,7 @@ class UserController extends Controller
 
             $em->flush();
 
-            $this->addFlash('notice', "Bien reçu");
+            $this->addFlash('notice', "L'artiste " . $artist->getArtistname() . " a bien été créé.");
 
             return $this->redirectToRoute('user_my_artists');
         }
@@ -258,7 +259,7 @@ class UserController extends Controller
                 $this->get('AppBundle\Services\MailDispatcher')->sendEmailChangeConfirmation($user);
                 $em->flush();
 
-                $this->addFlash('notice', 'Bien reçu votre demande, regardez vos mails');
+                $this->addFlash('notice', 'Votre demande a bien été reçue. Pour valider le changement d\'adresse e-mail, il vous faut cliquer sur un lien qui a été envoyé à la nouvelle adresse demandée.');
 
                 return $this->redirectToRoute('user_change_email');
             }
@@ -295,6 +296,30 @@ class UserController extends Controller
         }
 
         return $this->render('@App/User/advanced.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/preferences", name="user_preferences")
+     */
+    public function preferencesAction(Request $request, UserInterface $user) {
+
+        $form = $this->createForm(ProfilePreferencesType::class, $user);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('notice', 'Vos préférences ont bien été mises à jour.');
+
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/User/preferences.html.twig', array(
             'form' => $form->createView(),
         ));
     }

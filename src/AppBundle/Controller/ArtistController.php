@@ -48,7 +48,7 @@ class ArtistController extends Controller
             $em->persist($artist);
             $em->flush();
 
-            $this->addFlash('notice', 'Bien reçu');
+            $this->addFlash('notice', 'Les modifications ont été enregistrées.');
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
 

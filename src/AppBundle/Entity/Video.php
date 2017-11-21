@@ -125,32 +125,23 @@ class Video
     {
         $url = $this->url;
 
-        $code = <<<EEE
-    <style>
-        .embed-container { 
-            position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; 
-        }
-        .embed-container iframe, .embed-container object, .embed-container embed { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-        }
-    </style>
-EEE;
+        $code = '';
 
 
         if (false !== ($id = $this->getDailyMotionId($url))) {
             $code .= <<<EEE
-<div class='embed-container'><iframe src='http://www.dailymotion.com/embed/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+<div class='embed-container'><iframe src='https://www.dailymotion.com/embed/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
 EEE;
 
         }
         elseif (false !== ($id = $this->getVimeoId($url))) {
             $code .= <<<EEE
-<div class='embed-container'><iframe src='http://player.vimeo.com/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+<div class='embed-container'><iframe src='https://player.vimeo.com/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
 EEE;
         }
         elseif (false !== ($id = $this->getYoutubeId($url))) {
             $code .= <<<EEE
-<div class='embed-container'><iframe src='http://www.youtube.com/embed/$id' frameborder='0' allowfullscreen></iframe></div>
+<div class='embed-container'><iframe src='https://www.youtube.com/embed/$id' frameborder='0' allowfullscreen></iframe></div>
 EEE;
         }
         else {

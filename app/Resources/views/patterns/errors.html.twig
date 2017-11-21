@@ -1,18 +1,13 @@
 <div class="container">
     {% for message in app.request.session.flashbag.get('error') %}
-        <div class="alert alert-danger alert-dismissible fade show">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            {{ message }}
-        </div>
+        {{ utils.error(message) }}
     {% endfor%}
-</div>
 
 {% spaceless %}
     {% if (errors is defined and errors|length > 0) or (form is defined and not form.vars.valid) %}
         <div id="errors">
-            {% if form is defined %}
+            {% if form is defined and not form.vars.valid %}
+                {{ utils.error('Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.') }}
                 {{ form_errors(form) }}
             {% endif %}
             {% if errors is defined and errors|length > 0 %}
@@ -25,3 +20,4 @@
         </div>
     {% endif %}
 {% endspaceless %}
+</div>
