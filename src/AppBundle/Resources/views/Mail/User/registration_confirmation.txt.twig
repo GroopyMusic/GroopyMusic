@@ -1,17 +1,16 @@
 {% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
 
-{% block subject %}{{ subject }}{% endblock %}
+{# Careful, subject is duplicated below #}
+{% block subject %}{% set subject = subject is defined ? subject : 'Bienvenue sur Un-Mute !' %}{{ subject }}{% endblock %}
 
 {% autoescape false %}
+    {% block content %}
+        Hello,
 
-{% block content %}
-    Hello,
-
-    {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
-{% endblock %}
-
+        {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
+    {% endblock %}
 {% endautoescape %}
 
 {% block body_html %}
-    {% include 'AppBundle:Mail/User:registration_confirmation.html.twig' %}
+    {% include 'AppBundle:Mail/User:registration_confirmation.html.twig' with {'subject':subject|default('Bienvenue sur Un-Mute !')} %}
 {% endblock %}

@@ -30,6 +30,10 @@
     <input id="checkbox-leave-artist" class="mr-3" type="checkbox" data-toggle="collapse" data-target="#collapse-leave-artist"/><label for="checkbox-leave-artist">Je souhaite quitter la gestion de {{ artist.artistname }}</label>
 
     <div class="collapse" id="collapse-leave-artist">
+        {% if lastOne and not artist.available %}
+            <p>Vous ne pouvez pas quitter cet artiste à l'heure actuelle car vous en êtes le dernier propriétaire et un événement inmpliquant cet artiste est
+            en cours de récolte de tickets.</p>
+        {% endif %}
         <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaveArtistModal">
             Quitter {{ artist.artistname }}
         </button>

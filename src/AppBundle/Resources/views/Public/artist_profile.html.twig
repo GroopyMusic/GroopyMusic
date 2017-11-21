@@ -45,7 +45,7 @@
 
         <div class="tab-content artist-profile-content">
             <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
-                <p>{{ artist.shortDescription }}</p>
+                <p>{{ artist.getShortDescription()|nl2br }}</p>
                 {% set currentContract = artist.currentContract %}
 
                 <h3>Vidéos</h3>

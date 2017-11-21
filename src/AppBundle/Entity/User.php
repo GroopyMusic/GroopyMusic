@@ -6,6 +6,7 @@
 namespace AppBundle\Entity;
 
 use Azine\EmailBundle\Entity\RecipientInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -31,6 +32,7 @@ class User extends BaseUser implements RecipientInterface
         $this->addRole("ROLE_FAN");
         $this->inscription_date = new \DateTime();
         $this->accept_conditions = false;
+        $this->deleted = false;
     }
 
     public function owns(Artist $artist) {
@@ -49,6 +51,33 @@ class User extends BaseUser implements RecipientInterface
 
     public function addCredits($n) {
         $this->credits += $n;
+    }
+
+    public function anonymize() {
+        $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';
+        $this->setUsername($code);
+        $this->setUsernameCanonical($code);
+        $this->setAddress(null);
+        $this->setEmail($code);
+        $this->setEmailCanonical($code);
+        $this->setEnabled(false);
+        $this->setLastLogin(null);
+        $this->setConfirmationToken(null);
+        $this->setPasswordRequestedAt(null);
+        $this->setRoles([]);
+        $this->setLastname('NO_ONE');
+        $this->setFirstname('NO_ONE');
+        $this->setCredits(0);
+        $this->setNewsletter(false);
+        $this->setStripeCustomerId(null);
+        $this->setInscriptionDate(null);
+        $this->setAskedEmail(null);
+        $this->setAskedEmailToken(null);
+        $this->setBirthday(null);
+
+        foreach($this->artists_user as $au) {
+            $this->removeArtistsUser($au);
+        }
     }
 
     /**
@@ -158,7 +187,7 @@ class User extends BaseUser implements RecipientInterface
     private $address;
 
     /**
-     * @ORM\Column(name="inscription_date", type="datetime")
+     * @ORM\Column(name="inscription_date", type="datetime", nullable=true)
      */
     private $inscription_date;
 
@@ -181,6 +210,11 @@ class User extends BaseUser implements RecipientInterface
      * @ORM\Column(name="birthday", type="date", nullable=true)
      */
     private $birthday;
+
+    /**
+     * @ORM\Column(name="deleted", type="boolean")
+     */
+    private $deleted;
 
     /**
      * @param mixed $salutation

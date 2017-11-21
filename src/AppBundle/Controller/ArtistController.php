@@ -188,21 +188,36 @@ class ArtistController extends Controller
 
         if($form->isSubmitted()) {
             if($form->get('confirm')->isClicked()) {
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]));
-                if($lastOne) {
-                    $artist->setDeleted(true);
-                    $em->persist($artist);
-                }
-                $em->flush();
 
-                if($lastOne) {
-                    $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname() . '. Vous êtiez le dernier propriétaire de ' . $artist->getArtistname() . ' donc l\'artiste a été supprimé.');
+                if($lastOne && !$artist->isAvailable()) {
+                    $form->addError('Vous ne pouvez pas quitter un artiste lorsqu\'un événement de récolte de tickets est en cours pour cet artiste.');
                 }
+
                 else {
-                    $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname());
+                    $em = $this->getDoctrine()->getManager();
+                    $em->remove($em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]));
+
+                    if($lastOne) {
+                        // Duplicated in UserController->advanced
+                        $artist->setDeleted(true);
+
+                        foreach($em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist]) as $o_request) {
+                            $em->remove($o_request);
+                        }
+                        // End Duplicated
+
+                        $em->persist($artist);
+                    }
+                    $em->flush();
+
+                    if($lastOne) {
+                        $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname() . '. Vous êtiez le dernier propriétaire de ' . $artist->getArtistname() . ' donc l\'artiste a été supprimé.');
+                    }
+                    else {
+                        $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname());
+                    }
+                    return $this->redirectToRoute('user_my_artists');
                 }
-                return $this->redirectToRoute('homepage');
             }
             elseif($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('artist_owners', ['id' => $artist->getId()]);

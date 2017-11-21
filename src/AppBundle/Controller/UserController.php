@@ -285,14 +285,48 @@ class UserController extends Controller
 
         if($form->isSubmitted() && $form->get('submit')->isClicked()) {
             $em = $this->getDoctrine()->getManager();
-            // TODO supprimer compte
+
+            if($user->getAddress() != null) {
+                $em->remove($user->getAddress());
+            }
+            $user->anonymize();
+
+            foreach($em->getRepository('AppBundle:Artist_User')->findBy(['user' => $user]) as $a_u) {
+                $artist = $a_u->getArtist();
+
+                // Duplicated in ArtistController->Leave
+                if($artist->isAvailable() && count($artist->getArtistsUser()) == 1) {
+                    $artist->setDeleted(true);
+                    foreach ($em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist]) as $o_request) {
+                        $em->remove($o_request);
+                    }
+                    $em->persist($artist);
+                }
+                // End duplicated
+
+                $em->remove($a_u);
+            }
 
             $em->persist($user);
             $em->flush();
 
-            // TODO supprimer session
+            $session = $request->getSession();
+            $session->clear();
 
-            return $this->redirectToRoute('homepage');
+            $this->addFlash('notice', 'Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit.
+            Bonne continuation !');
+            $response = $this->redirectToRoute('homepage');
+
+            // Clearing the cookies.
+            $cookieNames = [
+                $this->container->getParameter('session.name'),
+                $this->container->getParameter('session.remember_me.name'),
+            ];
+            foreach ($cookieNames as $cookieName) {
+                $response->headers->clearCookie($cookieName);
+            }
+
+            return $response;
         }
 
         return $this->render('@App/User/advanced.html.twig', array(
