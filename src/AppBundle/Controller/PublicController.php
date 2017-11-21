@@ -146,6 +146,14 @@ class PublicController extends Controller
     }
 
     /**
+     * @Route("/faq", name="faq")
+     */
+    public function faqAction() {
+        return $this->render('AppBundle:Public:faq.html.twig');
+    }
+
+
+    /**
      * @Route("/suggestions", name="suggestionBox")
      */
     public function suggestionBoxAction(){

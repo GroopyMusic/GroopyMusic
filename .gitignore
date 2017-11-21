@@ -32,3 +32,7 @@ web/uploads/hall_technicalspecs/*
 **/.DS_Store
 /deploy.php
 !DoctrineMigrations
+!web/js/compiled
+!web/css/compiled
+web/js/compiled/*
+web/css/compiled/*

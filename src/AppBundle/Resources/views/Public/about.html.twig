@@ -1,11 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block body_attributes %}data-spy="scroll" data-target="#toc-nav"{% endblock %}
-
 {% block body %}
-
     <div class="container">
-
         <div class="row">
             <div class="col-12 col-md-4" id="static-toc">
                 <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md">
@@ -18,7 +14,6 @@
                     </ul>
                 </nav>
             </div>
-
 
             <div class="col-12 col-md-8 static-content">
                 <h3 id="about-intro">À propos</h3>
@@ -73,10 +68,6 @@
                     <li>Autres</li>
                 </ul>
             </div>
-
-
         </div>
     </div>
-
-
 {% endblock %}

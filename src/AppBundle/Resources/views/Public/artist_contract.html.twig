@@ -56,11 +56,17 @@
                         Région du concert : {{ contract.province ?: 'Sans préférence' }}
                     </li>
                     <li>
-                        Tickets achetés par des producteurs : {{ contract.ticketsSold }} / {{ contract.step.minTickets }}
-
+                        Tickets achetés par des producteurs : {{ contract.ticketsSold }}
+                    </li>
+                    <li>
+                        Nombre de tickets nécessaires pour concrétisation du concert: {{ contract.step.minTickets }}
                         <div class="progress">
                             <div class="progress-bar" style="padding-left: 1rem;width:{{ contract.ticketsSold * 100 / contract.step.minTickets }}%">{{ contract.ticketsSold * 100 / contract.step.minTickets }}%</div>
                         </div>
+                    </li>
+                    <li>
+                        {% set tickets_left = contract.step.maxTickets - contract.ticketsSold %}
+                        Nombre de tickets encore en vente : {{ tickets_left }}
                     </li>
 
                     {% if contract.motivations is not empty or owns %}
@@ -98,7 +104,6 @@
             </div>
             <div class="col-xs-12 col-md-4">
                 {% if state not in contract.uncrowdableStates %}
-                    {% set tickets_left = contract.step.maxTickets - contract.ticketsSold %}
                     <div class="col-12">
                         <h3 class="rounded-title">Acheter des tickets</h3>
                         <p>Il reste encore {{ tickets_left }} tickets, faites votre choix !</p>

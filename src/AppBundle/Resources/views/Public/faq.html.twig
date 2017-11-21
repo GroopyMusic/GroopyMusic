@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-4" id="static-toc">
+                <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md">
+                    <ul class="flex-column">
+                        <li class="nav-item"><a href="#about-intro">Un-Mute ASBL</a></li>
+                        <li class="nav-item"><a href="#about-how-it-works">Comment ça marche</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="col-12 col-md-8 static-content">
+                <h3 id="about-intro">À propos</h3>
+                <p>
+                    Un-Mute ASBL vise l'émancipation de la scène musicale belge en produisant, sans distinctions, les artistes qui auront été choisis par leurs fans.
+                    Elle propose une plateforme interactive et accessible qui facilite l'organisation de concerts en Belgique grâce à un système de financement participatif. Il s'agit d'un véritable carrefour de rencontres entre des artistes belges, différentes catégories de salles et des fans producteurs.
+                </p>
+
+                <h3 id="about-how-it-works">Comment ça fonctionne ?</h3>
+                <p>
+                    Une fois inscrit dans le catalogue des groupes, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement ( = concept de fan producteur).
+                    Pour que cet événement devienne un concert confirmé, il faut qu'un certain nombre de places aient été vendues dans les temps impartis.
+                    Si ce nombre minimum de places est atteint : le concert a lieu ! De plus, ce concert peut engendrer jusqu'à 2 concerts supplémentaires en Belgique grâce au système de tournée multi-locale
+                    Si ce nombre minimum de places n'est pas atteint, le concert n'a pas lieu, les fans sont remboursés intégralement et l'artiste peut retenter sa chance en créant un autre événement !
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
