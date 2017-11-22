@@ -192,8 +192,8 @@ class MailDispatcher
         // TODO should be another way of getting pdf path
         $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '\..\web\pdf\orders\\' . $contractFan->getBarcodeText().'.pdf'];
 
-        $to = $contractFan->getFan()->getEmail();
-        $toName = $contractFan->getFan()->getDisplayName();
+        $to = [$contractFan->getFan()->getEmail()];
+        $toName = [$contractFan->getFan()->getDisplayName()];
         $subject = "Votre commande sur Un-Mute.be";
         $params = [];
 
@@ -207,9 +207,9 @@ class MailDispatcher
 
         $attachments = ['votreContrat.pdf' => $this->get('kernel')->getRootDir() . '\..\web\pdf\tickets\\' . $contractFan->getBarcodeText().'.pdf'];
 
-        $to = $contractFan->getFan()->getEmail();
-        $toName = $contractFan->getFan()->getDisplayName();
-        $subject = "subject";
+        $to = [$contractFan->getFan()->getEmail()];
+        $toName = [$contractFan->getFan()->getDisplayName()];
+        $subject = "Votre ticket Un-Mute";
         $params = [];
 
         $this->sendEmail(MailTemplateProvider::TICKET_TEMPLATE, $subject, $params, [], $attachments, $to, $toName);

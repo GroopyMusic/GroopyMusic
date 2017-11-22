@@ -24,22 +24,24 @@
 
                 <ul class="um-list">
                     <li>
-                        Date du concert : {{ contract.preferences.date|date('d/m/Y') }}
+                        Date du concert : {{ contract.dateConcert|date('d/m/Y') }}
                     </li>
                     <li> État du crowdfunding :
-                        {% if state == 'state.success' %}
+                        {% if state is constant('STATE_SUCCESS_PASSED', contract) %}
                             <span class="success">Passé (réussi)</span>
-                        {% elseif state == 'state.refunded' %}
+                        {% elseif state is constant('STATE_REFUNDED', contract) %}
                             <span>Annulé</span>
-                        {% elseif state == 'state.failed' %}
+                        {% elseif state is constant('STATE_FAILED', contract) %}
                             <span>Objectif non atteint</span>
-                        {% elseif state == 'state.success-ongoing' %}
+                        {% elseif state is constant('STATE_SUCCESS_ONGOING', contract) %}
                             <span class="success">Objectif atteint ; places encore en vente !</span>
-                        {% elseif state == 'state.success-soldout' %}
+                        {% elseif state is constant('STATE_SUCCESS_CLOSED', contract) %}
+                            <span class="success">Objectif atteint ; la vente de tickets est terminée</span>
+                        {% elseif state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
                             <span class="success">Objectif atteint (SOLD OUT)</span>
-                        {% elseif state == 'state.ongoing' %}
+                        {% elseif state is constant('STATE_ONGOING', contract) %}
                             <span>En cours</span>
-                        {% elseif state == 'state.pending' %}
+                        {% elseif state is constant('STATE_PENDING', contract) %}
                             <span>En attente de confirmation d'un administrateur</span>
                         {% endif %}
                     </li>

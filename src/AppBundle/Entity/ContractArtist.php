@@ -15,40 +15,67 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class ContractArtist extends BaseContractArtist
 {
+    const NB_DAYS_OF_CLOSING = 7;
+
+    const STATE_REFUNDED = 'state.refunded';
+    const STATE_FAILED = 'state.failed';
+    const STATE_SUCCESS_SOLDOUT = 'state.success.soldout';
+    const STATE_SUCCESS_CLOSED = 'state.success.closed';
+    const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
+    const STATE_SUCCESS_PASSED = 'state.success.passed';
+    const STATE_ONGOING = 'state.ongoing';
+    const STATE_PENDING = 'state.pending';
+
     public function isUncrowdable() {
         return in_array($this->getState(), $this->getUncrowdableStates());
     }
 
     public static function getUncrowdableStates() {
         return [
-            'state.refunded',
-            'state.failed',
-            'state.success-soldout',
-            'state.success',
-            'state.pending',
+            self::STATE_REFUNDED,
+            self::STATE_FAILED,
+            self::STATE_SUCCESS_SOLDOUT,
+            self::STATE_SUCCESS_CLOSED,
+            self::STATE_SUCCESS_PASSED,
+            self::STATE_PENDING,
         ];
     }
 
     public function getState() {
-        if($this->refunded) {
-            return "state.refunded";
+
+        $today = new \DateTime();
+        $today2 = new \DateTime();
+
+        // Failure & refunded
+        if($this->refunded)
+            return self::STATE_REFUNDED;
+
+        // Failure
+        if($this->failed || ($this->dateEnd < $today && $this->tickets_sold < $this->step->getMinTickets()))
+            return self::STATE_FAILED;
+
+        // Success
+        if($this->successful || $this->tickets_sold > $this->step->getMinTickets()) {
+            // Concert in the future
+            if($this->getDateConcert() >= $today) {
+                // Sold out
+                if ($this->tickets_sold >= $this->step->getMaxTickets())
+                    return self::STATE_SUCCESS_SOLDOUT;
+                // No more selling
+                if ($today2->modify('+' . self::NB_DAYS_OF_CLOSING . ' days') > $this->getDateConcert())
+                    return self::STATE_SUCCESS_CLOSED;
+                // Successful, in the future, not sold out, not closed => ongoing
+                else
+                    return self::STATE_SUCCESS_ONGOING;
+            }
+            // Concert in the passed & successful
+            else
+                return self::STATE_SUCCESS_PASSED;
         }
-        if($this->failed) {
-            return "state.failed";
-        }
-        if($this->dateEnd > (new \DateTime())) {
-            if($this->tickets_sold > $this->step->getMinTickets())
-                return "state.success-ongoing";
-            if($this->tickets_sold >= $this->step->getMaxTickets())
-                return "state.success-soldout";
-            return "state.ongoing";
-        }
-        if($this->successful) {
-            return "state.success";
-        }
-        else {
-            return "state.pending";
-        }
+        if($this->dateEnd > $today)
+            return self::STATE_ONGOING;
+
+        return self::STATE_PENDING;
     }
 
     public function __construct()
@@ -70,6 +97,15 @@ class ContractArtist extends BaseContractArtist
 
     public function removeTicketsSold($quantity) {
         $this->tickets_sold -= $quantity;
+    }
+
+    public function getDateConcert() {
+        if(isset($this->reality) && $this->reality->getDate() != null) {
+            return $this->reality->getDate();
+        }
+        else {
+            return $this->preferences->getDate();
+        }
     }
 
     /**

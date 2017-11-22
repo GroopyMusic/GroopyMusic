@@ -242,7 +242,11 @@ class PublicController extends Controller
         $form = $this->createForm(ContractFanType::class, $cf);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) { // TODO && !$contract->isUncrowdable()
+        if($contract->isUncrowdable()) {
+            $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
+        }
+
+        elseif($form->isSubmitted() && $form->isValid()) {
 
             if($user == null) {
                 throw $this->createAccessDeniedException();

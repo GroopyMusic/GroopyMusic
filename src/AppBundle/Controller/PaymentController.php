@@ -56,6 +56,11 @@ class PaymentController extends Controller
                 ));
             }
 
+            if($contract->isUncrowdable()) {
+                $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
+                return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]);
+            }
+
             if ($cart->isProblematic()) {
                 $this->addFlash('error', 'Votre panier contenait des articles expirés ; nous nous chargeons de le remettre à jour');
 
