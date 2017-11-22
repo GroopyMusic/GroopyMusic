@@ -188,7 +188,7 @@ class Payment
     {
         $this->refunded = $refunded;
 
-        $this->getContractFan()->setRefunded(true);
+        $this->getContractFan()->setRefunded($refunded);
 
         return $this;
     }
