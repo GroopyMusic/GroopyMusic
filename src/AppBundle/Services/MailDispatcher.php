@@ -18,13 +18,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class MailDispatcher
 {
-    const TO = "no-reply@un-mute.be";
+    const MAX_BCC = 100;
+
+    const TO = ["no-reply@un-mute.be"];
 
     const REPLY_TO = "info@un-mute.be";
     const REPLY_TO_NAME = "Un-Mute ASBL";
 
-    const ADMIN_TO = "gonzyer@gmail.com";
-    const ADMIN_TO_NAME = "Admin Un-Mute";
+    const ADMIN_BCC = ["gonzyer@gmail.com"];
 
     private $mailer;
     private $from_address;
@@ -45,14 +46,55 @@ class MailDispatcher
         $this->kernel = $kernel;
     }
 
-    private function sendEmail($template, $subject, array $params, $bcc_emails, array $attachments = [], $to = self::TO, $to_name = '') {
-        $this->mailer->sendEmail($failedRecipients, $subject, $this->from_address, $this->from_name, $to, $to_name, [], '',
-            $bcc_emails, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+    private function sendEmail($template, $subject, array $params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '') {
+
+        // CASE 1 : # of recipients is reasonable -> one mail
+        if(count($to) + count($bcc_emails) <= self::MAX_BCC) {
+            $this->mailer->sendEmail($failedRecipients, $subject, $this->from_address, $this->from_name, $to, $to_name, [], '',
+                $bcc_emails, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+            return $failedRecipients;
+        }
+
+        // CASE 2 : # of recipients is high and "to" field is for no-reply only
+        // We need to chunk the bcc recipients
+        elseif($to == self::TO) {
+            $failedRecipients = array();
+            $bcc_chunks = array_chunk($bcc_emails, self::MAX_BCC);
+
+            foreach($bcc_chunks as $chunk)  {
+                $this->mailer->sendEmail($newFailedRecipients, $subject, $this->from_address, $this->from_name, $to, $to_name, [], '',
+                    $chunk, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+                $failedRecipients = array_merge($failedRecipients, $newFailedRecipients);
+            }
+        }
+
+        // CASE 3 : # of recipients is high and "to" fields is actually used
+        // We need to separate BCC and TO and send e-mails in chunks
+        // This case shouldn't happen in practice
+        else {
+            $failedRecipients = array();
+            $bcc_chunks = array_chunk($bcc_emails, self::MAX_BCC);
+
+            foreach($bcc_chunks as $chunk)  {
+                $this->mailer->sendEmail($newFailedRecipients, $subject, $this->from_address, $this->from_name, self::TO, '', [], '',
+                    $chunk, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+                $failedRecipients = array_merge($failedRecipients, $newFailedRecipients);
+            }
+
+            $to_chunks = array_chunk($to, self::MAX_BCC);
+
+            foreach($to_chunks as $chunk)  {
+                $this->mailer->sendEmail($newFailedRecipients, $subject, $this->from_address, $this->from_name, $chunk, '', [], '',
+                    '', '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+                $failedRecipients = array_merge($failedRecipients, $newFailedRecipients);
+            }
+        }
+
         return $failedRecipients;
     }
 
     private function sendAdminEmail($template, $subject, array $params = [], array $attachments = []) {
-        return $this->sendEmail($template, $subject, $params, [], $attachments, self::ADMIN_TO, self::ADMIN_TO_NAME);
+        return $this->sendEmail($template, $subject, $params, self::ADMIN_BCC, $attachments, [], '');
     }
 
     public function sendTestEmail() {
@@ -64,7 +106,7 @@ class MailDispatcher
 
         $params = ['user' => $user];
 
-        $this->sendEmail($template, "Changement d'e-mail", $params, [], [], $user->getAskedEmail(), $user->getDisplayName());
+        $this->sendEmail($template, "Changement d'e-mail", $params, [], [], [$user->getAskedEmail()], [$user->getDisplayName()]);
     }
 
 
@@ -83,13 +125,13 @@ class MailDispatcher
             $template = MailTemplateProvider::OWNERSHIPREQUEST_NONMEMBER_TEMPLATE;
         }
 
-        $this->sendEmail($template, "Quelqu'un a dit que vous possédiez un artiste sur Un-Mute", $params, [], [], $req->getEmail(), $toName);
+        $this->sendEmail($template, "Quelqu'un a dit que vous possédiez un artiste sur Un-Mute", $params, [], [], [$req->getEmail()], [$toName]);
     }
 
     public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox) {
         $recipient = $suggestionBox->getEmail();
         $recipientName = $suggestionBox->getDisplayName();
-        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), ['suggestionBox' => $suggestionBox], [], [], $recipient, $recipientName);
+        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), ['suggestionBox' => $suggestionBox], [], [], [$recipient], [$recipientName]);
     }
 
     public function sendKnownOutcomeContract(ContractArtist $contract, $success, $artist_users, $fan_users) {
