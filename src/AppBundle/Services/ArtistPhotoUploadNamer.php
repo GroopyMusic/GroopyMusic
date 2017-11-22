@@ -55,6 +55,6 @@ class ArtistPhotoUploadNamer implements NamerInterface
             throw new AccessDeniedException("You don't own this artist.");
         }
 
-        return sprintf('%s.%s', 'ag-' . $artist->getSafename() . '-' . uniqid(), $file->getExtension());
+        return sprintf('%s.%s', 'ag-' . $artist->getSlug() . '-' . uniqid(), $file->getExtension());
     }
 }

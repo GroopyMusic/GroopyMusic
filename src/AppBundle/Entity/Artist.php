@@ -17,6 +17,7 @@ class Artist implements TranslatableInterface
 {
 
     use ORMBehaviors\Translatable\Translatable;
+    use ORMBehaviors\Sluggable\Sluggable;
 
     const PHOTOS_DIR = 'uploads/artist_gallery/';
 
@@ -53,6 +54,10 @@ class Artist implements TranslatableInterface
         $this->photos = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->date_creation = new \DateTime();
+    }
+
+    public function getSluggableFields() {
+        return ['artistname'];
     }
 
     public function setLocale($locale)
