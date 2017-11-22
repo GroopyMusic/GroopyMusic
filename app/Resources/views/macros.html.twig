@@ -10,7 +10,7 @@
 {% endmacro %}
 
 {% macro hidden_loader(hidden=true) %}
-    <p class="d-none" id="loader-explanation"></p>
+    <div style="display:none;" class="loader-explanation"></div>
     <div class="loader"{% if hidden %} style="display:none;"{% endif %}>
         <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
         </svg>
@@ -18,7 +18,7 @@
 {% endmacro %}
 
 {% macro error(message, dismissible=true) %}
-    <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger alert-dismissible error-notice fade show">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>

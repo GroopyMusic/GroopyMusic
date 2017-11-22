@@ -90,7 +90,7 @@
 
         <!-- Used to display Element errors -->
         <div class="stripe-error alert alert-danger" role="alert"></div>
-        <div>
+        <div id="stripe-loader">
             {{ utils.hidden_loader() }}
         </div>
   </div>
@@ -102,6 +102,11 @@
     <script>
         hideError();
 
+        var $loader = $('#stripe-loader .loader'); 
+        var $loaderexplanation = $('#stripe-loader .loader-explanation');
+
+        var amount = {{ cart.amount * 100}};
+
         $('#card-form-row').hide();
         $('#accept_conditions').change(function(){
             if(this.checked) {
@@ -110,6 +115,7 @@
             else {
                 $('#card-form-row').hide();
             }
+            $('.error-notice').alert('close');
         });
 
         $('input[type=radio]').change(function() {
@@ -140,7 +146,7 @@
 
             stripe.createSource({
                 type: 'bancontact',
-                amount: {{ cart.amount * 100 }},
+                amount: amount,
                 currency: 'eur',
                 bancontact: {
                     preferred_language: 'fr'
@@ -180,7 +186,7 @@
                 displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
                 stripe.createSource({
                     type: 'three_d_secure',
-                    amount: {{ cart.amount * 100 }},
+                    amount: amount,
                     currency: "eur",
                     three_d_secure: {
                         card: result.id
@@ -237,29 +243,29 @@
         });
 
         function displayLoader(html) {
-            $('.loader').show();
+            $loader.show();
             $('form').hide();
             hideError();
             if(html) {
-                $('#loader-explanation').show();
-                $('#loader-explanation').html(html);
+                $('.loader-explanation').html(html);
+                $('.loader-explanation').show();
             }
             else {
-                $('#loader-explanation').hide();
+                $loaderexplanation.hide();
             }
         }
 
         function displayForm() {
             $('form').show();
-            $('.loader').hide();
-            $('#loader-explanation').hide();
+            $loader.hide();
+            $loaderexplanation.hide();
         }
 
         function displayError(html) {
             $('.stripe-error').html(html);
             $('.stripe-error').show();
-            $('.loader').hide();
-            $('#loader-explanation').hide();
+            $loader.hide();
+            $loaderexplanation.hide();
         }
 
         function hideError() {
@@ -269,7 +275,7 @@
         function stripeTokenHandler(source) {
 
             $('#payment-intro').hide();
-            displayLoader("Paiement en cours...<b>Ne quittez pas cette page</b>");
+            displayLoader("Paiement en cours... <b>Ne quittez pas cette page pendant le traitement de votre paiement.</b>");
 
             // Insert the token ID into the form so it gets submitted to the server
             var form = document.getElementById('payment-form');
@@ -277,7 +283,20 @@
             hiddenInput.setAttribute('type', 'hidden');
             hiddenInput.setAttribute('name', 'stripeSource');
             hiddenInput.setAttribute('value', source.id);
+
+            var hiddenInput2 = document.createElement('input');
+            hiddenInput2.setAttribute('type', 'hidden');
+            hiddenInput2.setAttribute('name', 'fancontract_id');
+            hiddenInput2.setAttribute('value', '{{ contract_fan.id }}');
+
+            var hiddenInput3 = document.createElement('input');
+            hiddenInput3.setAttribute('type', 'hidden');
+            hiddenInput3.setAttribute('name', 'amount');
+            hiddenInput3.setAttribute('value', '' + amount);
+
             form.appendChild(hiddenInput);
+            form.appendChild(hiddenInput2);
+            form.appendChild(hiddenInput3);
             // Submit the form
             form.submit();
         }

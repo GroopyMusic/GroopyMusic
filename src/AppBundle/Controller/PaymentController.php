@@ -43,6 +43,19 @@ class PaymentController extends Controller
 
         if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
 
+            $amount = intval($_POST['amount']);
+            $fancontract_id = intval($_POST['fancontract_id']);
+
+            // We set an explicit test for amount changes as it has legal impacts
+            if($amount != $contract->getAmount() * 100 || $fancontract_id != $contract->getId()) {
+                $this->addFlash('error', 'Vous avez modifié votre commande en cours de route ; merci de recommencer.');
+                return $this->render('@App/User/pay_cart.html.twig', array(
+                    'cart' => $cart,
+                    'error_conditions' => false,
+                    'contract_fan' => $contract,
+                ));
+            }
+
             if ($cart->isProblematic()) {
                 $this->addFlash('error', 'Votre panier contenait des articles expirés ; nous nous chargeons de le remettre à jour');
 
@@ -54,12 +67,12 @@ class PaymentController extends Controller
                 $output = new NullOutput();
                 $application->run($input, $output);
 
-                return $this->redirectToRoute('homepage');
+                return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]);
             }
 
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
-            \Stripe\Stripe::setApiKey("sk_test_b75odA2dm9Og4grQZyFdn9HP");
+            \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
 
             // Token is created using Stripe.js or Checkout!
             // Get the payment token submitted by the form:
@@ -67,25 +80,6 @@ class PaymentController extends Controller
 
             // Charge the user's card:
             try {
-                /*3DSecure doesn't work with this :
-
-                try {
-                    if ($user->getStripeCustomerId() != null) {
-                        throw new \Exception();
-                        //$stripe_customer = \Stripe\Customer::retrieve($user->getStripeCustomerId());
-                        //$stripe_customer->source = $source;
-                    } else {
-                        throw new \Exception();
-                    }
-                } catch (\Exception $e) {
-                    $stripe_customer = \Stripe\Customer::create(array(
-                        "description" => "Customer for " . $user->getEmail(),
-                        "source" => $source,
-                    ));
-
-                    $user->setStripeCustomerId($stripe_customer->id);
-                }*/
-
                 $contract_artist = $contract->getContractArtist();
 
                 $payment = new Payment();
@@ -98,10 +92,8 @@ class PaymentController extends Controller
                     $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
                 }
 
-
                 $charge = \Stripe\Charge::create(array(
-                    // TODO assurer que cet amount ne peut pas être changé au cours du processus, par ex. avec un hach
-                    "amount" => $contract->getAmount() * 100,
+                    "amount" => $amount,
                     "currency" => "eur",
                     "description" => "Paiement du contrat numéro " . $contract->getId(),
                     "source" => $source,

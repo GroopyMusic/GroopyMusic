@@ -67,8 +67,8 @@
   }
 }
 
-#loader-explanation {
+.loader-explanation {
   @extend .alert-warning;
   @extend .p-3;
-  text-align: center;
+  @extend .text-center;
 }

@@ -72,7 +72,7 @@ class Artist implements TranslatableInterface
     }
 
     public function getSafename() {
-        return urlencode($this->artistname);
+        return $this->slug;
     }
 
     public function isActive() {
