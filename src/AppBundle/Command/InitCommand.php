@@ -32,6 +32,7 @@ class InitCommand extends ContainerAwareCommand
         $arguments = array(
             '--no-interaction' => true,
             '--allow-no-migration' => true,
+            '--no-debug' => true,
         );
 
         $command->run(new ArrayInput($arguments), $output);
