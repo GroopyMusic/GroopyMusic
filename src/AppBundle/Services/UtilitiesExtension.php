@@ -53,8 +53,8 @@ class UtilitiesExtension extends \Twig_Extension
 
     public function error($message, $dismissible = true) {
         return $this->twig->render('patterns/utils/error.html.twig', [
-            'text' => $message,
-            'limit' => $dismissible,
+            'message' => $message,
+            'dismissible' => $dismissible,
         ]);
     }
 

@@ -242,40 +242,41 @@ class PublicController extends Controller
         $form = $this->createForm(ContractFanType::class, $cf);
         $form->handleRequest($request);
 
-        if($contract->isUncrowdable()) {
-            $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
-        }
+        if($form->isSubmitted() && $form->isValid()) {
 
-        elseif($form->isSubmitted() && $form->isValid()) {
+            if($contract->isUncrowdable()) {
+                $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
+            }
 
-            if($user == null) {
+            elseif($user == null) {
                 throw $this->createAccessDeniedException();
             }
 
-            /** @var Cart $cart */
-            $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-
-            if($cart == null) {
-                $cart = $this->createCartForUser($user);
-            }
             else {
-                $cart = $this->cleanCart($cart, $em);
-            }
+                /** @var Cart $cart */
+                $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
-            foreach($cf->getPurchases() as $purchase) {
-                if($purchase->getQuantity() == 0) {
-                    $cf->removePurchase($purchase);
+                if ($cart == null) {
+                    $cart = $this->createCartForUser($user);
+                } else {
+                    $cart = $this->cleanCart($cart, $em);
                 }
+
+                foreach ($cf->getPurchases() as $purchase) {
+                    if ($purchase->getQuantity() == 0) {
+                        $cf->removePurchase($purchase);
+                    }
+                }
+                $cart->addContract($cf);
+
+                $em->flush();
+
+                return $this->render('@App/User/pay_cart.html.twig', array(
+                    'cart' => $cart,
+                    'error_conditions' => false,
+                    'contract_fan' => $cf,
+                ));
             }
-            $cart->addContract($cf);
-
-            $em->flush();
-
-            return $this->render('@App/User/pay_cart.html.twig', array(
-                'cart' => $cart,
-                'error_conditions' => false,
-                'contract_fan' => $cf,
-            ));
         }
 
         return $this->render('@App/Public/artist_contract.html.twig', array(

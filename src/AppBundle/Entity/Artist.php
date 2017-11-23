@@ -102,7 +102,7 @@ class Artist implements TranslatableInterface
     public function isAvailable() {
         foreach($this->contracts as $contract) {
             /** @var ContractArtist $contract */
-            if(!$contract->getFailed() && $contract->getDateEnd() > (new \DateTime())) {
+            if($contract->isCrowdable()) {
                 return false;
             }
         }

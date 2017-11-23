@@ -1,6 +1,6 @@
 <div class="container">
     {% for message in app.request.session.flashbag.get('error') %}
-        {{ error(message) }}
+        {{ error(message)|raw }}
     {% endfor%}
 
 {% spaceless %}
@@ -10,7 +10,7 @@
                 or (form1 is defined and not form1.vars.valid)
                 or (form2 is defined and not form2.vars.valid))
             %}
-                {{ error('Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.') }}
+                {{ error('Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.')|raw }}
                 {{ form_errors(form) }}
             {% endif %}
             {% if errors is defined and errors|length > 0 %}

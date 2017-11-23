@@ -23,7 +23,8 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         $nots = $this->createQueryBuilder('a')
             ->select('a.id')
             ->innerJoin('a.contracts', 'c')
-            ->andWhere('c.dateEnd > ' . (new \DateTime('now'))->format('d/m/Y'))
+            ->andWhere('c.dateEnd > ' . (new \DateTime('now'))->format('Ymd'))
+            ->andWhere('c.failed = 0')
         ;
 
         $qb = $this->createQueryBuilder('a2');

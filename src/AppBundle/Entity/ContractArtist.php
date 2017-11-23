@@ -30,6 +30,10 @@ class ContractArtist extends BaseContractArtist
         return in_array($this->getState(), $this->getUncrowdableStates());
     }
 
+    public function isCrowdable() {
+        return !$this->isUncrowdable();
+    }
+
     public static function getUncrowdableStates() {
         return [
             self::STATE_REFUNDED,

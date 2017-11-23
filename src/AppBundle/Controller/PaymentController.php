@@ -40,6 +40,7 @@ class PaymentController extends Controller
 
         /** @var ContractFan $contract */
         $contract = $cart->getFirst();
+        $contract_artist = $contract->getContractArtist();
 
         if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
 
@@ -56,7 +57,7 @@ class PaymentController extends Controller
                 ));
             }
 
-            if($contract->isUncrowdable()) {
+            if($contract_artist->isUncrowdable()) {
                 $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
                 return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]);
             }
@@ -85,8 +86,6 @@ class PaymentController extends Controller
 
             // Charge the user's card:
             try {
-                $contract_artist = $contract->getContractArtist();
-
                 $payment = new Payment();
                 $payment->setDate(new \DateTime())->setUser($user)
                     ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());

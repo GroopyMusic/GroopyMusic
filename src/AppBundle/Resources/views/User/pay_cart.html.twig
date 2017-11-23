@@ -130,10 +130,10 @@
             }
         });
 
-        var stripe = Stripe('pk_test_X1amQwEQval7q4Ay1po0QOXe');
+        var stripe = Stripe('{{ stripe_api_public }}');
         var elements = stripe.elements();
         // set publishable key for V2
-        Stripe.setPublishableKey('pk_test_X1amQwEQval7q4Ay1po0QOXe');
+        Stripe.setPublishableKey('{{ stripe_api_public }}');
 
         var card = elements.create('card', {
             hidePostalCode: true
