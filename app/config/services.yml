@@ -5,10 +5,6 @@ parameters:
 
 services:
     # Avoid deprecation for private service
-    vich_uploader.namer_property.hall_technical_specs:
-      public: true
-      abstract: true
-
     swiftmailer.transport.real:
       public: true
       abstract: true

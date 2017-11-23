@@ -193,8 +193,7 @@ vich_uploader:
           delete_on_remove:   true
           inject_on_load:     false
           namer:
-            service: vich_uploader.namer_property
-            options: { property: 'technicalSpecsFileName'}
+            service: AppBundle\Services\BySlugNamer
 
 jmose_command_scheduler:
     log_path: '%kernel.root_dir%/../var/logs/commands/'

@@ -32,6 +32,10 @@ class Hall extends Partner
         return self::PHOTOS_DIR . $photo->getFilename();
     }
 
+    public function getUploadFileName() {
+        return $this->getTechnicalSpecsFileName();
+    }
+
     public function getTechnicalSpecsFileName() {
         try {
             return $this->slug . '-' . uniqid();
