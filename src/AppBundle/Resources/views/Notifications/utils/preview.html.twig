@@ -1,0 +1,5 @@
+<tr class="notification-preview {% if notification.unseen %} table-warning{% endif %}">
+    <td><a><b>{{ title }}</b></a>{% if notification.unseen %} - non lu {% endif %}</td>
+    <td><div>{{ preview(content, 50)|raw }}</div></td>
+    <td><a class="btn btn-primary notification-trigger" href="{{ path('user_notification', {'id': notification.id}) }}">Voir</a></td>
+</tr>

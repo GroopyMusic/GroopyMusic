@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-20T13:01:20Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-23T09:36:17Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
-      <trans-unit id="1e148cc2964d4632af25b33aa315a5e9ffc2d4a8" resname="Please enter your last name.">
-        <source>Please enter your last name.</source>
-        <target>Merci de renseigner votre nom de famille.</target>
-      </trans-unit>
-      <trans-unit id="eae0ea05069c88f9ae2dc06fa659efe7f45cad5e" resname="The last name is too long.">
-        <source>The last name is too long.</source>
-        <target>Ce nom de famille est trop long.</target>
-      </trans-unit>
-      <trans-unit id="b7fcf95c531ade6ffe7e8f1716cf98be6eb82cce" resname="The last name is too short.">
-        <source>The last name is too short.</source>
-        <target>Ce nom de famille est trop court.</target>
-      </trans-unit>
       <trans-unit id="e03e30d926d24faaabc739a13f6063d5a11a159e" resname="accept_conditions.notblank">
         <source>accept_conditions.notblank</source>
         <target>Vous devez accepter les conditions d'utilisation pour poursuivre.</target>

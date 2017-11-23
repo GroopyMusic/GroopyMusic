@@ -1,0 +1,6 @@
+<a class="notification-trigger notification-menu-preview-content{% if notification.unseen %} unseen{% endif %}" href="{{ path('user_notification', {'id': notification.id}) }}">
+    <div class="notification-menu-preview-item">
+        <h6 class="notification-menu-preview-title">{{ title|raw }}</h6>
+        <div class="notification-menu-preview-preview">{{ preview(content, 50)|raw }}</div>
+    </div>
+</a>

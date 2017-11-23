@@ -24,9 +24,11 @@ security:
             form_login:
                 provider: fos_userbundle
                 default_target_path: homepage
+                failure_path: login
                 csrf_parameter:       _csrf_token
                 csrf_token_id:        authenticate
                 csrf_token_generator: security.csrf.token_manager
+                use_referer: true
             logout:
               path: /logout
             anonymous:    true

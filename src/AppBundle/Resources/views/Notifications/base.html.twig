@@ -1,16 +1,14 @@
-{% import "@App/Notifications/macros.html.twig" as macros %}
-
 {% if menu %}
     {% block menu_preview %}
-        {{ macros.menu_preview(notification, title, content) }}
+        {{ notification_menu_preview(notification, title, content)|raw }}
     {% endblock %}
 {% elseif preview %}
     {% block preview %}
-        {{ macros.preview(notification, title, content) }}
+        {{ notification_preview(notification, title, content)|raw }}
     {% endblock %}
 {% else %}
     {% block complete %}
-        {{ macros.complete(notification, title, content) }}
+        {{ notification_complete(notification, title, content)|raw }}
     {% endblock %}
 {% endif %}
 

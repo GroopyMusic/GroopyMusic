@@ -17,7 +17,7 @@
                     {% include '@App/User/render_notifications_previews.html.twig' with {'notifs': notifs} %}
                 </table>
 
-                {{ utils.hidden_loader() }}
+                {{ hidden_loader() }}
 
                 {% if not got_to_max %}
                     <a id="load-more-notifs" class="btn btn-primary">Voir plus</a>

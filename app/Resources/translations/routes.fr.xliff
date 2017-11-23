@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-20T13:01:19Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-23T10:40:12Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -550,10 +550,6 @@
         <source>/artist/{id}/api/remove-photo</source>
         <target>/artist/{id}/api/remove-photo</target>
       </trans-unit>
-      <trans-unit id="b98f62f3b4c33078c2a9673d31ea6dd4ac39812a" resname="artist_ajax_update_motivations">
-        <source>/artist/{id}/api/update-motivations</source>
-        <target>/artist/{id}/api/update-motivations</target>
-      </trans-unit>
       <trans-unit id="32f737645eb5cd55706e85d7806dded8121cb618" resname="artist_cancel_ownership_request">
         <source>/artist/{id}/cancel-request/{request_id}</source>
         <target>/artiste/{id}/annuler-requete/{request_id}</target>
@@ -637,6 +633,10 @@
       <trans-unit id="f8eb525d26e1bfccf25865e02eef17703b609c66" resname="conditions">
         <source>/conditons</source>
         <target>/conditons-generales-utilisation</target>
+      </trans-unit>
+      <trans-unit id="e75bc04532a5639ed1e96d1a467f9ce694094864" resname="faq">
+        <source>/faq</source>
+        <target>/foire-aux-questions</target>
       </trans-unit>
       <trans-unit id="3e7a1eb65964daab6c8503cea70e628e3f933ce0" resname="fos_user_change_password">
         <source>/profile/change-password</source>
@@ -810,6 +810,10 @@
         <source>/api/remove-purchase-from-contract</source>
         <target>/api/remove-purchase-from-contract</target>
       </trans-unit>
+      <trans-unit id="02eb0767ce458b9abfae516aa488e3d5ddb3c57a" resname="user_ajax_update_motivations">
+        <source>/api/update-motivations/{id}</source>
+        <target>/api/update-motivations/{id}</target>
+      </trans-unit>
       <trans-unit id="5d040d256035ba8f6882515978fa0c64704c19b4" resname="user_cart">
         <source>/cart</source>
         <target>/panier</target>
@@ -857,6 +861,10 @@
       <trans-unit id="6c8c0dfadcf7d82f2a0fea9b6bc356781644cb11" resname="user_paid_carts">
         <source>/paid-carts</source>
         <target>/paniers-payes</target>
+      </trans-unit>
+      <trans-unit id="f3799fae9e456ba189f1abaf0377657b504917a3" resname="user_preferences">
+        <source>/preferences</source>
+        <target>/preferences</target>
       </trans-unit>
     </body>
   </file>

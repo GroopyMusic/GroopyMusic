@@ -1,25 +1,11 @@
 {% macro preview(notification, title, content) %}
-    {% import 'macros.html.twig' as utils %}
-    <tr class="notification-preview {% if notification.unseen %} table-warning{% endif %}">
-        <td><a><b>{{ title }}</b></a>{% if notification.unseen %} - non lu {% endif %}</td>
-        <td><div>{{ utils.preview(content, 50) }}</div></td>
-        <td><a class="btn btn-primary notification-trigger" href="{{ path('user_notification', {'id': notification.id}) }}">Voir</a></td>
-    </tr>
+    {% include '@App/Notifications/utils/preview.html.twig' %}
 {% endmacro %}
 
 {% macro complete(notification, title, content) %}
-    <div class="notification">
-        <h3>{{ title|raw }}</h3>
-        <p>{{ content|raw }}</p>
-    </div>
+    {% include '@App/Notifications/utils/complete.html.twig' %}
 {% endmacro %}
 
 {% macro menu_preview(notification, title, content) %}
-    {% import 'macros.html.twig' as utils %}
-    <a class="notification-trigger notification-menu-preview-content{% if notification.unseen %} unseen{% endif %}" href="{{ path('user_notification', {'id': notification.id}) }}">
-        <div class="notification-menu-preview-item">
-            <h6 class="notification-menu-preview-title">{{ title|raw }}</h6>
-            <div class="notification-menu-preview-preview">{{ utils.preview(content, 50) }}</div>
-        </div>
-    </a>
+    {% include '@App/Notifications/utils/menu_preview.html.twig' %}
 {% endmacro %}

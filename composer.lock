@@ -1843,32 +1843,31 @@
         },
         {
             "name": "jmose/command-scheduler-bundle",
-            "version": "v1.2.5",
+            "version": "v1.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/J-Mose/CommandSchedulerBundle.git",
-                "reference": "e7de713f712ebc651f10c496c5dc41a082a19bb6"
+                "reference": "7c7147ad3d27969a178c5508332c1478b1134fc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/J-Mose/CommandSchedulerBundle/zipball/e7de713f712ebc651f10c496c5dc41a082a19bb6",
-                "reference": "e7de713f712ebc651f10c496c5dc41a082a19bb6",
+                "url": "https://api.github.com/repos/J-Mose/CommandSchedulerBundle/zipball/7c7147ad3d27969a178c5508332c1478b1134fc3",
+                "reference": "7c7147ad3d27969a178c5508332c1478b1134fc3",
                 "shasum": ""
             },
             "require": {
-                "doctrine/doctrine-bundle": "~1.0",
-                "doctrine/orm": "~2.2,>=2.2.3,<2.6",
-                "mtdowling/cron-expression": "~1.0",
+                "doctrine/doctrine-bundle": "^1.4|^1.6",
+                "doctrine/orm": "^2.4.8|^2.5",
+                "mtdowling/cron-expression": "^1.2",
                 "php": ">=5.5.9",
-                "sensio/framework-extra-bundle": "~2.3|~3.0",
-                "symfony/symfony": "~2.7|~3.0",
-                "twig/twig": "~1.15"
+                "sensio/framework-extra-bundle": "^3.0.2",
+                "symfony/symfony": "~2.8|~3.0"
             },
             "require-dev": {
-                "doctrine/doctrine-fixtures-bundle": "~2.2",
-                "liip/functional-test-bundle": "1.2.2|~1.3",
-                "phpunit/phpunit": "~4.4",
-                "satooshi/php-coveralls": "~0.6"
+                "doctrine/doctrine-fixtures-bundle": "~2.4",
+                "liip/functional-test-bundle": "^1.6",
+                "phpunit/phpunit": "~4.8",
+                "satooshi/php-coveralls": "~1.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -1886,7 +1885,7 @@
                     "email": "julienguyon@hotmail.com"
                 }
             ],
-            "description": "This Symfony2 bundle will allow you to schedule all your commands just like UNIX crontab",
+            "description": "This Symfony bundle will allow you to schedule all your commands just like UNIX crontab",
             "homepage": "https://github.com/J-Mose/CommandSchedulerBundle",
             "keywords": [
                 "command",
@@ -1895,7 +1894,7 @@
                 "symfony",
                 "task"
             ],
-            "time": "2017-03-02T08:22:11+00:00"
+            "time": "2017-11-22T09:18:46+00:00"
         },
         {
             "name": "jms/i18n-routing-bundle",
@@ -2893,17 +2892,17 @@
         },
         {
             "name": "oneup/uploader-bundle",
-            "version": "1.9.0",
+            "version": "1.9.1",
             "target-dir": "Oneup/UploaderBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/1up-lab/OneupUploaderBundle.git",
-                "reference": "c71ac47cdd4ab545444c4735e0f6c41dd5d2f977"
+                "reference": "03231b8e00cee33658243ec2071a1576280e86f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/1up-lab/OneupUploaderBundle/zipball/c71ac47cdd4ab545444c4735e0f6c41dd5d2f977",
-                "reference": "c71ac47cdd4ab545444c4735e0f6c41dd5d2f977",
+                "url": "https://api.github.com/repos/1up-lab/OneupUploaderBundle/zipball/03231b8e00cee33658243ec2071a1576280e86f5",
+                "reference": "03231b8e00cee33658243ec2071a1576280e86f5",
                 "shasum": ""
             },
             "require": {
@@ -2964,7 +2963,7 @@
                 "plupload",
                 "upload"
             ],
-            "time": "2017-11-21T16:19:47+00:00"
+            "time": "2017-11-23T09:12:03+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -4117,16 +4116,16 @@
         },
         {
             "name": "sonata-project/admin-bundle",
-            "version": "3.25.1",
+            "version": "3.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "d649f27e90f0f28eb5cfd53f8e8f75e918c9aa5e"
+                "reference": "c8bcde5cc580abc1ca8bed255ea3fb93d8a0ded5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/d649f27e90f0f28eb5cfd53f8e8f75e918c9aa5e",
-                "reference": "d649f27e90f0f28eb5cfd53f8e8f75e918c9aa5e",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/c8bcde5cc580abc1ca8bed255ea3fb93d8a0ded5",
+                "reference": "c8bcde5cc580abc1ca8bed255ea3fb93d8a0ded5",
                 "shasum": ""
             },
             "require": {
@@ -4211,7 +4210,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2017-11-20T09:39:55+00:00"
+            "time": "2017-11-22T10:05:37+00:00"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -5525,12 +5524,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "125934a7e8d504734e041e0a0ab3be616246deef"
+                "reference": "70c634fc01d949f889181332d771f693194a9ea0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/125934a7e8d504734e041e0a0ab3be616246deef",
-                "reference": "125934a7e8d504734e041e0a0ab3be616246deef",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/70c634fc01d949f889181332d771f693194a9ea0",
+                "reference": "70c634fc01d949f889181332d771f693194a9ea0",
                 "shasum": ""
             },
             "require": {
@@ -5672,7 +5671,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-11-22T08:29:50+00:00"
+            "time": "2017-11-22T16:40:54+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -5893,20 +5892,21 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.35.0",
+            "version": "v2.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f"
+                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/daa657073e55b0a78cce8fdd22682fddecc6385f",
-                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/eddb97148ad779f27e670e1e3f19fb323aedafeb",
+                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^7.0",
+                "symfony/polyfill-mbstring": "~1.0"
             },
             "require-dev": {
                 "psr/container": "^1.0",
@@ -5916,7 +5916,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.35-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -5954,7 +5954,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-09-27T18:06:46+00:00"
+            "time": "2017-09-27T18:10:31+00:00"
         },
         {
             "name": "vich/uploader-bundle",

@@ -1,27 +1,11 @@
 {% macro preview(text, limit) %}
-    {%- set preview_content -%}
-        {{- text|decode_html|raw -}}
-    {%- endset -%}
-    {% if preview_content|length > limit %}
-        {{ preview_content|slice(0, limit)|raw }}...
-    {% else %}
-        {{ preview_content|raw }}
-    {% endif %}
+    {% include ':patterns/utils:preview.html.twig' %}
 {% endmacro %}
 
 {% macro hidden_loader(hidden=true) %}
-    <div style="display:none;" class="loader-explanation"></div>
-    <div class="loader"{% if hidden %} style="display:none;"{% endif %}>
-        <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
-        </svg>
-    </div>
+    {% include ':patterns/utils:hidden_loader.html.twig' %}
 {% endmacro %}
 
 {% macro error(message, dismissible=true) %}
-    <div class="alert alert-danger alert-dismissible error-notice fade show">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        {{ message }}
-    </div>
+    {% include ':patterns/utils:error.html.twig' %}
 {% endmacro %}

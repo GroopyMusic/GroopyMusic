@@ -1,0 +1,8 @@
+{%- set preview_content -%}
+    {{- text|decode_html|raw -}}
+{%- endset -%}
+{% if preview_content|length > limit %}
+    {{ preview_content|slice(0, limit)|raw }}...
+{% else %}
+    {{ preview_content|raw }}
+{% endif %}
