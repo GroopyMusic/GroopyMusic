@@ -105,11 +105,14 @@
                 </ul>
             </div>
             <div class="col-xs-12 col-md-4">
-                {% if state not in contract.uncrowdableStates %}
-                    <div class="col-12">
-                        <h3 class="rounded-title">Acheter des tickets</h3>
-                        <p>Il reste encore {{ tickets_left }} tickets, faites votre choix !</p>
-                    </div>
+                <div class="col-12">
+                    <h3 class="rounded-title">Acheter des tickets</h3>
+
+                {% if state in contract.uncrowdableStates %}
+                    <p>Il n'est plus possible d'acheter des tickets pour cet événement.</p>
+                {% else %}
+                    <p>Il reste encore {{ tickets_left }} tickets, faites votre choix !</p>
+                </div>
                     {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
                     {% if app.user %}

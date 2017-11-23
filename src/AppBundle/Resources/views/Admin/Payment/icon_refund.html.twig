@@ -4,6 +4,6 @@
     <a class="btn btn-sm" href="{{ admin.generateObjectUrl('refund', object) }}">rembourser</a>
     {% if object.isAskedRefundByOne %}
         {% set askings = object.askingrefund %}
-        (remboursement proposé par {% for asking in askings %}asking.displayName {% endfor %})
+        (remboursement proposé par {% for asking in askings %}{{ asking.displayName}} {% endfor %})
     {% endif %}
 {% endif %}

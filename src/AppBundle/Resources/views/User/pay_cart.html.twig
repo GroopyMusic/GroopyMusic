@@ -202,18 +202,21 @@
         }
 
         function on3DSSource(result) {
-            hideError();
-            Stripe.source.poll(
-                    result.source.id,
-                    result.source.client_secret,
-                    onChargeable3DS);
+            if(result.error) {
+                displayError('Une erreur est survenue. Veuillez réessayer plus tard et en informer un administrateur Un-Mute si le problème persiste.');
+            }
+            else {
+                hideError();
+                Stripe.source.poll(
+                        result.source.id,
+                        result.source.client_secret,
+                        onChargeable3DS);
 
-            $.featherlight({
-                iframe: result.source.redirect.url
-            });
-            displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
+                window.open(result.source.redirect.url);
+                displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
 
-            $('#payment-intro').hide();
+                $('#payment-intro').hide();
+            }
         }
 
         function onChargeable3DS(status, source) {

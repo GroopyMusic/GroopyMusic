@@ -83,11 +83,14 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
             ->join('c.step', 's')
+            ->join('c.preferences', 'p')
             ->leftJoin('c.reality', 'r')
             ->addSelect('a')
             ->addSelect('s')
             ->addSelect('r')
-            ->where('r.date is null OR r.date > :now')
+            ->addSelect('p')
+            ->where('c.failed = 0')
+            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
             ->andWhere('c.tickets_sold < s.max_tickets')
         ;
 

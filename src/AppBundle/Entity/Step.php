@@ -27,7 +27,7 @@ class Step extends BaseStep
                 $dates = array_merge($dates, $hall->getAvailableDates());
         }
 
-        return array_unique($dates);
+        return array_values($dates);
     }
 
     public function getAvailableDatesFormatted(Province $province = null) {
