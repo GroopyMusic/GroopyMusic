@@ -27,7 +27,7 @@
             <!-- this is the content of the card with an optionnal span for ⭐ -->
             <div class="um-card-content">
                 <h5>{{ hall.name }}</h5>
-                <p>{{ preview(hall.getShortDescription())|raw }}</p>
+                <p>{{ preview(hall.getShortDescription(), 100)|raw }}</p>
             </div>
 
             <!-- this is the link that the card need to take to -->
