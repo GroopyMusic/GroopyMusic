@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContractFan
 {
+    const ORDERS_DIRECTORY = 'pdf/orders/';
+
     public function __toString()
     {
         return 'contrat fan #' . $this->id;
@@ -37,8 +39,12 @@ class ContractFan
         $this->barcode_text = 'cf'.$this->id . uniqid();
     }
 
+    public function getOrderFileName() {
+        return $this->getBarcodeText() . '.pdf';
+    }
+
     public function getPdfPath() {
-        return 'pdf/orders/'.$this->getBarcodeText().'.pdf';
+        return self::ORDERS_DIRECTORY . $this->getOrderFileName();
     }
 
     public function getAmount() {

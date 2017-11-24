@@ -25,6 +25,7 @@ class Cart
         $this->date_creation = new \Datetime();
     }
 
+    /** @return ContractFan */
     public function getFirst() {
         return $this->contracts->first();
     }

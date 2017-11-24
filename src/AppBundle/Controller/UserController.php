@@ -7,8 +7,11 @@ use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
@@ -356,6 +359,35 @@ class UserController extends Controller
         return $this->render('@App/User/preferences.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @Route("/user/orders/{id}", name="user_get_order")
+     */
+    public function getOrderAction(Request $request, UserInterface $user, Cart $cart) {
+
+        $contract = $cart->getFirst();
+        if($contract->getUser() != $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $finder = new Finder();
+        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
+        $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
+
+        foreach($finder as $file) {
+
+            $response = new BinaryFileResponse($filePath);
+            // Set headers
+            $response->headers->set('Cache-Control', 'private');
+            $response->headers->set('Content-Type', 'PDF');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $contract->getOrderFileName()
+            ));
+
+            return $response;
+        }
     }
 
     // AJAX ----------------------------------------------------------------------------------------------------------------------

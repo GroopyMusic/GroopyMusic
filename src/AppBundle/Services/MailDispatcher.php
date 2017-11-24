@@ -190,7 +190,7 @@ class MailDispatcher
 
     public function sendOrderRecap(ContractFan $contractFan) {
         // TODO should be another way of getting pdf path
-        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '\..\web\pdf\orders\\' . $contractFan->getBarcodeText().'.pdf'];
+        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '/../web/pdf/orders/' . $contractFan->getBarcodeText().'.pdf'];
 
         $to = [$contractFan->getFan()->getEmail()];
         $toName = [$contractFan->getFan()->getDisplayName()];
@@ -205,7 +205,7 @@ class MailDispatcher
         $html2pdf->writeHTML($ticket_html);
         $html2pdf->output('pdf/tickets/'.$contractFan->getBarcodeText().'.pdf', 'F');
 
-        $attachments = ['votreContrat.pdf' => $this->get('kernel')->getRootDir() . '\..\web\pdf\tickets\\' . $contractFan->getBarcodeText().'.pdf'];
+        $attachments = ['votreContrat.pdf' => $this->get('kernel')->getRootDir() . '/../web/pdf/tickets/' . $contractFan->getBarcodeText().'.pdf'];
 
         $to = [$contractFan->getFan()->getEmail()];
         $toName = [$contractFan->getFan()->getDisplayName()];

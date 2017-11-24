@@ -37,7 +37,7 @@
                             {{ cart.first.date|date('d/m/Y H\\hi') }}
                         </td>
                         <td>
-                            <a href="{{ asset(cart.first.pdfPath) }}"
+                            <a href="{{ path('user_get_order', {'id': cart.id}) }}"
                                download="um_commande_{{ cart.first.id }}.pdf">PDF</a>
                         </td>
                     </tr>
