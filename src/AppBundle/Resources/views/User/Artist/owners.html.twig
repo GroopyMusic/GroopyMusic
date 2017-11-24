@@ -4,13 +4,18 @@
 
 {% block artist_edit_profile_content %}
 
+    <h3>Votre rôle au sein de l'artiste</h3>
     <div>
-        Votre rôle pour l'artiste "{{ artist.artistname }}" :
-        {{ form(form1) }}
+        {{ form_start(form1) }}
+            Votre rôle pour l'artiste "{{ artist.artistname }}" :
+            <div class="form-group">
+             {{ form_widget(form1.role) }}
+            </div>
+        {{ form_rest(form1) }}
     </div>
 
     {% if owners|length > 1 or requests|length > 0 %}
-    <h2>Autres propriétaires</h2>
+    <h3>Autres propriétaires</h3>
     <ul>
     {% for owner in owners if owner.user.id != app.user.id %}
         <li>{{ owner.user.displayName }}
@@ -26,17 +31,21 @@
     </ul>
     {% endif %}
 
-    <h2>Ajouter des propriétaires</h2>
+    <h3>Ajouter des propriétaires</h3>
+    <p>
+        Vous pouvez ici ajouter d'autres utilisateurs Un-Mute à la gestion de cet artiste. Deux cas sont possibles :
+    </p>
+    <ul class="um-list">
+        <li>S'ils ont déjà un compte Un-Mute, ils pourront simplement accepter votre demande et seront ajoutés comme propriétaires.</li>
+        <li>Sinon, pas de problème ! Ils seront invités par e-mail à s'inscrire sur Un-Mute, puis à accepter votre demande.</li>
+    </ul>
 
     {% form_theme form2 'AppBundle:Themes:ownerships_collection.html.twig' 'jquery.collection.html.twig' %}
     {{ form_start(form2) }}
-        {{ form_widget(form2.ownership_requests_form) }}
+        <div class="form_group mb-3">
+            {{ form_widget(form2.ownership_requests_form) }}
+        </div>
     {{ form_rest(form2) }}
-
-    <h2>Quitter l'artiste</h2>
-
-
-        <a class="btn btn-danger" href="{{ path('artist_leave', {'id': artist.id}) }}">Je quitte le groupe</a>
 
 {% endblock %}
 
@@ -47,7 +56,7 @@
             up: '',
             down: '',
             add_at_the_end: true,
-            add: '<a href="#">Ajouter</a>'
+            add: '<a class="btn btn-outline-secondary" href="#">Ajouter un propriétaire</a>'
         });
     </script>
 {% endblock %}

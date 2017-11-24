@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-23T10:40:12Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-24T17:00:45Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -594,6 +594,14 @@
         <source>/validate-ownership-{id}/{code}</source>
         <target>/valider-propriete-{id}/{code}</target>
       </trans-unit>
+      <trans-unit id="569e8e9a897f47d79bcbc6f8b671af93330be258" resname="azine_admin_email_dashboard">
+        <source>/mail/admin/email/dashboard</source>
+        <target>/mail/admin/email/dashboard</target>
+      </trans-unit>
+      <trans-unit id="d5f90cd3c392e40f126274432f797b6780a9ae85" resname="azine_admin_email_details_by_token">
+        <source>/mail/admin/email/details/{token}</source>
+        <target>/mail/admin/email/details/{token}</target>
+      </trans-unit>
       <trans-unit id="edc2efde98243704b5435ff506afc3b2544402d7" resname="azine_email_send_test_email">
         <source>/mail/admin/email/send-test-email-for/{template}/to/{email}</source>
         <target>/mail/admin/email/send-test-email-for/{template}/to/{email}</target>
@@ -830,6 +838,10 @@
         <source>/secure-zone/cart/payment/success/{id}</source>
         <target>/zone-securisee/panier/paiement-reussi/{id}</target>
       </trans-unit>
+      <trans-unit id="9ca8b160568047e2080ff342ac77f68fae8162a5" resname="user_cart_send_order_recap">
+        <source>/secure-zone/cart/send-recap-{id}</source>
+        <target>/secure-zone/cart/send-recap-{id}</target>
+      </trans-unit>
       <trans-unit id="4c33bd738004c7093beb1b3266b8e5fca0378122" resname="user_change_email">
         <source>/change-email</source>
         <target>/changer-email</target>
@@ -837,6 +849,10 @@
       <trans-unit id="af5b57d7c9d9bb3a7fb16e046b33951bf6e95ebb" resname="user_change_email_check">
         <source>/change-email-token-{token}</source>
         <target>/changer-email-token-{token}</target>
+      </trans-unit>
+      <trans-unit id="fbd2396e15bd32f70321331744d617e4d687b77b" resname="user_get_order">
+        <source>/user/orders/{id}</source>
+        <target>/mes-fichiers/commandes/{id}</target>
       </trans-unit>
       <trans-unit id="c9cad337a4e015dd309bd12e3c8702467be1858f" resname="user_my_artists">
         <source>/my-artists</source>

@@ -23,7 +23,10 @@ class Artist_UserType extends AbstractType
                     new Length(['max' => 63, 'maxMessage' => 'Le rôle ne peut dépasser {{ limit }} caractères.']),
                 ]
             ))
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, array(
+                'label' => 'labels.artist_user.submit',
+                'attr' => ['class' => 'btn btn-primary'],
+            ))
         ;
     }
 

@@ -91,14 +91,14 @@ class ArtistController extends Controller
         $form1->handleRequest($HTTPRequest);
         $form2->handleRequest($HTTPRequest);
 
-        if($form1->isSubmitted() && $form1->isValid()) {
+        if($form1->get('submit')->isClicked() && $form1->isValid()) {
             $em->persist($currentOwner);
             $em->flush();
 
-            $this->addFlash('notice', 'ok1');
+            $this->addFlash('notice', 'Votre rôle a bien été enregistré');
         }
 
-        elseif($form2->isSubmitted() && $form2->isValid()) {
+        elseif($form2->get('submit')->isClicked() && $form2->isValid()) {
             $reqs = array();
 
             $haystack = array_map(function(Artist_User $elem) {
@@ -107,7 +107,7 @@ class ArtistController extends Controller
 
             $haystack = array_merge($haystack, array_map(function(ArtistOwnershipRequest $elem) {
                 return $elem->getEmail();
-            }, $requests->toArray()));
+            }, $requests));
 
             foreach($form2->getData()->ownership_requests_form as $request) {
                 /** @var ArtistOwnershipRequest $request */
@@ -132,7 +132,7 @@ class ArtistController extends Controller
 
             $em->flush(); // For unique code !!
 
-            $this->addFlash('notice', 'ok2');
+            $this->addFlash('notice', 'Les invitations ont été envoyées.');
         }
 
         return $this->render('@App/User/Artist/owners.html.twig', array(

@@ -63,13 +63,15 @@
                     });
                 },
                 init: function() {
-                    this.files.push(ppmock);
-                    this.createThumbnailFromUrl(ppmock, mppock.url);
-                    this.emit('addedfile', ppmock);
-                    this.emit("thumbnail", ppmock, ppmock.url);
-                    this.emit('complete', ppmock);
+                    if(ppmock) {
+                        this.files.push(ppmock);
+                        this.createThumbnailFromUrl(ppmock, mppock.url);
+                        this.emit('addedfile', ppmock);
+                        this.emit("thumbnail", ppmock, ppmock.url);
+                        this.emit('complete', ppmock);
+                    }
 
-                    $ppzone.options.maxFiles = 0;
+                    $ppzone.options.maxFiles = 1;
                 },
                 success: function(file, serverResponse) {
                     file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;

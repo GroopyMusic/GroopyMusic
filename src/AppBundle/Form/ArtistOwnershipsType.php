@@ -21,7 +21,10 @@ class ArtistOwnershipsType extends AbstractType
             'attr' => ['class' => 'ownership'],
             'label' => false,
         ))
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, array(
+                'label' => 'labels.artist_ownerships.submit',
+                'attr' => ['class' => 'btn btn-primary'],
+            ))
         ;
     }
 
