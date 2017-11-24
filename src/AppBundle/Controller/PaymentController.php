@@ -148,7 +148,8 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment/success/{id}", name="user_cart_payment_stripe_success")
      */
-    public function cartSuccessAction(ContractFan $cf) {
+    public function cartSuccessAction(ContractFan $cf)
+    {
         $this->addFlash('notice', 'Votre paiement a bien été reçu. Vous allez recevoir un récapitulatif par e-mail. Vos tickets vous seront envoyés si l\'artiste ' . $cf->getContractArtist()->getArtist()->getArtistname() . ' parvient à débloquer ce concert.');
 
         $cf->generateBarCode();
@@ -164,12 +165,5 @@ class PaymentController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('user_paid_carts');
-    }
-
-    /**
-     * @Route("/cart/payment/pending", name="user_cart_payment_pending")
-     */
-    public function cartPendingAction() {
-        return $this->render('@App/User/threeds_pending.html.twig');
     }
 }

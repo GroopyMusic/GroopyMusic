@@ -34,7 +34,7 @@
                             {{ cart.state }}
                         </td>
                         <td>
-                            {{ cart.first.date|date('d/m/Y H:i:s') }}
+                            {{ cart.first.date|date('d/m/Y H\\hi') }}
                         </td>
                         <td>
                             <a href="{{ asset(cart.first.pdfPath) }}"

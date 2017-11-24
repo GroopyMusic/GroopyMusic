@@ -207,13 +207,12 @@
             }
             else {
                 hideError();
-                Stripe.source.poll(
-                        result.source.id,
-                        result.source.client_secret,
-                        onChargeable3DS);
 
-                window.open(result.source.redirect.url);
                 displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
+
+
+
+                window.location.replace(result.source.redirect.url);
 
                 $('#payment-intro').hide();
             }
@@ -221,15 +220,12 @@
 
         function onChargeable3DS(status, source) {
             if (source.status == 'chargeable') {
-                $.featherlight.current().close();
                 stripeTokenHandler(source);
             }
             else if (source.status == 'failed') {
-                $.featherlight.current().close();
                 displayError("L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href=\"{{ path('artist_contract', {'id': contract_fan.contractArtist.id}) }}\">ici</a> pour revenir en arrière. ");
             }
             else if (source.status != 'pending') {
-                $.featherlight.current().close();
                 displayError("Une erreur inconnue s'est produite lors de l'authentification 3D Secure : " + source.status);
             }
         }
@@ -250,8 +246,8 @@
             $('form').hide();
             hideError();
             if(html) {
-                $('.loader-explanation').html(html);
-                $('.loader-explanation').show();
+                $loaderexplanation.html(html);
+                $loaderexplanation.show();
             }
             else {
                 $loaderexplanation.hide();

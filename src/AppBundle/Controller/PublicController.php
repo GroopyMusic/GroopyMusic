@@ -286,6 +286,33 @@ class PublicController extends Controller
     }
 
     /**
+     * @Route("/cart/payment/pending", name="user_cart_payment_pending")
+     */
+    public function cartPendingAction(Request $request, UserInterface $user) {
+        $em = $this->getDoctrine()->getManager();
+        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+
+        $source = $request->get('source');
+        $client_secret = $request->get('client_secret');
+
+        /** @var Cart $cart */
+        if ($cart == null || count($cart->getContracts()) == 0) {
+            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+        }
+
+        /** @var ContractFan $contract */
+        $contract = $cart->getFirst();
+        $contract_artist = $contract->getContractArtist();
+
+        return $this->render('@App/User/threeds_pending.html.twig', array(
+            'cart' => $cart,
+            'source' => $source,
+            'client_secret' => $client_secret,
+            'contract_fan' => $contract,
+        ));
+    }
+
+    /**
      * @Route("/artists", name="catalog_artists")
      */
     public function artistsAction(Request $request, UserInterface $user = null) {
