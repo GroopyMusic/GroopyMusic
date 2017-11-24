@@ -5,7 +5,11 @@
 {% block subject %}{{ subject }}{% endblock %}
 
 {% block content %}
-   Erreur lors d'un paiement. Utilisateur : {{ user.displayName }} (id {{ user.id }}), numéro du panier : {{ cart.id }}. Infos de l'erreur Stripe :  {{ dump(stripe_error) }}.
+   Erreur lors d'un paiement. Utilisateur : {{ user.displayName }} (id {{ user.id }}), numéro du panier : {{ cart.id }}. Infos de l'erreur Stripe :
+
+   *** Message : {{ stripe_error.message }}
+   *** Request ID : {{ stripe_error.requestId }}
+   *** Date d'envoi de ce message : {{ 'now'|date('d/m/Y H:i:s') }}
 {% endblock %}
 
 {% endautoescape %}

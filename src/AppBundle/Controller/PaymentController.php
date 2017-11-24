@@ -158,12 +158,18 @@ class PaymentController extends Controller
         $html2pdf->writeHTML($order_html);
         $html2pdf->output($cf->getPdfPath(), 'F');
 
-        $this->get(MailDispatcher::class)->sendOrderRecap($cf);
-
         $em = $this->getDoctrine()->getManager();
         $em->persist($cf);
         $em->flush();
 
+        return $this->redirectToRoute('user_cart_send_order_recap', ['id' => $cf->getId()]);
+    }
+
+    /**
+     * @Route("/cart/send-recap-{id}", name="user_cart_send_order_recap")
+     */
+    public function sendOrderRecap(ContractFan $cf) {
+        $this->get(MailDispatcher::class)->sendOrderRecap($cf);
         return $this->redirectToRoute('user_paid_carts');
     }
 }

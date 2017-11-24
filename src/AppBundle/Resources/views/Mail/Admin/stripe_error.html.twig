@@ -5,8 +5,14 @@
 
         {% block content %}
             <div>
-                Erreur lors d'un paiement. Utilisateur : {{ user.displayName }} (id {{ user.id }}), numéro du panier : {{ cart.id }}. Infos de l'erreur Stripe :  {{ dump(stripe_error) }}.
+                Erreur lors d'un paiement. Utilisateur : {{ user.displayName }} (id {{ user.id }}), numéro du panier : {{ cart.id }}. Infos de l'erreur Stripe :.
             </div>
+
+            <ul>
+                <li>Message : {{ stripe_error.message }}</li>
+                <li>Request ID : {{ stripe_error.requestId }}</li>
+                <li>Date d'envoi de ce message : {{ 'now'|date('d/m/Y H:i:s') }}</li>
+            </ul>
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}
