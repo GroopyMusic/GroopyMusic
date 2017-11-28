@@ -156,7 +156,7 @@
                     email: '{{ app.user.email }}'
                 },
                 redirect: {
-                    return_url: '{{ absolute_url(path('user_cart_payment_pending')) }}'
+                    return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
                 },
                 statement_descriptor: 'Achat Un-Mute - contrat {{ contract_fan.id }}'
             }).then(function(result) {
@@ -192,7 +192,7 @@
                         card: result.id
                     },
                     redirect: {
-                        return_url: '{{ absolute_url(path('user_cart_payment_pending')) }}'
+                        return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
                     }
                 }).then(function(result) {on3DSSource(result)});
             }

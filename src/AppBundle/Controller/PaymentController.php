@@ -179,4 +179,35 @@ class PaymentController extends Controller
         $this->get(MailDispatcher::class)->sendOrderRecap($cf);
         return $this->redirectToRoute('user_paid_carts');
     }
+
+    /**
+     * @Route("/cart/payment/pending/{contract_id}", name="user_cart_payment_pending")
+     */
+    public function cartPendingAction(Request $request, UserInterface $user, $contract_id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        /** @var Cart $cart */
+        if ($cart == null || count($cart->getContracts()) == 0) {
+            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+        }
+
+        $contract = $em->getRepository('AppBundle:ContractFan')->find($contract_id);
+        /** @var ContractFan $contract */
+        $contract_cart = $cart->getFirst();
+        if($contract == null || $contract_cart == null || $contract_cart->getId() != $contract->getId() || $contract_cart->getAmount() != $contract->getAmount()) {
+            $this->addFlash('error', '<strong>Paiement annulé.</strong> Vous avez commandé d\'autres tickets entre-temps. Réessayez en passant la commande et en la payant d\'une seule traite, sans tenter de commander d\'autres tickets en parallèle.');
+            return $this->redirectToRoute('catalog_crowdfundings');
+        }
+
+        $source = $request->get('source');
+        $client_secret = $request->get('client_secret');
+
+        return $this->render('@App/User/threeds_pending.html.twig', array(
+            'cart' => $cart,
+            'source' => $source,
+            'client_secret' => $client_secret,
+            'contract_fan' => $contract,
+        ));
+    }
 }
