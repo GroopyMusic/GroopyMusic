@@ -6,7 +6,10 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
+use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -31,6 +34,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class UserController extends Controller
 {
+    protected $container;
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     private function createCartForUser($user) {
         $cart = new Cart();
         $cart->setUser($user);
@@ -239,7 +248,7 @@ class UserController extends Controller
     /**
      * @Route("/change-email", name="user_change_email")
      */
-    public function changeEmailAction(Request $request, UserInterface $user) {
+    public function changeEmailAction(Request $request, UserInterface $user, TokenGeneratorInterface $token_gen) {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -253,11 +262,11 @@ class UserController extends Controller
 
             $error_detect = $em->getRepository('AppBundle:User')->findOneBy(['email' => $email]);
             if($error_detect != null) {
-                $form->get('email')->addError(new FormError('Cette adresse e-mail est déjà associée à un compte Un-Mute.'));
+                $form->addError(new FormError('Cette adresse e-mail est déjà associée à un compte Un-Mute.'));
             }
 
             else {
-                $user->setAskedEmailToken($this->get('fos_user.util.token_generator.default')->generateToken());
+                $user->setAskedEmailToken($token_gen->generateToken());
                 $em->persist($user);
                 $this->get('AppBundle\Services\MailDispatcher')->sendEmailChangeConfirmation($user);
                 $em->flush();

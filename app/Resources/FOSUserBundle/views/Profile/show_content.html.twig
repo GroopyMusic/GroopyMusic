@@ -1,24 +1,24 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 <div class="fos_user_user_show">
-    <p>{{ 'profile.show.email'|trans }} : {{ user.email }}</p>
-    <p>{{ 'profile.show.firstname'|trans }} : {{ user.firstName }} </p>
-    <p>{{ 'profile.show.lastname'|trans }} : {{ user.lastName }} </p>
+    <p><strong>{{ 'profile.show.email'|trans }}</strong> : {{ user.email }}</p>
+    <p><strong>{{ 'profile.show.firstname'|trans }}</strong> : {{ user.firstName }} </p>
+    <p><strong>{{ 'profile.show.lastname'|trans }}</strong> : {{ user.lastName }} </p>
 
     {% if user.birthday is not null and user.birthday|date('Y') > 1900 %}
         <p>
-            {{ 'profile.show.birthday'|trans }} : {{ user.birthday|date('d/m/Y') }}
+            <strong>{{ 'profile.show.birthday'|trans }}</strong> : {{ user.birthday|date('d/m/Y') }}
         </p>
     {% endif %}
 
     {% if user.address is not null %}
         <p>
-            {{ 'profile.show.address'|trans }} : {{ user.address }}
+            <strong>{{ 'profile.show.address'|trans }}</strong> : {{ user.address }}
         </p>
     {% endif %}
 
     {% if user.artistsUser is not empty %}
-    <p>{{ 'profile.show.artists'|trans }} :
+    <p><strong>{{ 'profile.show.artists'|trans }}</strong> :
         <ul class="um-list">
             {% for a in user.artistsUser %}
                 <li><a href="{{ path('artist_profile', {'id': a.artist.id}) }}">{{ a.artist.artistname }}</a></li>
@@ -28,7 +28,7 @@
     {% endif %}
 
     {% if user.genres is not empty %}
-        <p>{{ 'profile.show.genres'|trans }} :
+        <p><strong>{{ 'profile.show.genres'|trans }}</strong> :
             <ul class="um-list">
                 {% for g in user.genres %}
                     <li>{{ g.name }}</li>
@@ -38,10 +38,10 @@
     {% endif %}
 
     <p>
-        {{ 'profile.show.newsletter'|trans }} : {{ user.newsletter ? 'Oui' : 'Non' }}
+        <strong>{{ 'profile.show.newsletter'|trans }}</strong> : {{ user.newsletter ? 'Oui' : 'Non' }}
     </p>
 
     <p>
-        {{ 'profile.show.inscription_date'|trans }} : {{ user.inscriptionDate|date('d/m/Y') }}
+        <strong>{{ 'profile.show.inscription_date'|trans }}</strong> : {{ user.inscriptionDate|date('d/m/Y') }}
     </p>
 </div>

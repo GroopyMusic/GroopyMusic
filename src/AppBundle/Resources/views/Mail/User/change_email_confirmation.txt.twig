@@ -8,7 +8,7 @@
     Hello,
     {{ txtH2Style }}
 
-    Link : {{ absolute_url(path('user_change_email_check', {'token': user.confirmationToken})) }}
+    Link : {{ absolute_url(path('user_change_email_check', {'token': user.askedEmailToken})) }}
 {% endblock %}
 
 {% endautoescape %}

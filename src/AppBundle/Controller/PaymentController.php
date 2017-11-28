@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,6 +24,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class PaymentController extends Controller
 {
+    protected $container;
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */

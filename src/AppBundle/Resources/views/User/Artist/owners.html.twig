@@ -4,7 +4,7 @@
 
 {% block artist_edit_profile_content %}
 
-    <h3>Votre rôle au sein de l'artiste</h3>
+    {#<h3>Votre rôle au sein de l'artiste</h3>
     <div>
         {{ form_start(form1) }}
             Votre rôle pour l'artiste "{{ artist.artistname }}" :
@@ -12,7 +12,7 @@
              {{ form_widget(form1.role) }}
             </div>
         {{ form_rest(form1) }}
-    </div>
+    </div>#}
 
     {% if owners|length > 1 or requests|length > 0 %}
     <h3>Autres propriétaires</h3>
@@ -51,12 +51,11 @@
 
 {% block javascripts %}
     {{ parent() }}
+
     <script type="text/javascript">
-        $('.ownership').collection({
-            up: '',
-            down: '',
-            add_at_the_end: true,
-            add: '<a class="btn btn-outline-secondary" href="#">Ajouter un propriétaire</a>'
+        um_collection({
+            add: '<a class="btn btn-outline-secondary" href="#">Ajouter un propriétaire</a>',
+            remove:'<a class="danger-color" href="#">Supprimer</a>'
         });
     </script>
 {% endblock %}

@@ -1,9 +1,16 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    {% if request.cancelled %}
-        <p>Cette requête a été annulée par son émetteur.</p>
-    {% else %}
-        {{ form(form) }}
-    {% endif %}
+    <div class="container">
+        <h3 class="rounded-title">Rejoindre {{ request.artist.artistname }}</h3>
+        {% if request.cancelled %}
+            <p>Cette requête a été annulée par son émetteur.</p>
+        {% else %}
+            <p>L'utilisateur {{ request.demander.displayName }} souhaite que vous le rejoigniez dans la gestion de l'artiste {{ request.artist.artistname }}.
+            {{ form_start(form) }}
+                {{ form_row(form.accept) }}
+                {{ form_row(form.refuse) }}
+            {{ form_rest(form) }}
+        {% endif %}
+    </div>
 {% endblock %}

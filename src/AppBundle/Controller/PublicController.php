@@ -15,6 +15,7 @@ use AppBundle\Form\ContractFanType;
 use AppBundle\Services\MailDispatcher;
 use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class PublicController extends Controller
 {
+    protected $container;
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     // Duplicated from UserController
     private function createCartForUser($user) {
         $cart = new Cart();
@@ -390,8 +397,14 @@ class PublicController extends Controller
         }
 
         $form = $this->createFormBuilder()
-            ->add('accept', SubmitType::class)
-            ->add('refuse', SubmitType::class)
+            ->add('accept', SubmitType::class, array(
+                'attr' => ['class' => 'btn btn-primary'],
+                'label' => 'labels.ownershiprequest.accept',
+            ))
+            ->add('refuse', SubmitType::class, array(
+                'attr' => ['class' => 'btn btn-secondary'],
+                'label' => 'labels.ownershiprequest.refuse',
+            ))
             ->getForm()
         ;
 
@@ -407,12 +420,14 @@ class PublicController extends Controller
                     ->setUser($user);
                 $em->persist($artist_user);
                 $em->flush();
+                $this->addFlash('notice', 'Félicitations, vous faites désormais partie de l\'artiste ' . $artist->getArtistname());
             }
             elseif($form->get('refuse')->isClicked()) {
                 $req->setRefused(true);
+                $em->flush();
+                $this->addFlash('notice', 'Votre choix a bien été enregistré.');
             }
 
-            $this->addFlash('notice', 'bien reçu');
             return $this->redirectToRoute('homepage');
         }
         return $this->render('@App/User/Artist/validate_ownership.html.twig', array(

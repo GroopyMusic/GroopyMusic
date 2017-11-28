@@ -27,6 +27,10 @@ services:
         autoconfigure: true # automatically registers services as commands, event subscribers, etc.
         public: true
 
+    AppBundle\Controller\:
+        resource: '../../src/AppBundle/Controller'
+        tags: ['controller.service_arguments']
+
     # Registration
     app.form.registration:
         class: AppBundle\Form\RegistrationType

@@ -10,6 +10,7 @@ use AppBundle\Form\ArtistMediasType;
 use AppBundle\Form\ArtistOwnershipsType;
 use AppBundle\Form\ArtistType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class ArtistController extends Controller
 {
+    protected $container;
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     private function assertOwns(UserInterface $user, Artist $artist) {
         if(!$user->owns($artist)) {
             throw $this->createAccessDeniedException("You don't own this artist!");
@@ -88,51 +95,61 @@ class ArtistController extends Controller
         $form1 = $this->createForm(Artist_UserType::class, $currentOwner);
         $form2 = $this->createForm(ArtistOwnershipsType::class, $artist);
 
-        $form1->handleRequest($HTTPRequest);
         $form2->handleRequest($HTTPRequest);
 
-        if($form1->get('submit')->isClicked() && $form1->isValid()) {
-            $em->persist($currentOwner);
-            $em->flush();
+        if($HTTPRequest->getMethod() == 'POST') {
 
-            $this->addFlash('notice', 'Votre rôle a bien été enregistré');
-        }
+            /*if ($HTTPRequest->request->has($form1->getName())) {
+                $form1->handleRequest($HTTPRequest);
 
-        elseif($form2->get('submit')->isClicked() && $form2->isValid()) {
-            $reqs = array();
+                if ($form1->isValid()) {
+                    $em->persist($currentOwner);
+                    $em->flush();
 
-            $haystack = array_map(function(Artist_User $elem) {
-               return $elem->getUser()->getEmail();
-            }, $owners->toArray());
+                    $this->addFlash('notice', 'Votre rôle a bien été enregistré');
+                }
+            }*/
+            if ($HTTPRequest->request->has($form2->getName())) {
 
-            $haystack = array_merge($haystack, array_map(function(ArtistOwnershipRequest $elem) {
-                return $elem->getEmail();
-            }, $requests));
+                if ($form2->isValid()) {
+                    $reqs = array();
 
-            foreach($form2->getData()->ownership_requests_form as $request) {
-                /** @var ArtistOwnershipRequest $request */
-                if(!(in_array($request->getEmail(), $haystack))) {
-                    $request->setDemander($user);
-                    $request->setArtist($artist);
-                    $em->persist($request);
-                    $reqs[] = $request;
-                    $haystack[] = $request->getEmail();
+                    $haystack = array_map(function (Artist_User $elem) {
+                        return $elem->getUser()->getEmail();
+                    }, $owners->toArray());
+
+                    $haystack = array_merge($haystack, array_map(function (ArtistOwnershipRequest $elem) {
+                        return $elem->getEmail();
+                    }, $requests));
+
+                    foreach ($form2->getData()->ownership_requests_form as $request) {
+                        /** @var ArtistOwnershipRequest $request */
+                        if (!(in_array($request->getEmail(), $haystack))) {
+                            $request->setDemander($user);
+                            $request->setArtist($artist);
+                            $em->persist($request);
+                            $reqs[] = $request;
+                            $haystack[] = $request->getEmail();
+                        }
+                    }
+
+                    $em->flush();
+
+                    $mailer = $this->get('AppBundle\Services\MailDispatcher');
+
+                    // Unique code is based on the id so we need this loop
+                    foreach ($reqs as $req) {
+                        $req->generateUniqueCode();
+                        $mailer->sendNewOwnershipRequest($artist, $req);
+                    }
+
+                    $em->flush(); // For unique code !!
+
+                    $this->addFlash('notice', 'Les invitations ont été envoyées.');
+
+                    return $this->redirectToRoute($HTTPRequest->get('_route'), $HTTPRequest->get('_route_params'));
                 }
             }
-
-            $em->flush();
-
-            $mailer = $this->get('AppBundle\Services\MailDispatcher');
-
-            // Unique code is based on the id so we need this loop
-            foreach($reqs as $req) {
-                $req->generateUniqueCode();
-                $mailer->sendNewOwnershipRequest($artist, $req);
-            }
-
-            $em->flush(); // For unique code !!
-
-            $this->addFlash('notice', 'Les invitations ont été envoyées.');
         }
 
         return $this->render('@App/User/Artist/owners.html.twig', array(

@@ -4,7 +4,7 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
-            Lien : <a href="{{ absolute_url(path('user_change_email_check', {'token': user.confirmationToken})) }}">ici</a>
+            Lien : <a href="{{ absolute_url(path('user_change_email_check', {'token': user.askedEmailToken})) }}">ici</a>
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

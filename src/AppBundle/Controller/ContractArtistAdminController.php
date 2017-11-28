@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Payment;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -13,6 +14,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ContractArtistAdminController extends Controller
 {
+    protected $container;
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     public function refundAction(Request $request, UserInterface $user) {
         $em = $this->getDoctrine()->getManager();
         $contract = $this->admin->getSubject();

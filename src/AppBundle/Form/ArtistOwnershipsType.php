@@ -18,7 +18,7 @@ class ArtistOwnershipsType extends AbstractType
             'allow_add' => true,
             'allow_delete' => true,
             'prototype' => true,
-            'attr' => ['class' => 'ownership'],
+            'attr' => ['class' => 'ownership collection'],
             'label' => false,
         ))
             ->add('submit', SubmitType::class, array(

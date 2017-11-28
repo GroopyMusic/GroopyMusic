@@ -1,8 +1,5 @@
 <?php
 
-// TODO
-// Historique fan -> profil
-
 namespace AppBundle\Entity;
 
 use Azine\EmailBundle\Entity\RecipientInterface;
@@ -17,7 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User extends BaseUser implements RecipientInterface
 {
-    // TODO suppression de compte ==> suppression des ownership requests !!!
     public function __toString()
     {
         return $this->getDisplayName();

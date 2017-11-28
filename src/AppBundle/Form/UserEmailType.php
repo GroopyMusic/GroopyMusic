@@ -26,7 +26,10 @@ class UserEmailType extends AbstractType
                     new Email(['message' => 'Cette adresse e-mail est invalide.']),
                 ]
             ))
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, array(
+                'label' => 'labels.user.newemail.submit',
+                'attr' => ['class' => 'btn btn-primary'],
+            ))
         ;
     }
     
