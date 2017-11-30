@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class ContractFan
 {
     const ORDERS_DIRECTORY = 'pdf/orders/';
+    const TICKETS_DIRECTORY = 'pdf/tickets/';
 
     public function __toString()
     {
@@ -22,7 +24,7 @@ class ContractFan
     public function __construct(ContractArtist $ca)
     {
         $this->contractArtist = $ca;
-        $this->purchases = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->purchases = new ArrayCollection();
 
         foreach($ca->getStep()->getCounterParts() as $cp) {
             $purchase = new Purchase();
@@ -33,10 +35,22 @@ class ContractFan
         $this->ticket_sent = false;
         $this->date = new \DateTime();
         $this->refunded = false;
+        $this->tickets = new ArrayCollection();
     }
 
     public function generateBarCode() {
         $this->barcode_text = 'cf'.$this->id . uniqid();
+    }
+
+    public function generateTickets() {
+        $i = 0;
+        foreach($this->purchases as $purchase) {
+            $i++;
+            /** @var Purchase $purchase */
+            $counterPart = $purchase->getCounterpart();
+            $this->addTicket(new Ticket($this, $counterPart, $i));
+        }
+
     }
 
     public function getOrderFileName() {
@@ -45,6 +59,14 @@ class ContractFan
 
     public function getPdfPath() {
         return self::ORDERS_DIRECTORY . $this->getOrderFileName();
+    }
+
+    public function getTicketsPath() {
+        return self::TICKETS_DIRECTORY . $this->getTicketsFileName();
+    }
+
+    public function getTicketsFileName() {
+        return $this->getBarcodeText() . '.pdf';
     }
 
     public function getAmount() {
@@ -123,6 +145,11 @@ class ContractFan
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="contractFan")
      */
     private $payment;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Ticket", mappedBy="contractFan", cascade={"all"})
+     */
+    private $tickets;
 
     /**
      * Get id
@@ -311,5 +338,63 @@ class ContractFan
     public function getRefunded()
     {
         return $this->refunded;
+    }
+
+    /**
+     * Set payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     *
+     * @return ContractFan
+     */
+    public function setPayment(\AppBundle\Entity\Payment $payment = null)
+    {
+        $this->payment = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Get payment
+     *
+     * @return \AppBundle\Entity\Payment
+     */
+    public function getPayment()
+    {
+        return $this->payment;
+    }
+
+    /**
+     * Add ticket
+     *
+     * @param \AppBundle\Entity\Ticket $ticket
+     *
+     * @return ContractFan
+     */
+    public function addTicket(\AppBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets[] = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * Remove ticket
+     *
+     * @param \AppBundle\Entity\Ticket $ticket
+     */
+    public function removeTicket(\AppBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets->removeElement($ticket);
+    }
+
+    /**
+     * Get tickets
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
     }
 }

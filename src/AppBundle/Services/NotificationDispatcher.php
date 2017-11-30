@@ -58,8 +58,8 @@ class NotificationDispatcher
         $this->addNotification($cart->getUser(), self::PROBLEMATIC_CART_TYPE);
     }
 
-    public function notifyReminderArtistContract($users, ContractArtist $contract, $nb_days) {
-        $this->addNotifications($users, self::REMINDER_ARTIST_CONTRACT_TYPE, ['nbDays' => $nb_days, 'contract' => $contract]);
+    public function notifyReminderArtistContract($users, ContractArtist $contract, $nb_days, $places) {
+        $this->addNotifications($users, self::REMINDER_ARTIST_CONTRACT_TYPE, ['nbDays' => $nb_days, 'contract' => $contract, 'places' => $places]);
     }
 
     public function notifyArtistsKnownOutcomeContract($users, ContractArtist $contract, $success) {

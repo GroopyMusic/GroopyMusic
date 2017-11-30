@@ -5,9 +5,11 @@
 {% autoescape false %}
 
 {% block content %}
-    Hello,
-    {{ txtH2Style }}
-
+   {{ email_content('concert.fan.confirmation', {
+        '%artist%': contract.artist.artistName,
+        '%hall%': contract.reality.hall.name,
+        '%artistCatalogUrl%': absolute_url(path('catalog_artists'))
+   }) }}
 {% endblock %}
 
 {% endautoescape %}

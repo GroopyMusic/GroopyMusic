@@ -4,6 +4,10 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
+            {{ email_content('concert.artist.reminder', {
+                '%days%': days,
+                '%artist%': artist,
+            }) }}
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

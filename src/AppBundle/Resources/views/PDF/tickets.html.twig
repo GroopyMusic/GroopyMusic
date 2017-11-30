@@ -1,0 +1,10 @@
+{% extends '@App/PDF/layout.html.twig' %}
+
+    {% block content %}
+        {% for ticket in contractFan.tickets %}
+            <page>
+                <img src="data:image/png;base64,
+                {{ barcode({code: ticket.barCodeText, type: 'qrcode', format: 'png', width: 10, height: 10, color: 'black'}) }}
+                " />
+            </page>
+    {% endblock %}

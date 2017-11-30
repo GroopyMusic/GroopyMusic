@@ -27,6 +27,7 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('hidden_loader', array($this, 'hidden_loader'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('preview', array($this, 'preview', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('error', array($this, 'error', array('is_safe' => array('html')))),
+            new \Twig_SimpleFunction('email_content', array($this, 'email_content', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('notification_preview', array($this, 'notification_preview', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('notification_menu_preview', array($this, 'notification_menu_preview', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('notification_complete', array($this, 'notification_complete', array('is_safe' => array('html')))),
@@ -79,6 +80,13 @@ class UtilitiesExtension extends \Twig_Extension
             'notification' => $notification,
             'title' => $title,
             'content' => $content,
+        ));
+    }
+
+    public function email_content($email_key, $email_variables) {
+        return $this->twig->render(':patterns/utils:email.html.twig', array(
+            'email_key' => $email_key,
+            'email_variables' => $email_variables,
         ));
     }
 

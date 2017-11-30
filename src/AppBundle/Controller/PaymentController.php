@@ -175,8 +175,13 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/send-recap-{id}", name="user_cart_send_order_recap")
      */
-    public function sendOrderRecap(ContractFan $cf) {
-        $this->get(MailDispatcher::class)->sendOrderRecap($cf);
+    public function sendOrderRecap(ContractFan $cf, MailDispatcher $dispatcher) {
+        $dispatcher->sendOrderRecap($cf);
+
+        if($cf->getContractArtist()->getTicketsSent()) {
+            $dispatcher->sendDetailsKnownFan($cf->getContractArtist(), $cf);
+        }
+
         return $this->redirectToRoute('user_paid_carts');
     }
 

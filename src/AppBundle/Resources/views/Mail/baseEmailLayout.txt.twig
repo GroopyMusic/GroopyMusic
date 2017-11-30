@@ -1,39 +1,40 @@
 {% block subject %}{{ subject }}{% endblock %}
 
 {% block body_text %}
-{% autoescape false %}
+    {% autoescape false %}
 
-{% block content %}
-{% block contentHead %}
-{% endblock %}
-{% if contentItems is defined %}
-{#
-the contentItems-array has the following structure
+    {% block content %}
+        {% block contentHead %}
+        {% endblock %}
+        {% if contentItems is defined %}
+            {#
+            the contentItems-array has the following structure
 
-array(0 => array(templateX => varsForX), 1 => array(templateY => varsForY), 2 => array(templateZ => varsForZ));
+            array(0 => array(templateX => varsForX), 1 => array(templateY => varsForY), 2 => array(templateZ => varsForZ));
 
-the first loop get's all the arrays, the second loop get's the template from the key and the vars from the value of the inner array.
-#}
-{% for contentItemArrays in contentItems  %}
-{% for contentItemTemplate, contentItemParams in contentItemArrays %}
-
-
-{{ txtHR }}{# this line separates different content items visualy, replace it with what ever you think is niceer #}
-
-{% filter addCampaignParamsForTemplate(contentItemTemplate, contentItemParams) %}
-{% include contentItemTemplate ~ '.txt.twig' with contentItemParams %} {# You can add multiple content-blocks by adding items to the contentItems array.#}
-{% endfilter %}
-{% endfor %}
-{% endfor %}
+            the first loop get's all the arrays, the second loop get's the template from the key and the vars from the value of the inner array.
+            #}
+            {% for contentItemArrays in contentItems  %}
+            {% for contentItemTemplate, contentItemParams in contentItemArrays %}
 
 
-{% endif %}
-{% endblock %}	{# end main content #}
+            {{ txtHR }}{# this line separates different content items visualy, replace it with what ever you think is niceer #}
 
-Musicalement vôtre,
+            {% filter addCampaignParamsForTemplate(contentItemTemplate, contentItemParams) %}
+            {% include contentItemTemplate ~ '.txt.twig' with contentItemParams %} {# You can add multiple content-blocks by adding items to the contentItems array.#}
+            {% endfilter %}
+            {% endfor %}
+            {% endfor %}
 
-Un-Mute
 
+        {% endif %}
+    {% endblock %}	{# end main content #}
+
+    {% block signature %}
+        À très bientôt pour de nouvelles aventures musicales,
+
+        L'équipe Un-Mute
+    {% endblock %}
 {{ txtHR }}
 {% block footerInfoText %}
 

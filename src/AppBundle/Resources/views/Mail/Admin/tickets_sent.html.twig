@@ -4,6 +4,9 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
+            <div>
+                Les tickets pour le concert de {{ contract.artist.artistName }} ont été envoyés !
+            </div>
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

@@ -21,7 +21,10 @@
                             Date
                         </th>
                         <th>
-                            PDF
+                            Commande (PDF)
+                        </th>
+                        <th>
+                            Tickets (PDF)
                         </th>
                     </tr>
                 </thead>
@@ -39,6 +42,12 @@
                         <td>
                             <a href="{{ path('user_get_order', {'id': cart.id}) }}"
                                download="um_commande_{{ cart.first.id }}.pdf">PDF</a>
+                        </td>
+                        <td>
+                            {% if cart.first.contractArtist.ticketsSent %}
+                                <a href="{{ path('user_get_tickets', {'id': cart.id}) }}"
+                                   dowload="um_ticket_{{ cart.first.id }}.pdf">Ticket</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

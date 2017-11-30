@@ -19,12 +19,14 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:reminder_contract_artist.txt.twig';
     const FAILED_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:failed_contract_artist.txt.twig';
     const SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:successful_contract_artist.txt.twig';
+    const DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:contract_details_known_artist.txt.twig';
 
     const FAILED_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:failed_contract_fan.txt.twig';
     const SUCCESSFUL_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:successful_contract_fan.txt.twig';
     const ONGOING_CART_TEMPLATE = 'AppBundle:Mail/Fan:ongoing_cart.txt.twig';
     const TICKET_TEMPLATE = 'AppBundle:Mail/Fan:ticket.txt.twig';
     const ORDER_RECAP_TEMPLATE = 'AppBundle:Mail/Fan:order.txt.twig';
+    const DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Artist:contract_details_known_fan.txt.twig';
 
     const NEWSLETTER_TEMPLATE = 'AppBundle:Mail/User:newsletter.txt.twig';
     const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/User:change_email_confirmation.txt.twig';
@@ -39,6 +41,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ADMIN_REMINDER_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract.txt.twig';
     const ADMIN_ENORMOUS_PAYER_TEMPLATE = 'AppBundle:Mail/Admin:enormous_payer.txt.twig';
     const ADMIN_STRIPE_ERROR_TEMPLATE  = 'AppBundle:Mail/Admin:stripe_error.txt.twig';
+    const ADMIN_TICKETS_SENT = 'AppBundle:Mail/Admin:tickets_sent.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
@@ -142,6 +145,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
             self::ONGOING_CART_TEMPLATE,
             self::TICKET_TEMPLATE,
             self::ORDER_RECAP_TEMPLATE,
+            self::DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE,
+            self::DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE,
 
             self::NEWSLETTER_TEMPLATE,
             self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,

@@ -371,9 +371,38 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user/orders/{id}", name="user_get_order")
-     */
+ * @Route("/user/orders/{id}", name="user_get_order")
+ */
     public function getOrderAction(Request $request, UserInterface $user, Cart $cart) {
+
+        $contract = $cart->getFirst();
+        if($contract->getUser() != $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $finder = new Finder();
+        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
+        $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
+
+        foreach($finder as $file) {
+
+            $response = new BinaryFileResponse($filePath);
+            // Set headers
+            $response->headers->set('Cache-Control', 'private');
+            $response->headers->set('Content-Type', 'PDF');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $contract->getOrderFileName()
+            ));
+
+            return $response;
+        }
+    }
+
+    /**
+     * @Route("/user/tickets/{id}", name="user_get_tickets")
+     */
+    public function getTicketsAction(Request $request, UserInterface $user, Cart $cart) {
 
         $contract = $cart->getFirst();
         if($contract->getUser() != $user) {

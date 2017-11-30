@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-28T10:51:13Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-30T10:28:41Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -73,14 +73,13 @@
       </trans-unit>
       <trans-unit id="6362bc7b7a8f72b782ffd590744ab069327bbe4a" resname="registration.email.message">
         <source>registration.email.message</source>
-        <target xml:space="preserve">Bonjour %username% !
+        <target xml:space="preserve">Bonjour %username%,
 
-Pour valider votre compte utilisateur, merci de vous rendre sur %confirmationUrl%
-            
-Ce lien ne peut être utilisé qu'une seule fois pour valider votre compte.
+Merci pour votre inscription ! Votre compte Un-Mute a bien été créé. 
 
-Cordialement,
-L'équipe</target>
+Pouvez-vous nous confirmer que votre adresse mail est bien correcte en cliquant sur le lien suivant : %confirmationUrl% ?
+
+À bientôt pour de nouvelles découvertes musicales !</target>
         <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\registration_confirmation.html.twig</jms:reference-file>
         <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\registration_confirmation.txt.twig</jms:reference-file>
         <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Registration\email.txt.twig</jms:reference-file>

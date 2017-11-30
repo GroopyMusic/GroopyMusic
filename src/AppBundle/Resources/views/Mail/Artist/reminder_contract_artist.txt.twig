@@ -5,10 +5,10 @@
 {% autoescape false %}
 
 {% block content %}
-    Hello,
-    {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
-
-    Dans {{ days }} jours il y a un concert pour votre artiste {{ artist }}. Plus d'infos sur Un-Mute.be
+    {{ email_content('concert.artist.reminder', {
+                '%days%': days,
+                '%artist%': artist,
+    }) }}
 {% endblock %}
 
 {% endautoescape %}

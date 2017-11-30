@@ -1,0 +1,70 @@
+change_email:
+  confirmation: |
+    Bonjour %username%,
+
+    Vous avez demandé de changer l'adresse mail liée à votre compte Un-Mute.
+
+    Pouvez-vous nous confirmer que cette adresse est bien correcte en cliquant sur le lien suivant : %confirmationUrl%
+
+concert:
+  artist:
+    failure: |
+
+
+    confirmation: |
+      Félicitations !
+
+      Vous êtes soutenu(s) par suffisamment de producteurs : Un-Mute vous offre l’organisation de votre concert le %date% dans la salle "%hall%".
+
+      Ce concert vous offrira peut-être la possibilité de participer à une tournée multi-locale organisée par Un-Mute. Nous vous recontacterons pour plus d'informations à ce sujet.
+    reminder: |
+      Bonjour %artist%,
+
+      Sachez qu'il ne reste plus que %places% places à vendre pour que le concert du date du concert au/à nom de la salle puisse être produit !
+
+      A partir d'aujourd'hui, vous avez encore %days% jours pour relancer vos fans via vos canaux de communication.
+
+      De notre côté, nous prévoyons de promouvoir votre évènement dans les prochains jours via nos propres moyens.
+
+  fan:
+    confirmation: |
+      Félicitations !
+
+      L’artiste %artist% vient d’obtenir l’organisation de son concert par Un-Mute Asbl grâce à vous ! Ce concert se tiendra le %date% dans la salle "%hall%". Vous recevrez très prochainement votre ticket ainsi que toutes les informations pratiques par e-mail.
+
+      Envie de soutenir/découvrir d’autres artistes ? Rendez-vous sur le catalogue de groupes Un-Mute à cette adresse : %artistCatalogUrl%
+    tickets: |
+      Bonjour %username%,
+
+      Voici les informations pratiques concernant le concert de %artist% du %date% dans la salle "%hall%".
+
+      %firstparts%
+
+      Vous trouverez votre ou vos ticket(s) de concert en pièce jointe (format PDF).
+
+      Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du concert car il s'agira de votre laissez-passer.
+
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
+    failure: |
+      Cher producteur,
+
+      L’artiste %artist% que vous aviez décidé de soutenir n’a pas pu récolter assez de fonds pour permettre l’organisation de son concert.
+
+      Vous serez remboursé de l’entièreté du prix des places achetées.
+
+      Envie de voir nom %artist% en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !
+
+      Envie de soutenir d’autres artistes ? Rendez-vous sur le catalogue de groupes : %artistCatalogUrl%
+
+ownershiprequest:
+  member: |
+    Vous avez été ajouté à l'artiste "%artist%" sur la plateforme Un-Mute, l'asbl pour la promotion, production et diffusion musicale 100% belge.
+
+    Pour confirmer ou non votre appartenance à cet artiste, cliquez sur le lien suivant : %confirmationUrl%
+
+  nonmember: |
+    Vous avez été ajouté à l'artiste "%artist%" sur la plateforme Un-Mute, l'asbl pour la promotion, production et diffusion musicale 100% belge.
+
+    Pour confirmer ou non votre appartenance à cet artiste, inscrivez-vous sur www.Un-Mute.be puis cliquez sur le lien suivant : %confirmationUrl%
+
+

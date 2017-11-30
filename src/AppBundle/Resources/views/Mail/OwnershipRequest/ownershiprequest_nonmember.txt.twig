@@ -5,13 +5,10 @@
 {% autoescape false %}
 
 {% block content %}
-   Quelqu'un pense que vous appartenez à un groupe
-   ==================
-
-    - Groupe : {{ artist.artistname }}
-
-    - Cliquez ici pour valider ou invalider cette requête (il vous faudra vous créer un compte sur Un-Mute.be) : {{ absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code})) }}
-
+  {{ email_content('ownershiprequest.nonmember', {
+      '%confirmationUrl%': absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code})),
+      '%artist%': artist.artistName
+   }) }}
 {% endblock %}
 
 {% endautoescape %}

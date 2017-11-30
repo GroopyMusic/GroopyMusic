@@ -87,6 +87,7 @@ class ContractArtist extends BaseContractArtist
         parent::__construct();
         $this->coartists_list = new ArrayCollection();
         $this->tickets_sold = 0;
+        $this->tickets_sent = false;
     }
 
     public function getCoartists() {
@@ -185,6 +186,10 @@ class ContractArtist extends BaseContractArtist
      */
     private $tickets_sold;
 
+    /**
+     * @ORM\Column(name="tickets_sent", type="boolean")
+     */
+    private $tickets_sent;
 
     /**
      * Set coartistsList
@@ -310,5 +315,29 @@ class ContractArtist extends BaseContractArtist
     public function getTicketsSold()
     {
         return $this->tickets_sold;
+    }
+
+    /**
+     * Set ticketsSent
+     *
+     * @param boolean $ticketsSent
+     *
+     * @return ContractArtist
+     */
+    public function setTicketsSent($ticketsSent)
+    {
+        $this->tickets_sent = $ticketsSent;
+
+        return $this;
+    }
+
+    /**
+     * Get ticketsSent
+     *
+     * @return boolean
+     */
+    public function getTicketsSent()
+    {
+        return $this->tickets_sent;
     }
 }

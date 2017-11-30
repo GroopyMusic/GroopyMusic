@@ -5,11 +5,11 @@
 {% block subject %}{{ subject }}{% endblock %}
 
 {% block content %}
-
+    Les tickets pour le concert de {{ contract.artist.artistName }} ont été envoyés !
 {% endblock %}
 
 {% endautoescape %}
 
 {% block body_html %}
-    {% include 'AppBundle:Mail/Artist:firstpart_announced_artist.html.twig' %}
+    {% include 'AppBundle:Mail/Admin:tickets_sent.html.twig' %}
 {% endblock %}

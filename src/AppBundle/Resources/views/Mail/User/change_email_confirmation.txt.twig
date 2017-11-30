@@ -5,10 +5,7 @@
 {% autoescape false %}
 
 {% block content %}
-    Hello,
-    {{ txtH2Style }}
-
-    Link : {{ absolute_url(path('user_change_email_check', {'token': user.askedEmailToken})) }}
+     {{ email_content('change_email.confirmation', {'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}) }}
 {% endblock %}
 
 {% endautoescape %}

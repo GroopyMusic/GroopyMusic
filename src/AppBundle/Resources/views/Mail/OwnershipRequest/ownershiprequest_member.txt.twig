@@ -5,14 +5,10 @@
 {% autoescape false %}
 
 {% block content %}{# override this block for emails that don't contain "contentItems" => password-reset, account-confirmation, other custom emails of your application #}
-
-   Quelqu'un pense que vous appartenez à un groupe
-   ==================
-
-    - Groupe : {{ artist.artistname }}
-
-    - Cliquez ici pour valider ou invalider cette requête : {{ absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code})) }}
-
+  {{ email_content('ownershiprequest.member', {
+      '%confirmationUrl%': absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code})),
+      '%artist%': artist.artistName
+   }) }}
 {% endblock %}
 
 {% endautoescape %}

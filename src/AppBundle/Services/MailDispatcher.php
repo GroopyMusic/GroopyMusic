@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Twig\Environment;
 
 class MailDispatcher
 {
@@ -34,8 +35,9 @@ class MailDispatcher
     private $notification_dispatcher;
     private $em;
     private $kernel;
+    private $twig;
 
-    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel)
+    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel, Environment $twig)
     {
         $this->mailer = $mailer;
         $this->translator = $translator;
@@ -44,6 +46,7 @@ class MailDispatcher
         $this->from_address = $from_address;
         $this->from_name = $from_name;
         $this->kernel = $kernel;
+        $this->twig = $twig;
     }
 
     private function sendEmail($template, $subject, array $params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '') {
@@ -150,7 +153,7 @@ class MailDispatcher
             return $elem->getEmail();
         }, $artist_users);
 
-        $this->sendEmail($template_artist, 'Subject', $params, $bcc);
+        $this->sendEmail($template_artist, 'Votre crowdfunding - Résultat des courses', $params, $bcc);
 
         // mail to fans
         if(!empty($fan_users)) {
@@ -158,7 +161,7 @@ class MailDispatcher
                 return $elem->getEmail();
             }, $fan_users));
 
-            $this->sendEmail($template_fan, 'Subject', $params, $bcc);
+            $this->sendEmail($template_fan, 'Concert de ' . $contract->getArtist()->getArtistname() . ' : résultat des courses', $params, $bcc);
         }
 
         $this->notification_dispatcher->notifyArtistsKnownOutcomeContract($artist_users, $contract, $success);
@@ -175,17 +178,20 @@ class MailDispatcher
             return $elem->getEmail();
         }, $users);
         $params = ['contract' => $contract, 'artist' => $contract->getArtist()->getArtistname()];
-        $this->sendEmail(MailTemplateProvider::ONGOING_CART_TEMPLATE, 'subject', $params, $recipients);
+        $this->sendEmail(MailTemplateProvider::ONGOING_CART_TEMPLATE, 'Votre panier sur Un-Mute.be', $params, $recipients);
         $this->notification_dispatcher->notifyOngoingCart($users, $contract);
     }
 
     public function sendArtistReminderContract($users, ContractArtist $contract, $nb_days) {
+
+        $places = $contract->getStep()->getMinTickets() - $contract->getTicketsSold();
+
         $recipients = array_map(function(User $elem) {
             return $elem->getEmail();
         }, $users);
-        $params = ['contract' => $contract, 'nbDays' => $nb_days, 'artist' => $contract->getArtist()->getArtistname()];
-        $this->sendEmail(MailTemplateProvider::REMINDER_CONTRACT_ARTIST_TEMPLATE, 'subject', $params, $recipients);
-        $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days);
+        $params = ['contract' => $contract, 'nbDays' => $nb_days, 'artist' => $contract->getArtist()->getArtistname(), 'places' => $places];
+        $this->sendEmail(MailTemplateProvider::REMINDER_CONTRACT_ARTIST_TEMPLATE, 'Rappel : votre événement sur Un-Mute.be', $params, $recipients);
+        $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days, $places);
     }
 
     public function sendOrderRecap(ContractFan $contractFan) {
@@ -200,20 +206,72 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::ORDER_RECAP_TEMPLATE, $subject, $params, [], $attachments, $to, $toName);
     }
 
-    public function sendTicket($ticket_html, ContractFan $contractFan) {
+    public function sendDetailsKnownArtist(ContractArtist $contractArtist) {
+        $users = $contractArtist->getArtistProfiles();
+        // mail to artists
+        $bcc = array_map(function(User $elem) {
+            return $elem->getEmail();
+        }, $users);
+
+        $firstParts = $contractArtist->getCoartists();
+
+        $first = $firstParts[0] ?: null;
+        $second = $firstParts[1] ?: null;
+
+        $params = [
+            'artist' => $contractArtist->getArtist(),
+            'contract' => $contractArtist,
+            'first' => $first, 
+            'second' => $second,
+        ];
+
+        $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE, 'Les détails de votre concert', $params, $bcc);
+
+    }
+
+    public function sendDetailsKnownFan(ContractArtist $contractArtist, $cf = null) {
+        $firstParts = $contractArtist->getCoartists();
+
+        $first = $firstParts[0] ?: null;
+        $second = $firstParts[1] ?: null;
+
+        $params = [
+            'artist' => $contractArtist->getArtist(),
+            'contract' => $contractArtist,
+            'first' => $first,
+            'second' => $second,
+        ];
+
         $html2pdf = new Html2Pdf();
-        $html2pdf->writeHTML($ticket_html);
-        $html2pdf->output('pdf/tickets/'.$contractFan->getBarcodeText().'.pdf', 'F');
 
-        $attachments = ['votreContrat.pdf' => $this->get('kernel')->getRootDir() . '/../web/pdf/tickets/' . $contractFan->getBarcodeText().'.pdf'];
+        $cfs = $cf == null ? $contractArtist->getContractsFan() : [$cf];
 
-        $to = [$contractFan->getFan()->getEmail()];
-        $toName = [$contractFan->getFan()->getDisplayName()];
-        $subject = "Votre ticket Un-Mute";
-        $params = [];
+        foreach($cfs as $contractFan) {
 
-        $this->sendEmail(MailTemplateProvider::TICKET_TEMPLATE, $subject, $params, [], $attachments, $to, $toName);
-        $this->notification_dispatcher->notifyTicket($contractFan->getFan(), $contractFan);
+            $contractFan->generateTickets();
+
+            $html2pdf->writeHTML($this->twig->render('@App/PDF/tickets.html.twig', ['contractFan' => $contractFan]));
+            $html2pdf->output($contractFan->getTicketsPath(), 'F');
+
+            $attachments = ['votreTicket.pdf' => $this->get('kernel')->getRootDir() . '/../web/' . $contractFan->getTicketsPath()];
+
+            $to = [$contractFan->getFan()->getEmail()];
+            $toName = [$contractFan->getFan()->getDisplayName()];
+            $subject = "Votre ticket Un-Mute";
+
+            $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE, $subject, $params, [], $attachments, $to, $toName);
+            $this->notification_dispatcher->notifyTicket($contractFan->getFan(), $contractFan);
+        }
+
+        if($cf == null) {
+            $this->sendAdminTicketsSent($contractArtist);
+            $contractArtist->setTicketsSent(true);
+        }
+    }
+
+    public function sendAdminTicketsSent(ContractArtist $contractArtist) {
+        $params = ['contract' => $contractArtist];
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_TICKETS_SENT, 'Tickets envoyés pour le concert de ' . $contractArtist->getArtist()->getArtistname(), $params);
     }
 
     public function sendAdminReminderContract(ContractArtist $contract, $nb_days) {
