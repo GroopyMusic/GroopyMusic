@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-30T10:28:41Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-12-01T09:09:44Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -105,11 +105,11 @@ Si vous ne recevez pas un email, vérifiez votre dossier spam ou essayez à nouv
       </trans-unit>
       <trans-unit id="70c8836a0e3b8dadb494b8de56ebed18939359b5" resname="resetting.email.message">
         <source>resetting.email.message</source>
-        <target xml:space="preserve">Un e-mail a été envoyé. Il contient un lien sur lequel il vous faudra cliquer pour réinitialiser votre mot de passe.
+        <target xml:space="preserve">Bonjour %username%, 
 
-Remarque : Vous ne pouvez demander un nouveau mot de passe que toutes les %tokenLifetime% heures.
+Vous avez oublié votre mot de passe qui vous permet de vous rendre sur Un-Mute.be ? 
 
-Si vous ne recevez pas un email, vérifiez votre dossier spam ou essayez à nouveau.</target>
+Pas de panique, vous pouvez créer un nouveau mot de passe en cliquant sur le lien suivant : %confirmationUrl%</target>
         <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Resetting\email.txt.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="126cf13058808d8948cc673c7933c6c1ce27841d" resname="resetting.email.subject">
