@@ -1,0 +1,16 @@
+.content-box {
+
+  &-header {
+    @extend .bg-primary;
+    @extend .p-4;
+    @extend .text-white;
+    @extend .text-center;
+  }
+
+  &-content {
+    @extend .pb-3;
+    background: #fdfdfe;
+    border-right: 2px solid #d0d2d4;
+    border-bottom: 2px solid #d0d2d4;
+  }
+}

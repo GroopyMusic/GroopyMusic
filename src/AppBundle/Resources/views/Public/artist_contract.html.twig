@@ -6,22 +6,15 @@
 {% block body %}
 
     <div class="container">
-        <h2 class="text-center">{{ contract.artist.artistname }} souhaite organiser un concert dans une salle "{{ contract.step.getName }}"</h2>
-
-        <p class="my-4 p-info">
-            ... et sur cette page, vous avez la possibilité de l'aider en achetant des tickets pour ce concert. Une fois le nombre de tickets requis atteint, <strong>nous confirmerons l'organisation du concert</strong>.
-            Il ne vous restera plus qu'à en profiter. <a href="{{ path('about') }}">En savoir plus sur notre fonctionnement</a>
-        </p>
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2">
+                <h2 class="text-center">{{ contract.artist.artistname }} souhaite organiser un concert dans une salle "{{ contract.step.getName }}"</h2>
+            </div>
+        </div>
 
         <div class="row">
-            <div class="col-xs-12 col-md-8">
-                <div class="col-12">
-                    <h3 class="rounded-title">Infos</h3>
-                </div>
-                {# TODO if artist is not defined and app.user.owns(contract.artist) %}
-                    <a href="{{ path('artist', {'id': contract.artist.id, 'contract_id': contract.id}) }}">Modifier</a>
-                {% endif #}
-
+            <div class="col-xs-12 col-md-8 content-box">
+                    <h3>Infos</h3>
                 <ul class="um-list">
                     <li>
                         Date du concert : {{ contract.dateConcert|date('d/m/Y') }}
@@ -104,15 +97,18 @@
                     {% endif %}
                 </ul>
             </div>
-            <div class="col-xs-12 col-md-4">
-                <div class="col-12">
-                    <h3 class="rounded-title">Acheter des tickets</h3>
+            <div class="col-xs-12 col-md-4 content-box">
+                <div class="content-box-header">
+                    {% if state in contract.uncrowdableStates %}
+                        <p>Il n'est plus possible d'acheter des tickets pour cet événement.</p>
+                    {% else %}
+                        <p>Il reste encore {{ tickets_left }} tickets, faites votre choix !</p>
+                    {% endif %}
 
-                {% if state in contract.uncrowdableStates %}
-                    <p>Il n'est plus possible d'acheter des tickets pour cet événement.</p>
-                {% else %}
-                    <p>Il reste encore {{ tickets_left }} tickets, faites votre choix !</p>
+                    <h3>Achetez vos tickets</h3>
                 </div>
+                <div class="content-box-content">
+                {% if state not in contract.uncrowdableStates %}
                     {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
                     {% if app.user %}
@@ -123,11 +119,17 @@
                         {% set counterpart = purchase.vars.value.counterpart %}
                         <div class="counterpart-form">
 
-                            <div class="form-group">
+                            <div class="form-group form-row">
                                 {{ form_errors(purchase) }}
-                                <label class="counterpart-label">{{ counterpart.name }} ({{ counterpart.price }} €)</label>
-                                <p>{{ counterpart.description|raw }}</p>
-                                {{ form_widget(purchase) }}
+
+                                <div class="col-8">
+                                    <label class="counterpart-label">{{ counterpart.name }}</label>
+                                </div>
+                                <div class="col-4">
+                                    {{ counterpart.price }} €
+                                </div>
+                                <div class="col-8">{{ counterpart.description|raw }}</div>
+                                <div class="col-4">{{ form_widget(purchase) }}</div>
                             </div>
                         </div>
                     {% endfor %}
@@ -140,6 +142,7 @@
                     <p class="text-italic">Vous devez être connecté pour acheter des tickets ! <a href="{{ path('fos_user_registration_register') }}">Pas encore inscrit ?</a></p>
                     <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</button>
                 {% endif %}
+                </div>
             </div>
         </div>
     </div>

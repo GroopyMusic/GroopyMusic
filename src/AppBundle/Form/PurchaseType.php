@@ -18,7 +18,7 @@ class PurchaseType extends AbstractType
         $builder
             ->add('quantity', ChoiceType::class, array(
                 'choices' => range(0, min(20, $contract_artist->getStep()->getMaxTickets() - $contract_artist->getTicketsSold())),
-                'label' => 'Quantité'
+                'label' => false,
             ))
         ;
     }

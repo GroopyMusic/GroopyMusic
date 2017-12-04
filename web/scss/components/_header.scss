@@ -36,13 +36,13 @@ header {
     -moz-transition: background-color 2s ease;
     -o-transition: background-color 2s ease;
 
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(59, 59, 59, 0.6);
     min-height: 50px;
   }
 
   #mainNav.stickytop {
     @extend .fixed-top;
-    background-color: rgba(0, 0, 0, 1);
+    background-color: rgba(59, 59, 59, 1);
   }
 
   #logo {
@@ -65,6 +65,12 @@ header {
     background-color: black;
     padding-bottom: 0;
     max-width: initial;
+  }
+
+  #dropdownMenuButton {
+    background: transparent;
+    border-radius: 5px;
+    color: $main-color;
   }
 
   .dropdown-menu .dropdown-item {
