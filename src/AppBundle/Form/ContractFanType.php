@@ -36,10 +36,10 @@ class ContractFanType extends AbstractType
 
     public function validate(ContractFan $contractFan, ExecutionContextInterface $context) {
         if($contractFan->getCounterPartsQuantity() == 0) {
-            $context->addViolationAt('purchases', "Pour poursuivre, il faut commander au moins une place de concert !");
+            $context->addViolation( "Pour poursuivre, il faut commander au moins une place de concert !");
         }
         if($contractFan->getCounterPartsQuantity() > $contractFan->getContractArtist()->getStep()->getMaxTickets() - $contractFan->getContractArtist()->getTicketsSold()) {
-            $context->addViolationAt('purchases', "Il n'y a pas autant de places disponibles !!");
+            $context->addViolation( "Il n'y a pas autant de places disponibles !!");
         }
     }
 

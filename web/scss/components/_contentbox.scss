@@ -1,4 +1,19 @@
 .content-box {
+  @extend .mb-3;
+
+  &-row {
+    @extend .align-items-end;
+    border-top: 1px solid #d2d2d2;
+    border-bottom: 1px solid #d2d2d2;
+    width: 100%;
+
+   .content-box-col:not(:first-child) {
+      border-left: 1px solid #d2d2d2;
+    }
+  }
+  &-col {
+    @extend .py-4;
+  }
 
   &-header {
     @extend .bg-primary;
@@ -8,7 +23,7 @@
   }
 
   &-content {
-    @extend .pb-3;
+    @extend .p-4;
     background: #fdfdfe;
     border-right: 2px solid #d0d2d4;
     border-bottom: 2px solid #d0d2d4;

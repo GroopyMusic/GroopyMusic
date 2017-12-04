@@ -4,29 +4,30 @@
 
     <div class="container">
 
-        <h3>Paiement de votre commande</h3>
-        <div id="payment-intro">
-            <p>
-                Bienvenue dans l'espace sécurisé d'Un-Mute, {{ app.user.firstname }}. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
-                vous ont convaincu lors de votre visite.
-            </p>
-
-
-            <p>Vous avez décidé de commander les éléments suivants :</p>
-
-            {% include "@App/User/cart_content.html.twig" with {'editable_cart': false} %}
-
-            <p>
-                En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="{{ path('conditions') }}">conditions d'utilisation</a>.
-                Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres producteurs qui soutiennent cet artiste.
-                Sinon, si cet événement a assez de succès, vous recevrez vos tickets par mail, et sur Un-Mute, quelques jours avant le concert.
-                Dans le cas où l'artiste a déjà atteint le seuil de réussite du concert, alors vous recevrez vos tickets par e-mail dans la journée.
-            </p>
-        </div>
+        <h3 class="mt-3 mb-5 text-center">Paiement de votre commande</h3>
 
         <div class="row">
+            <div class="col-12 col-md-8 order-2 order-md-1">
+                <div id="payment-intro">
+                    <p>
+                        Bienvenue dans l'espace sécurisé d'Un-Mute, {{ app.user.firstname }}. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
+                        vous ont convaincu lors de votre visite.
+                    </p>
 
-            <div class="col-12">
+                    <p>
+                        En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="{{ path('conditions') }}">conditions d'utilisation</a>.
+                        Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres producteurs qui soutiennent cet artiste.
+                        Sinon, si cet événement a assez de succès, vous recevrez vos tickets par mail, et sur Un-Mute, quelques jours avant le concert.
+                        Dans le cas où l'artiste a déjà atteint le seuil de réussite du concert, alors vous recevrez vos tickets par e-mail dans la journée.
+                    </p>
+                </div>
+
+                <!-- Used to display Element errors -->
+                <div class="stripe-error alert alert-danger" role="alert"></div>
+                <div id="stripe-loader">
+                    {{ hidden_loader() }}
+                </div>
+
                 <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
                     <div class="form-row">
                         {% if error_conditions %}
@@ -43,7 +44,7 @@
                         <div class="form-row form-group">
                             <div class="col-12">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="payment-method" value="credit-card" class="custom-control-input">
+                                    <input type="radio" name="payment-method" value="credit-card" class="custom-control-input" checked="checked">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Carte de crédit</span>
                                 </label>
@@ -55,43 +56,53 @@
                             </div>
                         </div>
 
-                        <div id="credit-card" class="form-row payment-method w-100" style="display:none;">
-                            <div class="col-12">
-                                <h5>
-                                    Carte de crédit <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.">+ d'infos</a>
-                                </h5>
-                                <p>Veuillez entrer votre numéro de carte de crédit, sa date d'expiration, ainsi que le cryptogramme visuel.</p>
-                            </div>
-                            <div class="col-12 col-md-8">
-                                <div id="card-element">
-                                    <!-- a Stripe Element will be inserted here. -->
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <input type="submit" class="btn btn-primary mt-3" value="Payer avec ma carte de crédit" />
-                            </div>
-                        </div>
+                        <div class="content-box">
+                            <div class="content-box-content">
 
-                        <div id="debit-card" class="payment-method w-100" style="display:none;">
-                            <h5>
-                               Payer par Bancontact <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.">+ d'infos</a>
-                            </h5>
-                            <p>Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.</p>
-                            <div id="bc-card-element">
-                                <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
-                                    Poursuivre avec Bancontact
-                                </button>
+                                <div id="credit-card" class="form-row payment-method w-100">
+                                    <div class="col-12">
+                                        <h5>
+                                            Paiement par carte de crédit <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.">+ d'infos</a>
+                                        </h5>
+                                        <p>Veuillez entrer votre numéro de carte de crédit, sa date d'expiration, ainsi que le cryptogramme visuel.</p>
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <div id="card-element">
+                                            <!-- a Stripe Element will be inserted here. -->
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="submit" class="btn btn-primary mt-3" value="Payer avec ma carte de crédit" />
+                                    </div>
+                                </div>
+
+                                <div id="debit-card" class="form-row payment-method w-100" style="display:none;">
+                                    <h5>
+                                       Payer par Bancontact <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.">+ d'infos</a>
+                                    </h5>
+                                    <p>Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.</p>
+                                    <div id="bc-card-element">
+                                        <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
+                                            Poursuivre avec Bancontact
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-        </div>
 
-        <!-- Used to display Element errors -->
-        <div class="stripe-error alert alert-danger" role="alert"></div>
-        <div id="stripe-loader">
-            {{ hidden_loader() }}
+            <div class="col-12 col-md-4 order-1 order-md-2">
+                <div class="content-box">
+                    <div class="content-box-header">
+                        <h3>Vos tickets</h3>
+                    </div>
+                    <div class="content-box-content">
+
+                    </div>
+                </div>
+            </div>
         </div>
   </div>
 

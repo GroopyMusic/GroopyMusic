@@ -26,6 +26,8 @@ $(".scroll").click(function(e) {
 
 $(function () {
     $('[data-toggle="popover"]').popover();
+    $('[data-toggle="popover"]').on('click', function(e) {e.preventDefault(); return true;});
+
     $('[data-toggle="tooltip"]').tooltip();
 
     $('body').on('click', function (e) {

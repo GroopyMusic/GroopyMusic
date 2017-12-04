@@ -1,7 +1,8 @@
 .footer{
+  @extend .py-3;
+
   background-color: $footer-background-color;
   margin-top: 50px;
-  border-top: 2px solid $main-color;
   height: $footer-height;
   &-links{
     margin-top: $main-margin;

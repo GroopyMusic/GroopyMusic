@@ -1,24 +1,27 @@
 .counterpart-label {
   font-weight: bold;
-  border-bottom: 1px solid $secondary-background;
+  font-size: 1.2em;
 }
 
-.featherlight-iframe, .featherlight .featherlight-content, .featherlight-inner {
-  position:fixed;
-  top:0px;
-  left:0px;
-  bottom:0px;
-  right:0px;
-  width:100%;
-  height:100%;
-  border:none;
-  margin:0;
-  padding:0;
-  overflow:hidden;
-  z-index:999999;
+.counterpart-price {
+  font-size: 1.4em;
 }
 
-.payment-method {
-  border: 1px solid grey;
-  padding: 10px;
+.counterpart-form:not(:first-of-type) {
+  @extend .pt-3;
+  border-top: 1px solid #D3D3D3;
+}
+
+.contract-info
+{
+  &-content {
+    font-size: 1.3em;
+  }
+
+  &-title {
+    @extend .font-weight-bold;
+    @extend .text-uppercase;
+    @extend .text-center;
+    color: #2d2c2c;
+  }
 }

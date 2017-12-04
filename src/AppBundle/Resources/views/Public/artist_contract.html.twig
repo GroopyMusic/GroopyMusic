@@ -12,97 +12,116 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-12 col-md-8 content-box">
-                    <h3>Infos</h3>
-                <ul class="um-list">
-                    <li>
-                        Date du concert : {{ contract.dateConcert|date('d/m/Y') }}
-                    </li>
-                    <li> État du crowdfunding :
-                        {% if state is constant('STATE_SUCCESS_PASSED', contract) %}
-                            <span class="success">Passé (réussi)</span>
-                        {% elseif state is constant('STATE_REFUNDED', contract) %}
-                            <span>Annulé</span>
-                        {% elseif state is constant('STATE_FAILED', contract) %}
-                            <span>Objectif non atteint</span>
-                        {% elseif state is constant('STATE_SUCCESS_ONGOING', contract) %}
-                            <span class="success">Objectif atteint ; places encore en vente !</span>
-                        {% elseif state is constant('STATE_SUCCESS_CLOSED', contract) %}
-                            <span class="success">Objectif atteint ; la vente de tickets est terminée</span>
-                        {% elseif state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
-                            <span class="success">Objectif atteint (SOLD OUT)</span>
-                        {% elseif state is constant('STATE_ONGOING', contract) %}
-                            <span>En cours</span>
-                        {% elseif state is constant('STATE_PENDING', contract) %}
-                            <span>En attente de confirmation d'un administrateur</span>
-                        {% endif %}
-                    </li>
-                    <li>
-                        Date de début du crowdfunding : {{ contract.date|date('d/m/Y') }}
-                    </li>
-                    <li>
-                        Date de fin du crowdfunding : {{ contract.dateEnd|date('d/m/Y') }}
-                    </li>
-                    <li>
-                        Type de concert souhaité : {{ contract.step.getName }}
-                    </li>
-                    <li>
-                        Région du concert : {{ contract.province ?: 'Sans préférence' }}
-                    </li>
-                    <li>
-                        Tickets achetés par des producteurs : {{ contract.ticketsSold }}
-                    </li>
-                    <li>
-                        Nombre de tickets nécessaires pour concrétisation du concert : {{ contract.step.minTickets }}
-                        <div class="progress">
-                            <div class="progress-bar" style="padding-left: 1rem;width:{{ contract.ticketsSold * 100 / contract.step.minTickets }}%">{{ contract.ticketsSold * 100 / contract.step.minTickets }}%</div>
+        {% set tickets_left = contract.step.maxTickets - contract.ticketsSold %}
+        <div class="row mt-4"s>
+            <div class="col-12 col-md-8 content-box">
+                <div class="content-box-content text-center">
+
+                    <h3 class="mb-3">Infos</h3>
+
+                    <div class="col-12 row content-box-row">
+                        <div class="col-12 col-md-4 content-box-col">
+                            <div class="contract-info-title">
+                                Date du concert
+                            </div>
+                            <div class="contract-info-content">
+                                {{ contract.dateConcert|date('d/m/Y') }}
+                            </div>
                         </div>
-                    </li>
-                    <li>
-                        {% set tickets_left = contract.step.maxTickets - contract.ticketsSold %}
-                        Nombre de tickets encore en vente : {{ tickets_left }}
-                    </li>
+                        <div class="col-12 col-md-4 content-box-col">
+                            <div class="contract-info-title">
+                                Début du crowdfunding
+                            </div>
+                            <div class="contract-info-content">
+                                {{ contract.date|date('d/m/Y') }}
+                            </div>
+                        </div>
 
-                    {% if contract.motivations is not empty or owns %}
-                        <li> Motivations de l'artiste :
-                            {% if not owns or state in contract.uncrowdableStates %}
-                                {% block contract_artist_motivations %}{% if contract.motivations is not empty %}<div class="contract-motivations">{{ contract.motivations|nl2br }}</div>{% endif  %}{% endblock %}
-                            {% else %}
-                                <ul class="nav nav-tabs" id="contract-motivations-tab" role="tablist">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" data-toggle="tab" href="#tab-see-motivations" id="tab-see-motivations-trigger" aria-selected="true">Voir</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#tab-edit-motivations" id="tab-edit-motivations-trigger" aria-selected="true">Modifier</a>
-                                    </li>
-                                </ul>
+                        <div class="col-12 col-md-4 content-box-col">
+                            <div class="contract-info-title">
+                                Fin du crowdfunding
+                            </div>
+                            <div class="contract-info-content">
+                                {{ contract.dateEnd|date('d/m/Y') }}
+                            </div>
+                        </div>
+                    </div>
 
-                                <div class="tab-content" id="contract-motivations-tab-content">
-                                    <div class="tab-pane fade show active" id="tab-see-motivations" role="tabpanel" aria-labelledby="tab-see-motivations-trigger">
-                                        {{ block('contract_artist_motivations') }}
-                                    </div>
-                                    <div class="tab-pane fade" id="tab-edit-motivations" role="tabpanel" aria-labelledby="tab-edit-motivations-trigger">
-                                        <div class="form-group">
-                                            <textarea class="form-control" id="motivations-textarea">{#
-                                                #}{{ contract.motivations }}{#
-                                            #}</textarea>
-                                            <br />
-                                            <a class="btn btn-secondary" target="_blank" href="{{ path('user_ajax_update_motivations', {'id': contract.id}) }}" id="update-motivations-button">Mettre à jour</a>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="col-12 content-box-col">
+                        <span class="contract-info-title">
+                            Etat du crowdfunding
+                        </span>
+                        <span class="contract-info-content">
+                            {% if state is constant('STATE_SUCCESS_PASSED', contract) %}
+                                Objectif atteint
+                            {% elseif state is constant('STATE_REFUNDED', contract) %}
+                                Annulé
+                            {% elseif state is constant('STATE_FAILED', contract) %}
+                                Objectif non atteint
+                            {% elseif state is constant('STATE_SUCCESS_ONGOING', contract) %}
+                                Objectif atteint
+                            {% elseif state is constant('STATE_SUCCESS_CLOSED', contract) %}
+                                Objectif atteint
+                            {% elseif state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
+                                Objectif atteint (SOLD OUT)
+                            {% elseif state is constant('STATE_ONGOING', contract) %}
+                                En cours
+                            {% elseif state is constant('STATE_PENDING', contract) %}
+                                En attente de confirmation d'un administrateur
                             {% endif %}
-                        </li>
-                    {% endif %}
-                </ul>
+                        </span>
+                    </div>
+
+                    <div class="col-12 row content-box-row">
+                        <div class="col-12 col-md-4 content-box-col">
+                            <div class="contract-info-title">
+                                Région du concert
+                            </div>
+                            <div class="contract-info-content">
+                                {{ contract.province ?: 'Sans préférence' }}
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 content-box-col">
+                            <div class="contract-info-title">
+                                Tickets achetés par des producteurs
+                            </div>
+                            <div class="contract-info-content">
+                                {{ contract.ticketsSold }}
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4 content-box-col">
+                            <div class="contract-info-title">
+                                Tickets encore en vente
+                            </div>
+                            <div class="contract-info-content">
+                                {{ tickets_left }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 content-box-col">
+                        <span class="contract-info-title">
+                           Nombre de tickets nécessaires pour concrétisation du concert
+                        </span>
+                        <span class="contract-info-content">
+                            {{ contract.step.minTickets }}
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar" style="padding-left: 1rem;width:{{ contract.ticketsSold * 100 / contract.step.minTickets }}%"></div>
+                        </div>
+                        <div class="text-right text-primary small font-weight-bold">
+                            {{ contract.ticketsSold * 100 / contract.step.minTickets }}%
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-xs-12 col-md-4 content-box">
                 <div class="content-box-header">
                     {% if state in contract.uncrowdableStates %}
-                        <p>Il n'est plus possible d'acheter des tickets pour cet événement.</p>
+                        <p class="text-uppercase small font-weight-bold">Il n'est plus possible d'acheter des tickets pour cet événement.</p>
                     {% else %}
-                        <p>Il reste encore {{ tickets_left }} tickets, faites votre choix !</p>
+                        <p class="text-uppercase small font-weight-bold">{{ tickets_left }} tickets disponibles</p>
                     {% endif %}
 
                     <h3>Achetez vos tickets</h3>
@@ -125,11 +144,19 @@
                                 <div class="col-8">
                                     <label class="counterpart-label">{{ counterpart.name }}</label>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-4 counterpart-price">
                                     {{ counterpart.price }} €
                                 </div>
                                 <div class="col-8">{{ counterpart.description|raw }}</div>
-                                <div class="col-4">{{ form_widget(purchase) }}</div>
+                                <div class="col-4">
+                                    <div class="container">
+                                        <div class="count-input space-bottom">
+                                            <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                            {{ form_widget(purchase) }}
+                                            <a class="incr-btn" data-action="increase" href="#">&plus;</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}

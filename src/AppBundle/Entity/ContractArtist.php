@@ -45,6 +45,10 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
+    public function getTotalNbAvailable() {
+        return $this->step->getMaxTickets() - $this->tickets_sold;
+    }
+
     public function getState() {
 
         $today = new \DateTime();

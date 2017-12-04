@@ -1,5 +1,6 @@
 .btn {
-  @extend .px-3;
+  @extend .text-uppercase;
+  @extend .px-5;
   border-radius: 20px;
 
   &-primary {
