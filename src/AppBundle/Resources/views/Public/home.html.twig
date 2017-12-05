@@ -1,5 +1,12 @@
 {% extends "base.html.twig" %}
 
+{% block header %}
+    {% include ':patterns:header.html.twig' %}
+{% endblock %}
+
+{% block body_attributes %}class="bg-white"{% endblock %}
+{% block footer_attributes %}class="footer mt-0"{% endblock %}
+
 {% block body %}
     <div class="container">
         <div id="headline" class="col-12 text-center">Découvrez. Soutenez. Produisez les artistes belges de demain.</div>
@@ -11,71 +18,75 @@
                 <div class="input-group-addon" ><button type="submit" class="btn btn-primary h-100 w-100">Recherche</button></div>
             </div>
         </div>
+    </div>
 
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
-                <div class="col-12">
-                    <h3 class="rounded-title">Notre concept</h3>
-                </div>
+            <div class="col-12 text-center mb-4">
+                <h3>Notre concept</h3>
             </div>
             <div class="col-12 col-md-6">
-                <div class="col-12 mb-5">
-                    <p>
-                        Vous souhaitez participer à l'émancipation de la scène musicale belge ? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique ?
-                    </p>
-                </div>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="col-12 mb-5">
-                    <p>
-                        <a href="{{ path('about') }}">Un-Mute ASBL</a> sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur",
-                        vous êtes acteur dans la construction de la scène musicale belge de demain via un système de financement participatif
-                        qui ne vous fait prendre aucun risque.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6">
-                <div class="col-12">
-                    <h3 class="rounded-title">News</h3>
-                    <div class="row">
-                    {% for new in news %}
-                        {% if new.type == 'artist' %}
-                            {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object, 'md':6, 'xs': 12, 'news':true} %}
-                        {% elseif new.type == 'contract' %}
-                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': new.object, 'md':6, 'xs': 12, 'news':true} %}
-                        {% endif %}
-                    {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6">
-                <div class="col-12">
-                    <h3 class="rounded-title">Concerts<br />à venir</h3>
-                    <div class="row">
-                        {% for crowdfunding in crowdfundings %}
-                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':6, 'xs': 12} %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 mt-5">
-                <div class="col-12">
-                    <h3 class="rounded-title">Nous rejoindre</h3>
-                </div>
-                <p class="text-center">
-                    Vous désirez devenir <a href="{{ path('about') ~ '#advantages-producers' }}">producteur</a> et soutenir un artiste ? Découvrez <a href="{{ path('catalog_artists') }}">le catalogue des artistes</a>
+                <p class="mb-5">
+                    Vous souhaitez participer à l'émancipation de la scène musicale belge ? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique ?
                 </p>
-                <p class="text-center">
-                    Vous êtes <a href="{{ path('about') ~ '#advantages-producers' }}">artiste</a> intéressé par le concept ? Rejoignez gratuitement le <a href="{{ path('fos_user_registration_register') }}">réseau Un-Mute</a>
-                </p>
-                <p class="text-center">
-                    Plus d'infos sur <a href="{{ path('about') }}">notre projet</a>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="mb-5">
+                    Un-Mute Asbl sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur",
+                    vous êtes acteur dans la construction de la scène musicale belge de demain via un système de financement participatif
+                    qui ne vous fait prendre aucun risque.
                 </p>
             </div>
         </div>
+    </div>
+
+    <div class="container-fluid bg-body">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <h3>Concerts à venir</h3>
+
+                <p class="mt-3">
+                    Nos artistes tentent de remplir des salles aux quatre coins du Royaume. Découvrez leurs envies et soutenez-les.
+                </p>
+
+                <div class="mt-3">
+                    <a class="small btn btn-primary font-weight-bold" href="{{ path('catalog_crowdfundings') }}">Voir la liste complète</a>
+                </div>
+            </div>
+
+            {% for crowdfunding in crowdfundings %}
+                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':3, 'xs': 12, 'news': false} %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="container-fluid bg-white">
+        <h3 class="text-center">News</h3>
+        <div class="row">
+        {% for new in news %}
+            {% if new.type == 'artist' %}
+                {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object, 'md':3, 'xs': 12, 'news':true} %}
+            {% elseif new.type == 'contract' %}
+                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': new.object, 'md':3, 'xs': 12, 'news':true} %}
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    <div class="container-fluid bg-grey text-center">
+        <h3>Nous rejoindre</h3>
+        <p class="text-center">
+            Vous désirez devenir <a href="{{ path('about') ~ '#advantages-producers' }}">producteur</a> et soutenir un artiste ? Découvrez le catalogue des artistes
+        </p>
+        <p class="text-center">
+            Vous êtes <a href="{{ path('about') ~ '#advantages-producers' }}">artiste</a> intéressé par le concept ? Rejoignez gratuitement le <a href="{{ path('fos_user_registration_register') }}">réseau Un-Mute</a>
+        </p>
+        <p class="text-center">
+            Plus d'infos sur <a href="{{ path('about') }}">notre projet</a>
+        </p>
+        <p>
+            <a href="{{ path('catalog_artists') }}" class="btn btn-primary">Catalogue des artistes</a>
+            <a href="{{ path('fos_user_security_login') }}" class="btn btn-primary">Rejoindre Un-Mute</a>
+        </p>
     </div>
 
 {% endblock %}

@@ -30,11 +30,11 @@
                 </div>
             <![endif]-->
             {% block header %}
-                {% include ':patterns:header.html.twig' %}
+                {% include ':patterns:header_nav.html.twig' with {'home_header': false} %}
             {% endblock %}
         </header>
 
-        <main id="main">
+        <main id="main" {% block main_attributes %}{% endblock %}>
             {% block modal_login_form %}
                 {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     {% include '@FOSUser/Security/login_content.html.twig' %}
@@ -61,7 +61,7 @@
 
 
         {% block footer %}
-            <footer class="footer">
+            <footer {% block footer_attributes %}class="footer"{% endblock %}>
                 <div class="footer-links row text-center">
                     <div class="col-xs-12 col-sm-4"><a href="{{ path('about') }}">à propos</a></div>
                     <div class="col-xs-12 col-sm-4"><a href="{{ path('suggestionBox') }}">contact</a></div>

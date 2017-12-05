@@ -23,9 +23,40 @@
   }
 
   &-content {
-    @extend .p-4;
+    padding: 1.5rem;
     background: #fdfdfe;
     border-right: 2px solid #d0d2d4;
     border-bottom: 2px solid #d0d2d4;
+    &-zones {
+      @extend .px-0;
+      .content-box-content-zone {
+        @extend .p-4;
+        border-bottom: 1px solid #d0d2d4;
+        &.no-border {
+          border-bottom: 0 none;
+        }
+      }
+    }
+  }
+  table {
+    @extend .w-100;
+
+    tr {
+      &:not(:last-child) {
+        border-bottom: 1px solid #d0d2d4;
+      }
+      &.no-border {
+         border-bottom: 0 none;
+       }
+    }
+
+    td {
+      @extend .py-3;
+      @extend .text-right;
+
+    }
+    td.contract-info-title {
+      @extend .text-left;
+    }
   }
 }

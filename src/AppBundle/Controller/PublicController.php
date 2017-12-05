@@ -72,7 +72,7 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $NB_MAX_NEWS = 4;
-        $NB_MAX_CROWDS = 4;
+        $NB_MAX_CROWDS = 3;
 
         $new_artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false], ['date_creation' => 'DESC'], $NB_MAX_NEWS);
         $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findNewContracts($NB_MAX_CROWDS);

@@ -1,9 +1,18 @@
 .um-card {
-  height: 12rem;
-  background-size: cover !important;
-  background-position: center;
   color: white;
   position: relative;
+
+  &-header {
+    position: relative;
+    height: 12rem;
+    background-size: cover !important;
+    background-position: center;
+  }
+
+  &-date {
+    position: absolute;
+    top: 20px;
+  }
 }
 
 .um-card-span{
@@ -12,13 +21,9 @@
 }
 
 .um-card-content{
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   padding-top: 10px;
-  text-align: center;
-  background-color: rgba(2550, 255, 255, 0.87);
+  text-align: left;
+  background-color: transparent;
 
   & span{
     height: 20px;
@@ -31,12 +36,12 @@
   }
 
   & h5{
-    color: $main-color;
-    text-shadow: 0.5px 0 0.5px rgba(0,0,0,0.2);
+    @extend .text-uppercase;
+    color: rgba(45, 44, 44, 1);
   }
 
   & p{
-    color: black;
+    color: rgba(99, 99, 99, 1);
     font-size: 12px;
   }
 }

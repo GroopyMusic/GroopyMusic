@@ -1,11 +1,14 @@
 body {
   padding-right: 0 !important;
   overflow-x: hidden !important;
+}
+
+.bg-body, body {
   background-color: $main-background;
 }
 
 main {
-  padding-top: 35px;
+  padding-top: 50px;
   padding-bottom: 70px;
 }
 
@@ -33,3 +36,16 @@ main {
 .btn {
   cursor: pointer;
 }
+
+.big {
+  font-size: 1.2em;
+}
+
+.small {
+  font-size: 80% !important;
+}
+
+.container-fluid {
+  @extend .p-5;
+}
+

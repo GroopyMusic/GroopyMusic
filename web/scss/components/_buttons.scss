@@ -1,9 +1,10 @@
 .btn {
   @extend .text-uppercase;
-  @extend .px-5;
+  padding-left: 2rem;
+  padding-right: 2rem;
   border-radius: 20px;
 
   &-primary {
-    color: white !important;
+    color: white;
   }
 }

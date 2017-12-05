@@ -22,12 +22,6 @@
                     </p>
                 </div>
 
-                <!-- Used to display Element errors -->
-                <div class="stripe-error alert alert-danger" role="alert"></div>
-                <div id="stripe-loader">
-                    {{ hidden_loader() }}
-                </div>
-
                 <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
                     <div class="form-row">
                         {% if error_conditions %}
@@ -56,35 +50,61 @@
                             </div>
                         </div>
 
-                        <div class="content-box">
-                            <div class="content-box-content">
+                        <!-- Used to display Element errors -->
+                        <div class="stripe-error alert alert-danger" role="alert"></div>
+                        <div id="stripe-loader">
+                            {{ hidden_loader() }}
+                        </div>
 
-                                <div id="credit-card" class="form-row payment-method w-100">
-                                    <div class="col-12">
+                        <div class="content-box col-12">
+                            <div class="content-box-content content-box-content-zones">
+
+                                <div id="credit-card" class="payment-method w-100">
+                                    <div class="col-12 content-box-content-zone">
                                         <h5>
                                             Paiement par carte de crédit <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.">+ d'infos</a>
                                         </h5>
-                                        <p>Veuillez entrer votre numéro de carte de crédit, sa date d'expiration, ainsi que le cryptogramme visuel.</p>
                                     </div>
-                                    <div class="col-12 col-md-8">
-                                        <div id="card-element">
-                                            <!-- a Stripe Element will be inserted here. -->
+                                    <div class="content-box-content-zone no-border">
+                                        <div class="col-12 row">
+                                            <div class="col-12">
+                                                <label>
+                                                    <div class="text-left contract-info-title">Carte de crédit</div>
+                                                    <div id="card-number-element" class="field"></div>
+                                                </label>
+                                            </div>
+                                            <div class="col-12 col-md-5 mt-3">
+                                                <label>
+                                                    <div class="text-left contract-info-title">Date d'exp.</div>
+                                                    <div id="card-expiry-element" class="field"></div>
+                                                </label>
+                                            </div>
+                                            <div class="col-12 col-md-5 mt-3">
+                                                <label>
+                                                    <div class="text-left contract-info-title">Cryptogramme visuel</div>
+                                                    <div id="card-cvc-element" class="field"></div>
+                                                </label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <input type="submit" class="btn btn-primary mt-3" value="Payer avec ma carte de crédit" />
+                                        <div class="col-12 text-center mt-5">
+                                            <input type="submit" class="btn btn-primary" value="Payer avec ma carte de crédit" />
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div id="debit-card" class="form-row payment-method w-100" style="display:none;">
-                                    <h5>
-                                       Payer par Bancontact <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.">+ d'infos</a>
-                                    </h5>
-                                    <p>Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.</p>
-                                    <div id="bc-card-element">
-                                        <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
-                                            Poursuivre avec Bancontact
-                                        </button>
+                                    <div class="col-12 content-box-content-zone">
+                                        <h5>
+                                           Payer par Bancontact <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.">+ d'infos</a>
+                                        </h5>
+                                        <p>Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.</p>
+                                    </div>
+                                    <div class="content-box-content-zone no-border">
+                                        <div id="bc-card-element">
+                                            <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
+                                                Poursuivre avec Bancontact
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -98,8 +118,45 @@
                     <div class="content-box-header">
                         <h3>Vos tickets</h3>
                     </div>
-                    <div class="content-box-content">
-
+                    <div class="content-box-content-zones content-box-content">
+                    {% for contract in cart.contracts %}
+                        {% for purchase in contract.purchases %}
+                            <div class="content-box-content-zone">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="contract-info-title">Type</td>
+                                            <td>{{ purchase.counterpart.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="contract-info-title">Concert</td>
+                                            <td>Concert de {{ contract.contractArtist.artist.artistname }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="contract-info-title">Date</td>
+                                            <td>{{ contract.contractArtist.dateConcert|date('d/m/Y') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="contract-info-title">Quantité</td>
+                                            <td>{{ purchase.quantity }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="contract-info-title">Prix unitaire</td>
+                                            <td>{{ purchase.counterpart.price }} €</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                        <div class="content-box-content-zone no-border">
+                            <table>
+                                <tr class="no-border">
+                                    <td class="contract-info-title big">Total</td>
+                                    <td class="big font-weight-bold">{{ cart.amount }} €</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,13 +200,54 @@
 
         var stripe = Stripe('{{ stripe_api_public }}');
         var elements = stripe.elements();
+
+        var style = {
+            base: {
+                color: '#32325D',
+                fontWeight: 500,
+                fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
+                fontSize: '16px',
+                fontSmoothing: 'antialiased',
+            },
+            invalid: {
+                color: '#E25950',
+
+                '::placeholder': {
+                    color: '#FFCCA5',
+                },
+            },
+        };
+
+        var elementClasses = {
+            focus: 'focused',
+            empty: 'empty',
+            invalid: 'invalid',
+        };
+
         // set publishable key for V2
         Stripe.setPublishableKey('{{ stripe_api_public }}');
 
-        var card = elements.create('card', {
-            hidePostalCode: true
+
+        var cardNumberElement = elements.create('cardNumber', {
+            style: style,
+            classes: elementClasses,
+            placeholder: 'Numéro de carte',
         });
-        card.mount('#card-element');
+        cardNumberElement.mount('#card-number-element');
+
+        var cardExpiryElement = elements.create('cardExpiry', {
+            style: style,
+            classes: elementClasses,
+            placeholder: 'MM/AA',
+        });
+        cardExpiryElement.mount('#card-expiry-element');
+
+        var cardCvcElement = elements.create('cardCvc', {
+            style: style,
+            classes: elementClasses,
+            placeholder: 'CVC',
+        });
+        cardCvcElement.mount('#card-cvc-element');
 
         $('#choose-bancontact').click(function(e) {
             e.preventDefault();
@@ -218,11 +316,7 @@
             }
             else {
                 hideError();
-
                 displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
-
-
-
                 window.location.replace(result.source.redirect.url);
 
                 $('#payment-intro').hide();
@@ -243,13 +337,15 @@
 
         $('#payment-form').submit(function(e) {
             e.preventDefault();
+            // Disable the submit button to prevent repeat
+            $('input[type="submit"]').prop('disabled', true);
 
             displayLoader();
             var extraDetails = {
-                name: '{{ app.user.displayName }}',
-                email: '{{ app.user.username }}'
+                //name: '{{ app.user.displayName }}',
+                //email: '{{ app.user.username }}'
             };
-            stripe.createToken(card, extraDetails).then(onToken);
+            stripe.createToken(cardNumberElement, extraDetails).then(onToken);
         });
 
         function displayLoader(html) {
@@ -272,6 +368,10 @@
         }
 
         function displayError(html) {
+
+            $('input[type="submit"]').prop('disabled', false);
+
+
             $('.stripe-error').html(html);
             $('.stripe-error').show();
             $loader.hide();

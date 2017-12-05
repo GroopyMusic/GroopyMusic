@@ -58,5 +58,7 @@ $(function () {
     });
 
     $('.notification-trigger').attach_notifications_behaviour();
+
+
 });
 

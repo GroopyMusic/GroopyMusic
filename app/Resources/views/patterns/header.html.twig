@@ -1,67 +1,5 @@
 
-    <div id="not-auth-perma-links">
-        {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-            <a class="btn btn-primary sharp text-uppercase inscription-link" href="{{ path('fos_user_registration_register') }}">Inscription</a>
-            {% block header_login_link %}<a class="btn btn-primary sharp text-uppercase" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
-        {% else %}
-
-            {# set cart_nb = cart_articles_nb() %}
-            {% if cart_nb > 0 %}
-                <a href="{{ path('user_cart') }}" class="btn btn-primary py-0 pl-0 pr-1 mr-1 color-secondary">
-                    <img src="{{ asset('images/cart.png') }}" />
-                    <span class="color-secondary p-1 rounded-circle">{{ cart_nb }}</span>
-                </a>
-            {% endif #}
-            {% set unseen_nb = unseen_notifs_nb() %}
-            {% set last_notifs = last_notifs(5) %}
-
-            <div class="dropdown d-inline-block">
-
-                <a id="notifs-toggler" href="{{ path('user_notifications') }}" {% if last_notifs is not empty %}role="button" data-toggle="dropdown" data-target="#"{% endif %} class="btn btn-primary py-0 pl-0 pr-1 mr-1 color-secondary">
-                    <img  src="{{ asset('images/notif.png') }}" />
-                    {% if unseen_nb > 0 %}
-                        <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
-                    {% endif %}
-                </a>
-                {% if last_notifs is not empty %}
-                    <div class="modal fade" id="notifs-modal" tabindex="-1" role="dialog" aria-labelledby="notifs-modal-label" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <button type="button" class="close text-right" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <div class="modal-body">
-                                    {{ hidden_loader(false) }}
-                                    <div id="notifs-modal-content"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <ul class="dropdown-menu notifications-menu-preview" role="menu" aria-labelledby="notifs-toggler">
-                        <div class="notifications-menu-preview-heading"><h4 class="menu-title"><a href="{{ path('user_notifications') }}">Toutes les notifications</a></h4>
-                        </div>
-                        <div class="notifications-menu-preview-wrapper">
-                            {% for notif in last_notifs %}
-                                {{ preview_menu_notification(notif)|raw }}
-                            {% endfor %}
-                        </div>
-                    </ul>
-                {% endif %}
-            </div>
-
-            <div class="dropdown d-inline-block">
-                <a id="dropdownMenuButton" class="btn uppercase dropdown-toggle px-1 px-md-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mon compte</a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="{{ path('user_my_artists') }}">Mes artistes</a>
-                    <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">Mon profil</a>
-                    <a class="dropdown-item" href="{{ path('user_paid_carts') }}">Mes commandes</a>
-                    {#<a class="dropdown-item" href="{{ path('user_cart') }}">Panier</a>#}
-                    {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
-                    <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+{% include ':patterns:perma-links.html.twig' with {'home_header': true} %}
 
 <div class="jumbotron jumbotron-fluid">
     <div class="container h-100 justify-content-center align-items-center text-center">
@@ -69,4 +7,4 @@
     </div>
 </div>
 
-{% include ':patterns:header_nav.html.twig' %}
+{% include ':patterns:header_nav.html.twig' with {'home_header': true} %}

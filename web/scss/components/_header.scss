@@ -8,21 +8,15 @@ header {
     right: 10px;
     top: 10px;
     z-index: 1041;
-    .inscription-link {
-      display: none;
-    }
     img {
       max-height: 36px;
     }
   }
 
-  #mainNav .nav-item {
-    text-transform: uppercase;
-    padding-left: 10px;
-    padding-right: 10px;
-    .nav-link {
-      color: white;
-    }
+  #inscription-perma-link {
+    position: fixed;
+    left: 10px;
+    top: 10px;
   }
 
   .jumbotron {
@@ -31,28 +25,37 @@ header {
   }
 
   #mainNav {
-    transition: background-color 2s ease;
-    -webkit-transition: background-color 2s ease;
-    -moz-transition: background-color 2s ease;
-    -o-transition: background-color 2s ease;
+    transition: background-color 1s ease;
+    -webkit-transition: background-color 1s ease;
+    -moz-transition: background-color 1s ease;
+    -o-transition: background-color 1s ease;
 
-    background-color: rgba(59, 59, 59, 0.6);
+    background-color: rgba(30, 22, 25, 0.9);
     min-height: 50px;
-  }
 
-  #mainNav.stickytop {
-    @extend .fixed-top;
-    background-color: rgba(59, 59, 59, 1);
+    .nav-item {
+      text-transform: uppercase;
+      padding-left: 6px;
+      padding-right: 6px;
+      .nav-link {
+        color: white;
+      }
+    }
+
+    &.stickytop {
+      @extend .fixed-top;
+      background-color: rgba(59, 59, 59, 1);
+    }
   }
 
   #logo {
     padding-top: 40px;
     max-width: 180px;
 
-    transition: opacity 2s ease;
-    -webkit-transition: opacity 2s ease;
-    -moz-transition: opacity 2s ease;
-    -o-transition: opacity 2s ease;
+    transition: opacity 1s ease;
+    -webkit-transition: opacity 1s ease;
+    -moz-transition: opacity 1s ease;
+    -o-transition: opacity 1s ease;
     opacity: 1;
 
     &.hiddenLogo {
@@ -67,10 +70,11 @@ header {
     max-width: initial;
   }
 
-  #dropdownMenuButton {
+  #dropdownMenuButton, .btn.btn-primary.header-button {
     background: transparent;
     border: 1px solid #9D9D9D;
     color: $main-color;
+    @extend .px-3;
   }
 
   .dropdown-menu .dropdown-item {
@@ -89,15 +93,9 @@ header {
 
   #menuLogo {
     position: relative;
-    display: none;
   }
 
-  @media (max-width: 576px) {
-    #menuLogo {
-      display: none !important;
-      position: relative;
-    }
-  }
+
 
   // > SMall
   // If you change this, you should also change toggleable breakpoint of #mainNav
@@ -110,49 +108,25 @@ header {
       margin: 0 auto;
     }
 
-    .nav-item {
-      border-right: 1px solid whitesmoke;
-
-      &:first-of-type {
-        border-left: 1px solid whitesmoke;
-      }
-
+    #mainNav .nav-item {
+      padding-left: 12px;
+      padding-right: 12px;
       position: relative;
 
-      transition: All 2s ease;
-      -webkit-transition: All 2s ease;
-      -moz-transition: All 2s ease;
-      -o-transition: All 2s ease;
-
-      &.stickytop {
-        border: 0;
-      }
-
-      &.left-nav-item {
-        right: 0;
-        &.stickytop {
-          right: 35px;
-        }
-      }
-      &.right-nav-item {
-        left: 0;
-        &.stickytop {
-          left: 35px;
-        }
-      }
-    }
-    .navbar .inscription-link {
-      display: none;
+      transition: All 1s ease;
+      -webkit-transition: All 1s ease;
+      -moz-transition: All 1s ease;
+      -o-transition: All 1s ease;
     }
 
     #not-auth-perma-links {
       position: absolute;
-      top: 20px;
       right: 20px;
+    }
 
-      .inscription-link {
-        display: inline-block;
-      }
+    #inscription-perma-link {
+      position: absolute;
+      left: 20px;
     }
 
     #logo {
@@ -251,6 +225,21 @@ header {
     }
     .dropdown {
       list-style: none;
+    }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  &.left-nav-item {
+    right: 0;
+    &.stickytop {
+      right: 35px;
+    }
+  }
+  &.right-nav-item {
+    left: 0;
+    &.stickytop {
+      left: 35px;
     }
   }
 }

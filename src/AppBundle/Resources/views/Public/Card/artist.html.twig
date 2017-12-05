@@ -25,7 +25,9 @@
 
     <div {% if rotation %}class="images-rotation" data-images='{{ imgstring }}'{% endif %}>
 
-        <div class="um-card" style="background-image: url({{ src }});">
+        <div class="um-card">
+            <div class="um-card-header w-100 {% if rotation %}images-rotation{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %} style="background-image: url({{ src }});">
+            </div>
 
             <!-- this is the content of the card with an optionnal span for ⭐ -->
             <div class="um-card-content">

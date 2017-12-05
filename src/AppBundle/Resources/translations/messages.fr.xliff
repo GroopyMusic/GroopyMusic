@@ -37,6 +37,55 @@
                 <target>Samedi</target>
             </trans-unit>
 
+            <trans-unit id="Jan">
+                <source>Jan</source>
+                <target>Jan</target>
+            </trans-unit>
+            <trans-unit id="Feb">
+                <source>Feb</source>
+                <target>Fév</target>
+            </trans-unit>
+            <trans-unit id="Mar">
+                <source>Mar</source>
+                <target>Mars</target>
+            </trans-unit>
+            <trans-unit id="Apr">
+                <source>Apr</source>
+                <target>Avr</target>
+            </trans-unit>
+            <trans-unit id="May">
+                <source>May</source>
+                <target>Mai</target>
+            </trans-unit>
+            <trans-unit id="Jun">
+                <source>Jun</source>
+                <target>Juin</target>
+            </trans-unit>
+            <trans-unit id="Jul">
+                <source>Jul</source>
+                <target>Juil</target>
+            </trans-unit>
+            <trans-unit id="Aug">
+                <source>Aug</source>
+                <target>Août</target>
+            </trans-unit>
+            <trans-unit id="Sep">
+                <source>Sep</source>
+                <target>Sept</target>
+            </trans-unit>
+            <trans-unit id="Oct">
+                <source>Oct</source>
+                <target>Oct</target>
+            </trans-unit>
+            <trans-unit id="Nov">
+                <source>Nov</source>
+                <target>Nov</target>
+            </trans-unit>
+            <trans-unit id="Dec">
+                <source>Dec</source>
+                <target>Déc</target>
+            </trans-unit>
+
             <trans-unit id="labels.artist.translations">
                 <source>labels.artist.translations</source>
                 <target>Descriptions</target>

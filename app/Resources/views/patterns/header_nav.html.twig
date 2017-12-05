@@ -1,37 +1,42 @@
-{% macro menu_logo() %}
-    <li id="menuLogo">
-        <a class="scroll" href="#header"><img id="nav-logo" src="{{ asset('images/logo.png') }}" /></a>
+{% macro menu_logo(home_header = false) %}
+    <li id="menuLogo" {% if not home_header %}class="d-none d-lg-inline-block"{% else %}style="display:none;"{% endif %}>
+        <a {% if not home_header %}href="{{ path('homepage') }}"{% else %}class="scroll" href="#header"{% endif %}><img id="nav-logo" src="{{ asset('images/logo.png') }}" /></a>
     </li>
 {% endmacro %}
 
 {% import _self as nav_macros %}
 
-<nav id="mainNav" class="navbar navbar-inverse navbar-expand-sm">
+<nav id="mainNav" class="navbar navbar-inverse navbar-expand-lg {% if not home_header %}stickytop{% endif %}">
+
+    {% if not home_header %}
+        {% include ':patterns:perma-links.html.twig' %}
+    {% endif %}
+
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbar-inverse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav mx-auto text-center pt-3 pt-md-0">
-            <li class="nav-item left-nav-item">
+            <li class="nav-item left-nav-item{% if not home_header %} stickytop{% endif %}">
                 <a class="nav-link" href="{{ path('about') }}">à propos</a>
             </li>
 
-            <li class="nav-item left-nav-item">
+            <li class="nav-item left-nav-item{% if not home_header %} stickytop{% endif %}">
                 <a class="nav-link" href="{{ path('catalog_artists') }}">artistes</a>
             </li>
 
-            {{ nav_macros.menu_logo() }}
+            {{ nav_macros.menu_logo(home_header) }}
 
-            <li class="nav-item right-nav-item">
+            <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">
                 <a class="nav-link" href="{{ path('catalog_halls') }}">salles</a>
             </li>
 
-            <li class="nav-item right-nav-item">
+            <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">
                 <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">événements</a>
             </li>
 
             {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                <li class="nav-item inscription-link">
+                <li class="nav-item inscription-link d-inline-block d-lg-none">
                     <a class="nav-link" href="{{ path('fos_user_registration_register') }}">Inscription</a>
                 </li>
             {% endif %}
