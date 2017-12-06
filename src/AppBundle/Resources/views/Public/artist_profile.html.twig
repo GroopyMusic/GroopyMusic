@@ -33,9 +33,11 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="bio" aria-expanded="false"  href="#artist-profile-bio">Biographie</a>
             </li>
+            {#
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="details" aria-expanded="false"  href="#artist-profile-details">Détails</a>
             </li>
+            #}
             {% if app.user is not null and app.user.owns(artist) %}
                 <li class="nav-item">
                     <a class="nav-link disabled" href="{{ path('artist_profile_edit', {'id':artist.id}) }}">Édition</a>
@@ -48,12 +50,45 @@
                 <p>{{ artist.getShortDescription()|nl2br }}</p>
                 {% set currentContract = artist.currentContract %}
 
+
                 <h3>Vidéos</h3>
                 {% for video in artist.videos %}
                     {{ video.embedVideo|raw }}
                 {% else %}
                     <p>Cet artiste n'a pas encore de vidéo à montrer.</p>
                 {% endfor %}
+
+                {% if artist.website is not null
+                    or artist.spotify is not null
+                    or artist.twitter is not null
+                    or artist.facebook is not null
+                %}
+                    <h3>Liens</h3>
+                    <ul class="um-list">
+                        {% if artist.website is not null %}
+                            <li>
+                                <a href="{{ artist.website }}">Voir le site Web</a>
+                            </li>
+                        {% endif %}
+                        {% if artist.spotify is not null %}
+                            <li>
+                                <a href="{{ artist.spotify }}">Suivre sur Spotify</a>
+                            </li>
+                        {% endif %}
+                        {% if artist.twitter is not null %}
+                            <li>
+                                <a href="{{ artist.twitter }}">Suivre sur Twitter</a>
+                            </li>
+                        {% endif %}
+                        {% if artist.facebook is not null %}
+                            <li>
+                                <a href="{{ artist.facebook }}">Suivre sur Facebook</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                {% endif %}
+
 
                 {% if currentContract is not null %}
                     <h3>Crowdfunding en cours</h3>
@@ -74,9 +109,11 @@
 
             </div>
 
+            {#
             <div id="artist-profile-details" class="tab-pane" role="tabpanel">
                 <h3>Détails</h3>
             </div>
+            #}
         </div>
     </div>
 

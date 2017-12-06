@@ -1,9 +1,22 @@
 
 {% include ':patterns:perma-links.html.twig' with {'home_header': true} %}
 
-<div class="jumbotron jumbotron-fluid">
-    <div class="container h-100 justify-content-center align-items-center text-center">
+<div class="jumbotron jumbotron-fluid position-relative">
+    <div class="opacity-layer"></div>
+    <div class="container justify-content-center align-items-center text-center position-relative">
         <a href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo.png') }}" /></a>
+
+        <div id="headline" class="col-12 text-center">Découvrez. Soutenez. Produisez les artistes belges de demain.</div>
+
+        <form method="get" action="{{ path('catalog_crowdfundings') }}">
+            <div id="custom-search-input" class="col-12 col-md-6 mx-auto">
+                <div class="input-group">
+                    <input class="form-control"
+                           placeholder="Rechercher un concert...">
+                    <div class="input-group-addon" ><button type="submit" class="btn btn-primary h-100 w-100">Recherche</button></div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

@@ -29,6 +29,7 @@ $spacer: 1.2rem;
 @import url('https://fonts.googleapis.com/css?family=Bad+Script');
 
 $headline-font: 'Bad Script', cursive;
+$headline-color: white;
 $secondary-font: 'Exo 2', sans-serif;
 
 // main paddings/margins
@@ -45,3 +46,5 @@ $l-width: 60px;
 
 $footer-height: 100px;
 $footer-background-color: #fdfdfe;
+
+$opacity-default-color: rgba(0,0,0,0.3);

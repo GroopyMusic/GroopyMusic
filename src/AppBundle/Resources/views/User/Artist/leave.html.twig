@@ -23,9 +23,9 @@
         </div>
     </div>
 
-    <h3>Options avancées</h3>
-
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>
+        Sur cette page, vous avez la possibilité de quitter la gestion de cet artiste. Si vous en êtes le dernier propriétaire, l'artiste sera définitivement supprimé du catalogue Un-Mute.
+    </p>
 
     <input id="checkbox-leave-artist" class="mr-3" type="checkbox" data-toggle="collapse" data-target="#collapse-leave-artist"/><label for="checkbox-leave-artist">Je souhaite quitter la gestion de {{ artist.artistname }}</label>
 
@@ -33,10 +33,11 @@
         {% if lastOne and not artist.available %}
             <p>Vous ne pouvez pas quitter cet artiste à l'heure actuelle car vous en êtes le dernier propriétaire et un événement inmpliquant cet artiste est
             en cours de récolte de tickets.</p>
+        {% else %}
+            <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaveArtistModal">
+                Quitter {{ artist.artistname }}
+            </button>
         {% endif %}
-        <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaveArtistModal">
-            Quitter {{ artist.artistname }}
-        </button>
     </div>
 
 {% endblock %}

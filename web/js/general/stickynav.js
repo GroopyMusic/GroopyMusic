@@ -13,8 +13,8 @@ function mainPadding() {
 }
 
 function mainNavHeight() {
-    $mainNav.css('height', 'auto');
-    $mainNav.css('height', $mainNav.outerHeight());
+    $mainNav.css('min-height', 'auto');
+    $mainNav.css('min-height', $mainNav.outerHeight());
 }
 
 $(function() {
@@ -45,7 +45,7 @@ $(function() {
                     $('#toc-nav').addClass('fixed-toc');
 
                 // Bug fix for logo appearing once too quickly
-                if(appearances > 0 || $(this).scrollTop() > stickyoffset + 50)
+                if(appearances > 0 || $(this).scrollTop() > stickyoffset + 10)
                     $('#menuLogo').fadeIn();
 
                 appearances++;

@@ -17,6 +17,11 @@
     </button>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav mx-auto text-center pt-3 pt-md-0">
+
+            <li class="d-inline-block d-lg-none nav-item">
+                <a class="nav-link" href="{{ path('homepage') }}">accueil</a>
+            </li>
+
             <li class="nav-item left-nav-item{% if not home_header %} stickytop{% endif %}">
                 <a class="nav-link" href="{{ path('about') }}">à propos</a>
             </li>

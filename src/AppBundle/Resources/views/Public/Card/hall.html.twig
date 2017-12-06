@@ -21,17 +21,18 @@
         {% endfor %}
     {% endif %}
 
-    <div {% if rotation %}class="images-rotation" data-images='{{ imgstring }}'{% endif %}>
-        <div class="um-card" style="background-image: url({{ src }});">
+    <div class="um-card{% if rotation %} images-rotation{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
 
-            <!-- this is the content of the card with an optionnal span for ⭐ -->
-            <div class="um-card-content">
-                <h5>{{ hall.name }}</h5>
-                <p>{{ preview(hall.getShortDescription(), 100)|raw }}</p>
-            </div>
-
-            <!-- this is the link that the card need to take to -->
-            <a class="um-card-link" href="{{ path('hall', {'id':hall.id}) }}"></a>
+        <div class="um-card-header" style="background-image: url({{ src }});">
         </div>
+
+        <!-- this is the content of the card with an optionnal span for ⭐ -->
+        <div class="um-card-content">
+            <h5>{{ hall.name }}</h5>
+            <p>{{ preview(hall.getShortDescription(), 100)|raw }}</p>
+        </div>
+
+        <!-- this is the link that the card need to take to -->
+        <a class="um-card-link" href="{{ path('hall', {'id':hall.id}) }}"></a>
     </div>
 {% endblock %}

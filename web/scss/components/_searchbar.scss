@@ -1,9 +1,10 @@
 #headline {
+  @extend .font-weight-bold;
   font-size: 2rem;
   margin-bottom: 3rem;
   margin-top: 3rem;
   font-family: $headline-font;
-  color: $main-color;
+  color: $headline-color;
 }
 
 #custom-search-input {
@@ -14,10 +15,55 @@
     min-height: 3rem;
   }
 
+  input {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    opacity:  1;
+  }
+
+  input::placeholder {
+    color: white;
+    opacity:  1;
+  }
+
+  input:-moz-placeholder {
+    color: white;
+    opacity:  1;
+  }
+
+  input::-moz-placeholder {
+    color: white;
+    opacity:  1;
+  }
+
+  input::-webkit-input-placeholder {
+    color: white;
+    opacity:  1;
+  }
+
+  input:-ms-input-placeholder {
+    color: white;
+    opacity:  1;
+  }
+
+  input::-ms-input-placeholder {
+    color: white;
+    opacity:  1;
+  }
+
+  .input-group-addon, .form-control {
+    border: 1px solid $main-color;
+  }
+
+  .form-control {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+
   .input-group-addon {
     padding: 0 ;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
     button.btn {
       border-radius:inherit;
     }

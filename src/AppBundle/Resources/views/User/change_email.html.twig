@@ -4,9 +4,8 @@
 
 {% block user_profile_content %}
     {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
-    <h3>Changer mon e-mail</h3>
     {{ form_start(form) }}
         {{ form_row(form.asked_email) }}
-        {{ form_widget(form.submit) }}
+        {{ form_row(form.submit) }}
     {{ form_end(form) }}
 {% endblock %}

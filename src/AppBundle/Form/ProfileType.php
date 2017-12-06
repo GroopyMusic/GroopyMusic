@@ -37,6 +37,7 @@ class ProfileType extends AbstractType
             // End duplicated
             ->remove('current_password')
             ->add('submit', SubmitType::class, array(
+                'attr' => ['class' => 'btn btn-primary'],
                 'label' => 'labels.user.profile.submit'
             ))
         ;

@@ -24,8 +24,8 @@
         {% endfor %}
     {% endif %}
 
-    <div class="um-card">
-        <div class="um-card-header w-100{% if rotation %} images-rotation{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}" style="background-image: url({{ src }});">
+    <div class="um-card{% if rotation %} images-rotation{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
+        <div class="um-card-header w-100" style="background-image: url({{ src }});">
             <span class="um-card-date btn-primary sharp p-2">
                 {{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
             </span>

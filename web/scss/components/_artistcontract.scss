@@ -19,11 +19,10 @@
   }
 
   &-title {
-    @extend .font-weight-bold;
-    @extend .text-uppercase;
+    @extend .text-center;
     @extend .small;
-    color: #2d2c2c;
-    text-align: center;
+    @extend .um-label;
+    @extend .font-weight-bold;
   }
 }
 

@@ -1,3 +1,13 @@
+label {
+  @extend .small;
+  @extend .um-label;
+}
+
+input.form-control {
+  background-color: $main-background;
+  border-radius: 15px;
+}
+
 .invalid-feedback {
   display:block;
 }

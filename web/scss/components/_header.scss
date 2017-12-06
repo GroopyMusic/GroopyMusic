@@ -21,7 +21,8 @@ header {
 
   .jumbotron {
     background-color: transparent !important;
-    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 2rem 1rem !important;
   }
 
   #mainNav {
@@ -49,6 +50,7 @@ header {
   }
 
   #logo {
+    z-index: 1000;
     padding-top: 40px;
     max-width: 180px;
 

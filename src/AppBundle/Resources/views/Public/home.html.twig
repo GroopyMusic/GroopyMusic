@@ -8,17 +8,6 @@
 {% block footer_attributes %}class="footer mt-0"{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div id="headline" class="col-12 text-center">Découvrez. Soutenez. Produisez les artistes belges de demain.</div>
-
-        <div id="custom-search-input" class="col-12 col-md-8 mx-auto">
-            <div class="input-group">
-                <input class="form-control"
-                       placeholder="Rechercher un artiste ou un concert...">
-                <div class="input-group-addon" ><button type="submit" class="btn btn-primary h-100 w-100">Recherche</button></div>
-            </div>
-        </div>
-    </div>
 
     <div class="container-fluid">
         <div class="row">
@@ -83,9 +72,9 @@
         <p class="text-center">
             Plus d'infos sur <a href="{{ path('about') }}">notre projet</a>
         </p>
-        <p>
-            <a href="{{ path('catalog_artists') }}" class="btn btn-primary">Catalogue des artistes</a>
-            <a href="{{ path('fos_user_security_login') }}" class="btn btn-primary">Rejoindre Un-Mute</a>
+        <p class="text-center">
+            <a href="{{ path('catalog_artists') }}" class="btn btn-primary small mt-2">Catalogue des artistes</a>
+            <a href="{{ path('fos_user_security_login') }}" class="btn btn-primary small mt-2">Rejoindre Un-Mute</a>
         </p>
     </div>
 

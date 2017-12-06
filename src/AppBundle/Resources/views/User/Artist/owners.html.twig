@@ -15,7 +15,7 @@
     </div>#}
 
     {% if owners|length > 1 or requests|length > 0 %}
-    <h3>Autres propriétaires</h3>
+    <h4>Autres propriétaires</h4>
     <ul>
     {% for owner in owners if owner.user.id != app.user.id %}
         <li>{{ owner.user.displayName }}
@@ -31,7 +31,7 @@
     </ul>
     {% endif %}
 
-    <h3>Ajouter des propriétaires</h3>
+    <h4>Ajouter des propriétaires</h4>
     <p>
         Vous pouvez ici ajouter d'autres utilisateurs Un-Mute à la gestion de cet artiste. Deux cas sont possibles :
     </p>
