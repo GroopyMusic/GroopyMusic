@@ -3,7 +3,7 @@
 {% block body %}
 
     <div class="container">
-        <h3 class="rounded-title">Nouvel artiste</h3>
+        <h3 class="mb-3 text-center">Nouvel artiste</h3>
 
         <p>
             Pour créer un artiste sur Un-Mute, merci de remplir le formulaire suivant.
@@ -14,30 +14,33 @@
             <strong>En créant un artiste, vous certifiez en être le propriétaire ou un des membres, s'il s'agit d'un groupe.</strong>
         </p>
 
-        {% form_theme form 'jquery.collection.html.twig' %}
+        <div class="content-box mt-3">
+            <div class="content-box-content">
+                {% form_theme form 'jquery.collection.html.twig' %}
 
-        {{ form_start(form) }}
+                {{ form_start(form) }}
 
-        <div class="form-group">
-            {{ form_row(form.artistname) }}
-            {{ form_row(form.province) }}
+                <div class="form-group">
+                    {{ form_row(form.artistname) }}
+                    {{ form_row(form.province) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_row(form.province) }}
+                    {{ form_row(form.genres) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_row(form.website) }}
+                    {{ form_row(form.facebook) }}
+                    {{ form_row(form.twitter) }}
+                    {{ form_row(form.spotify) }}
+                </div>
+
+
+                {{ form_end(form) }}
+            </div>
         </div>
-
-        <div class="form-group">
-            {{ form_row(form.province) }}
-            {{ form_row(form.genres) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_row(form.website) }}
-            {{ form_row(form.facebook) }}
-            {{ form_row(form.twitter) }}
-            {{ form_row(form.spotify) }}
-        </div>
-
-
-        {{ form_end(form) }}
-
     </div>
 
 {% endblock %}

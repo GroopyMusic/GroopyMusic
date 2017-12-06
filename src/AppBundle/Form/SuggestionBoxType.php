@@ -72,6 +72,7 @@ class SuggestionBoxType extends AbstractType
                 'required' => false,
             ))
             ->add('submit', SubmitType::class, array(
+                'attr' => ['class' => 'btn btn-primary'],
                 'label' => 'labels.suggestionbox.submit',
             ));
     }

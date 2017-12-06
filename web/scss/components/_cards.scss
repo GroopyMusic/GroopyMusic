@@ -13,50 +13,52 @@
     position: absolute;
     top: 20px;
   }
-}
 
-.um-card-span{
-  position: absolute;
-  bottom: 0;
-}
-
-.um-card-content{
-  padding-top: 10px;
-  text-align: left;
-  background-color: transparent;
-
-  & span{
-    height: 20px;
+  &-span {
     position: absolute;
-    bottom: calc(100% - 10px);
-    left: 0;
+    bottom: 0;
+  }
+  &-content {
+    @extend .pt-3;
+    @extend .px-3;
+    @extend .pb-2;
+
+    text-align: left;
+    background-color: transparent;
+
+    span {
+      height: 20px;
+      position: absolute;
+      bottom: calc(100% - 10px);
+      left: 0;
+      right: 0;
+      // background-color: transparent;
+      text-align: center;
+    }
+
+    h5 {
+      @extend .text-uppercase;
+      color: rgba(45, 44, 44, 1);
+    }
+
+    p {
+      color: rgba(99, 99, 99, 1);
+      font-size: 12px;
+    }
+  }
+
+  &-link {
+    position: absolute;
+    top: 0;
+    bottom: 0;
     right: 0;
-    // background-color: transparent;
-    text-align: center;
-  }
+    width: 100%;
+    z-index: 2;
+    background: black;
+    opacity: 0;
 
-  & h5{
-    @extend .text-uppercase;
-    color: rgba(45, 44, 44, 1);
-  }
-
-  & p{
-    color: rgba(99, 99, 99, 1);
-    font-size: 12px;
-  }
-}
-
-.um-card-link {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  z-index: 2;
-  background: black;
-  opacity: 0;
-
-  &:hover {
-    opacity: 0.1;
+    &:hover {
+      opacity: 0.1;
+    }
   }
 }

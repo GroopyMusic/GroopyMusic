@@ -3,10 +3,17 @@
 {% block body %}
 
     <div class="container">
-    <h2 class="rounded-title">Contact & boîte à idées</h2>
+        <h3 class="text-center mb-4">Contact & boîte à idées</h3>
 
-        <div id="suggestionbox_form">
-            {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+        <p mb-3>
+            Une idée ? Une question ? Un conseil ? Un intérêt pour le projet ?
+            Vous êtes au bon endroit. Remplissez le formulaire suivant pour nous contacter ; nous vous répondrons dans les plus brefs délais !
+        </p>
+
+        <div class="content-box">
+            <div id="suggestionbox_form" class="content-box-content">
+                {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+            </div>
         </div>
 
         <!-- Modal -->

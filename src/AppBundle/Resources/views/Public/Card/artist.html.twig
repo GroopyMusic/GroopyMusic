@@ -23,7 +23,7 @@
         {% endfor %}
     {% endif %}
 
-    <div class="um-card{% if rotation %} images-rotation{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
+    <div class="um-card{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
         <div class="um-card-header w-100" style="background-image: url({{ src }});">
         </div>
 

@@ -2,13 +2,18 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="rounded-title">Salles partenaires</h3>
+        <h3 class="text-center mb-4">Salles partenaires</h3>
+
+        <p>
+            Partout en Belgique, des salles encouragent la production musicale de nos artistes.
+            Découvrez les salles partenaires d'Un-Mute dans lesquelles des concerts sont susceptibles d'être organisés.
+        </p>
 
         {% if halls is not empty %}
             <div class="row">
-            {% for hall in halls %}
-                {% include 'AppBundle:Public/Card:hall.html.twig' %}
-            {% endfor %}
+                {% for hall in halls %}
+                    {% include 'AppBundle:Public/Card:hall.html.twig' with {'bgwhite': true} %}
+                {% endfor %}
             </div>
         {% else %}
             <p>Il n'y a pas encore de salle partenaire sur la plateforme.</p>

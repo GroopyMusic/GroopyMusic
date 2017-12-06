@@ -2,8 +2,14 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="rounded-title">Mes artistes</h3>
-            <div class="text-center">
+        <h3 class="text-center mb-4">Mes artistes</h3>
+
+            <p>
+                Vous êtes un artiste musical ? Vous faites partie d'un groupe ?
+                Créez votre identité sur Un-Mute et organisez vos concerts sans prendre aucun risque.
+            </p>
+
+            <div class="text-center mb-3">
                 {% if available_artist %}
                     <a class="btn btn-primary" href="{{ path('user_new_contract_artist') }}">Lancer un nouveau crowdfunding</a>
                 {% endif %}
@@ -19,7 +25,7 @@
             {% if artists is not empty %}
                 <div class="row">
                     {% for artist in artists %}
-                        {% include "AppBundle:Public/Card:artist.html.twig" %}
+                        {% include "AppBundle:Public/Card:artist.html.twig" with {'bgwhite': true} %}
                     {% endfor %}
                 </div>
             {% endif %}

@@ -3,7 +3,7 @@ label {
   @extend .um-label;
 }
 
-input.form-control {
+input.form-control, textarea.form-control {
   background-color: $main-background;
   border-radius: 15px;
 }

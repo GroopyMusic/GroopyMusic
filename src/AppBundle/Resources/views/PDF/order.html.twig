@@ -5,8 +5,7 @@
 
     <p>Merci d'avoir passé une commande de tickets de concert avec Un-Mute.
         Vous trouverez ci-dessous toutes les informations au sujet de votre commande.
-        Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
-
+        Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à pierre@un-mute.be
     </p>
 
     <ul>
@@ -43,9 +42,10 @@
         {% endfor %}
     </table>
 
-    <h2>Conditions du processus d'achat Un-Mute</h2>
+    <h2>Processus d'achat Un-Mute</h2>
 
     <p>
-        Vous serez remboursé si ...
+        Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins {{ cf.contractArtist.step.minTickets }} tickets sur Un-Mute pour ce concert.
+        Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur https://un-mute.be
     </p>
 {% endblock %}

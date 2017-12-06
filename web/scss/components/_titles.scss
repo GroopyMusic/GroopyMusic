@@ -32,6 +32,19 @@
 }
 
 .um-label {
+
   @extend .text-uppercase;
   color: #2d2c2c;
+  &-small {
+    @extend .um-label;
+    @extend .small;
+    &-bold {
+      @extend .um-label-small;
+      @extend .font-weight-bold;
+    }
+  }
+  &-bold {
+    @extend .um-label;
+    @extend .font-weight-bold;
+  }
 }

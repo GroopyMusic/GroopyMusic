@@ -2,57 +2,89 @@
 
 {% block body %}
     <div class="container">
-        <h3>Mes commandes</h3>
-        <table class="table table-hover">
-            {% if carts is empty %}
-                <tr>
-                    <td>Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="{{ path('catalog_artists') }}">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !</td>
-                </tr>
-            {% else %}
-                <thead class="thead-light">
+        <h3 class="text-center">Mes commandes</h3>
+        <div class="content-box mt-4">
+            <table class="table table-hover um-table content-box-content">
+                {% if carts is empty %}
                     <tr>
-                        <th>
-                            Détails de la commande
-                        </th>
-                        <th>
-                            État
-                        </th>
-                        <th>
-                            Date
-                        </th>
-                        <th>
-                            Commande (PDF)
-                        </th>
-                        <th>
-                            Tickets (PDF)
-                        </th>
+                        <td>Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="{{ path('catalog_artists') }}">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !</td>
                     </tr>
-                </thead>
-                {% for cart in carts %}
-                    <tr class="paid_cart">
-                        <td>
-                            {% include "@App/User/cart_content.html.twig" with {'editable_cart': true} %}
-                        </td>
-                        <td>
-                            {{ cart.state }}
-                        </td>
-                        <td>
-                            {{ cart.first.date|date('d/m/Y H\\hi') }}
-                        </td>
-                        <td>
-                            <a href="{{ path('user_get_order', {'id': cart.id}) }}"
-                               download="um_commande_{{ cart.first.id }}.pdf">PDF</a>
-                        </td>
-                        <td>
-                            {% if cart.first.contractArtist.ticketsSent %}
-                                <a href="{{ path('user_get_tickets', {'id': cart.id}) }}"
-                                   dowload="um_ticket_{{ cart.first.id }}.pdf">Ticket</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
-        </table>
-
+                {% else %}
+                    <thead>
+                        <tr>
+                            <th>
+                                Détail
+                            </th>
+                            <th>
+                                État
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th>
+                                Quantité
+                            </th>
+                            <th>
+                                Prix unitaire
+                            </th>
+                            <th>
+                                Prix total
+                            </th>
+                            <th>
+                                Commande
+                            </th>
+                            <th>
+                                Tickets
+                            </th>
+                        </tr>
+                    </thead>
+                    {% for cart in carts %}
+                        <tr class="paid_cart">
+                            <td>
+                                {% for contract in cart.contracts %}
+                                        {% for purchase in contract.purchases %}
+                                            {{ purchase.counterpart.name }}
+                                            <br /> <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">Concert de {{ contract.contractArtist.artist.artistname }}</a>
+                                        {% endfor %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {{ cart.state }}
+                            </td>
+                            <td>
+                                {{ cart.first.date|date('d/m/Y') }}
+                            </td>
+                            <td>
+                                {% for contract in cart.contracts %}
+                                    {% for purchase in contract.purchases %}
+                                        {% if not loop.first %}<br /><br />{% endif %}{{ purchase.quantity }}
+                                    {% endfor %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for contract in cart.contracts %}
+                                    {% for purchase in contract.purchases %}
+                                        {% if not loop.first %}<br /><br />{% endif %}{{ purchase.counterpart.price }} €
+                                    {% endfor %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {{ cart.amount }} €
+                            </td>
+                            <td>
+                                <a href="{{ path('user_get_order', {'id': cart.id}) }}"
+                                   download="um_commande_{{ cart.first.id }}.pdf">PDF</a>
+                            </td>
+                            <td>
+                                {% if cart.first.contractArtist.ticketsSent %}
+                                    <a href="{{ path('user_get_tickets', {'id': cart.id}) }}"
+                                       dowload="um_ticket_{{ cart.first.id }}.pdf">Ticket</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </table>
+        </div>
     </div>
 {% endblock %}

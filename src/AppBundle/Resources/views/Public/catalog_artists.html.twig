@@ -2,14 +2,22 @@
 
 {% block body %}
     <div class="container">
+        <h3 class="text-center mb-4">Nos artistes</h3>
+
         {% if artists is empty %}
-            <p>Pas encore d'artiste sur la plateforme</p>
+            <p>Il n'y a pas encore d'artiste sur Un-Mute. Revenez bientôt !</p>
         {% else %}
-            <h3 class="rounded-title">Nos artistes</h3>
+
+            <p>
+                Chez Un-Mute, tous les artistes musicaux sont les bienvenus.
+                Vous trouverez ci-dessous les groupes et musiciens inscrits.
+                Restez au courant de leur évolution au travers des événements qu'ils organiseront au fil du temps sur Un-Mute.
+                Vous souhaitez vous inscrire en tant qu'artiste ? <a href="{{ path('fos_user_registration_register') }}">Créez un profil</a>. En quelques minutes, vous aurez créé votre identité Un-Mute.
+            </p>
 
             <div class="row">
                 {% for artist in artists %}
-                    {% include 'AppBundle:Public/Card:artist.html.twig' %}
+                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'bgwhite': true} %}
                 {% endfor %}
             </div>
         {% endif %}
