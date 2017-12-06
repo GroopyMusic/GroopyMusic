@@ -877,7 +877,7 @@
       </trans-unit>
       <trans-unit id="ca72f99edc2e131d36b7d8ac5d527a43c62ce25f" resname="labels.user.newsletter">
         <source>labels.user.newsletter</source>
-        <target>Je m'inscris à la newsletter</target>
+        <target>Je souhaite recevoir des newsletters et autres communications commerciales d'Un-Mute Asbl</target>
         <jms:reference-file line="24">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ProfilePreferencesType.php\</jms:reference-file>
         <jms:reference-file line="45">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\RegistrationType.php\</jms:reference-file>
       </trans-unit>

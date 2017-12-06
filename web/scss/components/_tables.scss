@@ -11,8 +11,13 @@ table.um-table {
   }
 
   td {
-    @extend .text-center;
     @extend .py-3;
+  }
+
+  tr:first-child {
+    td, th {
+      border-top: 0 none;
+    }
   }
 
   tr:not(:last-child) td {

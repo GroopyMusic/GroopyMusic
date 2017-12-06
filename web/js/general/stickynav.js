@@ -1,6 +1,7 @@
 var $header = $('header');
 var $mainNav = $('#mainNav');
 var $main = $('main');
+var $footer = $('footer');
 var appearances = 0;
 var stickyoffset = $main.offset().top - $mainNav.outerHeight();
 $header.css('min-height', $header.outerHeight());
@@ -17,14 +18,29 @@ function mainNavHeight() {
     $mainNav.css('min-height', $mainNav.outerHeight());
 }
 
-$(function() {
+function footerPosition() {
+    var docHeight = $(window).height();
+    var footerHeight = $footer.outerHeight();
+    var footerTop = $footer.position().top + footerHeight;
+
+    if (footerTop < docHeight) {
+        $footer.css('margin-top', (docHeight - footerTop) + 'px');
+    }
+}
+
+function onResize() {
     mainPadding();
     mainNavHeight();
+    footerPosition();
+}
+
+$(function() {
+    onResize();
+
     $(window).resize(function () {
         $header.css('min-height', 'auto');
         $header.css('min-height', $header.outerHeight());
-        mainPadding();
-        mainNavHeight();
+        onResize();
     });
 
 
@@ -41,15 +57,14 @@ $(function() {
                 $('#logo').addClass('hiddenLogo');
                 stickyoffset = $main.offset().top - $mainNav.outerHeight();
 
-                if (!$('#toc-nav').hasClass('fixed-toc'))
-                    $('#toc-nav').addClass('fixed-toc');
-
                 // Bug fix for logo appearing once too quickly
                 if(appearances > 0 || $(this).scrollTop() > stickyoffset + 10)
                     $('#menuLogo').fadeIn();
 
                 appearances++;
             }
+            if (!$('#static-toc').hasClass('fixed-toc'))
+                $('#static-toc').addClass('fixed-toc');
         }
         else {
             $('#menuLogo').fadeOut();

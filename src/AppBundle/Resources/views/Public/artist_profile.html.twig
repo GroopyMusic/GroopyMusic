@@ -45,75 +45,76 @@
             {% endif %}
         </ul>
 
-        <div class="tab-content artist-profile-content">
-            <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
-                <p>{{ artist.getShortDescription()|nl2br }}</p>
-                {% set currentContract = artist.currentContract %}
+        <div class="content-box">
+            <div class="tab-content artist-profile-content content-box-content border-left">
+                <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
+                    <p>{{ artist.getShortDescription()|nl2br }}</p>
+                    {% set currentContract = artist.currentContract %}
 
 
-                <h3>Vidéos</h3>
-                {% for video in artist.videos %}
-                    {{ video.embedVideo|raw }}
-                {% else %}
-                    <p>Cet artiste n'a pas encore de vidéo à montrer.</p>
-                {% endfor %}
+                    <h3 class="mt-4">Vidéos</h3>
+                    {% for video in artist.videos %}
+                        {{ video.embedVideo|raw }}
+                    {% else %}
+                        <p>Cet artiste n'a pas encore de vidéo à montrer.</p>
+                    {% endfor %}
 
-                {% if artist.website is not null
-                    or artist.spotify is not null
-                    or artist.twitter is not null
-                    or artist.facebook is not null
-                %}
-                    <h3>Liens</h3>
-                    <ul class="um-list">
-                        {% if artist.website is not null %}
-                            <li>
-                                <a href="{{ artist.website }}">Voir le site Web</a>
-                            </li>
-                        {% endif %}
-                        {% if artist.spotify is not null %}
-                            <li>
-                                <a href="{{ artist.spotify }}">Suivre sur Spotify</a>
-                            </li>
-                        {% endif %}
-                        {% if artist.twitter is not null %}
-                            <li>
-                                <a href="{{ artist.twitter }}">Suivre sur Twitter</a>
-                            </li>
-                        {% endif %}
-                        {% if artist.facebook is not null %}
-                            <li>
-                                <a href="{{ artist.facebook }}">Suivre sur Facebook</a>
-                            </li>
-                        {% endif %}
-                    </ul>
+                    {% if artist.website is not null
+                        or artist.spotify is not null
+                        or artist.twitter is not null
+                        or artist.facebook is not null
+                    %}
+                        <h4 class="mt-4">Liens</h4>
+                        <ul class="um-list">
+                            {% if artist.website is not null %}
+                                <li>
+                                    <a href="{{ artist.website }}">Voir le site Web</a>
+                                </li>
+                            {% endif %}
+                            {% if artist.spotify is not null %}
+                                <li>
+                                    <a href="{{ artist.spotify }}">Suivre sur Spotify</a>
+                                </li>
+                            {% endif %}
+                            {% if artist.twitter is not null %}
+                                <li>
+                                    <a href="{{ artist.twitter }}">Suivre sur Twitter</a>
+                                </li>
+                            {% endif %}
+                            {% if artist.facebook is not null %}
+                                <li>
+                                    <a href="{{ artist.facebook }}">Suivre sur Facebook</a>
+                                </li>
+                            {% endif %}
+                        </ul>
 
-                {% endif %}
-
-
-                {% if currentContract is not null %}
-                    <h3>Crowdfunding en cours</h3>
-                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
-                {% endif %}
-
-                {% for contract in artist.otherSuccessfulContracts(currentContract) %}
-                    {% if loop.first %}
-                        <h3>Crowdfundings accomplis par le passé</h3>
                     {% endif %}
-                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' %}
-                {% endfor %}
-            </div>
 
-            <div id="artist-profile-bio" class="tab-pane" role="tabpanel">
-                <h3>Biographie</h3>
-                <p>{{ artist.getBiography()|nl2br }}</p>
 
-            </div>
+                    {% if currentContract is not null %}
+                        <h3 class="mt-4">Crowdfunding en cours</h3>
+                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
+                    {% endif %}
 
-            {#
-            <div id="artist-profile-details" class="tab-pane" role="tabpanel">
-                <h3>Détails</h3>
+                    {% for contract in artist.otherSuccessfulContracts(currentContract) %}
+                        {% if loop.first %}
+                            <h3 class="mt-4">Crowdfundings accomplis par le passé</h3>
+                        {% endif %}
+                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' %}
+                    {% endfor %}
+                </div>
+
+                <div id="artist-profile-bio" class="tab-pane" role="tabpanel">
+                    <h3>Biographie</h3>
+                    <p>{{ artist.getBiography()|nl2br }}</p>
+                </div>
+
+                {#
+                <div id="artist-profile-details" class="tab-pane" role="tabpanel">
+                    <h3>Détails</h3>
+                </div>
+                #}
             </div>
-            #}
         </div>
     </div>
 

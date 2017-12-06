@@ -5,8 +5,16 @@
 {% autoescape false %}
 
 {% block content %}
-    Hello,
-    {{ txtH2Style }}
+    Votre message envoyé sur Un-Mute.be a bien été reçu.
+
+    Le voici :
+
+    -> Type de demande : {{ suggestionBox.type }}
+    -> Objet : {{ suggestionBox.object }}
+    -> Message :
+        {{ suggestionBox.message|nl2br }}
+
+    Nous vous répondrons au plus vite si nécessaire.
 {% endblock %}
 
 {% endautoescape %}

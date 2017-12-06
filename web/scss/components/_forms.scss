@@ -1,6 +1,9 @@
 label {
   @extend .small;
   @extend .um-label;
+  &.custom-control {
+    line-height: 1.5rem;
+  }
 }
 
 input.form-control, textarea.form-control {

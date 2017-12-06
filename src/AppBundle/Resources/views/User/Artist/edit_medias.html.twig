@@ -8,11 +8,11 @@
 
     {{ form_start(form) }}
         {{ form_row(form.videos) }}
-        {{ form_widget(form.submit) }}
+        {{ form_row(form.submit) }}
     {{ form_rest(form) }}
 {% endblock  %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">um_collection({add:'<a class="btn btn-secondary" href="#">Ajouter une vidéo</a>', remove:'<a class="danger-color" href="#">Supprimer la vidéo</a>'});</script>
+    <script type="text/javascript">um_collection({add:'<a class="btn btn-outline-secondary" href="#">Ajouter une vidéo</a>', remove:'<a class="danger-color" href="#">Supprimer la vidéo</a>'});</script>
 {% endblock %}

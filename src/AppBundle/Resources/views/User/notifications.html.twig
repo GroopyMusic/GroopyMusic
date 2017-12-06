@@ -2,29 +2,30 @@
 
 {% block body %}
     <div class="container notifications-page">
-        <h3>Mes notifications</h3>
+        <h3 class="mb-3 text-center">Mes notifications</h3>
 
-        <div class="row">
-            {% if notifs is empty %}
-                 <div class="col-12">
-                     <p>
-                         Vous n'avez pas encore reçu de notification.
-                     </p>
-                 </div>
-            {% else %}
+        <div class="content-box">
+            <div class="row content-box-content">
+                {% if notifs is empty %}
+                     <div class="col-12">
+                         <p>
+                             Vous n'avez pas encore reçu de notification.
+                         </p>
+                     </div>
+                {% else %}
 
-                <table id="notifications-table" class="table table-hover">
-                    {% include '@App/User/render_notifications_previews.html.twig' with {'notifs': notifs} %}
-                </table>
+                    <table id="notifications-table" class="table table-hover um-table">
+                        {% include '@App/User/render_notifications_previews.html.twig' with {'notifs': notifs} %}
+                    </table>
 
-                {{ hidden_loader() }}
+                    {{ hidden_loader() }}
 
-                {% if not got_to_max %}
-                    <a id="load-more-notifs" class="btn btn-primary">Voir plus</a>
+                    {% if not got_to_max %}
+                        <a id="load-more-notifs" class="btn btn-primary">Voir plus</a>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
+            </div>
         </div>
-
     </div>
 {% endblock %}
 

@@ -11,8 +11,11 @@
         </p>
 
         <div class="content-box">
-            <div id="suggestionbox_form" class="content-box-content">
-                {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+            <div class="content-box-content">
+                {{ hidden_loader() }}
+                <div id="suggestionbox_form">
+                    {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+                </div>
             </div>
         </div>
 
@@ -20,23 +23,17 @@
         <div class="modal fade" id="suggestionmodal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-
-                    <!-- content of the modal itself ➡️ in this case the form -->
                     <div class="modal-body">
                         <div class="container">
-                            <!-- design of the modal header -->
-                            <div class="login-header">
-                                <div class="login-header-line"></div>
-                                <!-- titre de la section -->
-                                <div class="login-header-title">
-                                    <h6>Vous êtes sûrs ?</h6>
-                                </div>
+                            <div class="login-header-title">
+                                <h5 class="mb-3">Vous êtes sûr ?</h5>
+                                <p>
+                                    Apparemment, vous n'avez pas entré votre adresse e-mail. Nous ne pourrons donc pas répondre à votre question.
+                                </p>
                             </div>
-                            <form>
-                                <button id="validate-sb-send" class="btn btn-primary sharp text-uppercase">Valider</button>
-                                <button id="cancel-sb-send" class="btn btn-warning">Annuler</button>
-                            </form>
                         </div>
+                        <a id="validate-sb-send" class="btn btn-primary text-uppercase pull-left" href="#">Envoyer</a>
+                        <a id="cancel-sb-send" class="btn btn-secondary pull-right" data-dismiss="modal" href="#">Annuler</a>
                     </div>
                 </div>
             </div>
@@ -48,20 +45,31 @@
 {% block additional_javascripts %}
     <script>
         $('#suggestionmodal').modal({'show': false});
-        $('#cancel-sb-send').click(function() {
-            $('#suggestionmodal').modal('hide');
-        });
 
-        $('#validate-sb-send').click(function() {
+        $('#validate-sb-send').click(function(e) {
+            e.preventDefault();
            ajaxSendForm();
             $('#suggestionmodal').modal('hide');
         });
 
+        function displayLoader() {
+            $('.content-box .loader').show();
+            $('#suggestionbox_form').hide();
+        }
+
+        function hideLoader() {
+            $('.content-box .loader').hide();
+            $('#suggestionbox_form').show();
+        }
+
         function ajaxSendForm() {
             var url = "{{ path('suggestionBox_form') }}";
             var formSerialize = $('form.suggestionBoxForm').serialize();
-            // TODO loader
+
+            displayLoader();
+
             $.post(url, formSerialize, function(response) {
+                hideLoader();
                 $('#suggestionbox_form').html(response);
                 initform();
             }, 'HTML');
@@ -71,7 +79,7 @@
             $('.suggestionBoxForm').submit(function(e) {
                 e.preventDefault();
 
-                if($('.suggestion_form_email').length && !$('.suggestion_form_email').val()) {
+                if($('#suggestion_form_email') && !$('#suggestion_form_email').find('input').val()) {
                     $('#suggestionmodal').modal('show');
                 }
 

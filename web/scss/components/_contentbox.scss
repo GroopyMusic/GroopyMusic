@@ -35,6 +35,11 @@
     background: #fdfdfe;
     border-right: 2px solid #d0d2d4;
     border-bottom: 2px solid #d0d2d4;
+
+    &.border-left {
+      border-left: 2px solid #d0d2d4;
+    }
+
     &-zones {
       @extend .px-0;
       @extend .py-0;
@@ -77,7 +82,7 @@
     }
   }
 
-  table {
+  table.content-box-table {
     @extend .w-100;
 
     tr {
@@ -92,7 +97,6 @@
     td {
       @extend .py-3;
       @extend .text-right;
-
     }
     td.contract-info-title {
       @extend .text-left;

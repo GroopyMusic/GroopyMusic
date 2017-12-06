@@ -122,7 +122,7 @@
                     {% for contract in cart.contracts %}
                         {% for purchase in contract.purchases %}
                             <div class="content-box-content-zone">
-                                <table>
+                                <table class="content-box-table">
                                     <tbody>
                                         <tr>
                                             <td class="contract-info-title">Type</td>
@@ -150,7 +150,7 @@
                         {% endfor %}
                     {% endfor %}
                         <div class="content-box-content-zone no-border">
-                            <table>
+                            <table class="content-box-table">
                                 <tr class="no-border">
                                     <td class="contract-info-title big">Total</td>
                                     <td class="big font-weight-bold">{{ cart.amount }} €</td>

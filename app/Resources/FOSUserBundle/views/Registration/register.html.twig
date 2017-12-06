@@ -4,12 +4,18 @@
     <div class="container">
 
 
-        <h3 class="rounded-title">Inscription</h3>
-        {% if app.user %}
-            <p>Vous êtes connecté, impossible de s'inscrire</p>
-        {% else %}
-            {% include "@FOSUser/Registration/register_content.html.twig" %}
-        {% endif %}
+        <h3 class="mb-3 text-center">Inscription</h3>
+        <p class="text-center">Créez votre profil en quelques secondes pour pouvoir soutenir vos artistes favoris !</p>
+
+        <div class="content-box">
+            <div class="content-box-content">
+                {% if app.user %}
+                    <p>Vous êtes connecté, nous ne pouvons donc pas vous ré-inscrire. ;-)</p>
+                {% else %}
+                    {% include "@FOSUser/Registration/register_content.html.twig" %}
+                {% endif %}
+            </div>
+        </div>
     </div>
 
 {% endblock fos_user_content %}

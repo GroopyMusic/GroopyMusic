@@ -4,6 +4,18 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
+            <p>Votre message envoyé sur Un-Mute.be a bien été reçu.</p>
+
+            <p>
+                Le voici :
+            </p>
+            <ul>
+                <li>Type de demande : {{ suggestionBox.type }}</li>
+                <li>Objet : {{ suggestionBox.object }}</li>
+                <li>Message : <br /> {{ suggestionBox.message|nl2br }}</li>
+            </ul>
+
+            <p>Nous vous répondrons au plus vite si nécessaire.</p>
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

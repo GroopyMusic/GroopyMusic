@@ -40,7 +40,7 @@
                     </thead>
                     {% for cart in carts %}
                         <tr class="paid_cart">
-                            <td>
+                            <td class="text-center">
                                 {% for contract in cart.contracts %}
                                         {% for purchase in contract.purchases %}
                                             {{ purchase.counterpart.name }}
@@ -48,34 +48,34 @@
                                         {% endfor %}
                                 {% endfor %}
                             </td>
-                            <td>
+                            <td class="text-center">
                                 {{ cart.state }}
                             </td>
-                            <td>
+                            <td class="text-center">
                                 {{ cart.first.date|date('d/m/Y') }}
                             </td>
-                            <td>
+                            <td class="text-center">
                                 {% for contract in cart.contracts %}
                                     {% for purchase in contract.purchases %}
                                         {% if not loop.first %}<br /><br />{% endif %}{{ purchase.quantity }}
                                     {% endfor %}
                                 {% endfor %}
                             </td>
-                            <td>
+                            <td class="text-center">
                                 {% for contract in cart.contracts %}
                                     {% for purchase in contract.purchases %}
                                         {% if not loop.first %}<br /><br />{% endif %}{{ purchase.counterpart.price }} €
                                     {% endfor %}
                                 {% endfor %}
                             </td>
-                            <td>
+                            <td class="text-center">
                                 {{ cart.amount }} €
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <a href="{{ path('user_get_order', {'id': cart.id}) }}"
                                    download="um_commande_{{ cart.first.id }}.pdf">PDF</a>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 {% if cart.first.contractArtist.ticketsSent %}
                                     <a href="{{ path('user_get_tickets', {'id': cart.id}) }}"
                                        dowload="um_ticket_{{ cart.first.id }}.pdf">Ticket</a>
