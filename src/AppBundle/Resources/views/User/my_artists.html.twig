@@ -13,7 +13,7 @@
                 {% if available_artist %}
                     <a class="btn btn-primary" href="{{ path('user_new_contract_artist') }}">Lancer un nouveau crowdfunding</a>
                 {% endif %}
-                <a class="btn btn-primary" href="{{ path('user_new_artist') }}">Créer un artiste</a>
+                <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">Créer un artiste</a>
             </div>
 
             {% if not available_artist and artists is not empty %}

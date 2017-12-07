@@ -50,10 +50,12 @@
                             </div>
                         </div>
 
-                        <!-- Used to display Element errors -->
-                        <div class="stripe-error alert alert-danger" role="alert"></div>
-                        <div id="stripe-loader">
-                            {{ hidden_loader() }}
+                        <div class="col-12">
+                            <!-- Used to display Element errors -->
+                            <div class="stripe-error alert alert-danger" role="alert"></div>
+                            <div id="stripe-loader">
+                                {{ hidden_loader() }}
+                            </div>
                         </div>
 
                         <div class="content-box col-12">
@@ -100,7 +102,7 @@
                                         <p>Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.</p>
                                     </div>
                                     <div class="content-box-content-zone no-border">
-                                        <div id="bc-card-element">
+                                        <div id="bc-card-element" class="text-center">
                                             <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
                                                 Poursuivre avec Bancontact
                                             </button>

@@ -1,5 +1,5 @@
 header {
-  background-image: url('../images/jumbotron-bg.jpg');
+  background-image: url('../images/jumbotron-bg-small.jpg');
   background-size: cover;
   background-position: center;
 
@@ -228,6 +228,18 @@ header {
     .dropdown {
       list-style: none;
     }
+  }
+}
+
+@include media-breakpoint-down(md) {
+  header #menuLogo {
+    display: none !important;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  header {
+    background-image: url('../images/jumbotron-bg.jpg');
   }
 }
 

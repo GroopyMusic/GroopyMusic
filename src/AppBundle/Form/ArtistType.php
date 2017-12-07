@@ -86,6 +86,20 @@ class ArtistType extends AbstractType
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ]
             ))
+            ->add('soundcloud', UrlType::class, array(
+                'label' => 'labels.artist.soundcloud',
+                'required' => false,
+                'constraints' => [
+                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                ]
+            ))
+            ->add('bandcamp', UrlType::class, array(
+                'label' => 'labels.artist.bandcamp',
+                'required' => false,
+                'constraints' => [
+                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                ]
+            ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.artist.submit',
                 'attr' => ['class' => 'btn btn-primary']

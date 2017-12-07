@@ -22,12 +22,13 @@
 
 // >= Medium
 // If you change this, you shoulf also change toggleable breakpoint of TOC
-@media (min-width: 768px) {
+@include media-breakpoint-up(md) {
   #static-toc {
     position:relative;
     &.fixed-toc {
       position: fixed;
       top: 6rem;
+      left: 0;
     }
   }
 }

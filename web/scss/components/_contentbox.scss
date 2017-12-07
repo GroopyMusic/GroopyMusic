@@ -7,8 +7,10 @@
     border-bottom: 1px solid #d2d2d2;
     width: 100%;
 
-   .content-box-col:not(:first-child) {
-      border-left: 1px solid #d2d2d2;
+    @include media-breakpoint-up(md) {
+      .content-box-col:not(:first-child) {
+        border-left: 1px solid #d2d2d2;
+      }
     }
   }
   &-col {
@@ -48,7 +50,10 @@
         @extend .py-0;
       }
       .content-box-content-zone {
-        @extend .p-4;
+        width: 100%;
+        @extend .p-2;
+        @extend .pl-3;
+        @extend .p-md-4;
         border-bottom: 1px solid #d0d2d4;
 
         &-vert {

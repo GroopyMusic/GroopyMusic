@@ -110,6 +110,15 @@ class Artist implements TranslatableInterface
         return true;
     }
 
+    public function hasOneLink() {
+        return !empty($this->website)
+            || !empty($this->twitter)
+            || !empty($this->facebook)
+            || !empty($this->spotify)
+            || !empty($this->soundcloud)
+            || !empty($this->bandcamp)
+        ;
+    }
 
     public function getAllPhotos() {
         $photos = array();
@@ -243,6 +252,18 @@ class Artist implements TranslatableInterface
      * @ORM\Column(name="spotify", type="string", length=255, nullable=true)
      */
     private $spotify;
+
+    /**
+     * @var string
+     * @ORM\Column(name="soundcloud", type="string", length=255, nullable=true)
+     */
+    private $soundcloud;
+
+    /**
+     * @var string
+     * @ORM\Column(name="bandcamp", type="string", length=255, nullable=true)
+     */
+    private $bandcamp;
 
     /**
      * @ORM\Column(name="date_creation", type="datetime")
@@ -736,5 +757,53 @@ class Artist implements TranslatableInterface
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    /**
+     * Set soundcloud
+     *
+     * @param string $soundcloud
+     *
+     * @return Artist
+     */
+    public function setSoundcloud($soundcloud)
+    {
+        $this->soundcloud = $soundcloud;
+
+        return $this;
+    }
+
+    /**
+     * Get soundcloud
+     *
+     * @return string
+     */
+    public function getSoundcloud()
+    {
+        return $this->soundcloud;
+    }
+
+    /**
+     * Set bandcamp
+     *
+     * @param string $bandcamp
+     *
+     * @return Artist
+     */
+    public function setBandcamp($bandcamp)
+    {
+        $this->bandcamp = $bandcamp;
+
+        return $this;
+    }
+
+    /**
+     * Get bandcamp
+     *
+     * @return string
+     */
+    public function getBandcamp()
+    {
+        return $this->bandcamp;
     }
 }

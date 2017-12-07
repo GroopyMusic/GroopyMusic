@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-28T10:51:13Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-12-07T10:39:30Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -51,18 +51,23 @@
       <trans-unit id="ae6cac0b7b08da137c327069dc510638b95da600" resname="Autres photos">
         <source>Autres photos</source>
         <target>Autres photos</target>
-        <jms:reference-file line="82">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+        <jms:reference-file line="88">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="31f19541b931c22dc3f3e64ab13e6624aec7f7d2" resname="Bandcamp">
+        <source>Bandcamp</source>
+        <target state="new">Bandcamp</target>
+        <jms:reference-file line="81">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b5f616e00ac04be0b26cb81cc7303aa8ffa5c84" resname="Biographie">
         <source>Biographie</source>
         <target>Biographie</target>
-        <jms:reference-file line="104">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+        <jms:reference-file line="110">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
         <jms:reference-file line="61">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="3523d31fea4953286f174e1c22424fef9f2ffb26" resname="Cacher l'artiste (il ne sera plus visible sur la plateforme)">
         <source>Cacher l'artiste (il ne sera plus visible sur la plateforme)</source>
         <target>Cacher l'artiste (il ne sera plus visible sur la plateforme)</target>
-        <jms:reference-file line="113">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+        <jms:reference-file line="119">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="e43b8db42a3c56ae890a25038e52d67a26d28b9f" resname="Capacité (en nombre de personnes)">
         <source>Capacité (en nombre de personnes)</source>
@@ -187,7 +192,7 @@
       <trans-unit id="9ece03438b52bea2ae46f499a6d87d8ae1f5a545" resname="Description courte">
         <source>Description courte</source>
         <target>Description courte</target>
-        <jms:reference-file line="101">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+        <jms:reference-file line="107">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
         <jms:reference-file line="58">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
         <jms:reference-file line="25">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
         <jms:reference-file line="55">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
@@ -495,7 +500,7 @@
       <trans-unit id="7415d477584c4c2fc1584b8d75fc94e90f0ca04f" resname="Photo de profil">
         <source>Photo de profil</source>
         <target>Photo de profil</target>
-        <jms:reference-file line="78">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+        <jms:reference-file line="84">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8b2e864eccb38901097806819bf6aba2eed7ae1" resname="Photos">
         <source>Photos</source>
@@ -548,11 +553,6 @@
         <jms:reference-file line="51">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\SuggestionBoxAdmin.php\</jms:reference-file>
         <jms:reference-file line="51">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\UserAdmin.php\</jms:reference-file>
       </trans-unit>
-      <trans-unit id="09a38fda7876065eea2d72d936a0c48eeacf42ce" resname="Quantité">
-        <source>Quantité</source>
-        <target>Quantité</target>
-        <jms:reference-file line="21">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\PurchaseType.php\</jms:reference-file>
-      </trans-unit>
       <trans-unit id="72d07b9113030d4d8e38c02b884ef27932e369de" resname="Rappel envoyé pour les paniers non payés qui le référencent">
         <source>Rappel envoyé pour les paniers non payés qui le référencent</source>
         <target>Rappel envoyé pour les paniers non payés qui le référencent</target>
@@ -598,6 +598,11 @@
         <jms:reference-file line="66">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
         <jms:reference-file line="58">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
         <jms:reference-file line="98">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\PartnerAdmin.php\</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8720319e34ce7df6b82af61268497ec378710686" resname="SoundCloud">
+        <source>SoundCloud</source>
+        <target state="new">SoundCloud</target>
+        <jms:reference-file line="78">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a0cb6b42add7808a6ab3619930fa7983c9ce7fe" resname="Spotify">
         <source>Spotify</source>
@@ -656,7 +661,7 @@
       <trans-unit id="ea129238fc5751a8b0d5b8795ad4febab0bd4bc5" resname="Vidéos">
         <source>Vidéos</source>
         <target>Vidéos</target>
-        <jms:reference-file line="86">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
+        <jms:reference-file line="92">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Admin\ArtistAdmin.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="1a11ca4f7dd5e3ddf73665b4197bc4646aac8001" resname="Visible sur la plateforme">
         <source>Visible sur la plateforme</source>
@@ -705,6 +710,11 @@
         <target>Nom de scène</target>
         <jms:reference-file line="29">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
       </trans-unit>
+      <trans-unit id="5f112e1508ca8863afc7f246954c8b2f509b68d1" resname="labels.artist.bandcamp">
+        <source>labels.artist.bandcamp</source>
+        <target>Lien Bandcamp</target>
+        <jms:reference-file line="97">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
+      </trans-unit>
       <trans-unit id="9148cf28e597dd568a8b9c84ee3055088bc93bb0" resname="labels.artist.biography">
         <source>labels.artist.biography</source>
         <target>Biographie</target>
@@ -730,6 +740,11 @@
         <target>Description courte (moins de 255 caractères)</target>
         <jms:reference-file line="46">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
       </trans-unit>
+      <trans-unit id="4d08ced8224ea9e75860fe7ad62008255f08a14a" resname="labels.artist.soundcloud">
+        <source>labels.artist.soundcloud</source>
+        <target>Lien SoundCloud</target>
+        <jms:reference-file line="90">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
+      </trans-unit>
       <trans-unit id="8c0df054f63abaa441f36475bf9039b01be6fde5" resname="labels.artist.spotify">
         <source>labels.artist.spotify</source>
         <target>Lien Spotify</target>
@@ -738,7 +753,7 @@
       <trans-unit id="e7c45c1a2ee4e121b9c037ecbf8a3a1ea0e90f8f" resname="labels.artist.submit">
         <source>labels.artist.submit</source>
         <target>Valider</target>
-        <jms:reference-file line="90">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
+        <jms:reference-file line="104">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ArtistType.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="5e4118eda200bf7d1b74dc6804183cda41481dd5" resname="labels.artist.twitter">
         <source>labels.artist.twitter</source>
@@ -838,7 +853,7 @@
       <trans-unit id="e9898a500ddfd27a524876c729e119f389606737" resname="labels.suggestionbox.submit">
         <source>labels.suggestionbox.submit</source>
         <target>Envoyer</target>
-        <jms:reference-file line="75">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\SuggestionBoxType.php\</jms:reference-file>
+        <jms:reference-file line="76">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\SuggestionBoxType.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="ec8e7bfd64cc40bd456b5ffd0ca5ff4594a54b48" resname="labels.suggestionbox.type">
         <source>labels.suggestionbox.type</source>
@@ -899,7 +914,7 @@
       <trans-unit id="3abf62ae27ab49c2032fa230a8cab126d46261bb" resname="labels.user.profile.submit">
         <source>labels.user.profile.submit</source>
         <target>Enregistrer</target>
-        <jms:reference-file line="40">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ProfileType.php\</jms:reference-file>
+        <jms:reference-file line="41">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ProfileType.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b3efa879571eef661a2c7b890ca48d1b122335" resname="noscript.warning">
         <source>noscript.warning</source>
@@ -914,7 +929,7 @@
       <trans-unit id="4a37a6d25203364276a96bb0ec6f15734864c7d5" resname="txt.email.head.link.to.web.view.text.%url%">
         <source>txt.email.head.link.to.web.view.text.%url%</source>
         <target>Voir dans le navigateur</target>
-        <jms:reference-file line="49">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\baseEmailLayout.txt.twig</jms:reference-file>
+        <jms:reference-file line="50">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\baseEmailLayout.txt.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ff45fa66ad868bb6db5283c911d16714b092853" resname="Échec">
         <source>Échec</source>

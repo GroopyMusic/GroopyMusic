@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% block headtitle %}{{ artist.artistname }}{% endblock %}
+
 {% block body %}
 
     <div class="container container-large-margins w-75 mx-auto">
@@ -59,31 +61,37 @@
                         <p>Cet artiste n'a pas encore de vidéo à montrer.</p>
                     {% endfor %}
 
-                    {% if artist.website is not null
-                        or artist.spotify is not null
-                        or artist.twitter is not null
-                        or artist.facebook is not null
-                    %}
+                    {% if artist.hasOneLink %}
                         <h4 class="mt-4">Liens</h4>
                         <ul class="um-list">
-                            {% if artist.website is not null %}
+                            {% if artist.website is not null and artist.website is not empty %}
                                 <li>
                                     <a href="{{ artist.website }}">Voir le site Web</a>
                                 </li>
                             {% endif %}
-                            {% if artist.spotify is not null %}
+                            {% if artist.spotify is not null and artist.spotify is not empty %}
                                 <li>
                                     <a href="{{ artist.spotify }}">Suivre sur Spotify</a>
                                 </li>
                             {% endif %}
-                            {% if artist.twitter is not null %}
+                            {% if artist.twitter is not null and artist.twitter is not empty %}
                                 <li>
                                     <a href="{{ artist.twitter }}">Suivre sur Twitter</a>
                                 </li>
                             {% endif %}
-                            {% if artist.facebook is not null %}
+                            {% if artist.facebook is not null and artist.facebook is not empty %}
                                 <li>
                                     <a href="{{ artist.facebook }}">Suivre sur Facebook</a>
+                                </li>
+                            {% endif %}
+                            {% if artist.soundcloud is not null and artist.soundcloud is not empty %}
+                                <li>
+                                    <a href="{{ artist.soundcloud }}">Voir le profil SoundCloud</a>
+                                </li>
+                            {% endif %}
+                            {% if artist.bandcamp is not null and artist.bandcamp is not empty %}
+                                <li>
+                                    <a href="{{ artist.bandcamp }}">Voir le profil Bandcamp</a>
                                 </li>
                             {% endif %}
                         </ul>

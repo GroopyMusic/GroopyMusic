@@ -19,7 +19,7 @@
 
                     <h3 class="mb-3">Infos</h3>
 
-                    <div class="col-12 row content-box-row">
+                    <div class="col-12 row equal content-box-row">
                         <div class="col-12 col-md-4 content-box-col">
                             <div class="contract-info-title">
                                 Date du concert
@@ -72,7 +72,7 @@
                         </span>
                     </div>
 
-                    <div class="col-12 row content-box-row">
+                    <div class="col-12 row equal content-box-row">
                         <div class="col-12 col-md-4 content-box-col">
                             <div class="contract-info-title">
                                 Région du concert
@@ -111,7 +111,7 @@
                             <div class="progress-bar" style="padding-left: 1rem;width:{{ contract.ticketsSold * 100 / contract.step.minTickets }}%"></div>
                         </div>
                         <div class="text-right text-primary small font-weight-bold">
-                            {{ contract.ticketsSold * 100 / contract.step.minTickets }}%
+                            {{ contract.ticketsSold * 100 // contract.step.minTickets }}%
                         </div>
                     </div>
                 </div>

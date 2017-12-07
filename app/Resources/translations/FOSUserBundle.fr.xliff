@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-12-01T09:18:59Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-12-07T10:39:30Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -14,47 +14,47 @@
       <trans-unit id="c05ea373f9cb7d804e1489bc9d2cb07239993fd6" resname="profile.show.address">
         <source>profile.show.address</source>
         <target>Adresse</target>
-        <jms:reference-file line="16">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="19">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ba0674e7cd74a8fc95e1f4fdf1c377516c541f1" resname="profile.show.artists">
         <source>profile.show.artists</source>
         <target>Mes artistes</target>
-        <jms:reference-file line="21">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="24">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6f27f447e8548d153336886c8fbc59e87c78d55" resname="profile.show.birthday">
         <source>profile.show.birthday</source>
         <target>Date de naissance</target>
-        <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="13">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f2b87ab0da336a9cb633f397ff7f86ab7ea522b" resname="profile.show.email">
         <source>profile.show.email</source>
         <target>E-mail</target>
-        <jms:reference-file line="4">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="7">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="23dc75f0ce6a28854008a1cf8c3041e41181ba8d" resname="profile.show.firstname">
         <source>profile.show.firstname</source>
         <target>Prénom</target>
-        <jms:reference-file line="5">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="8">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cf284f16d21f881faec5bc7859f3ccd96feda1b1" resname="profile.show.genres">
         <source>profile.show.genres</source>
         <target>Mes genres musicaux</target>
-        <jms:reference-file line="31">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="34">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee2312733e8f2127d09163097fe02fab7eac01c4" resname="profile.show.inscription_date">
         <source>profile.show.inscription_date</source>
         <target>Date d'inscription</target>
-        <jms:reference-file line="45">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="48">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19e3f28bfb3a3b7d5fa0e6fe1bcca8a0a969de0c" resname="profile.show.lastname">
         <source>profile.show.lastname</source>
         <target>Nom</target>
-        <jms:reference-file line="6">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="9">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5f6d0469795932edb68c4fb92169d059fb2b7200" resname="profile.show.newsletter">
         <source>profile.show.newsletter</source>
         <target>Je souhaite recevoir des newsletters et autres communications commerciales d'Un-Mute Asbl</target>
-        <jms:reference-file line="41">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
+        <jms:reference-file line="44">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1fa5b2873fe30be026b854f6a51503b86c6ac81a" resname="registration.back">
         <source>registration.back</source>
@@ -110,12 +110,15 @@ Si vous ne recevez pas un email, vérifiez votre dossier spam ou essayez à nouv
 Vous avez oublié votre mot de passe qui vous permet de vous rendre sur Un-Mute.be ? 
 
 Pas de panique, vous pouvez créer un nouveau mot de passe en cliquant sur le lien suivant : %confirmationUrl%</target>
-        <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Resetting\email.txt.twig</jms:reference-file>
+        <jms:reference-file line="11">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\password_resetting.html.twig</jms:reference-file>
+        <jms:reference-file line="11">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\password_resetting.txt.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="126cf13058808d8948cc673c7933c6c1ce27841d" resname="resetting.email.subject">
         <source>resetting.email.subject</source>
         <target>Réinitialisation de votre mot de passe</target>
-        <jms:reference-file line="4">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Resetting\email.txt.twig</jms:reference-file>
+        <jms:reference-file line="6">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\password_resetting.html.twig</jms:reference-file>
+        <jms:reference-file line="16">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\password_resetting.txt.twig</jms:reference-file>
+        <jms:reference-file line="5">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\password_resetting.txt.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e1470b3c202d9a4fa8e1afa7ed8695917f060ccd" resname="resetting.request.submit">
         <source>resetting.request.submit</source>
@@ -140,12 +143,12 @@ Pas de panique, vous pouvez créer un nouveau mot de passe en cliquant sur le li
       <trans-unit id="d074ed9a0eb75b7f17ef2274c21d4c3d12d91634" resname="security.login.remember_me">
         <source>security.login.remember_me</source>
         <target>Se souvenir de moi</target>
-        <jms:reference-file line="34">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Security\login_content.html.twig</jms:reference-file>
+        <jms:reference-file line="37">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Security\login_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="79c180ac5e987e195d1dfeda857a114ed692d07f" resname="security.login.submit">
         <source>security.login.submit</source>
         <target>Connexion</target>
-        <jms:reference-file line="41">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Security\login_content.html.twig</jms:reference-file>
+        <jms:reference-file line="45">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Security\login_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="64e1b2aaf6156a7e34a13fbc38801e89478efff8" resname="security.login.username">
         <source>security.login.username</source>

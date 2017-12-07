@@ -6,7 +6,6 @@ var appearances = 0;
 var stickyoffset = $main.offset().top - $mainNav.outerHeight();
 $header.css('min-height', $header.outerHeight());
 
-
 function mainPadding() {
     if($header.outerHeight() == 0) {
         $main.css('margin-top', $mainNav.outerHeight());
@@ -19,6 +18,8 @@ function mainNavHeight() {
 }
 
 function footerPosition() {
+    $footer.css('margin-top', 'initial');
+
     var docHeight = $(window).height();
     var footerHeight = $footer.outerHeight();
     var footerTop = $footer.position().top + footerHeight;
@@ -28,21 +29,28 @@ function footerPosition() {
     }
 }
 
+function resizeHeader() {
+    $header.css('min-height', 'auto');
+    $header.css('min-height', $header.outerHeight());
+}
+
 function onResize() {
     mainPadding();
     mainNavHeight();
     footerPosition();
+    resizeHeader();
 }
 
 $(function() {
     onResize();
 
     $(window).resize(function () {
-        $header.css('min-height', 'auto');
-        $header.css('min-height', $header.outerHeight());
         onResize();
     });
 
+    $('.navbar-collapse').on('hidden.bs.collapse', function() {
+        onResize();
+    });
 
     $(window).scroll(function () {
         if ($(this).scrollTop() > stickyoffset) {
@@ -58,7 +66,7 @@ $(function() {
                 stickyoffset = $main.offset().top - $mainNav.outerHeight();
 
                 // Bug fix for logo appearing once too quickly
-                if(appearances > 0 || $(this).scrollTop() > stickyoffset + 10)
+               // if(appearances > 0 || $(this).scrollTop() > stickyoffset + 10)
                     $('#menuLogo').fadeIn();
 
                 appearances++;
@@ -85,5 +93,6 @@ $(function() {
                     $('#toc-nav').removeClass('fixed-toc');
             }
         }
+        onResize();
     });
 });

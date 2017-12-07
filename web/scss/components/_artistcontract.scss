@@ -19,7 +19,7 @@
   }
 
   &-title {
-    @extend .text-center;
+    text-align:center;
     @extend .small;
     @extend .um-label;
     @extend .font-weight-bold;

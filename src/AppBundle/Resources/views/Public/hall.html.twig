@@ -1,15 +1,27 @@
 {% extends 'base.html.twig' %}
 
+{% block headtitle %}{{ hall.name }}{% endblock %}
+
 {% block body %}
     <div class="container">
         <h3 class="text-center">{{ hall.name }}</h3>
         <p class="text-center"><small>{{ hall.address.natural(hall.province.name) }}</small></p>
 
         <div class="row">
+            <div class="col-12 content-box">
+                <div class="content-box-content">
+                    <p>
+                        <span class="contract-info-title">En quelques mots</span>
+                        {{ hall.getShortDescription }}
+                    </p>
+                </div>
+            </div>
+
             <div class="col-12 col-md-8">
                 {% if hall.getDescription is not empty %}
                     <div class="content-box">
                         <div class="content-box-content">
+                            <div class="contract-info-title mb-3">Description</div>
                             <p>{{ hall.getDescription }}</p>
                         </div>
                     </div>
@@ -24,23 +36,23 @@
                         <div class="carousel-inner">
                             {% for photo in hall.photos %}
                                 <div class="carousel-item{% if loop.first %} active{% endif %}">
-                                    <img class="d-block w-100" src="{{ asset(hall.webPath(photo)) }}" alt="{{ hall.name }}">
+                                    <img class="d-block w-100 mx-auto responsive-img" src="{{ asset(hall.webPath(photo)) }}" alt="{{ hall.name }}">
                                 </div>
                             {% endfor %}
                         </div>
                         <a class="carousel-control-prev" href="#hallCarousel" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-3" aria-hidden="true"></span>
                             <span class="sr-only">Précédent</span>
                         </a>
                         <a class="carousel-control-next" href="#hallCarousel" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-3" aria-hidden="true"></span>
                             <span class="sr-only">Suivant</span>
                         </a>
                     </div>
                 {% endif %}
             </div>
 
-            <div class="col-12 col-md-4 content-box">
+            <div class="col-12 col-md-4 content-box mt-3 mt-md-0">
 
                 <div class="content-box-header">
                     <h3>Caractéristiques</h3>

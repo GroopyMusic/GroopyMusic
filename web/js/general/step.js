@@ -36,22 +36,43 @@ $(function() {
         });
     });
 
+    var tickets = 0;
+
+    $(".incr-btn").each(function() {
+        var $button = $(this);
+        tickets += parseInt($button.parent().find('.quantity').val());
+    });
+
+    function disableIfNoTickets() {
+        if(tickets == 0) {
+            $('#app_bundle_contract_fan_type_submit').attr('disabled', 'disabled');
+        }
+        else {
+            $('#app_bundle_contract_fan_type_submit').attr('disabled', null);
+        }
+    }
+
+    disableIfNoTickets();
+
     $(".incr-btn").on("click", function (e) {
         var $button = $(this);
         var oldValue = $button.parent().find('.quantity').val();
         $button.parent().find('.incr-btn[data-action="decrease"]').removeClass('inactive');
         if ($button.data('action') == "increase") {
             var newVal = parseFloat(oldValue) + 1;
+            tickets++;
         } else {
             // Don't allow decrementing below 0
             if (oldValue > 0) {
                 var newVal = parseFloat(oldValue) - 1;
+                tickets--;
             } else {
                 newVal = 0;
                 $button.addClass('inactive');
             }
         }
         $button.parent().find('.quantity').val(newVal);
+        disableIfNoTickets();
         e.preventDefault();
     });
 

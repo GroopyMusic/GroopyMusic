@@ -63,16 +63,22 @@ class ArtistAdmin extends BaseAdmin
             ->end()
             ->with('Médias')
                 ->add('website', null, array(
-                    'label' => 'Site Web'
+                    'label' => 'Site Web',
                 ))
                 ->add('facebook', null, array(
-                    'label' => 'Facebook'
+                    'label' => 'Facebook',
                 ))
                 ->add('twitter', null, array(
-                    'label' => 'Twitter'
+                    'label' => 'Twitter',
                 ))
                 ->add('spotify', null, array(
-                    'label' => 'Spotify'
+                    'label' => 'Spotify',
+                ))
+                ->add('soundcloud', null, array(
+                    'label' => 'SoundCloud',
+                ))
+                ->add('bandcamp', null, array(
+                    'label' => 'Bandcamp',
                 ))
                 ->add('profilepic', null, array(
                     'label' => 'Photo de profil',

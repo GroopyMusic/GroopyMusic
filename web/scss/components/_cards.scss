@@ -20,8 +20,9 @@
   }
   &-content {
     @extend .pt-3;
-    @extend .px-3;
     @extend .pb-2;
+    @extend .px-1;
+    @extend .px-lg-3;
 
     text-align: left;
     background-color: transparent;

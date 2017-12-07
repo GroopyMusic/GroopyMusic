@@ -1,26 +1,32 @@
-<div class="container">
-    {% for message in app.request.session.flashbag.get('error') %}
-        {{ error(message)|raw }}
-    {% endfor%}
+{% set error_bag = app.request.session.flashbag.get('error') %}
 
-{% spaceless %}
-    {% if (errors is defined and errors|length > 0) or (form is defined and not form.vars.valid) %}
-        <div id="errors">
-            {% if ((form is defined and not form.vars.valid)
-                or (form1 is defined and not form1.vars.valid)
-                or (form2 is defined and not form2.vars.valid))
-            %}
-                {{ error('Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.')|raw }}
-                {{ form_errors(form) }}
+{% if error_bag is not empty
+        or ((errors is defined and errors|length > 0) or (form is defined and not form.vars.valid))%}
+
+    <div class="container">
+        {% for message in error_bag %}
+            {{ error(message)|raw }}
+        {% endfor%}
+
+        {% spaceless %}
+            {% if (errors is defined and errors|length > 0) or (form is defined and not form.vars.valid) %}
+                <div id="errors">
+                    {% if ((form is defined and not form.vars.valid)
+                        or (form1 is defined and not form1.vars.valid)
+                        or (form2 is defined and not form2.vars.valid))
+                    %}
+                        {{ error('Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.')|raw }}
+                        {{ form_errors(form) }}
+                    {% endif %}
+                    {% if errors is defined and errors|length > 0 %}
+                        <ul>
+                            {% for error in errors %}
+                                <li class="error">{{ error }}</li><br/>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
             {% endif %}
-            {% if errors is defined and errors|length > 0 %}
-                <ul>
-                    {% for error in errors %}
-                        <li class="error">{{ error }}</li><br/>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    {% endif %}
-{% endspaceless %}
-</div>
+        {% endspaceless %}
+    </div>
+{% endif %}
