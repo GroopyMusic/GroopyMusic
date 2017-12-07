@@ -23,10 +23,6 @@ main {
   z-index: 9999;
 }
 
-.container-large-margins {
-  margin: auto 20%;
-}
-
 .dz-image img { width: 100%;  }
 
 .danger-color {
@@ -51,3 +47,8 @@ main {
   @extend .p-lg-5;
 }
 
+@include media-breakpoint-up(md) {
+  .container-large-margins {
+    margin: auto 20%;
+  }
+}

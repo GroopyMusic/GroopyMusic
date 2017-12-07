@@ -57,8 +57,12 @@
         border-bottom: 1px solid #d0d2d4;
 
         &-vert {
-          border-right: 1px solid #d0d2d4;
-          border-bottom: 0 none;
+          @extend .pt-4;
+          @include media-breakpoint-up(md) {
+            border-right: 1px solid #d0d2d4;
+            border-bottom: 0 none;
+          }
+
         }
 
         &.no-border {

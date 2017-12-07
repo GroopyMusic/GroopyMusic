@@ -122,7 +122,7 @@ Pas de panique, vous pouvez créer un nouveau mot de passe en cliquant sur le li
       </trans-unit>
       <trans-unit id="e1470b3c202d9a4fa8e1afa7ed8695917f060ccd" resname="resetting.request.submit">
         <source>resetting.request.submit</source>
-        <target>Réinitialiser le mot de passe</target>
+        <target>Envoyer le lien de réinitialisation</target>
         <jms:reference-file line="9">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Resetting\request_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ad41bf8fb30013eb0f31ca027ca8d1dc7a3d96f" resname="resetting.request.username">

@@ -27,7 +27,11 @@
         Sur cette page, vous avez la possibilité de quitter la gestion de cet artiste. Si vous en êtes le dernier propriétaire, l'artiste sera définitivement supprimé du catalogue Un-Mute.
     </p>
 
-    <input id="checkbox-leave-artist" class="mr-3" type="checkbox" data-toggle="collapse" data-target="#collapse-leave-artist"/><label for="checkbox-leave-artist">Je souhaite quitter la gestion de {{ artist.artistname }}</label>
+    <label class="custom-control custom-checkbox pr-3" for="checkbox-leave-artist">
+        <input type="checkbox" id="checkbox-leave-artist" data-toggle="collapse" data-target="#collapse-leave-artist" class="custom-control-input">
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Je souhaite quitter la gestion de {{ artist.artistname }}</span>
+    </label>
 
     <div class="collapse" id="collapse-leave-artist">
         {% if lastOne and not artist.available %}

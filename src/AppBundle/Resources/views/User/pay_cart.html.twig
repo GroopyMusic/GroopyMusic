@@ -22,6 +22,14 @@
                     </p>
                 </div>
 
+                <div>
+                    <!-- Used to display Element errors -->
+                    <div class="stripe-error alert alert-danger" role="alert"></div>
+                    <div id="stripe-loader">
+                        {{ hidden_loader() }}
+                    </div>
+                </div>
+
                 <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
                     <div class="form-row">
                         {% if error_conditions %}
@@ -47,14 +55,6 @@
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Bancontact</span>
                                 </label>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <!-- Used to display Element errors -->
-                            <div class="stripe-error alert alert-danger" role="alert"></div>
-                            <div id="stripe-loader">
-                                {{ hidden_loader() }}
                             </div>
                         </div>
 

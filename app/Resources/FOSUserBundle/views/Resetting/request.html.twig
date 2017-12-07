@@ -3,8 +3,18 @@
 {% block fos_user_content %}
 
     <div class="container">
-        <h2 class="rounded-title">Mot de passe oublié ?</h2>
+        <h3 class="text-center mb-3">Mot de passe oublié ?</h3>
 
-        {% include "@FOSUser/Resetting/request_content.html.twig" %}
+        <p>
+            Vous avez oublié votre mot de passe Un-Mute ? Entrez ci-dessous l'adresse e-mail avec laquelle vous êtes inscrit(e)
+            sur Un-Mute.be et vous recevrez un e-mail qui vous permettra de le réinitialiser.
+        </p>
+
+        <div class="content-box">
+            <div class="content-box-content">
+                {% include "@FOSUser/Resetting/request_content.html.twig" %}
+            </div>
+        </div>
+
     </div>
 {% endblock fos_user_content %}
