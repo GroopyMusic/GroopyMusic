@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\BaseStep;
 use AppBundle\Entity\ContractArtist_Artist;
 use AppBundle\Entity\StepType;
 use AppBundle\Form\ConcertPossibilityType;
@@ -92,6 +93,9 @@ class ContractArtistAdmin extends BaseAdmin
                 ->add('motivations', null, array(
                     'label' => 'Motivations',
                 ))
+                ->add('preferences.additional_info', null, array(
+                    'label' => 'Infos pour les organisateurs',
+                ))
                 ->add('newsletter', null, array(
                     'label' => 'Newsletter associée',
                 ))
@@ -169,7 +173,7 @@ class ContractArtistAdmin extends BaseAdmin
             ->end()
         ;
 
-        if($this->getSubject()->getStep()->getType()->getName() == StepType::TYPE_CONCERT) {
+        if($this->getSubject()->getStep()->getType() == BaseStep::TYPE_CONCERT) {
             $form
                 ->with('Réalité')
                     ->add('reality', 'sonata_type_admin', array(

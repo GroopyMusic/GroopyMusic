@@ -18,6 +18,7 @@ class ContractArtistAdminController extends Controller
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->configure();
     }
 
     public function refundAction(Request $request, UserInterface $user) {
@@ -92,7 +93,7 @@ class ContractArtistAdminController extends Controller
         ));
     }
 
-    public function editAction($id = null)
+   /* public function editAction($id = null)
     {
         $request = $this->getRequest();
         $em = $this->getDoctrine()->getManager();
@@ -115,7 +116,6 @@ class ContractArtistAdminController extends Controller
 
         $this->admin->setSubject($existingObject);
 
-        /** @var $form Form */
         $form = $this->admin->getForm();
         $form->add('edit_and_mail_reality', SubmitType::class, array(
             'attr' => array('class' => 'btn btn-warning'),
@@ -269,5 +269,6 @@ class ContractArtistAdminController extends Controller
             'form' => $formView,
             'object' => $existingObject,
         ), null);
-    }
+    }*/
+
 }

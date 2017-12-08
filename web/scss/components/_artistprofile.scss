@@ -11,6 +11,18 @@
   }
 }
 
+@include media-breakpoint-up(md) {
+  #artist-profile-photos-carousel {
+    height: 300px;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  #artist-profile-photos-carousel {
+    height: 350px;
+  }
+}
+
 .artist-profile-title {
   min-width: 50%;
   max-width: 80%;
@@ -32,14 +44,6 @@
     padding-right: 2.5rem;
     padding-top: 20px;
   }
-}
-
-.artist-profile-tabs {
-    margin-top: 30px;
-}
-
-.artist-profile-content {
-  margin-top: 2.7rem;
 }
 
 .embed-container {

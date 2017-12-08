@@ -2,30 +2,57 @@
 
 {% block body %}
     <div class="container">
+
+        <h3 class="text-center mb-3">FAQ</h3>
+
         <div class="row">
-            <div class="col-12 col-md-4" id="static-toc">
-                <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md">
+            <div class="col-12 col-md-4 content-box">
+                <div class="content-box-header">
+                    <h3>Liens</h3>
+                </div>
+                <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
                     <ul class="flex-column">
-                        <li class="nav-item"><a href="#about-intro">Un-Mute ASBL</a></li>
-                        <li class="nav-item"><a href="#about-how-it-works">Comment ça marche</a></li>
+                        <li class="nav-item"><a href="{{ path('about') }}">À propos</a></li>
+                        <li class="nav-item"><a href="{{ path('catalog_artists') }}">Catalogue des artistes</a></li>
+                        <li class="nav-item"><a href="{{ path('catalog_halls') }}">Catalogue des salles</a></li>
+                        <li class="nav-item"><a href="{{ path('catalog_crowdfundings') }}">Evénements à venir</a></li>
+                        <li class="nav-item"><a href="{{ path('conditions') }}">Conditions d'utilisation</a></li>
+                        <li class="nav-item"><a href="{{ path('suggestionBox') }}">Contact</a></li>
                     </ul>
                 </nav>
             </div>
 
-            <div class="col-12 col-md-8 static-content">
-                <h3 id="about-intro">À propos</h3>
-                <p>
-                    Un-Mute ASBL vise l'émancipation de la scène musicale belge en produisant, sans distinctions, les artistes qui auront été choisis par leurs fans.
-                    Elle propose une plateforme interactive et accessible qui facilite l'organisation de concerts en Belgique grâce à un système de financement participatif. Il s'agit d'un véritable carrefour de rencontres entre des artistes belges, différentes catégories de salles et des fans producteurs.
-                </p>
-
-                <h3 id="about-how-it-works">Comment ça fonctionne ?</h3>
-                <p>
-                    Une fois inscrit dans le catalogue des groupes, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement ( = concept de fan producteur).
-                    Pour que cet événement devienne un concert confirmé, il faut qu'un certain nombre de places aient été vendues dans les temps impartis.
-                    Si ce nombre minimum de places est atteint : le concert a lieu ! De plus, ce concert peut engendrer jusqu'à 2 concerts supplémentaires en Belgique grâce au système de tournée multi-locale
-                    Si ce nombre minimum de places n'est pas atteint, le concert n'a pas lieu, les fans sont remboursés intégralement et l'artiste peut retenter sa chance en créant un autre événement !
-                </p>
+            <div class="col-12 col-md-8 static-content content-box">
+                <div class="content-box-content content-box-content-zones">
+                    <div class="content-box-content-zone">
+                        <div class="um-label um-semi-bold mb-3" >
+                            Vous dites pouvoir organiser jusqu’à deux concerts supplémentaires une fois un concert débloqué, comment cela est-il possible&nbsp;?
+                        </div>
+                        <p>
+                            Un-Mute prévoit dans ses budgets la prise en compte de cachets pour l’Artiste ayant initié l’événement, mais également pour une ou deux premières parties.
+                        </p>
+                        <p>
+                            Le fait de prendre en considération la rémunération de premières parties permet à Un-Mute de développer le principe de tournée multi-locale.
+                        </p>
+                        <p>
+                            En d’autres mots, comme chaque Artiste qui débloque un concert, débloque en réalité le budget suffisant pour se payer deux premières parties lors de son concert qu’il a rempli avec sa fan-base, Un-Mute Asbl proposera deux autres artistes membres de la plate-forme au concert en question. En contrepartie, l’Artiste aura l’occasion de jouer les premières parties, dans les salles remplies par les fan-bases de ses deux Artistes invités.
+                        </p>
+                    </div>
+                    <div class="content-box-content-zone" id="about-intro">
+                        <div class="um-label um-semi-bold mb-3" >
+                            Je ne sais malheureusement plus me rendre à un concert que j’ai co-produit, que puis-je faire&nbsp;?
+                        </div>
+                        <p>
+                            Dans le cas où vous ne pouvez plus vous rendre à un concert après sa confirmation, le remboursement n’est plus possible. Un-Mute vous propose de remplacer un ticket confirmé par un ticket pour n’importe quel autre concert confirmé.
+                        </p>
+                    </div>
+                    <div class="content-box-content-zone" id="about-intro">
+                        <div class="um-label um-semi-bold mb-3" >Qu’entendez-vous par concert confirmé&nbsp;?</div>
+                        <p>
+                            Un-Mute distingue les &laquo;&nbsp;événements&nbsp;&raquo;, qui sont une tentative d’un artiste de débloquer un concert à une certaine date, des &laquo;&nbsp;concerts confirmés&nbsp;&raquo; qui sont un événement pour lequel suffisament de producteurs ont acheté de tickets avant la fin du délai imparti.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

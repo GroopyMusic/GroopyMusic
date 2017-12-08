@@ -782,7 +782,7 @@
       </trans-unit>
       <trans-unit id="7d5a04a8fefa044bcab6fb5c1a362e98ba7d1ded" resname="labels.contractartist.accept_conditions">
         <source>labels.contractartist.accept_conditions</source>
-        <target>J'accepte les conditions générales d'utilisation</target>
+        <target>J'ai lu et j'accepte les conditions générales d'utilisation</target>
         <jms:reference-file line="72">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Form\ContractArtistType.php\</jms:reference-file>
       </trans-unit>
       <trans-unit id="f5db906e4f9f2950368914867f98cf659d4181f9" resname="labels.contractartist.artist">

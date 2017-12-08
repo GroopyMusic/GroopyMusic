@@ -4,15 +4,21 @@
 
 {% block fos_user_content %}
     <div class="container">
-        <h3 class="rounded-title">Bienvenue sur Un-Mute</h3>
-        {% if app.user %}
-            <p class="text-center">{{ 'registration.confirmed'|trans({'%username%': user.firstname}) }}</p>
-        {% else %}
-            <p class="text-center">Vous avez bien vérifié votre compte. Bienvenue chez Un-Mute !</p>
-        {% endif %}
+        <h3 class="text-center mb-3">Bienvenue sur Un-Mute</h3>
 
-        {% if targetUrl %}
-            <p><a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a></p>
-        {% endif %}
+        <div class="content-box">
+            <div class="content-box-contenr">
+                {% if app.user %}
+                    <p class="text-center">{{ 'registration.confirmed'|trans({'%username%': user.firstname}) }}</p>
+                {% else %}
+                    <p class="text-center">Vous avez bien vérifié votre compte. Bienvenue chez Un-Mute !</p>
+                {% endif %}
+
+                {% if targetUrl %}
+                    <p><a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a></p>
+                {% endif %}
+            </div>
+        </div>
+
     </div>
 {% endblock fos_user_content %}

@@ -8,7 +8,7 @@
     {{ email_content('concert.artist.reminder', {
                 '%days%': days,
                 '%artist%': artist,
-    }) }}
+    })|raw }}
 {% endblock %}
 
 {% endautoescape %}

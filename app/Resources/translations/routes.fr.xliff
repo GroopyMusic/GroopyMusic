@@ -640,7 +640,7 @@
       </trans-unit>
       <trans-unit id="f8eb525d26e1bfccf25865e02eef17703b609c66" resname="conditions">
         <source>/conditons</source>
-        <target>/conditons-generales-utilisation</target>
+        <target>/conditons-generales</target>
       </trans-unit>
       <trans-unit id="e75bc04532a5639ed1e96d1a467f9ce694094864" resname="faq">
         <source>/faq</source>

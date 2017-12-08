@@ -73,7 +73,7 @@
                             </td>
                             <td class="text-center">
                                 <a href="{{ path('user_get_order', {'id': cart.id}) }}"
-                                   download="um_commande_{{ cart.first.id }}.pdf">PDF</a>
+                                   download="um_commande_{{ cart.first.id }}.pdf"><img src="{{ asset('images/download.svg') }}" class="responsive-img" /></a>
                             </td>
                             <td class="text-center">
                                 {% if cart.first.contractArtist.ticketsSent %}

@@ -23,10 +23,10 @@ class MailDispatcher
 
     const TO = ["no-reply@un-mute.be"];
 
-    const REPLY_TO = "info@un-mute.be";
+    const REPLY_TO = "pierre@un-mute.be";
     const REPLY_TO_NAME = "Un-Mute ASBL";
 
-    const ADMIN_BCC = ["gonzyer@gmail.com"];
+    const ADMIN_BCC = ["pierre@un-mute.be", "gonzague@un-mute.be"];
 
     private $mailer;
     private $from_address;

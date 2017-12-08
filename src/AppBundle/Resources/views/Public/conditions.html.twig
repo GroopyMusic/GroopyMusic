@@ -1,7 +1,44 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <div class="container-fluid" style="padding-top:0 !important;">
+        <div class="row">
+            <div class="col-12 col-md-4 content-box">
+                <div id="static-toc" class="fixed-toc col-12 col-md-4">
+                    <div class="content-box-header">
+                        <h3>Navigation</h3>
+                    </div>
+                    <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
+                        <ul class="flex-column">
+                            <li class="nav-item"><a href="#cgu">Conditions générales d'utilisation</a></li>
+                            <li class="nav-item"><a href="#cgv">Conditions générales de vente</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-8 static-content">
+                <div class="content-box">
+                    <div id="cgu" class="content-box-content">
+                        <h3>Conditions générales d'utilisation</h3>
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+                <div class="content-box mt-4">
+                    <div id="cgv" class="content-box-content">
+                        <h3>Conditions générales de vente</h3>
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+            </div>
 
 
 
+
+        </div>
+    </div>
 {% endblock %}

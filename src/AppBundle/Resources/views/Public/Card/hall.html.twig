@@ -21,6 +21,10 @@
         {% endfor %}
     {% endif %}
 
+    {% if no_rotation_hall is defined and no_rotation_hall %}
+        {% set rotation = false %}
+    {% endif %}
+
     <div class="um-card{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
 
         <div class="um-card-header" style="background-image: url({{ src }});">

@@ -1,5 +1,18 @@
 {% extends 'base.html.twig' %}
 
+{% block open_graph %}
+    <meta property="og:title" content="{{ hall }} | Un-Mute"  />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
+    {% set og_src = absolute_url(asset('images/hall-card-default.jpg')) %}
+    {% set photos = hall.photos %}
+
+    {% if photos is not empty %}
+        {% set og_src = absolute_url(asset(hall.webPath(photos|first))) %}
+    {% endif %}
+    <meta property="og:image" content="{{ og_src }}" />
+{% endblock %}
+
 {% block headtitle %}{{ hall.name }}{% endblock %}
 
 {% block body %}

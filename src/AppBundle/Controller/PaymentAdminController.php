@@ -18,6 +18,7 @@ class PaymentAdminController extends Controller
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->configure();
     }
 
     public function refundAction(Request $request, UserInterface $user) {

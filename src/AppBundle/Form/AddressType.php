@@ -56,6 +56,7 @@ class AddressType extends AbstractType
                 'placeholder' => 'Pays',
                 'required' => true,
                 'constraints' => [
+                    new NotBlank(),
                     new Country()
                 ]
             ))

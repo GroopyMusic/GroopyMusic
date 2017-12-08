@@ -1,6 +1,8 @@
 body {
   padding-right: 0 !important;
   overflow-x: hidden !important;
+  font-family:$font;
+  font-weight: 400;
 }
 
 .bg-body, body {
@@ -9,7 +11,7 @@ body {
 
 main {
   padding-top: 50px;
-  padding-bottom: 70px;
+  padding-bottom: 40px;
 }
 
 .noscript-warning {
@@ -51,4 +53,12 @@ main {
   .container-large-margins {
     margin: auto 20%;
   }
+}
+
+.um-light {
+  font-weight:300;
+}
+
+.um-semi-bold, strong {
+  font-weight: 600;
 }

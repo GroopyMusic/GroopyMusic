@@ -1,6 +1,5 @@
 #headline {
-  @extend .font-weight-bold;
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin-bottom: 3rem;
   margin-top: 3rem;
   font-family: $headline-font;
@@ -56,14 +55,14 @@
   }
 
   .form-control {
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
   }
 
   .input-group-addon {
     padding: 0 ;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
     button.btn {
       border-radius:inherit;
     }

@@ -23,14 +23,13 @@ $spacer: 1.2rem;
 // typos =
 // =======
 
-@import url('https://fonts.googleapis.com/css?family=Montserrat');
-@import url('https://fonts.googleapis.com/css?family=Lato');
-@import url('https://fonts.googleapis.com/css?family=Exo+2');
-@import url('https://fonts.googleapis.com/css?family=Bad+Script');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Exo+2|Lato|Barlow+Condensed|Passion+One|Satisfy');
 
-$headline-font: 'Bad Script', cursive;
+
+$headline-font: 'Satisfy', cursive;
 $headline-color: white;
 $secondary-font: 'Exo 2', sans-serif;
+$font: 'Montserrat', 'sans-serif';
 
 // main paddings/margins
 

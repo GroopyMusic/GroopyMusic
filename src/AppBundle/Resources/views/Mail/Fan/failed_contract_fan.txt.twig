@@ -8,7 +8,7 @@
     {{ email_content('concert.fan.failure', {
         '%artist%': artist.artistName,
         '%artistCatalogUrl%': absolute_url(path('catalog_artists'))
-    }) }}
+    })|raw }}
 {% endblock %}
 
 {% endautoescape %}

@@ -6,7 +6,7 @@
             <h3 class="text-center mb-3">Soutenez-les !</h3>
 
             <p>
-                Ils souhaitent organiser un concert en Belgique. Ils ont besoin de votre soutien.
+                Les événements suivants ont encore besoin de soutien pour pouvoir être produits !
                 Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs concerts.
             </p>
 
@@ -20,7 +20,7 @@
 
     {% if successful_contracts is not empty %}
         <div class="container">
-            <h3 class="text-center">Ils sont confirmés</h3>
+            <h3 class="text-center mb-3">Ils sont confirmés</h3>
             <div class="row">
                 {% for contract in successful_contracts %}
                     {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'bgwhite': true} %}

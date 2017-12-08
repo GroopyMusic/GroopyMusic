@@ -4,8 +4,12 @@
 
 {% block fos_user_content %}
     <div class="container">
-        <h3 class="rounded-title">Inscription</h3>
+        <h3 class="text-center mb-3">Inscription</h3>
 
-        <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
+        <div class="content-box">
+            <div class="content-box-contenr">
+                <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
+            </div>
+        </div>
     </div>
 {% endblock fos_user_content %}

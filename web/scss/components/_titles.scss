@@ -40,11 +40,11 @@
     @extend .small;
     &-bold {
       @extend .um-label-small;
-      @extend .font-weight-bold;
+      font-weight: 600;
     }
   }
   &-bold {
     @extend .um-label;
-    @extend .font-weight-bold;
+    font-weight: 600;
   }
 }

@@ -72,10 +72,13 @@ header {
     max-width: initial;
   }
 
-  #dropdownMenuButton, .btn.btn-primary.header-button {
+  #dropdownMenuButton, .btn.btn-primary.header-button, #notifs-toggler {
     background: transparent;
     border: 1px solid #9D9D9D;
     color: $main-color;
+  }
+
+  .btn.btn-primary.header-button {
     @extend .px-3;
   }
 

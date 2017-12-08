@@ -17,6 +17,8 @@ class BaseStep implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
 
+    const TYPE_CONCERT = 'concert';
+
     public function __call($method, $arguments)
     {
         try {
@@ -232,4 +234,22 @@ class BaseStep implements TranslatableInterface
     {
         return $this->requiredAmount;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+
 }

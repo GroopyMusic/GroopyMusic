@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Province;
+use AppBundle\Entity\Step;
 
 /**
  * HallRepository
@@ -10,4 +12,18 @@ namespace AppBundle\Repository;
  */
 class HallRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findPotential(Step $step, Province $province = null) {
+        $qb = $this->createQueryBuilder('h')
+            ->where('h.step = :step')
+            ->setParameter('step', $step)
+        ;
+
+        if($province != null) {
+            $qb->andWhere('h.province = :province')
+            ->setParameter('province', $province);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

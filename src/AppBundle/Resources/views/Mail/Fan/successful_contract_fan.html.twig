@@ -8,7 +8,7 @@
                 '%artist%': contract.artist.artistName,
                 '%hall%': contract.reality.hall.name,
                 '%artistCatalogUrl%': absolute_url(path('catalog_artists'))
-            }) }}
+            })|raw }}
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

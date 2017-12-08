@@ -2,15 +2,23 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="rounded-title">Rejoindre {{ request.artist.artistname }}</h3>
+        <h3 class="text-center mb-3">Rejoindre {{ request.artist.artistname }}</h3>
+
         {% if request.cancelled %}
-            <p>Cette requête a été annulée par son émetteur.</p>
+            <p class="alert alert-error">Cette requête a été annulée par son émetteur.</p>
         {% else %}
-            <p>L'utilisateur {{ request.demander.displayName }} souhaite que vous le rejoigniez dans la gestion de l'artiste {{ request.artist.artistname }}.
-            {{ form_start(form) }}
-                {{ form_row(form.accept) }}
-                {{ form_row(form.refuse) }}
-            {{ form_rest(form) }}
+            <div class="content-box">
+                <div class="content-box-content">
+                    <p>
+                        L'utilisateur {{ request.demander.displayName }} souhaite que vous le rejoigniez dans la gestion de l'artiste <a target="_blank" href="{{ path('artist_profile', {'id': request.artist.id}) }}">{{ request.artist.artistname }}</a>.
+                    </p>
+                        {{ form_start(form) }}
+                            {{ form_row(form.accept) }}
+                            {{ form_row(form.refuse) }}
+                        {{ form_rest(form) }}
+                </div>
+            </div>
+
         {% endif %}
     </div>
 {% endblock %}

@@ -13,7 +13,7 @@ class Step extends BaseStep
     public function __construct()
     {
         parent::__construct();
-        $this->type = 'concert';
+        $this->type = parent::TYPE_CONCERT;
         $this->delay = 60;
         $this->delay_margin = 30;
         $this->deadline_duration = 30;

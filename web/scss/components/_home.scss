@@ -1,0 +1,12 @@
+#join-us {
+  background-image: url('../images/join-us-bg.jpg');
+  background-size: cover;
+  background-position: center;
+
+  @extend .text-white;
+
+  p {
+    @extend .um-light;
+    @extend .mt-4;
+  }
+}

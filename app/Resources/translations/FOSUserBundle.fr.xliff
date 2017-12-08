@@ -77,9 +77,7 @@
 
 Merci pour votre inscription ! Votre compte Un-Mute a bien été créé. 
 
-Pouvez-vous nous confirmer que votre adresse mail est bien correcte en cliquant sur le lien suivant : %confirmationUrl% ?
-
-À bientôt pour de nouvelles découvertes musicales !</target>
+Pouvez-vous nous confirmer que votre adresse mail est bien correcte en cliquant sur le lien suivant : %confirmationUrl% ?</target>
         <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\registration_confirmation.html.twig</jms:reference-file>
         <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Resources\views\Mail\User\registration_confirmation.txt.twig</jms:reference-file>
         <jms:reference-file line="10">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Registration\email.txt.twig</jms:reference-file>

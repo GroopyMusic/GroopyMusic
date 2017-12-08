@@ -244,6 +244,7 @@ class PublicController extends Controller
     public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract) {
 
         $em = $this->getDoctrine()->getManager();
+        $potential_halls = $em->getRepository('AppBundle:Hall')->findPotential($contract->getStep(), $contract->getProvince());
 
         $cf = new ContractFan($contract);
         $form = $this->createForm(ContractFanType::class, $cf);
@@ -289,6 +290,7 @@ class PublicController extends Controller
         return $this->render('@App/Public/artist_contract.html.twig', array(
             'contract' => $contract,
             'form' => $form->createView(),
+            'potential_halls' => $potential_halls,
         ));
     }
 

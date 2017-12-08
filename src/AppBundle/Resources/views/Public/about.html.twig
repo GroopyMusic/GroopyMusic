@@ -2,6 +2,9 @@
 
 {% block body %}
     <div class="container-fluid" style="padding-top:0 !important;">
+
+        <h2 class="text-center mb-3">À propos</h2>
+
         <div class="row">
             <div class="col-12 col-md-4 content-box">
                 <div id="static-toc" class="fixed-toc col-12 col-md-4">
@@ -10,11 +13,12 @@
                     </div>
                     <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
                         <ul class="flex-column">
-                            <li class="nav-item"><a href="#about-intro">Un-Mute ASBL</a></li>
+                            <li class="nav-item"><a href="#about-intro">Le concept Un-Mute</a></li>
                             <li class="nav-item"><a href="#about-how-it-works">Comment ça fonctionne ?</a></li>
-                            <li class="nav-item"><a href="#advantages-artists">Avantages pour les artistes</a></li>
-                            <li class="nav-item"><a href="#advantages-producers">Avantages pour les producteurs</a></li>
-                            <li class="nav-item"><a href="#advantages-halls">Avantages pour les salles</a></li>
+                            <li class="nav-item"><a href="#advantages-artists">Avantages artistes</a></li>
+                            <li class="nav-item"><a href="#advantages-producers">Avantages producteurs</a></li>
+                            <li class="nav-item"><a href="#advantages-halls">Avantages salles</a></li>
+                            <li class="nav-item"><a href="#more-info">Plus d'infos</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -23,65 +27,78 @@
             <div class="col-12 col-md-8 static-content content-box">
                 <div class="content-box-content content-box-content-zones">
                     <div class="content-box-content-zone" id="about-intro">
-                        <h3>À propos</h3>
+                        <h3>Le concept Un-Mute</h3>
                         <p>
-                            Un-Mute ASBL vise l'émancipation de la scène musicale belge en produisant, sans distinctions, les artistes qui auront été choisis par leurs fans.
-                            Elle propose une plateforme interactive et accessible qui facilite l'organisation de concerts en Belgique grâce à un système de financement participatif. Il s'agit d'un véritable carrefour de rencontres entre des artistes belges, différentes catégories de salles et des fans producteurs.
+                            Un-Mute Asbl vise l'émancipation de la scène musicale belge en produisant, sans distinction, les artistes qui auront été choisis par leurs fans.
+                        </p>
+                        <p>
+                            Elle propose une <strong>plateforme interactive et accessible</strong> qui <strong>facilite l'organisation de concerts en Belgique</strong> grâce à un <strong>système de financement participatif</strong>.
+                            Il s'agit d'un véritable carrefour de rencontres entre des artistes belges, différentes catégories de salles et des fans producteurs.
                         </p>
                     </div>
 
                     <div class="content-box-content-zone" id="about-how-it-works">
                         <h3>Comment ça fonctionne ?</h3>
                         <p>
-                            Une fois inscrit dans le catalogue des groupes, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement ( = concept de fan producteur).
-                            Pour que cet événement devienne un concert confirmé, il faut qu'un certain nombre de places aient été vendues dans les temps impartis.
-                            Si ce nombre minimum de places est atteint : le concert a lieu ! De plus, ce concert peut engendrer jusqu'à 2 concerts supplémentaires en Belgique grâce au système de tournée multi-locale
+                            Une fois inscrit dans le <a href="{{ path('catalog_artists') }}">catalogue des groupes</a>, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement.
+                            Ces fans, de par leur financement de l'événement, deviennent alors les réels producteurs de ce concert.
+                        </p>
+                        <p>
+                            <strong>Pour que cet événement devienne un concert confirmé,</strong> il faut qu'un certain nombre de places aient été vendues dans les temps impartis (30 jours).
+                        </p>
+                        <p>
+                            <strong>Si ce nombre minimum de places est atteint,</strong> le concert a lieu ! De plus, ce concert peut engendrer jusqu'à 2 concerts supplémentaires en Belgique
+                            grâce au système de <a href="#" data-toggle="popover" title="Tournée multi-locale"
+                                                   data-content="Un-Mute donne une chance à chaque artiste belge de remporter jusqu'à 3 concerts dans différentes salles en Belgique grâce au principe de financement participatif. <a href='{{ path('faq') }}'>Plus d'infos</a>">tournée multi-locale</a>.
+                        </p>
+                        <p>
                             Si ce nombre minimum de places n'est pas atteint, le concert n'a pas lieu, les fans sont remboursés intégralement et l'artiste peut retenter sa chance en créant un autre événement !
                         </p>
                     </div>
 
                     <div class="content-box-content-zone" id="advantages-artists">
-                        <h3>Avantages pour les artistes</h3>
-                        <ul>
-                            <li>Inscription  100% gratuite et accessible à tout artiste qui souhaite se lancer</li>
-                            <li>Aucune prise de risque financière pour les groupes ni pour leurs fans</li>
-                            <li>Possibilité de décrocher jusqu'à 2 concerts supplémentaires une fois un concert débloqué</li>
-                            <li>Opportunité de toucher/fidéliser de nouveaux fans</li>
-                            <li>Découverte de nouveaux groupes et de lieux musicaux/culturels belges (concept de tournée multi-locale et de programme d'échanges d'artistes entre lieux)</li>
-                            <li>Intégration au réseau d'artistes belges "Un-Mute" et d'un catalogue d'artistes variés</li>
-                            <li>Rémunération correcte et défraiements prévus dans le cas où le concert à lieu</li>
-                            <li>Possibilité d'évolution et de diffusion pour les plus petits artistes émergents</li>
-                            <li>Autres</li>
+                        <h3>Vos avantages en tant qu'Artiste</h3>
+                        <ul class="um-list">
+                            <li><strong>Inscription</strong> 100% <strong>gratuite et accessible</strong> à tout artiste qui souhaite se lancer</li>
+                            <li><strong>Aucune prise de risque financière</strong> pour les groupes ni pour leurs fans</li>
+                            <li>Possibilité de <strong>décrocher jusqu'à 2 concerts supplémentaires</strong> une fois un concert débloqué</li>
+                            <li>Opportunité de toucher et <strong>fidéliser de nouveaux fans</strong></li>
+                            <li>Découverte de <strong>nouveaux groupes et de lieux musicaux/culturels belges</strong></li>
+                            <li><strong>Intégration au réseau</strong> d'artistes belges "Un-Mute" et d'un catalogue d'artistes variés</li>
+                            <li><strong>Rémunération correcte et défraiements</strong> prévus dans le cas où le concert à lieu</li>
+                            <li>Possibilité <strong>d'évolution</strong> et de <strong>diffusion</strong> pour les plus <strong>petits artistes émergents</strong></li>
                         </ul>
                     </div>
 
                     <div class="content-box-content-zone" id="advantages-producers">
-                        <h3>Avantages pour les producteurs</h3>
-                        <ul>
-                            <li>Co-production et participation au concert de l'artiste de votre choix (//mécénat)</li>
-                            <li>Système de financement sans risque (remboursement intégral si le concert n'a pas lieu)</li>
-                            <li>Accès à un catalogue d'artistes variés et de différents types de groupes musicaux belges</li>
-                            <li>Rôle actif dans la construction de la scène musicale belge de demain</li>
-                            <li>Contribution à la promotion de la culture musicale belge</li>
-                            <li>Soutien de la musique belge locale, proche de chez vous</li>
-                            <li>Tremplin possible pour les plus petits groupes belges émergents</li>
-                            <li>Découverte de lieux musicaux/culturels belges</li>
-                            <li>Garantie d'une rémunération correcte et défraiements des groupes/artistes produits</li>
-                            <li>Autres</li>
+                        <h3>Vos avantages en tant que Producteur</h3>
+                        <ul class="um-list">
+                            <li><strong>Co-production et participation au concert de l'artiste de votre choix</strong></li>
+                            <li><strong>Système de financement sans risque</strong> grâce au remboursement intégral si le concert n'a pas lieu</li>
+                            <li><strong>Accès à un catalogue d'artistes variés</strong> et de différents types de groupes musicaux belges</li>
+                            <li><strong>Rôle actif</strong> dans la construction de <strong>la scène musicale belge de demain</strong></li>
+                            <li>Contribution à la <strong>promotion de la culture musicale belge</strong></li>
+                            <li><strong>Tremplin</strong> possible pour les plus petits groupes belges émergents</li>
+                            <li><strong>Découverte</strong> de <strong>lieux</strong> musicaux/culturels belges</li>
+                            <li><strong>Garantie d'une rémunération correcte et défraiements</strong> des groupes/artistes produits</li>
                         </ul>
                     </div>
 
                     <div class="content-box-content-zone" id="advantages-halls">
-                        <h3>Avantages pour les salles partenaires ? Ils nous ont dit oui</h3>
-                        <ul>
-                            <li>Organisation de concerts automatisées/facilitées par la plateforme Un-Mute</li>
-                            <li>Aucune prise de risque financière (garanties sur un nombre minimum de places vendues par concert)</li>
-                            <li>Garantie d’une soirée réussie et rentable (une salle pleine fait tourner le bar et génère donc de nombreux bénéfices en plus pour  la salle)</li>
-                            <li>Mise en avant de la salle au sein d’un réseau d’artistes et fans belges</li>
-                            <li>Promotion de la salle via les canaux de diffusion de l'asbl (page facebook, etc.)</li>
-                            <li>Revalorisation du secteur musical belge via le système de financement durable et social</li>
-                            <li>Autres</li>
+                        <h3>Vos avantages en tant que salle partenaire</h3>
+                        <ul class="um-list">
+                            <li><strong>Organisation de concerts automatisée et facilitée</strong> par la plateforme Un-Mute</li>
+                            <li><strong>Aucune prise de risque financière</strong> (garanties sur un nombre minimum de places vendues par concert)</li>
+                            <li>Garantie d’une <strong>soirée réussie</strong> dans une salle comble</li>
+                            <li><strong>Mise en avant de la salle au sein d'un réseau</strong> d’artistes et fans belges</li>
+                            <li><strong>Promotion de la salle via les canaux de diffusion de l'asbl</strong> (page facebook, etc.)</li>
+                            <li><strong>Revalorisation du secteur musical belge</strong> via le système de financement durable et social</li>
                         </ul>
+                    </div>
+                    <div class="content-box-content-zone" id="more-info">
+                        <h3>Plus d'infos</h3>
+                        <p>Vous avez des questions sur notre fonctionnement ? Visitez notre <a href="{{ path('faq') }}">FAQ</a>
+                        ou <a href="{{ path('suggestionBox') }}">contactez-nous</a>.</p>
                     </div>
                 </div>
             </div>

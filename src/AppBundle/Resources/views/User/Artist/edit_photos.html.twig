@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block artist_edit_profile_content %}
-    <p>Ajoutez ici jusqu'à 5 photos supplémentaires à votre artiste.</p>
+    <p>Ajoutez ici jusqu'à 5 photos supplémentaires à votre artiste. Choisissez des photos de bonne qualité et de préférence qui suivent le ratio 4 (largeur) / 3 (hauteur).</p>
     <div id="dropzone-2">
         <div id="artist_edit_photos" class="dropzone"></div>
     </div>
@@ -30,7 +30,7 @@
 
             $dropzone.dropzone({
                 url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
-                resizeWidth: 800,
+                resizeWidth: 1000,
                 maxFiles: 5,
                 addRemoveLinks: true,
                  params: {

@@ -16,13 +16,14 @@
 {
   &-content {
     font-size: 1.3em;
+    @extend .um-light;
   }
 
   &-title {
     text-align:center;
     @extend .small;
     @extend .um-label;
-    @extend .font-weight-bold;
+    @extend .um-semi-bold;
   }
 }
 

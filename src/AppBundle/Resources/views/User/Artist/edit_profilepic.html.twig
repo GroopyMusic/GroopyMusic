@@ -8,10 +8,19 @@
 {% endblock %}
 
 {% block artist_edit_profile_content %}
-    <p>Donnez ici une photo de profil à votre artiste</p>
+    <p>
+        Vous pouvez ici mettre en ligne la photo de profil de {{ artist.artistname }}.
+        Cette photo sera la première à apparaître sur les différents visuels de cet artiste sur Un-Mute.
+        Veillez à ce qu'elle soit de bonne qualité et qu'elle ait des dimensions de type 4 (largeur) / 3 (longueur).
+    </p>
+
     <div id="dropzone-1">
         <div id="artist_edit_pp" class="dropzone"></div>
     </div>
+
+    <p class="mt-4">
+        Vous souhaitez ajouter d'autres photos à votre artiste ? <a href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Ajoutez-en jusqu'à 5</a>
+    </p>
 {% endblock %}
 
 {% block javascripts %}
@@ -21,16 +30,20 @@
         $('document').ready(function() {
             var $ppzone =  $("div#artist_edit_pp");
 
+            var mocks = [];
             {% if artist.profilepic is not null %}
-            var ppmock = {
-                name: "{{ artist.profilepic.filename }}",
-                url: "{{ absolute_url(asset(artist.webPath(artist.profilepic))) }}"
-            };
+                {% for photo in [artist.profilepic]  %}
+                    mocks.push({
+                        name: "{{ photo.filename }}",
+                        url: "{{ absolute_url(asset(artist.webPath(photo))) }}",
+                        size: 12345
+                    });
+                {% endfor %}
             {% endif %}
 
             $ppzone.dropzone({
                 url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
-                resizeWidth: 800,
+                resizeWidth: 1200,
                 maxFiles: 1,
                 addRemoveLinks: true,
                 params: {
@@ -63,15 +76,19 @@
                     });
                 },
                 init: function() {
-                    if(ppmock) {
-                        this.files.push(ppmock);
-                        this.createThumbnailFromUrl(ppmock, mppock.url);
-                        this.emit('addedfile', ppmock);
-                        this.emit("thumbnail", ppmock, ppmock.url);
-                        this.emit('complete', ppmock);
-                    }
+                    var i = 0;
+                    while(i < mocks.length) {
+                        var mock = mocks[i];
+                        mock.accepted = true;
 
-                    $ppzone.options.maxFiles = 1;
+                        this.files.push(mock);
+                        this.createThumbnailFromUrl(mock, mock.url);
+                        this.emit('addedfile', mock);
+                        this.emit("thumbnail", mock, mock.url);
+                        this.emit('complete', mock);
+                        i++;
+                    }
+                    $ppzone.options.maxFiles = $ppzone.options.maxFiles - i;
                 },
                 success: function(file, serverResponse) {
                     file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;

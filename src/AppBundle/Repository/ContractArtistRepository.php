@@ -15,14 +15,23 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
     public function findNewContracts($max) {
         return $this->createQueryBuilder('c')
-            ->innerJoin('c.artist', 'a')
+            ->join('c.artist', 'a')
+            ->join('c.step', 's')
+            ->join('c.preferences', 'p')
+            ->leftJoin('c.reality', 'r')
             ->addSelect('a')
-            ->andWhere('a.deleted = 0')
-            ->andWhere('c.failed = 0')
-            ->orderBy('c.date', 'desc')
+            ->addSelect('s')
+            ->addSelect('r')
+            ->addSelect('p')
+            ->where('c.failed = 0')
+            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
+            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
+            ->orderBy('p.date', 'desc')
+            ->setParameter('now', new \DateTime('now'))
             ->setMaxResults($max)
             ->getQuery()
             ->getResult()
+
         ;
     }
 
@@ -91,6 +100,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('p')
             ->where('c.failed = 0')
             ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
+            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
             ->andWhere('c.tickets_sold < s.max_tickets')
         ;
 
@@ -99,6 +109,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $qb
+            ->orderBy('p.date', 'asc')
             ->setParameter('now', new \DateTime('now'))
             ->getQuery()
             ->getResult()

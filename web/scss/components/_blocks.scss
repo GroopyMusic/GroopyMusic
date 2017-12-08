@@ -1,9 +1,10 @@
 .p-info {
-  background-color: lightgray;
+  background-color: rgba(245,227,180, 0.86);
   border: 1px black dotted;
+  border-radius: 20px;
   padding: 10px;
 
-a {
-    color: $secondary-link-color;
+  a {
+      color: $secondary-link-color;
   }
 }
