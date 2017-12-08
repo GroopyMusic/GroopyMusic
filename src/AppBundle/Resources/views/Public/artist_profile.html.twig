@@ -1,18 +1,5 @@
 {% extends "base.html.twig" %}
 
-{% block open_graph %}
-    <meta property="og:title" content="{{ artist.artistname }} | Un-Mute"  />
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
-    {% set og_src = absolute_url(asset('images/artist-card-default.jpg')) %}
-    {% set photos = artist.allPhotos %}
-
-    {% if photos is not empty %}
-        {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
-    {% endif %}
-    <meta property="og:image" content="{{ og_src }}" />
-{% endblock %}
-
 {% block headtitle %}{{ artist.artistname }}{% endblock %}
 
 {% block body %}
@@ -61,11 +48,10 @@
         </ul>
 
         <div class="content-box">
-            <div class="tab-content artist-profile-content content-box-content border-left">
+            <div class="tab-content artist-profile-content content-box-content border-left pl-md-5">
                 <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
                     <p>{{ artist.getShortDescription()|nl2br }}</p>
                     {% set currentContract = artist.currentContract %}
-
 
                     <h3 class="mt-4">Vidéos</h3>
                     {% for video in artist.videos %}

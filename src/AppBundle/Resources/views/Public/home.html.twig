@@ -13,21 +13,20 @@
 
 {% block body_attributes %}class="bg-white"{% endblock %}
 {% block footer_attributes %}class="footer mt-0"{% endblock %}
+{% block main_attributes %}class="pt-3"{% endblock %}
 
 {% block body %}
 
     <div class="container-fluid">
+        <h3 class="text-center mb-4">Concept</h3>
         <div class="row">
-            <div class="col-12 text-center mb-4">
-                <h3>Concept</h3>
-            </div>
             <div class="col-12 col-md-6">
-                <p class="mb-5">
+                <p class="mb-4">
                     Vous souhaitez participer à l'émancipation de la scène musicale belge&nbsp;? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique&nbsp;?
                 </p>
             </div>
             <div class="col-12 col-md-6">
-                <p class="mb-5">
+                <p class="mb-4">
                     Un-Mute Asbl sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur",
                     vous êtes acteur dans la construction de la scène musicale belge de demain via un système de financement participatif
                     qui ne vous fait prendre <a href="{{ path('about') }}">aucun risque</a>.
@@ -36,7 +35,7 @@
         </div>
     </div>
 
-    <div class="container-fluid bg-body">
+    <div class="container-fluid bg-body-strong">
         <div class="row">
             <div class="col-12 col-md-3">
                 <h3>Concerts</h3>
