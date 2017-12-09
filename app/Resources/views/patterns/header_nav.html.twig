@@ -1,6 +1,6 @@
 {% macro menu_logo(home_header = false) %}
     <li id="menuLogo" {% if not home_header %}class="d-none d-lg-inline-block"{% else %}style="display:none;"{% endif %}>
-        <a {% if not home_header %}href="{{ path('homepage') }}"{% else %}class="scroll" href="#header"{% endif %}><img id="nav-logo" src="{{ asset('images/logo.png') }}" /></a>
+        <a {% if not home_header %}href="{{ path('homepage') }}"{% else %}class="scroll" href="#header"{% endif %}><img id="nav-logo" src="{{ asset('images/wave.svg') }}" /></a>
     </li>
 {% endmacro %}
 
