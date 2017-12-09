@@ -632,7 +632,7 @@
       </trans-unit>
       <trans-unit id="9a86ea6b80912b0a94c1eb9ad6129ba6e04f2047" resname="catalog_crowdfundings">
         <source>/crowdfundings</source>
-        <target>/crowdfundings</target>
+        <target>/evenements</target>
       </trans-unit>
       <trans-unit id="503b6ac84860b76a00a62373a9d97c5a5bb035b0" resname="catalog_halls">
         <source>/halls</source>
