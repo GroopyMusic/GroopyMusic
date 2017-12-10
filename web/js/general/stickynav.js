@@ -2,7 +2,6 @@ var $header = $('header');
 var $mainNav = $('#mainNav');
 var $main = $('main');
 var $footer = $('footer');
-var appearances = 0;
 var stickyoffset = $main.offset().top - $mainNav.outerHeight();
 $header.css('min-height', $header.outerHeight());
 
@@ -57,6 +56,8 @@ $(function() {
             if (!$mainNav.hasClass('stickytop')) {
                 $mainNav.addClass('stickytop');
 
+                $('#menuLogo').fadeIn();
+
                 $('header .nav-item').each(function () {
                     $(this).addClass('stickytop')
                 });
@@ -67,9 +68,6 @@ $(function() {
 
                 // Bug fix for logo appearing once too quickly
                // if(appearances > 0 || $(this).scrollTop() > stickyoffset + 10)
-                    $('#menuLogo').fadeIn();
-
-                appearances++;
             }
             if (!$('#static-toc').hasClass('fixed-toc'))
                 $('#static-toc').addClass('fixed-toc');
