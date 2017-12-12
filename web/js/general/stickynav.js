@@ -53,10 +53,11 @@ $(function() {
 
     $(window).scroll(function () {
         if ($(this).scrollTop() > stickyoffset) {
+            $('#menuLogo').fadeIn();
+
             if (!$mainNav.hasClass('stickytop')) {
                 $mainNav.addClass('stickytop');
 
-                $('#menuLogo').fadeIn();
 
                 $('header .nav-item').each(function () {
                     $(this).addClass('stickytop')
