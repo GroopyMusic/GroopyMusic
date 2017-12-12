@@ -1,0 +1,13 @@
+{% set info_bag = app.request.session.flashbag.get('info') %}
+{% if info_bag is not empty %}
+    <div class="container mb-5">
+        {% for message in info_bag %}
+            <div class="alert p-info alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message|raw }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-28T11:00:56Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-12-12T15:31:11Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -854,6 +854,10 @@
         <source>/user/orders/{id}</source>
         <target>/mes-fichiers/commandes/{id}</target>
       </trans-unit>
+      <trans-unit id="dd3c3e3e2e078b3abc1bac5e820794d9899ef235" resname="user_get_tickets">
+        <source>/user/tickets/{id}</source>
+        <target>mes-fichiers/tickets/{id}</target>
+      </trans-unit>
       <trans-unit id="c9cad337a4e015dd309bd12e3c8702467be1858f" resname="user_my_artists">
         <source>/my-artists</source>
         <target>/mes-artistes</target>
@@ -864,7 +868,11 @@
       </trans-unit>
       <trans-unit id="037e63fda06f63b818f94ed2f0ecc3251c5e1735" resname="user_new_contract_artist">
         <source>/new-crowdfunding</source>
-        <target>/nouveau-crowdfunding</target>
+        <target>/nouvel-evenement-beta</target>
+      </trans-unit>
+      <trans-unit id="6c6d790dbb4c1817e701119a2c6068ed9172b699" resname="user_new_contract_artist_temp">
+        <source>/new-crowdfunding-contact-us</source>
+        <target>/nouvel-evenement-contact</target>
       </trans-unit>
       <trans-unit id="87ba178d1393e55a6fef1270056438fb85fa8e3f" resname="user_notification">
         <source>/inbox/notifications/{id}</source>

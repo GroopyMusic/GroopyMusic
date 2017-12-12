@@ -1,0 +1,26 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            <p>Un nouveau message a été reçu par l'intermédiaire du formulaire de contact.</p>
+
+            <p>
+                Le voici :
+            </p>
+            <ul>
+                <li>Type de demande : {{ suggestionBox.type }}</li>
+                <li>Objet : {{ suggestionBox.object }}</li>
+                {% if suggestionBox.displayName is not empty %}
+                    <li>Expéditeur : {{ suggestionBox.displayName }}</li>
+                {% endif %}
+                {% if suggestionBox.email is not empty %}
+                    <li>E-mail : {{ suggestionBox.email }}</li>
+                {% endif %}
+
+                <li>Message : <br /> {{ suggestionBox.message|nl2br }}</li>
+            </ul>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

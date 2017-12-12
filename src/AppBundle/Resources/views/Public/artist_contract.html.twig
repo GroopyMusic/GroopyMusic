@@ -190,16 +190,13 @@
                         {% if app.user %}
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
+                        {% else %}
+                            <p class="text-italic">Vous devez être connecté pour acheter des tickets ! <a href="{{ path('fos_user_registration_register') }}">Pas encore inscrit ?</a></p>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</button>
                         {% endif %}
+
                     {% else %}
                         <p class="text-uppercase small font-weight-bold">Il n'est plus possible d'acheter des tickets pour cet événement.</p>
-                    {% endif %}
-
-
-
-                    {% if not app.user %}
-                        <p class="text-italic">Vous devez être connecté pour acheter des tickets ! <a href="{{ path('fos_user_registration_register') }}">Pas encore inscrit ?</a></p>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</button>
                     {% endif %}
                     </div>
                 </div>

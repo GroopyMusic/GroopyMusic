@@ -4,6 +4,8 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\SuggestionTypeEnum;
+use AppBundle\Repository\SuggestionTypeEnumRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,6 +31,11 @@ class SuggestionBoxType extends AbstractType
             ->add('type', EntityType::class, array(
                 'label' => 'labels.suggestionbox.type',
                 'class' => SuggestionTypeEnum::class,
+                'query_builder' => function (SuggestionTypeEnumRepository $er) {
+                    return $er->createQueryBuilder('t')
+                        ->leftJoin('t.translations', 'tr')
+                        ->orderBy('tr.name', 'ASC');
+                },
             ))
             ->add('name', TextType::class, array(
                 'label' => 'labels.suggestionbox.name',

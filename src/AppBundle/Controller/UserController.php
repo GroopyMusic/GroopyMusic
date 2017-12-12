@@ -182,6 +182,17 @@ class UserController extends Controller
     }
 
     /**
+     * @Route("/new-crowdfunding-contact-us", name="user_new_contract_artist_temp")
+     */
+    public function newContractTempAction() {
+        $this->addFlash('info', 'Cher artiste, merci d\'avoir montré votre intérêt pour Un-Mute. 
+        Pour organiser votre premier concert par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, 
+         ou d\'envoyer un e-mail à pierre@un-mute.be.');
+
+        return $this->redirectToRoute('suggestionBox');
+    }
+
+    /**
      * @Route("/new-crowdfunding", name="user_new_contract_artist")
      */
     public function newContractAction(UserInterface $user, Request $request) {

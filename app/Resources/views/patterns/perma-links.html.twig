@@ -25,7 +25,7 @@
         <div class="dropdown d-inline-block">
 
             <a id="notifs-toggler" href="{{ path('user_notifications') }}" {% if last_notifs is not empty %}role="button" data-toggle="dropdown" data-target="#"{% endif %} class="btn btn-primary py-0 px-2 px-md-3 mr-1">
-                <img src="{{ asset('images/speaker.svg') }}" class="responsive-img"/>
+                <img src="{{ asset('images/note.svg') }}" class="responsive-img py-2"/>
                 {% if unseen_nb > 0 %}
                     <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
                 {% endif %}

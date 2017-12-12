@@ -5,7 +5,7 @@
     <div class="container">
         <h3 class="text-center mb-4">Contact & boîte à idées</h3>
 
-        <p mb-3>
+        <p class="mb-3">
             Une idée ? Une question ? Un conseil ? Un intérêt pour le projet ?
             Vous êtes au bon endroit. Remplissez le formulaire suivant pour nous contacter ; nous vous répondrons dans les plus brefs délais !
         </p>
@@ -79,7 +79,7 @@
             $('.suggestionBoxForm').submit(function(e) {
                 e.preventDefault();
 
-                if($('#suggestion_form_email') && !$('#suggestion_form_email').find('input').val()) {
+                if($('#suggestion_form_email').length && !$('#suggestion_form_email').find('input').val()) {
                     $('#suggestionmodal').modal('show');
                 }
 

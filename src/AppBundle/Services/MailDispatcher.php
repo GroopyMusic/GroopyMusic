@@ -10,6 +10,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Newsletter;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
+use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Spipu\Html2Pdf\Html2Pdf;
@@ -49,12 +50,12 @@ class MailDispatcher
         $this->twig = $twig;
     }
 
-    private function sendEmail($template, $subject, array $params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '') {
+    private function sendEmail($template, $subject, array $params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
 
         // CASE 1 : # of recipients is reasonable -> one mail
         if(count($to) + count($bcc_emails) <= self::MAX_BCC) {
             $this->mailer->sendEmail($failedRecipients, $subject, $this->from_address, $this->from_name, $to, $to_name, [], '',
-                $bcc_emails, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+                $bcc_emails, '', $reply_to, $reply_to_name, array_merge(['subject' => $subject], $params), $template, $attachments);
             return $failedRecipients;
         }
 
@@ -66,7 +67,7 @@ class MailDispatcher
 
             foreach($bcc_chunks as $chunk)  {
                 $this->mailer->sendEmail($newFailedRecipients, $subject, $this->from_address, $this->from_name, $to, $to_name, [], '',
-                    $chunk, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+                    $chunk, '', $reply_to, $reply_to_name, array_merge(['subject' => $subject], $params), $template, $attachments);
                 $failedRecipients = array_merge($failedRecipients, $newFailedRecipients);
             }
         }
@@ -80,7 +81,7 @@ class MailDispatcher
 
             foreach($bcc_chunks as $chunk)  {
                 $this->mailer->sendEmail($newFailedRecipients, $subject, $this->from_address, $this->from_name, self::TO, '', [], '',
-                    $chunk, '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+                    $chunk, '', $reply_to, $reply_to_name, array_merge(['subject' => $subject], $params), $template, $attachments);
                 $failedRecipients = array_merge($failedRecipients, $newFailedRecipients);
             }
 
@@ -88,7 +89,7 @@ class MailDispatcher
 
             foreach($to_chunks as $chunk)  {
                 $this->mailer->sendEmail($newFailedRecipients, $subject, $this->from_address, $this->from_name, $chunk, '', [], '',
-                    '', '', self::REPLY_TO, self::REPLY_TO_NAME, array_merge(['subject' => $subject], $params), $template, $attachments);
+                    '', '', $reply_to, $reply_to_name, array_merge(['subject' => $subject], $params), $template, $attachments);
                 $failedRecipients = array_merge($failedRecipients, $newFailedRecipients);
             }
         }
@@ -96,8 +97,8 @@ class MailDispatcher
         return $failedRecipients;
     }
 
-    private function sendAdminEmail($template, $subject, array $params = [], array $attachments = []) {
-        return $this->sendEmail($template, $subject, $params, self::ADMIN_BCC, $attachments, [], '');
+    private function sendAdminEmail($template, $subject, array $params = [], array $attachments = [], $reply_to= self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
+        return $this->sendEmail($template, $subject, $params, self::ADMIN_BCC, $attachments, [], '', $reply_to, $reply_to_name);
     }
 
     public function sendTestEmail() {
@@ -134,7 +135,8 @@ class MailDispatcher
     public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox) {
         $recipient = $suggestionBox->getEmail();
         $recipientName = $suggestionBox->getDisplayName();
-        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), ['suggestionBox' => $suggestionBox], [], [], [$recipient], [$recipientName]);
+        $params = ['suggestionBox' => $suggestionBox];
+        $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), $params, [], [], [$recipient], [$recipientName]);
     }
 
     public function sendKnownOutcomeContract(ContractArtist $contract, $success, $artist_users, $fan_users) {
@@ -267,6 +269,15 @@ class MailDispatcher
             $this->sendAdminTicketsSent($contractArtist);
             $contractArtist->setTicketsSent(true);
         }
+    }
+
+    public function sendAdminContact(SuggestionBox $suggestionBox) {
+        $params = ['suggestionBox' => $suggestionBox];
+
+        $reply_to = $suggestionBox->getEmail() ?: self::REPLY_TO;
+        $reply_to_name = $suggestionBox->getDisplayName() ?: '';
+
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_CONTACT_FORM, 'Un-Mute / ' . $suggestionBox->getObject(), $params, [], $reply_to, $reply_to_name);
     }
 
     public function sendAdminTicketsSent(ContractArtist $contractArtist) {

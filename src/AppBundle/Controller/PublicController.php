@@ -187,9 +187,12 @@ class PublicController extends Controller
             $em->persist($suggestionBox);
             $em->flush();
 
+            $mailDispatcher = $this->get(MailDispatcher::class);
             if($suggestionBox->getMailCopy() && !empty($suggestionBox->getEmail())) {
-                $this->get('AppBundle\Services\MailDispatcher')->sendSuggestionBoxCopy($suggestionBox);
+                $mailDispatcher->sendSuggestionBoxCopy($suggestionBox);
             }
+
+            $mailDispatcher->sendAdminContact($suggestionBox);
 
             return new Response($this->renderView('AppBundle:Public/Form:suggestionBox_ok.html.twig'));
         }

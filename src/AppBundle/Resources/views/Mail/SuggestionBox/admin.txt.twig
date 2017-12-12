@@ -1,0 +1,30 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    Un nouveau message a été reçu par l'intermédiaire du formulaire de contact.
+
+    Le voici :
+
+    -> Type de demande : {{ suggestionBox.type }}
+    -> Objet : {{ suggestionBox.object }}
+    {% if suggestionBox.displayName is not empty %}
+     -> Expéditeur : {{ suggestionBox.displayName }}
+    {% endif %}
+    {% if suggestionBox.email is not empty %}
+    -> E-mail : {{ suggestionBox.email }}
+    {% endif %}
+    -> Message :
+        {{ suggestionBox.message|nl2br }}
+
+    Nous vous répondrons au plus vite si nécessaire.
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/SuggestionBox:admin.html.twig' %}
+{% endblock %}
