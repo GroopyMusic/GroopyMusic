@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-12-13T10:03:35Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-12-13T16:50:53Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -555,8 +555,8 @@
         <target>/artiste/{id}/annuler-requete/{request_id}</target>
       </trans-unit>
       <trans-unit id="717e033cbe3cf60243775541aaa990ca0cc243ae" resname="artist_contract">
-        <source>/crowdfunding-{id}</source>
-        <target>/evenement-{id}</target>
+        <source>/events/{id}-{slug}</source>
+        <target>/evenements/{id}-concert-de-{slug}</target>
       </trans-unit>
       <trans-unit id="2a3eee61573e58baa0212e936b7f7aae4c289a26" resname="artist_contracts">
         <source>/artist/{id}/all-contracts</source>
@@ -583,8 +583,8 @@
         <target>/artiste/{id}/proprietaires</target>
       </trans-unit>
       <trans-unit id="4268b7dfd75e6e0f6903d248f7d3ac3c8e613910" resname="artist_profile">
-        <source>/artist-{id}</source>
-        <target>/artiste-{id}</target>
+        <source>/artists/{id}-{slug}</source>
+        <target>/artistes/{id}-{slug}</target>
       </trans-unit>
       <trans-unit id="0a5f6c54b588c9ce51b7519f1ec6b85447cc1806" resname="artist_profile_edit">
         <source>/artist/{id}/edit</source>
@@ -707,8 +707,8 @@
         <target>/fp_js_form_validator/check_unique_entity</target>
       </trans-unit>
       <trans-unit id="4b5fdc6e9d5042e74b6ba328922f6be5cf995bc9" resname="hall">
-        <source>/hall-{id}</source>
-        <target>/salle-{id}</target>
+        <source>/halls/{id}-{slug}</source>
+        <target>/salles/{id}-{slug}</target>
       </trans-unit>
       <trans-unit id="568be0fa2023d1a447e7bd150dda7068ece26898" resname="homepage">
         <source>/</source>

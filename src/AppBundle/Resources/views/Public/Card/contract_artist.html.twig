@@ -31,13 +31,11 @@
             </span>
         </div>
 
-        <!-- this is the content of the card with an optionnal span for ⭐ -->
         <div class="um-card-content w-100">
             <h5>{% if news is defined and news %}NOUVEAU - {% endif %} Concert de {{ contract.artist.artistname }}</h5>
             <p>{{ contract.province is not null ? contract.province : contract.artist.province }}</p>
         </div>
 
-        <!-- this is the link that the card need to take to -->
-        <a class="um-card-link" href="{{ path('artist_contract', {'id': contract.id}) }}"></a>
+        <a class="um-card-link" href="{{ path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) }}"></a>
     </div>
 {% endblock %}

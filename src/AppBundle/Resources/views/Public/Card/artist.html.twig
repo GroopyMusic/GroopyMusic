@@ -34,6 +34,6 @@
         </div>
 
         <!-- this is the link that the card need to take to -->
-        <a class="um-card-link" href="{{ path('artist_profile', {'id': artist.id}) }}"></a>
+        <a class="um-card-link" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}"></a>
     </div>
 {% endblock %}

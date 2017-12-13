@@ -220,11 +220,16 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/hall-{id}", name="hall")
+     * @Route("/halls/{id}-{slug}", name="hall")
      */
-    public function hallAction(Hall $hall) {
+    public function hallAction(Hall $hall, $slug = null) {
+
+        if($slug !== null && $slug != $hall->getSlug()) {
+            return $this->redirectToRoute('hall', ['id' => $hall->getId(), 'slug' => $hall->getSlug()]);
+        }
+
         if(!$hall->getVisible()) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('Hall not visible');
         }
 
         return $this->render('@App/Public/hall.html.twig', array(
@@ -248,9 +253,13 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/crowdfunding-{id}", name="artist_contract")
+     * @Route("/events/{id}-{slug}", name="artist_contract")
      */
-    public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract) {
+    public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null) {
+
+        if($slug !== null && $contract->getArtist()->getSlug() != $slug) {
+            return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
+        }
 
         $em = $this->getDoctrine()->getManager();
         $potential_halls = $em->getRepository('AppBundle:Hall')->findPotential($contract->getStep(), $contract->getProvince());
@@ -327,9 +336,14 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/artist-{id}", name="artist_profile")
+     * @Route("/artists/{id}-{slug}", name="artist_profile")
      */
-    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist) {
+    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null) {
+
+        if($slug !== null && $slug != $artist->getSlug()) {
+            return $this->redirectToRoute('artist_contract', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
+        }
+
         return $this->render('@App/Public/artist_profile.html.twig', array(
             'artist' => $artist,
         ));

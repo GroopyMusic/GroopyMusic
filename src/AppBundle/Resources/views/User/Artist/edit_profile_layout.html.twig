@@ -21,12 +21,12 @@
                         </li>
                         <li class="nav-item{% if active_link == 'medias' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('artist_edit_medias', {'id': artist.id}) }}">Vidéos</a>
-                        </li>
+                    s     </li>
                         <li class="nav-item{% if active_link == 'owners' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('artist_owners', {'id': artist.id}) }}">Propriétaires</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id}) }}">Voir le profil</a>
+                            <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">Voir le profil</a>
                         </li>
                         <li class="nav-item{% if active_link == 'leave' %} active{% endif %}">
                             <a class="nav-link danger-color" href="{{ path('artist_leave', {'id': artist.id}) }}">Quitter l'artiste</a>
