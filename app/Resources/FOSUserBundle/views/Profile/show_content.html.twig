@@ -20,11 +20,11 @@
         </p>
     {% endif %}
 
-    {% if user.artistsUser is not empty %}
+    {% if user.artists is not empty %}
     <p><strong>{{ 'profile.show.artists'|trans }}</strong> :
         <ul class="um-list">
-            {% for a in user.artistsUser %}
-                <li><a href="{{ path('artist_profile', {'id': a.artist.id}) }}">{{ a.artist.artistname }}</a></li>
+            {% for artist in user.artists %}
+                <li><a href="{{ path('artist_profile', {'id': artist.id}) }}">{{ artist.artistname }}</a></li>
             {% endfor %}
         </ul>
     </p>
