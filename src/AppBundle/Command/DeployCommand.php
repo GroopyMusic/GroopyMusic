@@ -28,10 +28,6 @@ class DeployCommand extends ContainerAwareCommand
         $output->writeln('-------------------------------');
 
         $response = exec('php vendor/deployer/deployer/bin/dep deploy prod');
-        $output->writeln("$response");
-
-        $output->writeln('-------------------------------');
-        $output->writeln('DONE');
-        $output->writeln('-------------------------------');
+        $output->writeln($response);
     }
 }

@@ -41,7 +41,7 @@
                 {% endif %}
                 {% if hall.photos|length > 0 %}
                     <div id="hallCarousel" class="carousel slide" data-ride="carousel">
-                        {% if hall.photos is not empty %}
+                        {% if hall.photos|length > 1 %}
                             <ol class="carousel-indicators">
                                 {% for photo in hall.photos %}
                                     <li data-target="#hallCarousel" data-slide-to="0"{% if loop.first %} class="active"{% endif %}></li>
@@ -51,11 +51,11 @@
                         <div class="carousel-inner">
                             {% for photo in hall.photos %}
                                 <div class="carousel-item{% if loop.first %} active{% endif %}">
-                                    <img class="d-block w-100 mx-auto responsive-img" src="{{ asset(hall.webPath(photo)) }}" alt="{{ hall.name }}">
+                                    <img class="d-block mx-auto responsive-img" src="{{ asset(hall.webPath(photo)) }}" alt="{{ hall.name }}">
                                 </div>
                             {% endfor %}
                         </div>
-                        {% if hall.photos is not empty %}
+                        {% if hall.photos|length > 1 %}
                             <a class="carousel-control-prev" href="#hallCarousel" role="button" data-slide="prev">
                                 <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-3" aria-hidden="true"></span>
                                 <span class="sr-only">Précédent</span>
