@@ -1,0 +1,15 @@
+<div class="content-box-header">
+    <h3>Liens</h3>
+</div>
+<nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
+    <ul class="flex-column">
+        <li class="nav-item"><a href="{{ path('about') }}">À propos</a></li>
+        {% if 'team' not in no_link %}<li class="nav-item"><a href="{{ path('team') }}">L'équipe</a></li>{% endif %}
+        {% if 'faq' not in no_link %}<li class="nav-item"><a href="{{ path('faq') }}">FAQ</a></li>{% endif %}
+        <li class="nav-item"><a href="{{ path('catalog_artists') }}">Catalogue des artistes</a></li>
+        <li class="nav-item"><a href="{{ path('catalog_halls') }}">Catalogue des salles</a></li>
+        <li class="nav-item"><a href="{{ path('catalog_crowdfundings') }}">Evénements à venir</a></li>
+        <li class="nav-item"><a href="{{ path('conditions') }}">Conditions d'utilisation</a></li>
+        <li class="nav-item"><a href="{{ path('suggestionBox') }}">Contact</a></li>
+    </ul>
+</nav>

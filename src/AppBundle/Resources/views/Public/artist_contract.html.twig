@@ -138,8 +138,16 @@
 
                         <h3 class="mb-3 text-center">À propos de l'artiste</h3>
 
-                        <div class="um-label um-semi-bold">{{ artist.artistname }}</div>
+                        <div class="um-semi-bold">{{ artist.artistname }}</div>
                         <p>{{ artist.getShortDescription }}</p>
+
+                        {% if artist.genres is not empty %}
+                            <div class="mb-3">
+                                <span class="contract-info-title">Styles musicaux</span>
+                                {% for genre in artist.genres %} <span class="small">{{ genre }}</span> {% endfor %}
+                            </div>
+                        {% endif %}
+
                         <p class="text-center"><a href="{{ path('artist_profile', {'id': artist.id}) }}" class="btn btn-outline-primary">Voir le profil</a></p>
                     </div>
                 </div>

@@ -7,19 +7,7 @@
 
         <div class="row">
             <div class="col-12 col-md-4 content-box">
-                <div class="content-box-header">
-                    <h3>Liens</h3>
-                </div>
-                <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
-                    <ul class="flex-column">
-                        <li class="nav-item"><a href="{{ path('about') }}">À propos</a></li>
-                        <li class="nav-item"><a href="{{ path('catalog_artists') }}">Catalogue des artistes</a></li>
-                        <li class="nav-item"><a href="{{ path('catalog_halls') }}">Catalogue des salles</a></li>
-                        <li class="nav-item"><a href="{{ path('catalog_crowdfundings') }}">Evénements à venir</a></li>
-                        <li class="nav-item"><a href="{{ path('conditions') }}">Conditions d'utilisation</a></li>
-                        <li class="nav-item"><a href="{{ path('suggestionBox') }}">Contact</a></li>
-                    </ul>
-                </nav>
+                {% include '@App/Public/ContentBox/static_links.html.twig' with {'no_link': ['faq']} %}
             </div>
 
             <div class="col-12 col-md-8 static-content content-box">

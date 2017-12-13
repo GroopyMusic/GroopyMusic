@@ -50,10 +50,29 @@
         <div class="content-box">
             <div class="tab-content artist-profile-content content-box-content border-left pl-md-5">
                 <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
-                    <p>{{ artist.getShortDescription()|nl2br }}</p>
-                    {% set currentContract = artist.currentContract %}
 
-                    <h3 class="mt-4">Vidéos</h3>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="um-label um-semi-bold pr-2">
+                                En quelques mots
+                            </div>
+                            <p>
+                                {{ artist.getShortDescription()|nl2br }}
+                            </p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {% if artist.genres is not empty %}
+                                <div class="um-label um-semi-bold">Styles musicaux</div>
+                                <ul class="um-list">
+                                    {% for genre in artist.genres %}
+                                        <li>{{ genre }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h4 class="mt-4">Vidéos</h4>
                     {% for video in artist.videos %}
                         {{ video.embedVideo|raw }}
                     {% else %}
@@ -94,12 +113,11 @@
                                 </li>
                             {% endif %}
                         </ul>
-
                     {% endif %}
 
-
+                    {% set currentContract = artist.currentContract %}
                     {% if currentContract is not null %}
-                        <h3 class="mt-4">Crowdfunding en cours</h3>
+                        <h4 class="mt-4">Crowdfunding en cours</h4>
                         {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
                     {% endif %}
 

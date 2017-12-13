@@ -159,6 +159,12 @@ class PublicController extends Controller
         return $this->render('AppBundle:Public:faq.html.twig');
     }
 
+    /**
+     * @Route("/team", name="team")
+     */
+    public function teamAction() {
+        return $this->render('AppBundle:Public:team.html.twig');
+    }
 
     /**
      * @Route("/suggestions", name="suggestionBox")
