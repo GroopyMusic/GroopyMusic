@@ -14,6 +14,18 @@
     top: 20px;
   }
 
+  &-progress {
+    position:relative;
+    border-radius: initial;
+
+    .progress-bar {
+        &-percent {
+          position: absolute;
+          left: 4px;
+        }
+    }
+  }
+
   &-span {
     position: absolute;
     bottom: 0;

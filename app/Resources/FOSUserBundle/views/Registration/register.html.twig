@@ -5,12 +5,17 @@
 
 
         <h3 class="mb-3 text-center">Inscription</h3>
-        <p class="text-center">Créez votre profil en quelques secondes pour pouvoir soutenir vos artistes favoris !</p>
-
+        {% if not app.user %}
+            <p class="text-center">Créez votre profil en quelques secondes pour pouvoir soutenir vos artistes favoris&nbsp;!</p>
+        {% endif %}
         <div class="content-box">
-            <div class="content-box-content">
+            <div class="content-box-content text-center">
                 {% if app.user %}
                     <p>Vous êtes connecté, nous ne pouvons donc pas vous ré-inscrire. ;-)</p>
+                    <div>
+                        <a href="{{ path('homepage') }}" class="btn btn-outline-primary mt-2 mt-md-0">Retour à l'accueil</a>
+                        <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-secondary mt-2 mt-md-0">Je souhaite me déconnecter</a>
+                    </div>
                 {% else %}
                     {% include "@FOSUser/Registration/register_content.html.twig" %}
                 {% endif %}

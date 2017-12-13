@@ -54,6 +54,7 @@ class Artist implements TranslatableInterface
         $this->photos = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->date_creation = new \DateTime();
+        $this->accept_conditions = false;
     }
 
     public function getSluggableFields() {
@@ -160,6 +161,12 @@ class Artist implements TranslatableInterface
 
         return $contracts;
     }
+
+    // Form only
+
+    private $accept_conditions;
+    public function getAcceptConditions() {return $this->accept_conditions;}
+    public function setAcceptConditions($ac) { $this->accept_conditions = $ac; return $this;}
 
     /**
      * @ORM\Id

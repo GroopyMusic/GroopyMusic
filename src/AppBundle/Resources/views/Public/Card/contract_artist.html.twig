@@ -31,6 +31,11 @@
             </span>
         </div>
 
+        <div class="progress um-card-progress">
+            <div class="progress-bar" style="padding-left: 2rem;width:{{ contract.ticketsSold * 100 / contract.step.minTickets }}%">
+                <span class="progress-bar-percent">{{ contract.ticketsSold * 100 / contract.step.minTickets }}%</span>
+            </div>
+        </div>
         <div class="um-card-content w-100">
             <h5>{% if news is defined and news %}NOUVEAU - {% endif %} Concert de {{ contract.artist.artistname }}</h5>
             <p>{{ contract.province is not null ? contract.province : contract.artist.province }}</p>

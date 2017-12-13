@@ -3,7 +3,7 @@
 {% if error_bag is not empty
         or ((errors is defined and errors|length > 0) or (form is defined and not form.vars.valid))%}
 
-    <div class="container">
+    <div class="container mb-4">
         {% for message in error_bag %}
             {{ error(message)|raw }}
         {% endfor%}

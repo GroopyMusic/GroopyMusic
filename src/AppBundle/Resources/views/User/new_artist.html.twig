@@ -11,7 +11,7 @@
             et vous pourrez ajouter des photos et vidéos de cet artiste.
         </p>
         <p>
-            <strong>En créant un artiste, vous certifiez en être le propriétaire ou un des membres, s'il s'agit d'un groupe.</strong>
+            <strong>En créant un artiste, vous certifiez en être le représentant, ou l'un des membres s'il s'agit d'un groupe.</strong>
         </p>
 
         <div class="content-box mt-3">
@@ -37,6 +37,12 @@
                     {{ form_row(form.spotify) }}
                     {{ form_row(form.soundcloud) }}
                     {{ form_row(form.bandcamp) }}
+                </div>
+
+                {{ form_row(form.translations) }}
+
+                <div class="form-group">
+                    {{ form_widget(form.accept_conditions) }}
                 </div>
 
 

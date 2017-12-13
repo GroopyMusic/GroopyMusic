@@ -37,7 +37,7 @@
         {{- form_label(form, null, { widget: parent() }) -}}
     {%- else -%}
 
-        <label class="custom-control custom-checkbox pr-3" for="{{ id }}">
+        <label class="custom-control custom-checkbox pr-3{% if required %} required{% endif %}" for="{{ id }}">
             {{ parent() }}
             <span class="custom-control-indicator"></span>
             <span class="custom-control-description">{% if label is not same as(false) %} {{ label|trans }}{% endif %}</span>

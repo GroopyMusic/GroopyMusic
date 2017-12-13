@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ use AppBundle\Entity\ContractFan;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
@@ -160,6 +162,13 @@ class UserController extends Controller
         $artist = new Artist($phase);
 
         $form = $this->createForm(ArtistType::class, $artist, ['edit' => false]);
+        $form->add('accept_conditions', CheckboxType::class, array(
+            'required' => true,
+            'label' => 'labels.artist.accept_conditions',
+            'constraints' => [
+                new NotBlank(['message' => 'Vous devez accepter les conditions d\'utilisation pour continuer.']),
+            ],
+        ));
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
