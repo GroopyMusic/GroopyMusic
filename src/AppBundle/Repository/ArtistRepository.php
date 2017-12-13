@@ -11,7 +11,7 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('a')
             ->innerJoin('a.artists_user', 'au')
             ->leftJoin('a.contracts', 'c')
-            ->where('a.artists_user = :user')
+            ->where('au.user = :user')
             ->setParameter('user', $user)
             ->andWhere('a.deleted = 0')
             ->getQuery()

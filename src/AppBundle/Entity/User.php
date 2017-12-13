@@ -101,6 +101,14 @@ class User extends BaseUser implements RecipientInterface
         return ucwords($displayName);
     }
 
+    public function getArtists() {
+        return array_filter(array_map(function(Artist_User $elem) {
+            return $elem->getArtist();
+        }, $this->artists_user->toArray()), function(Artist $artist) {
+            return $artist->isActive();
+        });
+    }
+
     // Form only
     public $accept_conditions;
 

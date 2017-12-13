@@ -6,9 +6,9 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -128,15 +128,12 @@ class UserController extends Controller
     /**
      * @Route("/my-artists", name="user_my_artists")
      */
-    public function myArtistsAction(UserInterface $fan) {
+    public function myArtistsAction(UserInterface $user, EntityManagerInterface $em) {
 
-        $artists_user = $fan->getArtistsUser();
-
-        $artists = array_map(function(Artist_User $elem) {
-            return $elem->getArtist();
-        }, $artists_user->toArray());
+        $artists = $em->getRepository('AppBundle:Artist')->findForUser($user);
 
         $available_artist = false;
+
         foreach($artists as $artist) {
             if($artist->isAvailable()) {
                 $available_artist = true;

@@ -41,11 +41,13 @@
                 {% endif %}
                 {% if hall.photos|length > 0 %}
                     <div id="hallCarousel" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            {% for photo in hall.photos %}
-                                <li data-target="#hallCarousel" data-slide-to="0"{% if loop.first %} class="active"{% endif %}></li>
-                            {% endfor %}
-                        </ol>
+                        {% if hall.photos is not empty %}
+                            <ol class="carousel-indicators">
+                                {% for photo in hall.photos %}
+                                    <li data-target="#hallCarousel" data-slide-to="0"{% if loop.first %} class="active"{% endif %}></li>
+                                {% endfor %}
+                            </ol>
+                        {% endif %}
                         <div class="carousel-inner">
                             {% for photo in hall.photos %}
                                 <div class="carousel-item{% if loop.first %} active{% endif %}">
@@ -53,14 +55,16 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <a class="carousel-control-prev" href="#hallCarousel" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-3" aria-hidden="true"></span>
-                            <span class="sr-only">Précédent</span>
-                        </a>
-                        <a class="carousel-control-next" href="#hallCarousel" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-3" aria-hidden="true"></span>
-                            <span class="sr-only">Suivant</span>
-                        </a>
+                        {% if hall.photos is not empty %}
+                            <a class="carousel-control-prev" href="#hallCarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-3" aria-hidden="true"></span>
+                                <span class="sr-only">Précédent</span>
+                            </a>
+                            <a class="carousel-control-next" href="#hallCarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-3" aria-hidden="true"></span>
+                                <span class="sr-only">Suivant</span>
+                            </a>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
