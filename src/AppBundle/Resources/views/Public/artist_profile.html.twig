@@ -74,7 +74,9 @@
 
                     <h4 class="mt-4">Vidéos</h4>
                     {% for video in artist.videos %}
-                        {{ video.embedVideo|raw }}
+                        <div class="mb-2">
+                            {{ video.embedVideo|raw }}
+                        </div>
                     {% else %}
                         <p>Cet artiste n'a pas encore de vidéo à montrer.</p>
                     {% endfor %}

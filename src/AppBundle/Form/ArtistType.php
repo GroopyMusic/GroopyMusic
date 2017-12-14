@@ -61,44 +61,44 @@ class ArtistType extends AbstractType
             ->add('website', UrlType::class, array(
                 'label' => 'labels.artist.website',
                 'required' => false,
-                'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
-                ]
+                //'constraints' => [
+                //    new Url(['message' => "Veuillez entrer une URL valide."]),
+                // ]
             ))
             ->add('facebook', UrlType::class, array(
                 'label' => 'labels.artist.facebook',
                 'required' => false,
-                'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
-                ]
+                // 'constraints' => [
+                //    new Url(['message' => "Veuillez entrer une URL valide."]),
+                // ]
             ))
             ->add('twitter', UrlType::class, array(
                 'label' => 'labels.artist.twitter',
                 'required' => false,
-                'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
-                ]
+                // 'constraints' => [
+                //    new Url(['message' => "Veuillez entrer une URL valide."]),
+                // ]
             ))
             ->add('spotify', UrlType::class, array(
                 'label' => 'labels.artist.spotify',
                 'required' => false,
-                'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
-                ]
+                //'constraints' => [
+                //    new Url(['message' => "Veuillez entrer une URL valide."]),
+                // ]
             ))
             ->add('soundcloud', UrlType::class, array(
                 'label' => 'labels.artist.soundcloud',
                 'required' => false,
-                'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
-                ]
+                // 'constraints' => [
+                //     new Url(['message' => "Veuillez entrer une URL valide."]),
+                // ]
             ))
             ->add('bandcamp', UrlType::class, array(
                 'label' => 'labels.artist.bandcamp',
                 'required' => false,
-                'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
-                ]
+                // 'constraints' => [
+                //    new Url(['message' => "Veuillez entrer une URL valide."]),
+                //]
             ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.artist.submit',
