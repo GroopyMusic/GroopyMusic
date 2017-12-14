@@ -30,6 +30,13 @@
                     {{ form_row(form.genres) }}
                 </div>
 
+                {{ form_row(form.translations) }}
+
+                <div class="col-0 col-md-2"></div>
+                <div class="col-12 col-md-10">
+                    Dans les champs suivants, veuillez introduire vos éventuels liens sous forme d'URL valides <strong>commençant par <em>http://</em></strong>
+                </div>
+
                 <div class="form-group">
                     {{ form_row(form.website) }}
                     {{ form_row(form.facebook) }}
@@ -38,8 +45,6 @@
                     {{ form_row(form.soundcloud) }}
                     {{ form_row(form.bandcamp) }}
                 </div>
-
-                {{ form_row(form.translations) }}
 
                 <div class="form-group">
                     {{ form_widget(form.accept_conditions) }}
