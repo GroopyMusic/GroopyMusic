@@ -140,7 +140,7 @@ Pas de panique, vous pouvez créer un nouveau mot de passe en cliquant sur le li
       </trans-unit>
       <trans-unit id="d074ed9a0eb75b7f17ef2274c21d4c3d12d91634" resname="security.login.remember_me">
         <source>security.login.remember_me</source>
-        <target>Se souvenir de moi</target>
+        <target>Rester connecté</target>
         <jms:reference-file line="37">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Security\login_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="79c180ac5e987e195d1dfeda857a114ed692d07f" resname="security.login.submit">
