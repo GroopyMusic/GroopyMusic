@@ -280,6 +280,11 @@ class Artist implements TranslatableInterface
     /**
      * @ORM\OneToMany(targetEntity="BaseContractArtist", mappedBy="artist")
      */
+    private $base_contracts;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ContractArtist", mappedBy="main_artist")
+     */
     private $contracts;
 
 
@@ -812,5 +817,39 @@ class Artist implements TranslatableInterface
     public function getBandcamp()
     {
         return $this->bandcamp;
+    }
+
+    /**
+     * Add baseContract
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $baseContract
+     *
+     * @return Artist
+     */
+    public function addBaseContract(\AppBundle\Entity\BaseContractArtist $baseContract)
+    {
+        $this->base_contracts[] = $baseContract;
+
+        return $this;
+    }
+
+    /**
+     * Remove baseContract
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $baseContract
+     */
+    public function removeBaseContract(\AppBundle\Entity\BaseContractArtist $baseContract)
+    {
+        $this->base_contracts->removeElement($baseContract);
+    }
+
+    /**
+     * Get baseContracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBaseContracts()
+    {
+        return $this->base_contracts;
     }
 }

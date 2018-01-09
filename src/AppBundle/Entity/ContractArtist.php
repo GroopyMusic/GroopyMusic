@@ -94,6 +94,16 @@ class ContractArtist extends BaseContractArtist
         $this->tickets_sent = false;
     }
 
+    // Also add as main artist for the concert
+    // TODO simplify this process, for now this is needed to make the queries for finding available artists work properly
+    // because of inheritance of BaseContractArtist
+    public function setArtist(\AppBundle\Entity\Artist $artist)
+    {
+        parent::setArtist($artist);
+        $this->main_artist = $artist;
+        return $this;
+    }
+
     public function getCoartists() {
         return array_map(function($elem) {
             return $elem->getArtist();
@@ -194,6 +204,11 @@ class ContractArtist extends BaseContractArtist
      * @ORM\Column(name="tickets_sent", type="boolean")
      */
     private $tickets_sent;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Artist", inversedBy="contracts")
+     */
+    private $main_artist;
 
     /**
      * Set coartistsList
@@ -343,5 +358,29 @@ class ContractArtist extends BaseContractArtist
     public function getTicketsSent()
     {
         return $this->tickets_sent;
+    }
+
+    /**
+     * Set mainArtist
+     *
+     * @param \AppBundle\Entity\Artist $mainArtist
+     *
+     * @return ContractArtist
+     */
+    public function setMainArtist(\AppBundle\Entity\Artist $mainArtist = null)
+    {
+        $this->main_artist = $mainArtist;
+
+        return $this;
+    }
+
+    /**
+     * Get mainArtist
+     *
+     * @return \AppBundle\Entity\Artist
+     */
+    public function getMainArtist()
+    {
+        return $this->main_artist;
     }
 }

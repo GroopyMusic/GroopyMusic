@@ -19,26 +19,48 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    public function queryNotCurrentlyBusy(User $user) {
+    public function queryNotCurrentlyBusy(User $user = null) {
         $nots = $this->createQueryBuilder('a')
             ->select('a.id')
             ->innerJoin('a.contracts', 'c')
-            ->andWhere('c.dateEnd > ' . (new \DateTime('now'))->format('Ymd'))
+            ->leftJoin('c.step', 's')
+            ->leftJoin('c.preferences', 'p')
+            ->leftJoin('c.reality', 'r')
             ->andWhere('c.failed = 0')
+            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
+            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
+            ->andWhere('c.tickets_sold < s.max_tickets')
         ;
 
         $qb = $this->createQueryBuilder('a2');
 
+        // If he's not an admin, the user must own the artist
+        if($user != null) {
+            $qb
+                ->innerJoin('a2.artists_user', 'au')
+                ->where('au.user = :user')
+                ->setParameter('user', $user)
+            ;
+        }
         return $qb
-            ->innerJoin('a2.artists_user', 'au')
-            ->where('au.user = :user')
-            ->andWhere('a2.deleted = 0')
-            ->setParameter('user', $user)
-            ->andWhere($qb->expr()->notIn('a2.id', $nots->getDQL()));
+                ->setParameter('now', new \DateTime('now'))
+                ->andWhere('a2.deleted = 0')
+                ->andWhere($qb->expr()->notIn('a2.id', $nots->getDQL()));
     }
 
     public function findNotCurrentlyBusy(User $user) {
         return $this->queryNotCurrentlyBusy($user)->getQuery()->getResult();
+    }
+
+    // Handles the case where an admin wants to create an event
+    public function findAvailableForNewContract(User $user) {
+        // TODO ROLE_ADMIN
+        if($user->hasRole('ROLE_SUPER_ADMIN')) {
+            return $this->queryNotCurrentlyBusy(null)->getQuery()->getResult();
+        }
+        else {
+            return $this->findNotCurrentlyBusy($user);
+        }
     }
 
     public function findNotDeletedBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)

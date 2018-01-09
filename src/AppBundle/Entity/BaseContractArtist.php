@@ -128,7 +128,7 @@ class BaseContractArtist
     /**
      * @var Artist
      *
-     * @ORM\ManyToOne(targetEntity="Artist", inversedBy="contracts")
+     * @ORM\ManyToOne(targetEntity="Artist", inversedBy="base_contracts")
      * @ORM\JoinColumn(nullable=false)
      */
     protected $artist;

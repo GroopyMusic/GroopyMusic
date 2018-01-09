@@ -49,18 +49,6 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    public function findCurrentForArtist(Artist $artist) {
-        return $this->createQueryBuilder('c')
-            ->where('c.artist = :artist')
-            ->andWhere('c.dateEnd > :now')
-            ->setParameter('artist', $artist)
-            ->setParameter('now', new \DateTime('now'))
-            ->join('c.step', 's')
-            ->addSelect('s')
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
     /**
      * Returns 0-$limit contracts for which the deadline is not passed AND not enough money is raised at the moment
      */
@@ -114,6 +102,27 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function findCurrentForArtist(Artist $artist) {
+        return $this->createQueryBuilder('c')
+            ->join('c.artist', 'a')
+            ->join('c.step', 's')
+            ->join('c.preferences', 'p')
+            ->leftJoin('c.reality', 'r')
+            ->addSelect('s')
+            ->addSelect('p')
+
+            ->where('a = :artist')
+            ->andWhere('c.failed = 0')
+            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
+            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
+            ->andWhere('c.tickets_sold < s.max_tickets')
+
+            ->setParameter('artist', $artist)
+            ->setParameter('now', new \DateTime('now'))
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**

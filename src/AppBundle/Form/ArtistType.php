@@ -64,7 +64,7 @@ class ArtistType extends AbstractType
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ],
-               'attr' => ['placeholder' => 'http://'],
+               'attr' => ['placeholder' => 'http:// ou https://'],
             ))
             ->add('facebook', UrlType::class, array(
                 'label' => 'labels.artist.facebook',
@@ -72,7 +72,7 @@ class ArtistType extends AbstractType
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ],
-               'attr' => ['placeholder' => 'http://'],
+               'attr' => ['placeholder' => 'http:// ou https://'],
             ))
             ->add('twitter', UrlType::class, array(
                 'label' => 'labels.artist.twitter',
@@ -80,7 +80,7 @@ class ArtistType extends AbstractType
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ],
-               'attr' => ['placeholder' => 'http://'],
+               'attr' => ['placeholder' => 'http:// ou https://'],
             ))
             ->add('spotify', UrlType::class, array(
                 'label' => 'labels.artist.spotify',
@@ -88,7 +88,7 @@ class ArtistType extends AbstractType
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ],
-               'attr' => ['placeholder' => 'http://'],
+               'attr' => ['placeholder' => 'http:// ou https://'],
             ))
             ->add('soundcloud', UrlType::class, array(
                 'label' => 'labels.artist.soundcloud',
@@ -96,7 +96,7 @@ class ArtistType extends AbstractType
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ],
-               'attr' => ['placeholder' => 'http://'],
+               'attr' => ['placeholder' => 'http:// ou https://'],
             ))
             ->add('bandcamp', UrlType::class, array(
                 'label' => 'labels.artist.bandcamp',
@@ -104,7 +104,7 @@ class ArtistType extends AbstractType
                 'constraints' => [
                     new Url(['message' => "Veuillez entrer une URL valide."]),
                 ],
-               'attr' => ['placeholder' => 'http://'],
+               'attr' => ['placeholder' => 'http:// ou https://'],
             ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.artist.submit',

@@ -27,12 +27,15 @@ class ContractArtistType extends AbstractType
     {
         switch ($options['flow_step']) {
             case 1:
+                // TODO ROLE_ADMIN
+                $user = $options['user']->hasRole('ROLE_SUPER_ADMIN') ? null : $options['user'];
+
                 $builder
                     ->add('artist', EntityType::class, array(
                         'label' => 'labels.contractartist.artist',
                         'class' => Artist::class,
-                        'query_builder' => function(EntityRepository $er) use ($options) {
-                            return $er->queryNotCurrentlyBusy($options['user']);
+                        'query_builder' => function(EntityRepository $er) use ($user) {
+                            return $er->queryNotCurrentlyBusy($user);
                         },
                         'constraints' => [
                             new NotBlank(['message' => 'Merci de renseigner un artiste.']),

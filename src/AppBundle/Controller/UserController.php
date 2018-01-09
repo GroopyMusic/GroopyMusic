@@ -205,7 +205,7 @@ class UserController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $av_artists = $em->getRepository('AppBundle:Artist')->findNotCurrentlyBusy($user);
+        $av_artists = $em->getRepository('AppBundle:Artist')->findAvailableForNewContract($user);
 
         if(count($av_artists) == 0) {
             return $this->render('@App/User/Artist/new_contract.html.twig', array(
@@ -233,6 +233,11 @@ class UserController extends Controller
                 $form = $flow->createForm();
             } else {
                 // flow finished
+
+                if(!in_array($contract->getArtist()->getId(),
+                            array_map(function(Artist $artist) { return $artist->getId(); }, $av_artists))) {
+                    throw $this->createAccessDeniedException("Cet artiste ne vous appartient pas...");
+                }
 
                 // We check that there doesn't exist another contract for that artist before DB insertion
                 $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($contract->getArtist());

@@ -53,9 +53,9 @@ $(function() {
 
     $(window).scroll(function () {
         if ($(this).scrollTop() > stickyoffset) {
-            $('#menuLogo').fadeIn();
 
             if (!$mainNav.hasClass('stickytop')) {
+                $('#menuLogo img').addClass('opacity-1');
                 $mainNav.addClass('stickytop');
 
 
@@ -74,9 +74,8 @@ $(function() {
                 $('#static-toc').addClass('fixed-toc');
         }
         else {
-            $('#menuLogo').fadeOut();
-
             if ($mainNav.hasClass('stickytop')) {
+                $('#menuLogo img').removeClass('opacity-1');
                 $mainNav.removeClass('stickytop');
 
                 $header.css('min-height', 'auto');
