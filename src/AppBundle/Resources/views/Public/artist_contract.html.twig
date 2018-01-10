@@ -47,7 +47,7 @@
                             </div>
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Début du crowdfunding
+                                    Début des ventes
                                 </div>
                                 <div class="contract-info-content">
                                     {{ contract.date|date('d/m/Y') }}
@@ -56,7 +56,7 @@
 
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Fin du crowdfunding
+                                    Date de validation
                                 </div>
                                 <div class="contract-info-content">
                                     {{ contract.dateEnd|date('d/m/Y') }}
@@ -66,7 +66,7 @@
 
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
-                                état du crowdfunding
+                                état des ventes
                             </span>
                             <span class="contract-info-content pr-1">
                                 {% if state is constant('STATE_SUCCESS_PASSED', contract) %}
