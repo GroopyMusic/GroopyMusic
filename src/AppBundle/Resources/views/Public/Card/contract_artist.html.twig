@@ -33,7 +33,7 @@
 
         <div class="progress um-card-progress">
             <div class="progress-bar" style="padding-left: 2rem;width:{{ contract.ticketsSold * 100 / contract.step.minTickets }}%">
-                <span class="progress-bar-percent">{{ contract.ticketsSold * 100 / contract.step.minTickets }}%</span>
+                <span class="progress-bar-percent">{{ contract.ticketsSold * 100 // contract.step.minTickets }}%</span>
             </div>
         </div>
         <div class="um-card-content w-100">

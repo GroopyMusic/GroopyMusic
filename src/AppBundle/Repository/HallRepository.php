@@ -14,7 +14,8 @@ class HallRepository extends \Doctrine\ORM\EntityRepository
 {
     public function findPotential(Step $step, Province $province = null) {
         $qb = $this->createQueryBuilder('h')
-            ->where('h.step = :step')
+            ->where('h.visible = 1')
+            ->andWhere('h.step = :step')
             ->setParameter('step', $step)
         ;
 
