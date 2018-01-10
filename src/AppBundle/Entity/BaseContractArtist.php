@@ -18,7 +18,7 @@ class BaseContractArtist
 
     public function __toString()
     {
-        return 'Crowdfunding #'.$this->id. ' de l\'artiste '. $this->artist;
+        return 'Evénement #'.$this->id. ' de l\'artiste '. $this->artist;
     }
 
     public function __construct() {

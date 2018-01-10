@@ -119,13 +119,13 @@
 
                     {% set currentContract = artist.currentContract %}
                     {% if currentContract is not null %}
-                        <h4 class="mt-4">Crowdfunding en cours</h4>
+                        <h4 class="mt-4">Evénement en cours de vente de tickets</h4>
                         {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
                     {% endif %}
 
                     {% for contract in artist.otherSuccessfulContracts(currentContract) %}
                         {% if loop.first %}
-                            <h3 class="mt-4">Crowdfundings accomplis par le passé</h3>
+                            <h3 class="mt-4">Concerts accomplis par le passé</h3>
                         {% endif %}
                         {% include 'AppBundle:Public/Card:contract_artist.html.twig' %}
                     {% endfor %}
