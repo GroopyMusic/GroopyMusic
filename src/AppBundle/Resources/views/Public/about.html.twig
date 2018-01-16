@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+{% endblock %}
+
 {% block body %}
     <div class="container-fluid" style="padding-top:0 !important;">
 
@@ -40,6 +45,11 @@
 
                     <div class="content-box-content-zone" id="about-how-it-works">
                         <h3>Comment ça fonctionne ?</h3>
+                        <div class="py-3">
+                            <a href="{{ asset('images/concept.jpg') }}" data-fancybox>
+                                <img class="img-fluid" src="{{ asset('images/concept.png') }}" />
+                            </a>
+                        </div>
                         <p>
                             Une fois inscrit dans le <a href="{{ path('catalog_artists') }}">catalogue des groupes</a>, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement.
                             Ces fans, de par leur financement de l'événement, deviennent alors les réels producteurs de ce concert.
@@ -59,6 +69,7 @@
 
                     <div class="content-box-content-zone" id="advantages-artists">
                         <h3>Vos avantages en tant qu'Artiste</h3>
+                        <img src="{{ asset('images/icons/advantages-artist.png') }}" class="um-icon float-sm-right" />
                         <ul class="um-list">
                             <li><strong>Inscription</strong> 100% <strong>gratuite et accessible</strong> à tout artiste qui souhaite se lancer</li>
                             <li><strong>Aucune prise de risque financière</strong> pour les groupes ni pour leurs fans</li>
@@ -73,6 +84,7 @@
 
                     <div class="content-box-content-zone" id="advantages-producers">
                         <h3>Vos avantages en tant que Producteur</h3>
+                        <img src="{{ asset('images/icons/advantages-producer.png') }}" class="um-icon float-sm-right" />
                         <ul class="um-list">
                             <li><strong>Co-production et participation au concert de l'artiste de votre choix</strong></li>
                             <li><strong>Système de financement sans risque</strong> grâce au remboursement intégral si le concert n'a pas lieu</li>
@@ -87,6 +99,7 @@
 
                     <div class="content-box-content-zone" id="advantages-halls">
                         <h3>Vos avantages en tant que salle partenaire</h3>
+                        <img src="{{ asset('images/icons/advantages-hall.png') }}" class="um-icon float-sm-right" />
                         <ul class="um-list">
                             <li><strong>Organisation de concerts automatisée et facilitée</strong> par la plateforme Un-Mute</li>
                             <li><strong>Aucune prise de risque financière</strong> (garanties sur un nombre minimum de places vendues par concert)</li>
@@ -112,4 +125,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
 {% endblock %}
