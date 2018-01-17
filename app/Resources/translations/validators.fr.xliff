@@ -36,7 +36,7 @@
       </trans-unit>
       <trans-unit id="4b3130df261ac66147653997d2d83952a330faac" resname="fos_user.password.short">
         <source>fos_user.password.short</source>
-        <target>Ce mot de passe est trop court.</target>
+        <target>Ce mot de passe est trop court. Il doit faire un minimum de {{ limit }} caractères.</target>
       </trans-unit>
       <trans-unit id="77c8ec07f205976bbed1a3ce90fdc458891bb81d" resname="fos_user.username.already_used">
         <source>fos_user.username.already_used</source>

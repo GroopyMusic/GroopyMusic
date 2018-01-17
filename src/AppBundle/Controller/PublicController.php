@@ -69,6 +69,7 @@ class PublicController extends Controller
      */
     public function indexAction(Request $request, UserInterface $user = null)
     {
+
         $em = $this->getDoctrine()->getManager();
 
         $NB_MAX_NEWS = 4;
