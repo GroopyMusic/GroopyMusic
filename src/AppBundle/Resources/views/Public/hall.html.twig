@@ -36,14 +36,6 @@
             </div>
 
             <div class="col-12 col-md-8">
-                {% if hall.getDescription is not empty %}
-                    <div class="content-box">
-                        <div class="content-box-content">
-                            <div class="contract-info-title mb-3">Description</div>
-                            <p>{{ hall.getDescription }}</p>
-                        </div>
-                    </div>
-                {% endif %}
                 {% if hall.photos|length > 0 %}
                     <div id="hallCarousel" class="carousel slide" data-ride="carousel">
                         {% if hall.photos|length > 1 %}
@@ -70,6 +62,14 @@
                                 <span class="sr-only">Suivant</span>
                             </a>
                         {% endif %}
+                    </div>
+                {% endif %}
+                {% if hall.getDescription is not empty %}
+                    <div class="content-box{% if hall.photos|length > 0 %} mt-4{% endif %}">
+                        <div class="content-box-content">
+                            <div class="contract-info-title mb-3">Description</div>
+                            <p>{{ hall.getDescription }}</p>
+                        </div>
                     </div>
                 {% endif %}
             </div>
