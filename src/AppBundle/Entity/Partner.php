@@ -54,6 +54,15 @@ class Partner
         }
     }
 
+    public function getWebsiteDomain() {
+        $pieces = parse_url($this->website);
+        $domain = isset($pieces['host']) ? $pieces['host'] : $pieces['path'];
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return 'www.' . $regs['domain'];
+        }
+        return $this->website;
+    }
+
     public function getContactPersons() {
         return array_map(function($elem) {
             return $elem->getContactPerson();

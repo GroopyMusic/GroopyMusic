@@ -7,8 +7,13 @@
         <h3 class="text-center mb-3">Inscription</h3>
 
         <div class="content-box">
-            <div class="content-box-contenr">
-                <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
+            <div class="content-box-content row mt-3">
+                <div class="col-12 col-md-8 my-auto">
+                    <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
+                </div>
+                <div class="d-none d-md-block col-md-4">
+                    <img class="img-fluid um-icon" src="{{ asset('images/icons/producer.png') }}" />
+                </div>
             </div>
         </div>
     </div>

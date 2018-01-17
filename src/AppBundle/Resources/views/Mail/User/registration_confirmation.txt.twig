@@ -5,9 +5,7 @@
 
 {% autoescape false %}
     {% block content %}
-        Hello,
-
-        {{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
+        {{ 'registration.email.message'|trans({'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle') }}
     {% endblock %}
 {% endautoescape %}
 

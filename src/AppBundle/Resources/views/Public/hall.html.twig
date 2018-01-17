@@ -22,11 +22,16 @@
 
         <div class="row">
             <div class="col-12 content-box">
-                <div class="content-box-content">
-                    <p>
-                        <span class="contract-info-title">En quelques mots</span>
-                        {{ hall.getShortDescription }}
-                    </p>
+                <div class="content-box-content row">
+                    <div class="col-12 col-md-10 my-auto">
+                        <p>
+                            <span class="contract-info-title">En quelques mots</span><br />
+                            {{ hall.getShortDescription }}
+                        </p>
+                    </div>
+                    <div class="d-none d-md-block col-md-2">
+                        <img class="img-fluid um-icon" src="{{ asset('images/icons/hall.png') }}" />
+                    </div>
                 </div>
             </div>
 
@@ -86,6 +91,12 @@
                             <td class="contract-info-title">Capacité</td>
                             <td>{{ hall.capacity }} personnes</td>
                         </tr>
+                        {% if hall.website is not empty %}
+                            <tr>
+                                <td class="contract-info-title">Site Web</td>
+                                <td><a href="{{ hall.website }}">{{ hall.websiteDomain }}</a></td>
+                            </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>

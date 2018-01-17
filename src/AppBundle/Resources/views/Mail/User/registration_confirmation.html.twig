@@ -4,8 +4,6 @@
         {% block title %}{# TODO this #}{% endblock %}
 
         {% block content %}
-                <span {{ salutationStyle }}>Hello,</span>
-
                 <p>
                 {{ 'registration.email.message'|trans({'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle')|nl2br }}
                 </p>
