@@ -139,8 +139,11 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), $params, [], [], [$recipient], [$recipientName]);
     }
 
-    public function sendKnownOutcomeContract(ContractArtist $contract, $success, $artist_users, $fan_users) {
-        $params = ['contract' => $contract, 'artist' => $contract->getArtist()->getArtistname()];
+    public function sendKnownOutcomeContract(ContractArtist $contract, $success) {
+        $artist_users = $contract->getArtistProfiles();
+        $fan_users = $contract->getFanProfiles();
+
+        $params = ['contract' => $contract, 'artist' => $contract->getArtist()];
 
         if($success) {
             $template_artist = MailTemplateProvider::SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE;
@@ -155,7 +158,7 @@ class MailDispatcher
             return $elem->getEmail();
         }, $artist_users);
 
-        $this->sendEmail($template_artist, 'Votre crowdfunding - Résultat des courses', $params, $bcc);
+        $this->sendEmail($template_artist, 'Votre événement Un-Mute - Résultat des courses', $params, $bcc);
 
         // mail to fans
         if(!empty($fan_users)) {
@@ -289,6 +292,12 @@ class MailDispatcher
         $subject = "Rappel : un contrat doit être concrétisé";
         $params = ['contractArtist' => $contract, 'nbDays' => $nb_days];
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_REMINDER_CONTRACT_TEMPLATE, $subject, $params);
+    }
+
+    public function sendAdminPendingContract(ContractArtist $contract) {
+        $subject = "La récolte de tickets d'un événement est arrivée à échéance";
+        $params = ['contractArtist' => $contract];
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_PENDING_CONTRACT_TEMPLATE, $subject, $params);
     }
 
     public function sendAdminEnormousPayer(User $user) {

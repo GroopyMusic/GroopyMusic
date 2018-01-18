@@ -19,6 +19,7 @@ class ContractArtistAdmin extends BaseAdmin
             ->remove('delete')
             ->remove('create')
             ->add('refund', $this->getRouterIdParameter().'/refund')
+            ->add('validate', $this->getRouterIdParameter().'/validate')
         ;
     }
 
@@ -51,12 +52,18 @@ class ContractArtistAdmin extends BaseAdmin
             ->add('refunded', null, array(
                 'label' => 'Remboursé',
             ))
+            ->add('state', null, array(
+                'label' => 'Etat'
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
                     'refund' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_refund.html.twig',
+                    ),
+                    'validate' => array(
+                        'template' => 'AppBundle:Admin/ContractArtist:icon_validate.html.twig',
                     ),
                 )))
         ;

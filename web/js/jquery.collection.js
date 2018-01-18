@@ -224,6 +224,20 @@
 
             toReplace = new RegExp(pregQuote(collection.attr('id') + '_' + oldIndex), 'g');
             replaceWith = collection.attr('id') + '_' + newIndex;
+
+            if (settings.children) {
+                $.each(settings.children, function (key, child) {
+                    var childCollection = collection.find(child.selector).eq(index);
+                    var childSettings = childCollection.data('collection-settings');
+                    if (childSettings) {
+                        childSettings.elements_parent_selector = childSettings.elements_parent_selector.replace(toReplace, replaceWith);
+                        childSettings.elements_selector = childSettings.elements_selector.replace(toReplace, replaceWith);
+                        childSettings.prefix = childSettings.prefix.replace(toReplace, replaceWith);
+                        childCollection.data('collection-settings', childSettings);
+                    }
+                });
+            }
+
             replaceAttrData(elements, index, toReplace, replaceWith);
         };
 
@@ -328,7 +342,7 @@
                 if (init) {
                     elementsParent.append('<span class="' + settings.prefix + '-tmp"></span>');
                     if (settings.add) {
-                        collection.append(
+                        elementsParent.append(
                             $(settings.add)
                                 .addClass(settings.prefix + '-action ' + settings.prefix + '-rescue-add')
                                 .data('collection', collection.attr('id'))
@@ -339,6 +353,8 @@
 
             // initializes the collection with a minimal number of elements
             if (isInitialization) {
+                collection.data('collection-offset', 0);
+
                 var container = $(settings.container);
                 var button = collection.find('.' + settings.prefix + '-add, .' + settings.prefix + '-rescue-add, .' + settings.prefix + '-duplicate').first();
                 while (elements.length < settings.init_with_n_elements) {
@@ -346,10 +362,9 @@
                     var index = elements.length - 1;
                     elements = doAdd(container, button, collection, settings, elements, element, index, false);
                 }
-            }
 
-            // Track last index
-            collection.data('last-index', elements.length - 1);
+                collection.data('collection-offset', elements.length);
+            }
 
             // make buttons appear/disappear in each elements of the collection according to options
             // (enabled, min/max...) and logic (for example, do not put a move up button on the first
@@ -423,7 +438,7 @@
                         action
                             .addClass(settings.prefix + '-action')
                             .data('collection', collection.attr('id'))
-                            .data(settings.prefix + '-element', getOrCreateId(collection.attr('id') + '_' + index, element));
+                            .data('element', getOrCreateId(collection.attr('id') + '_' + index, element));
                     } else {
                         element.find('.' + button.selector).css('display', 'none');
                     }
@@ -484,9 +499,9 @@
         var doAdd = function (container, that, collection, settings, elements, element, index, isDuplicate) {
             if (elements.length < settings.max && (isDuplicate && trueOrUndefined(settings.before_duplicate(collection, element)) || trueOrUndefined(settings.before_add(collection, element)))) {
                 var prototype = collection.data('prototype');
-                var freeIndex = collection.data('last-index') + 1;
+                var freeIndex = collection.data('collection-offset');
 
-                collection.data('last-index', freeIndex);
+                collection.data('collection-offset', freeIndex + 1);
 
                 if (index === -1) {
                     index = elements.length - 1;
@@ -505,6 +520,7 @@
                 }
 
                 var code = $(prototype.replace(regexp, freeKey)).data('index', freeIndex);
+                setRightPrefix(settings, code);
 
                 var elementsParent = $(settings.elements_parent_selector);
                 var tmp = elementsParent.find('> .' + settings.prefix + '-tmp');
@@ -527,6 +543,7 @@
                     if (settings.fade_in) {
                         code.hide();
                     }
+
                     tmp.before(code);
                 }
 
@@ -573,8 +590,11 @@
         var doDelete = function (collection, settings, elements, element, index) {
             if (elements.length > settings.min && trueOrUndefined(settings.before_remove(collection, element))) {
                 var deletion = function () {
-                    elements = shiftElementsUp(collection, elements, settings, index);
-                    var toDelete = elements.last();
+                    var toDelete = element;
+                    if (!settings.preserve_names) {
+                        elements = shiftElementsUp(collection, elements, settings, index);
+                        toDelete = elements.last();
+                    }
                     var backup = toDelete.clone({withDataAndEvents: true}).show();
                     toDelete.remove();
                     if (!trueOrUndefined(settings.after_remove(collection, backup))) {
@@ -669,7 +689,7 @@
             });
 
             return elements;
-        }
+        };
 
         var getElementKey = function (settings, element) {
             var name = element.find(':input[name^="' + settings.name_prefix + '["]').attr('name');
@@ -689,6 +709,37 @@
             });
 
             return freeKey;
+        };
+
+        var setRightPrefix = function (settings, container) {
+            var suffixes = [
+                '-action',
+                '-action-disabled',
+                '-actions',
+                '-add',
+                '-down',
+                '-duplicate',
+                '-remove',
+                '-rescue-add',
+                '-tmp',
+                '-up'
+            ];
+
+            $.each(suffixes, function () {
+                var suffix = this;
+                container.each(function () {
+                    var that = $(this);
+                    if (that.hasClass(settings.user_prefix + suffix)) {
+                        that.addClass(settings.prefix + suffix);
+                    }
+                    that.find('*').each(function () {
+                        var here = $(this);
+                        if (here.hasClass(settings.user_prefix + suffix)) {
+                            here.addClass(settings.prefix + suffix);
+                        }
+                    });
+                });
+            });
         };
 
         // we're in a $.fn., so in $('.collection').collection(), $(this) equals $('.collection')
@@ -734,6 +785,12 @@
                     return true;
                 }
             }
+
+            // On nested collections, prefix is the same for all children leading to very
+            // random and unexepcted issues, so we merge prefix with current collection id.
+            settings.user_prefix = settings.prefix;
+            settings.prefix = collection.attr('id') + '-' + settings.user_prefix;
+            setRightPrefix(settings, collection);
 
             // enforcing logic between options
             if (!settings.allow_add) {
@@ -855,7 +912,7 @@
                     }
 
                     var elements = collection.find(settings.elements_selector);
-                    var element = that.data(settings.prefix + '-element') ? $('#' + that.data(settings.prefix + '-element')) : undefined;
+                    var element = that.data('element') ? $('#' + that.data('element')) : undefined;
                     var index = element && element.length ? elements.index(element) : -1;
                     var event = null;
 

@@ -209,6 +209,11 @@ class BaseContractArtist
      */
     protected $reminders_admin;
 
+    /**
+     * @ORM\Column(name="last_reminder_admin", type="datetime", nullable=true)
+     */
+    protected $last_reminder_admin;
+
     // Discriminator
     protected $type;
 
@@ -524,7 +529,9 @@ class BaseContractArtist
     public function setReality(\AppBundle\Entity\ContractArtistPossibility $reality = null)
     {
         $this->reality = $reality;
-        $reality->setContract($this);
+
+        if($reality != null)
+            $reality->setContract($this);
 
         return $this;
     }
@@ -703,4 +710,28 @@ class BaseContractArtist
         return $this->reminders_admin;
     }
 
+
+    /**
+     * Set lastReminderAdmin
+     *
+     * @param \DateTime $lastReminderAdmin
+     *
+     * @return BaseContractArtist
+     */
+    public function setLastReminderAdmin($lastReminderAdmin)
+    {
+        $this->last_reminder_admin = $lastReminderAdmin;
+
+        return $this;
+    }
+
+    /**
+     * Get lastReminderAdmin
+     *
+     * @return \DateTime
+     */
+    public function getLastReminderAdmin()
+    {
+        return $this->last_reminder_admin;
+    }
 }

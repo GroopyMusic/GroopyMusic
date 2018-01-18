@@ -9,7 +9,13 @@ change_email:
 concert:
   artist:
     failure: |
+      Cher artiste Un-Mute,
 
+      Malheureusement, vous n’avez pas pu récolter assez de fonds pour permettre l’organisation de votre %step% initialement prévu le %date%.
+
+      Les fans qui vous ont soutenu seront remboursés de l’entièreté du prix des places achetées.
+
+      Envie de retenter votre chance dans une autre catégorie de salle ? N'hésitez pas ! Notre plateforme www.un-mute.be vous est ouverte et le sera toujours.
 
     confirmation: |
       Félicitations !
@@ -50,9 +56,9 @@ concert:
 
       L’artiste %artist% que vous aviez décidé de soutenir n’a pas pu récolter assez de fonds pour permettre l’organisation de son concert.
 
-      Vous serez remboursé de l’entièreté du prix des places achetées.
+      Vous serez remboursé de l’entièreté du prix des places achetées dans les dix jours ouvrables.
 
-      Envie de voir nom %artist% en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !
+      Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !
 
       Envie de soutenir d’autres artistes ? Rendez-vous sur le catalogue de groupes : %artistCatalogUrl%
 

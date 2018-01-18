@@ -12,9 +12,22 @@
         border-left: 1px solid #d2d2d2;
       }
     }
+
+    &.no-border-top {
+      border-top: 0 none;
+    }
+    &.no-border-bottom {
+      border-bottom: 0 none;
+    }
   }
   &-col {
     @extend .py-4;
+    &.no-border-top {
+      border-top: 0 none;
+    }
+    &.no-border-bottom {
+      border-bottom: 0 none;
+    }
   }
 
   &-header {

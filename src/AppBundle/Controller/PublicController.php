@@ -101,7 +101,7 @@ class PublicController extends Controller
             }
         }
 
-        $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findWithAvailableCounterParts();
+        $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
         $crowdfundings = [];
 
         if($user != null && count($user->getGenres()) > 0) {
@@ -244,7 +244,7 @@ class PublicController extends Controller
     public function artistContractsAction() {
 
         $em = $this->getDoctrine()->getManager();
-        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findWithAvailableCounterParts();
+        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
         $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(

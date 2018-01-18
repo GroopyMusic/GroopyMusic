@@ -13,7 +13,7 @@ use AppBundle\Entity\Artist;
  */
 class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findNewContracts($max) {
+    public function queryVisible() {
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
             ->join('c.step', 's')
@@ -25,13 +25,16 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('p')
             ->where('c.failed = 0')
             ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
-            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
-            ->orderBy('p.date', 'desc')
             ->setParameter('now', new \DateTime('now'))
+        ;
+    }
+
+    public function findNewContracts($max) {
+        return $this->queryVisible()
+            ->orderBy('p.date', 'desc')
             ->setMaxResults($max)
             ->getQuery()
             ->getResult()
-
         ;
     }
 
@@ -76,20 +79,8 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Returns 0-$limit contracts for which there are tickets to buy
      */
-    public function findWithAvailableCounterParts($limit = null) {
-        $qb = $this->createQueryBuilder('c')
-            ->join('c.artist', 'a')
-            ->join('c.step', 's')
-            ->join('c.preferences', 'p')
-            ->leftJoin('c.reality', 'r')
-            ->addSelect('a')
-            ->addSelect('s')
-            ->addSelect('r')
-            ->addSelect('p')
-            ->where('c.failed = 0')
-            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
-            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
-            ->andWhere('c.tickets_sold < s.max_tickets')
+    public function findVisible($limit = null) {
+        $qb = $this->queryVisible()
         ;
 
         if($limit != null) {
@@ -98,36 +89,39 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb
             ->orderBy('p.date', 'asc')
-            ->setParameter('now', new \DateTime('now'))
             ->getQuery()
             ->getResult()
         ;
     }
 
     public function findCurrentForArtist(Artist $artist) {
-        return $this->createQueryBuilder('c')
-            ->join('c.artist', 'a')
-            ->join('c.step', 's')
-            ->join('c.preferences', 'p')
-            ->leftJoin('c.reality', 'r')
-            ->addSelect('s')
-            ->addSelect('p')
-
-            ->where('a = :artist')
-            ->andWhere('c.failed = 0')
-            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
-            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
-            ->andWhere('c.tickets_sold < s.max_tickets')
-
+        return $this->queryVisible()
+            ->andWhere('a = :artist')
             ->setParameter('artist', $artist)
-            ->setParameter('now', new \DateTime('now'))
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     /**
      * @see KnownOutcomeContractCommand
      */
+    public function findPending() {
+        return $this->queryVisible()
+            ->andWhere('c.deadline < :now')
+            ->andWhere('c.successful = 0')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+    /**
+     * @see KnownOutcomeContractCommand
+     * For now the two following methods are replaced by manually-triggered e-mails in admin section
+     */
+
+    /**
     public function findNewlyFailed() {
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
@@ -148,6 +142,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @see KnownOutcomeContractCommand
      */
+    /**
     public function findNewlySuccessful() {
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
@@ -162,5 +157,6 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+    **/
 
 }

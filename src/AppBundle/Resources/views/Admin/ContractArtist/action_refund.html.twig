@@ -2,17 +2,26 @@
 
 {% block sonata_admin_content %}
 
-    <div>Es-tu sûr de vouloir rembourser tous les participants à ce crowdfunding ? {% if contract.isOneStepFromBeingRefunded %}(cela le remboursera immédiatement){% else %}(il y aura besoin de la validation d'autres admins avant le remboursement){% endif %}</div>
+    <div class="content-box">
+        <div class="content-box-content">
+            <h2>Demande de remboursement</h2>
 
-    {% if not contract.failed %}
-        <div>Attention : le crowdfunding n'est pas un échec pour l'instant. Réfléchis bien avant de rembourser tous les participants !</div>
-    {% endif %}
+            <p>
+                Es-tu sûr de vouloir rembourser tous les participants à ce crowdfunding ? {% if contract.isOneStepFromBeingRefunded %}(cela le remboursera immédiatement){% else %}(il y aura besoin de la validation d'autres admins avant le remboursement){% endif %}
+            </p>
 
-    {{ form_start(form) }}
+            {% if not contract.failed %}
+                <div class="alert-danger">Attention : le crowdfunding n'est pas un échec pour l'instant. Réfléchis bien avant de rembourser tous les participants !</div>
+            {% endif %}
 
-    {{ form_row(form.confirm) }}
-    {{ form_row(form.cancel) }}
+            <div>
+                {{ form_start(form) }}
 
-    {{ form_rest(form) }}
+                {{ form_widget(form.confirm) }}
+                {{ form_widget(form.cancel) }}
 
+                {{ form_rest(form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

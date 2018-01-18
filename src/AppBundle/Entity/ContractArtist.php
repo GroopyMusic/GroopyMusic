@@ -59,11 +59,12 @@ class ContractArtist extends BaseContractArtist
             return self::STATE_REFUNDED;
 
         // Failure
-        if($this->failed || ($this->dateEnd < $today && $this->tickets_sold < $this->step->getMinTickets()))
+        if($this->failed) // || ($this->dateEnd < $today && $this->tickets_sold < $this->step->getMinTickets()))
             return self::STATE_FAILED;
 
         // Success
-        if($this->successful || $this->tickets_sold > $this->step->getMinTickets()) {
+        if($this->successful) // || $this->tickets_sold > $this->step->getMinTickets())
+        {
             // Concert in the future
             if($this->getDateConcert() >= $today) {
                 // Sold out

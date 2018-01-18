@@ -85,8 +85,13 @@
                         <tbody>
                         <tr>
                             <td class="contract-info-title">Catégorie</td>
-                            <td>{{ hall.step }}</td>
+                            <td>{{ hall.step }}<a href="#" data-toggle="popover" title="{{ hall.step }}" class="ml-1 px-1 py-0 btn btn-outline-primary"
+                                                  data-content="{{ hall.step.getDescription }}<br /><br />
+                                                  Seuil de réussite : <strong>{{ hall.step.minTickets }} tickets</strong><br />
+                                                  <a href='{{ path('faq') }}'>Plus d'infos</a>">?</a>
+                            </td>
                         </tr>
+
                         <tr>
                             <td class="contract-info-title">Capacité</td>
                             <td>{{ hall.capacity }} personnes</td>

@@ -64,6 +64,20 @@
                             </div>
                         </div>
 
+                        <div class="col-12 row equal content-box-row no-border-top">
+                            <div class="col-12 content-box-col">
+                                <span class="contract-info-title pr-2">
+                                    Catégorie de salle
+                                </span>
+
+                                <span class="contract-info-content pr-1">
+                                {{ contract.step }}<a href="#" data-toggle="popover" title="{{ contract.step }}" class="ml-2 px-1 py-0 btn btn-outline-primary"
+                                                      data-content="{{ contract.step.getDescription }}<br />
+                                                      <a href='{{ path('faq') }}'>Plus d'infos</a>">?</a>
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
                                 état des ventes
@@ -84,7 +98,7 @@
                                 {% elseif state is constant('STATE_ONGOING', contract) %}
                                     En cours
                                 {% elseif state is constant('STATE_PENDING', contract) %}
-                                    En attente de confirmation d'un administrateur
+                                    En cours d'examination par l'équipe Un-Mute
                                 {% endif %}
                             </span>
                             {% if state not in contract.uncrowdableStates %}

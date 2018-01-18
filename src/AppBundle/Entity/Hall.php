@@ -123,18 +123,20 @@ class Hall extends Partner
 
     public function refreshDates() {
 
-        // Clean passed dates
-        foreach($this->available_dates as $i => $ad) {
-            if((new \DateTime($ad)) < (new \DateTime('now'))) {
-                unset($this->available_dates[$i]);
-            }
-        }
-
         $minimum_days_from_today_for_crowdfunding = $this->getStep()->getDeadlineDuration() + $this->getStep()->getDelay();
         $days_margin_for_crowdfunding = $this->getStep()->getDelayMargin();
 
         $max_cursor = (new \DateTime())->add(new \DateInterval('P'.($minimum_days_from_today_for_crowdfunding + $days_margin_for_crowdfunding).'D'))->format(self::DATE_FORMAT);
         $default_cursor = (new \DateTime())->add(new \DateInterval('P'.$minimum_days_from_today_for_crowdfunding.'D'))->format(self::DATE_FORMAT);
+
+        // Clean "out of scope" dates
+        $this->available_dates = array_filter($this->available_dates, function($date) use ($default_cursor) {
+            return (new \DateTime($date)) >= (new \DateTime($default_cursor));
+        });
+
+        foreach($this->available_dates as $i => $ad) {
+
+        }
 
         // For each possible day
         foreach($this->cron_explored_dates as $i => $current_cursor) {

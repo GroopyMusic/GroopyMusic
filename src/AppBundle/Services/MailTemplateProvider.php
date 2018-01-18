@@ -39,6 +39,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     // Admin mails templates
     const ADMIN_TEST_TEMPLATE = 'AppBundle:Mail/Admin:test.txt.twig';
     const ADMIN_REMINDER_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract.txt.twig';
+    const ADMIN_PENDING_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:pending_contract.txt.twig';
     const ADMIN_ENORMOUS_PAYER_TEMPLATE = 'AppBundle:Mail/Admin:enormous_payer.txt.twig';
     const ADMIN_STRIPE_ERROR_TEMPLATE  = 'AppBundle:Mail/Admin:stripe_error.txt.twig';
     const ADMIN_TICKETS_SENT = 'AppBundle:Mail/Admin:tickets_sent.txt.twig';

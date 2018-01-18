@@ -40,9 +40,11 @@ class PaymentAdminController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('confirm', SubmitType::class, array(
+                'label' => 'Rembourser',
                 'attr' => array('class' => 'btn btn-warning')
             ))
             ->add('cancel', SubmitType::class, array(
+                'label' => 'Annuler',
                 'attr' => array('class' => 'btn btn-primary')
             ))
             ->getForm();

@@ -5,7 +5,8 @@
 
         {% block content %}
             <div>
-                Il faut encore fournir une concrétisation (salle + date) au contrat {{ contractArtist.id }} parce que ça fait {{ nbDays }} jours qu'il est validé.
+                Le {{ contractArtist.step.name }} de {{ contractArtist.artist.artistname }} prévu pour le {{ contractArtist.preferences.date|date('d/m/Y') }} est arrivé à échéance de récolte de tickets.
+                Tu peux le valider ou l'invalider dans <a href="{{ absolute_url(path('sonata_admin_dashboard')) }}">l'espace d'administration du site</a>.
             </div>
         {% endblock %}
     {% endspaceless %}

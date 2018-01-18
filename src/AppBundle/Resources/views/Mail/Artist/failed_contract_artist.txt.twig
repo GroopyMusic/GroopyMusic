@@ -4,9 +4,12 @@
 
 {% block subject %}{{ subject }}{% endblock %}
 
-{% block content %}
-
-{% endblock %}
+    {% block content %}
+        {{ email_content('concert.artist.failure', {
+            '%step%': contract.step.name,
+            '%date%': contract.preferences.date|date('d/m/Y')
+        })|raw }}
+    {% endblock %}
 
 {% endautoescape %}
 

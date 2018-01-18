@@ -1,0 +1,46 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+
+    <div class="content-box">
+        <div class="content-box-content">
+            <h2>Validation de concert</h2>
+
+            {% if contract.state is constant('STATE_PENDING', contract) %}
+                <p>
+                    Cet événement est arrivé à échéance et attend ta décision pour être confirmé ou non. <a href="{{ path('artist_contract', {'id':contract.id}) }}">Voir la page de l'événement.</a>
+                </p>
+                <p>
+                    À première vue, le contrat est {% if contract.ticketsSold >= contract.step.minTickets %}rempli !{% else %}un échec...{% endif %}.
+                </p>
+
+                <p class="alert-warning">
+                    Attention, quelle que soit ta décision, un mail sera envoyé à tous les crowdfundeurs pour la leur annoncer.
+                </p>
+
+                <div>
+                    {{ form_start(form) }}
+
+                    {{ form_row(form.reality) }}
+
+                    <p>
+                        ATTENTION : relis bien ces infos car elles seront envoyées par mail si tu confirmes le concert !
+                        Si tu souhaites marquer le concert comme raté, laisse les valeurs par défaut.
+                    </p>
+
+                    {{ form_row(form.acceptConditions) }}
+
+                    {{ form_widget(form.marksuccessful) }}
+                    {{ form_widget(form.markfailed) }}
+
+                    {{ form_rest(form) }}
+                </div>
+
+
+            {% else %}
+                Tu ne peux pas confirmer un concert tant que l'échéance de la vente de tickets n'a pas été atteinte.
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

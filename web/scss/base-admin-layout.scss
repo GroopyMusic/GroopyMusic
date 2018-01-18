@@ -1,0 +1,18 @@
+@import "config/index";
+
+.content-box {
+  margin-bottom: 1.5rem;
+
+  &-content {
+    padding: 1.5rem;
+
+    background: #fdfdfe;
+    border-right: 2px solid #d0d2d4;
+    border-bottom: 2px solid #d0d2d4;
+
+    &.border-left {
+      border-left: 2px solid #d0d2d4;
+    }
+  }
+}
+

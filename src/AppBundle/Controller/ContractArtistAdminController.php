@@ -2,7 +2,11 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ConcertPossibility;
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
+use AppBundle\Form\ContractArtistValidationType;
+use AppBundle\Services\MailDispatcher;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -37,9 +41,11 @@ class ContractArtistAdminController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('confirm', SubmitType::class, array(
+                'label' => 'Rembourser',
                 'attr' => array('class' => 'btn btn-warning')
             ))
             ->add('cancel', SubmitType::class, array(
+                'label' => 'Annuler',
                 'attr' => array('class' => 'btn btn-primary')
             ))
             ->getForm();
@@ -88,6 +94,54 @@ class ContractArtistAdminController extends Controller
         }
 
         return $this->render('@App/Admin/ContractArtist/action_refund.html.twig', array(
+            'form' => $form->createView(),
+            'contract' => $contract,
+        ));
+    }
+
+    public function validateAction(Request $request, UserInterface $user) {
+        $em = $this->getDoctrine()->getManager();
+        $contract = $this->admin->getSubject();
+
+        /** @var ContractArtist $contract */
+        if (!$contract) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $contract->getId()));
+        }
+
+        $form = $this->createForm(ContractArtistValidationType::class, $contract);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->get('marksuccessful')->isClicked()) {
+
+                $contract->setSuccessful(true)->setFailed(false);
+
+                $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, true);
+
+                $em->persist($contract);
+                $em->flush();
+
+                $this->addFlash('sonata_flash_success', "Cet événement est désormais confirmé. Les ventes de tickets vont continuer jusqu'au sold out ou jusqu'à quelques jours avant l'événement.");
+
+                return new RedirectResponse($this->admin->generateUrl('list'));
+            } elseif ($form->get('markfailed')->isClicked()) {
+
+                $contract->setSuccessful(false)->setFailed(true)->setReality(null);
+
+                $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, false);
+
+                $em->persist($contract);
+                $em->flush();
+
+                $this->addFlash('sonata_flash_success', "L'objectif de cet événement n'a pas été atteint. Les ventes de tickets sont finies ; n'oublie pas de rembourser les fans !");
+
+                return new RedirectResponse($this->admin->generateUrl('list'));
+            }
+        }
+
+        return $this->render('@App/Admin/ContractArtist/action_validate.html.twig', array(
             'form' => $form->createView(),
             'contract' => $contract,
         ));

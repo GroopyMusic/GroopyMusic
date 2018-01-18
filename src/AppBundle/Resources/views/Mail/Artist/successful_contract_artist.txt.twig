@@ -5,9 +5,10 @@
 {% autoescape false %}
 
 {% block content %}
-    Hello,
-    {{ txtH2Style }}{# this add a "==================="-line the "Hello" #}
-
+   {{ email_content('concert.artist.confirmation', {
+        '%hall%': contract.reality.hall.name,
+        '%date%': contract.reality.date|date('d/m/Y')
+   })|raw }}
 {% endblock %}
 
 {% endautoescape %}
