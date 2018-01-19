@@ -4,47 +4,70 @@
 
     <p>Votre profil n'est pas publié sur la plateforme ; seul vous y avez accès.</p>
 
-    <p><strong>{{ 'profile.show.email'|trans }}</strong> : {{ user.email }}</p>
-    <p><strong>{{ 'profile.show.firstname'|trans }}</strong> : {{ user.firstName }} </p>
-    <p><strong>{{ 'profile.show.lastname'|trans }}</strong> : {{ user.lastName }} </p>
+    <table class="um-table">
+        <tr>
+            <td class="contract-info-title text-left">{{ 'profile.show.firstname'|trans }}</td>
+            <td class="pl-3">{{ user.firstName }}</td>
+        </tr>
 
-    {% if user.birthday is not null and user.birthday|date('Y') > 1900 %}
-        <p>
-            <strong>{{ 'profile.show.birthday'|trans }}</strong> : {{ user.birthday|date('d/m/Y') }}
-        </p>
-    {% endif %}
+        <tr>
+            <td class="contract-info-title text-left">{{ 'profile.show.lastname'|trans }}</td>
+            <td class="pl-3">{{ user.lastName }}</td>
+        </tr>
 
-    {% if user.address is not null %}
-        <p>
-            <strong>{{ 'profile.show.address'|trans }}</strong> : {{ user.address }}
-        </p>
-    {% endif %}
+        <tr>
+            <td class="contract-info-title text-left">{{ 'profile.show.email'|trans }}</td>
+            <td class="pl-3">{{ user.email }}</td>
+        </tr>
 
-    {% if user.artists is not empty %}
-    <p><strong>{{ 'profile.show.artists'|trans }}</strong> :
-        <ul class="um-list">
-            {% for artist in user.artists %}
-                <li><a href="{{ path('artist_profile', {'id': artist.id}) }}">{{ artist.artistname }}</a></li>
-            {% endfor %}
-        </ul>
-    </p>
-    {% endif %}
+        {% if user.birthday is not null and user.birthday|date('Y') > 1900 %}
+            <tr>
+                <td class="contract-info-title text-left">{{ 'profile.show.birthday'|trans }}</td>
+                <td class="pl-3">{{ user.birthday|date('d/m/Y') }}</td>
+            </tr>
+        {% endif %}
 
-    {% if user.genres is not empty %}
-        <p><strong>{{ 'profile.show.genres'|trans }}</strong> :
-            <ul class="um-list">
-                {% for g in user.genres %}
-                    <li>{{ g.name }}</li>
-                {% endfor %}
-            </ul>
-        </p>
-    {% endif %}
+        {% if user.address is not null %}
+            <tr>
+                <td class="contract-info-title text-left">{{ 'profile.show.address'|trans }}</td>
+                <td class="pl-3">{{ user.address }}</td>
+            </tr>
+        {% endif %}
 
-    <p>
-        <strong>{{ 'profile.show.newsletter'|trans }}</strong> : {{ user.newsletter ? 'Oui' : 'Non' }}
-    </p>
+        {% if user.artists is not empty %}
+            <tr>
+                <td class="contract-info-title text-left align-top">{{ 'profile.show.artists'|trans }}</td>
+                <td class="pl-3">
+                    <ul class="um-list">
+                        {% for artist in user.artists %}
+                            <li><a href="{{ path('artist_profile', {'id': artist.id}) }}">{{ artist.artistname }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {% endif %}
 
-    <p>
-        <strong>{{ 'profile.show.inscription_date'|trans }}</strong> : {{ user.inscriptionDate|date('d/m/Y') }}
-    </p>
+        {% if user.genres is not empty %}
+            <tr>
+                <td class="contract-info-title text-left align-top">{{ 'profile.show.genres'|trans }}</td>
+                <td class="pl-3">
+                    <ul class="um-list">
+                        {% for g in user.genres %}
+                            <li>{{ g }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {% endif %}
+
+        <tr>
+            <td class="contract-info-title text-left">{{ 'profile.show.newsletter'|trans }}</td>
+            <td class="pl-3">{{ user.newsletter ? 'Oui' : 'Non' }}</td>
+        </tr>
+
+        <tr>
+            <td class="contract-info-title text-left">{{ 'profile.show.inscription_date'|trans }}</td>
+            <td class="pl-3">{{ user.inscriptionDate|date('d/m/Y') }}</td>
+        </tr>
+    </table>
 </div>

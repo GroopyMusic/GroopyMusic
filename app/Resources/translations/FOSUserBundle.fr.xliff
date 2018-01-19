@@ -53,7 +53,7 @@
       </trans-unit>
       <trans-unit id="5f6d0469795932edb68c4fb92169d059fb2b7200" resname="profile.show.newsletter">
         <source>profile.show.newsletter</source>
-        <target>Je souhaite recevoir des newsletters et autres communications commerciales d'Un-Mute Asbl</target>
+        <target>Communications commerciales</target>
         <jms:reference-file line="44">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\Profile\show_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1fa5b2873fe30be026b854f6a51503b86c6ac81a" resname="registration.back">
