@@ -3,6 +3,12 @@
 {% set title = 'Votre soutien a porté ses fruits !' %}
 {%- set content -%}
     <p>
-        Félicitations, le concert de {{ contract.artist.artistName }} a atteint suffisamment de fans pour être produit !
+        Félicitations, le <a href="{{ path('artist_contract', {'id': contract_id}) }}">{{ step }} de {{ artist }}</a> a atteint suffisamment de fans pour être produit !
+        <br /><br />
+        {% if hall_id is not null %}
+            Sachez qu'il aura lieu le {{ date }} dans la salle <a href="{{ path('hall', {'id': hall_id}) }}">{{ hall_name }}</a>.<br /> <br />
+        {% endif %}
+
+        Bientôt, vous recevrez vos tickets pour le concert, et vous serez averti des premières parties qui viendront jouer avec {{ artist }}.
     </p>
 {%- endset -%}

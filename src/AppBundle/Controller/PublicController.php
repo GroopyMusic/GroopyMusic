@@ -244,7 +244,7 @@ class PublicController extends Controller
     public function artistContractsAction() {
 
         $em = $this->getDoctrine()->getManager();
-        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
@@ -258,7 +258,7 @@ class PublicController extends Controller
      */
     public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null) {
 
-        if($slug !== null && $contract->getArtist()->getSlug() != $slug) {
+        if($contract->getArtist()->getSlug() != $slug) {
             return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
         }
 

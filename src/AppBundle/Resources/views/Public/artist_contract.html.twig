@@ -19,6 +19,9 @@
 {% set owns = app.user is not null ? app.user.owns(contract.artist) : false %}
 {% set state = contract.state %}
 
+{% set hall_confirmed = (contract.reality is not null and contract.reality.hall is not null) %}
+{% set hall_potential = (state not in contract.uncrowdableStates and potential_halls is not empty) %}
+
 {% block body %}
 
     <div class="container">
@@ -89,11 +92,11 @@
                                     Annulé
                                 {% elseif state is constant('STATE_FAILED', contract) %}
                                     Objectif non atteint
-                                {% elseif state is constant('STATE_SUCCESS_ONGOING', contract) %}
+                                {% elseif state is constant('STATE_SUCCESS_ONGOING', contract) or state is constant('STATE_SUCCESS_PENDING', contract) %}
                                     Objectif atteint
                                 {% elseif state is constant('STATE_SUCCESS_CLOSED', contract) %}
                                     Objectif atteint
-                                {% elseif state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
+                                {% elseif state is constant('STATE_SUCCESS_SOLDOUT', contract) or state is constant('STATE_SUCCESS_SOLDOUT_PENDING', contract) %}
                                     Objectif atteint (SOLD OUT)
                                 {% elseif state is constant('STATE_ONGOING', contract) %}
                                     En cours
@@ -112,7 +115,11 @@
                                     Région du concert
                                 </div>
                                 <div class="contract-info-content">
-                                    {{ contract.province ?: 'Sans préférence' }}
+                                    {% if hall_confirmed %}
+                                        {{ contract.reality.hall.province }}
+                                    {% else %}
+                                        {{ contract.province ?: 'Sans préférence' }}
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 content-box-col">
@@ -226,32 +233,41 @@
                     </div>
                 </div>
 
-                {% if state not in contract.uncrowdableStates and potential_halls is not empty %}
+                {% if hall_confirmed or hall_potential %}
                     <div class="col-12 content-box mt-4">
                         <div class="content-box-header">
-                            <h3>Salles potentielles</h3>
+                            {% if hall_confirmed %}
+                                <h3>Lieu du concert</h3>
+                            {% else %}
+                                <h3>Salles potentielles</h3>
+                            {% endif %}
                         </div>
                         <div class="content-box-content">
-                            <div id="carouselHallsIndicators" class="carousel slide" data-ride="carousel">
+                            <div id="carouselPotentialHalls" class="carousel slide" data-ride="carousel">
                                 <div class="carousel-inner">
-                                    {% for hall in potential_halls %}
-                                        <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                            {% include 'AppBundle:Public/Card:hall.html.twig' with {'xs': 12, 'md':12, 'no_rotation_hall':true} %}
+                                    {% if hall_confirmed %}
+                                        <div class="carousel-item active">
+                                            {% include 'AppBundle:Public/Card:hall.html.twig' with {'hall': contract.reality.hall, 'xs': 12, 'md':12, 'no_rotation_hall':false} %}
                                         </div>
-                                    {% endfor %}
+                                    {% else %}
+                                        {% for hall in potential_halls %}
+                                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                                {% include 'AppBundle:Public/Card:hall.html.twig' with {'xs': 12, 'md':12, 'no_rotation_hall':true} %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
-                                {% if potential_halls|length > 1 %}
-                                    <a class="carousel-control-prev" href="#carouselHallsIndicators" role="button" data-slide="prev">
+                                {% if not hall_confirmed and potential_halls|length > 1 %}
+                                    <a class="carousel-control-prev" href="#carouselPotentialHalls" role="button" data-slide="prev">
                                         <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-1" aria-hidden="true"></span>
                                         <span class="sr-only">Previous</span>
                                     </a>
-                                    <a class="carousel-control-next" href="#carouselHallsIndicators" role="button" data-slide="next">
+                                    <a class="carousel-control-next" href="#carouselPotentialHalls" role="button" data-slide="next">
                                         <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-1" aria-hidden="true"></span>
                                         <span class="sr-only">Next</span>
                                     </a>
                                 {% endif %}
                             </div>
-
                         </div>
                     </div>
                 {% endif %}

@@ -11,14 +11,16 @@
             </p>
 
             {% if not contract.failed %}
-                <div class="alert-danger">Attention : le crowdfunding n'est pas un échec pour l'instant. Réfléchis bien avant de rembourser tous les participants !</div>
+                <div class="alert alert-danger">Attention : le crowdfunding n'est pas un échec pour l'instant. Réfléchis bien avant de rembourser tous les participants !</div>
             {% endif %}
 
             <div>
                 {{ form_start(form) }}
 
-                {{ form_widget(form.confirm) }}
-                {{ form_widget(form.cancel) }}
+                <div class="form-group">
+                    {{ form_widget(form.confirm) }}
+                    {{ form_widget(form.cancel) }}
+                </div>
 
                 {{ form_rest(form) }}
             </div>

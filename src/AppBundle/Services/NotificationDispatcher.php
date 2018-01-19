@@ -38,6 +38,8 @@ class NotificationDispatcher
     }
 
     public function addNotifications($users, $type, array $params = []) {
+        $users = array_unique($users);
+
         $notifs = [];
         foreach($users as $user) {
             $notif = new Notification();
@@ -62,14 +64,31 @@ class NotificationDispatcher
         $this->addNotifications($users, self::REMINDER_ARTIST_CONTRACT_TYPE, ['nbDays' => $nb_days, 'contract' => $contract, 'places' => $places]);
     }
 
-    public function notifyArtistsKnownOutcomeContract($users, ContractArtist $contract, $success) {
-        $type = $success ? self::SUCCESSFUL_CONTRACT_ARTIST_TYPE : self::FAILED_CONTRACT_ARTIST_TYPE;
-        $this->addNotifications($users, $type, ['contract' => $contract]);
-    }
+    public function notifyKnownOutcomeContract($users, ContractArtist $contract, $artist, $success) {
 
-    public function notifyFansKnownOutcomeContract($users, ContractArtist $contract, $success) {
-        $type = $success ? self::SUCCESSFUL_CONTRACT_FAN_TYPE : self::FAILED_CONTRACT_FAN_TYPE;
-        $this->addNotifications($users, $type, ['contract' => $contract]);
+        if($artist) {
+            $type = $success ? self::SUCCESSFUL_CONTRACT_ARTIST_TYPE : self::FAILED_CONTRACT_ARTIST_TYPE;
+        }
+        else {
+            $type = $success ? self::SUCCESSFUL_CONTRACT_FAN_TYPE : self::FAILED_CONTRACT_FAN_TYPE;
+        }
+
+        $hall_id = null; $hall_name = null; $date = null;
+
+        if($contract->getReality() != null && $contract->getReality()->getDate() != null && $contract->getReality()->getHall() != null) {
+            $hall_id = $contract->getReality()->getHall()->getId();
+            $hall_name = $contract->getReality()->getHall()->getName();
+            $date = $contract->getReality()->getDate()->format('d/m/Y');
+        }
+
+        $this->addNotifications($users, $type, [
+            'artist' => $contract->getArtist()->getArtistname(),
+            'contract_id' => $contract->getId(),
+            'step' => $contract->getStep()->getName(),
+            'hall_id' => $hall_id,
+            'hall_name' => $hall_name,
+            'date' => $date,
+        ]);
     }
 
     public function notifyTicket(User $user, ContractFan $contractFan) {

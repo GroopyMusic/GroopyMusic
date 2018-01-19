@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            <div>
+                {{ email_content('concert.admin.newly_successful', {
+                    '%step%': contractArtist.step.name,
+                    '%date%': contractArtist.preferences.date|date('d/m/Y'),
+                    '%artist%': contractArtist.artist.artistname
+                })|raw }}
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

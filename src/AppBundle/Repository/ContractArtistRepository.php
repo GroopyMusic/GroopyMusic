@@ -108,55 +108,22 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
      */
     public function findPending() {
         return $this->queryVisible()
-            ->andWhere('c.deadline < :now')
+            ->andWhere('c.dateEnd < :now')
             ->andWhere('c.successful = 0')
             ->getQuery()
             ->getResult()
         ;
     }
 
-
-    /**
-     * @see KnownOutcomeContractCommand
-     * For now the two following methods are replaced by manually-triggered e-mails in admin section
-     */
-
-    /**
-    public function findNewlyFailed() {
-        return $this->createQueryBuilder('c')
-            ->join('c.artist', 'a')
-            ->join('a.artists_user', 'au')
-            ->join('c.step', 's')
-            ->addSelect('a')
-            ->addSelect('au')
-            ->addSelect('s')
-            ->where('c.dateEnd < :now')
-            ->andWhere('c.successful = 0')
-            ->andWhere('c.failed = 0') // Not marked as failed yet
-            ->andWhere('c.tickets_sold < s.min_tickets')
-            ->setParameter('now', new \DateTime('now'))
-            ->getQuery()
-            ->getResult();
-    }
-
     /**
      * @see KnownOutcomeContractCommand
      */
-    /**
     public function findNewlySuccessful() {
-        return $this->createQueryBuilder('c')
-            ->join('c.artist', 'a')
-            ->join('a.artists_user', 'au')
-            ->join('c.step', 's')
-            ->addSelect('a')
-            ->addSelect('au')
-            ->addSelect('s')
-            ->where('c.failed = 0')
+        return $this->queryVisible()
             ->andWhere('c.successful = 0') // Not marked as successful yet
             ->andWhere('c.tickets_sold >= s.min_tickets')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
-    **/
-
 }

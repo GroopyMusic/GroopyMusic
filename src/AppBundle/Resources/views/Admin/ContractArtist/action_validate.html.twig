@@ -6,15 +6,28 @@
         <div class="content-box-content">
             <h2>Validation de concert</h2>
 
-            {% if contract.state is constant('STATE_PENDING', contract) %}
-                <p>
-                    Cet événement est arrivé à échéance et attend ta décision pour être confirmé ou non. <a href="{{ path('artist_contract', {'id':contract.id}) }}">Voir la page de l'événement.</a>
-                </p>
-                <p>
-                    À première vue, le contrat est {% if contract.ticketsSold >= contract.step.minTickets %}rempli !{% else %}un échec...{% endif %}.
-                </p>
+            {% if contract.pending %}
+                {% if contract.state is constant('STATE_PENDING', contract) %} {# Deadline hit #}
+                    <p>
+                        Cet événement est arrivé à échéance et attend ta décision pour être confirmé ou non.
+                    </p>
+                    <p>
+                        À première vue, le contrat est {% if contract.ticketsSold >= contract.step.minTickets %}rempli !{% else %}un échec...{% endif %}.
+                    </p>
+                {% else %}
+                    {# No deadline hit -> success before deadline #}
+                    <p>
+                        Cet événement a atteint le seuil de ventes requis ! Il n'y a plus qu'à le confirmer en renseignant la salle et la date confirmées.
+                    </p>
 
-                <p class="alert-warning">
+                    <p>
+                        S'il s'agit d'une erreur ou d'un test, tu as aussi la possibilité de marquer l'événement comme un échec.
+                    </p>
+                {% endif %}
+
+                <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.artist.slug}) }}">Voir la page de l'événement.</a></p>
+
+                <p class="alert alert-warning">
                     Attention, quelle que soit ta décision, un mail sera envoyé à tous les crowdfundeurs pour la leur annoncer.
                 </p>
 
@@ -28,19 +41,20 @@
                         Si tu souhaites marquer le concert comme raté, laisse les valeurs par défaut.
                     </p>
 
-                    {{ form_row(form.acceptConditions) }}
+                    <div class="form-group">
+                        {{ form_widget(form.acceptConditions) }}
+                    </div>
 
-                    {{ form_widget(form.marksuccessful) }}
-                    {{ form_widget(form.markfailed) }}
+                    <div class="form-group">
+                        {{ form_widget(form.marksuccessful) }}
+                        {{ form_widget(form.markfailed) }}
+                    </div>
 
                     {{ form_rest(form) }}
                 </div>
-
-
             {% else %}
                 Tu ne peux pas confirmer un concert tant que l'échéance de la vente de tickets n'a pas été atteinte.
             {% endif %}
-
         </div>
     </div>
 {% endblock %}

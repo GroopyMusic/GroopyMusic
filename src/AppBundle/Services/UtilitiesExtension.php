@@ -36,7 +36,7 @@ class UtilitiesExtension extends \Twig_Extension
 
     public function decode($value)
     {
-        return html_entity_decode($value);
+        return strip_tags(html_entity_decode($value));
     }
 
     public function hidden_loader($hidden = true) {

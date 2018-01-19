@@ -56,11 +56,20 @@ concert:
 
       L’artiste %artist% que vous aviez décidé de soutenir n’a pas pu récolter assez de fonds pour permettre l’organisation de son concert.
 
-      Vous serez remboursé de l’entièreté du prix des places achetées dans les dix jours ouvrables.
+      Vous serez remboursé(e) de l’entièreté du prix des places achetées dans les dix jours ouvrables.
 
       Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !
 
-      Envie de soutenir d’autres artistes ? Rendez-vous sur le catalogue de groupes : %artistCatalogUrl%
+      Envie de soutenir d’autres artistes ? Rendez-vous sur www.un-mute.be !
+
+  admin:
+    newly_successful: |
+      Cher administrateur,
+
+      L'artiste %artist% a réussi à vendre assez de places pour son %step% qui est prévu pour le %date%.
+
+      Tu peux valider (ou invalider si nécessaire) le concert depuis l'espace d'administration, en précisant la salle et la date réelles du concert. Alors seulement un mail sera envoyé à tous les producteurs et à l'artiste.
+
 
 ownershiprequest:
   member: |

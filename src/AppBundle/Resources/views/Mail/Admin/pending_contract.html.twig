@@ -1,0 +1,13 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            <div>
+                Le {{ contractArtist.step.name }} de {{ contractArtist.artist.artistname }} prévu pour le {{ contractArtist.preferences.date|date('d/m/Y') }} est arrivé à échéance de récolte de tickets.
+                Tu peux le valider ou l'invalider dans l'espace d'administration du site.
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

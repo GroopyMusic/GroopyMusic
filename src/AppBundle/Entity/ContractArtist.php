@@ -20,8 +20,10 @@ class ContractArtist extends BaseContractArtist
     const STATE_REFUNDED = 'state.refunded';
     const STATE_FAILED = 'state.failed';
     const STATE_SUCCESS_SOLDOUT = 'state.success.soldout';
+    const STATE_SUCCESS_SOLDOUT_PENDING = 'state.success.soldout.pending';
     const STATE_SUCCESS_CLOSED = 'state.success.closed';
     const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
+    const STATE_SUCCESS_PENDING = 'state.success.pending';
     const STATE_SUCCESS_PASSED = 'state.success.passed';
     const STATE_ONGOING = 'state.ongoing';
     const STATE_PENDING = 'state.pending';
@@ -34,16 +36,30 @@ class ContractArtist extends BaseContractArtist
         return !$this->isUncrowdable();
     }
 
+    public function isPending() {
+        return in_array($this->getState(), $this->getPendingStates());
+    }
+
     public static function getUncrowdableStates() {
         return [
             self::STATE_REFUNDED,
             self::STATE_FAILED,
             self::STATE_SUCCESS_SOLDOUT,
+            self::STATE_SUCCESS_SOLDOUT_PENDING,
             self::STATE_SUCCESS_CLOSED,
             self::STATE_SUCCESS_PASSED,
             self::STATE_PENDING,
         ];
     }
+
+    public static function getPendingStates() {
+        return [
+            self::STATE_PENDING,
+            self::STATE_SUCCESS_PENDING,
+            self::STATE_SUCCESS_SOLDOUT_PENDING,
+        ];
+    }
+
 
     public function getTotalNbAvailable() {
         return $this->step->getMaxTickets() - $this->tickets_sold;
@@ -58,12 +74,12 @@ class ContractArtist extends BaseContractArtist
         if($this->refunded)
             return self::STATE_REFUNDED;
 
-        // Failure
-        if($this->failed) // || ($this->dateEnd < $today && $this->tickets_sold < $this->step->getMinTickets()))
+        // Marked as failure
+        if($this->failed)
             return self::STATE_FAILED;
 
-        // Success
-        if($this->successful) // || $this->tickets_sold > $this->step->getMinTickets())
+        // Marked as success
+        if($this->successful)
         {
             // Concert in the future
             if($this->getDateConcert() >= $today) {
@@ -81,9 +97,22 @@ class ContractArtist extends BaseContractArtist
             else
                 return self::STATE_SUCCESS_PASSED;
         }
-        if($this->dateEnd > $today)
-            return self::STATE_ONGOING;
 
+        // Crowdfunding is not over yet
+        if($this->dateEnd > $today) {
+            // But already sold out
+            if ($this->tickets_sold >= $this->step->getMaxTickets())
+                return self::STATE_SUCCESS_SOLDOUT_PENDING;
+
+            // Or already successful but not sold out and with a need of validation
+            if ($this->tickets_sold >= $this->step->getMinTickets())
+                return self::STATE_SUCCESS_PENDING;
+
+            // Or simply ongoing
+            return self::STATE_ONGOING;
+        }
+
+        // Crowdfunding is over but not marked as successful nor failed -> need for admin validation
         return self::STATE_PENDING;
     }
 

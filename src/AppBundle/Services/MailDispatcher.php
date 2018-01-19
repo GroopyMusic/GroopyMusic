@@ -169,8 +169,8 @@ class MailDispatcher
             $this->sendEmail($template_fan, 'Concert de ' . $contract->getArtist()->getArtistname() . ' : résultat des courses', $params, $bcc);
         }
 
-        $this->notification_dispatcher->notifyArtistsKnownOutcomeContract($artist_users, $contract, $success);
-        $this->notification_dispatcher->notifyFansKnownOutcomeContract($fan_users, $contract, $success);
+        $this->notification_dispatcher->notifyKnownOutcomeContract($artist_users, $contract, true, $success);
+        $this->notification_dispatcher->notifyKnownOutcomeContract($fan_users, $contract, false, $success);
     }
 
     public function sendNewsletter(Newsletter $newsletter, $recipients) {
@@ -298,6 +298,12 @@ class MailDispatcher
         $subject = "La récolte de tickets d'un événement est arrivée à échéance";
         $params = ['contractArtist' => $contract];
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_PENDING_CONTRACT_TEMPLATE, $subject, $params);
+    }
+
+    public function sendAdminNewlySuccessfulContract(ContractArtist $contract) {
+        $subject = "Un événement a atteint le seuil pour être concrétisé";
+        $params = ['contractArtist' => $contract];
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_NEWLY_SUCCESSFUL_CONTRACT_TEMPLATE, $subject, $params);
     }
 
     public function sendAdminEnormousPayer(User $user) {

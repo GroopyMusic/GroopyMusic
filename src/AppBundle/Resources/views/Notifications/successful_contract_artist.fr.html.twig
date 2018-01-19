@@ -3,6 +3,11 @@
 {% set title = 'Votre concert va être organisé !' %}
 {%- set content -%}
     <p>
-        Félicitations, le concert de {{ contract.artist.artistName }} a atteint suffisamment de fans pour être produit !
+        Félicitations, vous avez réussi à obtenir le soutien de suffisamment de producteurs pour permettre l’organisation de <a href="{{ path('artist_contract', {'id':contract_id }) }}">votre {{ step }}</a>.
+        {% if hall_id is not null %}Votre concert prendra place le {{ date }} dans la salle <a href="{{ path('hall', {'id': hall_id}) }}">{{ hall_name }}</a>.{% endif %}
+        <br /><br />
+
+        L'équipe Un-Mute se charge de trouver les premières parties de votre concert. De plus, vous aurez en principe la chance de jouer comme première partie d'autres artistes de la plateforme qui, comme vous, parviennent à remplir une salle.
+        Vous recevrez des e-mails pour vous avertir de tout cela en temps voulu.
     </p>
 {%- endset -%}
