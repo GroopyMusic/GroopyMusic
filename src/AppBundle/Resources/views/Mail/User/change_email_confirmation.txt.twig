@@ -5,9 +5,12 @@
 {% autoescape false %}
 
 {% block content %}
-     {{ email_content('change_email.confirmation', {'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}) }}
+    {{ email_content('change_email.confirmation', {
+            '%username%': user.firstname,
+            '%confirmationUrl%': absolute_url(path('user_change_email_check', {'token': user.askedEmailToken}))
+        })|raw
+    }}
 {% endblock %}
-
 {% endautoescape %}
 
 {% block body_html %}

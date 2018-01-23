@@ -1,3 +1,21 @@
+table tr {
+  &.no-border-top {
+    th, td {
+      border-top: 0 none !important;
+    }
+  }
+  &.no-border-bottom {
+    th, td {
+      border-bottom: 0 none !important;
+    }
+  }
+  &.tr-um-label {
+    td, th {
+      @extend .um-label-small-bold;
+    }
+  }
+}
+
 table.um-table {
   @extend .pt-3;
 

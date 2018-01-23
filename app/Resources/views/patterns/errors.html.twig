@@ -3,21 +3,30 @@
 {% if error_bag is not empty
         or ((errors is defined and errors|length > 0) or (form is defined and not form.vars.valid))%}
 
-    <div class="container mb-4">
+    <div class="container">
         {% for message in error_bag %}
             {{ error(message)|raw }}
         {% endfor%}
 
         {% spaceless %}
-            {% if (errors is defined and errors|length > 0) or (form is defined and not form.vars.valid) %}
-                <div id="errors">
+            {% if (errors is defined and errors|length > 0) or ((form is defined and not form.vars.valid) or (form1 is defined and not form1.vars.valid) or (form2 is defined and not form2.vars.valid)) %}
+                <div id="errors" class="mb-3">
                     {% if ((form is defined and not form.vars.valid)
                         or (form1 is defined and not form1.vars.valid)
                         or (form2 is defined and not form2.vars.valid))
                     %}
                         {{ error('Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.')|raw }}
+                    {% endif %}
+                    {% if (form is defined and not form.vars.valid) %}
                         {{ form_errors(form) }}
                     {% endif %}
+                    {% if (form1 is defined and not form1.vars.valid) %}
+                        {{ form_errors(form1) }}
+                    {% endif %}
+                    {% if (form2 is defined and not form2.vars.valid) %}
+                        {{ form_errors(form2) }}
+                    {% endif %}
+
                     {% if errors is defined and errors|length > 0 %}
                         <ul>
                             {% for error in errors %}

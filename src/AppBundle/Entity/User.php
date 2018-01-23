@@ -185,7 +185,7 @@ class User extends BaseUser implements RecipientInterface
     private $genres;
 
     /**
-     * @ORM\OneToOne(targetEntity="Address", cascade={"all"})
+     * @ORM\OneToOne(targetEntity="Address", cascade={"all"}, orphanRemoval=true)
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;

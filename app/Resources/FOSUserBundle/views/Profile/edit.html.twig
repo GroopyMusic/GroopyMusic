@@ -1,9 +1,13 @@
 {% set active_link = 'edit' %}
 
-{% extends "FOSUserBundle:Profile:layout.html.twig" %}
+{% extends "AppBundle:User/Profile:layout.html.twig" %}
 
 {% block user_profile_content %}
     {% include "@FOSUser/Profile/edit_content.html.twig" %}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">um_collection({max:1, add:'<a href="#">Ajouter une adresse</a>', remove:'<a href="#">Supprimer l\'adresse</a>'});</script>
+{% endblock %}
 

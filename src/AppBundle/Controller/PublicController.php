@@ -13,6 +13,8 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Services\MailDispatcher;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -156,8 +158,11 @@ class PublicController extends Controller
     /**
      * @Route("/faq", name="faq")
      */
-    public function faqAction() {
-        return $this->render('AppBundle:Public:faq.html.twig');
+    public function faqAction(EntityManagerInterface $em) {
+        $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
+        return $this->render('AppBundle:Public:faq.html.twig', array(
+            'steps' => $steps,
+        ));
     }
 
     /**

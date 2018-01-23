@@ -8,7 +8,7 @@
     <body>
       <trans-unit id="a5eba05921c11add89e9b68570149da22499c604" resname="change_password.submit">
         <source>change_password.submit</source>
-        <target>Valider</target>
+        <target>Changer mon mot de passe</target>
         <jms:reference-file line="6">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app\Resources\FOSUserBundle\views\ChangePassword\change_password_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c05ea373f9cb7d804e1489bc9d2cb07239993fd6" resname="profile.show.address">

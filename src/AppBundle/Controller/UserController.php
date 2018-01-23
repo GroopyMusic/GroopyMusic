@@ -6,6 +6,7 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
+use AppBundle\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -299,7 +300,7 @@ class UserController extends Controller
             }
         }
 
-        return $this->render('@App/User/change_email.html.twig', array(
+        return $this->render('@App/User/Profile/change_email.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -363,17 +364,19 @@ class UserController extends Controller
             return $response;
         }
 
-        return $this->render('@App/User/advanced.html.twig', array(
+        return $this->render('@App/User/Profile/advanced.html.twig', array(
             'form' => $form->createView(),
         ));
     }
 
     /**
-     * @Route("/preferences", name="user_preferences")
+     * @Route("/edit-profile", name="fos_user_profile_edit")
      */
-    public function preferencesAction(Request $request, UserInterface $user) {
+    public function editProfileAction(Request $request, UserInterface $user) {
 
-        $form = $this->createForm(ProfilePreferencesType::class, $user);
+        echo 'lol';
+
+        $form = $this->createForm(ProfileType::class, $user);
 
         $form->handleRequest($request);
 
@@ -382,12 +385,12 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
 
-            $this->addFlash('notice', 'Vos préférences ont bien été mises à jour.');
+            $this->addFlash('notice', 'Les modifications ont été enregistrées.');
 
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
 
-        return $this->render('@App/User/preferences.html.twig', array(
+        return $this->render('@FOSUser/Profile/edit.html.twig', array(
             'form' => $form->createView(),
         ));
     }

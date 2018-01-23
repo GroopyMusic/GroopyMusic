@@ -33,6 +33,7 @@ class BaseStep implements TranslatableInterface
     {
         $this->counterParts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->deadline_duration = 30;
+        $this->visible = true;
     }
 
     public function getDefaultLocale() {
@@ -75,6 +76,11 @@ class BaseStep implements TranslatableInterface
      * @ORM\ManyToOne(targetEntity="Phase", inversedBy="steps")
      */
     protected $phase;
+
+    /**
+     * @ORM\Column(name="visible", type="boolean")
+     */
+    protected $visible;
 
     // Discriminator
     protected $type;
@@ -252,4 +258,28 @@ class BaseStep implements TranslatableInterface
     }
 
 
+
+    /**
+     * Set visible
+     *
+     * @param boolean $visible
+     *
+     * @return BaseStep
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Get visible
+     *
+     * @return boolean
+     */
+    public function getVisible()
+    {
+        return $this->visible;
+    }
 }

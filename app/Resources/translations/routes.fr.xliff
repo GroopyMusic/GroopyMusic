@@ -651,7 +651,7 @@
         <target>/profil/modifier-mot-de-passe</target>
       </trans-unit>
       <trans-unit id="89d9f90f552727a161575b47336d827555229023" resname="fos_user_profile_edit">
-        <source>/profile/edit</source>
+        <source>/edit-profile</source>
         <target>/profil/edition</target>
       </trans-unit>
       <trans-unit id="a5c247e0ed2953f5e091126240a417a30fe47c12" resname="fos_user_profile_show">

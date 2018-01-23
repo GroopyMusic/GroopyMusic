@@ -115,6 +115,9 @@ fos_user:
         confirmation:
             enabled: true
             template: AppBundle:Mail/User:registration_confirmation.txt.twig
+    change_password:
+      form:
+        type: AppBundle\Form\ChangePasswordType
     profile:
         form:
           type: AppBundle\Form\ProfileType

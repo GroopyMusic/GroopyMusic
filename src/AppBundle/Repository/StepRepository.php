@@ -13,6 +13,9 @@ class StepRepository extends \Doctrine\ORM\EntityRepository
     public function findOrderedStepsWithoutPhases() {
         return $this->createQueryBuilder('s')
             ->join('s.phase', 'p')
+            ->leftJoin('s.halls', 'h', 'WITH', 'h.visible = 1')
+            ->addSelect('h')
+            ->where('s.visible = 1')
             ->orderBy('p.num', 'asc')
             ->addOrderBy('s.num', 'asc')
             ->getQuery()

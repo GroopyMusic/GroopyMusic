@@ -45,10 +45,13 @@
 
                     <div class="content-box-content-zone" id="about-how-it-works">
                         <h3>Comment ça fonctionne ?</h3>
-                        <div class="py-3">
-                            <a href="{{ asset('images/concept.jpg') }}" data-fancybox>
+                        <div class="py-3 text-center">
+                            <a class="d-none d-md-inline-block" href="{{ asset('images/concept.jpg') }}" data-fancybox>
                                 <img class="img-fluid" src="{{ asset('images/concept.png') }}" />
                             </a>
+                            <div class="d-inline-block d-md-none">
+                                <img class="img-fluid" src="{{ asset('images/concept-vertical.png') }}" />
+                            </div>
                         </div>
                         <p>
                             Une fois inscrit dans le <a href="{{ path('catalog_artists') }}">catalogue des groupes</a>, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement.

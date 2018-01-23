@@ -35,6 +35,10 @@ class StepAdmin extends BaseAdmin
             ->add('approximate_capacity', null, array(
                 'label' => 'Capacité approximative',
             ))
+            ->add('visible', null, array(
+                'label' => 'Visible sur la plateforme',
+                'editable' => true,
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
@@ -63,6 +67,9 @@ class StepAdmin extends BaseAdmin
                 ->add('num', 'integer', array(
                     'required' => true,
                     'label' => "Numéro d'ordre dans la phase",
+                ))
+                ->add('visible', null, array(
+                    'label' => 'Visible sur la plateforme',
                 ))
             ->end()
             ->with('Infos par rapport aux concerts & crowdfundings')
@@ -93,7 +100,6 @@ class StepAdmin extends BaseAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-
             ->with('Champs traductibles')
             ->add('translations', TranslationsType::class, array(
                 'label' => false,
@@ -106,6 +112,12 @@ class StepAdmin extends BaseAdmin
                     ],
                 ],
             ))
+            ->end()
+
+            ->with('Visibilité')
+                ->add('visible', null, array(
+                    'label' => 'Visible sur la plateforme',
+                ))
             ->end()
 
             ->with('Phase')

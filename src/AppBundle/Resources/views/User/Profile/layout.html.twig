@@ -11,13 +11,10 @@
                 <div class="col-xs-12 col-md-4 content-box-content-zone content-box-content-zone-vert no-padding-left no-padding-right">
                     <ul class="nav flex-column">
                         <li class="nav-item{% if active_link == 'show' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('fos_user_profile_show') }}">Voir le profil</a>
+                            <a class="nav-link" href="{{ path('fos_user_profile_show') }}">Voir mon profil</a>
                         </li>
                         <li class="nav-item{% if active_link == 'edit' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('fos_user_profile_edit') }}">Modifier le profil</a>
-                        </li>
-                        <li class="nav-item{% if active_link == 'preferences' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('user_preferences') }}">Préférences</a>
+                            <a class="nav-link" href="{{ path('fos_user_profile_edit') }}">Modifier mon profil</a>
                         </li>
                         <li class="nav-item{% if active_link == 'password' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('fos_user_change_password') }}">Changer mon mot de passe</a>

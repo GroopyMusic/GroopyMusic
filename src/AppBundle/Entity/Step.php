@@ -44,6 +44,15 @@ class Step extends BaseStep
         return $display ;
     }
 
+    public function getRandomHalls($nb) {
+        if(empty($this->halls)) {
+            return [];
+        }
+        $halls = $this->halls->toArray();
+        shuffle($halls);
+        return array_slice($halls, 0, $nb);
+    }
+
     /**
      * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
      */
@@ -227,5 +236,29 @@ class Step extends BaseStep
     public function getHalls()
     {
         return $this->halls;
+    }
+
+    /**
+     * Set visible
+     *
+     * @param boolean $visible
+     *
+     * @return Step
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Get visible
+     *
+     * @return boolean
+     */
+    public function getVisible()
+    {
+        return $this->visible;
     }
 }
