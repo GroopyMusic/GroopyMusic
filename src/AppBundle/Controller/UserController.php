@@ -370,11 +370,9 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/edit-profile", name="fos_user_profile_edit")
+     * @Route("/edit-profile", name="user_profile_edit")
      */
     public function editProfileAction(Request $request, UserInterface $user) {
-
-        echo 'lol';
 
         $form = $this->createForm(ProfileType::class, $user);
 

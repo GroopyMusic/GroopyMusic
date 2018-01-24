@@ -650,7 +650,7 @@
         <source>/profile/change-password</source>
         <target>/profil/modifier-mot-de-passe</target>
       </trans-unit>
-      <trans-unit id="89d9f90f552727a161575b47336d827555229023" resname="fos_user_profile_edit">
+      <trans-unit id="89d9f90f552727a161575b47336d827555229023" resname="user_profile_edit">
         <source>/edit-profile</source>
         <target>/profil/edition</target>
       </trans-unit>
