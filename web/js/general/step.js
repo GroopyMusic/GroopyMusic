@@ -59,8 +59,13 @@ $(function() {
         var oldValue = $button.parent().find('.quantity').val();
         $button.parent().find('.incr-btn[data-action="decrease"]').removeClass('inactive');
         if ($button.data('action') == "increase") {
-            var newVal = parseFloat(oldValue) + 1;
-            tickets++;
+            if(oldValue < $button.data('max')) {
+                var newVal = parseFloat(oldValue) + 1;
+                tickets++;
+            }
+            else {
+                newVal = oldValue;
+            }
         } else {
             // Don't allow decrementing below 0
             if (oldValue > 0) {

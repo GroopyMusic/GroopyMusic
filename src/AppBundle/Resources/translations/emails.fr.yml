@@ -38,7 +38,7 @@ concert:
 
       L’artiste %artist% vient d’obtenir l’organisation de son concert par Un-Mute Asbl grâce à vous ! Ce concert se tiendra le %date% dans la salle "%hall%". Vous recevrez très prochainement votre ticket ainsi que toutes les informations pratiques par e-mail.
 
-      Envie de soutenir/découvrir d’autres artistes ? Rendez-vous sur le catalogue de groupes Un-Mute à cette adresse : %artistCatalogUrl%
+      Envie de soutenir/découvrir d’autres artistes ? Rendez-vous sur https://un-mute.be !
     tickets: |
       Bonjour %username%,
 

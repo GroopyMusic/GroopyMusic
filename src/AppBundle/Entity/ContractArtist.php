@@ -60,15 +60,20 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
+    public function getMaxTickets() {
+        return $this->getHallConcert() != null ? $this->getHallConcert()->getCapacity() : $this->step->getMaxTickets();
+    }
 
     public function getTotalNbAvailable() {
-        return $this->step->getMaxTickets() - $this->tickets_sold;
+        return $this->getMaxTickets() - $this->tickets_sold;
     }
 
     public function getState() {
 
         $today = new \DateTime();
         $today2 = new \DateTime();
+
+        $max_tickets = $this->getMaxTickets();
 
         // Failure & refunded
         if($this->refunded)
@@ -84,7 +89,7 @@ class ContractArtist extends BaseContractArtist
             // Concert in the future
             if($this->getDateConcert() >= $today) {
                 // Sold out
-                if ($this->tickets_sold >= $this->step->getMaxTickets())
+                if ($this->tickets_sold >= $max_tickets)
                     return self::STATE_SUCCESS_SOLDOUT;
                 // No more selling
                 if ($today2->modify('+' . self::NB_DAYS_OF_CLOSING . ' days') > $this->getDateConcert())
@@ -101,7 +106,7 @@ class ContractArtist extends BaseContractArtist
         // Crowdfunding is not over yet
         if($this->dateEnd > $today) {
             // But already sold out
-            if ($this->tickets_sold >= $this->step->getMaxTickets())
+            if ($this->tickets_sold >= $max_tickets)
                 return self::STATE_SUCCESS_SOLDOUT_PENDING;
 
             // Or already successful but not sold out and with a need of validation
@@ -157,6 +162,9 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
+    /**
+     * @return Hall
+     */
     public function getHallConcert() {
         if(isset($this->reality) && $this->reality->getHall() != null) {
             return $this->reality->getHall();

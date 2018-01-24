@@ -7,7 +7,6 @@
             {{ email_content('concert.fan.confirmation', {
                 '%artist%': artist.artistName,
                 '%hall%': contract.reality.hall.name,
-                '%artistCatalogUrl%': absolute_url(path('catalog_artists')),
                 '%date%': contract.reality.date|date('d/m/Y')
             })|raw }}
         {% endblock %}

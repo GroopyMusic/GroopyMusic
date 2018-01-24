@@ -19,7 +19,7 @@
 {% set owns = app.user is not null ? app.user.owns(contract.artist) : false %}
 {% set state = contract.state %}
 
-{% set hall_confirmed = (contract.reality is not null and contract.reality.hall is not null) %}
+{% set hall_confirmed = (contract.hallConcert is not null) %}
 {% set hall_potential = (state not in contract.uncrowdableStates and potential_halls is not empty) %}
 
 {% block body %}
@@ -31,7 +31,8 @@
             </div>
         </div>
 
-        {% set tickets_left = contract.step.maxTickets - contract.ticketsSold %}
+        {% set max_tickets = contract.maxTickets %}
+        {% set tickets_left = contract.totalNbAvailable %}
         <div class="row mt-4">
             <div class="col-12 col-lg-8">
                 <div class="content-box">
@@ -116,7 +117,7 @@
                                 </div>
                                 <div class="contract-info-content">
                                     {% if hall_confirmed %}
-                                        {{ contract.reality.hall.province }}
+                                        {{ contract.hallConcert.province }}
                                     {% else %}
                                         {{ contract.province ?: 'Sans préférence' }}
                                     {% endif %}
@@ -212,7 +213,7 @@
                                             <div class="count-input space-bottom">
                                                 <a class="incr-btn" data-action="decrease" href="#">–</a>
                                                 {{ form_widget(purchase) }}
-                                                <a class="incr-btn" data-action="increase" href="#">&plus;</a>
+                                                <a class="incr-btn" data-action="increase" data-max="{{ tickets_left }}" href="#">&plus;</a>
                                             </div>
                                         </div>
                                     </div>
@@ -247,7 +248,7 @@
                                 <div class="carousel-inner">
                                     {% if hall_confirmed %}
                                         <div class="carousel-item active">
-                                            {% include 'AppBundle:Public/Card:hall.html.twig' with {'hall': contract.reality.hall, 'xs': 12, 'md':12, 'no_rotation_hall':false} %}
+                                            {% include 'AppBundle:Public/Card:hall.html.twig' with {'hall': contract.hallConcert, 'xs': 12, 'md':12, 'no_rotation_hall':false} %}
                                         </div>
                                     {% else %}
                                         {% for hall in potential_halls %}

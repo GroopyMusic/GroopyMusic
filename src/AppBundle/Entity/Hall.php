@@ -158,22 +158,22 @@ class Hall extends Partner
             return (new \DateTime($date)) >= (new \DateTime($default_cursor));
         });
 
-        foreach($this->available_dates as $i => $ad) {
-
-        }
-
         // For each possible day
         foreach($this->cron_explored_dates as $i => $current_cursor) {
             $current_cursor = $this->max_date($default_cursor, $current_cursor);
+
+            // Ensure that $max_cursor can't be < $current_cursor
+            $max_cursor = $this->max_date($max_cursor, $current_cursor);
 
             // There is a rule -> refresh dates & update cursor
             if($this->cron_automatic_days[$i]) {
                 while($current_cursor != $max_cursor) {
                     $current_date = new \DateTime($current_cursor);
+
                     // It must be the right day of the week & not yet in the array to be added
                     if(intval($current_date->format('w')) == array_search($i, array_keys($this->cron_automatic_days)) && !in_array($current_cursor, $this->available_dates)) {
-                        $this->available_dates[] = $current_cursor;
-                    }
+                     $this->available_dates[] = $current_cursor;
+                     }
                     $current_cursor = $current_date->add(new \DateInterval('P1D'))->format(self::DATE_FORMAT);
                 }
                 $this->cron_explored_dates[$i] = $current_cursor;
