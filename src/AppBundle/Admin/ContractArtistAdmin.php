@@ -180,17 +180,15 @@ class ContractArtistAdmin extends BaseAdmin
             ->end()
         ;
 
-        if($this->getSubject()->getStep()->getType() == BaseStep::TYPE_CONCERT) {
-            $form
-                ->with('Réalité')
-                    ->add('reality', 'sonata_type_admin', array(
-                        'label' => false,
-                        'required' => false,
-                    ), array(
-                        'admin_code' => ConcertPossibilityAdmin::class,
-                    ))
-                ->end();
-        }
+        $form
+            ->with('Détails connus')
+            ->add('reality', ConcertPossibilityType::class, array(
+                'label' => false,
+                'required' => false,
+                'required_reality' => false,
+                'is_reality' => true,
+            ))
+            ->end();
 
         $form
             ->with('Premières parties')

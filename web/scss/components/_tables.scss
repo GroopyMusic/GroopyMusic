@@ -42,3 +42,7 @@ table.um-table {
     border-bottom: 2px solid #e9ecef;
   }
 }
+
+tbody.align-middle td {
+  @extend .align-middle;
+}

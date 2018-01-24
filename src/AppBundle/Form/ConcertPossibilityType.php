@@ -13,29 +13,33 @@ class ConcertPossibilityType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $required = $options['required_reality'];
+
         $date_options = array(
-            'required' => true,
+            'required' => $required,
             'label' => 'labels.concertpossibility.date',
             'widget' => 'single_text',
             'format' => 'MM/dd/yyyy',
             'html5' => false,
             'attr' => ['class' => 'datePicker', 'available-dates' => $options['available-dates']],
-            'constraints' => [
-                new NotBlank(['message' => 'Merci de renseigner une date pour le concert.']),
-            ],
         );
+        if($required) {
+            $date_options['constraints'] = [
+                new NotBlank(['message' => 'Merci de renseigner une date pour le concert.']),
+            ];
+        }
 
         if($options['is_reality']) {
             $builder
                 ->remove('additional_info')
                 ->add('hall', null, array(
                     'label' => 'Salle où aura lieu le concert',
-                    'required' => true,
+                    'required' => $required,
                 ))
             ;
-            $date_options['data'] = $options['date_value'];
+            if($options['date_value'] != null)
+                $date_options['data'] = $options['date_value'];
         }
-
 
         $builder
             ->add('date', DateType::class, $date_options);
@@ -48,6 +52,7 @@ class ConcertPossibilityType extends AbstractType
             'data_class' => ConcertPossibility::class,
             'is_reality' => false,
             'date_value' => null,
+            'required_reality' => true,
         ));
     }
 

@@ -25,16 +25,16 @@ class ContractArtistType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // TODO ROLE_ADMIN
+        $user = $options['user']->hasRole('ROLE_SUPER_ADMIN') ? null : $options['user'];
+
         switch ($options['flow_step']) {
             case 1:
-                // TODO ROLE_ADMIN
-                $user = $options['user']->hasRole('ROLE_SUPER_ADMIN') ? null : $options['user'];
-
                 $builder
                     ->add('artist', EntityType::class, array(
                         'label' => 'labels.contractartist.artist',
                         'class' => Artist::class,
-                        'query_builder' => function(EntityRepository $er) use ($user) {
+                        'query_builder' => function (EntityRepository $er) use ($user) {
                             return $er->queryNotCurrentlyBusy($user);
                         },
                         'constraints' => [
@@ -53,8 +53,7 @@ class ContractArtistType extends AbstractType
                         'constraints' => [
                             new NotBlank(['message' => 'Merci de renseigner un type de concert.']),
                         ],
-                    ))
-                ;
+                    ));
                 break;
             case 2:
                 $builder
@@ -66,12 +65,20 @@ class ContractArtistType extends AbstractType
                     ->add('motivations', TextareaType::class, array(
                         'label' => 'labels.contractartist.motivations',
                         'required' => false,
-                    ))
-                ;
+                    ));
                 break;
             case 3:
-                $builder
-                    ->add('accept_conditions', CheckboxType::class, array(
+                if ($user == null)
+                    $builder
+                        ->add('reality', ConcertPossibilityType::class, array(
+                            'label' => 'Détails connus',
+                            'required' => false,
+                            'required_reality' => false,
+                            'is_reality' => true,
+                            'available-dates' => $options['available-dates'],
+                            'date_value' => $builder->getData()->getPreferences()->getDate(),
+                        ));
+                $builder->add('accept_conditions', CheckboxType::class, array(
                         'label' => 'labels.contractartist.accept_conditions',
                         'required' => true,
                         'constraints' => [

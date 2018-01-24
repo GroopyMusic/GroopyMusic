@@ -76,6 +76,7 @@ class Partner
     {
         $this->contact_persons_list = new \Doctrine\Common\Collections\ArrayCollection();
         $this->visible = true;
+        $this->ephemeral = false;
     }
 
     /**
@@ -123,6 +124,11 @@ class Partner
      * @ORM\Column(name="visible", type="boolean")
      */
     protected $visible;
+
+    /**
+     * @ORM\Column(name="ephemeral", type="boolean")
+     */
+    protected $ephemeral;
 
     /**
      * Get id
@@ -311,5 +317,29 @@ class Partner
     public function getVisible()
     {
         return $this->visible;
+    }
+
+    /**
+     * Set ephemeral
+     *
+     * @param boolean $ephemeral
+     *
+     * @return Partner
+     */
+    public function setEphemeral($ephemeral)
+    {
+        $this->ephemeral = $ephemeral;
+
+        return $this;
+    }
+
+    /**
+     * Get ephemeral
+     *
+     * @return boolean
+     */
+    public function getEphemeral()
+    {
+        return $this->ephemeral;
     }
 }

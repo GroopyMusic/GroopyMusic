@@ -157,6 +157,13 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
+    public function getHallConcert() {
+        if(isset($this->reality) && $this->reality->getHall() != null) {
+            return $this->reality->getHall();
+        }
+        return null;
+    }
+
     /**
      * @Assert\Callback(groups={"flow_createcontract_step1"})
      */

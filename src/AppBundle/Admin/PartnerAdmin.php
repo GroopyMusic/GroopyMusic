@@ -31,6 +31,10 @@ class PartnerAdmin extends BaseAdmin
                 'label' => 'Visible sur la plateforme',
                 'editable' => true,
             ))
+            ->add('ephemeral', null, array(
+                'label' => 'Éphémère',
+                'editable' => true,
+            ))
             ->add('_action', 'actions', array(
                     'actions' => array(
                         'show' => array(),
@@ -62,6 +66,9 @@ class PartnerAdmin extends BaseAdmin
                 ))
                 ->add('visible', null, array(
                     'label' => 'Visible sur la plateforme',
+                ))
+                ->add('ephemeral', null, array(
+                    'label' => 'Éphémère',
                 ))
                 ->add('contactpersons_list', null, array(
                     'associated_property' => 'contact_person',
@@ -104,6 +111,9 @@ class PartnerAdmin extends BaseAdmin
                 ))
                 ->add('visible', null, array(
                     'label' => 'Visible sur la plateforme',
+                ))
+                ->add('ephemeral', null, array(
+                    'label' => 'Doit être considéré comme éphémère',
                 ))
                 ->add('contactpersons_list', 'sonata_type_collection', array(
                     'label' => 'Personnes de contact',

@@ -218,9 +218,6 @@ class BaseContractArtist
     protected $type;
 
     // Conditions approval (user form only)
-    /**
-     * @Assert\NotBlank(message="accept_conditions.notblank")
-     */
     protected $accept_conditions;
 
     // Deadline calculation

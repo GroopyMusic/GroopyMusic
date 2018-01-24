@@ -44,13 +44,37 @@ class Hall extends Partner
         }
     }
 
+    // Needs to be called before using the 2 next methods
+    // as this sorts the available dates
+    public function hasClearDates() {
+        usort($this->available_dates, array($this, "cmp_dates"));
+        return count($this->available_dates) >= 2;
+    }
+
+    public function getFirstDate() {
+        return new \DateTime($this->available_dates[0]);
+    }
+
+    public function getLastDate() {
+        return new \DateTime($this->available_dates[count($this->available_dates) - 1]);
+    }
+
     public function getSafename() {
         return urlencode($this->getName());
     }
 
-    public function __toString()
-    {
+    public function __toString() {
         return 'Salle : ' . $this->getName();
+    }
+
+    private function cmp_dates($date1, $date2) {
+        if($date1 == $date2)
+            return 0;
+
+        if($this->max_date($date1, $date2) == $date1)
+            return 1;
+
+        return -1;
     }
 
     private function max_date($date1, $date2) {
@@ -596,5 +620,29 @@ class Hall extends Partner
     public function getVisible()
     {
         return $this->visible;
+    }
+
+    /**
+     * Set ephemeral
+     *
+     * @param boolean $ephemeral
+     *
+     * @return Hall
+     */
+    public function setEphemeral($ephemeral)
+    {
+        $this->ephemeral = $ephemeral;
+
+        return $this;
+    }
+
+    /**
+     * Get ephemeral
+     *
+     * @return boolean
+     */
+    public function getEphemeral()
+    {
+        return $this->ephemeral;
     }
 }

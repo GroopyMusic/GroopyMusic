@@ -54,7 +54,7 @@
                                             {{ form_widget(form.preferences.date) }}
                                         </td>
                                         <td class="align-middle pl-4">
-                                            <p id="datePicker-vis"></p>
+                                            <p class="datePicker-vis"></p>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -68,6 +68,34 @@
 
                         {{ form_errors(form.accept_conditions) }}
                         {{ form_widget(form.accept_conditions) }}
+
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="form-group form-row">
+                                <div class="contract-info-title">Admin</div>
+                                <div class="col-12">
+                                    {{ form_row(form.reality.hall) }}
+                                </div>
+
+                                <div class="col-12">
+                                    {{ form_errors(form.reality.date) }}
+                                    {{ form_label(form.reality.date) }}
+                                </div>
+                                <div class="col-12">
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td class="align-middle">
+                                                {{ form_widget(form.reality.date) }}
+                                            </td>
+                                            <td class="align-middle pl-4">
+                                                <p class="datePicker-vis">Date choisie : {{ contract.preferences.date|date('d/m/Y') }}</p>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
 
                     {% endif %}
 
@@ -131,7 +159,7 @@
             });
 
             $datePicker.change(function() {
-                $('#datePicker-vis').text('Date choisie : ' + dateToText($datePicker.val()));
+                $('.datePicker-vis').text('Date choisie : ' + dateToText($datePicker.val()));
             });
         });
     </script>

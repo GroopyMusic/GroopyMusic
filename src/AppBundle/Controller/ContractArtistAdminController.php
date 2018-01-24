@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use AppBundle\Entity\ContractFan;
 
 class ContractArtistAdminController extends Controller
 {
@@ -117,6 +118,17 @@ class ContractArtistAdminController extends Controller
             if ($form->get('marksuccessful')->isClicked()) {
 
                 $contract->setSuccessful(true)->setFailed(false);
+
+                foreach($contract->getContractsFan() as $cf) {
+                    if(!$cf->getRefunded()) {
+                        /*
+                         * @var ContractFan $cf
+                         */
+                        $cf_user = $cf->getUser();
+                        $cf_user->addCredits($cf->getAmount());
+                        $em->persist($cf_user);
+                    }
+                }
 
                 $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, true);
 
