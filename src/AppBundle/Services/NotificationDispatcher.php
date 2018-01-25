@@ -61,7 +61,13 @@ class NotificationDispatcher
     }
 
     public function notifyReminderArtistContract($users, ContractArtist $contract, $nb_days, $places) {
-        $this->addNotifications($users, self::REMINDER_ARTIST_CONTRACT_TYPE, ['nbDays' => $nb_days, 'contract' => $contract, 'places' => $places]);
+        $this->addNotifications($users, self::REMINDER_ARTIST_CONTRACT_TYPE, [
+            'nbDays' => $nb_days,
+            // TODO handle this case where step name won't be translated... should it be handled with IDs ?
+            'step' => $contract->getStep()->getName(),
+            'date' => $contract->getDateConcert()->format('d/m/Y'),
+            'places' => $places,
+        ]);
     }
 
     public function notifyKnownOutcomeContract($users, ContractArtist $contract, $artist, $success) {

@@ -68,6 +68,14 @@ class ContractArtist extends BaseContractArtist
         return $this->getMaxTickets() - $this->tickets_sold;
     }
 
+    public function getNbTicketsToSuccess() {
+        $min = $this->getStep()->getMinTickets();
+        if($this->getTicketsSold() >= $min)
+            return 0;
+
+        return $min - $this->getTicketsSold();
+    }
+
     public function getState() {
 
         $today = new \DateTime();

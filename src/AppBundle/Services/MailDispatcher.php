@@ -187,14 +187,16 @@ class MailDispatcher
         $this->notification_dispatcher->notifyOngoingCart($users, $contract);
     }
 
-    public function sendArtistReminderContract($users, ContractArtist $contract, $nb_days) {
+    public function sendArtistReminderContract($users, ContractArtist $contract) {
 
-        $places = $contract->getStep()->getMinTickets() - $contract->getTicketsSold();
+        $nb_days = (new \DateTime())->diff($contract->getDateEnd())->days;
+        $places = $contract->getNbTicketsToSuccess();
 
         $recipients = array_map(function(User $elem) {
             return $elem->getEmail();
         }, $users);
-        $params = ['contract' => $contract, 'nbDays' => $nb_days, 'artist' => $contract->getArtist()->getArtistname(), 'places' => $places];
+
+        $params = ['contract' => $contract, 'days' => $nb_days, 'places' => $places];
         $this->sendEmail(MailTemplateProvider::REMINDER_CONTRACT_ARTIST_TEMPLATE, 'Rappel : votre événement sur Un-Mute.be', $params, $recipients);
         $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days, $places);
     }

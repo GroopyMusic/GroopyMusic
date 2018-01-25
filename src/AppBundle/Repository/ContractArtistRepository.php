@@ -56,14 +56,10 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
      * Returns 0-$limit contracts for which the deadline is not passed AND not enough money is raised at the moment
      */
     public function findNotSuccessfulYet($limit = null) {
-        $qb = $this->createQueryBuilder('c')
-            ->where('c.dateEnd > :now')
+        $qb = $this->queryVisible()
+            ->andWhere('c.dateEnd > :now')
             ->andWhere('c.tickets_sold < s.min_tickets')
-            ->join('c.artist', 'a')
-            ->addSelect('a')
-            ->join('c.step', 's')
-            ->addSelect('s')
-            ->setParameter('now', new \DateTime('now'))
+            ->andWhere('c.successful = 0')
         ;
 
         if($limit != null) {

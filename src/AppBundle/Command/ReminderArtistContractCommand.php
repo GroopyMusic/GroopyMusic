@@ -13,6 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ReminderArtistContractCommand extends ContainerAwareCommand
 {
+    const NB_DAYS_FIRST_REMINDER = 20;
+    const NB_DAYS_SECOND_REMINDER = 10;
+
     /**
      * {@inheritdoc}
      */
@@ -22,9 +25,7 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
             ->setName('reminders:crowdfunding:artist')
             ->setDescription('Reminds an artist that one of its contract is almost on deadline')
             ->setHelp('Reminds an artist that one of its contract is almost on deadline')
-
-            ->addArgument('days', InputArgument::REQUIRED, 'The number of days to the event deadline to remind (10 OR 20)')
-
+            ->addArgument('x', InputArgument::REQUIRED, 'The reminder #x')
         ;
     }
 
@@ -33,14 +34,16 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $days = intval($input->getArgument('days'));
+        $x = intval($input->getArgument('x'));
+        $days = $x == 1 ? self::NB_DAYS_FIRST_REMINDER : self::NB_DAYS_SECOND_REMINDER;
 
         $output->writeln([
             'Starting the command',
             '============',
         ]);
 
-        $this->sendMailsForXDays($days);
+        $nb_mails = $this->sendMailsForXDays($days);
+        $output->writeln($nb_mails . ' mails sent');
 
         $output->writeln('Done.');
     }
@@ -56,25 +59,27 @@ class ReminderArtistContractCommand extends ContainerAwareCommand
         $currentContracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $currentDate = new \DateTime();
 
+        $nb_mails = 0;
+
         foreach($currentContracts as $contract) {
             /** @var ContractArtist $contract */
-            $reminder = false;
 
-            if((($contract->getRemindersArtist() < 1 && $days == 20) || ($contract->getRemindersArtist() < 2 && $days == 10))
-                && $currentDate->diff($contract->getDateEnd())->days <= $days ) {
-                $reminder = true;
-            }
+            if((($contract->getRemindersArtist() < 1 && $days == self::NB_DAYS_FIRST_REMINDER)
+                    || ($contract->getRemindersArtist() < 2 && $days == self::NB_DAYS_SECOND_REMINDER))
+                && $contract->getDateEnd() > $currentDate && $currentDate->diff($contract->getDateEnd())->days <= $days ) {
 
-            if($reminder && !$contract->getSuccessful()) {
-                $artist_users = $contract->getArtist()->getArtistsUser();
-
-                $mailer->sendArtistReminderContract($artist_users->toArray(), $contract, $days);
+                $artist_users = $contract->getArtistProfiles();
+                $mailer->sendArtistReminderContract($artist_users, $contract);
+                $nb_mails++;
 
                 $contract->setRemindersArtist($contract->getRemindersArtist() + 1);
                 $em->persist($contract);
             }
+
         }
 
         $em->flush();
+
+        return $nb_mails;
     }
 }

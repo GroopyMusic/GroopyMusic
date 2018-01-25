@@ -6,7 +6,10 @@
         {% block content %}
             {{ email_content('concert.artist.reminder', {
                 '%days%': days,
-                '%artist%': artist,
+                '%artist%': contract.artist.artistName,
+                '%places%': places,
+                '%date%': contract.dateConcert|date('d/m/Y'),
+                '%step%': contract.step
             })|raw }}
         {% endblock %}
     {% endspaceless %}

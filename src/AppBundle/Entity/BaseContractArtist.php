@@ -185,11 +185,6 @@ class BaseContractArtist
     protected $successful;
 
     /**
-     * @ORM\Column(name="cart_reminder_sent", type="boolean")
-     */
-    protected $cart_reminder_sent;
-
-    /**
      * @ORM\Column(name="refunded", type="boolean")
      */
     protected $refunded;
@@ -575,30 +570,6 @@ class BaseContractArtist
     public function getContractsFan()
     {
         return $this->contractsFan;
-    }
-
-    /**
-     * Set cartReminderSent
-     *
-     * @param boolean $cartReminderSent
-     *
-     * @return BaseContractArtist
-     */
-    public function setCartReminderSent($cartReminderSent)
-    {
-        $this->cart_reminder_sent = $cartReminderSent;
-
-        return $this;
-    }
-
-    /**
-     * Get cartReminderSent
-     *
-     * @return boolean
-     */
-    public function getCartReminderSent()
-    {
-        return $this->cart_reminder_sent;
     }
 
     /**
