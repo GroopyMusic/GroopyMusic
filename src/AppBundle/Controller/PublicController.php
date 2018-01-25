@@ -65,22 +65,22 @@ class PublicController extends Controller
      * @Security("has_role('ROLE_SUPER_ADMIN')")
      */
     public function testMailAction(KernelInterface $kernel) {
-# Instantiate the client.
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
         $input = new ArrayInput(array(
             'command' => 'reminders:crowdfunding:artist',
-            // (optional) define the value of command arguments
-            'x' => '2',
+            'x' => '1',
         ));
 
-        // You can use NullOutput() if you don't need the output
         $output = new BufferedOutput();
         $application->run($input, $output);
 
+        // return the output, don't use if you used NullOutput()
+        $content = $output->fetch();
+
         // return new Response(""), if you used NullOutput()
-        return $this->render('@App/Public/about.html.twig');
+        return new Response($content);
     }
 
     /**
