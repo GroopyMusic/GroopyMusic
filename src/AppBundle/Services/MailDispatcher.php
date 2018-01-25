@@ -196,9 +196,11 @@ class MailDispatcher
             return $elem->getEmail();
         }, $users);
 
+        var_dump($recipients);
+
         $params = ['contract' => $contract, 'days' => $nb_days, 'places' => $places];
         $this->sendEmail(MailTemplateProvider::REMINDER_CONTRACT_ARTIST_TEMPLATE, 'Rappel : votre événement sur Un-Mute.be', $params, $recipients);
-        $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days, $places);
+        // $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days, $places);
     }
 
     public function sendOrderRecap(ContractFan $contractFan) {

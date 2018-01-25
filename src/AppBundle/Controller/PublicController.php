@@ -16,11 +16,15 @@ use AppBundle\Services\MailDispatcher;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Mailgun\Mailgun;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Form\SuggestionBoxType;
 use AppBundle\Form\UserSuggestionBoxType;
@@ -60,9 +64,22 @@ class PublicController extends Controller
      * @Route("/test-mail", name="testmail")
      * @Security("has_role('ROLE_SUPER_ADMIN')")
      */
-    public function testMailAction() {
+    public function testMailAction(KernelInterface $kernel) {
 # Instantiate the client.
-        $this->get(MailDispatcher::class)->sendTestEmail();
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput(array(
+            'command' => 'reminders:crowdfunding:artist',
+            // (optional) define the value of command arguments
+            'x' => '2',
+        ));
+
+        // You can use NullOutput() if you don't need the output
+        $output = new BufferedOutput();
+        $application->run($input, $output);
+
+        // return new Response(""), if you used NullOutput()
         return $this->render('@App/Public/about.html.twig');
     }
 
