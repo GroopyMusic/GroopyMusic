@@ -28,6 +28,12 @@
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2">
                 <h2 class="text-center">{{ contract.artist.artistname }} souhaite organiser un {{ contract.step.getName }}</h2>
+
+                {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
+                    <p class="p-info">C'est le dernier jour de vente de tickets pour cet événement !</p>
+                {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
+                    <p class="p-info">C'est le dernier jour où vous pouvez aider {{ artist }} à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce concert est confirmé ou non.</p>
+                {% endif %}
             </div>
         </div>
 
@@ -59,12 +65,28 @@
                             </div>
 
                             <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
-                                    Date de validation
-                                </div>
-                                <div class="contract-info-content">
-                                    {{ contract.dateEnd|date('d/m/Y') }}
-                                </div>
+
+                                {% if state in contract.successfulStates %}
+                                    {% if state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
+                                        <div class="um-label">
+                                            SOLD <br /> OUT
+                                        </div>
+                                    {% else %}
+                                        <div class="contract-info-title">
+                                            Fin des ventes
+                                        </div>
+                                        <div class="contract-info-content">
+                                            {{ contract.lastSellingDate|date('d/m/Y') }}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="contract-info-title">
+                                        Date de validation
+                                    </div>
+                                    <div class="contract-info-content">
+                                        {{ contract.dateEnd|date('d/m/Y') }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
 

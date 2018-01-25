@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class ContractArtist extends BaseContractArtist
 {
-    const NB_DAYS_OF_CLOSING = 7;
+    const NB_DAYS_OF_CLOSING = 0;
 
     const STATE_REFUNDED = 'state.refunded';
     const STATE_FAILED = 'state.failed';
@@ -60,6 +60,29 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
+    public static function getSuccessfulStates() {
+        return [
+            self::STATE_SUCCESS_PENDING,
+            self::STATE_SUCCESS_SOLDOUT,
+            self::STATE_SUCCESS_SOLDOUT_PENDING,
+            self::STATE_SUCCESS_CLOSED,
+            self::STATE_SUCCESS_PASSED,
+            self::STATE_SUCCESS_ONGOING,
+        ];
+    }
+
+    public function getLastSellingDate() {
+        return $this->getDateConcert()->modify('-' . ($this->nb_closing_days + 1) . ' days');
+    }
+
+    public function isLastSellingDate() {
+        return (new \DateTime())->diff($this->getLastSellingDate())->days == 0;
+    }
+
+    public function isDeadlineDate() {
+        return (new \DateTime())->diff($this->dateEnd)->days == 0;
+    }
+
     public function getMaxTickets() {
         return $this->getHallConcert() != null ? $this->getHallConcert()->getCapacity() : $this->step->getMaxTickets();
     }
@@ -100,7 +123,7 @@ class ContractArtist extends BaseContractArtist
                 if ($this->tickets_sold >= $max_tickets)
                     return self::STATE_SUCCESS_SOLDOUT;
                 // No more selling
-                if ($today2->modify('+' . self::NB_DAYS_OF_CLOSING . ' days') > $this->getDateConcert())
+                if ($today2->modify('+' . $this->nb_closing_days . ' days') >= $this->getDateConcert())
                     return self::STATE_SUCCESS_CLOSED;
                 // Successful, in the future, not sold out, not closed => ongoing
                 else
@@ -135,6 +158,7 @@ class ContractArtist extends BaseContractArtist
         $this->coartists_list = new ArrayCollection();
         $this->tickets_sold = 0;
         $this->tickets_sent = false;
+        $this->nb_closing_days = self::NB_DAYS_OF_CLOSING;
     }
 
     // Also add as main artist for the concert
@@ -262,6 +286,11 @@ class ContractArtist extends BaseContractArtist
      * @ORM\ManyToOne(targetEntity="Artist", inversedBy="contracts")
      */
     private $main_artist;
+
+    /**
+     * @ORM\Column(name="nb_closing_days", type="smallint")
+     */
+    private $nb_closing_days;
 
     /**
      * Set coartistsList

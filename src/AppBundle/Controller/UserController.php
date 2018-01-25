@@ -228,7 +228,7 @@ class UserController extends Controller
             if ($flow->nextStep()) {
                 // form for the next step
                 $th_date = new \DateTime;
-                $th_date->modify('+ ' . $contract->getStep()->getDeadlineDuration() . ' days');
+                $th_date->modify('+ ' . $contract->getStep()->getDeadlineDuration() . ' days')->setTime(23, 59, 59);
                 $contract->setTheoriticalDeadline($th_date);
 
                 $form = $flow->createForm();
@@ -247,7 +247,7 @@ class UserController extends Controller
                 }
 
                 $deadline = new \DateTime();
-                $deadline->modify('+ ' . $contract->getStep()->getDeadlineDuration() . ' days');
+                $deadline->modify('+ ' . $contract->getStep()->getDeadlineDuration() . ' days')->setTime(23, 59, 59);
                 $contract->setDateEnd($deadline);
 
                 $em = $this->getDoctrine()->getManager();
