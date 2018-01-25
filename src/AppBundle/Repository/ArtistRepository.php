@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
 
 class ArtistRepository extends \Doctrine\ORM\EntityRepository
@@ -19,17 +20,17 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
+    // Dual of ContractArtistRepository::queryVisible()
     public function queryNotCurrentlyBusy(User $user = null) {
+        $contract_repository = $this->getEntityManager()->getRepository('AppBundle:ContractArtist');
+        $visible_contracts_ids = array_map(function(ContractArtist $ca) { return $ca->getId(); }, $contract_repository->findVisible());
+
         $nots = $this->createQueryBuilder('a')
+            ->innerJoin('a.base_contracts', 'c', 'WITH','c.id in (:ids)' )
             ->select('a.id')
-            ->innerJoin('a.contracts', 'c')
-            ->leftJoin('c.step', 's')
-            ->leftJoin('c.preferences', 'p')
-            ->leftJoin('c.reality', 'r')
-            ->andWhere('c.failed = 0')
-            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
-            ->andWhere('(c.dateEnd > :now) OR (c.tickets_sold >= s.min_tickets)')
-            ->andWhere('c.tickets_sold < s.max_tickets')
+            // TODO make the next line work
+            // to handle the fact that sold out situations shouldn't be considered as making an artist busy
+            // ->andWhere('(r.hall is not null AND c.tickets_sold < r.hall.capacity) OR (r.hall is null AND c.tickets_sold < s.max_tickets)')
         ;
 
         $qb = $this->createQueryBuilder('a2');
@@ -42,8 +43,8 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
                 ->setParameter('user', $user)
             ;
         }
-        return $qb
-                ->setParameter('now', new \DateTime('now'))
+
+         return $qb->setParameter('ids' ,$visible_contracts_ids)
                 ->andWhere('a2.deleted = 0')
                 ->andWhere($qb->expr()->notIn('a2.id', $nots->getDQL()));
     }

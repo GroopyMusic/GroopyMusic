@@ -135,7 +135,7 @@ class ContractArtist extends BaseContractArtist
         }
 
         // Crowdfunding is not over yet
-        if($this->dateEnd > $today) {
+        if($this->dateEnd >= $today) {
             // But already sold out
             if ($this->tickets_sold >= $max_tickets)
                 return self::STATE_SUCCESS_SOLDOUT_PENDING;

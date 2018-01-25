@@ -13,6 +13,22 @@ use AppBundle\Entity\Artist;
  */
 class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function queryVisible2() {
+        return $this->createQueryBuilder('c')
+            ->join('c.artist', 'a')
+            ->join('c.step', 's')
+            ->join('c.preferences', 'p')
+            ->leftJoin('c.reality', 'r')
+            ->addSelect('a')
+            ->addSelect('s')
+            ->addSelect('r')
+            ->addSelect('p')
+            ->where('c.failed = 0')
+            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
+            ->setParameter('now', new \DateTime('now'))
+            ;
+    }
+
     public function queryVisible() {
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
