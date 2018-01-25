@@ -13,10 +13,10 @@ services:
     resolve_controller_name_subscriber:
       public: true
       abstract: true
-
     console.error_listener:
       public: true
       abstract: true
+
 
     # The following line blocks an error in the AzineEmailBundle which references a non-existent "immediatemailer" service
     swiftmailer.mailer.immediatemailer: "@mailer"

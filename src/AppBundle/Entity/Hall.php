@@ -64,7 +64,7 @@ class Hall extends Partner
     }
 
     public function __toString() {
-        return 'Salle : ' . $this->getName();
+        return '' . $this->getName();
     }
 
     private function cmp_dates($date1, $date2) {
