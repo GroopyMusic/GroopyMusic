@@ -40,6 +40,11 @@ class ContractArtist extends BaseContractArtist
         return in_array($this->getState(), $this->getPendingStates());
     }
 
+    // TODO translate
+    public function getDisplayName() {
+        return $this->step . ' de ' . $this->artist;
+    }
+
     public static function getUncrowdableStates() {
         return [
             self::STATE_REFUNDED,
