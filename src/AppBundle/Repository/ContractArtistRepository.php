@@ -76,6 +76,8 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('c.dateEnd > :now')
             ->andWhere('c.tickets_sold < s.min_tickets')
             ->andWhere('c.successful = 0')
+            // TODO modify r.date --> concert date (new field)
+            ->orderBy('p.date', 'asc')
         ;
 
         if($limit != null) {
