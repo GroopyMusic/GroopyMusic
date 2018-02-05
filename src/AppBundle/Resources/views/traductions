@@ -56,3 +56,19 @@ pay_cart:
             quantity: Quantité
             unitprice: Prix unitaire
             total: Total
+
+my_orders:
+    title: Mes commandes
+    empty: Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="%catalog_url%">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !
+    labels:
+        details: Détail
+        state: État
+        date: Date
+        quantity: Quantité
+        unitprice: Prix
+        totalprice: Prix total
+        order: Commande
+        tickets: Tickets
+
+
+
