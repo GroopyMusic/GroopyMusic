@@ -1,0 +1,280 @@
+Days 0: Dimanche
+Days 1: Lundi
+Days 2: Mardi
+Days 3: Mercredi
+Days 4: Jeudi
+Days 5: Vendredi
+Days 6: Samedi
+Jan: Jan
+Feb: Fév
+Mar: Mars
+Apr: Avr
+May: Mai
+Jun: Juin
+Jul: Juil
+Aug: Août
+Sep: Sept
+Oct: Oct
+Nov: Nov
+Dec: Déc
+labels.artist.translations: Descriptions
+
+home:
+  concept:
+    title: Concept
+    content_1: Vous souhaitez participer à l'émancipation de la scène musicale belge&nbsp;? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique&nbsp;?
+    content_2: Un-Mute sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur", vous êtes acteur dans la construction de la scène musicale belge de demain via <a href="#" data-toggle="popover" title="En savoir plus" data-content="Vous souhaitez en savoir plus sur notre fonctionnement ? <a href='%about_url%'>C'est par ici !</a>">un système de financement participatif qui ne vous fait prendre aucun risque</a>.
+  concerts:
+    title: Concerts
+    content: Nos artistes tentent de remplir des salles aux quatre coins du Royaume. Découvrez leurs envies et soutenez-les.
+    see_all: Voir la liste complète
+  news:
+    title: News
+  join_us:
+    title: Nous rejoindre
+    content_1: <strong>Vous désirez devenir <a href="%about_url%">producteur</a> et soutenir un artiste ?</strong> Découvrez <a href="%catalog_url%">le catalogue des artistes</a>.
+    content_2: <strong>Vous êtes un <a href="%about_url%">artiste</a> intéressé par le concept ?</strong> Rejoignez gratuitement le <a href="%register_url%">réseau Un-Mute</a>.
+    content_3: <strong>Vous désirez proposer une salle à nos artistes ?</strong> <a href="%contact_url%">Prenez contact avec l'équipe Un-Mute</a>.
+    more_info: Plus d'infos
+    login_link: Rejoindre Un-Mute
+
+team:
+  title: L'équipe
+  members:
+    pierre: <span class='um-label um-semi-bold'>Pierre</span>, à l'initiative du projet, baigne dans la musique depuis plus de 10 ans. Ayant fait partie de nombreux groupes, il a eu l'occasion d'expérimenter les différentes phases qu'un groupe doit passer pour se faire voir sur la scène belge. Fort de ses frustrations, il propose une vision innovante du booking pour la scène Francophone de Belgique.
+    gonzague: Conquis par l'idée, <span class='um-label um-semi-bold'>Gonzague</span>, jeune webmaster diplômé en informatique, accepte directement de participer au projet. La coordination du développement d'une plateforme Web de cette envergure constitue un défi des plus motivants à ses yeux, en accord avec son envie de participer au lancement d'une start-up au sortir de ses études.
+    louis: Sollicité pour assurer l'encadrement juridique du projet, <span class='um-label um-semi-bold'>Louis</span> n'a pas tardé à répondre positivement à cette invitation. La possibilité qui lui était ainsi offerte de mettre les connaissances théoriques acquises durant ses cinq années de formation juridique au service d'un projet sous-tendu par des valeurs qui lui étaient chères a fini de le convaincre de s'investir pleinement dans Un-Mute.
+    alice: "Concernant la communication, <span class='um-label um-semi-bold'>Alice</span> alimente l'équipe avec ses 6 années d'expériences professionnelles en PME puis en institution non marchande. Diplômée de l'IHECS et de la KUL en culturele studies, Un-Mute était une belle opportunité de rajouter à son arc un secteur d'activité qui l'a toujours passionnée  : la communication événementielle et culturelle !"
+
+pillars:
+  title: Nos valeurs
+  intro: L'équipe d'Un-Mute s'articule autour de 3 grands principes qui résument la volonté des porteurs du projet.
+  accessibility:
+    title:  Accessibilité
+    content: Un-Mute se veut accessible à tous en ne faisant pas de sélection à l'entrée et en mettant en place un financement participatif qui permet à toute personne sachant convaincre le public d'évoluer sans contraintes. Ainsi, la plate-forme s'adresse à tout artiste musical de la Fédération Wallonie-Bruxelles, et ce, quel que soit son niveau de performance, son âge ou son style de musique. De même, avec le temps, Un-Mute peut envisager d'augmenter le territoire dans lequel elle est présente.
+  continuity:
+    title: Continuité
+    content: Un-Mute ne veut pas se limiter à un concert pour la production de ses artistes, et veut pouvoir leur proposer une <a href="%faq_url%">tournée multilocale</a>. À terme, Un-Mute souhaite offrir un cadre de développement global à ses artistes, qui prendrait en considération tous les aspects inhérents à l'émancipation d'artistes musicaux (l'image, le son, la diffusion, etc.).
+  synergy:
+    title: Synergie
+    content: Un-Mute souhaite être le carrefour entre les artistes, les producteurs et les professionnels du secteur, mais également jouer sur la diversité de ses artistes pour leur permettre de mettre leurs atouts en avant. Pour Un-Mute, un plus un est égal à trois. C'est de cette volonté qu'une née le principe de tournée multi-locale.
+
+contact:
+  title: Contact
+  intro: Une idée ? Une question ? Un conseil ? Un intérêt pour le projet ? Vous êtes au bon endroit. Remplissez le formulaire suivant pour nous contacter ; nous vous répondrons dans les plus brefs délais !
+  nomail:
+    title: Vous êtes sûr ?
+    explanation: Apparemment, vous n'avez pas entré votre adresse e-mail. Nous ne pourrons donc pas répondre à votre question.
+    confirm: Envoyer
+    cancel: Annuler
+
+threeds:
+    pending_stripe: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...
+    pending: Paiement en cours... <b>Ne quittez pas cette page pendant le traitement de votre paiement.</b>
+    error: L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href="%backUrl%">ici</a> pour revenir en arrière.
+
+pay_cart:
+    title: Paiement de votre commande
+    intro: |
+        <p>
+            Bienvenue dans l'espace sécurisé d'Un-Mute, %firstName%. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
+            vous ont convaincu lors de votre visite.
+        </p>
+
+        <p>
+            En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
+            Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres producteurs qui soutiennent cet artiste.
+            Sinon, si cet événement a assez de succès, vous recevrez vos tickets par e-mail, et sur Un-Mute, quelques jours avant le concert.
+            Dans le cas où l'artiste a déjà atteint le seuil de réussite du concert, alors vous recevrez vos tickets par e-mail dans la journée.
+        </p>
+    conditions:
+        error: Vous devez accepter les conditions générales pour continuer.
+        label: J'accepte les conditions générales et je souhaite procéder au paiement
+    methods:
+        creditcard: Carte de crédit
+        bancontact: Bancontact
+    proceed:
+        threeds:
+            error: Une erreur est survenue. Veuillez réessayer plus tard et en informer un administrateur Un-Mute si le problème persiste.
+            pending: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...
+        creditcard:
+            title: Paiement par carte de crédit
+            popover:
+                title: Cartes autorisées
+                content: Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.
+                apparent: + d'infos
+            labels:
+                creditcard: Carte de crédit
+                exp: Date d'exp.
+                cvc: Cryptogramme visuel
+            submit: Payer avec ma carte de crédit
+        bancontact:
+            title: Payer par Bancontact
+            popover:
+                title: Cartes autorisées
+                content: Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.
+                apparent: + d'infos
+            info: Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.
+            submit: Poursuivre avec Bancontact
+            pending: Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.
+    recap:
+        title: Vos tickets
+        labels:
+            counterpart: Type
+            concert: Concert
+            date: Date
+            quantity: Quantité
+            unitprice: Prix unitaire
+            total: Total
+
+my_orders:
+    title: Mes commandes
+    empty: Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="%catalog_url%">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !
+    labels:
+        details: Détail
+        state: État
+        date: Date
+        quantity: Quantité
+        unitprice: Prix
+        totalprice: Prix total
+        order: Commande
+        tickets: Tickets
+
+notifs:
+    title: Mes notifications
+    empty: Vous n'avez pas encore reçu de notification.
+    see_more: Voir plus
+
+new_artist:
+  title: Nouvel artiste
+  intro: |
+      Pour créer un artiste sur Un-Mute, merci de remplir le formulaire suivant.
+      Une fois votre artiste créé, il apparaîtra dans le <a href="%catalog_url%">catalogue des artistes Un-Mute</a>
+      et vous pourrez ajouter des photos et vidéos de cet artiste.
+  warning: En créant un artiste, vous certifiez en être le représentant, ou l'un des membres s'il s'agit d'un groupe.
+  urls_explanation: Dans les champs suivants, veuillez introduire vos éventuels liens sous forme d'URL valides <strong>commençant par <em>http://</em> ou <em>https://</em></strong>
+
+my_artists:
+  title: Mes artistes
+  intro: |
+      Vous êtes un artiste musical ? Vous faites partie d'un groupe ?
+      Créez votre identité sur Un-Mute et organisez vos concerts sans prendre aucun risque.
+  new_event: Créer un événement
+  new_artist: Créer un artiste
+  no_available_artist: "Note : vous ne pouvez pas créer de nouvel événement pour votre/vos artiste(s) parce que tous vos artistes sont déjà lancés sur un autre événement."
+
+profile:
+  title: Mon profil
+  see:
+    title: Voir mon profil
+  edit:
+    title: Modifier mon profil
+  change_password:
+    title: Changer mon mot de passe
+  change_email:
+    title: Changer mon e-mail
+  advanced:
+    title: Options avancées
+    deletion:
+      warning: Attention, cette action est irréversible !
+      cancel: Annuler
+      title: Suppression de compte
+      explanation: |
+          En fermant votre compte, vous demandez la suppression de vos données de la plateforme Un-Mute.
+          Celles-ci ne seront plus reprises dans notre base de données, conformément à la loi en vigueur.
+          Vous ne serez plus repris dans les propriétaires des artistes dont vous faites actuellement partie des gestionnaires et n'aurez donc plus accès à leur gestion.
+      checkbox: Je souhaite supprimer mon compte
+      confirm: Supprimer mon compte
+
+artist_profile:
+  title: Édition du profil de l'artiste %artist%
+  menu:
+    edit: Infos générales
+    profile_pic: Photo de profil
+    other_pics: Autres photos
+    medias: Vidéos
+    owners: Propriétaires
+    see: Voir le profil
+    leave: Quitter l'artiste
+  see:
+    tabs:
+      profile: Profil
+      biography: Biographie
+      edition: Édition
+    short_description: En quelques mots
+    genres: Styles musicaux
+    videos:
+      title: Vidéos:
+      empty: Cet artiste n'a pas encore de vidéo à montrer.
+    links:
+      title: Liens
+      website: Voir le site Web
+      spotify: Suivre sur Spotify
+      twitter: Suivre sur Twitter
+      facebook: Suivre sur Facebook
+      instagram: Suivre sur Instagram
+      soundcloud: Voir le profil SoundCloud
+      bandcamp: Voir le profil Bandcamp
+    current_event: Evénement en cours de vente de tickets
+    passed_events: Concerts accomplis par le passé
+  profile_pic:
+    intro: |
+      Vous pouvez ici mettre en ligne la photo de profil de %artist%.
+      Cette photo sera la première à apparaître sur les différents visuels de cet artiste sur Un-Mute.
+      Veillez à ce qu'elle soit de bonne qualité et qu'elle ait des dimensions de type 4 (largeur) / 3 (longueur).
+    to_other_pics: Vous souhaitez ajouter d'autres photos à votre artiste ? <a href="%url%">Ajoutez-en jusqu'à 5</a>
+  other_pics:
+    intro: Ajoutez ici jusqu'à 5 photos supplémentaires à votre artiste. Choisissez des photos de bonne qualité et de préférence qui suivent le ratio 4 (largeur) / 3 (hauteur).
+  medias:
+    add_video: Ajouter une vidéo
+    remove_video: Supprimer la vidéo
+
+validate_ownership:
+  title: Rejoindre
+  cancelled: Cette requête a été annulée par son émetteur.
+
+owners:
+  my_role:
+   title: Votre rôle au sein de l'artiste
+   label: Votre rôle pour l'artiste "%artist%"
+  others:
+    title: Autres propriétaires
+    role_label: Rôle
+    pending: en attente de confirmation
+    added_by: ajouté par
+    cancel: annuler
+  add:
+    title: Ajouter des propriétaires
+    intro: "Vous pouvez ici ajouter d'autres utilisateurs Un-Mute à la gestion de cet artiste. Deux cas sont possibles :"
+    case_1: S'ils ont déjà un compte Un-Mute, ils pourront simplement accepter votre demande et seront ajoutés comme propriétaires.
+    case_2: Sinon, pas de problème ! Ils seront invités par e-mail à s'inscrire sur Un-Mute, puis à accepter votre demande.
+    button: Ajouter un propriétaire
+  delete: Supprimer
+
+new_event:
+  title: Lancement d'un nouvel événement
+  empty: Vous n'avez pas d'artiste disponible pour lancer un nouvel événement. Souhaitez-vous <a href="%url%">créer un nouvel artiste</a> ?
+  step: Étape
+  step_1:
+    intro: |
+      Choisissez un artiste, une province et un niveau de concert. Des dates vous seront alors proposées en fonction des disponibilités des salles.
+      La salle où aura lieu le concert sera annoncée une fois l'objectif de crowdfunding atteint.
+  step_3:
+    recap:
+      artist: Artiste
+      province: Province
+      date: Date choisie
+      motivations: Motivations
+      additional_info: Informations pour Un-Mute
+  step_2:
+    date_preview: "Date choisie : "
+
+leave_artist:
+  intro: Sur cette page, vous avez la possibilité de quitter la gestion de cet artiste. Si vous en êtes le dernier propriétaire, l'artiste sera définitivement supprimé du catalogue Un-Mute.
+  warning: Attention, cette action est irréversible !
+  checkbox: Je souhaite quitter la gestion de %artist%
+  last:
+    warning: Vous êtes le dernier propriétaire de %artist%. Si vous poursuivez, l'artiste sera supprimé du catalogue de la plateforme.
+    busy: Vous ne pouvez pas quitter cet artiste à l'heure actuelle car vous en êtes le dernier propriétaire et un événement impliquant cet artiste est en cours de récolte de tickets.
+  cancel: Annuler
+  confirm: Quitter %artist%

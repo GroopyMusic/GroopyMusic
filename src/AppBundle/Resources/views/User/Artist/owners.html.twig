@@ -4,10 +4,10 @@
 
 {% block artist_edit_profile_content %}
 
-    {#<h3>Votre rôle au sein de l'artiste</h3>
+    {#<h3>{{ 'owners.my_role.title'|trans|raw }}</h3>
     <div>
         {{ form_start(form1) }}
-            Votre rôle pour l'artiste "{{ artist.artistname }}" :
+           {{ 'owners.my_role.label'|trans({'%artist%': artist.artistname})|raw }} :
             <div class="form-group">
              {{ form_widget(form1.role) }}
             </div>
@@ -15,29 +15,29 @@
     </div>#}
 
     {% if owners|length > 1 or requests|length > 0 %}
-    <h4>Autres propriétaires</h4>
+    <h4>{{ 'owners.others.title'|trans|raw }}</h4>
     <ul>
     {% for owner in owners if owner.user.id != app.user.id %}
         <li>{{ owner.user.displayName }}
-            <br> Rôle : {% if owner.role is not null %}{{ owner.role }}{% endif %}
+            <br> {{ 'owners.others.role_label'|trans|raw }} : {% if owner.role is not null %}{{ owner.role }}{% endif %}
         </li>
     {% endfor %}
     {% for request in requests %}
-        <li>{{ request.email }} - en attente de confirmation
-            (ajouté par {{ request.demander.displayName }})
-            {% if request.demander.id == app.user.id %}<a href="{{ path('artist_cancel_ownership_request', {'id': artist.id, 'request_id': request.id}) }}">annuler</a>{% endif %}
+        <li>{{ request.email }} - {{ 'owners.others.pending'|trans|raw }}
+            ({{ 'owners.others.added_by'|trans|raw }} {{ request.demander.displayName }})
+            {% if request.demander.id == app.user.id %}<a href="{{ path('artist_cancel_ownership_request', {'id': artist.id, 'request_id': request.id}) }}">{{ 'owners.others.cancel'|trans|raw }}</a>{% endif %}
         </li>
     {% endfor %}
     </ul>
     {% endif %}
 
-    <h4>Ajouter des propriétaires</h4>
+    <h4>{{ 'owners.add.title'|trans|raw }}</h4>
     <p>
-        Vous pouvez ici ajouter d'autres utilisateurs Un-Mute à la gestion de cet artiste. Deux cas sont possibles :
+        {{ 'owners.add.intro'|trans|raw }}
     </p>
     <ul class="um-list">
-        <li>S'ils ont déjà un compte Un-Mute, ils pourront simplement accepter votre demande et seront ajoutés comme propriétaires.</li>
-        <li>Sinon, pas de problème ! Ils seront invités par e-mail à s'inscrire sur Un-Mute, puis à accepter votre demande.</li>
+        <li>{{ 'owners.add.case_1'|trans|raw }}</li>
+        <li>{{ 'owners.add.case_2'|trans|raw }}</li>
     </ul>
 
     {% form_theme form2 'AppBundle:Themes:ownerships_collection.html.twig' 'jquery.collection.html.twig' %}
@@ -54,8 +54,8 @@
 
     <script type="text/javascript">
         um_collection({
-            add: '<a class="btn btn-outline-secondary" href="#">Ajouter un propriétaire</a>',
-            remove:'<a class="danger-color" href="#">Supprimer</a>'
+            add: '<a class="btn btn-outline-secondary" href="#">{{ 'owners.add.button'|trans|raw }}</a>',
+            remove:'<a class="danger-color" href="#">{{ 'owners.delete'|trans|raw }}</a>'
         });
     </script>
 {% endblock %}

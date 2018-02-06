@@ -106,6 +106,14 @@ class ArtistType extends AbstractType
                 ],
                'attr' => ['placeholder' => 'http:// ou https://'],
             ))
+            ->add('instagram', UrlType::class, array(
+                'label' => 'labels.artist.instagram',
+                'required' => false,
+                'constraints' => [
+                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                ],
+                'attr' => ['placeholder' => 'http:// ou https://'],
+            ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.artist.submit',
                 'attr' => ['class' => 'btn btn-primary']

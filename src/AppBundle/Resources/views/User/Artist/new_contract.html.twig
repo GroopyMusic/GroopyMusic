@@ -9,32 +9,31 @@
 
 {% block body %}
     <div class="container">
-        <h2 class="text-center mb-4">Lancement d'un nouvel événement</h2>
+        <h2 class="text-center mb-4">{{ 'new_event.title'|trans|raw }}</h2>
         {% if no_artist is defined %}
-            <p>Vous n'avez pas d'artiste disponible pour lancer un nouvel événement. Souhaitez-vous <a href="{{ path('user_new_artist') }}">créer un nouvel artiste</a> ?</p>
+            <p>{{ 'new_event.empty'|trans({'%url%': path('user_new_artist')})|raw }}</p>
         {% else %}
             {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
             <div class="content-box">
                 <div class="content-box-content">
-                    <h3>Étape {{ flow.currentStepNumber }}/{{ flow.lastStepNumber }} : {{ flow.currentStepLabel }} </h3>
+                    <h3>{{ 'new_event.step'|trans|raw }} {{ flow.currentStepNumber }}/{{ flow.lastStepNumber }} : {{ flow.currentStepLabel }} </h3>
                     {% if flow.currentStepNumber == 1 %}
                         <p>
-                            Choisissez un artiste, une province et un niveau de concert. Des dates vous seront alors proposées en fonction des disponibilités des salles.
-                            La salle où aura lieu le concert sera annoncée une fois l'objectif de crowdfunding atteint.
+                            {{ 'new_event.step_1.intro'|trans|raw }}
                         </p>
                     {% endif %}
 
                     {% if flow.currentStepNumber == flow.lastStepNumber %}
                         <ul class="um-list">
-                            <li>Artiste : {{ contract.artist }}</li>
-                            <li>Province : {{ contract.province is empty ? 'Sans importance' : contract.province }}</li>
-                            <li>Date choisie : {{ contract.preferences.date|date('d/m/Y') }}</li>
+                            <li>{{ 'new_event.step_3.recap.artist'|trans|raw }} : {{ contract.artist }}</li>
+                            <li>{{ 'new_event.step_3.recap.province'|trans|raw }} : {{ contract.province is empty ? 'Sans importance' : contract.province }}</li>
+                            <li>{{ 'new_event.step_3.recap.date'|trans|raw }} : {{ contract.preferences.date|date('d/m/Y') }}</li>
                             {% if contract.motivations is not empty %}
-                                <li>Motivations : <br />{{ contract.motivations|nl2br }}</li>
+                                <li>{{ 'new_event.step_3.recap.motivations'|trans|raw }} : <br />{{ contract.motivations|nl2br }}</li>
                             {% endif %}
                             {% if contract.preferences.additionalInfo is not empty %}
-                                <li>Informations pour Un-Mute : <br />{{ contract.preferences.additionalInfo|nl2br }}</li>
+                                <li>{{ 'new_event.step_3.recap.additional_info'|trans|raw }} : <br />{{ contract.preferences.additionalInfo|nl2br }}</li>
                             {% endif %}
                         </ul>
                     {% endif %}
@@ -88,7 +87,7 @@
                                                 {{ form_widget(form.reality.date) }}
                                             </td>
                                             <td class="align-middle pl-4">
-                                                <p class="datePicker-vis">Date choisie : {{ contract.preferences.date|date('d/m/Y') }}</p>
+                                                <p class="datePicker-vis">{{ "new_event.step_2.date_preview"|trans|raw }} {{ contract.preferences.date|date('d/m/Y') }}</p>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -159,7 +158,7 @@
             });
 
             $datePicker.change(function() {
-                $('.datePicker-vis').text('Date choisie : ' + dateToText($datePicker.val()));
+                $('.datePicker-vis').text('{{ "new_event.step_2.date_preview"|trans|raw }} ' + dateToText($datePicker.val()));
             });
         });
     </script>

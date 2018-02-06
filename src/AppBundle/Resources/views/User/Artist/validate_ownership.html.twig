@@ -2,20 +2,20 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="text-center mb-3">Rejoindre {{ request.artist.artistname }}</h3>
+        <h3 class="text-center mb-3">{{ 'validate_ownership.title'|trans|raw }} {{ request.artist.artistname }}</h3>
 
         {% if request.cancelled %}
-            <p class="alert alert-error">Cette requête a été annulée par son émetteur.</p>
+            <p class="alert alert-error">{{ 'validate_ownership.cancelled'|trans|raw }}</p>
         {% else %}
             <div class="content-box">
                 <div class="content-box-content">
                     <p>
-                        L'utilisateur {{ request.demander.displayName }} souhaite que vous le rejoigniez dans la gestion de l'artiste <a target="_blank" href="{{ path('artist_profile', {'id': request.artist.id}) }}">{{ request.artist.artistname }}</a>.
+                        {{ 'validate_ownership.cancelled'|trans({'%demander%': request.demander.displayName, '%artist_url%': path('artist_profile', {'id': request.artist.id}), '%artist%': request.artist.artistname})|raw }} L'utilisateur %demander% souhaite que vous le rejoigniez dans la gestion de l'artiste <a target="_blank" href="%artist_url%">%artist%</a>.
                     </p>
-                        {{ form_start(form) }}
-                            {{ form_row(form.accept) }}
-                            {{ form_row(form.refuse) }}
-                        {{ form_rest(form) }}
+                    {{ form_start(form) }}
+                        {{ form_row(form.accept) }}
+                        {{ form_row(form.refuse) }}
+                    {{ form_rest(form) }}
                 </div>
             </div>
 

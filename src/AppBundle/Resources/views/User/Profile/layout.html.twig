@@ -1,29 +1,29 @@
 {% extends "@FOSUser/layout.html.twig" %}
 
-{% block headtitle %}Mon profil{% endblock %}
+{% block headtitle %}{{ 'profile.title'|trans|raw }}{% endblock %}
 
 {% block fos_user_content %}
     <div class="container">
-        <h3 class="mb-4 text-center">Mon profil</h3>
+        <h3 class="mb-4 text-center">{{ 'profile.title'|trans|raw }}</h3>
 
         <div class="container content-box">
             <div class="row content-box-content content-box-content-zones content-box-content-zones-vert no-padding-left">
                 <div class="col-xs-12 col-md-4 content-box-content-zone content-box-content-zone-vert no-padding-left no-padding-right">
                     <ul class="nav flex-column">
                         <li class="nav-item{% if active_link == 'show' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('fos_user_profile_show') }}">Voir mon profil</a>
+                            <a class="nav-link" href="{{ path('fos_user_profile_show') }}">{{ 'profile.see.title'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'edit' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('user_profile_edit') }}">Modifier mon profil</a>
+                            <a class="nav-link" href="{{ path('user_profile_edit') }}">{{ 'profile.edit.title'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'password' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('fos_user_change_password') }}">Changer mon mot de passe</a>
+                            <a class="nav-link" href="{{ path('fos_user_change_password') }}">{{ 'profile.change_password.title'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'email' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('user_change_email') }}">Changer mon e-mail</a>
+                            <a class="nav-link" href="{{ path('user_change_email') }}">{{ 'profile.change_email.title'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'advanced' %} active{% endif %}">
-                            <a class="nav-link danger-color" href="{{ path('user_advanced_options') }}">Options avancées</a>
+                            <a class="nav-link danger-color" href="{{ path('user_advanced_options') }}">{{ 'profile.advanced.title'|trans|raw }}</a>
                         </li>
                     </ul>
                 </div>

@@ -2,23 +2,21 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="text-center mb-4">Mes artistes</h3>
-
+        <h3 class="text-center mb-4">{{ 'my_artists.title'|trans|raw }}</h3>
             <p>
-                Vous êtes un artiste musical ? Vous faites partie d'un groupe ?
-                Créez votre identité sur Un-Mute et organisez vos concerts sans prendre aucun risque.
+                {{ 'my_artists.intro'|trans|raw }}
             </p>
 
             <div class="text-center mb-3">
                 {% if available_artist %}
-                    <a class="btn btn-primary" href="{{ path('user_new_contract_artist_temp') }}">Créer un événement</a>
+                    <a class="btn btn-primary" href="{{ path('user_new_contract_artist_temp') }}">{{ 'my_artists.new_event'|trans|raw }}</a>
                 {% endif %}
-                <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">Créer un artiste</a>
+                <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">{{ 'my_artists.new_artist'|trans|raw }}</a>
             </div>
 
             {% if not available_artist and artists is not empty %}
                 <p class="p-info mt-3">
-                    Note : vous ne pouvez pas créer de nouvel événement pour votre/vos artiste(s) parce que tous vos artistes sont déjà lancés sur un autre événement.
+                    {{ 'my_artists.no_available_artist'|trans|raw }}
                 </p>
             {% endif %}
 

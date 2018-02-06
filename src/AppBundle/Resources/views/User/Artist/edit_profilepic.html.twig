@@ -9,9 +9,7 @@
 
 {% block artist_edit_profile_content %}
     <p>
-        Vous pouvez ici mettre en ligne la photo de profil de {{ artist.artistname }}.
-        Cette photo sera la première à apparaître sur les différents visuels de cet artiste sur Un-Mute.
-        Veillez à ce qu'elle soit de bonne qualité et qu'elle ait des dimensions de type 4 (largeur) / 3 (longueur).
+        {{ 'artist_profile.profile_pic.intro'|trans({'%artist%':artist.artistname })|raw }}
     </p>
 
     <div id="dropzone-1">
@@ -19,7 +17,7 @@
     </div>
 
     <p class="mt-4">
-        Vous souhaitez ajouter d'autres photos à votre artiste ? <a href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Ajoutez-en jusqu'à 5</a>
+        {{ 'artist_profile.profile_pic.to_other_pics'|trans({'%url%': path('artist_edit_photos', {'id': artist.id}) })|raw }}
     </p>
 {% endblock %}
 

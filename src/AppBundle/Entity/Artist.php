@@ -118,6 +118,7 @@ class Artist implements TranslatableInterface
             || !empty($this->spotify)
             || !empty($this->soundcloud)
             || !empty($this->bandcamp)
+            || !empty($this->instagram)
         ;
     }
 
@@ -271,6 +272,12 @@ class Artist implements TranslatableInterface
      * @ORM\Column(name="bandcamp", type="string", length=255, nullable=true)
      */
     private $bandcamp;
+
+    /**
+     * @var string
+     * @ORM\Column(name="instagram", type="string", length=255, nullable=true)
+     */
+    private $instagram;
 
     /**
      * @ORM\Column(name="date_creation", type="datetime")
@@ -851,5 +858,29 @@ class Artist implements TranslatableInterface
     public function getBaseContracts()
     {
         return $this->base_contracts;
+    }
+
+    /**
+     * Set instagram
+     *
+     * @param string $instagram
+     *
+     * @return Artist
+     */
+    public function setInstagram($instagram)
+    {
+        $this->instagram = $instagram;
+
+        return $this;
+    }
+
+    /**
+     * Get instagram
+     *
+     * @return string
+     */
+    public function getInstagram()
+    {
+        return $this->instagram;
     }
 }

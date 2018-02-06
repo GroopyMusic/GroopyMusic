@@ -3,12 +3,9 @@
 {% block body %}
 
     <div class="container">
-        <h3 class="text-center mb-4">Contact</h3>
+        <h3 class="text-center mb-4">{{ 'contact.title'|trans|raw }}</h3>
 
-        <p class="mb-3">
-            Une idée ? Une question ? Un conseil ? Un intérêt pour le projet ?
-            Vous êtes au bon endroit. Remplissez le formulaire suivant pour nous contacter ; nous vous répondrons dans les plus brefs délais !
-        </p>
+        <p class="mb-3">{{ 'contact.intro'|trans|raw }}</p>
 
         <div class="content-box">
             <div class="content-box-content">
@@ -26,14 +23,14 @@
                     <div class="modal-body">
                         <div class="container">
                             <div class="login-header-title">
-                                <h5 class="mb-3">Vous êtes sûr ?</h5>
+                                <h5 class="mb-3">{{ 'contact.nomail.title'|trans|raw }}</h5>
                                 <p>
-                                    Apparemment, vous n'avez pas entré votre adresse e-mail. Nous ne pourrons donc pas répondre à votre question.
+                                    {{ 'contact.nomail.explanation'|trans|raw }}
                                 </p>
                             </div>
                         </div>
-                        <a id="validate-sb-send" class="btn btn-primary text-uppercase pull-left" href="#">Envoyer</a>
-                        <a id="cancel-sb-send" class="btn btn-secondary pull-right" data-dismiss="modal" href="#">Annuler</a>
+                        <a id="validate-sb-send" class="btn btn-primary text-uppercase pull-left" href="#">{{ 'contact.nomail.confirm'|trans|raw }}</a>
+                        <a id="cancel-sb-send" class="btn btn-secondary pull-right" data-dismiss="modal" href="#">{{ 'contact.nomail.cancel'|trans|raw }}</a>
                     </div>
                 </div>
             </div>
@@ -91,5 +88,4 @@
 
         initform();
     </script>
-
 {% endblock %}

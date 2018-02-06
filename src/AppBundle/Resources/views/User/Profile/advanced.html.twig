@@ -9,34 +9,32 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <p>Attention, cette action est irréversible !</p>
+                    <p>{{ 'profile.advanced.deletion.warning'|trans|raw }}</p>
                 </div>
                 <div class="modal-footer">
                     {{ form_start(form) }}
                         {{ form_widget(form.submit) }}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'profile.advanced.deletion.cancel'|trans|raw }}</button>
                     {{ form_end(form) }}
                 </div>
             </div>
         </div>
     </div>
 
-    <h4 class="danger-color">Suppression de compte</h4>
+    <h4 class="danger-color">{{ 'profile.advanced.deletion.title'|trans|raw }}</h4>
     <p>
-        En fermant votre compte, vous demandez la suppression de vos données de la plateforme Un-Mute.
-        Celles-ci ne seront plus reprises dans notre base de données, conformément à la loi en vigueur.
-        Vous ne serez plus repris dans les propriétaires des artistes dont vous faites actuellement partie des gestionnaires et n'aurez donc plus accès à leur gestion.
+        {{ 'profile.advanced.deletion.explanation'|trans|raw }}
     </p>
 
     <label class="custom-control custom-checkbox pr-3" for="checkbox-suppress-account">
         <input type="checkbox" id="checkbox-suppress-account" data-toggle="collapse" data-target="#collapse-suppress-account" class="custom-control-input">
         <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">Je souhaite supprimer mon compte</span>
+        <span class="custom-control-description">{{ 'profile.advanced.deletion.checkbox'|trans|raw }}</span>
     </label>
 
     <div class="collapse" id="collapse-suppress-account">
         <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#signOutModal">
-            Supprimer mon compte
+            {{ 'profile.advanced.deletion.confirm'|trans|raw }}
         </button>
     </div>
 {% endblock %}

@@ -14,5 +14,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">um_collection({add:'<a class="btn btn-outline-secondary" href="#">Ajouter une vidéo</a>', remove:'<a class="danger-color" href="#">Supprimer la vidéo</a>'});</script>
+    <script type="text/javascript">um_collection({add:'<a class="btn btn-outline-secondary" href="#">{{ "artist_profile.medias.add_video"|trans|raw }}</a>', remove:'<a class="danger-color" href="#">{{ "artist_profile.medias.remove_video"|trans|raw }}</a>'});</script>
 {% endblock %}

@@ -8,15 +8,15 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <p>Attention, cette action est irréversible !</p>
+                    <p>{{ 'leave_artist.warning'|trans|raw }}</p>
                     {% if lastOne %}
-                        <p class="alert alert-warning">Vous êtes le dernier propriétaire de {{ artist.artistname }}. Si vous poursuivez, l'artiste sera supprimé du catalogue de la plateforme.</p>
+                        <p class="alert alert-warning">{{ 'leave_artist.last.warning'|trans({'%artist%':artist.artistname})|raw }}</p>
                     {% endif %}
                 </div>
                 <div class="modal-footer">
                     {{ form_start(form) }}
                     {{ form_widget(form.confirm) }}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'leave_artist.cancel'|trans|raw }}</button>
                     {{ form_end(form) }}
                 </div>
             </div>
@@ -24,22 +24,21 @@
     </div>
 
     <p>
-        Sur cette page, vous avez la possibilité de quitter la gestion de cet artiste. Si vous en êtes le dernier propriétaire, l'artiste sera définitivement supprimé du catalogue Un-Mute.
+        {{ 'leave_artist.intro'|trans|raw }}
     </p>
 
     <label class="custom-control custom-checkbox pr-3" for="checkbox-leave-artist">
         <input type="checkbox" id="checkbox-leave-artist" data-toggle="collapse" data-target="#collapse-leave-artist" class="custom-control-input">
         <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">Je souhaite quitter la gestion de {{ artist.artistname }}</span>
+        <span class="custom-control-description">{{ 'leave_artist.checkbox'|trans({'%artist%':artist.artistname})|raw }}</span>
     </label>
 
     <div class="collapse" id="collapse-leave-artist">
         {% if lastOne and not artist.available %}
-            <p>Vous ne pouvez pas quitter cet artiste à l'heure actuelle car vous en êtes le dernier propriétaire et un événement inmpliquant cet artiste est
-            en cours de récolte de tickets.</p>
+            <p>{{ 'leave_artist.last.busy'|trans|raw }}</p>
         {% else %}
             <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaveArtistModal">
-                Quitter {{ artist.artistname }}
+                {{ 'leave_artist.confirm'|trans({'%artist%':artist.artistname})|raw }}
             </button>
         {% endif %}
     </div>

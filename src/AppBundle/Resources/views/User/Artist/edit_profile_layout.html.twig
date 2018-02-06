@@ -4,32 +4,32 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="mb-4 text-center">Edition du profil de l'artiste {{ artist.artistname }}</h3>
+        <h3 class="mb-4 text-center">{{ 'artist_profile.title'|trans({'%artist%': artist.artistname})|raw }}</h3>
 
         <div class="container content-box">
             <div class="row content-box-content content-box-content-zones content-box-content-zones-vert no-padding-left">
                 <div class="col-xs-12 col-md-4 content-box-content-zone content-box-content-zone-vert no-padding-left no-padding-right">
                     <ul class="nav flex-column">
                         <li class="nav-item{% if active_link == 'infos' %} active{% endif %}">
-                            <a class="nav-link " href="{{ path('artist_profile_edit', {'id': artist.id}) }}">Infos générales</a>
+                            <a class="nav-link " href="{{ path('artist_profile_edit', {'id': artist.id}) }}">{{ 'artist_profile.menu.edit'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'pp' %} active{% endif %}">
-                            <a class="nav-link " href="{{ path('artist_edit_profilepic', {'id': artist.id}) }}">Photo de profil</a>
+                            <a class="nav-link " href="{{ path('artist_edit_profilepic', {'id': artist.id}) }}">{{ 'artist_profile.menu.profile_pic'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'photos' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('artist_edit_photos', {'id': artist.id}) }}">Autres photos</a>
+                            <a class="nav-link" href="{{ path('artist_edit_photos', {'id': artist.id}) }}">{{ 'artist_profile.menu.other_pics'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'medias' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('artist_edit_medias', {'id': artist.id}) }}">Vidéos</a>
+                            <a class="nav-link" href="{{ path('artist_edit_medias', {'id': artist.id}) }}">{{ 'artist_profile.menu.medias'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'owners' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('artist_owners', {'id': artist.id}) }}">Propriétaires</a>
+                            <a class="nav-link" href="{{ path('artist_owners', {'id': artist.id}) }}">{{ 'artist_profile.menu.owners'|trans|raw }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">Voir le profil</a>
+                            <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ 'artist_profile.menu.see'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'leave' %} active{% endif %}">
-                            <a class="nav-link danger-color" href="{{ path('artist_leave', {'id': artist.id}) }}">Quitter l'artiste</a>
+                            <a class="nav-link danger-color" href="{{ path('artist_leave', {'id': artist.id}) }}">{{ 'artist_profile.menu.leave'|trans|raw }}Quitter l'artiste</a>
                         </li>
                     </ul>
                 </div>
