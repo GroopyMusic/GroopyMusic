@@ -97,8 +97,17 @@ class ContractArtist extends BaseContractArtist
         return $this->getMaxTickets() - $this->tickets_sold;
     }
 
+    public function getMinTickets() {
+        if($this->min_tickets <= 0) {
+            return $this->getStep()->getMinTickets();
+        }
+        else {
+            return $this->min_tickets;
+        }
+    }
+
     public function getNbTicketsToSuccess() {
-        $min = $this->getStep()->getMinTickets();
+        $min = $this->getMinTickets();
         if($this->getTicketsSold() >= $min)
             return 0;
 
@@ -147,7 +156,7 @@ class ContractArtist extends BaseContractArtist
                 return self::STATE_SUCCESS_SOLDOUT_PENDING;
 
             // Or already successful but not sold out and with a need of validation
-            if ($this->tickets_sold >= $this->step->getMinTickets())
+            if ($this->tickets_sold >= $this->getMinTickets())
                 return self::STATE_SUCCESS_PENDING;
 
             // Or simply ongoing
@@ -165,6 +174,7 @@ class ContractArtist extends BaseContractArtist
         $this->tickets_sold = 0;
         $this->tickets_sent = false;
         $this->nb_closing_days = self::NB_DAYS_OF_CLOSING;
+        $this->min_tickets = 0;
     }
 
     // Also add as main artist for the concert
@@ -299,6 +309,11 @@ class ContractArtist extends BaseContractArtist
     private $nb_closing_days;
 
     /**
+     * @ORM\Column(name="min_tickets", type="smallint")
+     */
+    private $min_tickets;
+
+    /**
      * Set coartistsList
      *
      * @param ArrayCollection $coartistsList
@@ -386,6 +401,7 @@ class ContractArtist extends BaseContractArtist
     public function setStep(\AppBundle\Entity\Step $step)
     {
         $this->step = $step;
+        $this->min_tickets = $step->getMinTickets();
 
         return $this;
     }
@@ -470,5 +486,43 @@ class ContractArtist extends BaseContractArtist
     public function getMainArtist()
     {
         return $this->main_artist;
+    }
+
+    /**
+     * Set nbClosingDays
+     *
+     * @param integer $nbClosingDays
+     *
+     * @return ContractArtist
+     */
+    public function setNbClosingDays($nbClosingDays)
+    {
+        $this->nb_closing_days = $nbClosingDays;
+
+        return $this;
+    }
+
+    /**
+     * Get nbClosingDays
+     *
+     * @return integer
+     */
+    public function getNbClosingDays()
+    {
+        return $this->nb_closing_days;
+    }
+
+    /**
+     * Set minTickets
+     *
+     * @param integer $minTickets
+     *
+     * @return ContractArtist
+     */
+    public function setMinTickets($minTickets)
+    {
+        $this->min_tickets = $minTickets;
+
+        return $this;
     }
 }

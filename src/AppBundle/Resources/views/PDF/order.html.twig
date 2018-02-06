@@ -8,14 +8,20 @@
         Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à pierre@un-mute.be
     </p>
 
+    <p>Note : Actuellement, par lot de 3 tickets achetés, un quatrième vous est offert.</p>
+
     <ul>
         <li>Date : {{ cf.date|date('d/m/Y') }}</li>
-        <li>Montant total : {{ cf.amount }} €</li>
-        <li>Nombre de tickets achetés : {{ cf.counterPartsQuantity }}</li>
         <li>Evénement soutenu : {{ cf.contractArtist }}</li>
+        <li>Montant total : {{ cf.amount }} €</li>
+        <li>Nombre de tickets achetés : {{ cf.counterPartsQuantityOrganic }}</li>
+        {% set freeTickets = cf.counterPartsQuantityPromotional %}
+        {% if freeTickets > 0 %}
+            <li>Nombre de tickets supplémentaires obtenus par promotion : {{ freeTickets }}</li>
+        {% endif %}
     </ul>
 
-    <p>Note : Actuellement, par lot de 3 tickets achetés, un quatrième vous sera offert lors de l'envoi des tickets !</p>
+
 
 
     <h2>Détails de la commande</h2>
@@ -33,7 +39,7 @@
                     {{ purchase.counterpart.name }}
                 </td>
                 <td>
-                    {{ purchase.quantity }}
+                    {{ purchase.quantityOrganic }}
                 </td>
                 <td>
                     {{ purchase.counterpart.price }} €
@@ -42,13 +48,30 @@
                     {{ purchase.amount }} €
                 </td>
             </tr>
+            {% set freeTickets = purchase.quantityPromotional %}
+            {% if freeTickets > 0 %}
+                <tr>
+                    <td>
+                        {{ purchase.counterpart.name }} - promotion
+                    </td>
+                    <td>
+                        {{ freeTickets }}
+                    </td>
+                    <td>
+                        0 €
+                    </td>
+                    <td>
+                        0 €
+                    </td>
+                </tr>
+            {% endif %}
         {% endfor %}
     </table>
 
     <h2>Processus d'achat Un-Mute</h2>
 
     <p>
-        Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins {{ cf.contractArtist.step.minTickets }} tickets sur Un-Mute pour ce concert.
+        Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins {{ cf.contractArtist.minTickets }} tickets sur Un-Mute pour ce concert.
         Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur https://un-mute.be
     </p>
 {% endblock %}

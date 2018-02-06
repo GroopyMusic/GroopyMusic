@@ -37,6 +37,9 @@
             </div>
         </div>
 
+        {% if state not in contract.uncrowdableStates %}
+            <p class="p-promo mt-3">Exceptionnellement à l'occasion du lancement de la plateforme, Un-Mute vous offre un ticket pour chaque lot de trois tickets achetés !</p>
+        {% endif %}
         {% set max_tickets = contract.maxTickets %}
         {% set tickets_left = contract.totalNbAvailable %}
         <div class="row mt-4">

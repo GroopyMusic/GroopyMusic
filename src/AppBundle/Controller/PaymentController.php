@@ -98,12 +98,14 @@ class PaymentController extends Controller
 
             // Charge the user's card:
             try {
+                $contract->calculatePromotions();
+
                 $payment = new Payment();
                 $payment->setDate(new \DateTime())->setUser($user)
                     ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());
 
                 $contract_artist->addAmount($contract->getAmount());
-
+                
                 if ($contract_artist instanceof ContractArtist) {
                     $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
                 }

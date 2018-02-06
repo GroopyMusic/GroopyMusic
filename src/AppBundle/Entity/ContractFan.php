@@ -43,14 +43,13 @@ class ContractFan
     }
 
     public function generateTickets() {
-        $i = 0;
         foreach($this->purchases as $purchase) {
-            $i++;
             /** @var Purchase $purchase */
-            $counterPart = $purchase->getCounterpart();
-            $this->addTicket(new Ticket($this, $counterPart, $i));
+            for($j = 1; $j < $purchase->getQuantity(); $j++) {
+                $counterPart = $purchase->getCounterpart();
+                $this->addTicket(new Ticket($this, $counterPart, $j));
+            }
         }
-
     }
 
     public function getOrderFileName() {
@@ -85,12 +84,28 @@ class ContractFan
         }, $this->purchases->toArray()));
     }
 
+    public function getCounterPartsQuantityOrganic() {
+        return $this->getCounterPartsQuantity() - $this->getCounterPartsQuantityPromotional();
+    }
+
+    public function getCounterPartsQuantityPromotional() {
+        return array_sum(array_map(function(Purchase $purchase) {
+            return $purchase->getNbFreeCounterparts();
+        }, $this->purchases->toArray()));
+    }
+
     public function getUser() {
         return $this->getCart()->getUser();
     }
 
     public function getFan() {
         return $this->getUser();
+    }
+
+    public function calculatePromotions() {
+        foreach($this->purchases as $purchase) {
+            $purchase->calculatePromotions();
+        }
     }
 
     /**

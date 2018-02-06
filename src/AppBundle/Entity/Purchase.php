@@ -22,6 +22,7 @@ class Purchase
     public function __construct()
     {
         $this->quantity = 0;
+        $this->nb_free_counterparts = 0;
     }
 
     public function addQuantity($q) {
@@ -32,7 +33,35 @@ class Purchase
     }
 
     public function getAmount() {
-        return $this->quantity * $this->counterpart->getPrice();
+        return $this->getQuantityOrganic() * $this->counterpart->getPrice();
+    }
+
+    public function calculatePromotions() {
+        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
+            // TODO adapt ; this is for February 2018 promotion
+            $this->nb_free_counterparts = floor($this->quantity / 3);
+            $this->addQuantity($this->nb_free_counterparts);
+        }
+    }
+
+    public function getQuantityOrganic() {
+        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
+            $this->calculatePromotions();
+        }
+
+        return $this->quantity - $this->getQuantityPromotional();
+    }
+
+    public function getQuantityPromotional() {
+        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
+            $this->calculatePromotions();
+        }
+
+        return $this->getNbFreeCounterparts();
+    }
+
+    public function getNbFreeCounterparts() {
+        return $this->nb_free_counterparts;
     }
 
     /**
@@ -62,6 +91,11 @@ class Purchase
      * @ORM\JoinColumn(nullable=false)
      */
     private $counterpart;
+
+    /**
+     * @ORM\Column(name="nb_free_counterparts", type="smallint")
+     */
+    private $nb_free_counterparts;
 
     /**
      * Get id
@@ -143,5 +177,19 @@ class Purchase
     public function getCounterpart()
     {
         return $this->counterpart;
+    }
+
+    /**
+     * Set nbFreeCounterparts
+     *
+     * @param integer $nbFreeCounterparts
+     *
+     * @return Purchase
+     */
+    public function setNbFreeCounterparts($nbFreeCounterparts)
+    {
+        $this->nb_free_counterparts = $nbFreeCounterparts;
+
+        return $this;
     }
 }

@@ -1,5 +1,44 @@
 {% extends "base.html.twig" %}
 
+{% macro recap_zone(purchase, contract, promotional = false) %}
+    <div class="content-box-content-zone">
+        <table class="content-box-table">
+            <tbody>
+            {% if not promotional %}
+                <tr>
+                    <td class="contract-info-title">Type</td>
+                    <td>{{ purchase.counterpart.name }}</td>
+                </tr>
+            {% else %}
+                <div class="um-label text-center"><strong>Promotion 3 + 1</strong></div>
+                <tr>
+                    <td class="contract-info-title">Type</td>
+                    <td>{{ purchase.counterpart.name }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td class="contract-info-title">Concert</td>
+                <td>Concert de {{ contract.contractArtist.artist.artistname }}</td>
+            </tr>
+            <tr>
+                <td class="contract-info-title">Date</td>
+                <td>{{ contract.contractArtist.dateConcert|date('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <td class="contract-info-title">Quantité</td>
+                <td>{% if not promotional %}{{ purchase.quantityOrganic }}{% else %}{{ purchase.quantityPromotional }}{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="contract-info-title">Prix unitaire</td>
+                <td>{% if not promotional %}{{ purchase.counterpart.price }} €{% else %}0 €{% endif %}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
+{% import _self as macros %}
+
 {% block body %}
 
     <div class="container">
@@ -123,32 +162,11 @@
                     <div class="content-box-content-zones content-box-content">
                     {% for contract in cart.contracts %}
                         {% for purchase in contract.purchases %}
-                            <div class="content-box-content-zone">
-                                <table class="content-box-table">
-                                    <tbody>
-                                        <tr>
-                                            <td class="contract-info-title">Type</td>
-                                            <td>{{ purchase.counterpart.name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="contract-info-title">Concert</td>
-                                            <td>Concert de {{ contract.contractArtist.artist.artistname }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="contract-info-title">Date</td>
-                                            <td>{{ contract.contractArtist.dateConcert|date('d/m/Y') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="contract-info-title">Quantité</td>
-                                            <td>{{ purchase.quantity }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="contract-info-title">Prix unitaire</td>
-                                            <td>{{ purchase.counterpart.price }} €</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            {{  macros.recap_zone(purchase, contract, false) }}
+                            {% set freeTickets = purchase.quantityPromotional %}
+                            {% if freeTickets > 0 %}
+                                {{ macros.recap_zone(purchase, contract, true) }}
+                            {% endif %}
                         {% endfor %}
                     {% endfor %}
                         <div class="content-box-content-zone no-border">

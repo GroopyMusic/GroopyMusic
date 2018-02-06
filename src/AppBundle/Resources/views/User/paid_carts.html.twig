@@ -57,7 +57,7 @@
                             <td class="text-center">
                                 {% for contract in cart.contracts %}
                                     {% for purchase in contract.purchases %}
-                                        {% if not loop.first %}<br /><br />{% endif %}{{ purchase.quantity }}
+                                        {% if not loop.first %}<br /><br />{% endif %}{{ purchase.quantity }}{% if purchase.quantityPromotional > 0 %} <br />(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
                                     {% endfor %}
                                 {% endfor %}
                             </td>
