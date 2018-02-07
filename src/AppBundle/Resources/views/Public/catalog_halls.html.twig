@@ -2,11 +2,10 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="text-center mb-4">Partenaires</h3>
+        <h3 class="text-center mb-4">{{ 'catalog_halls.title'|trans|raw }}</h3>
 
         <p>
-            Partout en Belgique, des salles encouragent la production musicale de nos artistes.
-            Découvrez les salles partenaires d'Un-Mute dans lesquelles des concerts sont susceptibles d'être organisés.
+            {{ 'catalog_halls.intro'|trans|raw }}
         </p>
 
         {% if halls is not empty %}
@@ -16,7 +15,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p>Il n'y a pas encore de salle partenaire sur la plateforme.</p>
+            <p>{{ 'catalog_halls.empty'|trans|raw }}</p>
         {% endif %}
     </div>
 

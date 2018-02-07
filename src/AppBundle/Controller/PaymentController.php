@@ -85,7 +85,7 @@ class PaymentController extends Controller
                 $output = new NullOutput();
                 $application->run($input, $output);
 
-                return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]);
+                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId()]);
             }
 
             // Set your secret key: remember to change this to your live secret key in production

@@ -2,18 +2,17 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="text-center mb-4">Nos artistes</h3>
+        <h3 class="text-center mb-4">{{ 'catalog_artists.title'|trans|raw }}</h3>
 
         {% if artists is empty %}
-            <p>Il n'y a pas encore d'artiste sur Un-Mute. Revenez bientôt !</p>
+            <p>{{ 'catalog_artists.empty'|trans|raw }}</p>
         {% else %}
 
             <p>
-                Bienvenue sur le catalogue des artistes belges Un-Mute !
-                Découvrez le profil ainsi que la biographie de chaque artiste et choisissez celui que vous désirez voir prochainement en concert !
+                {{ 'catalog_artists.intro'|trans|raw }}
             </p>
             <p>
-                Vous souhaitez vous inscrire en tant qu'artiste ? <a href="{{ path('fos_user_registration_register') }}">Créez un profil</a>. En quelques minutes, vous aurez créé votre identité Un-Mute.
+                {{ 'catalog_artists.join_us'|trans({'%url%': path('fos_user_registration_register')})|raw }}
             </p>
 
             <div class="row">

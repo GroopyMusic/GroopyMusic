@@ -18,6 +18,12 @@ Oct: Oct
 Nov: Nov
 Dec: Déc
 labels.artist.translations: Descriptions
+ticket: ticket
+tickets: tickets
+people: personnes
+success_limit: Seuil de réussite
+more_info: Plus d'infos
+step: Catégorie
 
 home:
   concept:
@@ -67,6 +73,68 @@ contact:
     explanation: Apparemment, vous n'avez pas entré votre adresse e-mail. Nous ne pourrons donc pas répondre à votre question.
     confirm: Envoyer
     cancel: Annuler
+
+catalog_halls:
+  title: Partenaires
+  intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des concerts sont susceptibles d'être organisés.
+  empty: Il n'y a pas encore de salle partenaire sur la plateforme.
+
+hall:
+  short_description_label: En quelques mots
+  description_label: Description
+  ephemeral:
+    intro:  Cette salle est <strong>éphémère</strong>. Des événements sont susceptibles d'y être organisés
+    known_dates: du %firstDate% au %lastDate%
+    unknown_dates: pendant une période limitée
+  infos:
+    title: Caractéristiques
+    capacity: Capacité
+    province: Province
+    website: Site Web
+
+catalog_artists:
+  title: Nos artistes
+  empty: Il n'y a pas encore d'artiste sur Un-Mute. Revenez bientôt !
+  intro: Bienvenue sur le catalogue des artistes belges Un-Mute ! Découvrez le profil ainsi que la biographie de chaque artiste et choisissez celui que vous désirez voir prochainement en concert !
+  join_us: Vous souhaitez vous inscrire en tant qu'artiste ? <a href="%url%">Créez un profil</a>. En quelques minutes, vous aurez créé votre identité Un-Mute.
+
+catalog_events:
+  empty:
+    title: Événements Un-Mute
+    content: Il n'y a aucun événement à soutenir en ce moment. Revenez très vite pour des nouveautés et tenez-vous au courant grâce à <a href="%facebook_url%">notre page sur Facebook.</a>
+    contact-us: Si vous êtes un artiste et que vous souhaitez organiser un micro-festival grâce à Un-Mute, <a href="%contact_url%">contactez-nous</a>.
+  running:
+    title: Festivals en cours de financement
+    intro:  Les événements suivants ont encore besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals.
+  confirmed:
+    title: Festivals confirmés
+
+faq:
+  title: FAQ
+  confirmed_show:
+    question: Qu’entendez-vous par concert confirmé&nbsp;?
+    answer: Un-Mute distingue les "événements", qui sont une tentative d’un artiste de débloquer un concert à une certaine date, des "concerts confirmés" qui sont un événement pour lequel suffisament de producteurs ont acheté de tickets avant la fin du délai imparti.
+  minimum_tickets:
+    question: Combien de tickets un artiste doit-il vendre au minimum pour débloquer un concert ?
+    answer: |
+      Nos concerts prennent place dans des salles de tailles variées. Nous les avons regroupées en catégories.
+
+      En fonction de la catégorie de salle choisie par un artiste lorsqu'il créé un événement, il devra récolter un certain nombre de tickets pour que son concert soit confirmé.
+    metric_minimum: "#tickets minimum"
+    metric_maximum: "#tickets maximum"
+    hall_examples: Exemples de salles
+    depends: Dépend de la salle
+  multilocal:
+    question: Vous dites pouvoir organiser jusqu’à deux concerts supplémentaires une fois un concert débloqué, comment cela est-il possible&nbsp;?
+    answer: |
+      Un-Mute prévoit dans ses budgets la prise en compte de cachets pour l’Artiste ayant initié l’événement, mais également pour une ou deux premières parties.
+
+      Le fait de prendre en considération la rémunération de premières parties permet à Un-Mute de développer le principe de tournée multi-locale.
+
+      En d’autres mots, comme chaque Artiste qui débloque un concert, débloque en réalité le budget suffisant pour se payer deux premières parties lors de son concert qu’il a rempli avec sa fan-base, Un-Mute proposera deux autres artistes membres de la plate-forme au concert en question. En contrepartie, l’Artiste aura l’occasion de jouer les premières parties, dans les salles remplies par les fan-bases de ses deux Artistes invités.
+  cancelling:
+    question: Je ne sais malheureusement plus me rendre à un concert que j’ai co-produit, que puis-je faire&nbsp;?
+    answer: Dans le cas où vous ne pouvez plus vous rendre à un concert après sa confirmation, le remboursement n’est plus possible. Un-Mute vous propose de remplacer un ticket confirmé par un ticket pour n’importe quel autre concert confirmé.
 
 threeds:
     pending_stripe: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...

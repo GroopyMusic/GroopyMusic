@@ -67,9 +67,12 @@ class BaseContractArtist
         $nb = $cp->getMaximumAmount();
 
         foreach($this->contractsFan as $cf) {
-            foreach($cf->getPurchases() as $purchase) {
-                if(!$cf->getRefunded() && $purchase->getCounterPart()->getId() == $cp->getId()) {
-                    $nb -= $purchase->getQuantity();
+            /** @var ContractFan $cf */
+            if($cf->getPaid() && !$cf->getRefunded()) {
+                foreach ($cf->getPurchases() as $purchase) {
+                    if ($purchase->getCounterPart()->getId() == $cp->getId()) {
+                        $nb -= $purchase->getQuantity();
+                    }
                 }
             }
         }

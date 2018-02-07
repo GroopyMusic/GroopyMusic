@@ -25,14 +25,13 @@
                 <div class="content-box-content row">
                     <div class="col-12 col-md-10 my-auto">
                         <p>
-                            <span class="contract-info-title">En quelques mots</span><br />
+                            <span class="contract-info-title">{{ 'hall.short_description_label'|trans|raw }}</span><br />
                             {{ hall.getShortDescription }}
                         </p>
                         {% if hall.ephemeral %}
                             <p class="p-info mb-1">
-                                Cette salle est <strong>éphémère</strong>.
-                                Des événements sont susceptibles d'y être organisés
-                                {% if hall.hasClearDates %}du {{ hall.firstDate|date('d/m/Y') }} au {{ hall.lastDate|date('d/m/Y') }}{% else %}pendant une période limitée{% endif %}.
+                                {{ 'hall.ephemeral.intro'|trans|raw }}
+                                {% if hall.hasClearDates %}{{ 'hall.ephemeral.known_dates'|trans({'%firstDate%': hall.firstDate|date('d/m/Y'), '%lastDate%': hall.lastDate|date('d/m/Y')})|raw }}{% else %}{{ 'hall.ephemeral.unknown_dates'|trans|raw }}{% endif %}.
                             </p>
                         {% endif %}
                     </div>
@@ -74,7 +73,7 @@
                 {% if hall.getDescription is not empty %}
                     <div class="content-box{% if hall.photos|length > 0 %} mt-4{% endif %}">
                         <div class="content-box-content">
-                            <div class="contract-info-title mb-3">Description</div>
+                            <div class="contract-info-title mb-3">{{ 'hall.description_label'|trans|raw }}</div>
                             <p>{{ hall.getDescription }}</p>
                         </div>
                     </div>
@@ -84,34 +83,34 @@
             <div class="col-12 col-md-4 content-box mt-3 mt-md-0">
 
                 <div class="content-box-header">
-                    <h3>Caractéristiques</h3>
+                    <h3>{{ 'hall.infos.title'|trans|raw }}</h3>
                 </div>
 
                 <div class="content-box-content">
                     <table class="content-box-table">
                         <tbody>
                         <tr>
-                            <td class="contract-info-title">Catégorie</td>
+                            <td class="contract-info-title">{{ 'step'|trans|raw }}</td>
                             <td>{{ hall.step }}<a href="#" data-toggle="popover" title="{{ hall.step }}" class="ml-1 px-1 py-0 btn btn-outline-primary"
                                                   data-content="{{ hall.step.getDescription }}<br /><br />
-                                                  Seuil de réussite : <strong>{{ hall.step.minTickets }} tickets</strong><br />
-                                                  <a href='{{ path('faq') }}'>Plus d'infos</a>">?</a>
+                                                  {{ 'success_limit'|trans|raw }} : <strong>{{ hall.step.minTickets }} {{ 'tickets'|trans|raw }}</strong><br />
+                                                  <a href='{{ path('faq') }}'>{{ 'more_info'|trans|raw }}</a>">?</a>
                             </td>
                         </tr>
 
                         <tr>
-                            <td class="contract-info-title">Capacité</td>
-                            <td>{{ hall.capacity }} personnes</td>
+                            <td class="contract-info-title">{{ 'hall.infos.capacity'|trans|raw }}</td>
+                            <td>{{ hall.capacity }} {{ 'people'|trans|raw }}</td>
                         </tr>
 
                         <tr>
-                            <td class="contract-info-title">Province</td>
+                            <td class="contract-info-title">{{ 'hall.infos.province'|trans|raw }}</td>
                             <td>{{ hall.province }}</td>
                         </tr>
 
                         {% if hall.website is not empty %}
                             <tr>
-                                <td class="contract-info-title">Site Web</td>
+                                <td class="contract-info-title">{{ 'hall.infos.website'|trans|raw }}</td>
                                 <td><a href="{{ hall.website }}">{{ hall.websiteDomain }}</a></td>
                             </tr>
                         {% endif %}

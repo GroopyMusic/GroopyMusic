@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="um-card-content w-100">
-            <h5>{% if news is defined and news %}NOUVEAU - {% endif %} Concert de {{ contract.artist.artistname }}</h5>
+            <h5>{% if news is defined and news %}NOUVEAU - {% endif %}{{ contract.artist.artistname }}</h5>
             <p>
                 {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}
                 {% else %}{{ contract.province is not null ? contract.province : contract.artist.province }}

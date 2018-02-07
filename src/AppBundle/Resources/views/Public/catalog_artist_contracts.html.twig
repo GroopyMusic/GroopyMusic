@@ -4,24 +4,22 @@
     {% if current_contracts is empty and successful_contracts is empty %}
 
         <div class="container">
-            <h3 class="text-center mb-3">Evénements Un-Mute</h3>
+            <h3 class="text-center mb-3">{{ 'catalog_events.empty.title'|trans|raw }}</h3>
             <p class="p-info">
-                Il n'y a aucun événement à soutenir en ce moment. Revenez très vite pour des nouveautés et tenez-vous au courant grâce à
-                <a href="https://www.facebook.com/UnMuteasbl/">notre page sur Facebook.</a>
+                {{ 'catalog_events.empty.content'|trans({'%facebook_url%':"https://www.facebook.com/UnMuteasbl/"})|raw }}
             </p>
             <p class="text-center">
-                Si vous êtes un artiste et que vous souhaitez organiser un concert grâce à Un-Mute, <a href="{{ path('suggestionBox') }}">contactez-nous</a>.
+                {{ 'catalog_events.empty.contact-us'|trans({'%contact_url%': path('suggestionBox')})|raw }}
             </p>
         </div>
 
     {% else %}
         {% if current_contracts is not empty %}
             <div class="container">
-                <h3 class="text-center mb-3">Soutenez-les !</h3>
+                <h3 class="text-center mb-3">{{ 'catalog_events.running.title'|trans|raw }}</h3>
 
                 <p>
-                    Les événements suivants ont encore besoin de soutien pour pouvoir être produits !
-                    Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs concerts.
+                    {{ 'catalog_events.running.intro'|trans|raw }}
                 </p>
 
                 <div class="row">
@@ -33,7 +31,7 @@
         {% endif %}
         {% if successful_contracts is not empty %}
             <div class="container{% if current_contracts is not empty %} mt-5{% endif %}">
-                <h3 class="text-center mb-3">Ils sont confirmés</h3>
+                <h3 class="text-center mb-3">{{ 'catalog_events.running.title'|trans|raw }}</h3>
                 <div class="row">
                     {% for contract in successful_contracts %}
                         {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'bgwhite': true} %}

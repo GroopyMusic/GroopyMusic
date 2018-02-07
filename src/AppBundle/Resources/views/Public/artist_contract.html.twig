@@ -3,7 +3,7 @@
 {% set artist = contract.artist %}
 
 {% block open_graph %}
-    <meta property="og:title" content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - {{ contract.step.getName }} de {{ contract.artist.artistname }} | Un-Mute"  />
+    <meta property="og:title" content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - Festival Un-Mute avec {{ contract.artist.artistname }}"  />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
     {% set og_src = absolute_url(asset('images/contract-card-default.jpg')) %}
@@ -27,12 +27,12 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2">
-                <h2 class="text-center">{{ contract.artist.artistname }} souhaite organiser un {{ contract.step.getName }}</h2>
+                <h2 class="text-center">Festival Un-Mute avec {{ contract.artist.artistname }}</h2>
 
                 {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
                     <p class="p-info">C'est le dernier jour de vente de tickets pour cet événement !</p>
                 {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-                    <p class="p-info">C'est le dernier jour où vous pouvez aider {{ artist }} à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce concert est confirmé ou non.</p>
+                    <p class="p-info">C'est le dernier jour où vous pouvez aider {{ artist }} à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.</p>
                 {% endif %}
             </div>
         </div>
@@ -52,7 +52,7 @@
                         <div class="col-12 row equal content-box-row">
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Date du concert
+                                    Date du festival
                                 </div>
                                 <div class="contract-info-content">
                                     {{ contract.dateConcert|date('d/m/Y') }}
@@ -138,7 +138,7 @@
                         <div class="col-12 row equal content-box-row">
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Région du concert
+                                    Région du festival
                                 </div>
                                 <div class="contract-info-content">
                                     {% if hall_confirmed %}
@@ -169,7 +169,7 @@
 
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
-                               Nombre de tickets nécessaires pour concrétisation du concert
+                               Nombre de tickets nécessaires pour concrétisation du festival
                             </span>
                             <span class="contract-info-content">
                                 {{ contract.step.minTickets }}
@@ -186,7 +186,7 @@
                 <div class="content-box">
                     <div class="content-box-content">
 
-                        <h3 class="mb-3 text-center">À propos de l'artiste</h3>
+                        <h3 class="mb-3 text-center">À propos de l'artiste hôte</h3>
 
                         <div class="um-semi-bold">{{ artist.artistname }}</div>
                         <p>{{ artist.getShortDescription }}</p>
@@ -204,6 +204,39 @@
             </div>
             <div class="col-12 col-lg-4">
                 <div class="col-12 content-box">
+                    <div class="content-box-header">
+                        <h3>Line up</h3>
+                    </div>
+                    <div class="content-box-content">
+                        <table class="content-box-table">
+                            <tbody>
+                                <tr>
+                                    <td class="contract-info-title">Artiste hôte</td>
+                                    <td><a href="{{ path('artist_profile', {'id': contract.artist.id, 'slug': contract.artist.slug}) }}">{{ contract.artist.artistname }}</td>
+                                </tr>
+                                {% set i = 1 %}
+                                {% for coartist_artist in contract.coartistsList %}
+                                    {% set coartist = coartist_artist.artist %}
+                                    <tr>
+                                        <td class="contract-info-title">Artiste invité {{ i }}</td>
+                                        <td><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist.artistname }}</a></td>
+                                    </tr>
+                                    {% set i = i + 1 %}
+                                {% endfor %}
+                                {% if i <= 2 %}
+                                    {% for j in i..2 %}
+                                        <tr>
+                                            <td class="contract-info-title">Artiste invité {{ j }}</td>
+                                            <td><i>Bientôt annoncé</i></td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-12 content-box mt-4">
                     <div class="content-box-header">
                         {% if state not in contract.uncrowdableStates %}
                             <p class="text-uppercase small font-weight-bold">{{ tickets_left }} tickets disponibles</p>
@@ -263,7 +296,7 @@
                     <div class="col-12 content-box mt-4">
                         <div class="content-box-header">
                             {% if hall_confirmed %}
-                                <h3>Lieu du concert</h3>
+                                <h3>Lieu du festival</h3>
                             {% else %}
                                 <h3>Salles potentielles</h3>
                             {% endif %}

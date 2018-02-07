@@ -43,6 +43,7 @@ class Cart
         }
     }
 
+    // TODO don't forget that counterparts have a maximum amount ; set to 5000 in DB
     public function isProblematic() {
         foreach($this->contracts as $contract) {
             $contract_artist = $contract->getContractArtist();

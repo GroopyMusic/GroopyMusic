@@ -3,7 +3,7 @@
 {% block body %}
     <div class="container">
 
-        <h3 class="text-center mb-3">FAQ</h3>
+        <h3 class="text-center mb-3">{{ 'faq.title'|trans|raw }}</h3>
 
         <div class="row">
             <div class="col-12 col-md-4 content-box">
@@ -14,33 +14,28 @@
                 <div class="content-box-content content-box-content-zones">
 
                     <div class="content-box-content-zone">
-                        <div class="um-label um-semi-bold mb-3" >Qu’entendez-vous par concert confirmé&nbsp;?</div>
+                        <div class="um-label um-semi-bold mb-3">{{ 'faq.confirmed_show.question'|trans|raw }}</div>
                         <p>
-                            Un-Mute distingue les &laquo;&nbsp;événements&nbsp;&raquo;, qui sont une tentative d’un artiste de débloquer un concert à une certaine date, des &laquo;&nbsp;concerts confirmés&nbsp;&raquo; qui sont un événement pour lequel suffisament de producteurs ont acheté de tickets avant la fin du délai imparti.
+                            {{ 'faq.confirmed_show.answer'|trans|nl2br|raw }}
                         </p>
                     </div>
 
                     <div class="content-box-content-zone">
                         <div class="um-label um-semi-bold mb-3" >
-                            Combien de tickets un artiste doit-il vendre au minimum pour débloquer un concert ?
+                            {{ 'faq.minimum_tickets.question'|trans|raw }}
                         </div>
 
                         <p>
-                            Nos concerts prennent place dans des salles de tailles variées.
-                            Nous les avons regroupées en catégories.
-                        </p>
-                        <p>
-                            En fonction de la catégorie de salle choisie par un artiste lorsqu'il créé un événement,
-                            il devra récolter un certain nombre de tickets pour que son concert soit confirmé.
+                            {{ 'faq.minimum_tickets.answer'|trans|nl2br|raw }}
                         </p>
 
                         <table class="table text-center">
                             <thead>
                                 <tr class="no-border-top no-border-bottom tr-um-label">
-                                    <th>Catégorie</th>
-                                    <th>#tickets minimum</th>
-                                    <th>#tickets maximum</th>
-                                    <th>Exemples de salles</th>
+                                    <th>{{ 'step'|trans|raw }}</th>
+                                    <th>{{ 'faq.minimum_tickets.metric_minimum'|trans|raw }}</th>
+                                    <th>{{ 'faq.minimum_tickets.metric_maximum'|trans|raw }}</th>
+                                    <th>{{ 'faq.minimum_tickets.hall_examples'|trans|raw }}</th>
                                 </tr>
                             </thead>
 
@@ -49,7 +44,7 @@
                                     <tr>
                                         <td>{{ step }}</td>
                                         <td>{{ step.minTickets }}</td>
-                                        <td>Dépend de la salle</td>
+                                        <td>{{ 'faq.minimum_tickets.depends'|trans|raw }}</td>
                                         <td>
                                             {% for hall in step.randomHalls(3) %}
                                                 <a href="{{ path('hall', {'id':hall.id, 'slug': hall.slug}) }}">{{ hall.name }}</a>{% if not loop.last %}, {% endif %}
@@ -63,24 +58,18 @@
                     </div>
                     <div class="content-box-content-zone">
                         <div class="um-label um-semi-bold mb-3" >
-                            Vous dites pouvoir organiser jusqu’à deux concerts supplémentaires une fois un concert débloqué, comment cela est-il possible&nbsp;?
+                            {{ 'faq.multilocal.question'|trans|raw }}
                         </div>
                         <p>
-                            Un-Mute prévoit dans ses budgets la prise en compte de cachets pour l’Artiste ayant initié l’événement, mais également pour une ou deux premières parties.
-                        </p>
-                        <p>
-                            Le fait de prendre en considération la rémunération de premières parties permet à Un-Mute de développer le principe de tournée multi-locale.
-                        </p>
-                        <p>
-                            En d’autres mots, comme chaque Artiste qui débloque un concert, débloque en réalité le budget suffisant pour se payer deux premières parties lors de son concert qu’il a rempli avec sa fan-base, Un-Mute proposera deux autres artistes membres de la plate-forme au concert en question. En contrepartie, l’Artiste aura l’occasion de jouer les premières parties, dans les salles remplies par les fan-bases de ses deux Artistes invités.
+                            {{ 'faq.multilocal.answer'|trans|nl2br|raw }}
                         </p>
                     </div>
                     <div class="content-box-content-zone">
                         <div class="um-label um-semi-bold mb-3" >
-                            Je ne sais malheureusement plus me rendre à un concert que j’ai co-produit, que puis-je faire&nbsp;?
+                            {{ 'faq.cancelling.question'|trans|raw }}
                         </div>
                         <p>
-                            Dans le cas où vous ne pouvez plus vous rendre à un concert après sa confirmation, le remboursement n’est plus possible. Un-Mute vous propose de remplacer un ticket confirmé par un ticket pour n’importe quel autre concert confirmé.
+                            {{ 'faq.cancelling.answer'|trans|nl2br|raw }}
                         </p>
                     </div>
                 </div>
