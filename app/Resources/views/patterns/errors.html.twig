@@ -15,7 +15,7 @@
                         or (form1 is defined and not form1.vars.valid)
                         or (form2 is defined and not form2.vars.valid))
                     %}
-                        {{ error('Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.')|raw }}
+                        {{ error('generic_form_error'|trans)|raw }}
                     {% endif %}
                     {% if (form is defined and not form.vars.valid) %}
                         {{ form_errors(form) }}

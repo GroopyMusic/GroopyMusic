@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta name="description" content="{% block description %}La première plate-forme belge de financement participatif de concerts. Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !{% endblock %}" />
+        <meta name="description" content="{% block description %}{{ 'meta_description'|trans }}{% endblock %}" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
@@ -67,9 +67,9 @@
         {% block footer %}
             <footer {% block footer_attributes %}class="footer"{% endblock %}>
                 <div class="footer-links row text-center">
-                    <div class="col-xs-12 col-sm-4"><a href="{{ path('about') }}">à propos</a></div>
-                    <div class="col-xs-12 col-sm-4"><a href="{{ path('suggestionBox') }}">contact</a></div>
-                    <div class="col-xs-12 col-sm-4"><a href="{{ path('conditions') }}">conditions générales</a></div>
+                    <div class="col-xs-12 col-sm-4"><a href="{{ path('about') }}">{{ 'footer.about'|trans }}</a></div>
+                    <div class="col-xs-12 col-sm-4"><a href="{{ path('suggestionBox') }}">{{ 'footer.contact'|trans }}</a></div>
+                    <div class="col-xs-12 col-sm-4"><a href="{{ path('conditions') }}">{{ 'footer.conditions'|trans }}</a></div>
                 </div>
                 <div class="copyright row">
                     <span class="text-uppercase">© Un-Mute <a href="https://www.facebook.com/UnMuteasbl/"><img class="ml-2" height="20" src="{{ asset('images/facebook.jpg') }}" /></a></span>

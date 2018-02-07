@@ -3,7 +3,7 @@
 {% set artist = contract.artist %}
 
 {% block open_graph %}
-    <meta property="og:title" content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - Festival Un-Mute avec {{ contract.artist.artistname }}"  />
+    <meta property="og:title" content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - {{ 'event.og_title'|trans({'%artist%':contract.artist.artistname})|raw }}"  />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
     {% set og_src = absolute_url(asset('images/contract-card-default.jpg')) %}
@@ -27,18 +27,18 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2">
-                <h2 class="text-center">Festival Un-Mute avec {{ contract.artist.artistname }}</h2>
+                <h2 class="text-center">{{ 'event.title'|trans({'%artist%':contract.artist.artistname})|raw }}</h2>
 
                 {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
-                    <p class="p-info">C'est le dernier jour de vente de tickets pour cet événement !</p>
+                    <p class="p-info">{{ 'event.lastday.tickets'|trans|raw }}</p>
                 {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-                    <p class="p-info">C'est le dernier jour où vous pouvez aider {{ artist }} à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.</p>
+                    <p class="p-info">{{ 'event.lastday.deadline'|trans|raw }}</p>
                 {% endif %}
             </div>
         </div>
 
         {% if state not in contract.uncrowdableStates %}
-            <p class="p-promo mt-3">Exceptionnellement à l'occasion du lancement de la plateforme, Un-Mute vous offre un ticket pour chaque lot de trois tickets achetés !</p>
+            <p class="p-promo mt-3">{{ 'event.promo'|trans|raw }}</p>
         {% endif %}
         {% set max_tickets = contract.maxTickets %}
         {% set tickets_left = contract.totalNbAvailable %}
@@ -47,12 +47,12 @@
                 <div class="content-box">
                     <div class="content-box-content text-center">
 
-                        <h3 class="mb-3">Infos</h3>
+                        <h3 class="mb-3">{{ 'event.infos.title'|trans|raw }}</h3>
 
                         <div class="col-12 row equal content-box-row">
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Date du festival
+                                    {{ 'event.infos.date'|trans|raw }}
                                 </div>
                                 <div class="contract-info-content">
                                     {{ contract.dateConcert|date('d/m/Y') }}
@@ -60,7 +60,8 @@
                             </div>
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Début des ventes
+                                    {{ 'event.infos.opening_date'|trans|raw }}
+
                                 </div>
                                 <div class="contract-info-content">
                                     {{ contract.date|date('d/m/Y') }}
@@ -76,7 +77,7 @@
                                         </div>
                                     {% else %}
                                         <div class="contract-info-title">
-                                            Fin des ventes
+                                            {{ 'event.infos.closing_date'|trans|raw }}
                                         </div>
                                         <div class="contract-info-content">
                                             {{ contract.lastSellingDate|date('d/m/Y') }}
@@ -84,7 +85,7 @@
                                     {% endif %}
                                 {% else %}
                                     <div class="contract-info-title">
-                                        Date de validation
+                                        {{ 'event.infos.validation_date'|trans|raw }}
                                     </div>
                                     <div class="contract-info-content">
                                         {{ contract.dateEnd|date('d/m/Y') }}
@@ -96,61 +97,62 @@
                         <div class="col-12 row equal content-box-row no-border-top">
                             <div class="col-12 content-box-col">
                                 <span class="contract-info-title pr-2">
-                                    Catégorie de salle
+                                    {{ 'event.infos.step'|trans|raw }}
                                 </span>
 
                                 <span class="contract-info-content pr-1">
                                 {{ contract.step }}<a href="#" data-toggle="popover" title="{{ contract.step }}" class="ml-2 px-1 py-0 btn btn-outline-primary"
                                                       data-content="{{ contract.step.getDescription }}<br />
-                                                      <a href='{{ path('faq') }}'>Plus d'infos</a>">?</a>
+                                                      <a href='{{ path('faq') }}'>{{ 'more_info'|trans|raw }}/a>">?</a>
                                 </span>
                             </div>
                         </div>
 
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
-                                état des ventes
+                                {{ 'event.infos.state'|trans|raw }}
                             </span>
                             <span class="contract-info-content pr-1">
                                 {% if state is constant('STATE_SUCCESS_PASSED', contract) %}
-                                    Objectif atteint
+                                    {{ 'event.states.success_passed'|trans|raw }}
                                 {% elseif state is constant('STATE_REFUNDED', contract) %}
-                                    Annulé
+                                    {{ 'event.states.refunded'|trans|raw }}
                                 {% elseif state is constant('STATE_FAILED', contract) %}
-                                    Objectif non atteint
+                                    {{ 'event.states.failed'|trans|raw }}
                                 {% elseif state is constant('STATE_SUCCESS_ONGOING', contract) or state is constant('STATE_SUCCESS_PENDING', contract) %}
-                                    Objectif atteint
+                                    {{ 'event.states.success_ongoing'|trans|raw }}
                                 {% elseif state is constant('STATE_SUCCESS_CLOSED', contract) %}
-                                    Objectif atteint
+                                   {{ 'event.states.success_closed'|trans|raw }}
                                 {% elseif state is constant('STATE_SUCCESS_SOLDOUT', contract) or state is constant('STATE_SUCCESS_SOLDOUT_PENDING', contract) %}
-                                    Objectif atteint (SOLD OUT)
+                                    {{ 'event.states.success_soldout'|trans|raw }}
                                 {% elseif state is constant('STATE_ONGOING', contract) %}
-                                    En cours
+                                    {{ 'event.states.ongoing'|trans|raw }}
                                 {% elseif state is constant('STATE_PENDING', contract) %}
-                                    En cours d'examination par l'équipe Un-Mute
+                                    {{ 'event.states.pending'|trans|raw }}
                                 {% endif %}
                             </span>
                             {% if state not in contract.uncrowdableStates %}
-                                <span class="text-positive um-semi-bold"><img class="green-check" src="{{ asset('images/green-check.png') }}" />Places encore en vente</span>
+                                <span class="text-positive um-semi-bold"><img class="green-check" src="{{ asset('images/green-check.png') }}" />{{ 'event.stillselling'|trans|raw }}</span>
                             {% endif %}
                         </div>
 
                         <div class="col-12 row equal content-box-row">
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Région du festival
+                                    {{ 'event.infos.province'|trans|raw }}
                                 </div>
                                 <div class="contract-info-content">
                                     {% if hall_confirmed %}
                                         {{ contract.hallConcert.province }}
                                     {% else %}
-                                        {{ contract.province ?: 'Sans préférence' }}
+                                        {{ contract.province ?: 'event.infos.no_province'|trans|raw }}
                                     {% endif %}
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Tickets achetés par des producteurs
+                                    {{ 'event.infos.tickets_sold'|trans|raw }}
+
                                 </div>
                                 <div class="contract-info-content">
                                     {{ contract.ticketsSold }}
@@ -159,7 +161,8 @@
 
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
-                                    Tickets encore en vente
+                                    {{ 'event.infos.tickets_left'|trans|raw }}
+
                                 </div>
                                 <div class="contract-info-content">
                                     {{ tickets_left }}
@@ -169,7 +172,8 @@
 
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
-                               Nombre de tickets nécessaires pour concrétisation du festival
+                                 {{ 'event.infos.tickets_objective'|trans|raw }}
+
                             </span>
                             <span class="contract-info-content">
                                 {{ contract.step.minTickets }}
@@ -186,19 +190,19 @@
                 <div class="content-box">
                     <div class="content-box-content">
 
-                        <h3 class="mb-3 text-center">À propos de l'artiste hôte</h3>
+                        <h3 class="mb-3 text-center"> {{ 'event.about_host.title'|trans|raw }}</h3>
 
                         <div class="um-semi-bold">{{ artist.artistname }}</div>
                         <p>{{ artist.getShortDescription }}</p>
 
                         {% if artist.genres is not empty %}
                             <div class="mb-3">
-                                <span class="contract-info-title small">Styles musicaux</span>
+                                <span class="contract-info-title small"> {{ 'event.about_host.genres'|trans|raw }}</span>
                                 {% for genre in artist.genres %} {{ genre }} {% endfor %}
                             </div>
                         {% endif %}
 
-                        <p class="text-center"><a href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}" class="btn btn-outline-primary">Voir le profil</a></p>
+                        <p class="text-center"><a href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}" class="btn btn-outline-primary"> {{ 'event.about_host.see_profile'|trans|raw }}</a></p>
                     </div>
                 </div>
             </div>
@@ -211,14 +215,14 @@
                         <table class="content-box-table">
                             <tbody>
                                 <tr>
-                                    <td class="contract-info-title">Artiste hôte</td>
+                                    <td class="contract-info-title"> {{ 'event.lineup.host'|trans|raw }}</td>
                                     <td><a href="{{ path('artist_profile', {'id': contract.artist.id, 'slug': contract.artist.slug}) }}">{{ contract.artist.artistname }}</td>
                                 </tr>
                                 {% set i = 1 %}
                                 {% for coartist_artist in contract.coartistsList %}
                                     {% set coartist = coartist_artist.artist %}
                                     <tr>
-                                        <td class="contract-info-title">Artiste invité {{ i }}</td>
+                                        <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }} {{ i }}</td>
                                         <td><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist.artistname }}</a></td>
                                     </tr>
                                     {% set i = i + 1 %}
@@ -226,8 +230,8 @@
                                 {% if i <= 2 %}
                                     {% for j in i..2 %}
                                         <tr>
-                                            <td class="contract-info-title">Artiste invité {{ j }}</td>
-                                            <td><i>Bientôt annoncé</i></td>
+                                            <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }} {{ j }}</td>
+                                            <td><i> {{ 'event.lineup.tbc'|trans|raw }}</i></td>
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
@@ -239,10 +243,10 @@
                 <div class="col-12 content-box mt-4">
                     <div class="content-box-header">
                         {% if state not in contract.uncrowdableStates %}
-                            <p class="text-uppercase small font-weight-bold">{{ tickets_left }} tickets disponibles</p>
+                            <p class="text-uppercase small font-weight-bold"> {{ 'event.buy_tickets.tickets_left'|trans({'%tickets%':tickets_left})|raw }}</p>
                         {% endif %}
 
-                        <h3>Achetez vos tickets</h3>
+                        <h3>{{ 'event.buy_tickets.title'|trans|raw }}</h3>
                     </div>
                     <div class="content-box-content">
                     {% if state not in contract.uncrowdableStates %}
@@ -282,12 +286,12 @@
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
                         {% else %}
-                            <p class="text-italic">Vous devez être connecté pour acheter des tickets ! <a href="{{ path('fos_user_registration_register') }}">Pas encore inscrit ?</a></p>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</button>
+                            <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
                         {% endif %}
 
                     {% else %}
-                        <p class="text-uppercase small font-weight-bold">Il n'est plus possible d'acheter des tickets pour cet événement.</p>
+                        <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }} Il n'est plus possible d'acheter des tickets pour cet événement.</p>
                     {% endif %}
                     </div>
                 </div>
@@ -296,9 +300,9 @@
                     <div class="col-12 content-box mt-4">
                         <div class="content-box-header">
                             {% if hall_confirmed %}
-                                <h3>Lieu du festival</h3>
+                                <h3>{{ 'event.hall.known'|trans|raw }}</h3>
                             {% else %}
-                                <h3>Salles potentielles</h3>
+                                <h3>{{ 'event.hall.unknown'|trans|raw }}</h3>
                             {% endif %}
                         </div>
                         <div class="content-box-content">

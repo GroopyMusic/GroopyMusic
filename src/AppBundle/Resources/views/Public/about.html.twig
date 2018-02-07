@@ -8,23 +8,23 @@
 {% block body %}
     <div class="container-fluid" style="padding-top:0 !important;">
 
-        <h2 class="text-center mb-3">À propos</h2>
+        <h2 class="text-center mb-3">{{ 'about.title'|trans|raw }}</h2>
 
         <div class="row">
             <div class="col-12 col-md-4 content-box">
                 <div id="static-toc" class="fixed-toc col-12 col-md-4">
                     <div class="content-box-header">
-                        <h3>Navigation</h3>
+                        <h3>{{ 'navigation'|trans|raw }}</h3>
                     </div>
                     <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
                         <ul class="flex-column">
-                            <li class="nav-item"><a class="scroll" href="#about-intro">Le concept Un-Mute</a></li>
-                            <li class="nav-item"><a class="scroll" href="#about-how-it-works">Comment ça fonctionne ?</a></li>
-                            <li class="nav-item"><a class="scroll" href="#advantages-artists">Avantages artistes</a></li>
-                            <li class="nav-item"><a class="scroll" href="#advantages-producers">Avantages producteurs</a></li>
-                            <li class="nav-item"><a class="scroll" href="#advantages-halls">Avantages salles</a></li>
-                            <li class="nav-item"><a class="scroll" href="#team">Notre équipe et nos valeurs</a></li>
-                            <li class="nav-item"><a class="scroll" href="#more-info">Plus d'infos</a></li>
+                            <li class="nav-item"><a class="scroll" href="#about-intro">{{ 'about.menu.concept'|trans|raw }}</a></li>
+                            <li class="nav-item"><a class="scroll" href="#about-how-it-works">{{ 'about.menu.how_it_works'|trans|raw }}</a></li>
+                            <li class="nav-item"><a class="scroll" href="#advantages-artists">{{ 'about.menu.artists'|trans|raw }}</a></li>
+                            <li class="nav-item"><a class="scroll" href="#advantages-producers">{{ 'about.menu.producers'|trans|raw }}</a></li>
+                            <li class="nav-item"><a class="scroll" href="#advantages-halls">{{ 'about.menu.halls'|trans|raw }}</a></li>
+                            <li class="nav-item"><a class="scroll" href="#team">{{ 'about.menu.team'|trans|raw }}</a></li>
+                            <li class="nav-item"><a class="scroll" href="#more-info">{{ 'about.menu.more_info'|trans|raw }}</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -33,18 +33,14 @@
             <div class="col-12 col-md-8 static-content content-box">
                 <div class="content-box-content content-box-content-zones">
                     <div class="content-box-content-zone" id="about-intro">
-                        <h3>Le concept Un-Mute</h3>
+                        <h3>{{ 'about.concept.title'|trans|raw }}</h3>
                         <p>
-                            Un-Mute vise l'émancipation de la scène musicale belge en produisant, sans distinction, les artistes qui auront été choisis par leurs fans.
-                        </p>
-                        <p>
-                            Elle propose une <strong>plateforme interactive et accessible</strong> qui <strong>facilite l'organisation de concerts en Belgique</strong> grâce à un <strong>système de financement participatif</strong>.
-                            Il s'agit d'un véritable carrefour de rencontres entre des artistes belges, différentes catégories de salles et des fans producteurs.
+                            {{ 'about.concept.content'|trans|raw|nl2br }}
                         </p>
                     </div>
 
                     <div class="content-box-content-zone" id="about-how-it-works">
-                        <h3>Comment ça fonctionne ?</h3>
+                        <h3>{{ 'about.how_it_works.title'|trans|raw }}</h3>
                         <div class="py-3 text-center">
                             <a class="d-none d-md-inline-block" href="{{ asset('images/concept.jpg') }}" data-fancybox>
                                 <img class="img-fluid" src="{{ asset('images/concept.png') }}" />
@@ -54,75 +50,38 @@
                             </div>
                         </div>
                         <p>
-                            Une fois inscrit dans le <a href="{{ path('catalog_artists') }}">catalogue des groupes</a>, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement.
-                            Ces fans, de par leur financement de l'événement, deviennent alors les réels producteurs de ce concert.
-                        </p>
-                        <p>
-                            <strong>Pour que cet événement devienne un concert confirmé,</strong> il faut qu'un certain nombre de places aient été vendues dans les temps impartis (30 jours).
-                        </p>
-                        <p>
-                            <strong>Si ce nombre minimum de places est atteint,</strong> le concert a lieu ! De plus, ce concert peut engendrer jusqu'à 2 concerts supplémentaires en Belgique
-                            grâce au système de <a href="#" data-toggle="popover" title="Tournée multi-locale"
-                                                   data-content="Un-Mute donne une chance à chaque artiste belge de remporter jusqu'à 3 concerts dans différentes salles en Belgique grâce au principe de financement participatif. <a href='{{ path('faq') }}'>Plus d'infos</a>">tournée multi-locale</a>.
-                        </p>
-                        <p>
-                            Si ce nombre minimum de places n'est pas atteint, le concert n'a pas lieu, les fans sont remboursés intégralement et l'artiste peut retenter sa chance en créant un autre événement !
+                            {{ 'about.how_it_works.content'|trans({'%catalog_url%': path('catalog_artists'), '%faq_url%': path('faq')})|raw|nl2br }}
                         </p>
                     </div>
 
                     <div class="content-box-content-zone" id="advantages-artists">
-                        <h3>Vos avantages en tant qu'Artiste</h3>
+                        <h3>{{ 'about.artists.title'|trans|raw }}</h3>
                         <img src="{{ asset('images/icons/advantages-artist.png') }}" class="um-icon float-sm-right" />
-                        <ul class="um-list">
-                            <li><strong>Inscription</strong> 100% <strong>gratuite et accessible</strong> à tout artiste qui souhaite se lancer</li>
-                            <li><strong>Aucune prise de risque financière</strong> pour les groupes ni pour leurs fans</li>
-                            <li>Possibilité de <strong>décrocher jusqu'à 2 concerts supplémentaires</strong> une fois un concert débloqué</li>
-                            <li>Opportunité de toucher et <strong>fidéliser de nouveaux fans</strong></li>
-                            <li>Découverte de <strong>nouveaux groupes et de lieux musicaux/culturels belges</strong></li>
-                            <li><strong>Intégration au réseau</strong> d'artistes belges "Un-Mute" et d'un catalogue d'artistes variés</li>
-                            <li><strong>Rémunération correcte et défraiements</strong> prévus dans le cas où le concert à lieu</li>
-                            <li>Possibilité <strong>d'évolution</strong> et de <strong>diffusion</strong> pour les plus <strong>petits artistes émergents</strong></li>
-                        </ul>
+                        {{ 'about.artists.content'|trans|raw }}
                     </div>
 
                     <div class="content-box-content-zone" id="advantages-producers">
-                        <h3>Vos avantages en tant que Producteur</h3>
+                        <h3>{{ 'about.producers.title'|trans|raw }}</h3>
                         <img src="{{ asset('images/icons/advantages-producer.png') }}" class="um-icon float-sm-right" />
-                        <ul class="um-list">
-                            <li><strong>Co-production et participation au concert de l'artiste de votre choix</strong></li>
-                            <li><strong>Système de financement sans risque</strong> grâce au remboursement intégral tant que le concert n'est pas confirmé</li>
-                            <li><strong>Accès à un catalogue d'artistes variés</strong> et de différents types de groupes musicaux belges</li>
-                            <li><strong>Rôle actif</strong> dans la construction de <strong>la scène musicale belge de demain</strong></li>
-                            <li>Contribution à la <strong>promotion de la culture musicale belge</strong></li>
-                            <li><strong>Tremplin</strong> possible pour les plus petits groupes belges émergents</li>
-                            <li><strong>Découverte</strong> de <strong>lieux</strong> musicaux/culturels belges</li>
-                            <li><strong>Garantie d'une rémunération correcte et défraiements</strong> des groupes/artistes produits</li>
-                        </ul>
+                        {{ 'about.producers.content'|trans|raw }}
                     </div>
 
                     <div class="content-box-content-zone" id="advantages-halls">
-                        <h3>Vos avantages en tant que salle partenaire</h3>
+                        <h3>{{ 'about.halls.title'|trans|raw }}</h3>
                         <img src="{{ asset('images/icons/advantages-hall.png') }}" class="um-icon float-sm-right" />
-                        <ul class="um-list">
-                            <li><strong>Organisation de concerts automatisée et facilitée</strong> par la plateforme Un-Mute</li>
-                            <li><strong>Aucune prise de risque financière</strong> (garanties sur un nombre minimum de places vendues par concert)</li>
-                            <li>Garantie d’une <strong>soirée réussie</strong> dans une salle comble</li>
-                            <li><strong>Mise en avant de la salle au sein d'un réseau</strong> d’artistes et fans belges</li>
-                            <li><strong>Promotion de la salle via les canaux de diffusion d'Un-Mute</strong> (page facebook, etc.)</li>
-                            <li><strong>Revalorisation du secteur musical belge</strong> via le système de financement durable et social</li>
-                        </ul>
+                        {{ 'about.halls.content'|trans|raw }}
                     </div>
                     <div class="content-box-content-zone" id="team">
-                        <h3>Notre équipe et nos valeurs</h3>
+                        <h3>{{ 'about.team.title'|trans|raw }}</h3>
                         <p>
-                            L'équipe d'Un-Mute est constituée de quatre <strong>jeunes</strong> motivés et animés par les mêmes <strong>valeurs</strong>.
-                            <a href="{{ path('team') }}">Découvrez notre équipe et nos valeurs.</a>
+                            {{ 'about.team.content'|trans({'%team_url%':  path('team') })|raw }}
                         </p>
                     </div>
                     <div class="content-box-content-zone" id="more-info">
-                        <h3>Plus d'infos</h3>
-                        <p>Vous avez des questions sur notre fonctionnement ? Visitez notre <a href="{{ path('faq') }}">FAQ</a>
-                        ou <a href="{{ path('suggestionBox') }}">contactez-nous</a>.</p>
+                        <h3>{{ 'about.more_info.title'|trans|raw }}</h3>
+                        <p>
+                            {{ 'about.more_info.content'|trans({'%faq_url%': path('faq'), '%contact_url%': path('suggestionBox')})|raw }}
+                        </p>
                     </div>
                 </div>
             </div>

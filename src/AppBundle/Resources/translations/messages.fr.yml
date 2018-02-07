@@ -25,6 +25,13 @@ success_limit: Seuil de réussite
 more_info: Plus d'infos
 step: Catégorie
 
+meta_description: La première plate-forme belge de financement participatif de concerts. Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !
+
+
+card:
+  new_event: NOUVEAU
+  new_artist: NOUVEL ARTISTE
+
 home:
   concept:
     title: Concept
@@ -43,6 +50,98 @@ home:
     content_3: <strong>Vous désirez proposer une salle à nos artistes ?</strong> <a href="%contact_url%">Prenez contact avec l'équipe Un-Mute</a>.
     more_info: Plus d'infos
     login_link: Rejoindre Un-Mute
+
+navigation: Navigation
+static_menu:
+  title: Liens
+  about: À propos
+  team: L'équipe
+  faq: FAQ
+  catalog_artists: Catalogue des artistes
+  catalog_halls: Catalogue des salles
+  catalog_events: Événements à venir
+  conditions: Conditions d'utilisation
+  contact: Contact
+
+generic_form_error: Une erreur est survenue lors de la soumission du formulaire. Veuillez vérifier les informations et réessayer.
+
+footer:
+  about: à propos
+  contact: contact
+  conditions: conditions générales
+
+about:
+  title: À propos
+  menu:
+    concept: Le concept Un-Mute
+    how_it_works: Comment ça fonctionne ?
+    artists: Avantages artistes
+    producers: Avantages producteurs
+    halls: Avantages salles
+    team: Notre équipe et nos valeurs
+    more_info: Plus d'infos
+  concept:
+    title: Le concept Un-Mute
+    content: |
+      Un-Mute vise l'émancipation de la scène musicale belge en produisant, sans distinction, les artistes qui auront été choisis par leurs fans.
+
+      Elle propose une <strong>plateforme interactive et accessible</strong> qui <strong>facilite l'organisation de concerts en Belgique</strong> grâce à un <strong>système de financement participatif</strong>.
+      Il s'agit d'un véritable carrefour de rencontres entre des artistes belges, différentes catégories de salles et des fans producteurs.
+  how_it_works:
+    title: Comment ça fonctionne ?
+    content: |
+      Une fois inscrit dans le <a href="%catalog_url%">catalogue des groupes</a>, l'artiste choisit une date et une catégorie de salle de concert. Un événement est alors créé permettant aux fans intéressés d'acheter une place de concert et de participer ainsi à la production de cet événement. Ces fans, de par leur financement de l'événement, deviennent alors les réels producteurs de ce concert.
+
+      <strong>Pour que cet événement devienne un concert confirmé,</strong> il faut qu'un certain nombre de places aient été vendues dans les temps impartis (30 jours).
+
+      <strong>Si ce nombre minimum de places est atteint,</strong> le concert a lieu ! De plus, ce concert peut engendrer jusqu'à 2 concerts supplémentaires en Belgique grâce au système de <a href="#" data-toggle="popover" title="Tournée multi-locale" data-content="Un-Mute donne une chance à chaque artiste belge de remporter jusqu'à 3 concerts dans différentes salles en Belgique grâce au principe de financement participatif. <a href='%faq_url%'>Plus d'infos</a>">tournée multi-locale</a>.
+
+      Si ce nombre minimum de places n'est pas atteint, le concert n'a pas lieu, les fans sont remboursés intégralement et l'artiste peut retenter sa chance en créant un autre événement !
+
+  artists:
+    title: Vos avantages en tant qu'Artiste
+    content: |
+      <ul class="um-list">
+          <li><strong>Inscription</strong> 100% <strong>gratuite et accessible</strong> à tout artiste qui souhaite se lancer</li>
+          <li><strong>Aucune prise de risque financière</strong> pour les groupes ni pour leurs fans</li>
+          <li>Possibilité de <strong>décrocher jusqu'à 2 concerts supplémentaires</strong> une fois un concert débloqué</li>
+          <li>Opportunité de toucher et <strong>fidéliser de nouveaux fans</strong></li>
+          <li>Découverte de <strong>nouveaux groupes et de lieux musicaux/culturels belges</strong></li>
+          <li><strong>Intégration au réseau</strong> d'artistes belges "Un-Mute" et d'un catalogue d'artistes variés</li>
+          <li><strong>Rémunération correcte et défraiements</strong> prévus dans le cas où le concert à lieu</li>
+          <li>Possibilité <strong>d'évolution</strong> et de <strong>diffusion</strong> pour les plus <strong>petits artistes émergents</strong></li>
+      </ul>
+  producers:
+    title: Vos avantages en tant que Producteur
+    content: |
+      <ul class="um-list">
+          <li><strong>Co-production et participation au concert de l'artiste de votre choix</strong></li>
+          <li><strong>Système de financement sans risque</strong> grâce au remboursement intégral tant que le concert n'est pas confirmé</li>
+          <li><strong>Accès à un catalogue d'artistes variés</strong> et de différents types de groupes musicaux belges</li>
+          <li><strong>Rôle actif</strong> dans la construction de <strong>la scène musicale belge de demain</strong></li>
+          <li>Contribution à la <strong>promotion de la culture musicale belge</strong></li>
+          <li><strong>Tremplin</strong> possible pour les plus petits groupes belges émergents</li>
+          <li><strong>Découverte</strong> de <strong>lieux</strong> musicaux/culturels belges</li>
+          <li><strong>Garantie d'une rémunération correcte et défraiements</strong> des groupes/artistes produits</li>
+      </ul>
+  halls:
+    title: Vos avantages en tant que salle partenaire
+    content: |
+        <ul class="um-list">
+            <li><strong>Organisation de concerts automatisée et facilitée</strong> par la plateforme Un-Mute</li>
+            <li><strong>Aucune prise de risque financière</strong> (garanties sur un nombre minimum de places vendues par concert)</li>
+            <li>Garantie d’une <strong>soirée réussie</strong> dans une salle comble</li>
+            <li><strong>Mise en avant de la salle au sein d'un réseau</strong> d’artistes et fans belges</li>
+            <li><strong>Promotion de la salle via les canaux de diffusion d'Un-Mute</strong> (page facebook, etc.)</li>
+            <li><strong>Revalorisation du secteur musical belge</strong> via le système de financement durable et social</li>
+        </ul>
+  team:
+    title: Notre équipe et nos valeurs
+    content: L'équipe d'Un-Mute est constituée de quatre <strong>jeunes</strong> motivés et animés par les mêmes <strong>valeurs</strong>. <a href="%team_url%">Découvrez notre équipe et nos valeurs.</a>
+  more_info:
+    title: Plus d'infos
+    content: Vous avez des questions sur notre fonctionnement ? Visitez notre <a href="%faq_url%">FAQ</a> ou <a href="%contact_url%">contactez-nous</a>.</p>
+
 
 team:
   title: L'équipe
@@ -73,6 +172,7 @@ contact:
     explanation: Apparemment, vous n'avez pas entré votre adresse e-mail. Nous ne pourrons donc pas répondre à votre question.
     confirm: Envoyer
     cancel: Annuler
+  confirmation: Votre message a bien été reçu.
 
 catalog_halls:
   title: Partenaires
@@ -109,6 +209,55 @@ catalog_events:
   confirmed:
     title: Festivals confirmés
 
+login:
+  necessary_for_tickets: Vous devez être connecté pour acheter des tickets !
+  not_subscribed_yet: Pas encore inscrit ?
+  login: Connexion
+
+event:
+  og_title: Festival Un-Mute avec %artist%
+  title: Festival Un-Mute avec %artist%
+  lastday:
+    tickets: C'est le dernier jour de vente de tickets pour cet événement !
+    deadline: C'est le dernier jour où vous pouvez aider {{ artist }} à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
+  promo: Exceptionnellement à l'occasion du lancement de la plateforme, Un-Mute vous offre un ticket pour chaque lot de trois tickets achetés !
+  infos:
+    title: Infos
+    date: Date du festival
+    opening_date: Début des ventes
+    closing_date: Fin des ventes
+    validation_date: Date de validation
+    step: Catégorie de salle
+    state: État des ventes
+    province: Région du festival
+    no_province: Sans préférence
+    tickets_sold: Tickets achetés par des producteurs
+    tickets_left: Tickets encore en vente
+    tickets_objective: Nombre de tickets nécessaires pour concrétisation du festival
+  about_host:
+    title: À propos de l'artiste hôte
+    genres: Styles musicaux
+    see_profile: Voir le profil
+  states:
+    success_passed: Objectif atteint
+    refunded: Annulé
+    failed: Objectif non atteint
+    success_ongoing: Objectif atteint
+    success_closed:  Objectif atteint
+    success_soldout: Objectif atteint (SOLD OUT)
+    ongoing: En cours
+    pending: En cours d'examination par l'équipe Un-Mute
+  stillselling: Places encore en vente
+  lineup:
+    host: Artiste hôte
+    invited: Artiste invité
+    tbc: Bientôt annoncé
+  buy_tickets:
+    tickets_left: %tickets% tickets disponibles
+    title:  Achetez vos tickets
+  hall:
+    known: Lieu du festival
+    unknown: Salles potentielles
 faq:
   title: FAQ
   confirmed_show:

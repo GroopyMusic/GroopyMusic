@@ -29,7 +29,7 @@
 
         <!-- this is the content of the card with an optionnal span for ⭐ -->
         <div class="um-card-content">
-            <h5>{% if news is defined and news %}NOUVEL ARTISTE - {% endif %} {{ artist.artistname }}</h5>
+            <h5>{% if news is defined and news %}{{ 'card.new_artist'|trans|raw }} - {% endif %} {{ artist.artistname }}</h5>
             <p>{{ preview(artist.shortDescription, 50)|raw }}</p>
         </div>
 
