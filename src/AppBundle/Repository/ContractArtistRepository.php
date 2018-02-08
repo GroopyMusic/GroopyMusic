@@ -60,7 +60,8 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('c.reality', 'r')
             ->addSelect('cf')
             ->addSelect('r')
-            ->where('c.successful = 1')
+            ->where('c.successful = 1 OR c.tickets_sold >= c.min_tickets')
+            ->andWhere('c.failed = 0')
             ->andWhere('r.date > :now')
             ->setParameter('now', new \DateTime('now'))
             ->getQuery()
@@ -74,7 +75,7 @@ class ContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function findNotSuccessfulYet($limit = null) {
         $qb = $this->queryVisible()
             ->andWhere('c.dateEnd > :now')
-            ->andWhere('c.tickets_sold < s.min_tickets')
+            ->andWhere('c.tickets_sold < c.min_tickets')
             ->andWhere('c.successful = 0')
             // TODO modify r.date --> concert date (new field)
             ->orderBy('p.date', 'asc')

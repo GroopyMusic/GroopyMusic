@@ -8,7 +8,8 @@
    {{ email_content('concert.fan.confirmation', {
         '%artist%': artist.artistName,
         '%hall%': contract.reality.hall.name,
-        '%date%': contract.reality.date|date('d/m/Y')
+        '%date%': contract.reality.date|date('d/m/Y'),
+        '%events_link%': 'Un-Mute'
    })|raw }}
 {% endblock %}
 

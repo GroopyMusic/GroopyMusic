@@ -103,7 +103,7 @@
                                 <span class="contract-info-content pr-1">
                                 {{ contract.step }}<a href="#" data-toggle="popover" title="{{ contract.step }}" class="ml-2 px-1 py-0 btn btn-outline-primary"
                                                       data-content="{{ contract.step.getDescription }}<br />
-                                                      <a href='{{ path('faq') }}'>{{ 'more_info'|trans|raw }}/a>">?</a>
+                                                      <a href='{{ path('faq') }}'>{{ 'more_info'|trans|raw }}">?</a>
                                 </span>
                             </div>
                         </div>
@@ -179,10 +179,10 @@
                                 {{ contract.step.minTickets }}
                             </span>
                             <div class="progress">
-                                <div class="progress-bar" style="padding-left: 1rem;width:{{ contract.ticketsSold * 100 // contract.step.minTickets }}%"></div>
+                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ contract.ticketsSold * 100 // contract.step.minTickets }}%"></div>
                             </div>
-                            <div class="text-right text-primary small font-weight-bold">
-                                {{ contract.ticketsSold * 100 // contract.step.minTickets }}%
+                            <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} successful-progress-text{% else %} text-primary{% endif %}">
+                                {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ contract.ticketsSold * 100 // contract.step.minTickets }}%{% endif %}
                             </div>
                         </div>
                     </div>
@@ -222,7 +222,7 @@
                                 {% for coartist_artist in contract.coartistsList %}
                                     {% set coartist = coartist_artist.artist %}
                                     <tr>
-                                        <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }} {{ i }}</td>
+                                        <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}&nbsp;{{ i }}</td>
                                         <td><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist.artistname }}</a></td>
                                     </tr>
                                     {% set i = i + 1 %}
@@ -230,7 +230,7 @@
                                 {% if i <= 2 %}
                                     {% for j in i..2 %}
                                         <tr>
-                                            <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }} {{ j }}</td>
+                                            <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}&nbsp;{{ j }}</td>
                                             <td><i> {{ 'event.lineup.tbc'|trans|raw }}</i></td>
                                         </tr>
                                     {% endfor %}

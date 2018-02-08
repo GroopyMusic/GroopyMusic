@@ -3,9 +3,12 @@
     {% spaceless %}
         {% block title %}{# TODO this #}{% endblock %}
 
+
+
         {% block content %}
+            {% set confirmationUrl = '<a href="' ~ confirmationUrl ~ '">'~confirmationUrl~'</a>' %}
                 <p>
-                {{ 'registration.email.message'|trans({'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle')|nl2br }}
+                {{ 'registration.email.message'|trans({'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle')|raw|nl2br }}
                 </p>
         {% endblock %}
     {% endspaceless %}

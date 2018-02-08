@@ -3,11 +3,14 @@
     {% spaceless %}
         {% block title %}{{ subject }}{% endblock %}
 
+        {% set path = path('catalog_crowdfundings') %}
+
         {% block content %}
             {{ email_content('concert.fan.confirmation', {
                 '%artist%': artist.artistName,
                 '%hall%': contract.reality.hall.name,
-                '%date%': contract.reality.date|date('d/m/Y')
+                '%date%': contract.reality.date|date('d/m/Y'),
+                '%events_link%': '<a href="' ~ path ~ '">Un-Mute</a>'
             })|raw }}
         {% endblock %}
     {% endspaceless %}

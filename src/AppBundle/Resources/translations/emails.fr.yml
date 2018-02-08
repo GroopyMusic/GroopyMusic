@@ -11,16 +11,16 @@ concert:
     failure: |
       Cher artiste Un-Mute,
 
-      Malheureusement, vous n’avez pas pu récolter assez de fonds pour permettre l’organisation de votre %step% initialement prévu le %date%.
+      Malheureusement, vous n'avez pas pu récolter assez de fonds pour permettre l'organisation de votre %step% initialement prévu le %date%.
 
-      Les fans qui vous ont soutenu seront remboursés de l’entièreté du prix des places achetées.
+      Les fans qui vous ont soutenu seront remboursés de l'entièreté du prix des places achetées.
 
       Envie de retenter votre chance dans une autre catégorie de salle ? N'hésitez pas ! Notre plateforme www.un-mute.be vous est ouverte et le sera toujours.
 
     confirmation: |
       Félicitations !
 
-      Vous êtes soutenu(s) par suffisamment de producteurs : Un-Mute vous offre l’organisation de votre concert le %date% dans la salle "%hall%".
+      Vous êtes soutenu(s) par suffisamment de producteurs : Un-Mute vous offre l'organisation de votre concert le %date% dans la salle "%hall%".
 
       Ce concert vous offrira peut-être la possibilité de participer à une tournée multi-locale organisée par Un-Mute. Nous vous recontacterons pour plus d'informations à ce sujet.
     reminder: |
@@ -36,9 +36,9 @@ concert:
     confirmation: |
       Félicitations !
 
-      L’artiste %artist% vient d’obtenir l’organisation de son concert par Un-Mute Asbl grâce à vous ! Ce concert se tiendra le %date% dans la salle "%hall%". Vous recevrez très prochainement votre ticket ainsi que toutes les informations pratiques par e-mail.
+      L'artiste %artist% vient d'obtenir l'organisation de son concert par Un-Mute Asbl grâce à vous ! Ce concert se tiendra le %date% dans la salle "%hall%". Vous recevrez très prochainement vos tickets ainsi que toutes les informations pratiques par e-mail.
 
-      Envie de soutenir/découvrir d’autres artistes ? Rendez-vous sur https://un-mute.be !
+      Envie de soutenir/découvrir d'autres artistes ? Rendez-vous sur %events_link% !
     tickets: |
       Bonjour %username%,
 
@@ -54,13 +54,13 @@ concert:
     failure: |
       Cher producteur,
 
-      L’artiste %artist% que vous aviez décidé de soutenir n’a pas pu récolter assez de fonds pour permettre l’organisation de son concert.
+      L'artiste %artist% que vous aviez décidé de soutenir n'a pas pu récolter assez de fonds pour permettre l'organisation de son concert.
 
-      Vous serez remboursé(e) de l’entièreté du prix des places achetées dans les dix jours ouvrables.
+      Vous serez remboursé(e) de l'entièreté du prix des places achetées dans les dix jours ouvrables.
 
-      Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !
+      Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d'un prochain évènement !
 
-      Envie de soutenir d’autres artistes ? Rendez-vous sur www.un-mute.be !
+      Envie de soutenir d'autres artistes ? Rendez-vous sur www.un-mute.be !
 
   admin:
     newly_successful: |
