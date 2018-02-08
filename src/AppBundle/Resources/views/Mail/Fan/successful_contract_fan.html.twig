@@ -3,7 +3,7 @@
     {% spaceless %}
         {% block title %}{{ subject }}{% endblock %}
 
-        {% set path = path('catalog_crowdfundings') %}
+        {% set path = absolute_url(path('catalog_crowdfundings')) %}
 
         {% block content %}
             {{ email_content('concert.fan.confirmation', {

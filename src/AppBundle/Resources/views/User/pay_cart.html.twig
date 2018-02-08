@@ -160,19 +160,21 @@
                         <h3>Vos tickets</h3>
                     </div>
                     <div class="content-box-content-zones content-box-content">
-                    {% for contract in cart.contracts %}
-                        {% for purchase in contract.purchases %}
-                            {{  macros.recap_zone(purchase, contract, false) }}
+                    {% set sum_tickets = 0 %}
+                    {% for fan_contract in cart.contracts %}
+                        {% for purchase in fan_contract.purchases %}
+                            {{  macros.recap_zone(purchase, fan_contract, false) }}
                             {% set freeTickets = purchase.quantityPromotional %}
                             {% if freeTickets > 0 %}
-                                {{ macros.recap_zone(purchase, contract, true) }}
+                                {{ macros.recap_zone(purchase, fan_contract, true) }}
                             {% endif %}
                         {% endfor %}
+                        {% set sum_tickets = sum_tickets + fan_contract.counterPartsQuantity %}
                     {% endfor %}
                         <div class="content-box-content-zone no-border">
                             <table class="content-box-table">
                                 <tr class="no-border">
-                                    <td class="contract-info-title big">Total</td>
+                                    <td class="contract-info-title big">Total pour {{ sum_tickets }} ticket{% if sum_tickets > 1 %}s{% endif %}</td>
                                     <td class="big font-weight-bold">{{ cart.amount }} €</td>
                                 </tr>
                             </table>

@@ -257,6 +257,7 @@ event:
   buy_tickets:
     tickets_left: %tickets% tickets disponibles
     title:  Achetez vos tickets
+    over: Il n'est plus possible d'acheter des tickets pour cet événement.
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
@@ -304,7 +305,6 @@ pay_cart:
             En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
             Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres producteurs qui soutiennent cet artiste.
             Sinon, si cet événement a assez de succès, vous recevrez vos tickets par e-mail, et sur Un-Mute, quelques jours avant le concert.
-            Dans le cas où l'artiste a déjà atteint le seuil de réussite du concert, alors vous recevrez vos tickets par e-mail dans la journée.
         </p>
     conditions:
         error: Vous devez accepter les conditions générales pour continuer.

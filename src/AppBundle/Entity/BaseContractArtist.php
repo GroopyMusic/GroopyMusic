@@ -95,13 +95,27 @@ class BaseContractArtist
         return $result;
     }
 
+    // Returns only fans who paid their tickets and didn't get refunded
     public function getFanProfiles() {
         $fans = [];
 
         foreach($this->contractsFan as $cf) {
-            $fans[] = $cf->getUser();
+            /** @var ContractFan $cf */
+            if($cf->getPaid() && !$cf->getRefunded() && !in_array($cf->getUser(), $fans))
+                $fans[] = $cf->getUser();
         }
+        return $fans;
+    }
 
+    // Returns all fans who at least started an order on this event
+    public function getAllFanProfiles() {
+        $fans = [];
+
+        foreach($this->contractsFan as $cf) {
+            /** @var ContractFan $cf */
+            if(!in_array($cf->getUser(), $fans))
+                $fans[] = $cf->getUser();
+        }
         return $fans;
     }
 
