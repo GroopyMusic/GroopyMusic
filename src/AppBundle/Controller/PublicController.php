@@ -297,7 +297,7 @@ class PublicController extends Controller
                 $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
             }
 
-            elseif($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable()) {
+            elseif($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
                 $this->addFlash('error', "Il n'est pas possible de commander ce nombre de tickets pour cet événement.");
             }
 

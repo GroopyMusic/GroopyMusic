@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Purchase
 {
-    const MAX_QTY = 20;
+    const MAX_QTY = 100000;
 
     public function __toString()
     {
@@ -128,6 +128,9 @@ class Purchase
      */
     public function getQuantity()
     {
+        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
+            $this->calculatePromotions();
+        }
         return $this->quantity;
     }
 
