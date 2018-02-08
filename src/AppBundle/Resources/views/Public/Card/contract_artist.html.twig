@@ -25,26 +25,37 @@
     {% endif %}
 
     <div class="um-card{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
+        {% set progress_100 = contract.ticketsSold * 100 // contract.step.minTickets %}
         <div class="um-card-header w-100" style="background-image: url({{ src }});">
-            <span class="um-card-date btn-primary sharp p-2">
+            <span class="um-card-date btn-primary sharp p-2{% if progress_100 >= 100 %} successful-progress-bg{% endif %}">
                 {{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
             </span>
         </div>
 
-        <div class="progress um-card-progress">
-            <div class="progress-bar" style="padding-left: 2rem;width:{{ contract.ticketsSold * 100 / contract.step.minTickets }}%">
-                <span class="progress-bar-percent">{{ contract.ticketsSold * 100 // contract.step.minTickets }}%</span>
+        <div class="w-100 position-relative">
+
+            {% if progress_100 >= 100 %}
+                <div class="progress um-card-progress successful-progress py-3">
+                    <div class="progress-bar" style="width:100%">
+                        <span class="text-white">CONFIRMÉ</span>
+                    </div>
+                </div>
+            {% endif %}
+                <div class="progress um-card-progress">
+                    <div class="progress-bar" style="padding-left: 2rem;width:{{ progress_100 }}%">
+                        <span class="progress-bar-percent">{{ progress_100 }}%</span>
+                    </div>
+                </div>
+
+            <div class="um-card-content w-100">
+                <h5>{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ contract.artist.artistname }}</h5>
+                <p>
+                    {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}
+                    {% else %}{{ contract.province is not null ? contract.province : contract.artist.province }}
+                    {% endif %}
+                </p>
             </div>
         </div>
-        <div class="um-card-content w-100">
-            <h5>{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ contract.artist.artistname }}</h5>
-            <p>
-                {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}
-                {% else %}{{ contract.province is not null ? contract.province : contract.artist.province }}
-                {% endif %}
-            </p>
-        </div>
-
         <a class="um-card-link" href="{{ path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) }}"></a>
     </div>
 {% endblock %}

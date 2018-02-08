@@ -209,13 +209,13 @@
             <div class="col-12 col-lg-4">
                 <div class="col-12 content-box">
                     <div class="content-box-header">
-                        <h3>Line up</h3>
+                        <h3>{{ 'event.lineup.title'|trans|raw }}</h3>
                     </div>
                     <div class="content-box-content">
                         <table class="content-box-table">
                             <tbody>
                                 <tr>
-                                    <td class="contract-info-title"> {{ 'event.lineup.host'|trans|raw }}</td>
+                                    <td class="contract-info-title">{{ 'event.lineup.host'|trans|raw }}</td>
                                     <td><a href="{{ path('artist_profile', {'id': contract.artist.id, 'slug': contract.artist.slug}) }}">{{ contract.artist.artistname }}</td>
                                 </tr>
                                 {% set i = 1 %}

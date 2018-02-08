@@ -18,11 +18,18 @@
     position:relative;
     border-radius: initial;
 
+    &.successful-progress {
+      width: 100%;
+      background: $successful-progress-bg;
+      position: absolute;
+      top: -22px;
+      z-index: 100;
+    }
     .progress-bar {
-        &-percent {
-          position: absolute;
-          left: 4px;
-        }
+      &-percent {
+        position: absolute;
+        left: 4px;
+      }
     }
   }
 
@@ -66,7 +73,7 @@
     bottom: 0;
     right: 0;
     width: 100%;
-    z-index: 2;
+    z-index: 1000;
     background: black;
     opacity: 0;
 
@@ -74,4 +81,8 @@
       opacity: 0.1;
     }
   }
+}
+
+.successful-progress-bg {
+  background: $successful-progress-bg;
 }

@@ -249,6 +249,7 @@ event:
     pending: En cours d'examination par l'équipe Un-Mute
   stillselling: Places encore en vente
   lineup:
+    title: Line-up
     host: Artiste hôte
     invited: Artiste invité
     tbc: Bientôt annoncé

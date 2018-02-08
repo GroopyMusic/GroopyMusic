@@ -31,7 +31,7 @@
         {% endif %}
         {% if successful_contracts is not empty %}
             <div class="container{% if current_contracts is not empty %} mt-5{% endif %}">
-                <h3 class="text-center mb-3">{{ 'catalog_events.running.title'|trans|raw }}</h3>
+                <h3 class="text-center mb-3">{{ 'catalog_events.confirmed.title'|trans|raw }}</h3>
                 <div class="row">
                     {% for contract in successful_contracts %}
                         {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'bgwhite': true} %}
