@@ -34,9 +34,9 @@
         </div>
 
         {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
-            <p class="p-info"><img width="70" class="um-icon float-left float-md-none" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.tickets'|trans|raw }}</p>
+            <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.tickets'|trans|raw }}</p>
         {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-            <p class="p-info"><img width="70" class="um-icon float-left" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}</p>
+            <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}</p>
         {% endif %}
 
         {% if state not in contract.uncrowdableStates %}
