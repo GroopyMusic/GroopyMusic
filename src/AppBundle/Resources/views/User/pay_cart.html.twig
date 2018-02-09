@@ -4,32 +4,27 @@
     <div class="content-box-content-zone">
         <table class="content-box-table">
             <tbody>
-            {% if not promotional %}
-                <tr>
-                    <td class="contract-info-title">Type</td>
-                    <td>{{ purchase.counterpart.name }}</td>
-                </tr>
-            {% else %}
+            {% if promotional %}
                 <div class="um-label text-center"><strong>Promotion 3 + 1</strong></div>
+            {% endif %}
                 <tr>
-                    <td class="contract-info-title">Type</td>
+                    <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
                     <td>{{ purchase.counterpart.name }}</td>
                 </tr>
-            {% endif %}
             <tr>
-                <td class="contract-info-title">Festival</td>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.concert'|trans|raw }}</td>
                 <td>Festival de {{ contract.contractArtist.artist.artistname }}</td>
             </tr>
             <tr>
-                <td class="contract-info-title">Date</td>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.date'|trans|raw }}</td>
                 <td>{{ contract.contractArtist.dateConcert|date('d/m/Y') }}</td>
             </tr>
             <tr>
-                <td class="contract-info-title">Quantité</td>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.quantity'|trans|raw }}</td>
                 <td>{% if not promotional %}{{ purchase.quantityOrganic }}{% else %}{{ purchase.quantityPromotional }}{% endif %}</td>
             </tr>
             <tr>
-                <td class="contract-info-title">Prix unitaire</td>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}</td>
                 <td>{% if not promotional %}{{ purchase.counterpart.price }} €{% else %}0 €{% endif %}</td>
             </tr>
             </tbody>
@@ -43,22 +38,12 @@
 
     <div class="container">
 
-        <h3 class="mt-3 mb-5 text-center">Paiement de votre commande</h3>
+        <h3 class="mt-3 mb-5 text-center">{{ 'pay_cart.title'|trans|raw }}</h3>
 
         <div class="row">
             <div class="col-12 col-md-8 order-2 order-md-1">
                 <div id="payment-intro">
-                    <p>
-                        Bienvenue dans l'espace sécurisé d'Un-Mute, {{ app.user.firstname }}. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
-                        vous ont convaincu lors de votre visite.
-                    </p>
-
-                    <p>
-                        En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="{{ path('conditions') }}#cgv">conditions générales de vente</a>.
-                        Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres producteurs qui soutiennent cet artiste.
-                        Sinon, si cet événement a assez de succès, vous recevrez vos tickets par e-mail, et sur Un-Mute, quelques jours avant le concert.
-                        Dans le cas où l'artiste a déjà atteint le seuil de réussite du concert, alors vous recevrez vos tickets par e-mail dans la journée.
-                    </p>
+                    {{ 'pay_cart.intro'|trans({'%firstName%':app.user.firstname, '%conditionsUrl%': path('conditions') ~ '#cgv'})|raw }}
                 </div>
 
                 <div>
@@ -72,12 +57,12 @@
                 <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
                     <div class="form-row">
                         {% if error_conditions %}
-                            <p class="alert alert-danger">Vous devez accepter les conditions générales pour continuer.</p>
+                            <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
                         {% endif %}
                         <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
                             <input type="checkbox" id="accept_conditions" name="accept_conditions" class="custom-control-input">
                             <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">J'accepte les conditions générales et je souhaite procéder au paiement</span>
+                            <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
                         </label>
                     </div>
 
@@ -87,12 +72,12 @@
                                 <label class="custom-control custom-radio">
                                     <input type="radio" name="payment-method" value="credit-card" class="custom-control-input" checked="checked">
                                     <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Carte de crédit</span>
+                                    <span class="custom-control-description">{{ 'pay_cart.methods.creditcard'|trans|raw }}</span>
                                 </label>
                                 <label class="custom-control custom-radio">
                                     <input type="radio" name="payment-method" value="debit-card" class="custom-control-input">
                                     <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Bancontact</span>
+                                    <span class="custom-control-description">{{ 'pay_cart.methods.bancontact'|trans|raw }}</span>
                                 </label>
                             </div>
                         </div>
@@ -103,32 +88,32 @@
                                 <div id="credit-card" class="payment-method w-100">
                                     <div class="col-12 content-box-content-zone">
                                         <h5>
-                                            Paiement par carte de crédit <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.">+ d'infos</a>
+                                            {{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a href="#" data-toggle="popover" title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }}" data-content="{{ 'pay_cart.proceed.creditcard.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.creditcard.popover.apparent'|trans|raw }}</a>
                                         </h5>
                                     </div>
                                     <div class="content-box-content-zone no-border">
                                         <div class="col-12 row">
                                             <div class="col-12">
                                                 <label>
-                                                    <div class="text-left contract-info-title">Carte de crédit</div>
+                                                    <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.creditcard'|trans|raw }}</div>
                                                     <div id="card-number-element" class="field"></div>
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-5 mt-3">
                                                 <label>
-                                                    <div class="text-left contract-info-title">Date d'exp.</div>
+                                                    <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.exp'|trans|raw }}</div>
                                                     <div id="card-expiry-element" class="field"></div>
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-5 mt-3">
                                                 <label>
-                                                    <div class="text-left contract-info-title">Cryptogramme visuel</div>
+                                                    <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.cvc'|trans|raw }}</div>
                                                     <div id="card-cvc-element" class="field"></div>
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-12 text-center mt-5">
-                                            <input type="submit" class="btn btn-primary" value="Payer avec ma carte de crédit" />
+                                            <input type="submit" class="btn btn-primary" value="{{ 'pay_cart.proceed.creditcard.submit'|trans|raw }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -136,14 +121,14 @@
                                 <div id="debit-card" class="form-row payment-method w-100" style="display:none;">
                                     <div class="col-12 content-box-content-zone">
                                         <h5>
-                                           Payer par Bancontact <a href="#" data-toggle="popover" title="Cartes autorisées" data-content="Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.">+ d'infos</a>
+                                           {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#" data-toggle="popover" title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}" data-content="{{ 'pay_cart.proceed.bancontact.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.bancontact.popover.apparent'|trans|raw }}</a>
                                         </h5>
-                                        <p>Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.</p>
+                                        <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
                                     </div>
                                     <div class="content-box-content-zone no-border">
                                         <div id="bc-card-element" class="text-center">
                                             <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
-                                                Poursuivre avec Bancontact
+                                                {{ 'pay_cart.proceed.bancontact.submit'|trans|raw }}
                                             </button>
                                         </div>
                                     </div>
@@ -157,7 +142,7 @@
             <div class="col-12 col-md-4 order-1 order-md-2">
                 <div class="content-box">
                     <div class="content-box-header">
-                        <h3>Vos tickets</h3>
+                        <h3>{{ 'pay_cart.recap.title'|trans|raw }}</h3>
                     </div>
                     <div class="content-box-content-zones content-box-content">
                     {% set sum_tickets = 0 %}
@@ -273,7 +258,7 @@
 
         $('#choose-bancontact').click(function(e) {
             e.preventDefault();
-            displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
+            displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
             scrollToLoader();
 
             stripe.createSource({
@@ -315,7 +300,7 @@
             }
 
             if(result.card.three_d_secure == 'required') {
-                displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
+                displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
                 stripe.createSource({
                     type: 'three_d_secure',
                     amount: amount,
@@ -335,11 +320,11 @@
 
         function on3DSSource(result) {
             if(result.error) {
-                displayError('Une erreur est survenue. Veuillez réessayer plus tard et en informer un administrateur Un-Mute si le problème persiste.');
+                displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
             }
             else {
                 hideError();
-                displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement.");
+                displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
                 window.location.replace(result.source.redirect.url);
 
                 $('#payment-intro').hide();
@@ -350,6 +335,7 @@
             if (source.status == 'chargeable') {
                 stripeTokenHandler(source);
             }
+            // TODO translate
             else if (source.status == 'failed') {
                 displayError("L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href=\"{{ path('artist_contract', {'id': contract_fan.contractArtist.id}) }}\">ici</a> pour revenir en arrière. ");
             }
@@ -415,7 +401,7 @@
         function stripeTokenHandler(source) {
 
             $('#payment-intro').hide();
-            displayLoader("Paiement en cours... <b>Ne quittez pas cette page pendant le traitement de votre paiement.</b>");
+            displayLoader("{{ 'threeds.pending'|trans|raw }}");
 
             // Insert the token ID into the form so it gets submitted to the server
             var form = document.getElementById('payment-form');

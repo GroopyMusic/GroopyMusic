@@ -315,7 +315,7 @@ pay_cart:
     proceed:
         threeds:
             error: Une erreur est survenue. Veuillez réessayer plus tard et en informer un administrateur Un-Mute si le problème persiste.
-            pending: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...
+            pending: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement.
         creditcard:
             title: Paiement par carte de crédit
             popover:
@@ -340,7 +340,7 @@ pay_cart:
         title: Vos tickets
         labels:
             counterpart: Type
-            concert: Concert
+            concert: Festival
             date: Date
             quantity: Quantité
             unitprice: Prix unitaire

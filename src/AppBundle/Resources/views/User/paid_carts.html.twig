@@ -2,39 +2,39 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="text-center">Mes commandes</h3>
+        <h3 class="text-center">{{ 'my_orders.title'|trans|raw }}</h3>
         <div class="content-box mt-4">
             <table class="table table-hover um-table content-box-content">
                 {% if carts is empty %}
                     <tr>
-                        <td>Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="{{ path('catalog_artists') }}">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !</td>
+                        <td>{{ 'my_orders.empty'|trans({'%catalog_url%': path('catalog_artists')})|raw }}</td>
                     </tr>
                 {% else %}
                     <thead>
                         <tr>
                             <th>
-                                Détail
+                                {{ 'my_orders.labels.details'|trans|raw }}
                             </th>
                             <th>
-                                État
+                                {{ 'my_orders.labels.state'|trans|raw }}
                             </th>
                             <th>
-                                Date
+                                {{ 'my_orders.labels.date'|trans|raw }}
                             </th>
                             <th>
-                                Quantité
+                                {{ 'my_orders.labels.quantity'|trans|raw }}
                             </th>
                             <th>
-                                Prix unitaire
+                                {{ 'my_orders.labels.unitprice'|trans|raw }}
                             </th>
                             <th>
-                                Prix total
+                                {{ 'my_orders.labels.totalprice'|trans|raw }}
                             </th>
                             <th>
-                                Commande
+                                {{ 'my_orders.labels.order'|trans|raw }}
                             </th>
                             <th>
-                                Tickets
+                                {{ 'my_orders.labels.tickets'|trans|raw }}
                             </th>
                         </tr>
                     </thead>
@@ -43,8 +43,9 @@
                             <td class="text-center">
                                 {% for contract in cart.contracts %}
                                         {% for purchase in contract.purchases %}
+                                            {% if not loop.first %}<br /><br />{% endif %}
                                             {{ purchase.counterpart.name }}
-                                            <br /> <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">Concert de {{ contract.contractArtist.artist.artistname }}</a>
+                                            <br /> <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">Festival Un-Mute avec {{ contract.contractArtist.artist.artistname }}</a>
                                         {% endfor %}
                                 {% endfor %}
                             </td>
@@ -57,14 +58,14 @@
                             <td class="text-center">
                                 {% for contract in cart.contracts %}
                                     {% for purchase in contract.purchases %}
-                                        {% if not loop.first %}<br /><br />{% endif %}{{ purchase.quantity }}{% if purchase.quantityPromotional > 0 %} <br />(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
+                                        {% if not loop.first %}<br /><br /><br />{% endif %}{{ purchase.quantity }}{% if purchase.quantityPromotional > 0 %} <br />(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
                                     {% endfor %}
                                 {% endfor %}
                             </td>
                             <td class="text-center">
                                 {% for contract in cart.contracts %}
                                     {% for purchase in contract.purchases %}
-                                        {% if not loop.first %}<br /><br />{% endif %}{{ purchase.counterpart.price }} €
+                                        {% if not loop.first %}<br /><br /><br />{% endif %}{{ purchase.counterpart.price }} €
                                     {% endfor %}
                                 {% endfor %}
                             </td>
@@ -78,7 +79,7 @@
                             <td class="text-center">
                                 {% if cart.first.contractArtist.ticketsSent %}
                                     <a href="{{ path('user_get_tickets', {'id': cart.id}) }}"
-                                       dowload="um_ticket_{{ cart.first.id }}.pdf">Ticket</a>
+                                       download="um_ticket_{{ cart.first.id }}.pdf"><img src="{{ asset('images/download.svg') }}" class="responsive-img" /></a>
                                 {% endif %}
                             </td>
                         </tr>
