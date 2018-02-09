@@ -274,6 +274,7 @@
         $('#choose-bancontact').click(function(e) {
             e.preventDefault();
             displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
+            scrollToLoader();
 
             stripe.createSource({
                 type: 'bancontact',
@@ -338,7 +339,7 @@
             }
             else {
                 hideError();
-                displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
+                displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement.");
                 window.location.replace(result.source.redirect.url);
 
                 $('#payment-intro').hide();
@@ -363,12 +364,19 @@
             $('input[type="submit"]').prop('disabled', true);
 
             displayLoader();
+            scrollToLoader();
             var extraDetails = {
                 //name: '{{ app.user.displayName }}',
                 //email: '{{ app.user.username }}'
             };
             stripe.createToken(cardNumberElement, extraDetails).then(onToken);
         });
+
+        function scrollToLoader() {
+            $('html, body').animate({
+                scrollTop: $("#stripe-loader").offset().top - 300
+            }, 500);
+        }
 
         function displayLoader(html) {
             $loader.show();

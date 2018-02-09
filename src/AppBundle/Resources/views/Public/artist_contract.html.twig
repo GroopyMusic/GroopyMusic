@@ -32,7 +32,7 @@
                 {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
                     <p class="p-info">{{ 'event.lastday.tickets'|trans|raw }}</p>
                 {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-                    <p class="p-info">{{ 'event.lastday.deadline'|trans|raw }}</p>
+                    <p class="p-info">{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}</p>
                 {% endif %}
             </div>
         </div>
@@ -155,7 +155,7 @@
 
                                 </div>
                                 <div class="contract-info-content">
-                                    {{ contract.ticketsSold }}
+                                    {{ contract.ticketsSoldMajored }}
                                 </div>
                             </div>
 

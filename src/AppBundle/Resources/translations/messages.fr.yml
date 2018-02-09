@@ -220,7 +220,7 @@ event:
   title: Festival Un-Mute avec %artist%
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
-    deadline: C'est le dernier jour où vous pouvez aider {{ artist }} à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
+    deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
   promo: Exceptionnellement à l'occasion du lancement de la plateforme, Un-Mute vous offre un ticket pour chaque lot de trois tickets achetés !
   infos:
     title: Infos
@@ -423,7 +423,7 @@ artist_profile:
     short_description: En quelques mots
     genres: Styles musicaux
     videos:
-      title: Vidéos:
+      title: Vidéos
       empty: Cet artiste n'a pas encore de vidéo à montrer.
     links:
       title: Liens

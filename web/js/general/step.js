@@ -40,10 +40,22 @@ $(function() {
 
     $(".incr-btn").each(function() {
         var $button = $(this);
-        tickets += parseInt($button.parent().find('.quantity').val());
+    });
+
+    function calculateTickets() {
+        var q = 0;
+        $('.quantity.form-control').each(function() {
+            q += parseInt($(this).val());
+        });
+        tickets = q;
+    }
+
+    $('.quantity.form-control').on('change', function() {
+        disableIfNoTickets();
     });
 
     function disableIfNoTickets() {
+        calculateTickets();
         if(tickets == 0) {
             $('#app_bundle_contract_fan_type_submit').attr('disabled', 'disabled');
         }
@@ -54,6 +66,7 @@ $(function() {
 
     disableIfNoTickets();
 
+
     $(".incr-btn").on("click", function (e) {
         var $button = $(this);
         var oldValue = $button.parent().find('.quantity').val();
@@ -61,7 +74,6 @@ $(function() {
         if ($button.data('action') == "increase") {
             if(oldValue < $button.data('max')) {
                 var newVal = parseFloat(oldValue) + 1;
-                tickets++;
             }
             else {
                 newVal = oldValue;
@@ -70,7 +82,6 @@ $(function() {
             // Don't allow decrementing below 0
             if (oldValue > 0) {
                 var newVal = parseFloat(oldValue) - 1;
-                tickets--;
             } else {
                 newVal = 0;
                 $button.addClass('inactive');

@@ -17,6 +17,8 @@ class ContractArtist extends BaseContractArtist
 {
     const NB_DAYS_OF_CLOSING = 0;
 
+    const MAXIMUM_PROMO_OVERFLOW = 5;
+
     const STATE_REFUNDED = 'state.refunded';
     const STATE_FAILED = 'state.failed';
     const STATE_SUCCESS_SOLDOUT = 'state.success.soldout';
@@ -87,6 +89,10 @@ class ContractArtist extends BaseContractArtist
 
     public function isDeadlineDate() {
         return (new \DateTime())->diff($this->dateEnd)->days == 0;
+    }
+
+    public function getTicketsSoldMajored() {
+        return min($this->getTicketsSold(), $this->getMaxTickets());
     }
 
     public function getMaxTickets() {

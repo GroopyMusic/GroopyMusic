@@ -42,7 +42,7 @@
             {% endif %}
 
             {% set progress_100 = contract.ticketsSold * 100 // contract.step.minTickets %}
-            <div class="progress um-card-progress">
+            <div class="progress um-card-progress{% if contract.state in contract.successfulStates %} invisible{% endif %}">
                 <div class="progress-bar" style="padding-left: 2rem;width:{{ progress_100 }}%">
                     <span class="progress-bar-percent">{{ progress_100 }}%</span>
                 </div>

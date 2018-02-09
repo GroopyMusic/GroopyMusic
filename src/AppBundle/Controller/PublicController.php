@@ -301,6 +301,10 @@ class PublicController extends Controller
                 $this->addFlash('error', "Il n'est pas possible de commander ce nombre de tickets pour cet événement.");
             }
 
+            elseif($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
+                $this->addFlash('error', "Il n'est plus possible de commander autant de tickets ; la promotion 3 + 1 vous fait dépasser le sold out. Veuillez réessayer en commandant moins de tickets.");
+            }
+
             elseif($user == null) {
                 throw $this->createAccessDeniedException();
             }

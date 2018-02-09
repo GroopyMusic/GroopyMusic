@@ -48,6 +48,7 @@ class PaymentController extends Controller
         /** @var ContractFan $contract */
         $contract = $cart->getFirst();
         $contract_artist = $contract->getContractArtist();
+        $artist = $contract_artist->getArtist();
 
         if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
 
@@ -66,12 +67,17 @@ class PaymentController extends Controller
 
             if($contract_artist->isUncrowdable()) {
                 $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
-                return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]);
+                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
             }
 
-            elseif($contract->getCounterPartsQuantity() > $contract_artist->getTotalNbAvailable()) {
+            elseif($contract->getCounterPartsQuantityOrganic() > $contract_artist->getTotalNbAvailable()) {
                 $this->addFlash('error', "Il n'est pas possible de commander ce nombre de tickets pour cet événement.");
-                return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]);
+                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
+            }
+
+            elseif($contract->getCounterPartsQuantity() > $contract_artist->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
+                $this->addFlash('error', "Il n'est plus possible de commander autant de tickets ; la promotion 3 + 1 vous fait dépasser le sold out. Veuillez réessayer en commandant moins de tickets.");
+                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
             }
 
             if ($cart->isProblematic()) {
@@ -85,7 +91,7 @@ class PaymentController extends Controller
                 $output = new NullOutput();
                 $application->run($input, $output);
 
-                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId()]);
+                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
             }
 
             // Set your secret key: remember to change this to your live secret key in production
