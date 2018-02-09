@@ -29,13 +29,15 @@
             <div class="col-12 col-md-8 offset-md-2">
                 <h2 class="text-center">{{ 'event.title'|trans({'%artist%':contract.artist.artistname})|raw }}</h2>
 
-                {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
-                    <p class="p-info">{{ 'event.lastday.tickets'|trans|raw }}</p>
-                {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-                    <p class="p-info">{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}</p>
-                {% endif %}
+
             </div>
         </div>
+
+        {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
+            <p class="p-info"><img width="70" class="um-icon float-left float-md-none" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.tickets'|trans|raw }}</p>
+        {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
+            <p class="p-info"><img width="70" class="um-icon float-left" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}</p>
+        {% endif %}
 
         {% if state not in contract.uncrowdableStates %}
             <p class="p-promo mt-3">{{ 'event.promo'|trans|raw }}</p>
