@@ -181,7 +181,7 @@
                                 {{ contract.step.minTickets }}
                             </span>
                             <div class="progress">
-                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ contract.ticketsSold * 100 // contract.step.minTickets }}%"></div>
+                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ contract.state in contract.successfulStates ? 100 : contract.ticketsSold * 100 // contract.step.minTickets }}%"></div>
                             </div>
                             <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} successful-progress-text{% else %} text-primary{% endif %}">
                                 {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ contract.ticketsSold * 100 // contract.step.minTickets }}%{% endif %}
