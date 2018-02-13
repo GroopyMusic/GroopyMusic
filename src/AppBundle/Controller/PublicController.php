@@ -1,5 +1,4 @@
 <?php
-// src/AppBundle/Controller/PublicController.php
 
 namespace AppBundle\Controller;
 
@@ -30,6 +29,7 @@ use AppBundle\Form\SuggestionBoxType;
 use AppBundle\Form\UserSuggestionBoxType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class PublicController extends Controller
 {
@@ -58,29 +58,6 @@ class PublicController extends Controller
             }
             return $cart;
         }
-    }
-
-    /**
-     * @Route("/test-mail", name="testmail")
-     * @Security("has_role('ROLE_SUPER_ADMIN')")
-     */
-    public function testMailAction(KernelInterface $kernel) {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput(array(
-            'command' => 'reminders:crowdfunding:artist',
-            'x' => '1',
-        ));
-
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-
-        // return new Response(""), if you used NullOutput()
-        return new Response($content);
     }
 
     /**
@@ -294,15 +271,15 @@ class PublicController extends Controller
         if($form->isSubmitted() && $form->isValid()) {
 
             if($contract->isUncrowdable()) {
-                $this->addFlash('error', "Il n'est plus possible de contribuer à cet événement.");
+                $this->addFlash('error', 'errors.event.uncrowdable');
             }
 
             elseif($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
-                $this->addFlash('error', "Il n'est pas possible de commander ce nombre de tickets pour cet événement.");
+                $this->addFlash('error', 'errors.order_max');
             }
 
             elseif($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
-                $this->addFlash('error', "Il n'est plus possible de commander autant de tickets ; la promotion 3 + 1 vous fait dépasser le sold out. Veuillez réessayer en commandant moins de tickets.");
+                $this->addFlash('error', 'errors.order_max_promo');
             }
 
             elseif($user == null) {
@@ -384,7 +361,7 @@ class PublicController extends Controller
      * @Route("/validate-ownership-{id}/{code}", name="artist_validate_ownership")
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function validateOwnershipAction(Request $request, UserInterface $user = null, Artist $artist, $code) {
+    public function validateOwnershipAction(Request $request, UserInterface $user = null, Artist $artist, $code, TranslatorInterface $translator) {
 
         $em = $this->getDoctrine()->getManager();
         $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
@@ -449,12 +426,12 @@ class PublicController extends Controller
                     ->setUser($user);
                 $em->persist($artist_user);
                 $em->flush();
-                $this->addFlash('notice', 'Félicitations, vous faites désormais partie de l\'artiste ' . $artist->getArtistname());
+                $this->addFlash('notice', $translator->trans('notices.artist_ownership_request_accepted', ['%artist%' => $artist->getArtistname()]));
             }
             elseif($form->get('refuse')->isClicked()) {
                 $req->setRefused(true);
                 $em->flush();
-                $this->addFlash('notice', 'Votre choix a bien été enregistré.');
+                $this->addFlash('notice', 'notices.artist_ownership_request_refused');
             }
 
             return $this->redirectToRoute('homepage');
@@ -474,7 +451,7 @@ class PublicController extends Controller
         $user = $em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
 
         if(!$user) {
-            $this->addFlash('error', 'Ce jeton est expiré');
+            $this->addFlash('error', 'errors.change_email_token_expired');
             return $this->redirectToRoute('homepage');
         }
 
@@ -482,7 +459,7 @@ class PublicController extends Controller
 
         $error_detector = $em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
         if($error_detector != null) {
-            $this->addFlash('error', "L'adresse e-mail demandée est déjà prise par un autre membre depuis votre demande.");
+            $this->addFlash('error', 'errors.change_email_used_since');
             return $this->redirectToRoute('homepage');
         }
 
@@ -501,16 +478,39 @@ class PublicController extends Controller
             $session = $request->getSession();
             $session->invalidate();
 
-            $this->addFlash('notice', "Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.");
+            $this->addFlash('notice', 'notices.change_email_logged_out');
         }
 
         else {
-            $this->addFlash('notice', "Votre e-mail a bien été modifié.");
+            $this->addFlash('notice', 'notices.change_email');
         }
 
         $em->persist($user);
         $em->flush();
 
         return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @Route("/test-mail", name="testmail")
+     * @Security("has_role('ROLE_SUPER_ADMIN')")
+     */
+    public function testMailAction(KernelInterface $kernel) {
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput(array(
+            'command' => 'reminders:crowdfunding:artist',
+            'x' => '1',
+        ));
+
+        $output = new BufferedOutput();
+        $application->run($input, $output);
+
+        // return the output, don't use if you used NullOutput()
+        $content = $output->fetch();
+
+        // return new Response(""), if you used NullOutput()
+        return new Response($content);
     }
 }

@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,6 +21,7 @@ use AppBundle\Entity\Artist;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
@@ -55,7 +57,7 @@ class ArtistController extends Controller
             $em->persist($artist);
             $em->flush();
 
-            $this->addFlash('notice', 'Les modifications ont été enregistrées.');
+            $this->addFlash('notice', 'notices.edition');
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
 
@@ -106,7 +108,7 @@ class ArtistController extends Controller
                     $em->persist($currentOwner);
                     $em->flush();
 
-                    $this->addFlash('notice', 'Votre rôle a bien été enregistré');
+                    $this->addFlash('notice', 'notices.artist_role');
                 }
             }*/
             if ($HTTPRequest->request->has($form2->getName())) {
@@ -145,7 +147,7 @@ class ArtistController extends Controller
 
                     $em->flush(); // For unique code !!
 
-                    $this->addFlash('notice', 'Les invitations ont été envoyées.');
+                    $this->addFlash('notice', 'notices.artist_ownership_requests');
 
                     return $this->redirectToRoute($HTTPRequest->get('_route'), $HTTPRequest->get('_route_params'));
                 }
@@ -178,7 +180,7 @@ class ArtistController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->persist($o_request);
         $em->flush();
-        $this->addFlash('notice', 'Requête supprimée');
+        $this->addFlash('notice', 'notices.artist_ownership_request_cancel');
 
         return $this->redirectToRoute('artist_owners', array(
             'id' => $artist->getId(),
@@ -188,7 +190,7 @@ class ArtistController extends Controller
     /**
      * @Route("/leave", name="artist_leave")
      */
-    public function leaveAction(Request $request, UserInterface $user, Artist $artist) {
+    public function leaveAction(Request $request, UserInterface $user, Artist $artist, TranslatorInterface $translator) {
         $this->assertOwns($user, $artist);
 
         $lastOne = count($artist->getArtistsUser()) == 1;
@@ -207,7 +209,8 @@ class ArtistController extends Controller
             if($form->get('confirm')->isClicked()) {
 
                 if($lastOne && !$artist->isAvailable()) {
-                    $form->addError('Vous ne pouvez pas quitter un artiste lorsqu\'un événement de récolte de tickets est en cours pour cet artiste.');
+                    // TODO test this error
+                    $form->addError(new FormError('Vous ne pouvez pas quitter un artiste lorsqu\'un événement de récolte de tickets est en cours pour cet artiste.'));
                 }
 
                 else {
@@ -228,10 +231,10 @@ class ArtistController extends Controller
                     $em->flush();
 
                     if($lastOne) {
-                        $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname() . '. Vous êtiez le dernier propriétaire de ' . $artist->getArtistname() . ' donc l\'artiste a été supprimé.');
+                        $this->addFlash('notice', $translator->trans('notices.artist_leave_last', ['%artist%' => $artist->getArtistname()]));
                     }
                     else {
-                        $this->addFlash('notice', 'Vous avez quitté '. $artist->getArtistname());
+                        $this->addFlash('notice', $translator->trans('notices.artist_leave', ['%artist%' => $artist->getArtistname()]));
                     }
                     return $this->redirectToRoute('user_my_artists');
                 }
@@ -286,7 +289,7 @@ class ArtistController extends Controller
             $em->persist($artist);
             $em->flush();
 
-            $this->addFlash('notice', 'Les modifications ont bien été enregistrées.');
+            $this->addFlash('notice', 'notices.edition');
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
 

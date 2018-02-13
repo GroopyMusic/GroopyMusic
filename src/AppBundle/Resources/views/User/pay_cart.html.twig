@@ -5,7 +5,7 @@
         <table class="content-box-table">
             <tbody>
             {% if promotional %}
-                <div class="um-label text-center"><strong>Promotion 3 + 1</strong></div>
+                <div class="um-label text-center"><strong>{{ 'pay_cart.recap.promo_title'|trans|raw }}</strong></div>
             {% endif %}
                 <tr>
                     <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
@@ -13,7 +13,7 @@
                 </tr>
             <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.concert'|trans|raw }}</td>
-                <td>Festival de {{ contract.contractArtist.artist.artistname }}</td>
+                <td>{{ 'event.generic_name'|trans({'%artist%': contract.contractArtist.artist.artistname}) }}</td>
             </tr>
             <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.date'|trans|raw }}</td>
@@ -159,7 +159,7 @@
                         <div class="content-box-content-zone no-border">
                             <table class="content-box-table">
                                 <tr class="no-border">
-                                    <td class="contract-info-title big">Total pour {{ sum_tickets }} ticket{% if sum_tickets > 1 %}s{% endif %}</td>
+                                    <td class="contract-info-title big">{{ 'pay_cart.recap.total'|transchoice(sum_tickets)|raw }}</td>
                                     <td class="big font-weight-bold">{{ cart.amount }} €</td>
                                 </tr>
                             </table>
@@ -275,7 +275,7 @@
                 redirect: {
                     return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
                 },
-                statement_descriptor: 'Achat Un-Mute - contrat {{ contract_fan.id }}'
+                statement_descriptor: 'Un-Mute - purchase {{ contract_fan.id }}'
             }).then(function(result) {
                 on3DSSource(result);
             });
@@ -335,13 +335,12 @@
             if (source.status == 'chargeable') {
                 stripeTokenHandler(source);
             }
-            // TODO translate
             else if (source.status == 'failed') {
-                displayError("L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href=\"{{ path('artist_contract', {'id': contract_fan.contractArtist.id}) }}\">ici</a> pour revenir en arrière. ");
+                displayError("{{ 'threeds.error'|trans({'%backUrl%': absolute_url(path('artist_contract', {'id': contract_fan.contractArtist.id}))})|raw }}");
             }
-            else if (source.status != 'pending') {
-                displayError("Une erreur inconnue s'est produite lors de l'authentification 3D Secure : " + source.status);
-            }
+            /*else if (source.status != 'pending') {
+                displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+            }*/
         }
 
         $('#payment-form').submit(function(e) {

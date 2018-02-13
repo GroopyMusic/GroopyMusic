@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container">
-        <h3>Votre paiement</h3>
+        <h3>{{ 'threeds.title'|trans|raw }}</h3>
 
         <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
         </form>
@@ -30,17 +30,17 @@
             '{{ source }}',
             '{{ client_secret }}',
             onChargeable3DS);
-        displayLoader("<b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
+        displayLoader("{{ 'threeds.pending_stripe'|trans|raw }}");
         function onChargeable3DS(status, source) {
             if (source.status == 'chargeable') {
                 stripeTokenHandler(source);
             }
             else if (source.status == 'failed') {
-                displayError("L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href=\"{{ path('artist_contract', {'id': contract_fan.contractArtist.id}) }}\">ici</a> pour revenir en arrière. ");
+                displayError("{{ 'threeds.error'|trans({'%backUrl%': absolute_url(path('artist_contract', {'id': contract_fan.contractArtist.id}))})|raw }}");
             }
-            // else if (source.status != 'pending') {
-            //     displayError("Une erreur inconnue s'est produite lors de l'authentification 3D Secure : " + source.status);
-            // }
+             /*else if (source.status != 'pending') {
+                 displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+             }*/
         }
         function displayLoader(html) {
             $loader.show();
@@ -65,7 +65,7 @@
         }
         function stripeTokenHandler(source) {
             $('#payment-intro').hide();
-            displayLoader("Paiement en cours... <b>Ne quittez pas cette page pendant le traitement de votre paiement.</b>");
+            displayLoader("{{ 'threeds.pending'|trans|raw }}");
             // Insert the token ID into the form so it gets submitted to the server
             var form = document.getElementById('payment-form');
             var hiddenInput = document.createElement('input');

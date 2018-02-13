@@ -5,47 +5,14 @@
 
         {% block content %}
 
-            <p>Cher artiste,</p>
-
-            <p>Voici les informations pratiques concernant votre concert du {{ contract.reality.hall.date|date('d/m/Y') }} dans la salle "{{ contract.reality.hall.name }}".</p>
-
-            {% set both = first is not null and second is not null %}
-            {% if first is not null %}
-                <p>Mystère également résolu...
-                {% if both %}
-                    Les deux artistes qui joueront lors de la première partie sont désormais connus : il s'agit de {{ first.artistName }} et {{ second.artistName }} !
-                {% else %}
-                    L'artiste qui jouera lors de la première partie est désormais connu : il s'agit de {{ first.artistName }} !
-                {% endif %}
-                </p>
-            {% endif %}
-
-            <p>Planning de la soirée :</p>
-            <ul>
-                <li>Soundcheck ({{ artist.artistName }} - hôte) : 17h</li>
-                 {% if first is not null %}<li>Soundcheck ({{ first.artistName }}) : 17h45</li>{% endif %}
-                 {% if second is not null %}<li>Soundcheck ({{ second.artistName }}) : 18h15</li>{% endif %}
-                 {% if first is not null %}<li>Heure du concert ({{ first.artistName }}) :  19h (45 minutes)</li>{% endif %}
-                 {% if second is not null %}<li>Heure du concert ({{ second.artistName }}) :  20h (45 minutes)</li>{% endif %}
-                <li>>Heure du concert ({{ artist.artistName }} - hôte) :  20h30 (1h)</li>
-
-            <p>Important : nous demandons à chaque groupe d'arriver 30 minutes avant leur heure de soundcheck !
-
-            <p>Enfin, pourriez-vous nous envoyer la fiche technique de votre groupe ainsi que le contrat (en pièce jointe) que vous devez nous renvoyer signé au plus tard fin de cette semaine.
-
-            <p>Pour rappel, nous appliquons le principe de solidarité pour la gestion de la caisse lors de concerts qui se déroulent dans une salle ne prévoyant pas de système de ticketing. C'est à dire que nous vous demanderons à un moment de la soirée de co-gérer la caisse (voir contrat pour plus d'informations).
-
-            <p>Si vous avez des questions, n'hésitez pas à nous joindre par mail à l'adresse contact@un-mute.be
-
-            <p>
-                Nous nous réjouissons de vous voir bientôt sur scène !
-            </p>
-        {% endblock %}
-
-        {% block signature %}
-            <p>Musicalement vôtre,<br /> <br />
-
-            L'équipe Un-Mute</p>
+            {{ email_content('concert.artist.details', {
+                '%date%': contract.reality.hall.date|date('d/m/Y'),
+                '%hall%': contract.reality.hall.name,
+                '%host%': artist.artistName,
+                '%invited1%': first.artistName,
+                '%invited2%': second.artistName
+            })|raw }}
+            
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

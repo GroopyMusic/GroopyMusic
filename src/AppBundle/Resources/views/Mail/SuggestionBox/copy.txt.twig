@@ -5,16 +5,12 @@
 {% autoescape false %}
 
 {% block content %}
-    Votre message envoyé sur Un-Mute.be a bien été reçu.
+    {{ email_content('contact.copy', {
+        '%type%': suggestionBox.type.name,
+        '%object%': suggestionBox.object
+    })|raw }}
 
-    Le voici :
-
-    -> Type de demande : {{ suggestionBox.type }}
-    -> Objet : {{ suggestionBox.object }}
-    -> Message :
-        {{ suggestionBox.message|nl2br }}
-
-    Nous vous répondrons au plus vite si nécessaire.
+    {{ suggestionBox.message|nl2br }}
 {% endblock %}
 
 {% endautoescape %}

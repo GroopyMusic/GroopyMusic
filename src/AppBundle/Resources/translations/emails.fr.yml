@@ -1,3 +1,16 @@
+subjects:
+  change_email_confirmation: Changement d'e-mail
+  new_ownership_request: Quelqu'un a dit que vous possédiez un artiste sur Un-Mute
+  order_recap: Votre commande sur Un-Mute.be
+  concert:
+    artist:
+      known_outcome: Votre événement Un-Mute - Résultat des courses
+      reminder: "Rappel : votre événement sur Un-Mute.be"
+      details: Les détails de votre concert
+    fan:
+      known_outcome: "Concert de %artist% : résultat des courses"
+      tickets: Vos tickets Un-Mute pour %artist%
+
 change_email:
   confirmation: |
     Bonjour %username%,
@@ -32,6 +45,31 @@ concert:
 
       De notre côté, nous prévoyons de promouvoir votre évènement dans les prochains jours via nos propres moyens.
 
+    details: |
+      Cher artiste,
+
+       Voici les informations pratiques concernant votre concert du %date% dans la salle "%hall%".
+
+       Planning de la soirée :
+
+           -- Soundcheck (%host% - hôte) : 14h30
+           -- Soundcheck (%invited1%) : 16h
+           -- Soundcheck (%invited2%) : 17h
+           -- Heure du concert (%invited1%) :  19h (45 minutes)
+           -- Heure du concert (%invited2%) :  20h15 (45 minutes)
+           -- Heure du concert (%host% - hôte) :  21h30 (1h)
+
+       Important : nous demandons à chaque groupe d'arriver 30 minutes avant leur heure de soundcheck !
+
+       Enfin, pourriez-vous nous envoyer la fiche technique de votre groupe ainsi que le contrat (en pièce jointe) que vous devez nous renvoyer signé au plus tard fin de cette semaine ?
+
+       Pour rappel, nous appliquons le principe de solidarité pour la gestion de la caisse lors de concerts qui se déroulent dans une salle ne prévoyant pas de système de ticketing. C'est à dire que nous vous demanderons à un moment de la soirée de co-gérer la caisse (voir contrat pour plus d'informations).
+
+       Si vous avez des questions, n'hésitez pas à nous joindre par mail à l'adresse pierre@un-mute.be
+
+
+       Nous nous réjouissons de vous voir bientôt sur scène !
+
   fan:
     confirmation: |
       Félicitations !
@@ -42,15 +80,15 @@ concert:
     tickets: |
       Bonjour %username%,
 
-      Voici les informations pratiques concernant le concert de %artist% du %date% dans la salle "%hall%".
+      Voici les informations pratiques concernant le concert de %host% du %date% dans la salle "%hall%".
 
-      %firstparts%
+      Les artistes invités au concert sont %invited1% et %invited2%.
 
       Vous trouverez votre ou vos ticket(s) de concert en pièce jointe (format PDF).
 
       Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du concert car il s'agira de votre laissez-passer.
 
-      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
     failure: |
       Cher producteur,
 
@@ -70,6 +108,21 @@ concert:
 
       Tu peux valider (ou invalider si nécessaire) le concert depuis l'espace d'administration, en précisant la salle et la date réelles du concert. Alors seulement un mail sera envoyé à tous les producteurs et à l'artiste.
 
+order: |
+    Merci d'avoir passé commande chez Un-Mute. Vous allez peut-être permettre à un artiste de se produire sur une scène belge reconnue et devant un public en folie !
+    Vous trouverez le récapitulatif de votre commande en pièces jointes, et dans votre espace personnel sur notre <a href="%url%">site Web</a>.
+
+    Actuellement, vous bénéficiez également de la promotion suivante : par lot de 3 tickets achetés, un quatrième vous est offert !
+
+contact:
+  copy: |
+    Votre message envoyé sur Un-Mute.be a bien été reçu. Nous vous répondrons au plus vite si nécessaire.</p>
+
+    Le voici :
+
+    -- Type de demande : %type%
+    -- Objet : %object%
+    -- Message :
 
 ownershiprequest:
   member: |

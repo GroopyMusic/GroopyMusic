@@ -8,6 +8,7 @@ use AppBundle\Entity\Genre;
 use AppBundle\Entity\Province;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -119,6 +120,15 @@ class ArtistType extends AbstractType
                 'attr' => ['class' => 'btn btn-primary']
             ))
         ;
+        if($options['edit']) {
+            $builder->add('accept_conditions', CheckboxType::class, array(
+                'required' => true,
+                'label' => 'labels.artist.accept_conditions',
+                'constraints' => [
+                    new NotBlank(['message' => 'Vous devez accepter les conditions d\'utilisation pour continuer.']),
+                ],
+            ));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)

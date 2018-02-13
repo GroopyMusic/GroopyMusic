@@ -5,44 +5,15 @@
 {% block subject %}{{ subject }}{% endblock %}
 
 {% block content %}
-    Cher artiste,
-
-    Voici les informations pratiques concernant votre concert du {{ contract.reality.hall.date|date('d/m/Y') }} dans la salle "{{ contract.reality.hall.name }}".
-
-    {% set both = first is not null and second is not null %}
-    {% if first is not null %}
-        Mystère également résolu...
-        {% if both %}
-            Les deux artistes qui joueront lors de la première partie sont désormais connus : il s'agit de {{ first.artistName }} et {{ second.artistName }} !
-        {% else %}
-            L'artiste qui jouera lors de la première partie est désormais connu : il s'agit de {{ first.artistName }} !
-        {% endif %}
-    {% endif %}
-
-    Planning de la soirée :
-     - Soundcheck ({{ artist.artistName }} - hôte) : 17h
-     {% if first is not null %}- Soundcheck ({{ first.artistName }}) : 17h45{% endif %}
-     {% if second is not null %}- Soundcheck ({{ second.artistName }}) : 18h15{% endif %}
-     {% if first is not null %}- Heure du concert ({{ first.artistName }}) :  19h (45 minutes){% endif %}
-     {% if second is not null %}- Heure du concert ({{ second.artistName }}) :  20h (45 minutes){% endif %}
-     - Heure du concert ({{ artist.artistName }} - hôte) :  20h30 (1h)
-
-    Important : nous demandons à chaque groupe d'arriver 30 minutes avant leur heure de soundcheck !
-
-    Enfin, pourriez-vous nous envoyer la fiche technique de votre groupe ainsi que le contrat (en pièce jointe) que vous devez nous renvoyer signé au plus tard fin de cette semaine.
-
-    Pour rappel, nous appliquons le principe de solidarité pour la gestion de la caisse lors de concerts qui se déroulent dans une salle ne prévoyant pas de système de ticketing. C'est à dire que nous vous demanderons à un moment de la soirée de co-gérer la caisse (voir contrat pour plus d'informations).
-
-    Si vous avez des questions, n'hésitez pas à nous joindre par mail à l'adresse contact@un-mute.be
-
-    Nous nous réjouissons de vous voir bientôt sur scène !
+    {{ email_content('concert.artist.details', {
+                '%date%': contract.reality.hall.date|date('d/m/Y'),
+                '%hall%': contract.reality.hall.name,
+                '%host%': artist.artistName,
+                '%invited1%': first.artistName,
+                '%invited2%': second.artistName
+    })|raw }}
 {% endblock %}
 
-    {% block signature %}
-        Musicalement vôtre,
-
-        L'équipe Un-Mute
-    {% endblock %}
 {% endautoescape %}
 
 {% block body_html %}

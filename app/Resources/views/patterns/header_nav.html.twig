@@ -19,30 +19,30 @@
         <ul class="navbar-nav mx-auto text-center pt-3 pt-md-0">
 
             <li class="d-inline-block d-lg-none nav-item">
-                <a class="nav-link" href="{{ path('homepage') }}">accueil</a>
+                <a class="nav-link" href="{{ path('homepage') }}">{{ 'header.nav.home'|trans|raw }}</a>
             </li>
 
             <li class="nav-item left-nav-item{% if not home_header %} stickytop{% endif %}">
-                <a class="nav-link" href="{{ path('about') }}">à propos</a>
+                <a class="nav-link" href="{{ path('about') }}">{{ 'header.nav.about'|trans|raw }}</a>
             </li>
 
             <li class="nav-item left-nav-item{% if not home_header %} stickytop{% endif %}">
-                <a class="nav-link" href="{{ path('catalog_artists') }}">artistes</a>
+                <a class="nav-link" href="{{ path('catalog_artists') }}">{{ 'header.nav.artists'|trans|raw }}</a>
             </li>
 
             {{ nav_macros.menu_logo(home_header) }}
 
             <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">
-                <a class="nav-link" href="{{ path('catalog_halls') }}">salles</a>
+                <a class="nav-link" href="{{ path('catalog_halls') }}">{{ 'header.nav.partners'|trans|raw }}</a>
             </li>
 
             <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">
-                <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">événements</a>
+                <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">{{ 'header.nav.events'|trans|raw }}</a>
             </li>
 
             {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <li class="nav-item inscription-link d-inline-block d-lg-none">
-                    <a class="nav-link" href="{{ path('fos_user_registration_register') }}">Inscription</a>
+                    <a class="nav-link" href="{{ path('fos_user_registration_register') }}">{{ 'header.nav.sign_up'|trans|raw }}</a>
                 </li>
             {% endif %}
         </ul>

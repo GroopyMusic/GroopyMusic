@@ -218,6 +218,7 @@ login:
 event:
   og_title: Festival Un-Mute avec %artist%
   title: Festival Un-Mute avec %artist%
+  generic_name: Festival Un-Mute avec %artist%
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
@@ -257,7 +258,7 @@ event:
   buy_tickets:
     tickets_left: %tickets% tickets disponibles
     title:  Achetez vos tickets
-    over: Il n'est plus possible d'acheter des tickets pour cet événement.
+    over: Il n'est pas possible d'acheter des tickets pour cet événement.
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
@@ -289,9 +290,12 @@ faq:
     answer: Dans le cas où vous ne pouvez plus vous rendre à un concert après sa confirmation, le remboursement n’est plus possible. Un-Mute vous propose de remplacer un ticket confirmé par un ticket pour n’importe quel autre concert confirmé.
 
 threeds:
+    title: Votre paiement
     pending_stripe: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...
     pending: Paiement en cours... <b>Ne quittez pas cette page pendant le traitement de votre paiement.</b>
-    error: L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href="%backUrl%">ici</a> pour revenir en arrière.
+    # In the next line, it is important to keep the href attribute between simple quotes as this text is used in JS surrounded by double quotes.
+    error: L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href='%backUrl%'>ici</a> pour revenir en arrière.
+    unknown_error: Une erreur inconnue s'est produite lors de l'authentification 3D Secure.
 
 pay_cart:
     title: Paiement de votre commande
@@ -338,6 +342,7 @@ pay_cart:
             pending: Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.
     recap:
         title: Vos tickets
+        promo_title: Promotion 3 + 1
         labels:
             counterpart: Type
             concert: Festival
@@ -345,6 +350,7 @@ pay_cart:
             quantity: Quantité
             unitprice: Prix unitaire
             total: Total
+        total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
 
 my_orders:
     title: Mes commandes
@@ -497,3 +503,85 @@ leave_artist:
     busy: Vous ne pouvez pas quitter cet artiste à l'heure actuelle car vous en êtes le dernier propriétaire et un événement impliquant cet artiste est en cours de récolte de tickets.
   cancel: Annuler
   confirm: Quitter %artist%
+
+order_pdf:
+  title: Récapitulatif de votre commande
+  intro: Merci d'avoir passé une commande de tickets de concert avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à pierre@un-mute.be
+  promo: "Note : Actuellement, par lot de 3 tickets achetés, un quatrième vous est offert."
+  labels:
+    event: Evénement soutenu
+    event_date: Date de l'événement
+    total_amount: Montant total
+    nb_tickets: Nombre de tickets achetés
+    nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
+  details:
+    title: Détails de la commande
+    labels:
+      counterpart: Article
+      quantity: Quantité
+      unit_price: Prix unitaire
+      total_price: Prix
+      promo: promotion
+  process:
+    title: Processus d'achat Un-Mute
+    content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce concert. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>
+  footer:
+    tracking: "Cette confirmation de commande a été générée le %date%. Identifiant commande : %id%"
+
+header:
+  slogan: Découvrez. Soutenez. Produisez les artistes belges de demain.
+  search_placeholder: Rechercher un concert...
+  nav:
+    home: Accueil
+    about: À propos
+    artists: Artistes
+    partners: Salles
+    events: Événements
+    sign_up: Inscription
+    sign_in: Connexion
+    all_notifications: Voir toutes les notifications
+    my_account: Mon compte
+    my_artists: Mes artistes
+    my_profile: Mon profil
+    my_orders: Mes commandes
+    log_out: Déconnexion
+
+notices:
+  edition: Les modifications ont été enregistrées.
+  event_create: Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans son organisation !
+  artist_create: L'artiste %artist% a bien été créé.
+  artist_role: Votre rôle a bien été enregistré.
+  # Next line : invitation to become administrator of a specific artist on Un-Mute
+  artist_ownership_requests: Les invitations ont été envoyées.
+  artist_ownership_request_cancel: Invitation annulée.
+  artist_ownership_request_accepted: Félicitations, vous faites désormais partie des gestionnaires de l'artiste %artist%.
+  artist_ownership_request_refused: Votre choix a bien été enregistré.
+  artist_leave_last: Vous avez quitté la gestion de %artist%. Vous êtiez le dernier propriétaire de cet artiste ; il a donc été supprimé de la plateforme.
+  artist_leave: Vous avez bien quitté la gestion de %artist%.
+  payment: Votre paiement a bien été reçu. Vous allez recevoir un récapitulatif par e-mail. Vos tickets vous seront envoyés si l'artiste %artist% parvient à débloquer ce concert.
+  change_email_request: Votre demande a bien été reçue. Pour valider le changement d'adresse e-mail, il vous faut cliquer sur un lien qui a été envoyé à la nouvelle adresse demandée.
+  change_email_logged_out: Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.
+  change_email: Votre adresse e-mail a bien été modifiée.
+  account_deletion: Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit. Bonne continuation !
+
+errors:
+  change_email_token_expired: Ce jeton est expiré.
+  change_email_used_since: L'adresse e-mail demandée est déjà prise par un autre membre depuis votre demande.
+  change_email_already_used: Cette adresse e-mail est déjà associée à un compte Un-Mute.
+  order_changed: Vous avez modifié votre commande en cours de route ; merci de recommencer.
+  order_changed_counterparts: <strong>Paiement annulé.</strong> Vous avez tenté de commander d'autres tickets entre-temps. Réessayez en passant la commande et en la payant d'une seule traite, sans tenter de commander d'autres tickets en parallèle.
+  event_uncrowdable: Il n'est plus possible de contribuer à cet événement.
+  order_max: Il n'est pas possible de commander ce nombre de tickets pour cet événement.
+  order_max_promo: Il n'est plus possible de commander autant de tickets ; la promotion 3 + 1 vous fait dépasser le sold out. Veuillez réessayer en commandant moins de tickets.
+  problematic_cart: Votre panier contenait des articles expirés ; nous nous chargeons de le remettre à jour.
+  stripe:
+    card: Une erreur est survenue avec votre carte, veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
+    rate_limit: Trop de requêtes simultanées, veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
+    invalid_request: Paramètres invalides, veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
+    authentication: L'authentification Stripe a échoué, veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
+    api_connection: Une erreur est survenue avec le système de paiement, veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
+    generic: Une erreur est survenue avec le système de paiement, veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
+    other: Une erreur inconnue est survenue ; veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
+
+infos:
+  new_event_temp: Cher artiste, merci d'avoir montré votre intérêt pour Un-Mute. Pour organiser votre premier concert par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, ou d'envoyer un e-mail à pierre@un-mute.be.

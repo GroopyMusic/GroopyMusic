@@ -1,35 +1,32 @@
 {% extends '@App/PDF/layout.html.twig' %}
 
 {% block content %}
-    <h1>Récapitulatif de votre commande</h1>
+    <h1>{{ 'order_pdf.title'|trans|raw }}</h1>
 
-    <p>Merci d'avoir passé une commande de tickets de concert avec Un-Mute.
-        Vous trouverez ci-dessous toutes les informations au sujet de votre commande.
-        Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à pierre@un-mute.be
-    </p>
+    <p>{{ 'order_pdf.intro'|trans|raw }}</p>
 
-    <p>Note : Actuellement, par lot de 3 tickets achetés, un quatrième vous est offert.</p>
+    <p>{{ 'order_pdf.promo'|trans|raw }}</p>
 
-    <ul>-
-        <li>Evénement soutenu : Festival Un-Mute avec {{ cf.contractArtist.artist.artistname }}</li>
-        <li>Date de l'événement : {{ cf.contractArtist.dateConcert|date('d/m/Y') }}</li>
-        <li>Montant total : {{ cf.amount }} €</li>
-        <li>Nombre de tickets achetés : {{ cf.counterPartsQuantityOrganic }}</li>
+    <ul>
+        <li>{{ 'order_pdf.labels.event'|trans|raw }} : {{ 'event.generic_name'|trans({'%artist%':cf.contractArtist.artist.artistname})|raw }}</li>
+        <li>{{ 'order_pdf.labels.event_date'|trans|raw }} : {{ cf.contractArtist.dateConcert|date('d/m/Y') }}</li>
+        <li>{{ 'order_pdf.labels.total_amount'|trans|raw }} : {{ cf.amount }} €</li>
+        <li>{{ 'order_pdf.labels.nb_tickets'|trans|raw }} : {{ cf.counterPartsQuantityOrganic }}</li>
         {% set freeTickets = cf.counterPartsQuantityPromotional %}
         {% if freeTickets > 0 %}
-            <li>Nombre de tickets supplémentaires obtenus par promotion : {{ freeTickets }}</li>
+            <li>{{ 'order_pdf.labels.nb_tickets_promo'|trans|raw }} : {{ freeTickets }}</li>
         {% endif %}
     </ul>
 
 
-    <h2>Détails de la commande</h2>
+    <h2>{{ 'order_pdf.details.title'|trans|raw }}</h2>
 
     <table>
         <tr>
-            <th>Article</th>
-            <th>Quantité</th>
-            <th>Prix unitaire</th>
-            <th>Prix</th>
+            <th>{{ 'order_pdf.details.labels.counterpart'|trans|raw }}</th>
+            <th>{{ 'order_pdf.details.labels.quantity'|trans|raw }}</th>
+            <th>{{ 'order_pdf.details.labels.unit_price'|trans|raw }}</th>
+            <th>{{ 'order_pdf.details.labels.total_price'|trans|raw }}</th>
         </tr>
         {% for purchase in cf.purchases %}
             <tr>
@@ -50,7 +47,7 @@
             {% if freeTickets > 0 %}
                 <tr>
                     <td>
-                        {{ purchase.counterpart.name }} - promotion
+                        {{ purchase.counterpart.name }} - {{ 'order_pdf.details.labels.promo'|trans|raw }}
                     </td>
                     <td>
                         {{ freeTickets }}
@@ -66,15 +63,14 @@
         {% endfor %}
     </table>
 
-    <h2>Processus d'achat Un-Mute</h2>
+    <h2>{{ 'order_pdf.process.title'|trans|raw }}</h2>
 
     <p>
-        Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins {{ cf.contractArtist.minTickets }} tickets sur Un-Mute pour ce concert.
-        Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur https://un-mute.be
+        {{ 'order_pdf.process.content'|trans({'%min_tickets%': cf.contractArtist.minTickets})|raw }}
     </p>
 {% endblock %}
 
 {% block footer %}
-    <p>Cette confirmation de commande a été générée le {{ cf.date|date('d/m/Y') }}. Identifiant commande : {{ cf.barcodeText }}</p>
+    <p>{{ 'order_pdf.footer.tracking'|trans({'%date%': cf.date|date('d/m/Y'), '%id%': cf.barcodeText})|raw }}</p>
     {{ parent() }}
 {% endblock %}

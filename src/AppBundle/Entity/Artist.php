@@ -15,7 +15,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Artist implements TranslatableInterface
 {
-
     use ORMBehaviors\Translatable\Translatable;
     use ORMBehaviors\Sluggable\Sluggable;
 

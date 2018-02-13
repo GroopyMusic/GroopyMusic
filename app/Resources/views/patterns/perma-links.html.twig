@@ -1,7 +1,7 @@
 {% if not home_header and not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
     <div id="inscription-perma-link">
         {% block inscription_perma_link %}
-            <a class="btn btn-primary text-uppercase inscription-link header-button text-white d-none d-{% if home_header %}md{% else %}lg{% endif %}-inline-block" href="{{ path('fos_user_registration_register') }}">Inscription</a>
+            <a class="btn btn-primary text-uppercase inscription-link header-button text-white d-none d-{% if home_header %}md{% else %}lg{% endif %}-inline-block" href="{{ path('fos_user_registration_register') }}">{{ 'header.nav.sign_up'|trans|raw }}</a>
         {% endblock %}
     </div>
 {% endif %}
@@ -9,16 +9,9 @@
 <div id="not-auth-perma-links">
     {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         {% if home_header %}{{ block('inscription_perma_link') }}{% endif %}
-        {% block header_login_link %}<a class="btn btn-primary text-uppercase header-button" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">Connexion</a>{% endblock %}
+        {% block header_login_link %}<a class="btn btn-primary text-uppercase header-button" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'header.nav.sign_in'|trans|raw }}</a>{% endblock %}
     {% else %}
 
-        {# set cart_nb = cart_articles_nb() %}
-        {% if cart_nb > 0 %}
-            <a href="{{ path('user_cart') }}" class="btn btn-primary py-0 pl-0 pr-1 mr-1 color-secondary">
-                <img src="{{ asset('images/cart.png') }}" />
-                <span class="color-secondary p-1 rounded-circle">{{ cart_nb }}</span>
-            </a>
-        {% endif #}
         {% set unseen_nb = unseen_notifs_nb() %}
         {% set last_notifs = last_notifs(5) %}
 
@@ -45,7 +38,7 @@
                     </div>
                 </div>
                 <ul class="dropdown-menu notifications-menu-preview" role="menu" aria-labelledby="notifs-toggler">
-                    <div class="notifications-menu-preview-heading"><h4 class="menu-title"><a href="{{ path('user_notifications') }}">Toutes les notifications</a></h4>
+                    <div class="notifications-menu-preview-heading"><h4 class="menu-title"><a href="{{ path('user_notifications') }}">{{ 'header.nav.all_notifications'|trans|raw }}</a></h4>
                     </div>
                     <div class="notifications-menu-preview-wrapper">
                         {% for notif in last_notifs %}
@@ -55,14 +48,13 @@
                 </ul>
             {% endif %}
             <div class="dropdown d-inline-block">
-                <a id="dropdownMenuButton" class="btn uppercase dropdown-toggle px-2 px-md-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mon compte</a>
+                <a id="dropdownMenuButton" class="btn uppercase dropdown-toggle px-2 px-md-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ 'header.nav.my_account'|trans|raw }}</a>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="{{ path('user_my_artists') }}">Mes artistes</a>
-                    <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">Mon profil</a>
-                    <a class="dropdown-item" href="{{ path('user_paid_carts') }}">Mes commandes</a>
-                    {#<a class="dropdown-item" href="{{ path('user_cart') }}">Panier</a>#}
+                    <a class="dropdown-item" href="{{ path('user_my_artists') }}">{{ 'header.nav.my_artists'|trans|raw }}</a>
+                    <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">{{ 'header.nav.my_profile'|trans|raw }}</a>
+                    <a class="dropdown-item" href="{{ path('user_paid_carts') }}">{{ 'header.nav.my_orders'|trans|raw }}</a>
                     {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
-                    <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                    <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">{{ 'header.nav.log_out'|trans|raw }}</a>
                 </div>
             </div>
         </div>

@@ -45,7 +45,7 @@
                                         {% for purchase in contract.purchases %}
                                             {% if not loop.first %}<br /><br />{% endif %}
                                             {{ purchase.counterpart.name }}
-                                            <br /> <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">Festival Un-Mute avec {{ contract.contractArtist.artist.artistname }}</a>
+                                            <br /> <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">{{ 'event.generic_name'|trans({'%artist%': contract.contractArtist.artist.artistname}) }}</a>
                                         {% endfor %}
                                 {% endfor %}
                             </td>

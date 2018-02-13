@@ -29,7 +29,7 @@
                             <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ 'artist_profile.menu.see'|trans|raw }}</a>
                         </li>
                         <li class="nav-item{% if active_link == 'leave' %} active{% endif %}">
-                            <a class="nav-link danger-color" href="{{ path('artist_leave', {'id': artist.id}) }}">{{ 'artist_profile.menu.leave'|trans|raw }}Quitter l'artiste</a>
+                            <a class="nav-link danger-color" href="{{ path('artist_leave', {'id': artist.id}) }}">{{ 'artist_profile.menu.leave'|trans|raw }}</a>
                         </li>
                     </ul>
                 </div>
@@ -39,7 +39,5 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 {% endblock  %}

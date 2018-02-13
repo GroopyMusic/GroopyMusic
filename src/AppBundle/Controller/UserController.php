@@ -30,6 +30,7 @@ use AppBundle\Entity\ContractFan;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -151,7 +152,7 @@ class UserController extends Controller
     /**
      * @Route("/new-artist", name="user_new_artist")
      */
-    public function newArtistAction(Request $request, UserInterface $user) {
+    public function newArtistAction(Request $request, UserInterface $user, TranslatorInterface $translator) {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -160,13 +161,6 @@ class UserController extends Controller
         $artist = new Artist($phase);
 
         $form = $this->createForm(ArtistType::class, $artist, ['edit' => false]);
-        $form->add('accept_conditions', CheckboxType::class, array(
-            'required' => true,
-            'label' => 'labels.artist.accept_conditions',
-            'constraints' => [
-                new NotBlank(['message' => 'Vous devez accepter les conditions d\'utilisation pour continuer.']),
-            ],
-        ));
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -178,7 +172,7 @@ class UserController extends Controller
 
             $em->flush();
 
-            $this->addFlash('notice', "L'artiste " . $artist->getArtistname() . " a bien été créé.");
+            $this->addFlash('notice', $translator->trans('notices.artist_create', ['%artist%' => $artist->getArtistname()]));
 
             return $this->redirectToRoute('user_my_artists');
         }
@@ -192,9 +186,7 @@ class UserController extends Controller
      * @Route("/new-crowdfunding-contact-us", name="user_new_contract_artist_temp")
      */
     public function newContractTempAction() {
-        $this->addFlash('info', 'Cher artiste, merci d\'avoir montré votre intérêt pour Un-Mute. 
-        Pour organiser votre premier concert par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, 
-         ou d\'envoyer un e-mail à pierre@un-mute.be.');
+        $this->addFlash('info', 'infos.new_event_temp');
 
         return $this->redirectToRoute('suggestionBox');
     }
@@ -256,7 +248,7 @@ class UserController extends Controller
 
                 $flow->reset(); // remove step data from the session
 
-                $this->addFlash('notice', 'Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans l\'organisation de celui-ci !');
+                $this->addFlash('notice', 'notices.event_create');
                 return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]); // redirect when done
             }
         }
@@ -285,7 +277,7 @@ class UserController extends Controller
 
             $error_detect = $em->getRepository('AppBundle:User')->findOneBy(['email' => $email]);
             if($error_detect != null) {
-                $form->addError(new FormError('Cette adresse e-mail est déjà associée à un compte Un-Mute.'));
+                $this->addFlash('error', 'errors.change_email_already_used');
             }
 
             else {
@@ -294,7 +286,7 @@ class UserController extends Controller
                 $this->get('AppBundle\Services\MailDispatcher')->sendEmailChangeConfirmation($user);
                 $em->flush();
 
-                $this->addFlash('notice', 'Votre demande a bien été reçue. Pour valider le changement d\'adresse e-mail, il vous faut cliquer sur un lien qui a été envoyé à la nouvelle adresse demandée.');
+                $this->addFlash('notice', 'notices.change_email_request');
 
                 return $this->redirectToRoute('user_change_email');
             }
@@ -310,9 +302,10 @@ class UserController extends Controller
      */
     public function advancedAction(Request $request, UserInterface $user) {
 
+        /** @var User $user */
         $form = $this->createFormBuilder(['submit' => false])
             ->add('submit', SubmitType::class, array(
-                'label' => 'Supprimer mon compte',
+                'label' => 'labels.user.advanced.confirm', // Supprimer mon compte
                 'attr' => ['class' => 'btn btn-danger'],
             ))->getForm();
 
@@ -348,8 +341,7 @@ class UserController extends Controller
             $session = $request->getSession();
             $session->clear();
 
-            $this->addFlash('notice', 'Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit.
-            Bonne continuation !');
+            $this->addFlash('notice', 'notices.account_deletion');
             $response = $this->redirectToRoute('homepage');
 
             // Clearing the cookies.
@@ -383,7 +375,7 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
 
-            $this->addFlash('notice', 'Les modifications ont été enregistrées.');
+            $this->addFlash('notice', 'notices.edition');
 
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }

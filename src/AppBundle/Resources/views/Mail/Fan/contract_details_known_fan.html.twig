@@ -4,20 +4,10 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
-            {% set firstparts = '' %}
-            {% set both = first is not null and second is not null %}
-
-            {% if first is not null %}
-                {% set firstparts = firstparts ~ 'Mystère également résolu... ' %}
-                {% if both %}
-                    {% set firstparts = firstparts ~ "Les deux artistes qui joueront lors de la première partie sont désormais connus : il s'agit de " ~ first.artistName ~ " et " ~ second.artistName ~ " !" %}
-                {% else %}
-                    {% set firstparts = firstparts ~ "L'artiste qui jouera lors de la première partie est désormais connu : il s'agit de " ~ first.artistName ~ " !" %}
-                {% endif %}
-            {% endif %}
             {{ email_content('concert.fan.tickets', {
-                '%firstparts%': firstparts,
-                '%artist%': artist.artistName,
+                '%invited1%': first.artistName,
+                '%invited2%': second.artistName,
+                '%host%': artist.artistName,
                 '%hall%': contract.reality.hall.name,
                 '%date%': contract.reality.date,
             })|raw }}
