@@ -7,6 +7,13 @@
             {{ email_content('order', {
                 '%url%': absolute_url(path('homepage'))
             })|raw }}
+
+            {% if motivations is not empty %}
+                <p>{{ 'others.message_from_artist'|trans({}, 'emails') }}</p>
+                {# Todo translate motivations ? #}
+                <blockquote>{{ motivations }}</blockquote>
+            {% endif %}
+
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

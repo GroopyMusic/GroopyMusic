@@ -5,12 +5,9 @@
 {% autoescape false %}
 
 {% block content %}
-
-   {% block content %}
-        {{ email_content('order', {
-            '%url%': absolute_url(path('homepage'))
-        })|raw }}
-    {% endblock %}
+    {{ email_content('order', {
+        '%url%': absolute_url(path('homepage'))
+    })|raw }}
 {% endblock %}
 
 {% endautoescape %}

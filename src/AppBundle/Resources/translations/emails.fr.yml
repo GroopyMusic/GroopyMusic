@@ -11,6 +11,9 @@ subjects:
       known_outcome: "Concert de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
 
+others:
+  message_from_artist: Message de l'artiste
+
 change_email:
   confirmation: |
     Bonjour %username%,
@@ -110,9 +113,8 @@ concert:
 
 order: |
     Merci d'avoir passé commande chez Un-Mute. Vous allez peut-être permettre à un artiste de se produire sur une scène belge reconnue et devant un public en folie !
-    Vous trouverez le récapitulatif de votre commande en pièces jointes, et dans votre espace personnel sur notre <a href="%url%">site Web</a>.
 
-    Actuellement, vous bénéficiez également de la promotion suivante : par lot de 3 tickets achetés, un quatrième vous est offert !
+    Vous trouverez le récapitulatif de votre commande en pièces jointes, et dans votre espace personnel sur notre <a href="%url%">site Web</a>.
 
 contact:
   copy: |

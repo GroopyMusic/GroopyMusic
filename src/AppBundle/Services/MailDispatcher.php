@@ -222,7 +222,7 @@ class MailDispatcher
         $to = [$contractFan->getFan()->getEmail()];
         $toName = [$contractFan->getFan()->getDisplayName()];
         $subject = 'subjects.order_recap';
-        $params = [];
+        $params = ['motivations' => $contractFan->getContractArtist()->getMotivations()];
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::ORDER_RECAP_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
