@@ -147,7 +147,8 @@ class Hall extends Partner
 
     public function refreshDates() {
 
-        $minimum_days_from_today_for_crowdfunding = $this->getStep()->getDeadlineDuration() + $this->getStep()->getDelay();
+        $delay = $this->getDelay() > 0 ? $this->delay : $this->getStep()->getDelay();
+        $minimum_days_from_today_for_crowdfunding = $this->getStep()->getDeadlineDuration() + $delay;
         $days_margin_for_crowdfunding = $this->getStep()->getDelayMargin();
 
         $max_cursor = (new \DateTime())->add(new \DateInterval('P'.($minimum_days_from_today_for_crowdfunding + $days_margin_for_crowdfunding).'D'))->format(self::DATE_FORMAT);

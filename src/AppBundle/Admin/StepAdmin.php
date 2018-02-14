@@ -79,11 +79,15 @@ class StepAdmin extends BaseAdmin
                 ))
                 ->add('delay', null, array(
                     'required' => true,
-                    'label' => 'Délai de confirmation',
+                    'label' => 'Délai de confirmation par défaut (peut varier en fonction des salles)',
                 ))
                 ->add('delay_margin', null, array(
                     'required' => true,
                     'label' => 'Nombre de jours ouverts pour le choix de date après le délai de confirmation (= fenêtre de shotgun pour les artistes)'
+                ))
+                ->add('deadline_duration', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de jours avant la validation',
                 ))
                 ->add('min_tickets', null, array(
                     'required' => true,
@@ -139,11 +143,15 @@ class StepAdmin extends BaseAdmin
                 ))
                 ->add('delay', null, array(
                     'required' => true,
-                    'label' => 'Délai de confirmation',
+                    'label' => 'Délai de confirmation par défaut (peut varier en fonction des salles)',
                 ))
                 ->add('delay_margin', null, array(
                     'required' => true,
-                    'label' => 'Nombre de jours ouverts pour le choix de date après le délai de confirmation (= fenêtre de shotgun pour les artistes)'
+                    'label' => 'Nombre de jours ouverts pour le choix de date après le délai de confirmation (= fenêtre de shotgun pour les artistes)',
+                ))
+                ->add('deadline_duration', null, array(
+                    'required' => true,
+                    'label' => 'Nombre de jours avant la validation',
                 ))
                 ->add('min_tickets', null, array(
                     'required' => true,
