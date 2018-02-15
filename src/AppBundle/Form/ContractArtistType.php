@@ -38,20 +38,20 @@ class ContractArtistType extends AbstractType
                             return $er->queryNotCurrentlyBusy($user);
                         },
                         'constraints' => [
-                            new NotBlank(['message' => 'Merci de renseigner un artiste.']),
+                            new NotBlank(['message' => 'contractartist.artist.blank']),
                         ],
                     ))
                     ->add('province', EntityType::class, array(
                         'label' => 'labels.contractartist.province',
                         'required' => false,
                         'class' => Province::class,
-                        'placeholder' => 'Sans importance',
+                        'placeholder' => 'Sans importance', // TODO translate
                     ))
                     ->add('step', EntityType::class, array(
                         'label' => 'labels.contractartist.step',
                         'class' => Step::class,
                         'constraints' => [
-                            new NotBlank(['message' => 'Merci de renseigner un type de concert.']),
+                            new NotBlank(['message' => 'contractartist.artist.blank']),
                         ],
                     ));
                 break;
@@ -82,7 +82,7 @@ class ContractArtistType extends AbstractType
                         'label' => 'labels.contractartist.accept_conditions',
                         'required' => true,
                         'constraints' => [
-                            new IsTrue(['message' => 'Vous devez accepter les conditions d\'utilisation pour poursuivre.']),
+                            new IsTrue(['message' => 'contractartist.accept_conditions.blank']),
                         ],
                     ))
                 ;

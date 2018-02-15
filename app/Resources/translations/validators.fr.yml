@@ -1,0 +1,49 @@
+fos_user:
+  email:
+    already_used: Cette adresse e-mail est déjà utilisée.
+    blank: Merci de renseigner votre adresse e-mail.
+    invalid: Cette adresse e-mail est invalide.
+    long: Cette adresse e-mail est trop longue.
+    short: Cette adresse e-mail est trop courte.
+  password:
+    blank: Merci de choisir un mot de passe.
+    short: Ce mot de passe est trop court. Il doit faire un minimum de {{ limit }} caractères.
+  username:
+    already_used: Cette adresse e-mail est déjà utilisée.
+    blank: Merci de renseigner votre adresse e-mail.
+    long: Cette adresse e-mail est trop longue.
+    short: Cette adresse e-mail est trop courte.
+
+address:
+  street:
+    long: Le nom de rue ne peut excéder {{ limit }} caractères.
+  number:
+    long: Le numéro de rue ne peut excéder {{ limit }} caractères.
+  zipcode:
+    long: Le code postal ne peut excéder {{ limit }} caractères.
+  city:
+    long: Le nom de la ville ne peut excéder {{ limit }} caractères.
+
+artist:
+  artistname:
+    long: Le nom d'artiste ne peut excéder {{ limit }} caractères.
+  links:
+    url: Veuillez entrer une URL valide.
+  accept_conditions:
+    blank: Vous devez accepter les conditions d'utilisation pour continuer.
+
+artist_user:
+  role:
+    long: Le rôle ne peut dépasser {{ limit }} caractères.
+
+concert_possibility:
+  date:
+    blank: Merci de renseigner une date pour le concert.
+
+contractartist:
+  artist:
+    blank: Merci de renseigner un artiste.
+  step:
+    blank: Merci de renseigner un type de concert.
+  accept_conditions:
+    blank: Vous devez accepter les conditions d'utilisation pour poursuivre.

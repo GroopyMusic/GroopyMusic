@@ -29,7 +29,7 @@ class ChangePasswordListener implements EventSubscriberInterface {
     }
 
     public function onChangePasswordSuccess(FormEvent $event) {
-        $this->session->getFlashBag()->add('notice', 'change_password.well_received');
+        $this->session->getFlashBag()->add('notice', 'notices.change_password');
         $url = $this->router->generate('fos_user_change_password');
         $event->setResponse(new RedirectResponse($url));
     }

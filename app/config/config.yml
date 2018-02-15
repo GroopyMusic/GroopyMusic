@@ -160,14 +160,14 @@ jms_translation:
     routes:
       dirs: ['%kernel.root_dir%', '%kernel.root_dir%/../src']
       output_dir: "%kernel.root_dir%/Resources/translations"
-      output_format: xliff
+      output_format: yml
       excluded_dirs: [Tests]
       extractors: [jms_i18n_routing]
       domain: routes # run php bin/console translation:extract en --config=routes --output-format=xliff
     app:
       dirs: ['%kernel.root_dir%', '%kernel.root_dir%/../src']
       output_dir: "%kernel.root_dir%/Resources/translations"
-      output_format: xliff
+      output_format: yml
 
 tetranz_select2_entity:
     minimum_input_length: 0

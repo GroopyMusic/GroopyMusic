@@ -564,6 +564,7 @@ notices:
   change_email_logged_out: Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.
   change_email: Votre adresse e-mail a bien été modifiée.
   account_deletion: Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit. Bonne continuation !
+  change_password: Votre mot de passe a bien été modifié.
 
 errors:
   change_email_token_expired: Ce jeton est expiré.
@@ -586,3 +587,95 @@ errors:
 
 infos:
   new_event_temp: Cher artiste, merci d'avoir montré votre intérêt pour Un-Mute. Pour organiser votre premier concert par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, ou d'envoyer un e-mail à pierre@un-mute.be.
+
+html.email.head.link.to.web.view.text.%url%: Voir dans le navigateur
+txt.email.head.link.to.web.view.text.%url%: Voir dans le navigateur
+
+ie:
+  warning: Apparemment, vous utilisez un ancien navigateur. Pour profiter pleinement des fonctionnalités de ce site, pensez à le mettre à jour !
+
+noscript:
+  warning: Pour profiter pleinement des fonctionnalités de ce site, activez votre JavaScript.
+
+labels:
+  address:
+    city: Ville
+    country: Pays
+    number: Numéro
+    street: Rue
+    zipcode: Code postal
+
+  artist:
+    accept_conditions: J'ai lu et j'accepte les conditions générales d'utilisation de la plateforme Un-Mute
+    artistname: Nom de scène
+    bandcamp: Lien Bandcamp
+    biography: Biographie
+    facebook: Lien Facebook
+    genres: Styles musicaux
+    province: Province d'origine
+    short_description: Description courte (moins de 255 caractères)
+    soundcloud: Lien SoundCloud
+    spotify: Lien Spotify
+    submit: Valider
+    twitter: Lien Twitter
+    website: Site Web
+
+  artist_medias:
+    submit: Enregistrer les modifications
+
+  artist_ownerships:
+    submit: Enregistrer les propriétaires
+
+  ownershiprequest:
+    accept: Accepter cette proposition
+    refuse: Décliner cette proposition
+
+  suggestionbox:
+    email: Adresse e-mail
+    firstname: Prénom
+    mailcopy: Recevoir une copie du message par mail
+    message: Message
+    object: Objet
+    submit: Envoyer
+    type: Type de message
+
+  user:
+    firstname: Prénom
+    lastname: Nom
+    newemail:
+      submit: Changer mon adresse e-mail
+    newsletter: Je souhaite recevoir des newsletters et autres communications commerciales d'Un-Mute Asbl
+    preferences:
+      submit: Enregistrer
+    profile:
+      firstname: Prénom
+      lastname: Nom de famille
+      submit: Enregistrer
+    accept_conditions: J'accepte les conditions générales d'utilisation
+    askedEmail:
+      first: Nouvelle adresse e-mail demandée
+      second: Répéter la nouvelle adresse e-mail
+    advanced:
+      confirm: Supprimer mon compte
+
+  artist_user:
+    submit: Enregistrer le rôle
+
+  concertpossibility:
+    date: Date du concert
+    hall: Salle où aura lieu le concert
+
+  contractartist:
+    flow_1: Choix de la salle
+    flow_2: Choix de la date
+    flow_3: Confirmation
+    accept_conditions: J'ai lu et j'accepte les conditions générales d'utilisation
+    artist: Artiste à produire
+    motivations: Vos motivations (elles seront communiquées aux producteurs potentiels)
+    province: Province dans laquelle produire l'artiste
+    step: Type de concert recherché
+
+  contractartistpossibility:
+    additional_info: Informations supplémentaires à transmettre aux organisateurs Un-Mute
+
+

@@ -15,7 +15,7 @@
                         or (form1 is defined and not form1.vars.valid)
                         or (form2 is defined and not form2.vars.valid))
                     %}
-                        {{ error('generic_form_error'|trans)|raw }}
+                        {{ error('generic_form_error')|raw }}
                     {% endif %}
                     {% if (form is defined and not form.vars.valid) %}
                         {{ form_errors(form) }}

@@ -27,7 +27,7 @@ class ArtistMediasType extends AbstractType
             ))
             ->add('submit', SubmitType::class, array(
                 'attr' => ['class' => 'btn btn-primary'],
-                'label' => 'Enregistrer les modifications'
+                'label' => 'labels.artist_medias.submit'
             ))
         ;
     }

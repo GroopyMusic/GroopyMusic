@@ -18,7 +18,6 @@ class ContractArtist_ArtistType extends AbstractType
         $builder
             ->add('artist', EntityType::class, array(
                 'required' => true,
-                ''
             ));
     }
     

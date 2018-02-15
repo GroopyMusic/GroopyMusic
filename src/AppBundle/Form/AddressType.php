@@ -24,7 +24,7 @@ class AddressType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 255, 'maxMessage' => 'Le nom de rue ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'address.street.long'])
                 ],
             ))
             ->add('number', TextType::class, array(
@@ -32,7 +32,7 @@ class AddressType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 10, 'maxMessage' => 'Le numéro de rue ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 10, 'maxMessage' => 'address.number.long'])
                 ],
             ))
             ->add('zipcode', TextType::class, array(
@@ -40,7 +40,7 @@ class AddressType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 10, 'maxMessage' => 'Le code postal ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 10, 'maxMessage' => 'address.zipcode.long'])
                 ],
             ))
             ->add('city', TextType::class, array(
@@ -48,7 +48,7 @@ class AddressType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 50, 'maxMessage' => 'Le nom de la ville ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 50, 'maxMessage' => 'address.city.long'])
                 ],
             ))
             ->add('country', CountryType::class, array(
