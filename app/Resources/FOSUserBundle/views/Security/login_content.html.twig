@@ -41,6 +41,9 @@
                         <div class="mb-4 mt-1">
                             <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a> | <a href="{{ path('fos_user_registration_register') }}">Pas encore inscrit ?</a>
                         </div>
+                        <input type="hidden" name="_csrf_token"
+                               value="{{ csrf_token('authenticate') }}"
+                        >
                         <div class="text-center">
                             <button class="btn btn-primary text-uppercase" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
                         </div>

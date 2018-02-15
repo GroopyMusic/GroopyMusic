@@ -53,7 +53,7 @@ class ContractArtistAdmin extends BaseAdmin
                 'label' => 'Remboursé',
             ))
             ->add('state', null, array(
-                'label' => 'Etat'
+                'label' => 'Etat',
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(

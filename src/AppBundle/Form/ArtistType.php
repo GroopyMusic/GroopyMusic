@@ -120,7 +120,7 @@ class ArtistType extends AbstractType
                 'attr' => ['class' => 'btn btn-primary']
             ))
         ;
-        if($options['edit']) {
+        if(!$options['edit']) {
             $builder->add('accept_conditions', CheckboxType::class, array(
                 'required' => true,
                 'label' => 'labels.artist.accept_conditions',
