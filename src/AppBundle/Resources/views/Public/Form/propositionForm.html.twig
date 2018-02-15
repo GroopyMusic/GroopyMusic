@@ -1,0 +1,175 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        {{  form_start(form) }}
+
+        {#Form contact person#}
+        <div class="form-group form-row">
+            <div class="col-12">
+                {{ form_row(form.contactPerson.lastname) }}
+            </div>
+        </div>
+        <div class="form-group form-row">
+            <div class="col-12">
+                {{ form_row(form.contactPerson.firstname) }}
+            </div>
+        </div>
+        <div class="form-group form-row">
+            <div class="col-12">
+                {{ form_row(form.contactPerson.phone) }}
+            </div>
+        </div>
+        <div class="form-group form-row">
+            <div class="col-12">
+                {{ form_row(form.contactPerson.mail) }}
+            </div>
+        </div>
+
+        {#First radio button#}
+        <div class="form-row" id="proposition-choice">
+            <div class="form-row form-group">
+                <div class="col-12">
+                    C'est bien une propo de concert?
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="proposition-type" value="concert" class="custom-control-input" checked="true">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Oui</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="proposition-type" value="hall" class="custom-control-input">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Non</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="redirection">
+            On redirige ici
+        </div>
+
+        <div class="form-row" id="artist-choice">
+            <div class="form-row form-group">
+                <div class="col-12">
+                    L'artiste existe déjà ?
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="artist-choice" value="exist" class="custom-control-input" checked="true">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Oui</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="artist-choice" value="not-exist" class="custom-control-input">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Non</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-artist-exist">
+            Select artist
+        </div>
+        {#Form Artist#}
+        <div class="form-new-artist">
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.propositionArtist.artistname) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.propositionArtist.demo_link) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.propositionArtist.genres) }}
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.artists) }}
+                </div>
+            </div>
+        </div>
+        <div class="form-event">
+            {#Form Event#}
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.reason) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.nb_expected) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.payable) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.period_start_date) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.period_end_date) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.day_commentary) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.commentary) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.province) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-new-hall">
+            {#Form Hall#}
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.propositionHall.name) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.propositionHall.contact_email) }}
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-12">
+                    {{ form_row(form.propositionHall.contact_phone) }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-row form-province">
+            <div class="col-12">
+                {{ form_row(form.propositionHall.province) }}
+            </div>
+        </div>
+        {{ form_row(form.submit) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script>
+        $('input[type=radio]').change(function() {
+            //hideError();
+
+        });
+    </script>
+{% endblock %}

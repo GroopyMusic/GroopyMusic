@@ -8,9 +8,11 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Hall;
+use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Form\ContractFanType;
+use AppBundle\Form\PropositionContractArtistType;
 use AppBundle\Services\MailDispatcher;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -512,5 +514,26 @@ class PublicController extends Controller
 
         // return new Response(""), if you used NullOutput()
         return new Response($content);
+    }
+
+    /**
+     * @Route("/proposition", name="proposition")
+     */
+    public function propositionAction(Request $request){
+        $propositionContractArtist = new PropositionContractArtist();
+        $form = $this->createForm(PropositionContractArtistType::class);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($propositionContractArtist);
+            $em->flush();
+
+            return $this->redirectToRoute('proposition');
+        }
+        return new Response($this->renderView('AppBundle:Public/Form:propositionForm.html.twig', array(
+            'form' => $form->createView(),
+        )));
     }
 }
