@@ -79,15 +79,6 @@
                         </div>
                     </div>
 
-                    <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
-                    {% for video in artist.videos %}
-                        <div class="mb-2">
-                            {{ video.embedVideo|raw }}
-                        </div>
-                    {% else %}
-                        <p>{{ 'artist_profile.see.videos.empty'|trans|raw }}</p>
-                    {% endfor %}
-
                     {% if artist.hasOneLink %}
                         <h4 class="mt-4">{{ 'artist_profile.see.links.title'|trans|raw }}</h4>
                         <ul class="um-list">
@@ -128,6 +119,15 @@
                             {% endif %}
                         </ul>
                     {% endif %}
+
+                    <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
+                    {% for video in artist.videos %}
+                        <div class="mb-2">
+                            {{ video.embedVideo|raw }}
+                        </div>
+                    {% else %}
+                        <p>{{ 'artist_profile.see.videos.empty'|trans|raw }}</p>
+                    {% endfor %}
 
                     {% set currentContract = artist.currentContract %}
                     {% if currentContract is not null %}

@@ -39,15 +39,18 @@ class ContractFan
     }
 
     public function generateBarCode() {
-        $this->barcode_text = 'cf'.$this->id . uniqid();
+        if(empty($this->barcode_text))
+            $this->barcode_text = 'cf'.$this->id . uniqid();
     }
 
     public function generateTickets() {
-        foreach($this->purchases as $purchase) {
-            /** @var Purchase $purchase */
-            for($j = 1; $j < $purchase->getQuantity(); $j++) {
-                $counterPart = $purchase->getCounterpart();
-                $this->addTicket(new Ticket($this, $counterPart, $j));
+        if(empty($this->tickets)) {
+            foreach ($this->purchases as $purchase) {
+                /** @var Purchase $purchase */
+                for ($j = 1; $j < $purchase->getQuantity(); $j++) {
+                    $counterPart = $purchase->getCounterpart();
+                    $this->addTicket(new Ticket($this, $counterPart, $j));
+                }
             }
         }
     }

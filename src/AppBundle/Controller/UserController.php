@@ -7,6 +7,7 @@ use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
 use AppBundle\Form\ProfileType;
+use AppBundle\Services\PDFWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -388,19 +389,31 @@ class UserController extends Controller
     /**
  * @Route("/user/orders/{id}", name="user_get_order")
  */
-    public function getOrderAction(Request $request, UserInterface $user, Cart $cart) {
+    public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em) {
 
         $contract = $cart->getFirst();
         if($contract->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
 
+        if(empty($contract->getBarcodeText())) {
+            $contract->generateBarCode();
+        }
+
         $finder = new Finder();
         $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
         $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
 
-        foreach($finder as $file) {
+        if(count($finder) == 0) {
+            $writer->writeOrder($contract);
+            $em->persist($contract);
+            $em->flush();
+            $finder = new Finder();
+            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
+            $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
+        }
 
+        foreach($finder as $file) {
             $response = new BinaryFileResponse($filePath);
             // Set headers
             $response->headers->set('Cache-Control', 'private');
