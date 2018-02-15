@@ -1,0 +1,13 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'reminder_contract_artist.title'|trans %}
+{%- set content -%}
+    {{ 'reminder_contract_artist.content'|trans({
+        '%places%': places,
+        '%step%': step,
+        '%date%': date,
+        '%nbDays%': nbDays
+    })|raw|nl2br }}
+{%- endset -%}

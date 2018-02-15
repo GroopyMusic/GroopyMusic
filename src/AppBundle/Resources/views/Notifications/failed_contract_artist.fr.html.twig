@@ -1,9 +1,0 @@
-{% extends "AppBundle:Notifications:base.html.twig" %}
-
-{% set title = 'Votre concert : résultat des courses' %}
-{%- set content -%}
-    <p>Vous n’avez pas réussi à obtenir le soutien de suffisamment de producteurs pour permettre l’organisation de <a href="{{ path('artist_contract', {'id':contract_id }) }}">votre {{ step }}</a>.</p>
-    <p>Envie de retenter votre chance ? Rendez-vous sur votre espace personnel et choisissez un autre événement !</p>
-    <p>À bientôt,</p>
-    <p>L’équipe Un-Mute</p>
-{%- endset -%}

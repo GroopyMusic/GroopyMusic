@@ -1,3 +1,5 @@
+{% trans_default_domain 'notifications' %}
+
 {% if menu %}
     {% block menu_preview %}
         {{ notification_menu_preview(notification, title, content)|raw }}

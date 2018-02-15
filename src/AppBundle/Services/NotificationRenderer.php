@@ -20,11 +20,6 @@ class NotificationRenderer
 
     public function renderNotif(Notification $notification, $locale, $preview = false, $menu = false) {
         $params = array_merge(['notification' => $notification, 'preview' => $preview, 'menu' => $menu], $notification->getParams());
-
-        try {
-            return $this->twig->render('AppBundle:Notifications:' . $notification->getType() . '.' . $locale . '.html.twig', $params);
-        } catch(\Exception $e) {
-            return $this->twig->render('AppBundle:Notifications:' . $notification->getType() . '.' . $this->requestStack->getCurrentRequest()->getDefaultLocale() . '.html.twig', $params);
-        }
+        return $this->twig->render('AppBundle:Notifications:' . $notification->getType() . '.html.twig', $params);
     }
 }

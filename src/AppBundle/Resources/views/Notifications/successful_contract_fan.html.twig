@@ -1,0 +1,15 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'successful_contract_fan.title'|trans|raw %}
+{%- set content -%}
+    {{ 'successful_contract_fan.content'|trans({
+        '%event_url%': path('artist_contract', {'id': contract_id}),
+        '%step%': step,
+        '%artist%': artist,
+        '%date%': date,
+        '%hall_url%': path('hall', {'id': hall_id}),
+        '%hall_name%': hall_name
+    })|raw|nl2br}}
+{%- endset -%}

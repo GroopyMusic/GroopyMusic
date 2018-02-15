@@ -12,7 +12,7 @@ subjects:
       tickets: Vos tickets Un-Mute pour %artist%
 
 others:
-  message_from_artist: Message de l'artiste
+  message_from_artist: "Message de l'artiste :"
 
 change_email:
   confirmation: |

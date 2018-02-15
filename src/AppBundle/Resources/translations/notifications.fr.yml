@@ -1,0 +1,73 @@
+failed_contract_artist:
+  title: "Votre concert : résultat des courses"
+  content: |
+    Vous n’avez pas réussi à obtenir le soutien de suffisamment de producteurs pour permettre l’organisation de <a href="%event_url%">votre %step%</a>.
+
+    Envie de retenter votre chance ? Rendez-vous sur votre espace personnel et choisissez un autre événement !
+
+    À bientôt,
+
+    L’équipe Un-Mute
+
+failed_contract_fan:
+  title: Concert de %artist% - résultat des courses
+  content: |
+    Cher producteur,
+
+    L’artiste %artist% que vous aviez décidé de soutenir n’a pas pu récolter assez de fonds pour permettre l’organisation de son <a href="%event_url%">%step%</a>.
+
+    Il n’y aura donc pas de concert organisé et vous serez remboursé(e) de l’entièreté du prix des places achetées.
+
+    Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !
+
+    Envie de soutenir d’autres artistes ? Découvrez <a href="%events_url%">nos événements en cours de récolte de tickets.</a>
+
+    À bientôt,
+
+    L’équipe Un-Mute
+
+successful_contract_artist:
+  title: Votre concert va être organisé !
+  content: |
+    Félicitations, vous avez réussi à obtenir le soutien de suffisamment de producteurs pour permettre l’organisation de <a href="%event_url%">votre %step%</a>.
+    Votre concert prendra place le %date% dans la salle <a href="%hall_url%">%hall_name%</a>.
+
+    L'équipe Un-Mute se charge de trouver les premières parties de votre concert. De plus, vous aurez en principe la chance de jouer comme première partie d'autres artistes de la plateforme qui, comme vous, parviennent à remplir une salle.
+    Vous recevrez des e-mails pour vous avertir de tout cela en temps voulu.
+
+    Musicalement,
+
+    L'équipe Un-Mute
+
+successful_contract_fan:
+  title: Votre soutien a porté ses fruits !
+  content: |
+    Félicitations, le <a href="%event_url%">%step% de %artist%</a> a atteint suffisamment de fans pour être produit !
+
+    Sachez qu'il aura lieu le %date% dans la salle <a href="%hall_url%">%hall_name%</a>.
+
+    Bientôt, vous recevrez vos tickets pour le concert, et vous serez averti des deux artistes invités qui viendront jouer avec %artist%.
+
+    Musicalement,
+
+    L'équipe Un-Mute
+
+ongoing_cart:
+  title: Votre panier
+  content: Vous n'avez pas complété vos achats lors de votre dernière visite. Des éléments dans votre panier pourraient permettre d'aider l'un ou l'autre artiste, n'attendez plus !
+
+reminder_contract_artist:
+  title: "Rappel : votre concert à venir"
+  content: |
+    Il ne reste plus que %places% places à vendre pour que votre %step% du %date% soit confirmé !
+
+    À partir d'aujourd'hui, vous avez encore %nbDays% jours pour relancer vos fans via vos canaux de communication.
+
+    De notre côté, nous prévoyons de promouvoir votre évènement dans les prochains jours via nos propres moyens.
+
+tickets_sent:
+  title: Vos tickets sont disponibles
+  content: |
+    Vos tickets pour le Festival Un-Mute du %date% dans la salle "%hall_name%" sont disponibles.
+
+    N'oubliez pas que vous devez les avoir imprimés pour le jour du Festival. Direction <a href="%orders_url%">votre espace personnel</a> pour les télécharger !
