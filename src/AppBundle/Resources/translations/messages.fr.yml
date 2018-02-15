@@ -509,6 +509,7 @@ order_pdf:
   intro: Merci d'avoir passé une commande de tickets de concert avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à pierre@un-mute.be
   promo: "Note : Actuellement, par lot de 3 tickets achetés, un quatrième vous est offert."
   labels:
+    order_date: Date de la commande
     event: Evénement soutenu
     event_date: Date de l'événement
     total_amount: Montant total
