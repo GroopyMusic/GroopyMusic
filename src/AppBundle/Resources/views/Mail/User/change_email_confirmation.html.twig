@@ -7,7 +7,7 @@
             {% set url = absolute_url(path('user_change_email_check', {'token': user.askedEmailToken})) %}
             {{ email_content('change_email.confirmation', {
                     '%username%': user.firstname,
-                    '%confirmationUrl%': '<a href="'~url~'">'~url~'</a>'
+                    '%confirmationUrl%': email_link(url)
                 })|raw
             }}
         {% endblock %}

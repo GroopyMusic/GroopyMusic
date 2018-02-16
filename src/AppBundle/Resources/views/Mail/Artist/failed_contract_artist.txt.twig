@@ -8,7 +8,7 @@
         {{ email_content('concert.artist.failure', {
             '%step%': contract.step.name,
             '%date%': contract.preferences.date|date('d/m/Y'),
-            '%url%': absolute_url(path('homepage')
+            '%url%': absolute_url(path('homepage'))
         })|raw }}
     {% endblock %}
 

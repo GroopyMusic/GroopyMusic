@@ -28,7 +28,6 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ORDER_RECAP_TEMPLATE = 'AppBundle:Mail/Fan:order.txt.twig';
     const DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Artist:contract_details_known_fan.txt.twig';
 
-    const NEWSLETTER_TEMPLATE = 'AppBundle:Mail/User:newsletter.txt.twig';
     const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/User:change_email_confirmation.txt.twig';
 
     const OWNERSHIPREQUEST_MEMBER_TEMPLATE = 'AppBundle:Mail/OwnershipRequest:ownershiprequest_member.txt.twig';
@@ -151,7 +150,6 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
             self::DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE,
             self::DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE,
 
-            self::NEWSLETTER_TEMPLATE,
             self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,
 
             self::OWNERSHIPREQUEST_MEMBER_TEMPLATE,

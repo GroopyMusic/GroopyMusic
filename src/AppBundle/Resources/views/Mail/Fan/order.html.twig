@@ -5,7 +5,7 @@
 
         {% block content %}
             {{ email_content('order', {
-                '%url%': absolute_url(path('homepage'))
+                '%url%': email_link(absolute_url(path('homepage')), 'Un-Mute'),
             })|raw }}
 
             {% if motivations is not empty %}

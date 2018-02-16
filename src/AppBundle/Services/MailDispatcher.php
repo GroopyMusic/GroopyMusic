@@ -7,7 +7,6 @@ use AppBundle\Entity\ArtistOwnershipRequest;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
-use AppBundle\Entity\Newsletter;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
@@ -179,12 +178,6 @@ class MailDispatcher
 
         $this->notification_dispatcher->notifyKnownOutcomeContract($artist_users, $contract, true, $success);
         $this->notification_dispatcher->notifyKnownOutcomeContract($fan_users, $contract, false, $success);
-    }
-
-    public function sendNewsletter(Newsletter $newsletter, $recipients) {
-        $params = ['newsletter' => $newsletter];
-        $subject_params = [];
-        $this->sendEmail(MailTemplateProvider::NEWSLETTER_TEMPLATE, $newsletter->getTitle(), $params, $subject_params, $recipients);
     }
 
     /*
