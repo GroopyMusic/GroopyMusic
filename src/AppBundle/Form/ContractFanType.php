@@ -28,7 +28,7 @@ class ContractFanType extends AbstractType
                 ],
             ))
             ->add('submit', SubmitType::class, array(
-                'label' => 'Valider la commande',
+                'label' => 'labels.contractfan.submit',
                 'attr' => ['class' => 'btn btn-primary'],
             ))
         ;
@@ -36,10 +36,10 @@ class ContractFanType extends AbstractType
 
     public function validate(ContractFan $contractFan, ExecutionContextInterface $context) {
         if($contractFan->getCounterPartsQuantity() == 0) {
-            $context->addViolation( "Pour poursuivre, il faut commander au moins une place de concert !");
+            $context->addViolation('contractfan.quantity_min');
         }
         if($contractFan->getCounterPartsQuantity() > $contractFan->getContractArtist()->getStep()->getMaxTickets() - $contractFan->getContractArtist()->getTicketsSold()) {
-            $context->addViolation( "Il n'y a pas autant de places disponibles !!");
+            $context->addViolation('contractfan.quantity_max');
         }
     }
 

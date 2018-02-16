@@ -285,7 +285,6 @@
                             </div>
                         {% endfor %}
                         {% if app.user %}
-                            {{ form_widget(form._token) }}
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
                         {% else %}

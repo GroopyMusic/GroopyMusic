@@ -23,7 +23,7 @@ class UserEmailType extends AbstractType
                 'second_options' => ['label' => 'labels.user.askedEmail.second'],
                 'required' => true,
                 'constraints' => [
-                    new Email(['message' => 'Cette adresse e-mail est invalide.']),
+                    new Email(['message' => 'fos_user.email.invalid']),
                 ]
             ))
             ->add('submit', SubmitType::class, array(

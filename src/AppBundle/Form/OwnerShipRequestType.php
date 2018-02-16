@@ -17,7 +17,7 @@ class OwnerShipRequestType extends AbstractType
             ->add('email', EmailType::class, array(
                 'required' => true,
                 'constraints' => [
-                    new Email(['message' => 'Cette adresse e-mail est invalide.']),
+                    new Email(['message' => 'ownershiprequest.email.email']),
                 ]
             ));
     }

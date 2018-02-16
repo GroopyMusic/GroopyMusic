@@ -14,6 +14,31 @@ fos_user:
     long: Cette adresse e-mail est trop longue.
     short: Cette adresse e-mail est trop courte.
 
+user:
+  lastname:
+    blank: Merci de renseigner un nom de famille.
+    long: Le nom ne peut dépasser {{ limit }} caractères.
+  firstname:
+    blank: Merci de renseigner un prénom.
+    long: Le prénom ne peut dépasser {{ limit }} caractères.
+  birthday:
+    date: Veuillez rentrer une date d'anniversaire valide, ou laisser ces champs vides.
+  accept_conditions:
+    blank: Vous devez accepter les conditions d'utilisation pour continuer.
+
+suggestionbox:
+  name:
+    long: Le nom ne peut dépasser {{ limit }} caractères.
+  firstname:
+    long: Le prénom ne peut dépasser {{ limit }} caractères.
+  email:
+    email: Cette adresse e-mail est invalide.
+  object:
+    long: L'objet ne peut dépasser {{ limit }} caractères
+  message:
+    blank: Merci de renseigner un message.
+    short: Le message doit contenir au moins {{ limit }} caractères.
+
 address:
   street:
     long: Le nom de rue ne peut excéder {{ limit }} caractères.
@@ -36,7 +61,7 @@ artist_user:
   role:
     long: Le rôle ne peut dépasser {{ limit }} caractères.
 
-concert_possibility:
+concertpossibility:
   date:
     blank: Merci de renseigner une date pour le concert.
 
@@ -47,3 +72,11 @@ contractartist:
     blank: Merci de renseigner un type de concert.
   accept_conditions:
     blank: Vous devez accepter les conditions d'utilisation pour poursuivre.
+
+contractfan:
+  quantity_min: Pour poursuivre, il faut commander au moins une place de concert !
+  quantity_max: Il n'y a pas autant de places disponibles !
+
+ownershiprequest:
+  email:
+    email: Cette adresse e-mail est invalide.

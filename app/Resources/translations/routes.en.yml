@@ -1,92 +1,92 @@
 # Desc: /about
-about: /a-propos
+about: /about
 
 # Desc: /admin/ajax/all-{id}/remove-photo
 admin_ajax_hall_remove_photo: '/admin/ajax/all-{id}/remove-photo'
 
 # Desc: /artist/{id}/api/remove-photo
-artist_ajax_remove_photo: '/artiste/{id}/api/remove-photo'
+artist_ajax_remove_photo: '/artist/{id}/api/remove-photo'
 
 # Desc: /artist/{id}/cancel-request/{request_id}
-artist_cancel_ownership_request: '/artiste/{id}/annuler-requete/{request_id}'
+artist_cancel_ownership_request: '/artiste/{id}/cancel-request/{request_id}'
 
 # Desc: /events/{id}-{slug}
-artist_contract: '/evenements/{id}-concert-de-{slug}'
+artist_contract: '/events/{id}-{slug}'
 
 # Desc: /artist/{id}/all-contracts
-artist_contracts: '/artiste/{id}/crowdfundings'
+artist_contracts: '/artist/{id}/events'
 
 # Desc: /artist/{id}/edit-medias
-artist_edit_medias: '/artiste/{id}/medias'
+artist_edit_medias: '/artist/{id}/medias'
 
 # Desc: /artist/{id}/edit-photos
-artist_edit_photos: '/artiste/{id}/modifier-photos'
+artist_edit_photos: '/artist/{id}/edit-photos'
 
 # Desc: /artist/{id}/edit-profile-picture
-artist_edit_profilepic: '/artiste/{id}/photo-de-profil'
+artist_edit_profilepic: '/artist/{id}/profile-picture'
 
 # Desc: /artist/{id}/leave
-artist_leave: '/quitter-artiste-{id}'
+artist_leave: '/leave-artist-{id}'
 
 # Desc: /artist/{id}/owners
-artist_owners: '/artiste/{id}/proprietaires'
+artist_owners: '/artist/{id}/owners'
 
 # Desc: /artists/{id}-{slug}
-artist_profile: '/artistes/{id}-{slug}'
+artist_profile: '/artists/{id}-{slug}'
 
 # Desc: /artist/{id}/edit
-artist_profile_edit: '/artiste/{id}/editer'
+artist_profile_edit: '/artist/{id}/edit'
 
 # Desc: /validate-ownership-{id}/{code}
-artist_validate_ownership: '/valider-propriete-{id}/{code}'
+artist_validate_ownership: '/validate-ownership-{id}/{code}'
 
 # Desc: /artists
-catalog_artists: /artistes
+catalog_artists: /artists
 
 # Desc: /crowdfundings
-catalog_crowdfundings: /evenements
+catalog_crowdfundings: /events
 
 # Desc: /halls
-catalog_halls: /salles
+catalog_halls: /partners
 
 # Desc: /conditons
-conditions: /conditons-generales
+conditions: /end-user-agreement
 
 # Desc: /faq
-faq: /foire-aux-questions
+faq: /frequently-asked-questions
 
 # Desc: /profile/change-password
-fos_user_change_password: /profil/modifier-mot-de-passe
+fos_user_change_password: /profile/change-password
 
 # Desc: /profile/edit
 fos_user_profile_edit: /profile/edit   # FIXME
 
 # Desc: /profile/
-fos_user_profile_show: /profil/
+fos_user_profile_show: /profile/
 
 # Desc: /register/check-email
-fos_user_registration_check_email: /inscription/verification-email
+fos_user_registration_check_email: /register/check-email
 
 # Desc: /register/confirm/{token}
-fos_user_registration_confirm: '/inscription/confirmation/{token}'
+fos_user_registration_confirm: '/register/confirm/{token}'
 
 # Desc: /register/confirmed
-fos_user_registration_confirmed: /inscription-confirmee
+fos_user_registration_confirmed: /register/confirmed
 
 # Desc: /register/
-fos_user_registration_register: /inscription/
+fos_user_registration_register: /register/
 
 # Desc: /resetting/check-email
-fos_user_resetting_check_email: /nouveau-mdp/check-email
+fos_user_resetting_check_email: /reset-password/check-email
 
 # Desc: /resetting/request
-fos_user_resetting_request: /nouveau-mdp/requete
+fos_user_resetting_request: /reset-password/request
 
 # Desc: /resetting/reset/{token}
-fos_user_resetting_reset: '/nouveau-mdp/reset/{token}'
+fos_user_resetting_reset: '/reset-password/reset/{token}'
 
 # Desc: /resetting/send-email
-fos_user_resetting_send_email: /nouveau-mdp/envoi-email
+fos_user_resetting_send_email: /reset-password/send-email
 
 # Desc: /login_check
 fos_user_security_check: /login_check
@@ -102,7 +102,7 @@ fp_js_form_validator:
     check_unique_entity: /fp_js_form_validator/check_unique_entity
 
 # Desc: /halls/{id}-{slug}
-hall: '/salles/{id}-{slug}'
+hall: '/partners/{id}-{slug}'
 
 # Desc: /
 homepage: /
@@ -117,64 +117,50 @@ suggestionBox: /contact
 suggestionBox_form: /contact/post
 
 # Desc: /team
-team: /equipe-et-valeurs
+team: /team
 
 # Desc: /test-mail
 testmail: /test-mail
 
 # Desc: /advanced-options
-user_advanced_options: /options-avancees
+user_advanced_options: /advanced
 
-# Desc: /api/add-to-cart
-user_ajax_add_to_cart: /api/add-to-cart
-
-# Desc: /api/remove-all-from-cart
-user_ajax_remove_all_from_cart: /api/remove-all-from-cart
-
-# Desc: /api/remove-purchase-from-contract
-user_ajax_remove_from_contract: /api/remove-purchase-from-contract
-
-# Desc: /api/update-motivations/{id}
-user_ajax_update_motivations: '/api/update-motivations/{id}'
-
-# Desc: /cart
-user_cart: /panier
 
 # Desc: /secure-zone/cart/payment/pending/{contract_id}
-user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{contract_id}'
+user_cart_payment_pending: '/secure-zone/payment/pending/{contract_id}'
 
 # Desc: /secure-zone/cart/payment
-user_cart_payment_stripe: /zone-securisee/panier/paiement
+user_cart_payment_stripe: /secure-zone/cart/payment
 
 # Desc: /secure-zone/cart/payment/success/{id}
-user_cart_payment_stripe_success: '/zone-securisee/panier/paiement-reussi/{id}'
+user_cart_payment_stripe_success: '/secure-zone/cart/payment/success/{id}'
 
 # Desc: /secure-zone/cart/send-recap-{id}
 user_cart_send_order_recap: '/secure-zone/cart/send-recap-{id}'
 
 # Desc: /change-email
-user_change_email: /changer-email
+user_change_email: /change-email
 
 # Desc: /change-email-token-{token}
-user_change_email_check: '/changer-email-token-{token}'
+user_change_email_check: '/change-email-token-{token}'
 
 # Desc: /user/orders/{id}
-user_get_order: '/mes-fichiers/commandes/{id}'
+user_get_order: '/my-files/orders/{id}'
 
 # Desc: /user/tickets/{id}
-user_get_tickets: 'mes-fichiers/tickets/{id}'
+user_get_tickets: 'my-files/tickets/{id}'
 
 # Desc: /my-artists
-user_my_artists: /mes-artistes
+user_my_artists: /my-artists
 
 # Desc: /new-artist
-user_new_artist: /creer-artiste
+user_new_artist: /new-artist
 
 # Desc: /new-crowdfunding
 user_new_contract_artist: /nouvel-evenement-beta
 
 # Desc: /new-crowdfunding-contact-us
-user_new_contract_artist_temp: /nouvel-evenement-contact
+user_new_contract_artist_temp: /new-event-contact-us
 
 # Desc: /inbox/notifications/{id}
 user_notification: '/notifications/{id}'
@@ -183,10 +169,10 @@ user_notification: '/notifications/{id}'
 user_notifications: /notifications
 
 # Desc: /paid-carts
-user_paid_carts: /mes-commandes
+user_paid_carts: /my-orders
 
 # Desc: /edit-profile
-user_profile_edit: /profil/edition
+user_profile_edit: /edit-profile
 
 
 #####################################

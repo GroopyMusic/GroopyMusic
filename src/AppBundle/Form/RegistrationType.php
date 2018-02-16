@@ -21,16 +21,16 @@ class RegistrationType extends AbstractType
                 'label' => 'labels.user.lastname',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Merci de renseigner un nom de famille.']),
-                    new Length(['max' => 64, 'maxMessage' => 'Le nom ne peut dépasser {{ limit }} caractères.']),
+                    new NotBlank(['message' => 'user.lastname.blank']),
+                    new Length(['max' => 64, 'maxMessage' => 'user.lastname.long']),
                 ]
             ))
             ->add('firstname', TextType::class, array(
                 'label' => 'labels.user.firstname',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Merci de renseigner un prénom.']),
-                    new Length(['max' => 64, 'maxMessage' => 'Le prénom ne peut dépasser {{ limit }} caractères.']),
+                    new NotBlank(['message' => 'user.firstname.blank']),
+                    new Length(['max' => 64, 'maxMessage' => 'user.firstname.long']),
                 ]
             ))
             // end duplicated
@@ -38,7 +38,7 @@ class RegistrationType extends AbstractType
                 'label' => 'labels.user.accept_conditions',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Vous devez accepter les conditions d\'utilisation pour continuer.']),
+                    new NotBlank(['message' => 'user.accept_conditions.blank']),
                 ],
             ))
             ->add('newsletter', CheckboxType::class, array(
