@@ -16,7 +16,7 @@ class Purchase
 
     public function __toString()
     {
-        return 'purchase #' . $this->id . ' (quantité : ' . $this->quantity . ' ; counterpart : ' . $this->counterpart . ')';
+        return $this->counterpart . ' (x'.$this->quantity.')';
     }
 
     public function __construct()

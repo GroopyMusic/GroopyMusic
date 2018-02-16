@@ -184,6 +184,11 @@ class ContractArtist extends BaseContractArtist
         $this->min_tickets = 0;
     }
 
+    public function __toString()
+    {
+        return 'Festival Un-Mute avec '. $this->artist;
+    }
+
     // Also add as main artist for the concert
     // TODO simplify this process, for now this is needed to make the queries for finding available artists work properly
     // because of inheritance of BaseContractArtist
@@ -198,6 +203,19 @@ class ContractArtist extends BaseContractArtist
         return array_map(function($elem) {
             return $elem->getArtist();
         }, $this->coartists_list->toArray());
+    }
+
+    // Facilitates admin list export
+    public function getCoartistsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->getCoartists() as $key => $val) {
+            $exportList[] = $i .
+                ') id: '. $val->getId() . ' 
+                Nom:' . $val->getArtistname();
+        $i++;
+    }
+        return join(' , ', $exportList);
     }
 
     public function addTicketsSold($quantity) {

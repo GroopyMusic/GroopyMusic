@@ -76,7 +76,7 @@ class Payment
     private $refunded;
 
     /**
-     * @ORM\OneToOne(targetEntity="ContractFan", inversedBy="payment")
+     * @ORM\OneToOne(targetEntity="ContractFan", inversedBy="payment", cascade={"persist"})
      */
     private $contractFan;
 

@@ -18,7 +18,7 @@ class BaseContractArtist
 
     public function __toString()
     {
-        return 'Evénement #'.$this->id. ' de l\'artiste '. $this->artist;
+        return 'Festival Un-Mute avec '. $this->artist;
     }
 
     public function __construct() {

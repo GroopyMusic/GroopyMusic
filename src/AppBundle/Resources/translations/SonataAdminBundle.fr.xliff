@@ -19,7 +19,7 @@
 
             <trans-unit id="app.admin.group.crowdfunding">
                 <source>app.admin.group.crowdfunding</source>
-                <target>Crowdfunding</target>
+                <target>Événements</target>
             </trans-unit>
 
             <trans-unit id="app.admin.group.payment">
@@ -69,7 +69,7 @@
 
             <trans-unit id="app.admin.contractartist">
                 <source>app.admin.contractartist</source>
-                <target>Crowdfunding</target>
+                <target>Événement</target>
             </trans-unit>
 
             <trans-unit id="app.admin.contractfan">

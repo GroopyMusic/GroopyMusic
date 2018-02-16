@@ -1,6 +1,6 @@
 {% if not object.refunded %}
     {% if object.isAskedRefundBy(app.user) %}
-        <a class="btn btn-sm btn-default disabled">remboursement demandé</a>
+        <a class="btn btn-sm btn-default disabled">Remboursement demandé</a>
     {% elseif not object.refunded %}
         <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('refund', object) }}">Rembourser</a>
         {% if object.isAskedRefundByOne %}

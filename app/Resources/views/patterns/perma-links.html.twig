@@ -17,7 +17,7 @@
 
         <div class="dropdown d-inline-block">
             {% if enabled_locales|length > 1 %}
-                <a id="language_switcher" href="#" role="button" data-toggle="dropdown" data-target="#" class="btn btn-primary px-1 px-md-2 mr-1">{{ app.request.locale }}</a>
+                <a id="language_switcher" href="#" role="button" data-toggle="dropdown" data-target="#" class="btn btn-primary px-1 px-md-2 px-lg-3 mr-1">{{ app.request.locale }}</a>
 
                 <div class="dropdown-menu locales-dropdown min-width-auto" role="menu" aria-labelledby="language_switcher">
                     {% for locale in enabled_locales %}
@@ -27,7 +27,7 @@
             {% endif %}
         </div>
         <div class="dropdown d-inline-block">
-            <a id="notifs-toggler" href="{{ path('user_notifications') }}" {% if last_notifs is not empty %}role="button" data-toggle="dropdown" data-target="#"{% endif %} class="btn btn-primary py-0 px-1 px-md-2 mr-1">
+            <a id="notifs-toggler" href="{{ path('user_notifications') }}" {% if last_notifs is not empty %}role="button" data-toggle="dropdown" data-target="#"{% endif %} class="btn btn-primary py-0 px-1 px-md-2 px-lg-3 mr-1">
                 <img src="{{ asset('images/note.svg') }}" class="responsive-img py-2"/>
                 {% if unseen_nb > 0 %}
                     <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
@@ -59,7 +59,7 @@
             {% endif %}
         </div>
         <div class="dropdown d-inline-block">
-            <a id="dropdownMenuButton" class="btn uppercase dropdown-toggle px-1 px-md-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ 'header.nav.my_account'|trans|raw }}</a>
+            <a id="dropdownMenuButton" class="btn uppercase dropdown-toggle px-1 px-md-2 px-lg-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ 'header.nav.my_account'|trans|raw }}</a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="{{ path('user_my_artists') }}">{{ 'header.nav.my_artists'|trans|raw }}</a>
                 <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">{{ 'header.nav.my_profile'|trans|raw }}</a>

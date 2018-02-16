@@ -70,16 +70,22 @@ class PaymentAdmin extends BaseAdmin
             ->add('amount', null, array(
                 'label' => 'Montant',
             ))
+            ->add('contractFan.purchases', null, array(
+                'label' => 'Achats'
+            ))
             ->add('refunded', null, array(
                 'label' => 'Remboursé',
+            ))
+            ->add('asking_refund', null, array(
+                'label' => 'Demandes de remboursement',
             ))
             ->add('contractFan', null, array(
                 'label' => 'Contrat fan',
                 'route' => array('name' => 'show'),
             ))
-            ->add('asking_refund', null, array(
-                'label' => 'Demandes de remboursement',
-            ))
+            ->add('contractFan.ticket_sent', 'boolean', array(
+                    'label' => 'Tickets envoyés',
+                ))
         ;
     }
 }

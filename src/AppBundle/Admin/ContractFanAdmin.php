@@ -75,7 +75,7 @@ class ContractFanAdmin extends BaseAdmin
                     'label' => 'Payé'
                 ))
                 ->add('ticket_sent', 'boolean', array(
-                    'label' => 'Ticket envoyé',
+                    'label' => 'Tickets envoyés',
                 ))
             ->end()
         ;

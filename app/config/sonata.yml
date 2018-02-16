@@ -50,18 +50,6 @@ sonata_admin:
                label_catalogue: SonataAdminBundle
                items:
                    - AppBundle\Admin\ContractArtistAdmin
-                   - AppBundle\Admin\ContractFanAdmin
-                   - AppBundle\Admin\CartAdmin
-#           app.admin.group.special:
-#               label: app.admin.group.special
-#               label_catalogue: SonataAdminBundle
-#               items:
-#                   - AppBundle\Admin\SpecialAdvantageAdmin
-#                   - AppBundle\Admin\SpecialPurchaseAdmin
-           app.admin.group.payment:
-               label: app.admin.group.payment
-               label_catalogue: SonataAdminBundle
-               items:
                    - AppBundle\Admin\PaymentAdmin
                roles: [ROLE_PAYMENTS_ADMIN]
 
@@ -160,18 +148,6 @@ services:
         arguments: [~, AppBundle\Entity\Phase, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.phase }
-        public: true
-
-    AppBundle\Admin\SpecialAdvantageAdmin:
-        arguments: [~, AppBundle\Entity\SpecialAdvantage, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.specialadvantage }
-        public: true
-
-    AppBundle\Admin\SpecialPurchaseAdmin:
-        arguments: [~, AppBundle\Entity\SpecialPurchase, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.specialpurchase }
         public: true
 
     AppBundle\Admin\ConcertPossibilityAdmin:
