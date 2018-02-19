@@ -223,9 +223,11 @@ class ContractArtist extends BaseContractArtist
         $i = 1;
         foreach ($this->payments as $key => $val) {
             /** @var Payment $val */
-            $exportList[] = $i .
-                ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
-            $i++;
+            if(!$val->getRefunded()) {
+                $exportList[] = $i .
+                    ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
+                $i++;
+            }
         }
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
@@ -248,7 +250,9 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getNbPayments() {
-        return count($this->payments);
+        return count(array_filter($this->payments->toArray(), function($elem) {
+            return !$elem->getRefunded();
+        }));
     }
 
     /**

@@ -96,6 +96,7 @@ class PaymentAdmin extends BaseAdmin
             '#' => 'id',
             'Date' => 'date',
             'Stripe ID' => 'chargeId',
+            'Remboursé' => 'refunded',
             '# Utilisateur' => 'user.id',
             'Nom utilisateur' => 'user.displayName',
             '# Evénement' => 'contractArtist.id',
