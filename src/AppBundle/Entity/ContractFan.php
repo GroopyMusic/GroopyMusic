@@ -18,7 +18,16 @@ class ContractFan
 
     public function __toString()
     {
-        return 'contrat fan #' . $this->id;
+        $str = '';
+
+        for($i = 0; $i < $this->purchases->count(); $i++) {
+            if($i > 0) {
+                $str .= ', ';
+            }
+            $str .= $this->purchases->get($i);
+        }
+
+        return $str;
     }
 
     public function __construct(ContractArtist $ca)

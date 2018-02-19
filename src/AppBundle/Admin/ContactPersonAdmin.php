@@ -50,6 +50,11 @@ class ContactPersonAdmin extends BaseAdmin {
             ->add('mail', 'text', array(
                 'label' => 'Adresse e-mail',
             ))
+            ->add('partners_list', null, array(
+                'associated_property' => 'partner',
+                'label' => 'Partenaires liés',
+                'route' => ['name' => 'nonexistent-route'] // TODO make this more usable by returning the route to the partner admin...
+            ))
         ;
     }
 

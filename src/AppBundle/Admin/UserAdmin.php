@@ -10,6 +10,8 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class UserAdmin extends BaseAdmin
 {
+    protected $perPageOptions = array(16, 32, 64, 128, 192, 1000000);
+
     public function configureRoutes(RouteCollection $collection)
     {
         $collection
@@ -50,6 +52,9 @@ class UserAdmin extends BaseAdmin
                 ->add('firstname', null, array(
                     'label' => 'Prénom',
                 ))
+                ->add('email', null, array(
+                    'label' => 'Adresse e-mail',
+                ))
                 ->add('newsletter', null, array(
                     'label' => 'Inscrit à la newsletter',
                 ))
@@ -63,18 +68,10 @@ class UserAdmin extends BaseAdmin
             ->with('Activité')
                 ->add('payments', null, array(
                     'label' => 'Paiements',
-                ))
-                ->add('carts', null, array(
-                    'label' => 'Paniers',
+                    'route' => ['name' => 'show'],
                 ))
                 ->add('stripe_customer_id', null, array(
                     'label' => 'Stripe customer ID',
-                ))
-                ->add('credits', null, array(
-                    'label' => 'Crédits obtenus',
-                ))
-                ->add('specialPurchases', null, array(
-                    'label' => 'Achats avec crédits bonus',
                 ))
             ->end()
         ;

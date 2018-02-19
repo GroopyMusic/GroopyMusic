@@ -211,11 +211,23 @@ class ContractArtist extends BaseContractArtist
         $i = 1;
         foreach ($this->getCoartists() as $key => $val) {
             $exportList[] = $i .
-                ') id: '. $val->getId() . ' 
-                Nom:' . $val->getArtistname();
-        $i++;
+                ') id: '. $val->getId() . ', nom: ' . $val->getArtistname();
+            $i++;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
-        return join(' , ', $exportList);
+
+    // Facilitates admin list export
+    public function getPaymentsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->payments as $key => $val) {
+            /** @var Payment $val */
+            $exportList[] = $i .
+                ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
+            $i++;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
     public function addTicketsSold($quantity) {
@@ -233,6 +245,10 @@ class ContractArtist extends BaseContractArtist
         else {
             return $this->preferences->getDate();
         }
+    }
+
+    public function getNbPayments() {
+        return count($this->payments);
     }
 
     /**

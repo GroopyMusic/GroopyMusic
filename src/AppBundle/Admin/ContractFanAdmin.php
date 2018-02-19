@@ -54,13 +54,16 @@ class ContractFanAdmin extends BaseAdmin
                     'label' => 'Membre',
                     'route' => array('name' => 'show'),
                 ))
-                ->add('contractArtist', null, array(
-                    'label' => 'Crowdfunding',
-                    'route' => array('name' => 'show'),
+                ->add('contractArtist', 'url', array(
+                    'label' => 'Event',
+                    'route' => [
+                        'name' => 'artist_contract',
+                        'parameters' => ['id' => $this->getSubject()->getContractArtist()->getId()]
+                    ],
                 ))
-                ->add('cart', null, array(
-                    'label' => 'Panier correspondant',
-                    'route' => array('name' => 'show'),
+                ->add('payment', null, array(
+                    'label' => 'Paiement',
+                    'route' => ['name' => 'show'],
                 ))
                 ->add('date', 'datetime', array(
                     'label' => 'Date de création',
@@ -68,6 +71,11 @@ class ContractFanAdmin extends BaseAdmin
                 ))
                 ->add('purchases', null, array(
                     'label' => 'Achats',
+                    'route' => ['name' => 'show']
+                ))
+                ->add('cart', null, array(
+                    'label' => 'Panier correspondant',
+                    'route' => array('name' => 'show'),
                 ))
             ->end()
             ->with('État')

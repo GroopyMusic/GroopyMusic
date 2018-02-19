@@ -5,6 +5,9 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
+use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\ContractArtist;
+
 /**
  * Payment
  *
@@ -17,7 +20,7 @@ class Payment
 
     public function __toString()
     {
-        return 'payment #' . $this->id;
+        return 'Paiement de ' . $this->getUser() . ' de ' . $this->getAmount() . ' € pour l\'événement "' . $this->getContractArtist() . '" (' . $this->contractFan . ')';
     }
 
     public function __construct() {
@@ -38,6 +41,18 @@ class Payment
 
     public function isOneStepFromBeingRefunded() {
         return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
+    }
+
+    public function getCounterPartsQuantity() {
+        return $this->contractFan->getCounterPartsQuantity();
+    }
+
+    public function getCounterPartsQuantityOrganic() {
+        return $this->contractFan->getCounterPartsQuantityOrganic();
+    }
+
+    public function getCounterPartsQuantityPromotional() {
+        return $this->contractFan->getCounterPartsQuantityPromotional();
     }
 
     /**
@@ -76,11 +91,13 @@ class Payment
     private $refunded;
 
     /**
+     * @var ContractFan
      * @ORM\OneToOne(targetEntity="ContractFan", inversedBy="payment", cascade={"persist"})
      */
     private $contractFan;
 
     /**
+     * @var ContractArtist
      * @ORM\ManyToOne(targetEntity="ContractArtist", inversedBy="payments")
      */
     private $contractArtist;
@@ -91,6 +108,7 @@ class Payment
     private $amount;
 
     /**
+     * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="User")
      */
     private $asking_refund;

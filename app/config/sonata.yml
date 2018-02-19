@@ -13,12 +13,12 @@ sonata_admin:
              position: left
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.user, app.admin.group.evolution, app.admin.group.content]
+               groups: [app.admin.group.user, app.admin.group.contact, app.admin.group.content]
            -
              position: right
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.crowdfunding, app.admin.group.payment]
+               groups: [app.admin.group.events, app.admin.group.orders]
 
        groups:
            app.admin.group.user:
@@ -27,29 +27,33 @@ sonata_admin:
                items:
                    - AppBundle\Admin\UserAdmin
                    - AppBundle\Admin\ArtistAdmin
-                   - AppBundle\Admin\SuggestionBoxAdmin
-                   - AppBundle\Admin\SuggestionTypeEnumAdmin
-           app.admin.group.evolution:
-               label: app.admin.group.evolution
-               label_catalogue: SonataAdminBundle
-               items:
-                   - AppBundle\Admin\PhaseAdmin
-                   - AppBundle\Admin\StepAdmin
-                   - AppBundle\Admin\CounterPartAdmin
+           app.admin.group.contact:
+                label_catalogue: SonataAdminBundle
+                items:
+                  - AppBundle\Admin\SuggestionBoxAdmin
+                  - AppBundle\Admin\SuggestionTypeEnumAdmin
            app.admin.group.content:
-               label: app.admin.group.content
-               label_catalogue: SonataAdminBundle
-               items:
-                   - AppBundle\Admin\GenreAdmin
-                   #- AppBundle\Admin\PartnerAdmin
-                   - AppBundle\Admin\ContactPersonAdmin
-                   - AppBundle\Admin\HallAdmin
-                   - AppBundle\Admin\ProvinceAdmin
-           app.admin.group.crowdfunding:
-               label: app.admin.group.crowdfunding
+                label: app.admin.group.content
+                label_catalogue: SonataAdminBundle
+                items:
+                  - AppBundle\Admin\GenreAdmin
+                  - AppBundle\Admin\ProvinceAdmin
+                  #- AppBundle\Admin\PartnerAdmin
+                  - AppBundle\Admin\ContactPersonAdmin
+                  - AppBundle\Admin\HallAdmin
+           app.admin.group.events:
+               label: app.admin.group.events
                label_catalogue: SonataAdminBundle
                items:
                    - AppBundle\Admin\ContractArtistAdmin
+                   - AppBundle\Admin\StepAdmin
+                   - AppBundle\Admin\CounterPartAdmin
+
+           app.admin.group.orders:
+               label: app.admin.group.orders
+               label_catalogue: SonataAdminBundle
+               items:
+                   - AppBundle\Admin\ContractFanAdmin
                    - AppBundle\Admin\PaymentAdmin
                roles: [ROLE_PAYMENTS_ADMIN]
 
@@ -142,6 +146,12 @@ services:
         arguments: [~, AppBundle\Entity\Payment, AppBundle:PaymentAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.payment }
+        public: true
+
+    AppBundle\Admin\PurchaseAdmin:
+        arguments: [~, AppBundle\Entity\Purchase, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.purchase }
         public: true
 
     AppBundle\Admin\PhaseAdmin:

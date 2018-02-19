@@ -231,7 +231,8 @@ class ContractArtistAdmin extends BaseAdmin
             'Tickets pour sold out' => 'maxTickets',
             'Tickets encore en vente' => 'crowdable',
             'Artistes invités' => 'coartistsExport',
-
+            'Nombre de paiements' => 'nbPayments',
+            'Paiements' => 'paymentsExport',
         ];
     }
 }
