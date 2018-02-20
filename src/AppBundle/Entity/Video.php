@@ -130,13 +130,13 @@ class Video
 
         if (false !== ($id = $this->getDailyMotionId($url))) {
             $code .= <<<EEE
-<div class='embed-container'><iframe src='https://www.dailymotion.com/embed/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+<div class='small-embed'><iframe src='https://www.dailymotion.com/embed/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
 EEE;
 
         }
         elseif (false !== ($id = $this->getVimeoId($url))) {
             $code .= <<<EEE
-<div class='embed-container'><iframe src='https://player.vimeo.com/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+<div class='small-embed'><iframe src='https://player.vimeo.com/video/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
 EEE;
         }
         elseif (false !== ($id = $this->getYoutubeId($url))) {

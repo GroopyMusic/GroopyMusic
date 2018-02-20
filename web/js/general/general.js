@@ -59,23 +59,46 @@ $(function () {
 
     $('.notification-trigger').attach_notifications_behaviour();
 
-    $(".youtube").each(function() {
+    function attach_youtube_click($video, video_id, title) {
         // Based on the YouTube ID, we can easily find the thumbnail image
-        $(this).css('background-image', 'url(http://i.ytimg.com/vi/' + this.id + '/hqdefault.jpg)');
+        $video.css('background-image', 'url(http://i.ytimg.com/vi/' + video_id + '/hqdefault.jpg)');
+        $video.append('<div class="play"><span class="youtube-caption">' + title + '</span></div>');
 
-        // Overlay the Play icon to make it look like a video player
-        $(this).append($('<div/>', {'class': 'play'}));
-
-        $(document).delegate('#'+this.id, 'click', function() {
+        $(document).delegate('#' + video_id, 'click', function () {
             // Create an iFrame with autoplay set to true
-            var iframe_url = "https://www.youtube.com/embed/" + this.id + "?autoplay=1&autohide=1";
-            if ($(this).data('params')) iframe_url+='&'+$(this).data('params');
+            var iframe_url = "https://www.youtube.com/embed/" + video_id + "?autoplay=1&autohide=1";
+            if ($video.data('params')) iframe_url += '&' + $video.data('params');
 
             // The height and width of the iFrame should be the same as parent
-            var iframe = $('<iframe/>', {'frameborder': '0', 'src': iframe_url, 'width': $(this).width(), 'height': $(this).height() })
+            var iframe = $('<iframe/>', {
+                'frameborder': '0',
+                'src': iframe_url,
+                'width': $video.width(),
+                'height': $video.height()
+            });
 
             // Replace the YouTube thumbnail with YouTube HTML5 Player
-            $(this).replaceWith(iframe);
+            $video.replaceWith(iframe);
+        });
+    }
+
+    $(".youtube").each(function() {
+
+        var video_id = this.id;
+        var $video = $(this);
+
+        $.getJSON("https://www.googleapis.com/youtube/v3/videos", {
+            key: "AIzaSyBMt1U3tTxBt4AtRR4BAwo4knEQXJf4y-A",
+            part: "snippet,statistics",
+            id: video_id
+        }, function(data) {
+            if (data.items.length === 0) {
+                attach_youtube_click($video, video_id, '');
+            }
+
+            else {
+                attach_youtube_click($video, video_id, data.items[0].snippet.title);
+            }
         });
     });
 });
