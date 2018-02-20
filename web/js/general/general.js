@@ -61,7 +61,7 @@ $(function () {
 
     $(".youtube").each(function() {
         // Based on the YouTube ID, we can easily find the thumbnail image
-        $(this).css('background-image', 'url(http://i.ytimg.com/vi/' + this.id + '/sddefault.jpg)');
+        $(this).css('background-image', 'url(http://i.ytimg.com/vi/' + this.id + '/hqdefault.jpg)');
 
         // Overlay the Play icon to make it look like a video player
         $(this).append($('<div/>', {'class': 'play'}));
