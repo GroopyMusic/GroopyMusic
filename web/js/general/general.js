@@ -88,7 +88,8 @@ $(function () {
                 width = Math.min(size.width, $video.outerWidth());
             })
             .always(function() {
-                $video.append('<div class="play"><span class="youtube-caption">' + title + '</span></div>');
+                var span = title != '' ? '<span class="youtube-caption">' + title + '</span>' : '';
+                $video.append('<div class="play">' + span + '</div>');
                 $video.find('.play').css('width', width);
             });
 
@@ -111,7 +112,6 @@ $(function () {
     }
 
     $(".youtube").each(function() {
-
         var video_id = this.id;
         var $video = $(this);
 
@@ -119,7 +119,7 @@ $(function () {
             key: "AIzaSyBMt1U3tTxBt4AtRR4BAwo4knEQXJf4y-A",
             part: "snippet,statistics",
             id: video_id
-        }, function(data) {
+        }).done(function(data) {
             if (data.items.length === 0) {
                 attach_youtube_click($video, video_id, '');
             }
@@ -127,6 +127,9 @@ $(function () {
             else {
                 attach_youtube_click($video, video_id, data.items[0].snippet.title);
             }
+        })
+        .fail(function() {
+            attach_youtube_click($video, video_id, '');
         });
     });
 });
