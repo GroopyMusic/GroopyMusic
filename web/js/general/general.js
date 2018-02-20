@@ -59,10 +59,38 @@ $(function () {
 
     $('.notification-trigger').attach_notifications_behaviour();
 
+    var getBackgroundImageSize = function(el) {
+        var imageUrl = el.match(/^url\(["']?(.+?)["']?\)$/);
+        var dfd = new $.Deferred();
+
+        if (imageUrl) {
+            var image = new Image();
+            image.onload = dfd.resolve;
+            image.onerror = dfd.reject;
+            image.src = imageUrl[1];
+        } else {
+            dfd.reject();
+        }
+
+        return dfd.then(function() {
+            return { width: this.width, height: this.height };
+        });
+    };
+
     function attach_youtube_click($video, video_id, title) {
         // Based on the YouTube ID, we can easily find the thumbnail image
-        $video.css('background-image', 'url(http://i.ytimg.com/vi/' + video_id + '/hqdefault.jpg)');
-        $video.append('<div class="play"><span class="youtube-caption">' + title + '</span></div>');
+        var $url = "url('http://i.ytimg.com/vi/" + video_id + "/hqdefault.jpg')";
+        $video.css('background-image', $url);
+        var width = '100%';
+
+        getBackgroundImageSize($url)
+            .then(function(size) {
+                width = Math.min(size.width, $video.outerWidth());
+            })
+            .always(function() {
+                $video.append('<div class="play"><span class="youtube-caption">' + title + '</span></div>');
+                $video.find('.play').css('width', width);
+            });
 
         $(document).delegate('#' + video_id, 'click', function () {
             // Create an iFrame with autoplay set to true
