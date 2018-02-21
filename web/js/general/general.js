@@ -88,9 +88,12 @@ $(function () {
                 width = Math.min(size.width, $video.outerWidth());
             })
             .always(function() {
-                var span = title != '' ? '<span class="youtube-caption">' + title + '</span>' : '';
-                $video.append('<div class="play">' + span + '</div>');
-                $video.find('.play').css('width', width);
+                if(title != '') {
+                    $video.append('<div class="youtube-caption">' + title + '</div>');
+                }
+                $video.append('<div class="play"></div>');
+                $video.find('.play').css('width', width).css('bottom', $video.find('.youtube-caption').outerHeight()/2);
+                $video.find('.youtube-caption').css('width', width);
             });
 
         $(document).delegate('#' + video_id, 'click', function () {

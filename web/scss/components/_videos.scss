@@ -9,13 +9,14 @@
 }
 
 .youtube .play {
+  @extend .mx-auto;
   background: url("../images/icons/play-video.png") no-repeat center center;
   background-size: 64px 64px;
-  position: absolute;
   height: 100%;
   opacity: .8;
   filter: alpha(opacity=80);
   transition: all 0.2s ease-out;
+  position:relative;
 }
 
 .youtube .play:hover {
@@ -24,6 +25,7 @@
 }
 
 .youtube-caption {
+  @extend .mx-auto;
   background: rgba(255, 231, 231, 0.8);
   color: #772e0a;
   padding: 6px;
