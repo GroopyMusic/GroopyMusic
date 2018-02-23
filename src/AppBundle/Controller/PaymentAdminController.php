@@ -71,6 +71,7 @@ class PaymentAdminController extends Controller
                     ));
 
                     $payment->setRefunded(true);
+                    $payment->getContractFan()->setRefunded(true);
 
                     // Concert
                     if($payment->getContractArtist() instanceof ContractArtist) {
@@ -79,6 +80,7 @@ class PaymentAdminController extends Controller
 
                     $message = 'Paiement remboursé !';
                 }
+
 
                 $em->persist($payment);
                 $em->flush();

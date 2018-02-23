@@ -184,6 +184,11 @@ class ContractArtist extends BaseContractArtist
         $this->min_tickets = 0;
     }
 
+    public function __toString()
+    {
+        return 'Festival Un-Mute avec '. $this->artist;
+    }
+
     // Also add as main artist for the concert
     // TODO simplify this process, for now this is needed to make the queries for finding available artists work properly
     // because of inheritance of BaseContractArtist
@@ -198,6 +203,33 @@ class ContractArtist extends BaseContractArtist
         return array_map(function($elem) {
             return $elem->getArtist();
         }, $this->coartists_list->toArray());
+    }
+
+    // Facilitates admin list export
+    public function getCoartistsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->getCoartists() as $key => $val) {
+            $exportList[] = $i .
+                ') id: '. $val->getId() . ', nom: ' . $val->getArtistname();
+            $i++;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+    }
+
+    // Facilitates admin list export
+    public function getPaymentsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->payments as $key => $val) {
+            /** @var Payment $val */
+            if(!$val->getRefunded()) {
+                $exportList[] = $i .
+                    ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
+                $i++;
+            }
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
     public function addTicketsSold($quantity) {
@@ -215,6 +247,12 @@ class ContractArtist extends BaseContractArtist
         else {
             return $this->preferences->getDate();
         }
+    }
+
+    public function getNbPayments() {
+        return count(array_filter($this->payments->toArray(), function($elem) {
+            return !$elem->getRefunded();
+        }));
     }
 
     /**

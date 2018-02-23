@@ -58,5 +58,82 @@ $(function () {
     });
 
     $('.notification-trigger').attach_notifications_behaviour();
+
+    var getBackgroundImageSize = function(el) {
+        var imageUrl = el.match(/^url\(["']?(.+?)["']?\)$/);
+        var dfd = new $.Deferred();
+
+        if (imageUrl) {
+            var image = new Image();
+            image.onload = dfd.resolve;
+            image.onerror = dfd.reject;
+            image.src = imageUrl[1];
+        } else {
+            dfd.reject();
+        }
+
+        return dfd.then(function() {
+            return { width: this.width, height: this.height };
+        });
+    };
+
+    function attach_youtube_click($video, video_id, title) {
+        // Based on the YouTube ID, we can easily find the thumbnail image
+        var $url = "url('http://i.ytimg.com/vi/" + video_id + "/hqdefault.jpg')";
+        $video.css('background-image', $url);
+        var width = '100%';
+
+        getBackgroundImageSize($url)
+            .then(function(size) {
+                width = Math.min(size.width, $video.outerWidth());
+            })
+            .always(function() {
+                if(title != '') {
+                    $video.append('<div class="youtube-caption">' + title + '</div>');
+                }
+                $video.append('<div class="play"></div>');
+                $video.find('.play').css('width', width).css('bottom', $video.find('.youtube-caption').outerHeight()/2);
+                $video.find('.youtube-caption').css('width', width);
+            });
+
+        $(document).delegate('#' + video_id, 'click', function () {
+            // Create an iFrame with autoplay set to true
+            var iframe_url = "https://www.youtube.com/embed/" + video_id + "?autoplay=1&autohide=1";
+            if ($video.data('params')) iframe_url += '&' + $video.data('params');
+
+            // The height and width of the iFrame should be the same as parent
+            var iframe = $('<iframe/>', {
+                'frameborder': '0',
+                'src': iframe_url,
+                'width': $video.width(),
+                'height': $video.height()
+            });
+
+            // Replace the YouTube thumbnail with YouTube HTML5 Player
+            $video.replaceWith(iframe);
+        });
+    }
+
+    $(".youtube").each(function() {
+        var video_id = this.id;
+        var $video = $(this);
+
+        $.getJSON("https://www.googleapis.com/youtube/v3/videos", {
+            key: "AIzaSyBMt1U3tTxBt4AtRR4BAwo4knEQXJf4y-A",
+            part: "snippet,statistics",
+            id: video_id
+        }).done(function(data) {
+            if (data.items.length === 0) {
+                attach_youtube_click($video, video_id, '');
+            }
+
+            else {
+                attach_youtube_click($video, video_id, data.items[0].snippet.title);
+            }
+        })
+        .fail(function() {
+            attach_youtube_click($video, video_id, '');
+        });
+    });
 });
 

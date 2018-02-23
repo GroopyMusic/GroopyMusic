@@ -19,7 +19,7 @@ class NotificationDispatcher
     const FAILED_CONTRACT_FAN_TYPE = 'failed_contract_fan';
     const SUCCESSFUL_CONTRACT_ARTIST_TYPE = 'successful_contract_artist';
     const SUCCESSFUL_CONTRACT_FAN_TYPE = 'successful_contract_fan';
-    const TICKET_SENT_TYPE = 'ticket_sent';
+    const TICKET_SENT_TYPE = 'tickets_sent';
     const ONGOING_CART_TYPE = 'ongoing_cart';
 
     private $em;
@@ -98,7 +98,8 @@ class NotificationDispatcher
     }
 
     public function notifyTicket(User $user, ContractFan $contractFan) {
-        $this->addNotification($user, self::TICKET_SENT_TYPE, ['contractFan' => $contractFan]);
+        $contractArtist = $contractFan->getContractArtist();
+        $this->addNotification($user, self::TICKET_SENT_TYPE, ['date' => $contractArtist->getDateConcert(), 'hall_name' => $contractArtist->getHallConcert()->getName()]);
     }
 
     public function notifyOngoingCart($users, ContractArtist $contract) {

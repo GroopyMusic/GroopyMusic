@@ -7,6 +7,7 @@ use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
 use AppBundle\Form\ProfileType;
+use AppBundle\Services\PDFWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -388,19 +389,31 @@ class UserController extends Controller
     /**
  * @Route("/user/orders/{id}", name="user_get_order")
  */
-    public function getOrderAction(Request $request, UserInterface $user, Cart $cart) {
+    public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em) {
 
         $contract = $cart->getFirst();
         if($contract->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
 
+        if(empty($contract->getBarcodeText())) {
+            $contract->generateBarCode();
+        }
+
         $finder = new Finder();
         $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
         $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
 
-        foreach($finder as $file) {
+        if(count($finder) == 0) {
+            $writer->writeOrder($contract);
+            $em->persist($contract);
+            $em->flush();
+            $finder = new Finder();
+            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
+            $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
+        }
 
+        foreach($finder as $file) {
             $response = new BinaryFileResponse($filePath);
             // Set headers
             $response->headers->set('Cache-Control', 'private');
@@ -464,194 +477,4 @@ class UserController extends Controller
 
         return new Response($motivations);
     }
-
-    /**
-     * @Route("/api/add-to-cart", name="user_ajax_add_to_cart")
-     */
-    public function addToCartAction(Request $request, UserInterface $user) {
-
-        $id_counterpart = $request->get('id_counterpart');
-        $id_contract_artist = $request->get('id_contract_artist');
-        $quantity = $request->get('quantity');
-
-        $em = $this->getDoctrine()->getManager();
-        $counterpart = $em->getRepository('AppBundle:CounterPart')->find($id_counterpart);
-        $contractArtist = $em->getRepository('AppBundle:ContractArtist')->find($id_contract_artist);
-
-        if($contractArtist->isUncrowdable()) {
-            return new Response("KO");
-        }
-
-        if($contractArtist->getNbAvailable($counterpart) < $quantity) {
-            return new Response("MAX_QTY");
-        }
-
-        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-
-        if($cart == null) {
-            $cart = $this->createCartForUser($user);
-        }
-
-        $fanContracts = $cart->getContracts();
-        foreach($fanContracts as $fc) {
-            if($fc->getContractArtist()->getId() == $id_contract_artist) {
-                $contract = $fc;
-                break;
-            }
-        }
-
-        if(!isset($contract)) {
-            $contract = new ContractFan();
-            $contract->setCart($cart);
-            $contract->setContractArtist($contractArtist);
-        }
-
-        foreach($contract->getPurchases() as $p) {
-            if($p->getCounterPart()->getId() == $id_counterpart) {
-                $purchase = $p;
-                break;
-            }
-        }
-
-        if(!isset($purchase)) {
-            $purchase = new Purchase();
-            $purchase->setCounterpart($counterpart);
-            $purchase->setContractFan($contract);
-        }
-
-        else {
-            if($purchase->getQuantity() >= Purchase::MAX_QTY)
-                return new Response("MAX_QTY");
-        }
-
-        $to_max_qty = $purchase->getQuantity() + $quantity >= Purchase::MAX_QTY;
-
-        $purchase->addQuantity($quantity);
-
-        $em->persist($contract);
-        $em->persist($purchase);
-
-        $em->flush();
-
-        if($to_max_qty) {
-            return new Response("TO_MAX_QTY");
-        }
-
-        return new Response("OK");
-    }
-
-    /**
-     * @Route("/api/remove-all-from-cart", name="user_ajax_remove_all_from_cart")
-     */
-    public function removeAllFromCartAction(Request $request, UserInterface $user) {
-
-        $em = $this->getDoctrine()->getManager();
-
-        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-
-        if($cart == null) {
-            $cart = $this->createCartForUser($user);
-            $em->flush();
-            return new Response("OK");
-        }
-
-        foreach($cart->getContracts() as $contract) {
-            $em->remove($contract);
-        }
-        $em->flush();
-
-        return new Response($this->renderView('@App/User/cart_content.html.twig', array(
-            'cart' => $cart,
-        )));
-    }
-
-    /**
-     * @Route("/api/remove-purchase-from-contract", name="user_ajax_remove_from_contract")
-     */
-    public function removeFromContractAction(Request $request, UserInterface $user) {
-        $em = $this->getDoctrine()->getManager();
-        $id_purchase = $request->get('id_purchase');
-        $purchase = $em->getRepository('AppBundle:Purchase')->find($id_purchase);
-
-        if($purchase == null) {
-            throw $this->createNotFoundException('Pas de purchase de numéro '. $id_purchase);
-        }
-
-        $contract = $purchase->getContractFan();
-        $contract->removePurchase($purchase);
-        $cart = $contract->getCart();
-
-        $em->remove($purchase);
-        $em->persist($contract);
-
-        if(count($contract->getPurchases()) == 0) {
-            $cart->removeContract($contract);
-            $em->persist($cart);
-            $em->remove($contract);
-        }
-
-        $em->flush();
-
-        return new Response($this->renderView('@App/User/cart_content.html.twig', array(
-            'cart' => $cart,
-        )));
-    }
-
-    /**
-     * @Route("/api/deblock-advantage", name="user_ajax_deblock_advantage")
-
-    public function deblockAdvantageAction(Request $request, UserInterface $user) {
-        $em = $this->getDoctrine()->getManager();
-
-        $id_advantage = intval($request->get('id_advantage'));
-        $quantity = intval($request->get('quantity'));
-
-        $adv = $em->getRepository('AppBundle:SpecialAdvantage')->find($id_advantage);
-
-        $purchase = new SpecialPurchase();
-        $purchase->setUser($user)
-            ->setQuantity($quantity)
-            ->setSpecialAdvantage($adv);
-
-        if($user->getCredits() < $purchase->getAmountCredits()) {
-            return new Response("NOT_ENOUGH_CREDITS");
-        }
-
-        $user->removeCredits($purchase->getAmountCredits());
-
-        $em->persist($user);
-        $em->persist($purchase);
-        $em->flush();
-
-        return new Response($user->getCredits());
-    }
-
-    */
-
-    /**
-     * @Route("/special-advantages", name="user_special_advantages")
-
-        public function specialAdvantagesAction() {
-            $em = $this->getDoctrine()->getManager();
-            $sa = $em->getRepository('AppBundle:SpecialAdvantage')->findCurrents();
-
-            return $this->render('@App/User/special_advantages.html.twig', array(
-                'advantages' => $sa,
-            ));
-        }
-     */
-
-    /**
-     * @Route("/special-purchases", name="fan_special_purchases")
-
-        public function specialPurchasesAction(UserInterface $user) {
-
-            $em = $this->getDoctrine()->getManager();
-            $sp = $em->getRepository('AppBundle:SpecialPurchase')->findBy(array('user' => $user), array('date' => 'DESC'));
-
-            return $this->render('@App/User/special_purchases.html.twig', array(
-                'purchases' => $sp,
-            ));
-        }
-     */
 }

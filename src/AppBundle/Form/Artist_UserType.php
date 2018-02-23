@@ -19,8 +19,8 @@ class Artist_UserType extends AbstractType
             ->add('role', TextType::class, array(
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez renseigner ce champ.']),
-                    new Length(['max' => 63, 'maxMessage' => 'Le rôle ne peut dépasser {{ limit }} caractères.']),
+                    new NotBlank(),
+                    new Length(['max' => 63, 'maxMessage' => 'artist_user.role.long']),
                 ]
             ))
             ->add('submit', SubmitType::class, array(

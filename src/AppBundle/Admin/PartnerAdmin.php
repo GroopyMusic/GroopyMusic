@@ -73,6 +73,7 @@ class PartnerAdmin extends BaseAdmin
                 ->add('contactpersons_list', null, array(
                     'associated_property' => 'contact_person',
                     'label' => 'Personnes de contact',
+                    'route' => ['name' => 'nonexistent-route'] // TODO make this more usable by returning the route to the contact person admin...
                 ))
                 ->add('address', 'sonata_type_admin', array(
                     'label' => 'Adresse',

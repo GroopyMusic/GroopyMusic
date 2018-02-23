@@ -4,7 +4,7 @@
         {% block title %}{{ subject }}{% endblock %}
         {% block content %}
             {{ email_content('ownershiprequest.member', {
-                '%confirmationUrl%': absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code})),
+                '%confirmationUrl%': email_link(absolute_url(path('artist_validate_ownership', {'id': artist.id, 'code': request.code}))),
                 '%artist%': artist.artistName
             })|raw }}
         {% endblock %}

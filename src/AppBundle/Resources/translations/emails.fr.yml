@@ -12,7 +12,7 @@ subjects:
       tickets: Vos tickets Un-Mute pour %artist%
 
 others:
-  message_from_artist: Message de l'artiste
+  message_from_artist: "Message de l'artiste :"
 
 change_email:
   confirmation: |
@@ -25,13 +25,13 @@ change_email:
 concert:
   artist:
     failure: |
-      Cher artiste Un-Mute,
+      Cher artiste,
 
       Malheureusement, vous n'avez pas pu récolter assez de fonds pour permettre l'organisation de votre %step% initialement prévu le %date%.
 
       Les fans qui vous ont soutenu seront remboursés de l'entièreté du prix des places achetées.
 
-      Envie de retenter votre chance dans une autre catégorie de salle ? N'hésitez pas ! Notre plateforme www.un-mute.be vous est ouverte et le sera toujours.
+      Envie de retenter votre chance dans une autre catégorie de salle ? N'hésitez pas ! Notre plateforme %url% vous est ouverte et le sera toujours.
 
     confirmation: |
       Félicitations !
@@ -101,7 +101,7 @@ concert:
 
       Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d'un prochain évènement !
 
-      Envie de soutenir d'autres artistes ? Rendez-vous sur www.un-mute.be !
+      Envie de soutenir d'autres artistes ? Rendez-vous sur %artistCatalogUrl% !
 
   admin:
     newly_successful: |
@@ -114,11 +114,11 @@ concert:
 order: |
     Merci d'avoir passé commande chez Un-Mute. Vous allez peut-être permettre à un artiste de se produire sur une scène belge reconnue et devant un public en folie !
 
-    Vous trouverez le récapitulatif de votre commande en pièces jointes, et dans votre espace personnel sur notre <a href="%url%">site Web</a>.
+    Vous trouverez le récapitulatif de votre commande en pièces jointes, et dans votre espace personnel sur %url%.
 
 contact:
   copy: |
-    Votre message envoyé sur Un-Mute.be a bien été reçu. Nous vous répondrons au plus vite si nécessaire.</p>
+    Votre message envoyé sur Un-Mute.be a bien été reçu. Nous vous répondrons au plus vite si nécessaire.
 
     Le voici :
 

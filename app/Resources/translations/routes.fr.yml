@@ -1,0 +1,676 @@
+# Desc: /about
+about: /a-propos
+
+# Desc: /admin/ajax/all-{id}/remove-photo
+admin_ajax_hall_remove_photo: '/admin/ajax/all-{id}/remove-photo'
+
+# Desc: /artist/{id}/api/remove-photo
+artist_ajax_remove_photo: '/artiste/{id}/api/remove-photo'
+
+# Desc: /artist/{id}/cancel-request/{request_id}
+artist_cancel_ownership_request: '/artiste/{id}/annuler-requete/{request_id}'
+
+# Desc: /events/{id}-{slug}
+artist_contract: '/evenements/{id}-concert-de-{slug}'
+
+# Desc: /artist/{id}/all-contracts
+artist_contracts: '/artiste/{id}/crowdfundings'
+
+# Desc: /artist/{id}/edit-medias
+artist_edit_medias: '/artiste/{id}/medias'
+
+# Desc: /artist/{id}/edit-photos
+artist_edit_photos: '/artiste/{id}/modifier-photos'
+
+# Desc: /artist/{id}/edit-profile-picture
+artist_edit_profilepic: '/artiste/{id}/photo-de-profil'
+
+# Desc: /artist/{id}/leave
+artist_leave: '/quitter-artiste-{id}'
+
+# Desc: /artist/{id}/owners
+artist_owners: '/artiste/{id}/proprietaires'
+
+# Desc: /artists/{id}-{slug}
+artist_profile: '/artistes/{id}-{slug}'
+
+# Desc: /artist/{id}/edit
+artist_profile_edit: '/artiste/{id}/editer'
+
+# Desc: /validate-ownership-{id}/{code}
+artist_validate_ownership: '/valider-propriete-{id}/{code}'
+
+# Desc: /artists
+catalog_artists: /artistes
+
+# Desc: /crowdfundings
+catalog_crowdfundings: /evenements
+
+# Desc: /halls
+catalog_halls: /salles
+
+# Desc: /conditons
+conditions: /conditons-generales
+
+# Desc: /faq
+faq: /foire-aux-questions
+
+# Desc: /profile/change-password
+fos_user_change_password: /profil/modifier-mot-de-passe
+
+# Desc: /profile/edit
+fos_user_profile_edit: /profile/edit   # FIXME
+
+# Desc: /profile/
+fos_user_profile_show: /profil/
+
+# Desc: /register/check-email
+fos_user_registration_check_email: /inscription/verification-email
+
+# Desc: /register/confirm/{token}
+fos_user_registration_confirm: '/inscription/confirmation/{token}'
+
+# Desc: /register/confirmed
+fos_user_registration_confirmed: /inscription-confirmee
+
+# Desc: /register/
+fos_user_registration_register: /inscription/
+
+# Desc: /resetting/check-email
+fos_user_resetting_check_email: /nouveau-mdp/check-email
+
+# Desc: /resetting/request
+fos_user_resetting_request: /nouveau-mdp/requete
+
+# Desc: /resetting/reset/{token}
+fos_user_resetting_reset: '/nouveau-mdp/reset/{token}'
+
+# Desc: /resetting/send-email
+fos_user_resetting_send_email: /nouveau-mdp/envoi-email
+
+# Desc: /login_check
+fos_user_security_check: /login_check
+
+# Desc: /login
+fos_user_security_login: /login
+
+# Desc: /logout
+fos_user_security_logout: /logout
+
+fp_js_form_validator:
+    # Desc: /fp_js_form_validator/check_unique_entity
+    check_unique_entity: /fp_js_form_validator/check_unique_entity
+
+# Desc: /halls/{id}-{slug}
+hall: '/salles/{id}-{slug}'
+
+# Desc: /
+homepage: /
+
+# Desc: /select2/genres
+select2_genres: /select2/genres
+
+# Desc: /suggestions
+suggestionBox: /contact
+
+# Desc: /suggestions/post
+suggestionBox_form: /contact/post
+
+# Desc: /team
+team: /equipe-et-valeurs
+
+# Desc: /test-mail
+testmail: /test-mail
+
+# Desc: /advanced-options
+user_advanced_options: /options-avancees
+
+# Desc: /api/add-to-cart
+user_ajax_add_to_cart: /api/add-to-cart
+
+# Desc: /api/remove-all-from-cart
+user_ajax_remove_all_from_cart: /api/remove-all-from-cart
+
+# Desc: /api/remove-purchase-from-contract
+user_ajax_remove_from_contract: /api/remove-purchase-from-contract
+
+# Desc: /api/update-motivations/{id}
+user_ajax_update_motivations: '/api/update-motivations/{id}'
+
+# Desc: /cart
+user_cart: /panier
+
+# Desc: /secure-zone/cart/payment/pending/{contract_id}
+user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{contract_id}'
+
+# Desc: /secure-zone/cart/payment
+user_cart_payment_stripe: /zone-securisee/panier/paiement
+
+# Desc: /secure-zone/cart/payment/success/{id}
+user_cart_payment_stripe_success: '/zone-securisee/panier/paiement-reussi/{id}'
+
+# Desc: /secure-zone/cart/send-recap-{id}
+user_cart_send_order_recap: '/secure-zone/cart/send-recap-{id}'
+
+# Desc: /change-email
+user_change_email: /changer-email
+
+# Desc: /change-email-token-{token}
+user_change_email_check: '/changer-email-token-{token}'
+
+# Desc: /user/orders/{id}
+user_get_order: '/mes-fichiers/commandes/{id}'
+
+# Desc: /user/tickets/{id}
+user_get_tickets: 'mes-fichiers/tickets/{id}'
+
+# Desc: /my-artists
+user_my_artists: /mes-artistes
+
+# Desc: /new-artist
+user_new_artist: /creer-artiste
+
+# Desc: /new-crowdfunding
+user_new_contract_artist: /nouvel-evenement-beta
+
+# Desc: /new-crowdfunding-contact-us
+user_new_contract_artist_temp: /nouvel-evenement-contact
+
+# Desc: /inbox/notifications/{id}
+user_notification: '/notifications/{id}'
+
+# Desc: /inbox
+user_notifications: /notifications
+
+# Desc: /paid-carts
+user_paid_carts: /mes-commandes
+
+# Desc: /edit-profile
+user_profile_edit: /profil/edition
+
+
+#####################################
+################ DO NOT TRANSLATE
+#####################################
+
+# Desc: /admin/core/append-form-field-element
+sonata_admin_append_form_element: /admin/core/append-form-field-element
+
+# Desc: /admin/dashboard
+sonata_admin_dashboard: /admin/dashboard
+
+# Desc: /admin/
+sonata_admin_redirect: /admin/
+
+# Desc: /admin/core/get-autocomplete-items
+sonata_admin_retrieve_autocomplete_items: /admin/core/get-autocomplete-items
+
+# Desc: /admin/core/get-form-field-element
+sonata_admin_retrieve_form_element: /admin/core/get-form-field-element
+
+# Desc: /admin/search
+sonata_admin_search: /admin/search
+
+# Desc: /admin/core/set-object-field-value
+sonata_admin_set_object_field_value: /admin/core/set-object-field-value
+
+# Desc: /admin/core/get-short-object-description.{_format}
+sonata_admin_short_object_information: '/admin/core/get-short-object-description.{_format}'
+
+# Desc: /admin/app/address/batch
+admin_app_address_batch: /admin/app/address/batch
+
+# Desc: /admin/app/address/create
+admin_app_address_create: /admin/app/address/create
+
+# Desc: /admin/app/address/{id}/delete
+admin_app_address_delete: '/admin/app/address/{id}/delete'
+
+# Desc: /admin/app/address/{id}/edit
+admin_app_address_edit: '/admin/app/address/{id}/edit'
+
+# Desc: /admin/app/address/export
+admin_app_address_export: /admin/app/address/export
+
+# Desc: /admin/app/address/list
+admin_app_address_list: /admin/app/address/list
+
+# Desc: /admin/app/address/{id}/show
+admin_app_address_show: '/admin/app/address/{id}/show'
+
+# Desc: /admin/app/artist/batch
+admin_app_artist_batch: /admin/app/artist/batch
+
+# Desc: /admin/app/artist/{id}/edit
+admin_app_artist_edit: '/admin/app/artist/{id}/edit'
+
+# Desc: /admin/app/artist/export
+admin_app_artist_export: /admin/app/artist/export
+
+# Desc: /admin/app/artist/list
+admin_app_artist_list: /admin/app/artist/list
+
+# Desc: /admin/app/artist/{id}/show
+admin_app_artist_show: '/admin/app/artist/{id}/show'
+
+# Desc: /admin/app/cart/batch
+admin_app_cart_batch: /admin/app/cart/batch
+
+# Desc: /admin/app/cart/export
+admin_app_cart_export: /admin/app/cart/export
+
+# Desc: /admin/app/cart/list
+admin_app_cart_list: /admin/app/cart/list
+
+# Desc: /admin/app/cart/{id}/show
+admin_app_cart_show: '/admin/app/cart/{id}/show'
+
+# Desc: /admin/app/concertpossibility/batch
+admin_app_concertpossibility_batch: /admin/app/concertpossibility/batch
+
+# Desc: /admin/app/concertpossibility/create
+admin_app_concertpossibility_create: /admin/app/concertpossibility/create
+
+# Desc: /admin/app/concertpossibility/{id}/delete
+admin_app_concertpossibility_delete: '/admin/app/concertpossibility/{id}/delete'
+
+# Desc: /admin/app/concertpossibility/{id}/edit
+admin_app_concertpossibility_edit: '/admin/app/concertpossibility/{id}/edit'
+
+# Desc: /admin/app/concertpossibility/export
+admin_app_concertpossibility_export: /admin/app/concertpossibility/export
+
+# Desc: /admin/app/concertpossibility/list
+admin_app_concertpossibility_list: /admin/app/concertpossibility/list
+
+# Desc: /admin/app/concertpossibility/{id}/show
+admin_app_concertpossibility_show: '/admin/app/concertpossibility/{id}/show'
+
+# Desc: /admin/app/contactperson/batch
+admin_app_contactperson_batch: /admin/app/contactperson/batch
+
+# Desc: /admin/app/contactperson/create
+admin_app_contactperson_create: /admin/app/contactperson/create
+
+# Desc: /admin/app/contactperson/{id}/delete
+admin_app_contactperson_delete: '/admin/app/contactperson/{id}/delete'
+
+# Desc: /admin/app/contactperson/{id}/edit
+admin_app_contactperson_edit: '/admin/app/contactperson/{id}/edit'
+
+# Desc: /admin/app/contactperson/export
+admin_app_contactperson_export: /admin/app/contactperson/export
+
+# Desc: /admin/app/contactperson/list
+admin_app_contactperson_list: /admin/app/contactperson/list
+
+# Desc: /admin/app/contactperson/{id}/show
+admin_app_contactperson_show: '/admin/app/contactperson/{id}/show'
+
+# Desc: /admin/app/contractartist_artist/batch
+admin_app_contractartist_artist_batch: /admin/app/contractartist_artist/batch
+
+# Desc: /admin/app/contractartist_artist/create
+admin_app_contractartist_artist_create: /admin/app/contractartist_artist/create
+
+# Desc: /admin/app/contractartist_artist/{id}/delete
+admin_app_contractartist_artist_delete: '/admin/app/contractartist_artist/{id}/delete'
+
+# Desc: /admin/app/contractartist_artist/{id}/edit
+admin_app_contractartist_artist_edit: '/admin/app/contractartist_artist/{id}/edit'
+
+# Desc: /admin/app/contractartist_artist/export
+admin_app_contractartist_artist_export: /admin/app/contractartist_artist/export
+
+# Desc: /admin/app/contractartist_artist/list
+admin_app_contractartist_artist_list: /admin/app/contractartist_artist/list
+
+# Desc: /admin/app/contractartist_artist/{id}/show
+admin_app_contractartist_artist_show: '/admin/app/contractartist_artist/{id}/show'
+
+# Desc: /admin/app/contractartist/batch
+admin_app_contractartist_batch: /admin/app/contractartist/batch
+
+# Desc: /admin/app/contractartist/{id}/edit
+admin_app_contractartist_edit: '/admin/app/contractartist/{id}/edit'
+
+# Desc: /admin/app/contractartist/export
+admin_app_contractartist_export: /admin/app/contractartist/export
+
+# Desc: /admin/app/contractartist/list
+admin_app_contractartist_list: /admin/app/contractartist/list
+
+# Desc: /admin/app/contractartist/{id}/refund
+admin_app_contractartist_refund: '/admin/app/contractartist/{id}/refund'
+
+# Desc: /admin/app/contractartist/{id}/show
+admin_app_contractartist_show: '/admin/app/contractartist/{id}/show'
+
+# Desc: /admin/app/contractartist/{id}/validate
+admin_app_contractartist_validate: '/admin/app/contractartist/{id}/validate'   # FIXME
+
+# Desc: /admin/app/contractfan/batch
+admin_app_contractfan_batch: /admin/app/contractfan/batch
+
+# Desc: /admin/app/contractfan/export
+admin_app_contractfan_export: /admin/app/contractfan/export
+
+# Desc: /admin/app/contractfan/list
+admin_app_contractfan_list: /admin/app/contractfan/list
+
+# Desc: /admin/app/contractfan/{id}/show
+admin_app_contractfan_show: '/admin/app/contractfan/{id}/show'
+
+# Desc: /admin/app/counterpart/batch
+admin_app_counterpart_batch: /admin/app/counterpart/batch
+
+# Desc: /admin/app/counterpart/create
+admin_app_counterpart_create: /admin/app/counterpart/create
+
+# Desc: /admin/app/counterpart/{id}/delete
+admin_app_counterpart_delete: '/admin/app/counterpart/{id}/delete'
+
+# Desc: /admin/app/counterpart/{id}/edit
+admin_app_counterpart_edit: '/admin/app/counterpart/{id}/edit'
+
+# Desc: /admin/app/counterpart/export
+admin_app_counterpart_export: /admin/app/counterpart/export
+
+# Desc: /admin/app/counterpart/list
+admin_app_counterpart_list: /admin/app/counterpart/list
+
+# Desc: /admin/app/counterpart/{id}/show
+admin_app_counterpart_show: '/admin/app/counterpart/{id}/show'
+
+# Desc: /admin/app/genre/batch
+admin_app_genre_batch: /admin/app/genre/batch
+
+# Desc: /admin/app/genre/create
+admin_app_genre_create: /admin/app/genre/create
+
+# Desc: /admin/app/genre/{id}/delete
+admin_app_genre_delete: '/admin/app/genre/{id}/delete'
+
+# Desc: /admin/app/genre/{id}/edit
+admin_app_genre_edit: '/admin/app/genre/{id}/edit'
+
+# Desc: /admin/app/genre/export
+admin_app_genre_export: /admin/app/genre/export
+
+# Desc: /admin/app/genre/list
+admin_app_genre_list: /admin/app/genre/list
+
+# Desc: /admin/app/genre/{id}/show
+admin_app_genre_show: '/admin/app/genre/{id}/show'
+
+# Desc: /admin/app/hall/batch
+admin_app_hall_batch: /admin/app/hall/batch
+
+# Desc: /admin/app/hall/create
+admin_app_hall_create: /admin/app/hall/create
+
+# Desc: /admin/app/hall/{id}/delete
+admin_app_hall_delete: '/admin/app/hall/{id}/delete'
+
+# Desc: /admin/app/hall/{id}/edit
+admin_app_hall_edit: '/admin/app/hall/{id}/edit'
+
+# Desc: /admin/app/hall/export
+admin_app_hall_export: /admin/app/hall/export
+
+# Desc: /admin/app/hall/list
+admin_app_hall_list: /admin/app/hall/list
+
+# Desc: /admin/app/hall/{id}/show
+admin_app_hall_show: '/admin/app/hall/{id}/show'
+
+# Desc: /admin/app/partner/batch
+admin_app_partner_batch: /admin/app/partner/batch
+
+# Desc: /admin/app/partner_contactperson/batch
+admin_app_partner_contactperson_batch: /admin/app/partner_contactperson/batch
+
+# Desc: /admin/app/partner_contactperson/create
+admin_app_partner_contactperson_create: /admin/app/partner_contactperson/create
+
+# Desc: /admin/app/partner_contactperson/{id}/delete
+admin_app_partner_contactperson_delete: '/admin/app/partner_contactperson/{id}/delete'
+
+# Desc: /admin/app/partner_contactperson/{id}/edit
+admin_app_partner_contactperson_edit: '/admin/app/partner_contactperson/{id}/edit'
+
+# Desc: /admin/app/partner_contactperson/export
+admin_app_partner_contactperson_export: /admin/app/partner_contactperson/export
+
+# Desc: /admin/app/partner_contactperson/list
+admin_app_partner_contactperson_list: /admin/app/partner_contactperson/list
+
+# Desc: /admin/app/partner_contactperson/{id}/show
+admin_app_partner_contactperson_show: '/admin/app/partner_contactperson/{id}/show'
+
+# Desc: /admin/app/partner/create
+admin_app_partner_create: /admin/app/partner/create
+
+# Desc: /admin/app/partner/{id}/delete
+admin_app_partner_delete: '/admin/app/partner/{id}/delete'
+
+# Desc: /admin/app/partner/{id}/edit
+admin_app_partner_edit: '/admin/app/partner/{id}/edit'
+
+# Desc: /admin/app/partner/export
+admin_app_partner_export: /admin/app/partner/export
+
+# Desc: /admin/app/partner/list
+admin_app_partner_list: /admin/app/partner/list
+
+# Desc: /admin/app/partner/{id}/show
+admin_app_partner_show: '/admin/app/partner/{id}/show'
+
+# Desc: /admin/app/payment/batch
+admin_app_payment_batch: /admin/app/payment/batch
+
+# Desc: /admin/app/payment/export
+admin_app_payment_export: /admin/app/payment/export
+
+# Desc: /admin/app/payment/list
+admin_app_payment_list: /admin/app/payment/list
+
+# Desc: /admin/app/payment/{id}/refund
+admin_app_payment_refund: '/admin/app/payment/{id}/refund'
+
+# Desc: /admin/app/payment/{id}/show
+admin_app_payment_show: '/admin/app/payment/{id}/show'
+
+# Desc: /admin/app/phase/batch
+admin_app_phase_batch: /admin/app/phase/batch
+
+# Desc: /admin/app/phase/create
+admin_app_phase_create: /admin/app/phase/create
+
+# Desc: /admin/app/phase/{id}/edit
+admin_app_phase_edit: '/admin/app/phase/{id}/edit'
+
+# Desc: /admin/app/phase/export
+admin_app_phase_export: /admin/app/phase/export
+
+# Desc: /admin/app/phase/list
+admin_app_phase_list: /admin/app/phase/list
+
+# Desc: /admin/app/phase/{id}/show
+admin_app_phase_show: '/admin/app/phase/{id}/show'
+
+# Desc: /admin/app/province/batch
+admin_app_province_batch: /admin/app/province/batch
+
+# Desc: /admin/app/province/create
+admin_app_province_create: /admin/app/province/create
+
+# Desc: /admin/app/province/{id}/delete
+admin_app_province_delete: '/admin/app/province/{id}/delete'
+
+# Desc: /admin/app/province/{id}/edit
+admin_app_province_edit: '/admin/app/province/{id}/edit'
+
+# Desc: /admin/app/province/export
+admin_app_province_export: /admin/app/province/export
+
+# Desc: /admin/app/province/list
+admin_app_province_list: /admin/app/province/list
+
+# Desc: /admin/app/province/{id}/show
+admin_app_province_show: '/admin/app/province/{id}/show'
+
+# Desc: /admin/app/specialadvantage/batch
+admin_app_specialadvantage_batch: /admin/app/specialadvantage/batch
+
+# Desc: /admin/app/specialadvantage/create
+admin_app_specialadvantage_create: /admin/app/specialadvantage/create
+
+# Desc: /admin/app/specialadvantage/{id}/delete
+admin_app_specialadvantage_delete: '/admin/app/specialadvantage/{id}/delete'
+
+# Desc: /admin/app/specialadvantage/{id}/edit
+admin_app_specialadvantage_edit: '/admin/app/specialadvantage/{id}/edit'
+
+# Desc: /admin/app/specialadvantage/export
+admin_app_specialadvantage_export: /admin/app/specialadvantage/export
+
+# Desc: /admin/app/specialadvantage/list
+admin_app_specialadvantage_list: /admin/app/specialadvantage/list
+
+# Desc: /admin/app/specialadvantage/{id}/show
+admin_app_specialadvantage_show: '/admin/app/specialadvantage/{id}/show'
+
+# Desc: /admin/app/specialpurchase/batch
+admin_app_specialpurchase_batch: /admin/app/specialpurchase/batch
+
+# Desc: /admin/app/specialpurchase/export
+admin_app_specialpurchase_export: /admin/app/specialpurchase/export
+
+# Desc: /admin/app/specialpurchase/list
+admin_app_specialpurchase_list: /admin/app/specialpurchase/list
+
+# Desc: /admin/app/specialpurchase/{id}/show
+admin_app_specialpurchase_show: '/admin/app/specialpurchase/{id}/show'
+
+# Desc: /admin/app/step/batch
+admin_app_step_batch: /admin/app/step/batch
+
+# Desc: /admin/app/step/create
+admin_app_step_create: /admin/app/step/create
+
+# Desc: /admin/app/step/{id}/edit
+admin_app_step_edit: '/admin/app/step/{id}/edit'
+
+# Desc: /admin/app/step/export
+admin_app_step_export: /admin/app/step/export
+
+# Desc: /admin/app/step/list
+admin_app_step_list: /admin/app/step/list
+
+# Desc: /admin/app/step/{id}/show
+admin_app_step_show: '/admin/app/step/{id}/show'
+
+# Desc: /admin/app/suggestionbox/batch
+admin_app_suggestionbox_batch: /admin/app/suggestionbox/batch
+
+# Desc: /admin/app/suggestionbox/{id}/delete
+admin_app_suggestionbox_delete: '/admin/app/suggestionbox/{id}/delete'
+
+# Desc: /admin/app/suggestionbox/export
+admin_app_suggestionbox_export: /admin/app/suggestionbox/export
+
+# Desc: /admin/app/suggestionbox/list
+admin_app_suggestionbox_list: /admin/app/suggestionbox/list
+
+# Desc: /admin/app/suggestionbox/{id}/show
+admin_app_suggestionbox_show: '/admin/app/suggestionbox/{id}/show'
+
+# Desc: /admin/app/suggestiontypeenum/batch
+admin_app_suggestiontypeenum_batch: /admin/app/suggestiontypeenum/batch
+
+# Desc: /admin/app/suggestiontypeenum/create
+admin_app_suggestiontypeenum_create: /admin/app/suggestiontypeenum/create
+
+# Desc: /admin/app/suggestiontypeenum/{id}/delete
+admin_app_suggestiontypeenum_delete: '/admin/app/suggestiontypeenum/{id}/delete'
+
+# Desc: /admin/app/suggestiontypeenum/{id}/edit
+admin_app_suggestiontypeenum_edit: '/admin/app/suggestiontypeenum/{id}/edit'
+
+# Desc: /admin/app/suggestiontypeenum/export
+admin_app_suggestiontypeenum_export: /admin/app/suggestiontypeenum/export
+
+# Desc: /admin/app/suggestiontypeenum/list
+admin_app_suggestiontypeenum_list: /admin/app/suggestiontypeenum/list
+
+# Desc: /admin/app/suggestiontypeenum/{id}/show
+admin_app_suggestiontypeenum_show: '/admin/app/suggestiontypeenum/{id}/show'
+
+# Desc: /admin/app/user/batch
+admin_app_user_batch: /admin/app/user/batch
+
+# Desc: /admin/app/user/export
+admin_app_user_export: /admin/app/user/export
+
+# Desc: /admin/app/user/list
+admin_app_user_list: /admin/app/user/list
+
+# Desc: /admin/app/user/{id}/show
+admin_app_user_show: '/admin/app/user/{id}/show'
+
+# Desc: /mail/admin/email/dashboard
+azine_admin_email_dashboard: /mail/admin/email/dashboard
+
+# Desc: /mail/admin/email/details/{token}
+azine_admin_email_details_by_token: '/mail/admin/email/details/{token}'
+
+# Desc: /mail/admin/email/send-test-email-for/{template}/to/{email}
+azine_email_send_test_email: '/mail/admin/email/send-test-email-for/{template}/to/{email}'
+
+# Desc: /mail/email/image/{folderKey}/{filename}
+azine_email_serve_template_image: '/mail/email/image/{folderKey}/{filename}'
+
+# Desc: /mail/admin/email/
+azine_email_template_index: /mail/admin/email/
+
+# Desc: /mail/admin/email/test-sent-email-spam-score
+azine_email_test_sent_email_spam_score: /mail/admin/email/test-sent-email-spam-score
+
+# Desc: /mail/admin/email/webpreview/{template}/{format}
+azine_email_web_preview: '/mail/admin/email/webpreview/{template}/{format}'
+
+# Desc: /mail/email/webview/{token}
+azine_email_webview: '/emails-web/{token}'
+
+
+
+# Desc: /command-scheduler/action/execute/{id}
+jmose_command_scheduler_action_execute: '/command-scheduler/action/execute/{id}'
+
+# Desc: /command-scheduler/action/remove/{id}
+jmose_command_scheduler_action_remove: '/command-scheduler/action/remove/{id}'
+
+# Desc: /command-scheduler/action/toggle/{id}
+jmose_command_scheduler_action_toggle: '/command-scheduler/action/toggle/{id}'
+
+# Desc: /command-scheduler/action/unlock/{id}
+jmose_command_scheduler_action_unlock: '/command-scheduler/action/unlock/{id}'
+
+# Desc: /command-scheduler/detail/edit/{scheduledCommandId}
+jmose_command_scheduler_detail_edit: '/command-scheduler/detail/edit/{scheduledCommandId}'
+
+# Desc: /command-scheduler/detail/view/
+jmose_command_scheduler_detail_index: /command-scheduler/detail/view/
+
+# Desc: /command-scheduler/detail/new
+jmose_command_scheduler_detail_new: /command-scheduler/detail/new
+
+# Desc: /command-scheduler/detail/save
+jmose_command_scheduler_detail_save: /command-scheduler/detail/save
+
+# Desc: /command-scheduler/list
+jmose_command_scheduler_list: /command-scheduler/list
+
+# Desc: /command-scheduler/monitor
+jmose_command_scheduler_monitor: /command-scheduler/monitor

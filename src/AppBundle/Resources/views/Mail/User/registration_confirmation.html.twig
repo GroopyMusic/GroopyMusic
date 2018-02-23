@@ -4,7 +4,7 @@
         {% block title %}{# TODO this #}{% endblock %}
 
         {% block content %}
-            {% set confirmationUrl = '<a href="' ~ confirmationUrl ~ '">'~confirmationUrl~'</a>' %}
+            {% set confirmationUrl = email_link(confirmationUrl) %}
                 <p>
                 {{ 'registration.email.message'|trans({'%username%': user.firstname, '%confirmationUrl%': confirmationUrl}, 'FOSUserBundle')|raw|nl2br }}
                 </p>

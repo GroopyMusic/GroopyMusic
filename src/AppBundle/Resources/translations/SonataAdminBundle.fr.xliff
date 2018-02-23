@@ -2,9 +2,9 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="fr" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="app.admin.group.evolution">
-                <source>app.admin.group.evolution</source>
-                <target>Évolution</target>
+            <trans-unit id="app.admin.group.contact">
+                <source>app.admin.group.contact</source>
+                <target>Formulaires de contact</target>
             </trans-unit>
 
             <trans-unit id="app.admin.group.content">
@@ -17,19 +17,14 @@
                 <target>Utilisateurs</target>
             </trans-unit>
 
-            <trans-unit id="app.admin.group.crowdfunding">
-                <source>app.admin.group.crowdfunding</source>
-                <target>Crowdfunding</target>
+            <trans-unit id="app.admin.group.events">
+                <source>app.admin.group.events</source>
+                <target>Événements et paliers</target>
             </trans-unit>
 
-            <trans-unit id="app.admin.group.payment">
-                <source>app.admin.group.payment</source>
-                <target>Paiements</target>
-            </trans-unit>
-
-            <trans-unit id="app.admin.group.special">
-                <source>app.admin.group.special</source>
-                <target>Crédits bonus</target>
+            <trans-unit id="app.admin.group.orders">
+                <source>app.admin.group.orders</source>
+                <target>Commandes et paiements</target>
             </trans-unit>
 
             <trans-unit id="app.admin.step">
@@ -69,12 +64,12 @@
 
             <trans-unit id="app.admin.contractartist">
                 <source>app.admin.contractartist</source>
-                <target>Crowdfunding</target>
+                <target>Événement</target>
             </trans-unit>
 
             <trans-unit id="app.admin.contractfan">
                 <source>app.admin.contractfan</source>
-                <target>Contrat fan</target>
+                <target>Commande</target>
             </trans-unit>
 
             <trans-unit id="app.admin.cart">

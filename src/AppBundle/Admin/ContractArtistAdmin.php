@@ -53,7 +53,7 @@ class ContractArtistAdmin extends BaseAdmin
                 'label' => 'Remboursé',
             ))
             ->add('state', null, array(
-                'label' => 'Etat'
+                'label' => 'Etat',
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(
@@ -205,5 +205,34 @@ class ContractArtistAdmin extends BaseAdmin
             ->end()
         ;
 
+    }
+
+    public function getExportFields() {
+
+        return [
+            '#' => 'id',
+            'Date de création' => 'date',
+            'Date limite pour objectif' => 'dateEnd',
+            'Artiste' => 'artist.artistname',
+            '# Artiste' => 'artist.id',
+            'Motivations' => 'motivations',
+            'Date souhaitée' => 'preferences.date',
+            'Infos additionnelles' => 'preferences.additional_info',
+            'Date réelle' => 'reality.date',
+            '# Salle réelle' => 'reality.hall.id',
+            'Salle réelle' => 'reality.hall.name',
+            'Amassé brut' => 'collected_amount',
+            'Réussi' => 'successful',
+            'Raté' => 'failed',
+            'Remboursé' => 'refunded',
+            'État' => 'state',
+            'Tickets vendus' => 'tickets_sold',
+            'Seuil' => 'min_tickets',
+            'Tickets pour sold out' => 'maxTickets',
+            'Tickets encore en vente' => 'crowdable',
+            'Artistes invités' => 'coartistsExport',
+            'Nombre de paiements (non remboursés)' => 'nbPayments',
+            'Paiements (non remboursés)' => 'paymentsExport',
+        ];
     }
 }

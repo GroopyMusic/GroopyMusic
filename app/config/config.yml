@@ -10,6 +10,7 @@ imports:
 parameters:
     locale: fr
     mailer_from_name: "Un-Mute"
+    locales: [fr]
 
 framework:
     #esi:             ~
@@ -20,7 +21,7 @@ framework:
         strict_requirements: ~
     form:            ~
     csrf_protection:
-        enabled: true
+        enabled: false
     validation:      { enable_annotations: true }
     #serializer:      { enable_annotations: true }
     templating:
@@ -49,8 +50,8 @@ twig:
       - ':Form:jquery.collection.html.twig'
       - ':Form:bootstrap_4_horizontal_layout.html.twig'
     globals:
-      fos_csrf_provider: "@security.csrf.token_manager"
       stripe_api_public: "%stripe_api_public%"
+      enabled_locales: "%locales%"
 
 # Doctrine Configuration
 doctrine:
@@ -61,6 +62,7 @@ doctrine:
         dbname:   "%database_name%"
         user:     "%database_user%"
         password: "%database_password%"
+        server_version: "%database_version%"
         charset:  UTF8
         types:
           json: Sonata\Doctrine\Types\JsonType
@@ -85,7 +87,7 @@ knp_doctrine_behaviors:
 
 a2lix_translation_form:
   locale_provider: default
-  locales: [fr, en, nl]
+  locales: "%locales%"
   default_locale : "%locale%"
   required_locales: ["%locale%"]
   templating: "A2lixTranslationFormBundle::default.html.twig"
@@ -151,7 +153,7 @@ assetic:
 
 jms_i18n_routing:
     default_locale: "%locale%"
-    locales: [fr]
+    locales: "%locales%"
     strategy: prefix_except_default
 
 jms_translation:
@@ -159,14 +161,14 @@ jms_translation:
     routes:
       dirs: ['%kernel.root_dir%', '%kernel.root_dir%/../src']
       output_dir: "%kernel.root_dir%/Resources/translations"
-      output_format: xliff
+      output_format: yml
       excluded_dirs: [Tests]
       extractors: [jms_i18n_routing]
       domain: routes # run php bin/console translation:extract en --config=routes --output-format=xliff
     app:
       dirs: ['%kernel.root_dir%', '%kernel.root_dir%/../src']
       output_dir: "%kernel.root_dir%/Resources/translations"
-      output_format: xliff
+      output_format: yml
 
 tetranz_select2_entity:
     minimum_input_length: 0

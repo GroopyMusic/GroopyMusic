@@ -130,11 +130,6 @@ class User extends BaseUser implements RecipientInterface
     protected $firstname;
 
     /**
-     * @ORM\OneToMany(targetEntity="SpecialPurchase", mappedBy="user")
-     */
-    private $specialPurchases;
-
-    /**
      * @ORM\OneToMany(targetEntity="Cart", mappedBy="user")
      */
     private $carts;
@@ -402,40 +397,6 @@ class User extends BaseUser implements RecipientInterface
     public function getStripeCustomerId()
     {
         return $this->stripe_customer_id;
-    }
-
-    /**
-     * Add specialPurchase
-     *
-     * @param \AppBundle\Entity\SpecialPurchase $specialPurchase
-     *
-     * @return User
-     */
-    public function addSpecialPurchase(\AppBundle\Entity\SpecialPurchase $specialPurchase)
-    {
-        $this->specialPurchases[] = $specialPurchase;
-
-        return $this;
-    }
-
-    /**
-     * Remove specialPurchase
-     *
-     * @param \AppBundle\Entity\SpecialPurchase $specialPurchase
-     */
-    public function removeSpecialPurchase(\AppBundle\Entity\SpecialPurchase $specialPurchase)
-    {
-        $this->specialPurchases->removeElement($specialPurchase);
-    }
-
-    /**
-     * Get specialPurchases
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getSpecialPurchases()
-    {
-        return $this->specialPurchases;
     }
 
     /**

@@ -7,6 +7,7 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\PDFWriter;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -169,15 +170,11 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment/success/{id}", name="user_cart_payment_stripe_success")
      */
-    public function cartSuccessAction(ContractFan $cf, TranslatorInterface $translator)
+    public function cartSuccessAction(ContractFan $cf, TranslatorInterface $translator, PDFWriter $writer)
     {
         $this->addFlash('notice', $translator->trans('notices.payment', ['%artist%' => $cf->getContractArtist()->getArtist()->getArtistname()]));
 
-        $cf->generateBarCode();
-        $order_html = $this->get('twig')->render('AppBundle:PDF:order.html.twig', array('cf' => $cf));
-        $html2pdf = new Html2Pdf();
-        $html2pdf->writeHTML($order_html);
-        $html2pdf->output($cf->getPdfPath(), 'F');
+        $writer->writeOrder($cf);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($cf);

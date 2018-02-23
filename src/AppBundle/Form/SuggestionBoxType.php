@@ -41,37 +41,37 @@ class SuggestionBoxType extends AbstractType
                 'label' => 'labels.suggestionbox.name',
                 'required' => false,
                 'constraints' => [
-                    new Length(['max' => 64, 'maxMessage' => 'Le nom ne peut dépasser {{ limit }} caractères.']),
+                    new Length(['max' => 64, 'maxMessage' => 'suggestionbox.name.long']),
                 ]
             ))
             ->add('firstname', TextType::class, array(
                 'label' => 'labels.suggestionbox.firstname',
                 'required' => false,
                 'constraints' => [
-                    new Length(['max' => 64, 'maxMessage' => 'Le prénom ne peut dépasser {{ limit }} caractères.']),
+                    new Length(['max' => 64, 'maxMessage' => 'suggestionbox.firstname.long']),
                 ]
             ))
             ->add('email', TextType::class, array(
                 'label' => 'labels.suggestionbox.email',
                 'required' => false,
                 'constraints' => [
-                    new Email(['message' => 'Cette adresse e-mail est invalide.']),
+                    new Email(['message' => 'suggestionbox.email.email']),
                 ]
             ))
             ->add('object', TextType::class, array(
                 'label' => 'labels.suggestionbox.object',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Merci de renseigner un objet.']),
-                    new Length(['max' => 64, 'maxMessage' => "L'objet ne peut dépasser {{ limit }} caractères"]),
+                    new NotBlank(),
+                    new Length(['max' => 64, 'maxMessage' => 'suggestionbox.object.long']),
                 ]
             ))
             ->add('message', TextareaType::class, array(
                 'label' => 'labels.suggestionbox.message',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Merci de renseigner un message.']),
-                    new Length(['min' => 20, 'minMessage' => "Le message doit contenir au moins {{ limit }} caractères."]),
+                    new NotBlank(['message' => 'suggestionbox.message.blank']),
+                    new Length(['min' => 20, 'minMessage' => 'suggestionbox.message.short']),
                 ]
             ))
             ->add('mailCopy', CheckboxType::class, array(

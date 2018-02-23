@@ -72,7 +72,7 @@ header {
     max-width: initial;
   }
 
-  #dropdownMenuButton, .btn.btn-primary.header-button, #notifs-toggler {
+  #dropdownMenuButton, .btn.btn-primary.header-button, #notifs-toggler, #language_switcher {
     background: transparent;
     border: 1px solid #9D9D9D;
     color: $main-color;
@@ -104,7 +104,7 @@ header {
 
   // > SMall
   // If you change this, you should also change toggleable breakpoint of #mainNav
-  @media (min-width: 576px) {
+  @include media-breakpoint-up(sm) {
     .navbar-brand {
       position: absolute;
       width: 100%;
@@ -122,16 +122,6 @@ header {
       -webkit-transition: All 1s ease;
       -moz-transition: All 1s ease;
       -o-transition: All 1s ease;
-    }
-
-    #not-auth-perma-links {
-      position: absolute;
-      right: 20px;
-    }
-
-    #inscription-perma-link {
-      position: absolute;
-      left: 20px;
     }
 
     #logo {
@@ -268,6 +258,18 @@ header {
     left: 0;
     &.stickytop {
       left: 35px;
+    }
+  }
+
+  header {
+    #not-auth-perma-links {
+      position: absolute;
+      right: 20px;
+    }
+
+    #inscription-perma-link {
+      position: absolute;
+      left: 20px;
     }
   }
 }

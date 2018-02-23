@@ -26,7 +26,7 @@ class Partner_ContactPerson
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ContactPerson")
+     * @ORM\ManyToOne(targetEntity="ContactPerson", inversedBy="partners_list")
      */
     private $contact_person;
 

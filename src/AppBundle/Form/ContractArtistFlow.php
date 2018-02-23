@@ -20,15 +20,15 @@ class ContractArtistFlow extends FormFlow
     {
         return array(
             array(
-                'label' => 'Choix de la salle',
+                'label' => 'labels.contractartist.flow_1',
                 'form_type' => ContractArtistType::class,
             ),
             array(
-                'label' => 'Choix de la date',
+                'label' => 'labels.contractartist.flow_2',
                 'form_type' => ContractArtistType::class,
             ),
             array(
-                'label' => 'Confirmation',
+                'label' => 'labels.contractartist.flow_3',
                 'form_type' => ContractArtistType::class,
             )
         );

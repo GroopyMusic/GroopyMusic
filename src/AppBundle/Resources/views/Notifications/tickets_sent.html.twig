@@ -1,0 +1,12 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'tickets_sent.title'|trans|raw %}
+{%- set content -%}
+    {{ 'tickets_sent.content'|trans({
+        '%date%': date,
+        '%hall_name%': hall_name,
+        '%orders_url%': path('user_paid_carts'),
+    })|raw|nl2br }}
+{%- endset -%}

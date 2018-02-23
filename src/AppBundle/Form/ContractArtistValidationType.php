@@ -14,7 +14,7 @@ class ContractArtistValidationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
+        // Admin only so no translation needed
         $builder
             ->add('reality', ConcertPossibilityType::class, array(
                 'label' => 'Réalité associée',

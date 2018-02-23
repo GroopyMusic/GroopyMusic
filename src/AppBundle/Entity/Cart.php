@@ -14,7 +14,7 @@ class Cart
 {
     public function __toString()
     {
-        return 'cart #' . $this->id;
+        return 'Panier de ' . $this->user . ' payé le ' . $this->date_creation->format('d/m/Y')  . ' (valeur : ' . $this->getAmount() . ' €)';
     }
 
     public function __construct()

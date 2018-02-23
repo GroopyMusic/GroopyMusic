@@ -30,8 +30,8 @@ class ArtistType extends AbstractType
                 'label' => 'labels.artist.artistname',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Merci de renseigner le nom de l\'artiste.']),
-                    new Length(['max' => 67, 'maxMessage' => 'Le nom d\'artiste ne peut excéder {{ limit }} caractères.'])
+                    new NotBlank(),
+                    new Length(['max' => 67, 'maxMessage' => 'artist.artistname.long'])
                 ]
             ))
             ->add('province', EntityType::class, array(
@@ -63,69 +63,69 @@ class ArtistType extends AbstractType
                 'label' => 'labels.artist.website',
                 'required' => false,
                 'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                    new Url(['message' => "artist.links.url"]),
                 ],
-               'attr' => ['placeholder' => 'http:// ou https://'],
+               'attr' => ['placeholder' => 'http(s)://...'],
             ))
             ->add('facebook', UrlType::class, array(
                 'label' => 'labels.artist.facebook',
                 'required' => false,
                 'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                    new Url(['message' => "artist.links.url"]),
                 ],
-               'attr' => ['placeholder' => 'http:// ou https://'],
+               'attr' => ['placeholder' => 'http(s)://...'],
             ))
             ->add('twitter', UrlType::class, array(
                 'label' => 'labels.artist.twitter',
                 'required' => false,
                 'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                    new Url(['message' => "artist.links.url"]),
                 ],
-               'attr' => ['placeholder' => 'http:// ou https://'],
+               'attr' => ['placeholder' => 'http(s)://...'],
             ))
             ->add('spotify', UrlType::class, array(
                 'label' => 'labels.artist.spotify',
                 'required' => false,
                 'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                    new Url(['message' => "artist.links.url"]),
                 ],
-               'attr' => ['placeholder' => 'http:// ou https://'],
+               'attr' => ['placeholder' => 'http(s)://...'],
             ))
             ->add('soundcloud', UrlType::class, array(
                 'label' => 'labels.artist.soundcloud',
                 'required' => false,
                 'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                    new Url(['message' => "artist.links.url"]),
                 ],
-               'attr' => ['placeholder' => 'http:// ou https://'],
+               'attr' => ['placeholder' => 'http(s)://...'],
             ))
             ->add('bandcamp', UrlType::class, array(
                 'label' => 'labels.artist.bandcamp',
                 'required' => false,
                 'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                    new Url(['message' => "artist.links.url"]),
                 ],
-               'attr' => ['placeholder' => 'http:// ou https://'],
+               'attr' => ['placeholder' => 'http(s)://...'],
             ))
             ->add('instagram', UrlType::class, array(
                 'label' => 'labels.artist.instagram',
                 'required' => false,
                 'constraints' => [
-                    new Url(['message' => "Veuillez entrer une URL valide."]),
+                    new Url(['message' => "artist.links.url"]),
                 ],
-                'attr' => ['placeholder' => 'http:// ou https://'],
+                'attr' => ['placeholder' => 'http(s)://...'],
             ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.artist.submit',
                 'attr' => ['class' => 'btn btn-primary']
             ))
         ;
-        if($options['edit']) {
+        if(!$options['edit']) {
             $builder->add('accept_conditions', CheckboxType::class, array(
                 'required' => true,
                 'label' => 'labels.artist.accept_conditions',
                 'constraints' => [
-                    new NotBlank(['message' => 'Vous devez accepter les conditions d\'utilisation pour continuer.']),
+                    new NotBlank(['message' => 'artist.accept_conditions.blank']),
                 ],
             ));
         }

@@ -18,7 +18,16 @@ class ContractFan
 
     public function __toString()
     {
-        return 'contrat fan #' . $this->id;
+        $str = '';
+
+        for($i = 0; $i < $this->purchases->count(); $i++) {
+            if($i > 0) {
+                $str .= ', ';
+            }
+            $str .= $this->purchases->get($i);
+        }
+
+        return $str;
     }
 
     public function __construct(ContractArtist $ca)
@@ -39,15 +48,18 @@ class ContractFan
     }
 
     public function generateBarCode() {
-        $this->barcode_text = 'cf'.$this->id . uniqid();
+        if(empty($this->barcode_text))
+            $this->barcode_text = 'cf'.$this->id . uniqid();
     }
 
     public function generateTickets() {
-        foreach($this->purchases as $purchase) {
-            /** @var Purchase $purchase */
-            for($j = 1; $j < $purchase->getQuantity(); $j++) {
-                $counterPart = $purchase->getCounterpart();
-                $this->addTicket(new Ticket($this, $counterPart, $j));
+        if(empty($this->tickets)) {
+            foreach ($this->purchases as $purchase) {
+                /** @var Purchase $purchase */
+                for ($j = 1; $j < $purchase->getQuantity(); $j++) {
+                    $counterPart = $purchase->getCounterpart();
+                    $this->addTicket(new Ticket($this, $counterPart, $j));
+                }
             }
         }
     }

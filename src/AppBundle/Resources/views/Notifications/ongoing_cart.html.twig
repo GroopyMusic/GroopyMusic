@@ -1,0 +1,8 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'ongoing_cart.title'|trans|raw %}
+{%- set content -%}
+    {{ 'ongoing_cart.content'|trans|raw|nl2br }}
+{%- endset -%}

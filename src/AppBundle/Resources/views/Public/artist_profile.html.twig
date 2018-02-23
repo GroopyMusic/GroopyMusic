@@ -81,9 +81,7 @@
 
                     <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
                     {% for video in artist.videos %}
-                        <div class="mb-2">
-                            {{ video.embedVideo|raw }}
-                        </div>
+                        {{ video.embedVideo|raw }}
                     {% else %}
                         <p>{{ 'artist_profile.see.videos.empty'|trans|raw }}</p>
                     {% endfor %}

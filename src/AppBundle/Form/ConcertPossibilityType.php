@@ -25,7 +25,7 @@ class ConcertPossibilityType extends AbstractType
         );
         if($required) {
             $date_options['constraints'] = [
-                new NotBlank(['message' => 'Merci de renseigner une date pour le concert.']),
+                new NotBlank(['message' => 'concert_possibility.date.blank']),
             ];
         }
 
@@ -33,7 +33,7 @@ class ConcertPossibilityType extends AbstractType
             $builder
                 ->remove('additional_info')
                 ->add('hall', null, array(
-                    'label' => 'Salle où aura lieu le concert',
+                    'label' => 'labels.concertpossibility.hall',
                     'required' => $required,
                 ))
             ;

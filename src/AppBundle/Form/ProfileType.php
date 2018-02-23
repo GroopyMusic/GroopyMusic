@@ -27,16 +27,16 @@ class ProfileType extends AbstractType
                 'label' => 'labels.user.profile.lastname',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Merci de renseigner un nom de famille.']),
-                    new Length(['max' => 64, 'maxMessage' => 'Le nom ne peut dépasser {{ limit }} caractères.']),
+                    new NotBlank(['message' => 'user.lastname.blank']),
+                    new Length(['max' => 64, 'maxMessage' => 'user.lastname.long']),
                 ]
             ))
             ->add('firstname', TextType::class, array(
                 'label' => 'labels.user.profile.firstname',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Merci de renseigner un prénom.']),
-                    new Length(['max' => 64, 'maxMessage' => 'Le prénom ne peut dépasser {{ limit }} caractères.']),
+                    new NotBlank(['message' => 'user.firstname.blank']),
+                    new Length(['max' => 64, 'maxMessage' => 'user.firstname.long']),
                 ]
             ))
             // End duplicated
@@ -71,7 +71,7 @@ class ProfileType extends AbstractType
                 'required' => false,
                 'years' => range(1920, date('Y')),
                 'constraints' => [
-                    new Date(['message' => 'constraints.user.preferences.birthday.date']),
+                    new Date(['message' => 'user.birthday.date']),
                 ]
             ))
 

@@ -10,7 +10,7 @@
                 '%artist%': artist.artistName,
                 '%hall%': contract.reality.hall.name,
                 '%date%': contract.reality.date|date('d/m/Y'),
-                '%events_link%': '<a href="' ~ path ~ '">Un-Mute</a>'
+                '%events_link%': email_link(path, 'Un-Mute'),
             })|raw }}
         {% endblock %}
     {% endspaceless %}
