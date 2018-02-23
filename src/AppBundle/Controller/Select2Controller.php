@@ -68,7 +68,7 @@ class Select2Controller extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $artists = $em->getRepository('AppBundle:Artist')->findNotDeletedBy(null);
+        $artists = $em->getRepository('AppBundle:Artist')->findNotDeleted();
 
         $artistsArray = [];
 

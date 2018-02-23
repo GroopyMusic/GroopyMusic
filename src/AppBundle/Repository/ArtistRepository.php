@@ -64,11 +64,10 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-    public function findNotDeletedBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+    public function findNotDeleted()
     {
-        $criteria = array_merge(['deleted' => false], $criteria);
+        $criteria = array_merge(['deleted' => false]);
         $persister = $this->_em->getUnitOfWork()->getEntityPersister($this->_entityName);
-
-        return $persister->loadAll($criteria, $orderBy, $limit, $offset);
+        return $persister->loadAll($criteria);
     }
 }

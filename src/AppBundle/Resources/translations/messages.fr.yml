@@ -601,17 +601,24 @@ labels:
     artistname : Nom de l'artiste ou du groupe
     demo_link : Extrait musical
     genres : Genre(s)
-  proposition_contractArtist :
+  proposition_contract_artist :
     province : Province
     reason : Raison de l'évenement
     nb_expected : Nombres de personnes attendues
-    payable : Payant
     period_start_date : Date de début
     period_end_date : Date de fin
     day_commentary : Préférence sur le(s) jour(s) de la semaine
     commentary : Commentaire
     submit : Soumettre
     artists : Artiste
+    payable : Payant
+
+placeholders :
+  proposition_contract_artist :
+    year : Année
+    month : Mois
+    day : Jour
+
 
 
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 /**
  * PropositionContractArtist
  *
@@ -35,31 +36,31 @@ class PropositionContractArtist
 
     /**
      * @var Province
-     * @ORM\ManyToOne(targetEntity="Province")
+     * @ORM\ManyToOne(targetEntity="Province",cascade={"persist"})
      */
     private $province;
 
     /**
      * @var PropositionHall
-     * @ORM\OneToOne(targetEntity="PropositionHall")
+     * @ORM\OneToOne(targetEntity="PropositionHall",cascade={"persist"})
      */
     private $propositionHall;
 
     /**
      * @var PropositionArtist
-     * @ORM\OneToOne(targetEntity="PropositionArtist")
+     * @ORM\OneToOne(targetEntity="PropositionArtist",cascade={"persist"})
      */
     private $propositionArtist;
 
     /**
      * @var Artist
-     * @ORM\ManyToOne(targetEntity="Artist")
+     * @ORM\ManyToOne(targetEntity="Artist",cascade={"persist"})
      */
     private $Artist;
 
     /**
      * @var ContactPerson
-     * @ORM\OneToOne(targetEntity="ContactPerson")
+     * @ORM\OneToOne(targetEntity="ContactPerson",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $contactPerson;

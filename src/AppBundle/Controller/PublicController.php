@@ -521,7 +521,7 @@ class PublicController extends Controller
      */
     public function propositionAction(Request $request){
         $propositionContractArtist = new PropositionContractArtist();
-        $form = $this->createForm(PropositionContractArtistType::class);
+        $form = $this->createForm(PropositionContractArtistType::class, $propositionContractArtist);
 
         $form->handleRequest($request);
 
