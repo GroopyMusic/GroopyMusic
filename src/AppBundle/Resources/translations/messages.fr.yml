@@ -439,8 +439,8 @@ artist_profile:
       instagram: Suivre sur Instagram
       soundcloud: Voir le profil SoundCloud
       bandcamp: Voir le profil Bandcamp
-    current_event: Evénement en cours de vente de tickets
-    passed_events: Concerts accomplis par le passé
+    current_event: Événement à venir
+    passed_events: Événéments passés
   profile_pic:
     intro: |
       Vous pouvez ici mettre en ligne la photo de profil de %artist%.

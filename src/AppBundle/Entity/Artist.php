@@ -140,7 +140,7 @@ class Artist implements TranslatableInterface
         else {
             foreach($this->contracts as $contract) {
                 /** @var ContractArtist $contract */
-                if($contract->getDateEnd() >= (new \DateTime()) && !$contract->getFailed()) {
+                if($contract->getDateConcert() >= (new \DateTime()) && !$contract->getFailed()) {
                     return $contract;
                 }
             }
@@ -148,14 +148,13 @@ class Artist implements TranslatableInterface
         return null;
     }
 
-    public function getOtherSuccessfulContracts(ContractArtist $firstContract = null) {
+    public function getPassedSuccessfulContracts() {
         $contracts = [];
 
         foreach($this->contracts as $contract) {
-            if($firstContract == null || ($contract->getId() != $firstContract->getId())) {
-                if($contract->getSuccessful()) {
-                    $contracts[] = $contract;
-                }
+            /** @var ContractArtist $contract */
+            if($contract->getDateConcert() < (new \DateTime()) && $contract->getSuccessful() && !$contract->getFailed()) {
+                $contracts[] = $contract;
             }
         }
 
