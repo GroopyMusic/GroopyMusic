@@ -20,6 +20,7 @@ class ContractArtistAdmin extends BaseAdmin
             ->remove('create')
             ->add('refund', $this->getRouterIdParameter().'/refund')
             ->add('validate', $this->getRouterIdParameter().'/validate')
+            ->add('prevalidate', $this->getRouterIdParameter().'/prevalidate')
         ;
     }
 
@@ -31,6 +32,14 @@ class ContractArtistAdmin extends BaseAdmin
                 'label' => 'Date de création',
                 'format' => 'd/m/Y',
             ))
+            ->add('start_date', 'date', array(
+                'label' => 'Début des ventes',
+                'format' => 'd/m/Y',
+            ))
+            ->add('date_end', 'date', array(
+                'label' => 'Échéance',
+                'format' => 'd/m/Y',
+            ))
             ->add('artist', null, array(
                 'label' => 'Artiste',
                 'route' => array('name' => 'show'),
@@ -38,10 +47,6 @@ class ContractArtistAdmin extends BaseAdmin
             ->add('step', null, array(
                 'label' => 'Palier',
                 'route' => array('name' => 'show'),
-            ))
-            ->add('date_end', 'date', array(
-                'label' => 'Échéance',
-                'format' => 'd/m/Y',
             ))
             ->add('failed', null, array(
                 'label' => 'Échec',
@@ -65,6 +70,9 @@ class ContractArtistAdmin extends BaseAdmin
                     'validate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_validate.html.twig',
                     ),
+                    'prevalidate' => array(
+                        'template' => 'AppBundle:Admin/ContractArtist:icon_prevalidate.html.twig',
+                    ),
                 )))
         ;
     }
@@ -76,6 +84,12 @@ class ContractArtistAdmin extends BaseAdmin
                 ->add('id')
                 ->add('date', 'date', array(
                     'label' => 'Date de création',
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr',
+                    'timezone' => 'Europe/Paris',
+                ))
+                ->add('start_date', 'date', array(
+                    'label' => 'Début des ventes',
                     'format' => 'd/m/Y',
                     'locale' => 'fr',
                     'timezone' => 'Europe/Paris',
@@ -103,11 +117,14 @@ class ContractArtistAdmin extends BaseAdmin
                 ->add('preferences.additional_info', null, array(
                     'label' => 'Infos pour les organisateurs',
                 ))
-                ->add('newsletter', null, array(
-                    'label' => 'Newsletter associée',
+                ->add('promotions', null, array(
+                    'label' => 'Promotions appliquées',
                 ))
             ->end()
             ->with('État')
+                ->add('test_period', null, array(
+                    'label' => 'Est en pré-validation',
+                ))
                 ->add('collected_amount', null, array(
                     'label' => 'Montant collecté',
                 ))
@@ -212,6 +229,7 @@ class ContractArtistAdmin extends BaseAdmin
         return [
             '#' => 'id',
             'Date de création' => 'date',
+            'Date de début des ventes officielles' => 'start_date',
             'Date limite pour objectif' => 'dateEnd',
             'Artiste' => 'artist.artistname',
             '# Artiste' => 'artist.id',
@@ -225,6 +243,7 @@ class ContractArtistAdmin extends BaseAdmin
             'Réussi' => 'successful',
             'Raté' => 'failed',
             'Remboursé' => 'refunded',
+            'En pré-validation' => 'test_period',
             'État' => 'state',
             'Tickets vendus' => 'tickets_sold',
             'Seuil' => 'min_tickets',
@@ -233,6 +252,7 @@ class ContractArtistAdmin extends BaseAdmin
             'Artistes invités' => 'coartistsExport',
             'Nombre de paiements (non remboursés)' => 'nbPayments',
             'Paiements (non remboursés)' => 'paymentsExport',
+            'Promotions' => 'promotionsExport',
         ];
     }
 }

@@ -29,6 +29,7 @@ security:
                 #csrf_token_id:        authenticate
                 #csrf_token_generator: security.csrf.token_manager
                 use_referer: true
+                require_previous_session: false
             logout:
               path: /logout
             anonymous:    true

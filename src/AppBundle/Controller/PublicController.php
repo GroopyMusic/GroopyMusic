@@ -240,15 +240,17 @@ class PublicController extends Controller
     /**
      * @Route("/crowdfundings", name="catalog_crowdfundings")
      */
-    public function artistContractsAction() {
+    public function artistContractsAction(UserInterface $user = null) {
 
         $em = $this->getDoctrine()->getManager();
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
+        $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user);
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
             'successful_contracts' => $succesful_contracts,
+            'prevalidation_contracts' => $prevalidation_contracts,
         ));
     }
 

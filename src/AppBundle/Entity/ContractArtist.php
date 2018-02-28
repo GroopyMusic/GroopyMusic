@@ -21,7 +21,7 @@ class ContractArtist extends BaseContractArtist
 
     const STATE_REFUNDED = 'state.refunded';
     const STATE_FAILED = 'state.failed';
-    const STATE_SUCCESS_SOLDOUT = 'state.success.soldout';
+    const STATE_SUCCESS_SOLDOUT = 'state.success.soldout.soldout';
     const STATE_SUCCESS_SOLDOUT_PENDING = 'state.success.soldout.pending';
     const STATE_SUCCESS_CLOSED = 'state.success.closed';
     const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
@@ -29,6 +29,7 @@ class ContractArtist extends BaseContractArtist
     const STATE_SUCCESS_PASSED = 'state.success.passed';
     const STATE_ONGOING = 'state.ongoing';
     const STATE_PENDING = 'state.pending';
+    const STATE_TEST_PERIOD = 'state.test_period';
 
     public function isUncrowdable() {
         return in_array($this->getState(), $this->getUncrowdableStates());
@@ -166,6 +167,11 @@ class ContractArtist extends BaseContractArtist
             if ($this->tickets_sold >= $this->getMinTickets())
                 return self::STATE_SUCCESS_PENDING;
 
+            // Or in pre-validaton
+            if($this->isInTestPeriod()) {
+                return self::STATE_TEST_PERIOD;
+            }
+
             // Or simply ongoing
             return self::STATE_ONGOING;
         }
@@ -247,6 +253,13 @@ class ContractArtist extends BaseContractArtist
         else {
             return $this->preferences->getDate();
         }
+    }
+
+    public function getCurrentPromotions() {
+        $now = new \DateTime();
+        return array_filter($this->promotions->toArray(), function(Promotion $promotion) use ($now) {
+            return $promotion->getStartDate() <= $now && $promotion->getEndDate() >= $now;
+        });
     }
 
     public function getNbPayments() {
@@ -569,5 +582,39 @@ class ContractArtist extends BaseContractArtist
         $this->min_tickets = $minTickets;
 
         return $this;
+    }
+
+    /**
+     * Add promotion
+     *
+     * @param \AppBundle\Entity\Promotion $promotion
+     *
+     * @return ContractArtist
+     */
+    public function addPromotion(\AppBundle\Entity\Promotion $promotion)
+    {
+        $this->promotions[] = $promotion;
+
+        return $this;
+    }
+
+    /**
+     * Remove promotion
+     *
+     * @param \AppBundle\Entity\Promotion $promotion
+     */
+    public function removePromotion(\AppBundle\Entity\Promotion $promotion)
+    {
+        $this->promotions->removeElement($promotion);
+    }
+
+    /**
+     * Get promotions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPromotions()
+    {
+        return $this->promotions;
     }
 }

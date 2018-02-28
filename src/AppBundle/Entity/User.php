@@ -41,6 +41,7 @@ class User extends BaseUser implements RecipientInterface
         return false;
     }
 
+
     public function removeCredits($n) {
         $this->credits -= $n;
     }

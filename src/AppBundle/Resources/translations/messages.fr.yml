@@ -199,6 +199,9 @@ catalog_artists:
   join_us: Vous souhaitez vous inscrire en tant qu'artiste ? <a href="%url%">Créez un profil</a>. En quelques minutes, vous aurez créé votre identité Un-Mute.
 
 catalog_events:
+  prevalidation:
+    title: Événements en pré-validation
+    intro: Les événements suivants sont en cours de prévalidation ; ils ne sont visibles que par les artistes qui les hôtent et les administrateurs Un-Mute.
   empty:
     title: Événements Un-Mute
     content: Il n'y a aucun événement à soutenir en ce moment. Revenez très vite pour des nouveautés et tenez-vous au courant grâce à <a href="%facebook_url%">notre page sur Facebook.</a>
@@ -221,7 +224,8 @@ event:
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
-  promo: Exceptionnellement à l'occasion du lancement de la plateforme, Un-Mute vous offre un ticket pour chaque lot de trois tickets achetés !
+  promo: "Lors de la première semaine de ventes, cet événement est en promotion : pour %nb_organic_needed% tickets achetés, vous en recevrez %nb_promotional% !"
+  prevalidation: "Cet événement est en pré-validation. Sa page ne sera rendue publique que lorsque 10% de tickets auront été vendus, et il y aura alors encore un mois pour obtenir les 100% requis à la concrétisation du Festival."
   infos:
     title: Infos
     date: Date du festival
@@ -239,15 +243,20 @@ event:
     title: À propos de l'artiste hôte
     genres: Styles musicaux
     see_profile: Voir le profil
-  states:
-    success_passed: Objectif atteint
+  state:
+    success:
+      pending: Objectif atteint
+      passed: Objectif atteint
+      ongoing: Objectif atteint
+      closed:  Objectif atteint
+      soldout:
+        soldout: Objectif atteint (SOLD OUT)
+        pending: Objectif atteint (SOLD OUT)
     refunded: Annulé
     failed: Objectif non atteint
-    success_ongoing: Objectif atteint
-    success_closed:  Objectif atteint
-    success_soldout: Objectif atteint (SOLD OUT)
     ongoing: En cours
     pending: En cours d'examination par l'équipe Un-Mute
+    test_period: En pré-validation
   stillselling: Places encore en vente
   lineup:
     title: Line-up
@@ -340,8 +349,8 @@ pay_cart:
             submit: Poursuivre avec Bancontact
             pending: Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.
     recap:
+        promo_title: Promotion
         title: Vos tickets
-        promo_title: Promotion 3 + 1
         labels:
             counterpart: Type
             concert: Festival
@@ -506,7 +515,7 @@ leave_artist:
 order_pdf:
   title: Récapitulatif de votre commande
   intro: Merci d'avoir passé une commande de tickets de concert avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à pierre@un-mute.be
-  promo: "Note : Actuellement, par lot de 3 tickets achetés, un quatrième vous est offert."
+  promo: "Note : pour toute commande passée lors de la première semaine de ventes de tickets pour cet événement (c'est-à-dire jusqu'au %end_date%), par %nb_organic_needed% tickets achetés, vous en recevez %nb_promotional%."
   labels:
     order_date: Date de la commande
     event: Evénement soutenu

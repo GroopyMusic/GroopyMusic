@@ -1,8 +1,26 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    {% if current_contracts is empty and successful_contracts is empty %}
 
+    {% if prevalidation_contracts is not empty %}
+
+        <div class="container opacity-50 mb-4">
+            <h3 class="text-center mb-3">{{ 'catalog_events.prevalidation.title'|trans|raw }}</h3>
+
+            <p>
+                {{ 'catalog_events.prevalidation.intro'|trans|raw }}
+            </p>
+
+            <div class="row">
+                {% for contract in prevalidation_contracts %}
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'bgwhite': true} %}
+                {% endfor %}
+            </div>
+        </div>
+
+    {% endif %}
+
+    {% if current_contracts is empty and successful_contracts is empty %}
         <div class="container">
             <h3 class="text-center mb-3">{{ 'catalog_events.empty.title'|trans|raw }}</h3>
             <p class="p-info">

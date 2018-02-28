@@ -120,6 +120,10 @@ class ContractFan
         }
     }
 
+    public function isEligibleForPromotion(Promotion $promotion) {
+        return $this->date >= $promotion->getStartDate() && $this->date <= $promotion->getEndDate();
+    }
+
     /**
      * @var int
      *
