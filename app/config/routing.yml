@@ -1,10 +1,29 @@
 # app/config/routing.yml
-app_all:
-    resource: "@AppBundle/Resources/config/routing.yml"
-    schemes: ['%http_protocol%']
-
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+    schemes: ['%http_protocol%']
+
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /login
+    schemes: ['%http_protocol%']
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /connect
+    schemes: ['%http_protocol%']
+
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /login
+    schemes: ['%http_protocol%']
+
+facebook_login:
+    path: /login/check-facebook
+    schemes: ['%http_protocol%']
+
+app_all:
+    resource: "@AppBundle/Resources/config/routing.yml"
     schemes: ['%http_protocol%']
 
 azine_email_bundle:

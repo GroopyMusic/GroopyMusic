@@ -1,0 +1,13 @@
+.um-login {
+  &-button {
+    border-radius: 5px;
+    padding-left: 3rem;
+  }
+
+  &-wave-icon {
+    position: absolute;
+    left: 5px;
+    top: calc(50% - 12px);
+    height: 24px;
+  }
+}

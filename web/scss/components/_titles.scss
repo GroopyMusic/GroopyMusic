@@ -1,8 +1,6 @@
 
-.rounded-title, .login-rounded-title {
+.rounded-title, .rounded-title-login-choice {
   font-family: $secondary-font;
-  min-width: 110px;
-  min-height: 110px;
   width: 110px;
   height: 110px;
   color: white;
@@ -16,6 +14,12 @@
   margin-top: -55px;
   text-align: center;
 
+  &-login-choice {
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    background: rgba(188, 187, 187, 1);
+  }
 
   h2&, h3&, h4&, h5&, h6& {
     font-size: 1.2rem;
@@ -28,6 +32,7 @@
     border-bottom: $main-color solid 3px;
     background-color: transparent;
     height: 50%;
+    &-login-choice { border-bottom-color: rgba(188, 187, 187, 0.75);}
   }
 }
 

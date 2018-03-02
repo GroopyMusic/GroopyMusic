@@ -71,6 +71,8 @@ class User extends BaseUser implements RecipientInterface
         $this->setAskedEmail(null);
         $this->setAskedEmailToken(null);
         $this->setBirthday(null);
+        $this->setFacebookAccessToken(null);
+        $this->setFacebookId(null);
 
         foreach($this->artists_user as $au) {
             $this->removeArtistsUser($au);
@@ -215,6 +217,12 @@ class User extends BaseUser implements RecipientInterface
      * @ORM\Column(name="deleted", type="boolean")
      */
     private $deleted;
+
+    /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
+    protected $facebook_id;
+
+    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    protected $facebook_access_token;
 
     /**
      * @param mixed $salutation
@@ -735,5 +743,53 @@ class User extends BaseUser implements RecipientInterface
     public function getDeleted()
     {
         return $this->deleted;
+    }
+
+    /**
+     * Set facebookId
+     *
+     * @param string $facebookId
+     *
+     * @return User
+     */
+    public function setFacebookId($facebookId)
+    {
+        $this->facebook_id = $facebookId;
+
+        return $this;
+    }
+
+    /**
+     * Get facebookId
+     *
+     * @return string
+     */
+    public function getFacebookId()
+    {
+        return $this->facebook_id;
+    }
+
+    /**
+     * Set facebookAccessToken
+     *
+     * @param string $facebookAccessToken
+     *
+     * @return User
+     */
+    public function setFacebookAccessToken($facebookAccessToken)
+    {
+        $this->facebook_access_token = $facebookAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * Get facebookAccessToken
+     *
+     * @return string
+     */
+    public function getFacebookAccessToken()
+    {
+        return $this->facebook_access_token;
     }
 }

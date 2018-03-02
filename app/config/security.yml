@@ -30,6 +30,16 @@ security:
                 #csrf_token_generator: security.csrf.token_manager
                 use_referer: true
                 require_previous_session: false
+            oauth:
+              resource_owners:
+                facebook:           "/login/check-facebook"
+              login_path:        fos_user_security_login
+              failure_path:      fos_user_security_login
+
+              oauth_user_provider:
+                  #this is my custom user provider, created from FOSUBUserProvider - will manage the
+                  #automatic user registration on your site, with data from the provider (facebook. google, etc.)
+                  service:  um_fosub_user_provider
             logout:
               path: /logout
             anonymous:    true
@@ -40,3 +50,4 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: /admin/, role: ROLE_ADMIN }
         - { path: ^/command-scheduler/, role: ROLE_ADMIN }
+        - { path: ^/connect, roles: IS_AUTHENTICATED_ANONYMOUSLY }
