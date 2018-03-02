@@ -77,4 +77,10 @@ main {
 
 .word-break-all {
   word-break: break-all;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  -o-hyphens: auto;
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
