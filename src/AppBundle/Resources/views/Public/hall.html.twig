@@ -111,7 +111,7 @@
                         {% if hall.website is not empty %}
                             <tr>
                                 <td class="contract-info-title">{{ 'hall.infos.website'|trans|raw }}</td>
-                                <td><a href="{{ hall.website }}">{{ hall.websiteDomain }}</a></td>
+                                <td><a class="word-break-all" href="{{ hall.website }}">{{ hall.websiteDomain }}</a></td>
                             </tr>
                         {% endif %}
                         </tbody>
