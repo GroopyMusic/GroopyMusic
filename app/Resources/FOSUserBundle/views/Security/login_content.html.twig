@@ -13,11 +13,8 @@
                 <div class="container">
                     <!-- design of the modal header -->
                     <div class="login-header">
-                        <div class="h-line"></div>
                         <!-- titre de la section -->
-                        <div class="login-header-title">
-                            <h4 class="login-rounded-title">Connexion</h4>
-                        </div>
+                        <h5>Connexion</h5>
                     </div>
                     <form action="{{ path("fos_user_security_check") }}" method="post">
                         <div class="form-group">
@@ -43,10 +40,23 @@
                                value="{{ csrf_token('authenticate') }}"
                         >#}
                         <div class="text-center">
-                            <button class="btn btn-primary text-uppercase" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
+                            <button class="btn btn-primary text-uppercase position-relative um-login-button text-center" type="submit" id="_submit" name="_submit"><!--
+                                --><img class="um-login-wave-icon" src="{{ asset('images/wave-white.png') }}" />{{ 'security.login.submit'|trans }}<!--
+                            --></button>
                         </div>
                     </form>
+
+                    {# TODO uncomment for FB login
+                    <div class="py-4 mt-4" style="min-height: 100px;">
+                        <div class="h-line h-line-login-choice"></div>
+                        <h6 class="rounded-title-login-choice">{{ 'or'|trans({}, 'messages') }}</h6>
+                    </div>
+
+                    <div class="mb-4 mt-1 text-center">
+                        <div class="fb-login-button d-inline-block" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState();"></div>
+                    </div>#}
                 </div>
+
             </div>
         </div>
     </div>

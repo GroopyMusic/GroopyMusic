@@ -14,4 +14,15 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
         ;
     }
 
+    public function findUsersWithRoles(array $roles) {
+        $qb = $this->createQueryBuilder('u');
+
+        foreach($roles as $role) {
+            $qb->orWhere('u.roles LIKE :role')
+                ->setParameter('role', '%' . $role . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

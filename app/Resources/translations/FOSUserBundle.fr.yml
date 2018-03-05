@@ -51,5 +51,5 @@ security:
   login:
     password: Mot de passe
     remember_me: Rester connecté
-    submit: Connexion
+    submit: Connexion avec Un-Mute
     username: Adresse e-mail

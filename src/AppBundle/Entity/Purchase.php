@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,13 +17,36 @@ class Purchase
 
     public function __toString()
     {
-        return $this->counterpart . ' (x'.$this->quantity.')';
+        return $this->counterpart . ' (x'.$this->quantity.') ' . $this->getActuallyAppliedPromotionsString() ;
     }
 
     public function __construct()
     {
         $this->quantity = 0;
         $this->nb_free_counterparts = 0;
+        $this->applied_promotions = new ArrayCollection();
+    }
+
+    public function getPromotions()
+    {
+        return array_map(function(Purchase_Promotion $p_promotion) {
+            return $p_promotion->getPromotion();
+        }, $this->purchase_promotions->toArray());
+    }
+
+    public function getActuallyAppliedPromotions() {
+        return array_map(function(Purchase_Promotion $p_promotion) {
+                return $p_promotion->getPromotion();
+            }, array_filter($this->purchase_promotions->toArray(), function(Purchase_Promotion $p_promotion) {
+                return $p_promotion->getNbFreeCounterParts() > 0;
+            }));
+    }
+
+    public function getActuallyAppliedPromotionsString() {
+        $string = '';
+        foreach($this->getActuallyAppliedPromotions() as $promotion) {
+            $string .= '- ' . $promotion;
+        }
     }
 
     public function addQuantity($q) {
@@ -36,27 +60,30 @@ class Purchase
         return $this->getQuantityOrganic() * $this->counterpart->getPrice();
     }
 
+    /**
+     * @return ContractArtist
+     */
+    public function getContractArtist() {
+        return $this->contractFan->getContractArtist();
+    }
+
     public function calculatePromotions() {
-        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
-            // TODO adapt ; this is for February 2018 promotion
-            $this->nb_free_counterparts = floor($this->quantity / 3);
-            $this->addQuantity($this->nb_free_counterparts);
+        foreach($this->getContractArtist()->getPromotions() as $promotion) {
+            /** @var Promotion $promotion */
+            if($this->contractFan->isEligibleForPromotion($promotion) && !$this->applied_promotions->contains($promotion)) {
+                $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($this->getQuantityOrganic() / $promotion->getNbOrganicNeeded()));
+                $this->nb_free_counterparts += $new_promotional_counterparts;
+                $this->addQuantity($new_promotional_counterparts);
+                $this->addAppliedPromotion($promotion);
+            }
         }
     }
 
     public function getQuantityOrganic() {
-        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
-            $this->calculatePromotions();
-        }
-
         return $this->quantity - $this->getQuantityPromotional();
     }
 
     public function getQuantityPromotional() {
-        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
-            $this->calculatePromotions();
-        }
-
         return $this->getNbFreeCounterparts();
     }
 
@@ -81,12 +108,16 @@ class Purchase
     private $quantity;
 
     /**
+     * @var ContractFan
+     *
      * @ORM\ManyToOne(targetEntity="ContractFan", inversedBy="purchases")
      * @ORM\JoinColumn(nullable=false)
      */
     private $contractFan;
 
     /**
+     * @var CounterPart
+     *
      * @ORM\ManyToOne(targetEntity="CounterPart")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -96,6 +127,12 @@ class Purchase
      * @ORM\Column(name="nb_free_counterparts", type="smallint")
      */
     private $nb_free_counterparts;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Purchase_Promotion", mappedBy="purchase")
+     */
+    private $purchase_promotions;
 
     /**
      * Get id
@@ -194,5 +231,39 @@ class Purchase
         $this->nb_free_counterparts = $nbFreeCounterparts;
 
         return $this;
+    }
+
+    /**
+     * Add purchasePromotion
+     *
+     * @param \AppBundle\Entity\Purchase_Promotion $purchasePromotion
+     *
+     * @return Purchase
+     */
+    public function addPurchasePromotion(\AppBundle\Entity\Purchase_Promotion $purchasePromotion)
+    {
+        $this->purchase_promotions[] = $purchasePromotion;
+
+        return $this;
+    }
+
+    /**
+     * Remove purchasePromotion
+     *
+     * @param \AppBundle\Entity\Purchase_Promotion $purchasePromotion
+     */
+    public function removePurchasePromotion(\AppBundle\Entity\Purchase_Promotion $purchasePromotion)
+    {
+        $this->purchase_promotions->removeElement($purchasePromotion);
+    }
+
+    /**
+     * Get purchasePromotions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPurchasePromotions()
+    {
+        return $this->purchase_promotions;
     }
 }

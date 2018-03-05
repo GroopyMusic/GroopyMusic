@@ -17,7 +17,7 @@
 
             <div class="content-box">
                 <div class="content-box-content">
-                    <h3>{{ 'new_event.step'|trans|raw }} {{ flow.currentStepNumber }}/{{ flow.lastStepNumber }} : {{ flow.currentStepLabel }} </h3>
+                    <h3>{{ 'new_event.step'|trans|raw }} {{ flow.currentStepNumber }}/{{ flow.lastStepNumber }} : {{ flow.currentStepLabel|trans|raw }} </h3>
                     {% if flow.currentStepNumber == 1 %}
                         <p>
                             {{ 'new_event.step_1.intro'|trans|raw }}
@@ -69,8 +69,13 @@
                         {{ form_widget(form.accept_conditions) }}
 
                         {% if is_granted('ROLE_ADMIN') %}
-                            <div class="form-group form-row">
+                            <div class="form-group form-row mt-3">
                                 <div class="contract-info-title">Admin</div>
+
+                                <div class="col-12">
+                                    {{ form_errors(form.testPeriod) }}
+                                    {{ form_widget(form.testPeriod) }}
+                                </div>
                                 <div class="col-12">
                                     {{ form_row(form.reality.hall) }}
                                 </div>

@@ -32,7 +32,6 @@
         </div>
 
         <div class="w-100 position-relative">
-
             {% if contract.state in contract.successfulStates %}
                 <div class="progress um-card-progress successful-progress py-3">
                     <div class="progress-bar" style="width:100%">
@@ -41,7 +40,7 @@
                 </div>
             {% endif %}
 
-            {% set progress_100 = contract.ticketsSold * 100 // contract.step.minTickets %}
+            {% set progress_100 = contract.percentObjective %}
             <div class="progress um-card-progress{% if contract.state in contract.successfulStates %} invisible{% endif %}">
                 <div class="progress-bar" style="padding-left: 2rem;width:{{ progress_100 }}%">
                     <span class="progress-bar-percent">{{ progress_100 }}%</span>

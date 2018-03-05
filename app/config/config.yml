@@ -11,6 +11,7 @@ parameters:
     locale: fr
     mailer_from_name: "Un-Mute"
     locales: [fr]
+    facebook_page_url: https://www.facebook.com/UnMuteasbl/
 
 framework:
     #esi:             ~
@@ -51,7 +52,9 @@ twig:
       - ':Form:bootstrap_4_horizontal_layout.html.twig'
     globals:
       stripe_api_public: "%stripe_api_public%"
+      facebook_api_id: "%facebook_api_id%"
       enabled_locales: "%locales%"
+      facebook_page_url: "%facebook_page_url%"
 
 # Doctrine Configuration
 doctrine:
@@ -208,3 +211,23 @@ cspoo_swiftmailer_mailgun:
     key: "%mailgun_api_secret%"
     domain: "%mailgun_domain%"
     http_client: ~ # Optional. Defaults to null and uses discovery to find client.
+
+hwi_oauth:
+    #will manage the
+    #automatic user registration on your site, with data from the provider (facebook. google, etc.)
+    #and also, the connecting part (get the token and the user_id)
+    connect:
+        account_connector: um_fosub_user_provider
+    # name of the firewall in which this bundle is active, this setting MUST be set
+    firewall_name: main
+    fosub:
+        username_iterations: 30
+        properties:
+            # these properties will be used/redefined later in the custom FOSUBUserProvider service.
+            facebook: facebook_id
+    resource_owners:
+        facebook:
+            type:                facebook
+            client_id:           "%facebook_api_id%"
+            client_secret:       "%facebook_api_secret%"
+            scope:               "email"

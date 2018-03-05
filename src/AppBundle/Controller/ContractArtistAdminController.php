@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ConcertPossibility;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
+use AppBundle\Form\ContractArtistPreValidationType;
 use AppBundle\Form\ContractArtistValidationType;
 use AppBundle\Services\MailDispatcher;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
@@ -99,6 +100,62 @@ class ContractArtistAdminController extends Controller
             'contract' => $contract,
         ));
     }
+
+    public function preValidateAction(Request $request, UserInterface $user) {
+        $em = $this->getDoctrine()->getManager();
+        /** @var ContractArtist $contract */
+        $contract = $this->admin->getSubject();
+
+        if (!$contract) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $contract->getId()));
+        }
+
+        if(!$contract->isInTestPeriod()) {
+            throw new NotFoundHttpException('this contract is not in test period...');
+        }
+
+        $form = $this->createForm(ContractArtistPreValidationType::class, $contract);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->get('cancel')->isClicked()) {
+                return new RedirectResponse($this->admin->generateUrl('list'));
+            }
+
+            elseif($form->get('markfailed')->isClicked()) {
+                $contract->setSuccessful(false)->setFailed(true)->setReality(null)->setDateEnd(new \DateTime())->setStartDate(new \DateTime())->setTestPeriod(false);
+
+                $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, false);
+
+                $em->persist($contract);
+                $em->flush();
+
+                $this->addFlash('sonata_flash_success', "L'objectif de cet événement n'a pas été atteint. Les ventes de tickets sont finies ; n'oublie pas de rembourser les fans !");
+
+                return new RedirectResponse($this->admin->generateUrl('list'));
+            }
+
+            elseif ($form->get('marksuccessful')->isClicked()) {
+
+                $contract->endTestPeriod();
+
+                $em->persist($contract);
+                $em->flush();
+
+                $this->addFlash('sonata_flash_success', "L'événement a bien été modifié.");
+
+                return new RedirectResponse($this->admin->generateUrl('list'));
+            }
+        }
+
+        return $this->render('@App/Admin/ContractArtist/action_prevalidate.html.twig', array(
+            'form' => $form->createView(),
+            'contract' => $contract,
+        ));
+    }
+
 
     public function validateAction(Request $request, UserInterface $user) {
         $em = $this->getDoctrine()->getManager();

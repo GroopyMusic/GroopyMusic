@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Artist;
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Province;
 use AppBundle\Entity\Step;
@@ -68,8 +69,12 @@ class ContractArtistType extends AbstractType
                     ));
                 break;
             case 3:
-                if ($user == null)
+                if ($user == null) {
                     $builder
+                        ->add('testPeriod', CheckboxType::class, array(
+                            'required' => false,
+                            'label' => 'Doit avoir une période de test de ' . BaseContractArtist::NB_TEST_PERIOD_DAYS . ' jours',
+                        ))
                         ->add('reality', ConcertPossibilityType::class, array(
                             'label' => 'Détails connus',
                             'required' => false,
@@ -78,6 +83,7 @@ class ContractArtistType extends AbstractType
                             'available-dates' => $options['available-dates'],
                             'date_value' => $builder->getData()->getPreferences()->getDate(),
                         ));
+                }
                 $builder->add('accept_conditions', CheckboxType::class, array(
                         'label' => 'labels.contractartist.accept_conditions',
                         'required' => true,

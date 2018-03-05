@@ -5,8 +5,9 @@
 
     <p>{{ 'order_pdf.intro'|trans|raw }}</p>
 
-    <p>{{ 'order_pdf.promo'|trans|raw }}</p>
-
+    {% for promotion in cf.contractArtist.currentPromotions %}
+        <p>{{ 'order_pdf.promo'|trans({'%end_date%':promotion.endDate|date('d/m/Y'), '%nb_organic_needed%':promotion.nbOrganicNeeded, '%nb_promotional%':promotion.nbPromotional})|raw }}</p>
+    {% endfor %}
     <ul>
         <li>{{ 'order_pdf.labels.order_date'|trans|raw }} : {{ cf.date|date('d/m/Y') }}</li>
         <li>{{ 'order_pdf.labels.event'|trans|raw }} : {{ 'event.generic_name'|trans({'%artist%':cf.contractArtist.artist.artistname})|raw }}</li>

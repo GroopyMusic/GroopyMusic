@@ -133,7 +133,7 @@
                         {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
                     {% endif %}
 
-                    {% for contract in artist.otherSuccessfulContracts(currentContract) %}
+                    {% for contract in artist.passedSuccessfulContracts() %}
                         {% if loop.first %}
                             <h3 class="mt-4">{{ 'artist_profile.see.passed_events'|trans|raw }}</h3>
                         {% endif %}

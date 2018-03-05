@@ -17,7 +17,6 @@ services:
       public: true
       abstract: true
 
-
     # The following line blocks an error in the AzineEmailBundle which references a non-existent "immediatemailer" service
     swiftmailer.mailer.immediatemailer: "@mailer"
 
@@ -37,6 +36,11 @@ services:
         tags:
             - { name: form.type, alias: app_user_registration }
 
+    AppBundle\Connect\UMFOSUBUserProvider:
+      arguments: ['@fos_user.user_manager',{facebook: facebook_id}]
+
+    um_fosub_user_provider: '@AppBundle\Connect\UMFOSUBUserProvider'
+
     AppBundle\EventListener\UploadListener:
       arguments: ["@doctrine.orm.entity_manager"]
       tags:
@@ -53,6 +57,10 @@ services:
       arguments:
         $from_address: "%mailer_from_address%"
         $from_name: "%mailer_from_name%"
+
+    AppBundle\Services\UserRolesManager:
+      arguments:
+        $hierarchy: "%security.role_hierarchy.roles%"
 
     AppBundle\Form\ContractArtistFlow:
       parent: craue.form.flow

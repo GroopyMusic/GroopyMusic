@@ -14,6 +14,7 @@ use AppBundle\Entity\SuggestionBox;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\PropositionContractArtistType;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\NotificationDispatcher;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Mailgun\Mailgun;
@@ -201,6 +202,8 @@ class PublicController extends Controller
             }
 
             $mailDispatcher->sendAdminContact($suggestionBox);
+            $notifDispatcher = $this->get(NotificationDispatcher::class);
+            $notifDispatcher->notifyAdminContact($suggestionBox);
 
             return new Response($this->renderView('AppBundle:Public/Form:suggestionBox_ok.html.twig'));
         }
@@ -215,6 +218,7 @@ class PublicController extends Controller
     public function hallsAction() {
         $em = $this->getDoctrine()->getManager();
         $halls = $em->getRepository('AppBundle:Hall')->findBy(array('visible' => true));
+        shuffle($halls);
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(
             'halls' => $halls,
@@ -242,15 +246,17 @@ class PublicController extends Controller
     /**
      * @Route("/crowdfundings", name="catalog_crowdfundings")
      */
-    public function artistContractsAction() {
+    public function artistContractsAction(UserInterface $user = null) {
 
         $em = $this->getDoctrine()->getManager();
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
+        $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user);
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
             'successful_contracts' => $succesful_contracts,
+            'prevalidation_contracts' => $prevalidation_contracts,
         ));
     }
 
