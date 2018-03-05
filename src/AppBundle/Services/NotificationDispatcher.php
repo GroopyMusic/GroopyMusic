@@ -6,6 +6,7 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Notification;
+use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -22,11 +23,15 @@ class NotificationDispatcher
     const TICKET_SENT_TYPE = 'tickets_sent';
     const ONGOING_CART_TYPE = 'ongoing_cart';
 
-    private $em;
+    const ADMIN_NEW_CONTACT_FORM_TYPE = 'Admin/new_contact_form';
 
-    public function __construct(EntityManagerInterface $em)
+    private $em;
+    private $rolesManager;
+
+    public function __construct(EntityManagerInterface $em, UserRolesManager $rolesManager)
     {
         $this->em = $em;
+        $this->rolesManager = $rolesManager;
     }
 
     public function addNotification(User $user, $type, array $params = []) {
@@ -35,6 +40,12 @@ class NotificationDispatcher
 
         $this->em->persist($notif);
         $this->em->flush();
+    }
+
+    public function addAdminNotification($type, array $params = []) {
+        $admin_roles = $this->rolesManager->getParentRoles(['ROLE_ADMIN']);
+        $admin_profiles = $this->em->getRepository('AppBundle:User')->findUsersWithRoles($admin_roles);
+        $this->addNotifications($admin_profiles, $type, $params);
     }
 
     public function addNotifications($users, $type, array $params = []) {
@@ -68,6 +79,10 @@ class NotificationDispatcher
             'date' => $contract->getDateConcert()->format('d/m/Y'),
             'places' => $places,
         ]);
+    }
+
+    public function notifyAdminContact(SuggestionBox $suggestionBox) {
+        $this->addAdminNotification(self::ADMIN_NEW_CONTACT_FORM_TYPE);
     }
 
     public function notifyKnownOutcomeContract($users, ContractArtist $contract, $artist, $success) {

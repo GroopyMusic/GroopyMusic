@@ -277,13 +277,6 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
-    public function getCurrentPromotions() {
-        $now = new \DateTime();
-        return array_filter($this->promotions->toArray(), function(Promotion $promotion) use ($now) {
-            return $promotion->getStartDate() <= $now && $promotion->getEndDate() >= $now;
-        });
-    }
-
     public function getNbPayments() {
         return count(array_filter($this->payments->toArray(), function($elem) {
             return !$elem->getRefunded();
@@ -609,40 +602,6 @@ class ContractArtist extends BaseContractArtist
         $this->min_tickets = $minTickets;
 
         return $this;
-    }
-
-    /**
-     * Add promotion
-     *
-     * @param \AppBundle\Entity\Promotion $promotion
-     *
-     * @return ContractArtist
-     */
-    public function addPromotion(\AppBundle\Entity\Promotion $promotion)
-    {
-        $this->promotions[] = $promotion;
-
-        return $this;
-    }
-
-    /**
-     * Remove promotion
-     *
-     * @param \AppBundle\Entity\Promotion $promotion
-     */
-    public function removePromotion(\AppBundle\Entity\Promotion $promotion)
-    {
-        $this->promotions->removeElement($promotion);
-    }
-
-    /**
-     * Get promotions
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPromotions()
-    {
-        return $this->promotions;
     }
 
     /**

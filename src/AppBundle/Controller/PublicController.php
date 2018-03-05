@@ -12,6 +12,7 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\NotificationDispatcher;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Mailgun\Mailgun;
@@ -199,6 +200,8 @@ class PublicController extends Controller
             }
 
             $mailDispatcher->sendAdminContact($suggestionBox);
+            $notifDispatcher = $this->get(NotificationDispatcher::class);
+            $notifDispatcher->notifyAdminContact($suggestionBox);
 
             return new Response($this->renderView('AppBundle:Public/Form:suggestionBox_ok.html.twig'));
         }

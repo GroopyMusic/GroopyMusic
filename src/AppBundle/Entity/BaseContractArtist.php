@@ -78,10 +78,17 @@ class BaseContractArtist
         $startDate = clone $this->date;
         $endDate = clone $this->start_date;
 
-        $endDate->add(new \DateInterval('P' . self::NB_PROMO_DAYS.'D'));
+        $endDate->add(new \DateInterval('P' . (self::NB_PROMO_DAYS - 1) .'D'));
 
         $promo->setStartDate($startDate)->setEndDate($endDate);
-        $this->promotions->add($promo);
+        $this->addPromotion($promo);
+    }
+
+    public function getCurrentPromotions() {
+        $now = new \DateTime();
+        return array_filter($this->promotions->toArray(), function(Promotion $promotion) use ($now) {
+            return $promotion->getStartDate() <= $now && $promotion->getEndDate() >= $now;
+        });
     }
 
     // Facilitates admin list export

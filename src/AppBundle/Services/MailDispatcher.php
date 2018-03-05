@@ -26,7 +26,7 @@ class MailDispatcher
     const REPLY_TO = "pierre@un-mute.be";
     const REPLY_TO_NAME = "Un-Mute ASBL";
 
-    const ADMIN_BCC = ["pierre@un-mute.be", "gonzague@un-mute.be"];
+    const ADMIN_TO = ["pierre@un-mute.be", "gonzague@un-mute.be"];
 
     private $mailer;
     private $from_address;
@@ -100,7 +100,7 @@ class MailDispatcher
     }
 
     private function sendAdminEmail($template, $subject, array $params = [], array $attachments = [], $reply_to= self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
-        return $this->sendEmail($template, $subject, $params, [], self::ADMIN_BCC, $attachments, [], '', $reply_to, $reply_to_name);
+        return $this->sendEmail($template, $subject, $params, [], [], $attachments, self::ADMIN_TO, '', $reply_to, $reply_to_name);
     }
 
     public function sendTestEmail() {
