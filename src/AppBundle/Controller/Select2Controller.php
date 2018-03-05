@@ -40,35 +40,13 @@ class Select2Controller extends Controller
     }
 
     /**
-     * @Route("/provinces", name="select2_provinces")
-     */
-    public function provincesAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $q = $request->get('q');
-        $provinces = $em->getRepository('AppBundle:Province')->findForString($q, $request->getLocale());
-
-        $provincesArray = [];
-
-        foreach($provinces as $province)
-        {
-            $genresArray[] = array(
-                'id' => $province->getId(),
-                'text' => $province->getName(),
-            );
-        }
-        return new Response(json_encode($provincesArray), 200, array('Content-Type' => 'application/json'));
-    }
-
-    /**
      * @Route("/artists", name="select2_artists")
      */
     public function artistsAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-
-        $artists = $em->getRepository('AppBundle:Artist')->findNotDeleted();
+        $q = $request->get('q');
+        $artists = $em->getRepository('AppBundle:Artist')->findNotDeleted($q);
 
         $artistsArray = [];
 

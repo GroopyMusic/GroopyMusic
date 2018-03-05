@@ -11,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PropositionContractArtist
 {
-
+    public $radioPropositionType;
+    public $radioArtist;
+    public $radioHall;
     /**
      * Constructor
      */
@@ -99,14 +101,14 @@ class PropositionContractArtist
     /**
      * @var string
      *
-     * @ORM\Column(name="day_commentary", type="text")
+     * @ORM\Column(name="day_commentary", type="text", nullable=true)
      */
     private $day_commentary;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="commentary", type="text")
+     * @ORM\Column(name="commentary", type="text",  nullable=true)
      */
     private $commentary;
 

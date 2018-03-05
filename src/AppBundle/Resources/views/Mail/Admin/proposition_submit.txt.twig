@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+{% autoescape false %}
+{% block title %}{{ subject }}{% endblock %}
+{% block content %}
+{{ email_content('admin.proposition.submit', {
+        '%displayName%': contact_person.DisplayName,
+        '%phoneContact%': contact_person.phone,
+        '%mailContact%': contact_person.mail,
+        '%reasonEvent%': event.reason,
+    })|trans|raw }}
+{% endblock %}
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Admin:proposition_submit.html.twig' %}
+{% endblock %}

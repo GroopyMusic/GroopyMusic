@@ -682,3 +682,54 @@ labels:
 
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"
+
+  proposition_hall:
+    name: Nom de la salle
+    contact_email: Adresse email
+    contact_phone: Numero de téléphone
+    province: Province
+  contact_person:
+    firstname: Prénom
+    lastname: Nom de famille
+    phone: Numero de téléphone
+    mail: Adresse email
+  proposition_artist:
+    artistname: Nom de l'artiste ou du groupe
+    demo_link: Extrait musical
+    genres: Genre(s)
+  proposition_contract_artist:
+    province: Province
+    reason: Raison de l'évenement
+    nb_expected: Nombres de personnes attendues
+    period_start_date: Date de début
+    period_end_date: Date de fin
+    day_commentary: Préférence sur le(s) jour(s) de la semaine
+    commentary: Commentaire
+    submit: Envoyer
+    artists: Artiste
+    payable: Payant
+    ask_if_concert : S'agit-il bien d'une proposition de concert ?
+    ask_if_artist : L'artiste existe-t-il déjà ?
+    ask_if_hall : Connaissez-vous deja la salle ?
+
+placeholders:
+  proposition_contract_artist:
+    year: Année
+    month: Mois
+    day: Jour
+
+choices :
+  proposition_contract_artist:
+    yes : Oui
+    no : Non
+
+proposition :
+  title : Proposition de concert
+  intro : Ici vous pouvez soumettre une proposition de concert. L'équipe Un-Mute l'étudira dans les plus bref délais.
+  contact_person : Personne de contact
+  artist : Artiste
+  event : Information pratique sur l'événement
+  place : Lieu de l'événement
+  explication : Ne remplissez seulement la date de début si vous désirez renseigner une date unique et remplissez les deux dates pour une durée.
+  redirection : Si vous ne souhaitez pas soumettre une proposition de concert, nous vons invitons à remplir <a href="%url%"> ce formulaire.</a>
+  confirmation : Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.

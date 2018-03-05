@@ -1,12 +1,12 @@
 <?php
 
 namespace AppBundle\Form;
+use AppBundle\Entity\PropositionArtist;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class PropositionArtistType extends AbstractType
@@ -19,15 +19,14 @@ class PropositionArtistType extends AbstractType
                 'label' => 'labels.proposition_artist.artistname',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(['max' => 67, 'maxMessage' => 'Le nom de l\'artiste ou du groupe ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'proposition_artist.artistname.max'])
                 ],
             ))
             ->add('demo_link', TextType::class, array(
                 'label' => 'labels.proposition_artist.demo_link',
                 'required' => false,
                 'constraints' => [
-                    new Length(['max' => 255, 'maxMessage' => 'Le lien ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'proposition_artist.demo_link.max'])
                 ],
             ))
             ->add('genres', Select2EntityType::class, [
@@ -44,7 +43,7 @@ class PropositionArtistType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\PropositionArtist'
+            'data_class' => 'AppBundle\Entity\PropositionArtist',
         ));
     }
 

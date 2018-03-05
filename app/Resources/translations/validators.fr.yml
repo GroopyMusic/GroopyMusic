@@ -80,3 +80,50 @@ contractfan:
 ownershiprequest:
   email:
     email: Cette adresse e-mail est invalide.
+
+contact_person:
+  firstname:
+    max: Le prénom ne peut pas excéder {{ limit }} caractères.
+  lastname:
+    max: Le nom ne peut pas excéder {{ limit }} caractères.
+  phone:
+    max: Le numero de téléphone ne peut pas excéder {{ limit }} caractères.
+  mail:
+    max: L'email ne peut pas excéder {{ limit }} caractères.
+
+proposition_artist :
+  artistname:
+    max: Le nom de l'artiste ne peut pas excéder {{ limit }} caractères.
+    empty : Le nom de l'artiste ne peut pas être vide.
+  demo_link:
+    max: Le lien ne peut pas excéder {{ limit }} caractères.
+
+proposition_hall :
+  name :
+    max : Le nom de la salle ne peut pas excéder {{ limit }} caractères.
+    empty : Le nom de la salle ne peut pas être vide.
+  contact_email :
+    max : L'email ne peut pas excéder {{ limit }} caractères.
+    empty : Le email de la salle ne peut pas être vide.
+  contact_phone :
+    max : Le numero de télephone ne peut excéder {{ limit }} caractères.
+    empty : Le numero de contact de la salle ne peut pas être vide.
+
+proposition_contract_artist:
+  reason:
+    min : La raison doit faire au minimum {{ limit }} caractères.
+  nb_expected:
+    min_range : Le nombre de personne attendue ne peut pas être négatif.
+  day_commentary:
+    min : L'avis sur le jour doit faire au minimum {{ limit }} caractères.
+  commentary :
+    min : Le commentaire doit faire au minimum {{ limit }} caractères.
+  province :
+    null : La province doit être renseignée.
+  artist :
+    null : Il vous faut choisir un artiste.
+  end_date :
+    not_valable : La date de fin ne peut pas être plus petite ou égale  à la date de début.
+
+
+

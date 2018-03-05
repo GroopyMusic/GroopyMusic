@@ -519,7 +519,7 @@ class PublicController extends Controller
     /**
      * @Route("/proposition", name="proposition")
      */
-    public function propositionAction(Request $request){
+    public function propositionAction(Request $request, MailDispatcher $mailDispatcher){
         $propositionContractArtist = new PropositionContractArtist();
         $form = $this->createForm(PropositionContractArtistType::class, $propositionContractArtist);
 
@@ -529,8 +529,9 @@ class PublicController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($propositionContractArtist);
             $em->flush();
+            $mailDispatcher->sendAdminProposition($propositionContractArtist);
 
-            return $this->redirectToRoute('proposition');
+            return new Response($this->renderView('AppBundle:Public/Form:propositionForm_ok.html.twig'));
         }
         return new Response($this->renderView('AppBundle:Public/Form:propositionForm.html.twig', array(
             'form' => $form->createView(),

@@ -8,6 +8,7 @@
 
 namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,7 +25,7 @@ class ContactPersonType  extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 255, 'maxMessage' => 'Le prénom ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'contact_person.firstname.max'])
                 ],
             ))
             ->add('lastname', TextType::class, array(
@@ -32,7 +33,7 @@ class ContactPersonType  extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 255, 'maxMessage' => 'Le nom ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'contact_person.lastname.max'])
                 ],
             ))
             ->add('phone', TextType::class, array(
@@ -40,15 +41,15 @@ class ContactPersonType  extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 20, 'maxMessage' => 'Le numero de télephone ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 20, 'maxMessage' => 'contact_person.phone.max'])
                 ],
             ))
-            ->add('mail', TextType::class, array(
+            ->add('mail', EmailType::class, array(
                 'label' => 'labels.contact_person.mail',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => 255, 'maxMessage' => 'L\'email ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'contact_person.mail.max'])
                 ],
             ))
         ;

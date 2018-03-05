@@ -7,7 +7,9 @@
  */
 
 namespace AppBundle\Form;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,33 +26,28 @@ class PropositionHallType extends AbstractType
                 'label' => 'labels.proposition_hall.name',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(['max' => 255, 'maxMessage' => 'Le nom de le la salle ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'proposition_hall.name.max'])
                 ],
             ))
-            ->add('contact_email', TextType::class, array(
+            ->add('contact_email', EmailType::class, array(
                 'label' => 'labels.proposition_hall.contact_email',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(['max' => 255, 'maxMessage' => 'L\'email ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 255, 'maxMessage' => 'proposition_hall.contact_email.max'])
                 ],
             ))
             ->add('contact_phone', TextType::class, array(
                 'label' => 'labels.proposition_hall.contact_phone',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(['max' => 255, 'maxMessage' => 'Le numero de télephone ne peut excéder {{ limit }} caractères.'])
+                    new Length(['max' => 20, 'maxMessage' => 'proposition_hall.contact_phone.max'])
                 ],
             ))
-            ->add('province', Select2EntityType::class, [
-                'required' => false,
-                'label' => 'labels.proposition_hall.province',
+            ->add('province', EntityType::class, [
+                'required' => true,
+                'label' => 'labels.proposition_contract_artist.province',
                 'multiple' => false,
-                'remote_route' => 'select2_provinces',
-                'class' => 'AppBundle\Entity\province',
-                'primary_key' => 'id',
+                'class' => 'AppBundle\Entity\Province'
             ])
         ;
     }
