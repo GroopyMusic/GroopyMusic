@@ -143,6 +143,24 @@ class BaseContractArtist
         return $nb;
     }
 
+    public function getContractsFanPaid() {
+        return array_filter($this->contractsFan->toArray(), function(ContractFan $contractFan) {
+            return $contractFan->isPaid();
+        });
+    }
+
+    public function getNbCounterPartsObtainedByPromotion() {
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityPromotional();
+        }, $this->getContractsFanPaid()));
+    }
+
+    public function getNbCounterPartsSoldOrganic() {
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityOrganic();
+        }, $this->getContractsFanPaid()));
+    }
+
     public function cantAddPurchase($quantity, CounterPart $cp) {
         return $this->getNbAvailable($cp) < $quantity;
     }
@@ -249,6 +267,7 @@ class BaseContractArtist
     protected $collected_amount;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="contractArtist", cascade={"persist"})
      */
     protected $contractsFan;

@@ -48,6 +48,9 @@ class ContractArtistAdmin extends BaseAdmin
                 'label' => 'Palier',
                 'route' => array('name' => 'show'),
             ))
+            ->add('totalBookedTickets', null, array(
+                'label' => 'Tickets bookés',
+            ))
             ->add('failed', null, array(
                 'label' => 'Échec',
             ))
@@ -121,12 +124,29 @@ class ContractArtistAdmin extends BaseAdmin
                     'label' => 'Promotions appliquées',
                 ))
             ->end()
-            ->with('État')
-                ->add('test_period', null, array(
-                    'label' => 'Est en pré-validation',
+            ->with('Statistiques de vente')
+                ->add('totalBookedTickets', null, array(
+                    'label' => 'Tickets bookés (total)',
+                ))
+                ->add('nbCounterPartsSoldOrganic', null, array(
+                    'label' => 'Dont tickets payés',
+                ))
+                ->add('nbCounterPartsObtainedByPromotion', null, array(
+                    'label' => 'Dont tickets obtenus par promotion',
+                ))
+                ->add('tickets_reserved', null, array(
+                    'label' => 'Dont tickets réservés',
                 ))
                 ->add('collected_amount', null, array(
                     'label' => 'Montant collecté',
+                ))
+            ->end()
+            ->with('État')
+                ->add('state', null, array(
+                    'label' => 'Code'
+                ))
+                ->add('test_period', null, array(
+                    'label' => 'Est en pré-validation',
                 ))
                 ->add('failed', null, array(
                     'label' => 'Échec',
@@ -134,12 +154,15 @@ class ContractArtistAdmin extends BaseAdmin
                 ->add('successful', null, array(
                     'label' => 'Réussi',
                 ))
-                ->add('cart_reminder_sent', null, array(
-                    'label' => 'Rappel envoyé pour les paniers non payés qui le référencent',
-                ))
                 ->add('refunded', null, array(
                     'label' => 'Remboursé',
                 ))
+            ->end()
+            ->with('Autres')
+                ->add('cart_reminder_sent', null, array(
+                    'label' => 'Rappel envoyé pour les paniers non payés qui le référencent',
+                ))
+
                 ->add('asking_refund', null, array(
                     'label' => 'Demandes de remboursement',
                 ))
@@ -167,10 +190,6 @@ class ContractArtistAdmin extends BaseAdmin
                     'label' => 'Paiements',
                     'route' => array('name' => 'show'),
                 ))
-                ->add('contractsFan', null, array(
-                    'label' => 'Contrats fan',
-                    'route' => array('name' => 'show'),
-                ))
             ->end()
         ;
     }
@@ -193,6 +212,10 @@ class ContractArtistAdmin extends BaseAdmin
             ->add('province', null, array(
                 'required' => true,
                 'label' => 'Province',
+            ))
+            ->add('tickets_reserved', null, array(
+                'required' => true,
+                'label' => 'Tickets réservés',
             ))
             ->end()
         ;
@@ -245,7 +268,10 @@ class ContractArtistAdmin extends BaseAdmin
             'Remboursé' => 'refunded',
             'En pré-validation' => 'test_period',
             'État' => 'state',
-            'Tickets vendus' => 'tickets_sold',
+            'Tickets bookés' => 'totalBookedTickets',
+            'Dont tickets payés' => 'nbCounterPartsSoldOrganic',
+            'Dont tickets offerts par promotion' => 'nbCounterPartsObtainedByPromotion',
+            'Dont tickets réservés' => 'tickets_reserved',
             'Seuil' => 'min_tickets',
             'Tickets pour sold out' => 'maxTickets',
             'Tickets encore en vente' => 'crowdable',

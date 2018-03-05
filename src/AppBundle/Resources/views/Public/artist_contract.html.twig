@@ -137,10 +137,9 @@
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
                                     {{ 'event.infos.tickets_sold'|trans|raw }}
-
                                 </div>
                                 <div class="contract-info-content">
-                                    {{ contract.ticketsSoldMajored }}
+                                    {{ contract.totalBookedTicketsMajored }}
                                 </div>
                             </div>
 
@@ -158,16 +157,16 @@
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
                                  {{ 'event.infos.tickets_objective'|trans|raw }}
-
                             </span>
                             <span class="contract-info-content">
                                 {{ contract.step.minTickets }}
                             </span>
+                            {% set progress_100 = contract.percentObjective %}
                             <div class="progress">
-                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ contract.state in contract.successfulStates ? 100 : contract.ticketsSold * 100 // contract.step.minTickets }}%"></div>
+                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                             </div>
                             <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} successful-progress-text{% else %} text-primary{% endif %}">
-                                {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ contract.ticketsSold * 100 // contract.step.minTickets }}%{% endif %}
+                                {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
                             </div>
                         </div>
                     </div>
