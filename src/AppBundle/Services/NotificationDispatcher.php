@@ -8,6 +8,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
+use AppBundle\Entity\VIPInscription;
 use Doctrine\ORM\EntityManagerInterface;
 
 // TODO avoid passing entire objects as parameters to notifications, but rather their ID or values
@@ -24,6 +25,7 @@ class NotificationDispatcher
     const ONGOING_CART_TYPE = 'ongoing_cart';
 
     const ADMIN_NEW_CONTACT_FORM_TYPE = 'Admin/new_contact_form';
+    const ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE = 'Admin/new_vip_inscription';
 
     private $em;
     private $rolesManager;
@@ -81,10 +83,6 @@ class NotificationDispatcher
         ]);
     }
 
-    public function notifyAdminContact(SuggestionBox $suggestionBox) {
-        $this->addAdminNotification(self::ADMIN_NEW_CONTACT_FORM_TYPE);
-    }
-
     public function notifyKnownOutcomeContract($users, ContractArtist $contract, $artist, $success) {
 
         if($artist) {
@@ -119,5 +117,16 @@ class NotificationDispatcher
 
     public function notifyOngoingCart($users, ContractArtist $contract) {
         $this->addNotifications($users, self::ONGOING_CART_TYPE, ['contract' => $contract]);
+    }
+
+    // --------------------
+    // Admin notifs
+    // --------------------
+    public function notifyAdminContact(SuggestionBox $suggestionBox) {
+        $this->addAdminNotification(self::ADMIN_NEW_CONTACT_FORM_TYPE, ['object' => $suggestionBox->getObject()]);
+    }
+
+    public function notifyAdminVIPInscription(VIPInscription $inscription) {
+        $this->addAdminNotification(self::ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE, ['inscription_string' => $inscription->__toString()]);
     }
 }

@@ -330,6 +330,12 @@ class BaseContractArtist
      */
     protected $promotions;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="VIPInscription", mappedBy="contract_artist")
+     */
+    private $vip_inscriptions;
+
     // Discriminator
     protected $type;
 

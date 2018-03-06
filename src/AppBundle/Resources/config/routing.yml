@@ -2,6 +2,10 @@ app_public:
     resource: "@AppBundle/Controller/PublicController.php"
     type:     annotation
 
+app_temp:
+    resource: "@AppBundle/Controller/TempShitController.php"
+    type: annotation
+
 app_user:
     resource: "@AppBundle/Controller/UserController.php"
     type:     annotation

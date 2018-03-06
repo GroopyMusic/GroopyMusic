@@ -32,6 +32,7 @@ sonata_admin:
                 items:
                   - AppBundle\Admin\SuggestionBoxAdmin
                   - AppBundle\Admin\SuggestionTypeEnumAdmin
+                  - AppBundle\Admin\VIPInscriptionAdmin
            app.admin.group.content:
                 label: app.admin.group.content
                 label_catalogue: SonataAdminBundle
@@ -86,6 +87,13 @@ services:
         arguments: [~, AppBundle\Entity\SuggestionBox, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.suggestionBox }
+        public: true
+
+
+    AppBundle\Admin\VIPInscriptionAdmin:
+        arguments: [~, AppBundle\Entity\VIPInscription, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.VIPInscription }
         public: true
 
     AppBundle\Admin\UserAdmin:

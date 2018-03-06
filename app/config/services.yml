@@ -36,8 +36,25 @@ services:
         tags:
             - { name: form.type, alias: app_user_registration }
 
+    app.form.changepassword:
+      class: AppBundle\Form\ChangePasswordType
+      calls:
+        - method: setUser
+          arguments:
+            - '@security.token_storage'
+
     AppBundle\Connect\UMFOSUBUserProvider:
       arguments: ['@fos_user.user_manager',{facebook: facebook_id}]
+      calls:
+        - method: setLogger
+          arguments:
+            - '@logger'
+        - method: setEventDispatcher
+          arguments:
+            - '@event_dispatcher'
+        - method: setRequest
+          arguments:
+            - '@request_stack'
 
     um_fosub_user_provider: '@AppBundle\Connect\UMFOSUBUserProvider'
 
@@ -47,6 +64,10 @@ services:
             - { name: kernel.event_listener, event: oneup_uploader.post_persist, method: onUpload }
 
     AppBundle\EventListener\ChangePasswordListener:
+      tags:
+        - {name: kernel.event_subscriber }
+
+    AppBundle\EventListener\ConnectListener:
       tags:
         - {name: kernel.event_subscriber }
 

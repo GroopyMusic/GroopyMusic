@@ -3,6 +3,7 @@
 namespace AppBundle\EventListener;
 
 use FOS\UserBundle\Event\FilterUserResponseEvent;
+use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\FormEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,4 +34,6 @@ class ChangePasswordListener implements EventSubscriberInterface {
         $url = $this->router->generate('fos_user_change_password');
         $event->setResponse(new RedirectResponse($url));
     }
+
+
 }

@@ -496,27 +496,4 @@ class PublicController extends Controller
 
         return $this->redirectToRoute('homepage');
     }
-
-    /**
-     * @Route("/test-mail", name="testmail")
-     * @Security("has_role('ROLE_SUPER_ADMIN')")
-     */
-    public function testMailAction(KernelInterface $kernel) {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput(array(
-            'command' => 'reminders:crowdfunding:artist',
-            'x' => '1',
-        ));
-
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-
-        // return new Response(""), if you used NullOutput()
-        return new Response($content);
-    }
 }

@@ -1,0 +1,10 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            <p>Nouvelle inscription Presse à "{{ inscription.contractArtist }}". La personne inscrite est : {{ inscription }}.</p>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

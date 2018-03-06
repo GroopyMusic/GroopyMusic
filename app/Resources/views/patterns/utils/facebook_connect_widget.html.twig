@@ -1,0 +1,4 @@
+<div class="fb-spinner d-inline-block" style="background: #4267b2; border-radius: 5px; color: white; height: 40px; text-align: center; width: 250px;">
+    {{ 'loading'|trans({}, 'messages') }}
+    <div class="fb-login-button" data-scope="public_profile, email" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="{% if with_pp %}true{% else %}false{% endif %}" onlogin="checkLoginState();"></div>
+</div>

@@ -1,0 +1,21 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('vip_inscription.copy', {
+        '%name%': inscription.displayName,
+        '%email%': inscription.email,
+        '%event%': inscription.contractArtist.__toString,
+        '%company%': inscription.company,
+        '%function%': inscription.function,
+        '%date%': inscription.contractArtist.dateConcert|date('d/m/Y'),
+        '%contact_url%': absolute_url(path('suggestionBox')),
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/VIPInscription:copy.html.twig' %}
+{% endblock %}

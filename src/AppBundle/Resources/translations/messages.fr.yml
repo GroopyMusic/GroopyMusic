@@ -26,6 +26,7 @@ more_info: Plus d'infos
 step: Catégorie
 confirmed: Confirmé
 or: ou
+loading: Chargement....
 
 meta_description: La première plate-forme belge de financement participatif de concerts. Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !
 
@@ -574,6 +575,12 @@ notices:
   change_email: Votre adresse e-mail a bien été modifiée.
   account_deletion: Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit. Bonne continuation !
   change_password: Votre mot de passe a bien été modifié.
+  #new
+  social:
+    connection_email_confirmed: Vous êtes désormais connecté.
+    connection_email_new_account: Nous avons lié votre compte Facebook au compte Un-Mute existant pour l'adresse %email%.
+    connection_oauth_confirmed: Vous êtes désormais connecté au travers de votre compte Facebook.
+    registration_success: Votre compte Un-Mute a bien été créé avec vos données de Facebook. Vous pouvez définir un mot de passe à tout moment dans votre page de profil si vous souhaitez également pouvoir vous connecter à Un-Mute sans passer par Facebook.
 
 errors:
   change_email_token_expired: Ce jeton est expiré.
