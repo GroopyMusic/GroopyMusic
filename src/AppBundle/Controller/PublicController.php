@@ -249,12 +249,12 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
-        $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user);
+        //$prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user);
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
             'successful_contracts' => $succesful_contracts,
-            'prevalidation_contracts' => $prevalidation_contracts,
+            //'prevalidation_contracts' => $prevalidation_contracts,
         ));
     }
 
