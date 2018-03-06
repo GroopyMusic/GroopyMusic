@@ -2,8 +2,12 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    - { resource: azine.yml }
-    - { resource: sonata.yml }
+    - { resource: c_azine.yml }
+    - { resource: c_sonata.yml }
+    - { resource: c_doctrine.yml }
+    - { resource: c_fos.yml }
+    - { resource: c_jms.yml }
+    - { resource: c_bundles.yml }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -41,7 +45,6 @@ framework:
     php_errors:
         log: true
 
-
 # Twig Configuration
 twig:
     debug:            "%kernel.debug%"
@@ -56,45 +59,6 @@ twig:
       enabled_locales: "%locales%"
       facebook_page_url: "%facebook_page_url%"
 
-# Doctrine Configuration
-doctrine:
-    dbal:
-        driver:   pdo_mysql
-        host:     "%database_host%"
-        port:     "%database_port%"
-        dbname:   "%database_name%"
-        user:     "%database_user%"
-        password: "%database_password%"
-        server_version: "%database_version%"
-        charset:  UTF8
-        types:
-          json: Sonata\Doctrine\Types\JsonType
-
-    orm:
-        auto_generate_proxy_classes: "%kernel.debug%"
-        entity_managers:
-          default:
-            auto_mapping: true
-            naming_strategy: doctrine.orm.naming_strategy.underscore
-
-doctrine_migrations:
-    dir_name: "%kernel.root_dir%/DoctrineMigrations"
-    namespace: Application\Migrations
-    table_name: migration_versions
-    name: Application Migrations
-    organize_migrations: "BY_YEAR_AND_MONTH" # Version >=1.2 Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
-
-knp_doctrine_behaviors:
-  translatable: true
-  sluggable: true
-
-a2lix_translation_form:
-  locale_provider: default
-  locales: "%locales%"
-  default_locale : "%locale%"
-  required_locales: ["%locale%"]
-  templating: "A2lixTranslationFormBundle::default.html.twig"
-
 # Swiftmailer Configuration
 swiftmailer:
     transport:  "%mailer_transport%"
@@ -106,128 +70,3 @@ swiftmailer:
     username:   "%mailer_user%"
     password:   "%mailer_password%"
 
-# friendsofsymfony/userbundle
-fos_user:
-    db_driver: orm
-    firewall_name: main
-    user_class: AppBundle\Entity\User
-    service:
-        mailer: azine_email.default.template_twig_swift_mailer
-    registration:
-        form:
-            type: AppBundle\Form\RegistrationType
-           # validations_groups: [AppRegistration] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
-        confirmation:
-            enabled: true
-            template: AppBundle:Mail/User:registration_confirmation.txt.twig
-    change_password:
-      form:
-        type: AppBundle\Form\ChangePasswordType
-    profile:
-        form:
-          type: AppBundle\Form\ProfileType
-         # validation_groups: [AppProfile] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
-    from_email:
-        address:        "%mailer_from_address%"
-        sender_name:    "%mailer_from_name%"
-    resetting:
-        email:
-            template:  AppBundle:Mail/User:password_resetting.txt.twig
-
-# Assetic config
-assetic:
-    debug:          '%kernel.debug%'
-    use_controller: '%kernel.debug%'
-    #node: "%path_to_node%"
-    filters:
-        cssrewrite: ~
-        jsqueeze: ~
-        #uglifyjs2:
-        #    bin: "%path_to_uglifyjs%"
-        #uglifycss:
-        #    bin: "%path_to_uglifycss%"
-        scssphp:
-            formatter: 'Leafo\ScssPhp\Formatter\Compressed'
-    bundles:
-        - FpJsFormValidatorBundle
-        - AppBundle
-        - FOSUserBundle
-
-
-jms_i18n_routing:
-    default_locale: "%locale%"
-    locales: "%locales%"
-    strategy: prefix_except_default
-
-jms_translation:
-  configs:
-    routes:
-      dirs: ['%kernel.root_dir%', '%kernel.root_dir%/../src']
-      output_dir: "%kernel.root_dir%/Resources/translations"
-      output_format: yml
-      excluded_dirs: [Tests]
-      extractors: [jms_i18n_routing]
-      domain: routes # run php bin/console translation:extract en --config=routes --output-format=xliff
-    app:
-      dirs: ['%kernel.root_dir%', '%kernel.root_dir%/../src']
-      output_dir: "%kernel.root_dir%/Resources/translations"
-      output_format: yml
-
-tetranz_select2_entity:
-    minimum_input_length: 0
-    page_limit: 8
-    allow_clear: false
-    delay: 500
-    language: "%locale%"
-    cache: false
-    cache_timeout: 0
-    scroll: false
-
-oneup_uploader:
-    mappings:
-        artist_gallery:
-            frontend: dropzone # or any uploader you use in the frontend
-            namer: AppBundle\Services\ArtistPhotoUploadNamer
-        hall_gallery:
-            frontend: dropzone
-            namer: AppBundle\Services\HallPhotoUploadNamer
-
-vich_uploader:
-    db_driver: orm
-    mappings:
-      hall_technical_specs:
-          uri_prefix:         uploads/hall_technicalspecs
-          upload_destination: '%kernel.root_dir%/../web/uploads/hall_technicalspecs'
-          delete_on_update:   true
-          delete_on_remove:   true
-          inject_on_load:     false
-          namer:
-            service: AppBundle\Services\BySlugNamer
-
-jmose_command_scheduler:
-    log_path: '%kernel.root_dir%/../var/logs/commands/'
-
-cspoo_swiftmailer_mailgun:
-    key: "%mailgun_api_secret%"
-    domain: "%mailgun_domain%"
-    http_client: ~ # Optional. Defaults to null and uses discovery to find client.
-
-hwi_oauth:
-    #will manage the
-    #automatic user registration on your site, with data from the provider (facebook. google, etc.)
-    #and also, the connecting part (get the token and the user_id)
-    connect:
-        account_connector: um_fosub_user_provider
-    # name of the firewall in which this bundle is active, this setting MUST be set
-    firewall_name: main
-    fosub:
-        username_iterations: 30
-        properties:
-            # these properties will be used/redefined later in the custom FOSUBUserProvider service.
-            facebook: facebook_id
-    resource_owners:
-        facebook:
-            type:                facebook
-            client_id:           "%facebook_api_id%"
-            client_secret:       "%facebook_api_secret%"
-            scope:               "email"

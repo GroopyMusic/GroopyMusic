@@ -1,0 +1,64 @@
+# Assetic config
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    #node: "%path_to_node%"
+    filters:
+        cssrewrite: ~
+        jsqueeze: ~
+        #uglifyjs2:
+        #    bin: "%path_to_uglifyjs%"
+        #uglifycss:
+        #    bin: "%path_to_uglifycss%"
+        scssphp:
+            formatter: 'Leafo\ScssPhp\Formatter\Compressed'
+    bundles:
+        - FpJsFormValidatorBundle
+        - AppBundle
+        - FOSUserBundle
+
+a2lix_translation_form:
+  locale_provider: default
+  locales: "%locales%"
+  default_locale : "%locale%"
+  required_locales: ["%locale%"]
+  templating: "A2lixTranslationFormBundle::default.html.twig"
+
+tetranz_select2_entity:
+    minimum_input_length: 0
+    page_limit: 8
+    allow_clear: false
+    delay: 500
+    language: "%locale%"
+    cache: false
+    cache_timeout: 0
+    scroll: false
+
+oneup_uploader:
+    mappings:
+        artist_gallery:
+            frontend: dropzone # or any uploader you use in the frontend
+            namer: AppBundle\Services\ArtistPhotoUploadNamer
+        hall_gallery:
+            frontend: dropzone
+            namer: AppBundle\Services\HallPhotoUploadNamer
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+      hall_technical_specs:
+          uri_prefix:         uploads/hall_technicalspecs
+          upload_destination: '%kernel.root_dir%/../web/uploads/hall_technicalspecs'
+          delete_on_update:   true
+          delete_on_remove:   true
+          inject_on_load:     false
+          namer:
+            service: AppBundle\Services\BySlugNamer
+
+jmose_command_scheduler:
+    log_path: '%kernel.root_dir%/../var/logs/commands/'
+
+cspoo_swiftmailer_mailgun:
+    key: "%mailgun_api_secret%"
+    domain: "%mailgun_domain%"
+    http_client: ~ # Optional. Defaults to null and uses discovery to find client.
