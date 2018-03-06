@@ -47,10 +47,10 @@ class SuggestionBoxAdmin extends BaseAdmin
     protected function configureShowFields(ShowMapper $show)
     {
         $show
-            ->add('name', null, array(
+            ->add('firstname', null, array(
                 'label' => 'Prénom',
             ))
-            ->add('lastname', null, array(
+            ->add('name', null, array(
                 'label' => 'Nom de famille',
             ))
             ->add('email', null, array(
