@@ -8,9 +8,11 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Hall;
+use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Form\ContractFanType;
+use AppBundle\Form\PropositionContractArtistType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
 use Doctrine\ORM\EntityManager;
@@ -495,5 +497,27 @@ class PublicController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('homepage');
+    }
+  
+    /**
+     * @Route("/proposition", name="proposition")
+     */
+    public function propositionAction(Request $request, MailDispatcher $mailDispatcher){
+        $propositionContractArtist = new PropositionContractArtist();
+        $form = $this->createForm(PropositionContractArtistType::class, $propositionContractArtist);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($propositionContractArtist);
+            $em->flush();
+            $mailDispatcher->sendAdminProposition($propositionContractArtist);
+
+            return new Response($this->renderView('AppBundle:Public/Form:propositionForm_ok.html.twig'));
+        }
+        return new Response($this->renderView('AppBundle:Public/Form:propositionForm.html.twig', array(
+            'form' => $form->createView(),
+        )));
     }
 }

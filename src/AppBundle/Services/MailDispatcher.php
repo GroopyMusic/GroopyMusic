@@ -7,6 +7,7 @@ use AppBundle\Entity\ArtistOwnershipRequest;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Entity\VIPInscription;
@@ -354,5 +355,11 @@ class MailDispatcher
         $params = ['stripe_error' => $e, 'user' => $user, 'cart' => $cart];
         $subject_params = [];
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_STRIPE_ERROR_TEMPLATE, $subject, $params, $subject_params);
+    }
+    public function sendAdminProposition(PropositionContractArtist $propositionContractArtist){
+        $subject = "Soumission de proposition";
+        $params = ['contact_person' => $propositionContractArtist->getContactPerson(), 'event' => $propositionContractArtist];
+        $subject_params = [];
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_PROPOSITION_SUBMIT, $subject, $params, $subject_params);
     }
 }

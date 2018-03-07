@@ -38,4 +38,26 @@ class Select2Controller extends Controller
         }
         return new Response(json_encode($genresArray), 200, array('Content-Type' => 'application/json'));
     }
+
+    /**
+     * @Route("/artists", name="select2_artists")
+     */
+    public function artistsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $q = $request->get('q');
+        $artists = $em->getRepository('AppBundle:Artist')->findNotDeleted($q);
+
+        $artistsArray = [];
+
+        foreach($artists as $artist)
+        {
+            $artistsArray[] = array(
+                'id' => $artist->getId(),
+                'text' => $artist->getArtistname(),
+            );
+        }
+        return new Response(json_encode($artistsArray), 200, array('Content-Type' => 'application/json'));
+    }
+
 }

@@ -137,6 +137,18 @@ ownershiprequest:
 
     Pour confirmer ou non votre appartenance à cet artiste, inscrivez-vous sur www.Un-Mute.be puis cliquez sur le lien suivant : %confirmationUrl%
 
+admin :
+  proposition :
+    submit : |
+     Une proposition a été soumise.
+
+      Personne de contact :
+      -- Nom et prénom : %displayName%
+      -- Numéro de téléphone : %phoneContact%
+      -- Adresse email : %mailContact%
+
+      Raison de l'événement : %reasonEvent%
+
 #new
 vip_inscription:
   copy: |
