@@ -12,6 +12,55 @@ crossorigin="anonymous"></script>
 <script src="https://js.stripe.com/v3/"></script>
 <script src="https://js.stripe.com/v2/"></script>
 
+<div id="fb-root"></div>
+<script type="text/javascript">
+    function statusChangeCallback(response) {
+        if (response.status === 'connected') {
+            testAPI();
+        } else {
+
+        }
+    }
+
+    function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+    }
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '{{ facebook_api_id }}',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v2.8'
+        });
+
+        FB.Event.subscribe('xfbml.render', function(response) {
+            var spinner = document.getElementsByClassName("fb-spinner");
+
+            for(var i = 0; i < spinner.length; i++) {
+                spinner[i].removeAttribute("style");
+                spinner[i].removeChild(spinner[i].childNodes[0]);
+            }
+        });
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/{{ app.request.locale }}/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function testAPI() {
+        FB.api('/me', function(response) {
+            document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+        });
+    }
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
 

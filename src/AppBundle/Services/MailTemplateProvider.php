@@ -34,6 +34,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const OWNERSHIPREQUEST_NONMEMBER_TEMPLATE = 'AppBundle:Mail/OwnershipRequest:ownershiprequest_nonmember.txt.twig';
 
     const SUGGESTIONBOXCOPY_TEMPLATE = 'AppBundle:Mail/SuggestionBox:copy.txt.twig';
+    const VIPINSCRIPTIONCOPY_TEMPLATE = 'AppBundle:Mail/VIPInscription:copy.txt.twig';
 
     // Admin mails templates
     const ADMIN_TEST_TEMPLATE = 'AppBundle:Mail/Admin:test.txt.twig';
@@ -45,6 +46,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ADMIN_TICKETS_SENT = 'AppBundle:Mail/Admin:tickets_sent.txt.twig';
     const ADMIN_CONTACT_FORM = 'AppBundle:Mail/SuggestionBox:admin.txt.twig';
     const ADMIN_PROPOSITION_SUBMIT ='AppBundle:Mail/Admin:proposition_submit.txt.twig';
+    const ADMIN_VIP_INSCRIPTION_FORM = 'AppBundle:Mail/VIPInscription:admin.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
@@ -157,6 +159,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
             self::OWNERSHIPREQUEST_NONMEMBER_TEMPLATE,
 
             self::SUGGESTIONBOXCOPY_TEMPLATE,
+            self::VIPINSCRIPTIONCOPY_TEMPLATE,
 
         ]);
         return $include;

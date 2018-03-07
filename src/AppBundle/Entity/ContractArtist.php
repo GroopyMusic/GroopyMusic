@@ -21,7 +21,7 @@ class ContractArtist extends BaseContractArtist
 
     const STATE_REFUNDED = 'state.refunded';
     const STATE_FAILED = 'state.failed';
-    const STATE_SUCCESS_SOLDOUT = 'state.success.soldout';
+    const STATE_SUCCESS_SOLDOUT = 'state.success.soldout.soldout';
     const STATE_SUCCESS_SOLDOUT_PENDING = 'state.success.soldout.pending';
     const STATE_SUCCESS_CLOSED = 'state.success.closed';
     const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
@@ -29,6 +29,7 @@ class ContractArtist extends BaseContractArtist
     const STATE_SUCCESS_PASSED = 'state.success.passed';
     const STATE_ONGOING = 'state.ongoing';
     const STATE_PENDING = 'state.pending';
+    const STATE_TEST_PERIOD = 'state.test_period';
 
     public function isUncrowdable() {
         return in_array($this->getState(), $this->getUncrowdableStates());
@@ -78,6 +79,18 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
+    public function getPercentObjective() {
+       return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
+    }
+
+    public function getTotalBookedTickets() {
+        return $this->tickets_reserved + $this->tickets_sold;
+    }
+
+    public function getTotalBookedTicketsMajored() {
+        return min($this->getTotalBookedTickets(), $this->getMaxTickets());
+    }
+
     public function getLastSellingDate() {
         $dateconcert_copy = clone $this->getDateConcert();
         return $dateconcert_copy->modify('-' . ($this->nb_closing_days + 1) . ' days');
@@ -101,7 +114,7 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getTotalNbAvailable() {
-        return $this->getMaxTickets() - $this->tickets_sold;
+        return $this->getMaxTickets() - $this->getTotalBookedTickets();
     }
 
     public function getMinTickets() {
@@ -115,10 +128,11 @@ class ContractArtist extends BaseContractArtist
 
     public function getNbTicketsToSuccess() {
         $min = $this->getMinTickets();
-        if($this->getTicketsSold() >= $min)
+        $booked = $this->getTotalBookedTickets();
+        if($booked >= $min)
             return 0;
 
-        return $min - $this->getTicketsSold();
+        return $min - $booked;
     }
 
     public function getState() {
@@ -142,7 +156,7 @@ class ContractArtist extends BaseContractArtist
             // Concert in the future
             if($this->getDateConcert() >= $today) {
                 // Sold out
-                if ($this->tickets_sold >= $max_tickets)
+                if ($this->getTotalBookedTickets() >= $max_tickets)
                     return self::STATE_SUCCESS_SOLDOUT;
                 // No more selling
                 if ($today2->modify('+' . $this->nb_closing_days . ' days') >= $this->getDateConcert())
@@ -159,12 +173,17 @@ class ContractArtist extends BaseContractArtist
         // Crowdfunding is not over yet
         if($this->dateEnd >= $today) {
             // But already sold out
-            if ($this->tickets_sold >= $max_tickets)
+            if ($this->getTotalBookedTickets() >= $max_tickets)
                 return self::STATE_SUCCESS_SOLDOUT_PENDING;
 
             // Or already successful but not sold out and with a need of validation
-            if ($this->tickets_sold >= $this->getMinTickets())
+            if ($this->getTotalBookedTickets() >= $this->getMinTickets())
                 return self::STATE_SUCCESS_PENDING;
+
+            // Or in pre-validaton
+            if($this->isInTestPeriod()) {
+                return self::STATE_TEST_PERIOD;
+            }
 
             // Or simply ongoing
             return self::STATE_ONGOING;
@@ -179,6 +198,7 @@ class ContractArtist extends BaseContractArtist
         parent::__construct();
         $this->coartists_list = new ArrayCollection();
         $this->tickets_sold = 0;
+        $this->tickets_reserved = 0;
         $this->tickets_sent = false;
         $this->nb_closing_days = self::NB_DAYS_OF_CLOSING;
         $this->min_tickets = 0;
@@ -238,6 +258,14 @@ class ContractArtist extends BaseContractArtist
 
     public function removeTicketsSold($quantity) {
         $this->tickets_sold -= $quantity;
+    }
+
+    public function addTicketsReserved($quantity) {
+        $this->tickets_reserved += $quantity;
+    }
+
+    public function removeTicketsReserved($quantity) {
+        $this->tickets_reserved -= $quantity;
     }
 
     public function getDateConcert() {
@@ -357,6 +385,11 @@ class ContractArtist extends BaseContractArtist
      * @ORM\Column(name="min_tickets", type="smallint")
      */
     private $min_tickets;
+
+    /**
+     * @ORM\Column(name="tickets_reserved", type="smallint")
+     */
+    private $tickets_reserved;
 
     /**
      * Set coartistsList
@@ -569,5 +602,29 @@ class ContractArtist extends BaseContractArtist
         $this->min_tickets = $minTickets;
 
         return $this;
+    }
+
+    /**
+     * Set ticketsReserved
+     *
+     * @param integer $ticketsReserved
+     *
+     * @return ContractArtist
+     */
+    public function setTicketsReserved($ticketsReserved)
+    {
+        $this->tickets_reserved = $ticketsReserved;
+
+        return $this;
+    }
+
+    /**
+     * Get ticketsReserved
+     *
+     * @return integer
+     */
+    public function getTicketsReserved()
+    {
+        return $this->tickets_reserved;
     }
 }

@@ -1,20 +1,32 @@
 {% extends "@FOSUser/layout.html.twig" %}
 
+{% trans_default_domain 'FOSUserBundle' %}
+
 {% block fos_user_content %}
     <div class="container">
 
+        <h3 class="mb-3 text-center">{{ 'registration.title'|trans|raw }}</h3>
 
-        <h3 class="mb-3 text-center">Inscription</h3>
         {% if not app.user %}
-            <p class="text-center">Créez votre profil en quelques secondes pour pouvoir soutenir vos artistes favoris&nbsp;!</p>
+            <p class="text-center mb-4">{{ 'registration.intro'|trans|raw }}</p>
         {% endif %}
+
+        {#
+        <ul class="nav nav-tabs text-right">
+            <li class="nav-item">
+                <a class="nav-link active" id="registration-tab-link-um" href="#registration-tab-um" data-toggle="tab" role="tab" aria-selected="true">{{ 'registration.tab-um-title'|trans|raw }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="registration-tab-link-fb" href="#registration-tab-fb" data-toggle="tab" role="tab" aria-selected="false">{{ 'registration.tab-fb-title'|trans|raw }}</a>
+            </li>
+        </ul>#}
         <div class="content-box">
             <div class="content-box-content text-center">
                 {% if app.user %}
-                    <p>Vous êtes connecté, nous ne pouvons donc pas vous ré-inscrire. ;-)</p>
+                    <p>{{ 'registration.already_logged.message'|trans|raw }}</p>
                     <div>
-                        <a href="{{ path('homepage') }}" class="btn btn-outline-primary mt-2 mt-md-0">Retour à l'accueil</a>
-                        <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-secondary mt-2 mt-md-0">Je souhaite me déconnecter</a>
+                        <a href="{{ path('homepage') }}" class="btn btn-outline-primary mt-2 mt-md-0">{{ 'registration.already_logged.back'|trans|raw }}</a>
+                        <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-secondary mt-2 mt-md-0">{{ 'registration.already_logged.logout'|trans|raw }}</a>
                     </div>
                 {% else %}
                     {% include "@FOSUser/Registration/register_content.html.twig" %}

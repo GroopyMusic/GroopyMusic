@@ -15,6 +15,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BaseContractArtist
 {
     const VOTES_TO_REFUND = 2;
+    const NB_PROMO_DAYS = 7;
+    const NB_TEST_PERIOD_DAYS = 20;
 
     public function __toString()
     {
@@ -32,6 +34,74 @@ class BaseContractArtist
         $this->cart_reminder_sent = false;
         $this->refunded = false;
         $this->asking_refund = new ArrayCollection();
+        $this->test_period = true;
+        $this->promotions = new ArrayCollection();
+    }
+
+    public function isInTestPeriod() {
+        return $this->test_period;
+    }
+
+    public function endTestPeriod() {
+        $this->test_period = false;
+        $this->generateStartDate();
+        $this->generateDateEnd();
+        foreach($this->promotions as $promotion) {
+            $endDate = clone $this->start_date;
+            $endDate->add(new \DateInterval('P' . self::NB_PROMO_DAYS.'D'));
+            $promotion->setEndDate($endDate);
+        }
+    }
+
+    public function getCurrentTestDayNb() {
+        return $this->isInTestPeriod() ? (new \DateTime())->diff($this->date)->d + 1 : 0;
+    }
+
+    public function generateDateEnd() {
+        $deadline = clone $this->start_date;
+        $deadline->modify('+ ' . $this->getStep()->getDeadlineDuration() . ' days')->setTime(23, 59, 59);
+        $this->dateEnd = $deadline;
+    }
+
+    public function generateTestPeriodAndPromotion() {
+        $this->generateStartDate();
+        $this->generatePromotion();
+    }
+
+    public function generateStartDate() {
+        $this->start_date = $this->isInTestPeriod() ? (new \DateTime())->add(new \DateInterval('P'.self::NB_TEST_PERIOD_DAYS.'D')) : (new \DateTime());
+    }
+
+    // TODO handle case where test period lasts > x weeks
+    public function generatePromotion() {
+        $promo = new Promotion(Promotion::TYPE_THREE_PLUS_ONE);
+
+        $startDate = clone $this->date;
+        $endDate = clone $this->start_date;
+
+        $endDate->add(new \DateInterval('P' . (self::NB_PROMO_DAYS - 1) .'D'));
+
+        $promo->setStartDate($startDate)->setEndDate($endDate);
+        $this->addPromotion($promo);
+    }
+
+    public function getCurrentPromotions() {
+        $now = new \DateTime();
+        return array_filter($this->promotions->toArray(), function(Promotion $promotion) use ($now) {
+            return $promotion->getStartDate() <= $now && $promotion->getEndDate() >= $now;
+        });
+    }
+
+    // Facilitates admin list export
+    public function getPromotionsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->promotions as $key => $val) {
+            /** @var Promotion $val */
+            $exportList[] = $i . ') ' . $val;
+            $i++;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
     public function isRefundReady() {
@@ -79,6 +149,24 @@ class BaseContractArtist
 
         if($nb <= 0) return 0;
         return $nb;
+    }
+
+    public function getContractsFanPaid() {
+        return array_filter($this->contractsFan->toArray(), function(ContractFan $contractFan) {
+            return $contractFan->isPaid();
+        });
+    }
+
+    public function getNbCounterPartsObtainedByPromotion() {
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityPromotional();
+        }, $this->getContractsFanPaid()));
+    }
+
+    public function getNbCounterPartsSoldOrganic() {
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityOrganic();
+        }, $this->getContractsFanPaid()));
     }
 
     public function cantAddPurchase($quantity, CounterPart $cp) {
@@ -187,6 +275,7 @@ class BaseContractArtist
     protected $collected_amount;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="contractArtist", cascade={"persist"})
      */
     protected $contractsFan;
@@ -226,13 +315,35 @@ class BaseContractArtist
      */
     protected $last_reminder_admin;
 
+    /**
+     * @ORM\Column(name="start_date", type="datetime", nullable=true)
+     */
+    protected $start_date;
+
+    /**
+     * @ORM\Column(name="test_period", type="boolean")
+     */
+    protected $test_period;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="Promotion", cascade={"all"})
+     */
+    protected $promotions;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="VIPInscription", mappedBy="contract_artist")
+     */
+    private $vip_inscriptions;
+
     // Discriminator
     protected $type;
 
     // Conditions approval (user form only)
     protected $accept_conditions;
 
-    // Deadline calculation
+    // Deadline calculation (@deprecated)
     protected $theoritical_deadline;
 
     /**
@@ -718,5 +829,72 @@ class BaseContractArtist
     public function getLastReminderAdmin()
     {
         return $this->last_reminder_admin;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartDate()
+    {
+        return $this->start_date;
+    }
+
+    /**
+     * @param mixed $start_date
+     * @return BaseContractArtist
+     */
+    public function setStartDate($start_date)
+    {
+        $this->start_date = $start_date;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestPeriod()
+    {
+        return $this->test_period;
+    }
+
+    /**
+     * @param mixed $test_period
+     */
+    public function setTestPeriod($test_period)
+    {
+        $this->test_period = $test_period;
+    }
+
+    /**
+     * Add promotion
+     *
+     * @param \AppBundle\Entity\Promotion $promotion
+     *
+     * @return BaseContractArtist
+     */
+    public function addPromotion(\AppBundle\Entity\Promotion $promotion)
+    {
+        $this->promotions[] = $promotion;
+
+        return $this;
+    }
+
+    /**
+     * Remove promotion
+     *
+     * @param \AppBundle\Entity\Promotion $promotion
+     */
+    public function removePromotion(\AppBundle\Entity\Promotion $promotion)
+    {
+        $this->promotions->removeElement($promotion);
+    }
+
+    /**
+     * Get promotions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPromotions()
+    {
+        return $this->promotions;
     }
 }

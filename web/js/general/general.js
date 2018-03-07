@@ -14,7 +14,8 @@ $('.rounded-title').each(function() {
     $(this).width(tw + 4);
     $(this).height(tw);
     $(this).css('margin-top', '-' + $(this).outerHeight()/2 + 'px');
-    $(this).before('<div class="h-line" style="margin-top:'+ $(this).outerHeight()/2 +'px;"></div>');
+    var $class = $(this).hasClass('rounded-title-login-choice') ? 'h-line h-line-login-choice' : 'h-line';
+    $(this).before('<div class="'+$class+'" style="margin-top:'+ $(this).outerHeight()/2 +'px;"></div>');
 });
 
 $(".scroll").click(function(e) {

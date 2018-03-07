@@ -47,6 +47,14 @@ class ContractFan
         $this->tickets = new ArrayCollection();
     }
 
+    public function isPaid() {
+        return !$this->isRefunded();
+    }
+
+    public function isRefunded() {
+        return $this->getRefunded();
+    }
+
     public function generateBarCode() {
         if(empty($this->barcode_text))
             $this->barcode_text = 'cf'.$this->id . uniqid();
@@ -118,6 +126,10 @@ class ContractFan
         foreach($this->purchases as $purchase) {
             $purchase->calculatePromotions();
         }
+    }
+
+    public function isEligibleForPromotion(Promotion $promotion) {
+        return $this->date >= $promotion->getStartDate() && $this->date <= $promotion->getEndDate();
     }
 
     /**

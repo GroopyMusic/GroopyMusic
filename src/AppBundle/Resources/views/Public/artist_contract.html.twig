@@ -28,8 +28,6 @@
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2">
                 <h2 class="text-center">{{ 'event.title'|trans({'%artist%':contract.artist.artistname})|raw }}</h2>
-
-
             </div>
         </div>
 
@@ -37,11 +35,13 @@
             <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.tickets'|trans|raw }}</p>
         {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
             <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}</p>
+        {% elseif contract.isInTestPeriod %}
+            <p class="p-info mt-3">{{ 'event.prevalidation'|trans|raw }}</p>
         {% endif %}
 
-        {% if state not in contract.uncrowdableStates %}
-            <p class="p-promo mt-3">{{ 'event.promo'|trans|raw }}</p>
-        {% endif %}
+        {% for promo in contract.currentPromotions if not contract.inTestPeriod %}
+            <p class="p-promo mt-3">{{ 'event.promo'|trans({'%end_date%': promo.endDate|date('d/m/Y'), '%nb_organic_needed%': promo.nbOrganicNeeded, '%nb_promotional%': promo.nbPromotional})|raw }}</p>
+        {% endfor %}
         {% set max_tickets = contract.maxTickets %}
         {% set tickets_left = contract.totalNbAvailable %}
         <div class="row mt-4">
@@ -61,12 +61,11 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
+                                <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
                                     {{ 'event.infos.opening_date'|trans|raw }}
-
                                 </div>
-                                <div class="contract-info-content">
-                                    {{ contract.date|date('d/m/Y') }}
+                                <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
+                                    {{ contract.startDate|date('d/m/Y') }}
                                 </div>
                             </div>
 
@@ -86,10 +85,10 @@
                                         </div>
                                     {% endif %}
                                 {% else %}
-                                    <div class="contract-info-title">
+                                    <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
                                         {{ 'event.infos.validation_date'|trans|raw }}
                                     </div>
-                                    <div class="contract-info-content">
+                                    <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
                                         {{ contract.dateEnd|date('d/m/Y') }}
                                     </div>
                                 {% endif %}
@@ -115,23 +114,7 @@
                                 {{ 'event.infos.state'|trans|raw }}
                             </span>
                             <span class="contract-info-content pr-1">
-                                {% if state is constant('STATE_SUCCESS_PASSED', contract) %}
-                                    {{ 'event.states.success_passed'|trans|raw }}
-                                {% elseif state is constant('STATE_REFUNDED', contract) %}
-                                    {{ 'event.states.refunded'|trans|raw }}
-                                {% elseif state is constant('STATE_FAILED', contract) %}
-                                    {{ 'event.states.failed'|trans|raw }}
-                                {% elseif state is constant('STATE_SUCCESS_ONGOING', contract) or state is constant('STATE_SUCCESS_PENDING', contract) %}
-                                    {{ 'event.states.success_ongoing'|trans|raw }}
-                                {% elseif state is constant('STATE_SUCCESS_CLOSED', contract) %}
-                                   {{ 'event.states.success_closed'|trans|raw }}
-                                {% elseif state is constant('STATE_SUCCESS_SOLDOUT', contract) or state is constant('STATE_SUCCESS_SOLDOUT_PENDING', contract) %}
-                                    {{ 'event.states.success_soldout'|trans|raw }}
-                                {% elseif state is constant('STATE_ONGOING', contract) %}
-                                    {{ 'event.states.ongoing'|trans|raw }}
-                                {% elseif state is constant('STATE_PENDING', contract) %}
-                                    {{ 'event.states.pending'|trans|raw }}
-                                {% endif %}
+                                {{ ('event.'~state)|trans|raw }}
                             </span>
                             {% if state not in contract.uncrowdableStates %}
                                 <span class="text-positive um-semi-bold"><img class="green-check" src="{{ asset('images/green-check.png') }}" />{{ 'event.stillselling'|trans|raw }}</span>
@@ -154,10 +137,9 @@
                             <div class="col-12 col-md-4 content-box-col">
                                 <div class="contract-info-title">
                                     {{ 'event.infos.tickets_sold'|trans|raw }}
-
                                 </div>
                                 <div class="contract-info-content">
-                                    {{ contract.ticketsSoldMajored }}
+                                    {{ contract.totalBookedTicketsMajored }}
                                 </div>
                             </div>
 
@@ -175,16 +157,16 @@
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
                                  {{ 'event.infos.tickets_objective'|trans|raw }}
-
                             </span>
                             <span class="contract-info-content">
                                 {{ contract.step.minTickets }}
                             </span>
+                            {% set progress_100 = contract.percentObjective %}
                             <div class="progress">
-                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ contract.state in contract.successfulStates ? 100 : contract.ticketsSold * 100 // contract.step.minTickets }}%"></div>
+                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                             </div>
                             <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} successful-progress-text{% else %} text-primary{% endif %}">
-                                {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ contract.ticketsSold * 100 // contract.step.minTickets }}%{% endif %}
+                                {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
                             </div>
                         </div>
                     </div>
@@ -288,10 +270,11 @@
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
                         {% else %}
-                            <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
+                            <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<br /><a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
+                            <div class="text-center">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
+                            </div>
                         {% endif %}
-
                     {% else %}
                         <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
                     {% endif %}

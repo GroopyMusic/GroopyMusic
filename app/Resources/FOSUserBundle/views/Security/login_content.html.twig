@@ -13,20 +13,17 @@
                 <div class="container">
                     <!-- design of the modal header -->
                     <div class="login-header">
-                        <div class="h-line"></div>
                         <!-- titre de la section -->
-                        <div class="login-header-title">
-                            <h4 class="login-rounded-title">Connexion</h4>
-                        </div>
+                        <h5>Connexion</h5>
                     </div>
                     <form action="{{ path("fos_user_security_check") }}" method="post">
                         <div class="form-group">
                             {#<label for="username">{{ 'security.login.username'|trans }}</label>#}
-                            <input type="text" class="form-control" id="username" name="_username" {% if last_username is defined %}value="{{ last_username }}"{% endif %} placeholder="{{ 'security.login.username'|trans }}" required="required" />
+                            <input type="text" class="form-control" id="username" name="_um_username" {% if last_username is defined %}value="{{ last_username }}"{% endif %} placeholder="{{ 'security.login.username'|trans }}" required="required" />
                         </div>
                         <div class="form-group">
                             {#<label for="password">{{ 'security.login.password'|trans }}</label>#}
-                            <input type="password" class="form-control" id="password" name="_password" required="required" placeholder="{{ 'security.login.password'|trans }}" />
+                            <input type="password" class="form-control" id="password" name="_um_password" required="required" placeholder="{{ 'security.login.password'|trans }}" />
                         </div>
                         <div class="form-group">
                             <label class="custom-control custom-checkbox pr-3" for="remember_me">
@@ -43,10 +40,24 @@
                                value="{{ csrf_token('authenticate') }}"
                         >#}
                         <div class="text-center">
-                            <button class="btn btn-primary text-uppercase" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
+                            <button class="btn btn-primary text-uppercase position-relative um-login-button text-center" type="submit" id="_submit_um_connection" name="_submit"><!--
+                                --><img class="um-login-wave-icon" src="{{ asset('images/wave-white.png') }}" />{{ 'security.login.submit'|trans }}<!--
+                            --></button>
                         </div>
                     </form>
+                    {#
+                        <div class="py-4 mt-4" style="min-height: 100px;">
+                            <div class="h-line h-line-login-choice"></div>
+                            <h6 class="rounded-title-login-choice">{{ 'or'|trans({}, 'messages') }}</h6>
+                        </div>
+
+
+                        <div class="mb-4 mt-1 text-center">
+                            {{ facebook_connect_widget()|raw }}
+                         </div>
+                     #}
                 </div>
+
             </div>
         </div>
     </div>

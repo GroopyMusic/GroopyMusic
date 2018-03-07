@@ -6,7 +6,9 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Notification;
+use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
+use AppBundle\Entity\VIPInscription;
 use Doctrine\ORM\EntityManagerInterface;
 
 // TODO avoid passing entire objects as parameters to notifications, but rather their ID or values
@@ -22,11 +24,16 @@ class NotificationDispatcher
     const TICKET_SENT_TYPE = 'tickets_sent';
     const ONGOING_CART_TYPE = 'ongoing_cart';
 
-    private $em;
+    const ADMIN_NEW_CONTACT_FORM_TYPE = 'Admin/new_contact_form';
+    const ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE = 'Admin/new_vip_inscription';
 
-    public function __construct(EntityManagerInterface $em)
+    private $em;
+    private $rolesManager;
+
+    public function __construct(EntityManagerInterface $em, UserRolesManager $rolesManager)
     {
         $this->em = $em;
+        $this->rolesManager = $rolesManager;
     }
 
     public function addNotification(User $user, $type, array $params = []) {
@@ -35,6 +42,12 @@ class NotificationDispatcher
 
         $this->em->persist($notif);
         $this->em->flush();
+    }
+
+    public function addAdminNotification($type, array $params = []) {
+        $admin_roles = $this->rolesManager->getParentRoles(['ROLE_ADMIN']);
+        $admin_profiles = $this->em->getRepository('AppBundle:User')->findUsersWithRoles($admin_roles);
+        $this->addNotifications($admin_profiles, $type, $params);
     }
 
     public function addNotifications($users, $type, array $params = []) {
@@ -104,5 +117,16 @@ class NotificationDispatcher
 
     public function notifyOngoingCart($users, ContractArtist $contract) {
         $this->addNotifications($users, self::ONGOING_CART_TYPE, ['contract' => $contract]);
+    }
+
+    // --------------------
+    // Admin notifs
+    // --------------------
+    public function notifyAdminContact(SuggestionBox $suggestionBox) {
+        $this->addAdminNotification(self::ADMIN_NEW_CONTACT_FORM_TYPE, ['object' => $suggestionBox->getObject()]);
+    }
+
+    public function notifyAdminVIPInscription(VIPInscription $inscription) {
+        $this->addAdminNotification(self::ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE, ['inscription_string' => $inscription->__toString()]);
     }
 }

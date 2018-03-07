@@ -1,32 +1,43 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-{{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+<div class="tab-content">
 
-    <div class="row">
-        <div class="form-group col-12">
-            {{ form_row(form.email) }}
-            {{ form_row(form.lastname) }}
-            {{ form_row(form.firstname) }}
-        </div>
+    <div class="tab-pane fade show active" role="tabpanel" id="registration-tab-um" aria-labelledby="#registration-tab-link-um">
+        {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
 
-        <div class="form-group col-12">
-            {{ form_row(form.plainPassword) }}
-        </div>
+            <div class="row">
+                <div class="form-group col-12">
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.lastname) }}
+                    {{ form_row(form.firstname) }}
+                </div>
 
-        <div class="form-group col-12 text-left">
-            <div class="form-group row mb-1">
-                <div class="col-sm-2"></div>
-                <div class="col-sm-10"><a target="_blank" href="{{ path('conditions') }}">Lire nos conditions générales d'utilisation et de vente</a></div>
+                <div class="form-group col-12">
+                    {{ form_row(form.plainPassword) }}
+                </div>
+
+                <div class="form-group col-12 text-left">
+                    <div class="form-group row mb-1">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10"><a target="_blank" href="{{ path('conditions') }}">Lire nos conditions générales d'utilisation et de vente</a></div>
+                    </div>
+                    {{ form_row(form.accept_conditions) }}
+                    {{ form_row(form.newsletter) }}
+                </div>
             </div>
-            {{ form_row(form.accept_conditions) }}
-            {{ form_row(form.newsletter) }}
+            <div class="text-center">
+                <button class="btn btn-primary sharp text-uppercase um-login-button position-relative" type="submit" id="_submit_um_registration" name="_submit">
+                    <img class="um-login-wave-icon" src="{{ asset('images/wave-white.png') }}" />
+                    {{ 'registration.submit'|trans }}
+                </button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+    {#<div class="tab-pane fade" role="tabpanel" id="registration-tab-fb" aria-labelledby="#registration-tab-link-um">
+        <p>{{ 'registration.tab-fb.intro'|trans|raw|nl2br }}</p>
+        <div class="mb-4 mt-1 text-center">
+            {{ facebook_connect_widget()|raw }}
         </div>
-    </div>
-    <div class="text-center">
-        <input class="btn btn-primary sharp text-uppercase"
-               type="submit"
-               id="_submit"
-               name="_submit"
-               value="{{ 'registration.submit'|trans }}"/>
-    </div>
-{{ form_end(form) }}
+    </div>#}
+
+</div>

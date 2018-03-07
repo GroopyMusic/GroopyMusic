@@ -1,0 +1,36 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+
+    <div class="content-box">
+        <div class="content-box-content">
+            <h2>Mettre fin à la période de pré-validation de l'événement "{{ contract }}"</h2>
+
+            <p>
+                C'est le {{ contract.currentTestDayNb }}è jour de pré-validation de cet événement.
+            <p>
+            <ul>
+                <li>
+                    Si tu marques la pré-validation comme <strong>réussie</strong>, alors l'événement sera dévoilé au grand public sur la plateforme.
+                    Les ventes officielles commenceront à partir d'aujourd'hui et la date limite pour l'atteinte du seuil sera dans {{ contract.step.deadlineDuration }} jours.
+                </li>
+                <li>
+                    Si tu marques la pré-validation comme <strong>ratée</strong>, alors il ne sera plus possible d'acheter des tickets et l'événement sera considéré comme tout événement raté.
+                    N'oublie pas dans ce cas d'également rembourses les gens qui ont acheté des contreparties.
+                </li>
+            </ul>
+
+            <div>
+                {{ form_start(form) }}
+
+                <div class="form-group">
+                    {{ form_widget(form.marksuccessful) }}
+                    {{ form_widget(form.markfailed) }}
+                    {{ form_widget(form.cancel) }}
+                </div>
+
+                {{ form_rest(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

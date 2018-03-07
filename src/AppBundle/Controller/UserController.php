@@ -219,11 +219,6 @@ class UserController extends Controller
             $flow->saveCurrentStepData($form);
 
             if ($flow->nextStep()) {
-                // form for the next step
-                $th_date = new \DateTime;
-                $th_date->modify('+ ' . $contract->getStep()->getDeadlineDuration() . ' days')->setTime(23, 59, 59);
-                $contract->setTheoriticalDeadline($th_date);
-
                 $form = $flow->createForm();
             } else {
                 // flow finished
@@ -239,9 +234,9 @@ class UserController extends Controller
                     throw $this->createAccessDeniedException("Interdit de s'inscrire à deux paliers en même temps !");
                 }
 
-                $deadline = new \DateTime();
-                $deadline->modify('+ ' . $contract->getStep()->getDeadlineDuration() . ' days')->setTime(23, 59, 59);
-                $contract->setDateEnd($deadline);
+                // "start date" calculation based on test period or not
+                $contract->generateTestPeriodAndPromotion();
+                $contract->generateDateEnd();
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($contract);

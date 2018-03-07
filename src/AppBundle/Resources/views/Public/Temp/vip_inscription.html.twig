@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block headtitle %}Presse | Un-Mute{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <h2 class="text-center">Festival inauguratif Un-Mute - accès presse</h2>
+        <p class="my-4">Vous êtes attaché de presse et vous souhaitez en savoir plus sur Un-Mute ? Rendez-vous le 10 avril à 18h pour une conférence de presse donnée par l'équipe du projet. Les inscriptions se font en remplissant le formulaire ci-dessous.</p>
+
+        <div class="content-box">
+            <div class="content-box-content">
+                <p>
+                    Le <u>10 avril 2018</u> aura lieu le micro-festival de lancement du projet Un-Mute.
+                </p>
+
+                <ul class="um-list">
+                    <li>
+                        Lieu : Atelier 210 (Chaussée Saint-Pierre 210, 1040 Bruxelles)
+                    </li>
+                    <li>
+                        Horaire :
+                        <ul>
+                            <li><b>18h : conférence de presse (présentation du projet + questions-réponses)</b> - inscription via le formulaire ci-dessous</li>
+                            <li>19h : début des concerts</li>
+                            <li>22h30 : fin des concerts</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Infos sur les artistes et page de l'événement : <a href="{{ path('artist_contract', {'id': inscription.contractArtist.id}) }}">ici</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-box">
+            <div class="content-box-content">
+                <h4 class="text-center">Inscription à la conférence de presse</h4>
+                <div class="mt-4">
+                    {{ form(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

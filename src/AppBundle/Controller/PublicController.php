@@ -14,6 +14,7 @@ use AppBundle\Entity\SuggestionBox;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\PropositionContractArtistType;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\NotificationDispatcher;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Mailgun\Mailgun;
@@ -201,6 +202,8 @@ class PublicController extends Controller
             }
 
             $mailDispatcher->sendAdminContact($suggestionBox);
+            $notifDispatcher = $this->get(NotificationDispatcher::class);
+            $notifDispatcher->notifyAdminContact($suggestionBox);
 
             return new Response($this->renderView('AppBundle:Public/Form:suggestionBox_ok.html.twig'));
         }
@@ -215,6 +218,7 @@ class PublicController extends Controller
     public function hallsAction() {
         $em = $this->getDoctrine()->getManager();
         $halls = $em->getRepository('AppBundle:Hall')->findBy(array('visible' => true));
+        shuffle($halls);
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(
             'halls' => $halls,
@@ -242,15 +246,17 @@ class PublicController extends Controller
     /**
      * @Route("/crowdfundings", name="catalog_crowdfundings")
      */
-    public function artistContractsAction() {
+    public function artistContractsAction(UserInterface $user = null) {
 
         $em = $this->getDoctrine()->getManager();
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
+        $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user, $this->get('user_roles_manager'));
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
             'successful_contracts' => $succesful_contracts,
+            'prevalidation_contracts' => $prevalidation_contracts,
         ));
     }
 
@@ -328,7 +334,7 @@ class PublicController extends Controller
     public function artistsAction(Request $request, UserInterface $user = null) {
         $em = $this->getDoctrine()->getManager();
 
-        $artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false]);
+        $artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false], ['artistname' => 'ASC']);
 
         if($user != null && count($user->getGenres()) > 0) {
             usort($artists, function(Artist $a, Artist $b) use ($user) {
@@ -492,30 +498,7 @@ class PublicController extends Controller
 
         return $this->redirectToRoute('homepage');
     }
-
-    /**
-     * @Route("/test-mail", name="testmail")
-     * @Security("has_role('ROLE_SUPER_ADMIN')")
-     */
-    public function testMailAction(KernelInterface $kernel) {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput(array(
-            'command' => 'reminders:crowdfunding:artist',
-            'x' => '1',
-        ));
-
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-
-        // return new Response(""), if you used NullOutput()
-        return new Response($content);
-    }
-
+  
     /**
      * @Route("/proposition", name="proposition")
      */

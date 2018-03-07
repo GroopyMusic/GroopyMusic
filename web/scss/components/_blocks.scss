@@ -20,3 +20,7 @@
 .text-positive {
   color: $positive-color;
 }
+
+.alert-dismissable {
+  @extend .pr-5;
+}
