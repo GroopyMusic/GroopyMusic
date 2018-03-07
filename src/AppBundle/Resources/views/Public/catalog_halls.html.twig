@@ -5,7 +5,7 @@
         <h3 class="text-center mb-4">{{ 'catalog_halls.title'|trans|raw }}</h3>
 
         <p>
-            {{ 'catalog_halls.intro'|trans|raw }}
+            {{ 'catalog_halls.intro'|trans({'%proposition_url%': path('proposition')})|raw }}
         </p>
 
         {% if halls is not empty %}

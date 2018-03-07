@@ -9,7 +9,7 @@
         {% else %}
 
             <p>
-                {{ 'catalog_artists.intro'|trans|raw }}
+                {{ 'catalog_artists.intro'|trans({'%proposition_url%': path('proposition')})|raw }}
             </p>
             <p>
                 {{ 'catalog_artists.join_us'|trans({'%url%': path('fos_user_registration_register')})|raw }}

@@ -6,6 +6,7 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Notification;
+use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Entity\VIPInscription;
@@ -26,6 +27,7 @@ class NotificationDispatcher
 
     const ADMIN_NEW_CONTACT_FORM_TYPE = 'Admin/new_contact_form';
     const ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE = 'Admin/new_vip_inscription';
+    const ADMIN_NEW_PROPOSITION_FORM_TYPE = 'Admin/new_proposition';
 
     private $em;
     private $rolesManager;
@@ -128,5 +130,9 @@ class NotificationDispatcher
 
     public function notifyAdminVIPInscription(VIPInscription $inscription) {
         $this->addAdminNotification(self::ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE, ['inscription_string' => $inscription->__toString()]);
+    }
+
+    public function notifyAdminProposition(PropositionContractArtist $proposition) {
+        $this->addAdminNotification(self::ADMIN_NEW_PROPOSITION_FORM_TYPE, []);
     }
 }

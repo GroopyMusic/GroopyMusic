@@ -37,7 +37,7 @@
                 <h3 class="text-center mb-3">{{ 'catalog_events.running.title'|trans|raw }}</h3>
 
                 <p>
-                    {{ 'catalog_events.running.intro'|trans|raw }}
+                    {{ 'catalog_events.running.intro'|trans({'%proposition_url%': path('proposition')})|raw }}
                 </p>
 
                 <div class="row">

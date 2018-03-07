@@ -1,18 +1,16 @@
 <?php
 
 namespace AppBundle\Repository;
+
 use AppBundle\Command\FailedContractCommand;
 use AppBundle\Command\KnownOutcomeContractCommand;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\ContractArtist;
-use AppBundle\Entity\User;
-use AppBundle\Services\UserRolesManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * ContractArtistRepository
@@ -50,6 +48,7 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
         ;
     }
 
+    // Don't type-hint user here as it creates a bug
     public function findInPreValidationContracts($user = null, $rolesManager = null) {
         if($user == null || $rolesManager == null) {
             return [];
