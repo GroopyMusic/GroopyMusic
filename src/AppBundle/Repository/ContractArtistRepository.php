@@ -50,12 +50,10 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
         ;
     }
 
-    public function findInPreValidationContracts(User $user = null) {
+    public function findInPreValidationContracts(User $user, $rolesManager) {
         if($user == null) {
             return [];
         }
-
-        $rolesManager = $this->container->get('user_roles_manager');
 
         return array_filter(
             $this->queryVisible(true)->getQuery()->getResult(),
