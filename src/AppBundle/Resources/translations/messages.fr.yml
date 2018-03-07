@@ -227,7 +227,7 @@ event:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
   promo: "Lors de la première semaine de ventes, c'est-à-dire jusqu'au %end_date% à minuit, cet événement est en promotion : pour %nb_organic_needed% tickets achetés, vous en recevrez %nb_promotional% !"
-  prevalidation: "Cet événement est en pré-validation. Sa page ne sera rendue publique que lorsque 10% de tickets auront été vendus, et il y aura alors encore un mois pour obtenir les 100% requis à la concrétisation du Festival."
+  prevalidation: "Cet événement est en pré-validation. Sa page ne sera rendue publique que lorsque 10% de tickets auront été vendus, et il y aura alors encore un mois pour obtenir les 100% requis à la concrétisation du Festival. Pendant la pré-validation, les tickets sont en promotion 3 + 1."
   infos:
     title: Infos
     date: Date du festival
@@ -259,7 +259,7 @@ event:
     ongoing: En cours
     pending: En cours d'examination par l'équipe Un-Mute
     test_period: En pré-validation
-  stillselling: Places encore en vente
+  stillselling: Places en vente
   lineup:
     title: Line-up
     host: Artiste hôte

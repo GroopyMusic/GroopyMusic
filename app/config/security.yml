@@ -23,13 +23,15 @@ security:
             pattern: ^/
             form_login:
                 provider: fos_userbundle
-                default_target_path: homepage
                 failure_path: fos_user_security_login
+                always_use_default_target_path: false
+                default_target_path: homepage
+                use_referer: true
+                username_parameter: _um_username
+                password_parameter: _um_password
                 #csrf_parameter:       _csrf_token
                 #csrf_token_id:        authenticate
                 #csrf_token_generator: security.csrf.token_manager
-                use_referer: true
-                require_previous_session: false
             oauth:
               resource_owners:
                 facebook:           "/login/check-facebook"

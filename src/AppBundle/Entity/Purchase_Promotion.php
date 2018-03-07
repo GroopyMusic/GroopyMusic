@@ -13,6 +13,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 class Purchase_Promotion
 {
+    public function __construct(Purchase $purchase = null, Promotion $promotion = null, $nb_free_counterparts = null)
+    {
+        $this->purchase = $purchase;
+        $this->promotion = $promotion;
+        $this->nb_free_counterparts = $nb_free_counterparts;
+    }
 
     /**
      * @var int

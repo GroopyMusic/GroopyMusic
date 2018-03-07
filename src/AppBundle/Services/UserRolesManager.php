@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\User;
 use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Security\Core\Role\Role;
 
@@ -49,5 +50,21 @@ class UserRolesManager extends RoleHierarchy
         }
 
         return $results;
+    }
+
+    public function getAllRoles(User $user) {
+       $reachableRoles = $user->getRoles();
+
+        foreach ($user->getRoles() as $role) {
+            if (!isset($this->map[$role])) {
+                continue;
+            }
+
+            foreach ($this->map[$role] as $r) {
+                $reachableRoles[] = $r;
+            }
+        }
+
+        return $reachableRoles;
     }
 }

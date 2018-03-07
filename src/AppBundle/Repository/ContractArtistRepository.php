@@ -6,6 +6,7 @@ use AppBundle\Command\KnownOutcomeContractCommand;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
+use AppBundle\Services\UserRolesManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
@@ -21,10 +22,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class ContractArtistRepository extends EntityRepository implements ContainerAwareInterface
 {
-    private $auth_checker;
-
+    private $container;
     public function setContainer(ContainerInterface $container = null) {
-        $this->auth_checker = $container->get('security.authorization_checker');
+        $this->container = $container;
     }
 
     public function __construct(EntityManager $em, Mapping\ClassMetadata $class)
@@ -55,10 +55,13 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
             return [];
         }
 
+        $rolesManager = $this->container->get('user_roles_manager');
+
         return array_filter(
             $this->queryVisible(true)->getQuery()->getResult(),
-            function(ContractArtist $contractArtist) use ($user) {
-                return  $this->auth_checker->isGranted('ROLE_ADMIN') ||
+
+            function(ContractArtist $contractArtist) use ($user, $rolesManager) {
+                return  in_array('ROLE_ADMIN', $rolesManager->getAllRoles($user)) ||
                         $user->owns($contractArtist->getArtist());
             }
         );

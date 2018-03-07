@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    {# if prevalidation_contracts is not empty %}
+    {% if prevalidation_contracts is not empty %}
 
         <div class="container opacity-50 mb-4">
             <h3 class="text-center mb-3">{{ 'catalog_events.prevalidation.title'|trans|raw }}</h3>
@@ -18,7 +18,7 @@
             </div>
         </div>
 
-    {% endif #}
+    {% endif %}
 
     {% if current_contracts is empty and successful_contracts is empty %}
         <div class="container">
