@@ -50,8 +50,8 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
         ;
     }
 
-    public function findInPreValidationContracts(User $user, $rolesManager) {
-        if($user == null) {
+    public function findInPreValidationContracts(User $user = null, $rolesManager = null) {
+        if($user == null || $rolesManager == null) {
             return [];
         }
 
