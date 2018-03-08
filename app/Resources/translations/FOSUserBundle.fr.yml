@@ -15,9 +15,9 @@ profile:
     #new
     facebook:
       label: Compte Facebook
-      disconnect_link: Déconnecter mon compte Facebook d'Un-Mute
-      disconnect_title: Déconnecter mon compte Facebook d'Un-Mute
-      disconnect_submit: Déconnecter
+      disconnect_link: Dissocier mon compte Facebook d'Un-Mute
+      disconnect_title: Dissocier mon compte Facebook d'Un-Mute
+      disconnect_submit: Dissocier
       disconnect_cancel: Annuler
 
 
