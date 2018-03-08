@@ -50,7 +50,8 @@ crossorigin="anonymous"></script>
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = "https://connect.facebook.net/{{ app.request.locale }}/sdk.js";
+        {% set expanded_locale = expanded_locales[app.request.locale] is defined ? expanded_locales[app.request.locale] : app.request.locale %}
+        js.src = "https://connect.facebook.net/{{ expanded_locale }}/sdk.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
