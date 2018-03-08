@@ -12,6 +12,14 @@ profile:
     inscription_date: Date d'inscription
     lastname: Nom
     newsletter: Communications commerciales
+    #new
+    facebook:
+      label: Compte Facebook
+      disconnect_link: Déconnecter mon compte Facebook d'Un-Mute
+      disconnect_title: Déconnecter mon compte Facebook d'Un-Mute
+      disconnect_submit: Déconnecter
+      disconnect_cancel: Annuler
+
 
 registration:
   title: Inscription
@@ -20,7 +28,7 @@ registration:
   tab-fb-title: S'inscrire avec Facebook
   tab-fb:
     intro: |
-      Vous pouvez également vous créer un profil en vous connectant avec votre compte Facebook.
+      Vous pouvez également vous créer un profil en vous connectant avec votre compte Facebook. Vous déclarez dans ce cas avoir lu et accepté <a href="%conditions_url%">nos conditions générales d'utilisation</a>.
   already_logged:
     message: Vous êtes connecté, nous ne pouvons donc pas vous ré-inscrire. ;-)
     back: Retour à l'accueil

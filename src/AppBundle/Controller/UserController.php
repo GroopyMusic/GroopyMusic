@@ -358,6 +358,36 @@ class UserController extends Controller
     }
 
     /**
+     * @Route("/disconnect-fb", name="user_disconnect_fb")
+     */
+    public function disconnectFBAction(Request $request, UserInterface $user) {
+        /** @var User $user */
+        $form = $this->createFormBuilder(['submit' => false])
+            ->setAction($this->generateUrl('user_disconnect_fb'))
+            ->add('submit', SubmitType::class, array(
+                'label' => 'profile.show.facebook.disconnect_submit', // Supprimer mon compte
+                'translation_domain' => 'FOSUserBundle',
+                'attr' => ['class' => 'btn btn-danger'],
+            ))->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->get('submit')->isClicked()) {
+            $user->setFacebookId(null)->setFacebookAccessToken(null);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('notice', 'notices.edition');
+            return $this->redirectToRoute('fos_user_profile_show');
+        }
+
+        return new Response($this->renderView('@App/User/Profile/_disconnect_fb.html.twig', [
+            'form' => $form->createView(),
+        ]));
+    }
+
+    /**
      * @Route("/edit-profile", name="user_profile_edit")
      */
     public function editProfileAction(Request $request, UserInterface $user) {

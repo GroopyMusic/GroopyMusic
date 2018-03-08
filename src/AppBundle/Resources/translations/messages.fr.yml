@@ -708,7 +708,7 @@ labels:
     name: Nom de la salle
     contact_email: Adresse email
     contact_phone: Numero de téléphone
-    province: Province
+    province: Région de la salle
   contact_person:
     firstname: Prénom
     lastname: Nom de famille
@@ -717,9 +717,9 @@ labels:
   proposition_artist:
     artistname: Nom de l'artiste ou du groupe
     demo_link: Extrait musical (lien Youtube ou autre)
-    genres: Genre(s)
+    genres: Styles musicaux
   proposition_contract_artist:
-    province: Province
+    province: Région
     reason: Raison de l'évenement
     nb_expected: Nombres de personnes attendues
     period_start_date: Date de début
@@ -728,7 +728,7 @@ labels:
     commentary: Commentaire
     submit: Envoyer
     artists: Artiste
-    payable: L'entrée doit être payante.
+    payable: L'entrée doit être payante.s
     ask_if_concert : S'agit-il bien d'une proposition d'événement ?
     ask_if_artist : L'artiste existe-t-il déjà sur la plateforme ?
     ask_if_hall : Connaissez-vous déjà la salle où aura lieu l'événement ?
