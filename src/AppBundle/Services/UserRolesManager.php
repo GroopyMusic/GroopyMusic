@@ -7,10 +7,13 @@ use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Security\Core\Role\Role;
 
 /**
- * ReversedRoleHierarchy defines a reversed role hierarchy.
+ * UserRolesManager defines a REVERSED role hierarchy while also handling normal role hierarchy.
  */
 class UserRolesManager extends RoleHierarchy
 {
+    // This is the "normal" role hierarchy
+    private $role_hierarchy;
+
     /**
      * Constructor.
      *
@@ -18,6 +21,9 @@ class UserRolesManager extends RoleHierarchy
      */
     public function __construct(array $hierarchy)
     {
+        $initial_hierarchy = $hierarchy;
+        $this->role_hierarchy = new RoleHierarchy($initial_hierarchy);
+
         // Reverse the role hierarchy.
         $reversed = [];
         foreach ($hierarchy as $main => $roles) {
@@ -52,15 +58,17 @@ class UserRolesManager extends RoleHierarchy
         return $results;
     }
 
+    // Returns all roles reachable with $user roles
     public function getAllRoles(User $user) {
        $reachableRoles = $user->getRoles();
+       $normalRoleHierarchy = $this->role_hierarchy;
 
         foreach ($user->getRoles() as $role) {
-            if (!isset($this->map[$role])) {
+            if (!isset($normalRoleHierarchy->map[$role])) {
                 continue;
             }
 
-            foreach ($this->map[$role] as $r) {
+            foreach ($normalRoleHierarchy->map[$role] as $r) {
                 $reachableRoles[] = $r;
             }
         }
