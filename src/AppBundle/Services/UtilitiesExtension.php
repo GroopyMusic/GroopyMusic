@@ -33,6 +33,7 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('notification_complete', array($this, 'notification_complete', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('email_link', array($this, 'email_link', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('facebook_like_widget', array($this, 'facebook_like_widget', array('is_safe' => array('html')))),
+            new \Twig_SimpleFunction('facebook_connect_widget', array($this, 'facebook_connect_widget', array('is_safe' => array('html')))),
         );
     }
 
@@ -105,6 +106,12 @@ class UtilitiesExtension extends \Twig_Extension
     public function facebook_like_widget($with_faces = false) {
         return $this->twig->render(':patterns/utils:facebook_like_widget.html.twig', array(
             'with_faces' => $with_faces,
+        ));
+    }
+
+    public function facebook_connect_widget($with_pp = true) {
+        return $this->twig->render(':patterns/utils:facebook_connect_widget.html.twig', array(
+            'with_pp' => $with_pp,
         ));
     }
 

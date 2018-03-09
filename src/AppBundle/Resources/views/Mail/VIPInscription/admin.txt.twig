@@ -1,0 +1,13 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+    {% block content %}
+        Nouvelle inscription Presse à "{{ inscription.contractArtist }}". La personne inscrite est : {{ inscription }}.
+    {% endblock %}
+{% endautoescape %}
+
+{% block body_html %}
+    {% include '@App/Mail/VIPInscription/admin.html.twig' %}
+{% endblock %}

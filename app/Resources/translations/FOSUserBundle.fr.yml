@@ -12,8 +12,27 @@ profile:
     inscription_date: Date d'inscription
     lastname: Nom
     newsletter: Communications commerciales
+    #new
+    facebook:
+      label: Compte Facebook
+      disconnect_link: Dissocier mon compte Facebook d'Un-Mute
+      disconnect_title: Dissocier mon compte Facebook d'Un-Mute
+      disconnect_submit: Dissocier
+      disconnect_cancel: Annuler
+
 
 registration:
+  title: Inscription
+  intro: Créez votre profil en quelques secondes pour pouvoir soutenir vos artistes favoris&nbsp;!
+  tab-um-title: Créer un compte Un-Mute
+  tab-fb-title: S'inscrire avec Facebook
+  tab-fb:
+    intro: |
+      Vous pouvez également vous créer un profil en vous connectant avec votre compte Facebook. Vous déclarez dans ce cas avoir lu et accepté <a href="%conditions_url%">nos conditions générales d'utilisation</a>.
+  already_logged:
+    message: Vous êtes connecté, nous ne pouvons donc pas vous ré-inscrire. ;-)
+    back: Retour à l'accueil
+    logout: Je souhaite me déconnecter
   back: Retour sur le site
   check_email: Merci pour votre inscription. Un e-mail de confirmation vous a été envoyé. Il contient un lien d'activation. C'est la dernière étape avant d'accéder pour de bon à votre espace Un-Mute !
   confirmed: Votre compte a bien été vérifié. Dès à présent, découvrez vos artistes préférés et soutenez-les dans leurs projets musicaux !
@@ -24,7 +43,7 @@ registration:
       Merci pour votre inscription ! Votre compte Un-Mute a bien été créé.
 
       Pouvez-vous nous confirmer que votre adresse mail est bien correcte en cliquant sur le lien suivant : %confirmationUrl% ?
-  submit: Créer mon compte
+  submit: Créer mon compte Un-Mute
 
 resetting:
   check_email: |

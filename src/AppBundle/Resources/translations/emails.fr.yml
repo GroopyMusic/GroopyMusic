@@ -149,5 +149,15 @@ admin :
 
       Raison de l'événement : %reasonEvent%
 
+#new
+vip_inscription:
+  copy: |
+    Votre inscription Presse sur Un-Mute.be a bien été enregistrée. Voici les informations que vous avez fournies :
+    --> Nom : %name%
+    --> Adresse e-mail : %email%
+    --> Société/groupe médiatique : %company%
+    --> Fonction : %function%
 
+    Nous vous attendons donc à 18h le %date% pour le %event%.
 
+    Pour toute question, n'hésitez pas à nous contacter à ce lien : %contact_url%

@@ -1,17 +1,16 @@
 <?php
 
 namespace AppBundle\Repository;
+
 use AppBundle\Command\FailedContractCommand;
 use AppBundle\Command\KnownOutcomeContractCommand;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\ContractArtist;
-use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * ContractArtistRepository
@@ -21,10 +20,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class ContractArtistRepository extends EntityRepository implements ContainerAwareInterface
 {
-    private $auth_checker;
-
+    private $container;
     public function setContainer(ContainerInterface $container = null) {
-        $this->auth_checker = $container->get('security.authorization_checker');
+        $this->container = $container;
     }
 
     public function __construct(EntityManager $em, Mapping\ClassMetadata $class)
@@ -50,15 +48,17 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
         ;
     }
 
-    public function findInPreValidationContracts(User $user = null) {
-        if($user == null) {
+    // Don't type-hint user here as it creates a bug
+    public function findInPreValidationContracts($user = null, $rolesManager = null) {
+        if($user == null || $rolesManager == null) {
             return [];
         }
 
         return array_filter(
             $this->queryVisible(true)->getQuery()->getResult(),
-            function(ContractArtist $contractArtist) use ($user) {
-                return  $this->auth_checker->isGranted('ROLE_ADMIN') ||
+
+            function(ContractArtist $contractArtist) use ($user, $rolesManager) {
+                return  in_array('ROLE_ADMIN', $rolesManager->getAllRoles($user)) ||
                         $user->owns($contractArtist->getArtist());
             }
         );

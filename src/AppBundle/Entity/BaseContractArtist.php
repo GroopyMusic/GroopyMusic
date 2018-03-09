@@ -16,7 +16,7 @@ class BaseContractArtist
 {
     const VOTES_TO_REFUND = 2;
     const NB_PROMO_DAYS = 7;
-    const NB_TEST_PERIOD_DAYS = 7;
+    const NB_TEST_PERIOD_DAYS = 20;
 
     public function __toString()
     {
@@ -72,6 +72,7 @@ class BaseContractArtist
         $this->start_date = $this->isInTestPeriod() ? (new \DateTime())->add(new \DateInterval('P'.self::NB_TEST_PERIOD_DAYS.'D')) : (new \DateTime());
     }
 
+    // TODO handle case where test period lasts > x weeks
     public function generatePromotion() {
         $promo = new Promotion(Promotion::TYPE_THREE_PLUS_ONE);
 
@@ -329,6 +330,12 @@ class BaseContractArtist
      * @ORM\ManyToMany(targetEntity="Promotion", cascade={"all"})
      */
     protected $promotions;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="VIPInscription", mappedBy="contract_artist")
+     */
+    private $vip_inscriptions;
 
     // Discriminator
     protected $type;

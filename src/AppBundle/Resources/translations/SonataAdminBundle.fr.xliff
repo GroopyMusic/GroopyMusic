@@ -52,6 +52,11 @@
                 <target>Suggestion</target>
             </trans-unit>
 
+            <trans-unit id="app.admin.VIPInscription">
+                <source>app.admin.VIPInscription</source>
+                <target>Inscription Presse</target>
+            </trans-unit>
+
             <trans-unit id="app.admin.phase">
                 <source>app.admin.phase</source>
                 <target>Phase</target>

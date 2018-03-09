@@ -1,0 +1,47 @@
+# friendsofsymfony/userbundle
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: AppBundle\Entity\User
+    service:
+        mailer: azine_email.default.template_twig_swift_mailer
+    registration:
+        form:
+            type: AppBundle\Form\RegistrationType
+           # validations_groups: [AppRegistration] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
+        confirmation:
+            enabled: true
+            template: AppBundle:Mail/User:registration_confirmation.txt.twig
+    change_password:
+      form:
+        type: AppBundle\Form\ChangePasswordType
+    profile:
+        form:
+          type: AppBundle\Form\ProfileType
+         # validation_groups: [AppProfile] # see https://stackoverflow.com/questions/8832916/remove-replace-the-username-field-with-email-using-fosuserbundle-in-symfony2
+    from_email:
+        address:        "%mailer_from_address%"
+        sender_name:    "%mailer_from_name%"
+    resetting:
+        email:
+            template:  AppBundle:Mail/User:password_resetting.txt.twig
+
+hwi_oauth:
+    #will manage the
+    #automatic user registration on your site, with data from the provider (facebook. google, etc.)
+    #and also, the connecting part (get the token and the user_id)
+    connect:
+        account_connector: um_fosub_user_provider
+    # name of the firewall in which this bundle is active, this setting MUST be set
+    firewall_name: main
+    fosub:
+        username_iterations: 30
+        properties:
+            # these properties will be used/redefined later in the custom FOSUBUserProvider service.
+            facebook: facebook_id
+    resource_owners:
+        facebook:
+            type:                facebook
+            client_id:           "%facebook_api_id%"
+            client_secret:       "%facebook_api_secret%"
+            scope:               "public_profile, email"

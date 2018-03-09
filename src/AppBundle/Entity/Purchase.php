@@ -24,7 +24,7 @@ class Purchase
     {
         $this->quantity = 0;
         $this->nb_free_counterparts = 0;
-        $this->applied_promotions = new ArrayCollection();
+        $this->purchase_promotions = new ArrayCollection();
     }
 
     public function getPromotions()
@@ -70,11 +70,12 @@ class Purchase
     public function calculatePromotions() {
         foreach($this->getContractArtist()->getPromotions() as $promotion) {
             /** @var Promotion $promotion */
-            if($this->contractFan->isEligibleForPromotion($promotion) && !$this->applied_promotions->contains($promotion)) {
+            if($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getActuallyAppliedPromotions())) {
                 $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($this->getQuantityOrganic() / $promotion->getNbOrganicNeeded()));
                 $this->nb_free_counterparts += $new_promotional_counterparts;
                 $this->addQuantity($new_promotional_counterparts);
-                $this->addAppliedPromotion($promotion);
+                $pp = new Purchase_Promotion($this, $promotion, $new_promotional_counterparts);
+                $this->addPurchasePromotion($pp);
             }
         }
     }
@@ -130,7 +131,7 @@ class Purchase
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="Purchase_Promotion", mappedBy="purchase")
+     * @ORM\OneToMany(targetEntity="Purchase_Promotion", mappedBy="purchase", cascade={"all"})
      */
     private $purchase_promotions;
 

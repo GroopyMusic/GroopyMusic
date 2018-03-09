@@ -1,0 +1,6 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+{{ form_start(form) }}
+    {{ form_widget(form.submit) }}
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'profile.show.facebook.disconnect_cancel'|trans|raw }}</button>
+{{ form_end(form) }}

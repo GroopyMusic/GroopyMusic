@@ -10,6 +10,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
+use AppBundle\Entity\VIPInscription;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -100,8 +101,8 @@ class MailDispatcher
         return $failedRecipients;
     }
 
-    private function sendAdminEmail($template, $subject, array $params = [], array $attachments = [], $reply_to= self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
-        return $this->sendEmail($template, $subject, $params, [], [], $attachments, self::ADMIN_TO, '', $reply_to, $reply_to_name);
+    private function sendAdminEmail($template, $subject, array $params = [], array $subject_params = [], array $attachments = [], $reply_to= self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
+        return $this->sendEmail($template, $subject, $params, $subject_params, [], $attachments, self::ADMIN_TO, '', $reply_to, $reply_to_name);
     }
 
     public function sendTestEmail() {
@@ -143,6 +144,16 @@ class MailDispatcher
         $params = ['suggestionBox' => $suggestionBox];
         $subject_params = [];
         $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), $params, $subject_params, [], [], [$recipient], [$recipientName]);
+    }
+
+    public function sendVIPInscriptionCopy(VIPInscription $inscription) {
+        $recipient = $inscription->getEmail();
+        $recipientName = $inscription->getDisplayName();
+        $params = ['inscription' => $inscription];
+        $subject_params = [];
+        $subject = 'Votre inscription Presse sur Un-Mute';
+
+        $this->sendEmail(MailTemplateProvider::VIPINSCRIPTIONCOPY_TEMPLATE, $subject, $params, $subject_params, [], [], [$recipient], [$recipientName]);
     }
 
     public function sendKnownOutcomeContract(ContractArtist $contract, $success) {
@@ -297,6 +308,14 @@ class MailDispatcher
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_CONTACT_FORM, 'Un-Mute / ' . $suggestionBox->getObject(), $params, $subject_params, [], $reply_to, $reply_to_name);
     }
 
+    public function sendAdminVIPInscription(VIPInscription $inscription) {
+        $params = ['inscription' => $inscription];
+        $subject_params = [];
+        $subject = 'Nouvelle inscription Presse';
+
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_VIP_INSCRIPTION_FORM, $subject, $params, $subject_params);
+    }
+
     public function sendAdminTicketsSent(ContractArtist $contractArtist) {
         $params = ['contract' => $contractArtist];
         $subject_params = [];
@@ -331,7 +350,7 @@ class MailDispatcher
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_ENORMOUS_PAYER_TEMPLATE, $subject, $params, $subject_params);
     }
 
-    public function sendAdminStripeError(\Stripe\Error\Base $e, User $user, Cart $cart) {
+    public function sendAdminStripeError(\Exception $e, User $user, Cart $cart) {
         $subject = "Erreur lors d'un paiement Stripe";
         $params = ['stripe_error' => $e, 'user' => $user, 'cart' => $cart];
         $subject_params = [];

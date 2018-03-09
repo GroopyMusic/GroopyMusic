@@ -251,7 +251,7 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
         $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
-        $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user);
+        $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user, $this->get('user_roles_manager'));
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
@@ -334,7 +334,7 @@ class PublicController extends Controller
     public function artistsAction(Request $request, UserInterface $user = null) {
         $em = $this->getDoctrine()->getManager();
 
-        $artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false]);
+        $artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false], ['artistname' => 'ASC']);
 
         if($user != null && count($user->getGenres()) > 0) {
             usort($artists, function(Artist $a, Artist $b) use ($user) {
@@ -498,34 +498,11 @@ class PublicController extends Controller
 
         return $this->redirectToRoute('homepage');
     }
-
-    /**
-     * @Route("/test-mail", name="testmail")
-     * @Security("has_role('ROLE_SUPER_ADMIN')")
-     */
-    public function testMailAction(KernelInterface $kernel) {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput(array(
-            'command' => 'reminders:crowdfunding:artist',
-            'x' => '1',
-        ));
-
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-
-        // return new Response(""), if you used NullOutput()
-        return new Response($content);
-    }
-
+  
     /**
      * @Route("/proposition", name="proposition")
      */
-    public function propositionAction(Request $request, MailDispatcher $mailDispatcher){
+    public function propositionAction(Request $request, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher){
         $propositionContractArtist = new PropositionContractArtist();
         $form = $this->createForm(PropositionContractArtistType::class, $propositionContractArtist);
 
@@ -535,12 +512,18 @@ class PublicController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($propositionContractArtist);
             $em->flush();
-            $mailDispatcher->sendAdminProposition($propositionContractArtist);
 
-            return new Response($this->renderView('AppBundle:Public/Form:propositionForm_ok.html.twig'));
+            try {
+                $mailDispatcher->sendAdminProposition($propositionContractArtist);
+                $notificationDispatcher->notifyAdminProposition($propositionContractArtist);
+            } catch(\Exception $e) {
+
+            }
+            $this->addFlash('notice', 'notices.proposition');
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
-        return new Response($this->renderView('AppBundle:Public/Form:propositionForm.html.twig', array(
+        return $this->render('AppBundle:Public:proposition.html.twig', array(
             'form' => $form->createView(),
-        )));
+        ));
     }
 }

@@ -26,6 +26,7 @@ more_info: Plus d'infos
 step: Catégorie
 confirmed: Confirmé
 or: ou
+loading: Chargement....
 
 meta_description: La première plate-forme belge de financement participatif de concerts. Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !
 
@@ -51,6 +52,9 @@ home:
     content_3: <strong>Vous désirez proposer une salle à nos artistes ?</strong> <a href="%contact_url%">Prenez contact avec l'équipe Un-Mute</a>.
     more_info: Plus d'infos
     login_link: Rejoindre Un-Mute
+  #new
+  partners:
+    title: Nos partenaires
 
 navigation: Navigation
 static_menu:
@@ -70,6 +74,7 @@ footer:
   about: à propos
   contact: contact
   conditions: conditions générales
+  press: Accès presse
 
 about:
   title: À propos
@@ -177,7 +182,7 @@ contact:
 
 catalog_halls:
   title: Partenaires
-  intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des concerts sont susceptibles d'être organisés.
+  intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des concerts sont susceptibles d'être organisés. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement dans votre salle ?</a>
   empty: Il n'y a pas encore de salle partenaire sur la plateforme.
 
 hall:
@@ -196,7 +201,7 @@ hall:
 catalog_artists:
   title: Nos artistes
   empty: Il n'y a pas encore d'artiste sur Un-Mute. Revenez bientôt !
-  intro: Bienvenue sur le catalogue des artistes belges Un-Mute ! Découvrez le profil ainsi que la biographie de chaque artiste et choisissez celui que vous désirez voir prochainement en concert !
+  intro: Bienvenue sur le catalogue des artistes belges Un-Mute ! Découvrez le profil ainsi que la biographie de chaque artiste et choisissez celui que vous désirez voir prochainement en concert ! <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement pour un artiste ?</a>
   join_us: Vous souhaitez vous inscrire en tant qu'artiste ? <a href="%url%">Créez un profil</a>. En quelques minutes, vous aurez créé votre identité Un-Mute.
 
 catalog_events:
@@ -209,7 +214,8 @@ catalog_events:
     contact-us: Si vous êtes un artiste et que vous souhaitez organiser un micro-festival grâce à Un-Mute, <a href="%contact_url%">contactez-nous</a>.
   running:
     title: Festivals en cours de financement
-    intro:  Les événements suivants ont encore besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals.
+    #new
+    intro:  Les événements suivants ont encore besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement ?</a>
   confirmed:
     title: Festivals confirmés
 
@@ -226,7 +232,7 @@ event:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
   promo: "Lors de la première semaine de ventes, c'est-à-dire jusqu'au %end_date% à minuit, cet événement est en promotion : pour %nb_organic_needed% tickets achetés, vous en recevrez %nb_promotional% !"
-  prevalidation: "Cet événement est en pré-validation. Sa page ne sera rendue publique que lorsque 10% de tickets auront été vendus, et il y aura alors encore un mois pour obtenir les 100% requis à la concrétisation du Festival."
+  prevalidation: "Cet événement est en pré-validation. Sa page ne sera rendue publique que lorsque 10% de tickets auront été vendus, et il y aura alors encore un mois pour obtenir les 100% requis à la concrétisation du Festival. Pendant la pré-validation, les tickets sont en promotion 3 + 1."
   infos:
     title: Infos
     date: Date du festival
@@ -258,7 +264,7 @@ event:
     ongoing: En cours
     pending: En cours d'examination par l'équipe Un-Mute
     test_period: En pré-validation
-  stillselling: Places encore en vente
+  stillselling: Places en vente
   lineup:
     title: Line-up
     host: Artiste hôte
@@ -574,6 +580,13 @@ notices:
   change_email: Votre adresse e-mail a bien été modifiée.
   account_deletion: Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit. Bonne continuation !
   change_password: Votre mot de passe a bien été modifié.
+  #new
+  social:
+    connection_email_confirmed: Vous êtes désormais connecté.
+    connection_email_new_account: Nous avons lié votre compte Facebook au compte Un-Mute existant pour l'adresse %email%.
+    connection_oauth_confirmed: Vous êtes désormais connecté au travers de votre compte Facebook.
+    registration_success: Votre compte Un-Mute a bien été créé avec vos données de Facebook. Vous pouvez définir un mot de passe à tout moment dans votre page de profil si vous souhaitez également pouvoir vous connecter à Un-Mute sans passer par Facebook.
+  proposition: Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.
 
 errors:
   change_email_token_expired: Ce jeton est expiré.
@@ -694,11 +707,12 @@ labels:
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"
 
+#new
   proposition_hall:
     name: Nom de la salle
     contact_email: Adresse email
     contact_phone: Numero de téléphone
-    province: Province
+    province: Région de la salle
   contact_person:
     firstname: Prénom
     lastname: Nom de famille
@@ -706,10 +720,10 @@ labels:
     mail: Adresse email
   proposition_artist:
     artistname: Nom de l'artiste ou du groupe
-    demo_link: Extrait musical
-    genres: Genre(s)
+    demo_link: Extrait musical (lien Youtube ou autre)
+    genres: Styles musicaux
   proposition_contract_artist:
-    province: Province
+    province: Région
     reason: Raison de l'évenement
     nb_expected: Nombres de personnes attendues
     period_start_date: Date de début
@@ -718,10 +732,10 @@ labels:
     commentary: Commentaire
     submit: Envoyer
     artists: Artiste
-    payable: Payant
-    ask_if_concert : S'agit-il bien d'une proposition de concert ?
-    ask_if_artist : L'artiste existe-t-il déjà ?
-    ask_if_hall : Connaissez-vous deja la salle ?
+    payable: L'entrée doit être payante
+    ask_if_concert : S'agit-il bien d'une proposition d'événement ?
+    ask_if_artist : L'artiste existe-t-il déjà sur la plateforme ?
+    ask_if_hall : Connaissez-vous déjà la salle où aura lieu l'événement ?
 
 placeholders:
   proposition_contract_artist:
@@ -729,18 +743,17 @@ placeholders:
     month: Mois
     day: Jour
 
-choices :
+choices:
   proposition_contract_artist:
-    yes : Oui
-    no : Non
+    yes: Oui
+    no: Non
 
-proposition :
-  title : Proposition de concert
-  intro : Ici vous pouvez soumettre une proposition de concert. L'équipe Un-Mute l'étudira dans les plus bref délais.
-  contact_person : Personne de contact
-  artist : Artiste
-  event : Information pratique sur l'événement
-  place : Lieu de l'événement
-  explication : Ne remplissez seulement la date de début si vous désirez renseigner une date unique et remplissez les deux dates pour une durée.
-  redirection : Si vous ne souhaitez pas soumettre une proposition de concert, nous vons invitons à remplir <a href="%url%"> ce formulaire.</a>
-  confirmation : Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.
+proposition:
+  title: Proposition d'événement Un-Mute
+  intro: Un-Mute est sans cesse à la recherche de nouveaux événements et artistes à mettre en avant. Vous avez une idée d'événement ? Faites-nous en part. L'équipe Un-Mute étudiera votre requête dans les plus bref délais.
+  contact_person: Personne de contact
+  artist: Artiste
+  event: Informations pratiques de l'événement
+  place: Lieu de l'événement
+  explication: Ne renseignez que la date de début si vous désirez renseigner une date unique et remplissez les deux dates si votre événement peut s'étaler sur une certaine durée.
+  redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vons invitons à remplir <a href="%url%">ce formulaire</a>.

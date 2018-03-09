@@ -1,7 +1,19 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-<div class="fos_user_user_show">
+<div class="modal fade" id="disableFBModal" tabindex="-1" role="dialog" aria-labelledby="disableFBModalLabel" aria-hidden="true">>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>{{ 'profile.show.facebook.disconnect_title'|trans|raw }}</p>
+            </div>
+            <div class="modal-footer">
+                {{ render(controller('AppBundle:User:disconnectFB')) }}
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="fos_user_user_show">
     <p>Votre profil n'est pas publié sur la plateforme ; seul vous y avez accès.</p>
 
     <table class="um-table">
@@ -69,5 +81,15 @@
             <td class="contract-info-title text-left">{{ 'profile.show.inscription_date'|trans }}</td>
             <td class="pl-3">{{ user.inscriptionDate|date('d/m/Y') }}</td>
         </tr>
+
+        {% if user.facebookId is not null %}
+            <tr>
+                <td class="contract-info-title text-left">{{ 'profile.show.facebook.label'|trans }}</td>
+                <td class="pl-3">
+                    <img src="//graph.facebook.com/{{ user.facebookId }}/picture"><br />
+                    <a href="#" data-toggle="modal" data-target="#disableFBModal">{{ 'profile.show.facebook.disconnect_link'|trans }}</a>
+                </td>
+            </tr>
+        {% endif %}
     </table>
 </div>
