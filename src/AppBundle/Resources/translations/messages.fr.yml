@@ -732,7 +732,7 @@ labels:
     commentary: Commentaire
     submit: Envoyer
     artists: Artiste
-    payable: L'entrée doit être payante.s
+    payable: L'entrée doit être payante
     ask_if_concert : S'agit-il bien d'une proposition d'événement ?
     ask_if_artist : L'artiste existe-t-il déjà sur la plateforme ?
     ask_if_hall : Connaissez-vous déjà la salle où aura lieu l'événement ?
