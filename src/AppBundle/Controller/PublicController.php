@@ -17,21 +17,31 @@ use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\UserBundle\Event\FilterUserResponseEvent;
+use FOS\UserBundle\Event\FormEvent;
+use FOS\UserBundle\Event\GetResponseUserEvent;
+use FOS\UserBundle\Form\Factory\FactoryInterface;
+use FOS\UserBundle\FOSUserEvents;
+use FOS\UserBundle\Model\UserManagerInterface;
 use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Form\SuggestionBoxType;
 use AppBundle\Form\UserSuggestionBoxType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class PublicController extends Controller
@@ -263,9 +273,9 @@ class PublicController extends Controller
     /**
      * @Route("/events/{id}-{slug}", name="artist_contract")
      */
-    public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null) {
-
-        if($contract->getArtist()->getSlug() != $slug) {
+    public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null)
+    {
+        if ($contract->getArtist()->getSlug() != $slug) {
             return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
         }
 
@@ -276,29 +286,27 @@ class PublicController extends Controller
         $form = $this->createForm(ContractFanType::class, $cf);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            if($contract->isUncrowdable()) {
+            if ($contract->isUncrowdable()) {
                 $this->addFlash('error', 'errors.event.uncrowdable');
-            }
-
-            elseif($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
+            } elseif ($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
                 $this->addFlash('error', 'errors.order_max');
-            }
-
-            elseif($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
+            } elseif ($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
                 $this->addFlash('error', 'errors.order_max_promo');
             }
 
-            elseif($user == null) {
-                throw $this->createAccessDeniedException();
-            }
+            // elseif($user == null) {
+            //     throw $this->createAccessDeniedException();
+            // }
 
             else {
                 /** @var Cart $cart */
-                $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+                if ($user != null) {
+                    $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+                }
 
-                if ($cart == null) {
+                if (!isset($cart) || $cart == null) {
                     $cart = $this->createCartForUser($user);
                 } else {
                     $cart = $this->cleanCart($cart, $em);
@@ -312,12 +320,8 @@ class PublicController extends Controller
                 $cart->addContract($cf);
 
                 $em->flush();
-
-                return $this->render('@App/User/pay_cart.html.twig', array(
-                    'cart' => $cart,
-                    'error_conditions' => false,
-                    'contract_fan' => $cf,
-                ));
+                $request->getSession()->set('cart_id', $cart->getId());
+                return $this->redirectToRoute('checkout');
             }
         }
 
@@ -327,6 +331,98 @@ class PublicController extends Controller
             'potential_halls' => $potential_halls,
         ));
     }
+
+    /**
+     * @Route("/checkout", name="checkout")
+     */
+    public function checkoutAction(Request $request, UserInterface $user = null) {
+
+        $cart_id = $request->getSession()->get('cart_id', null);
+        /** @var $cart Cart */
+        if($cart_id == null) {
+            $this->addFlash('error', 'errors.order_changed');
+            return $this->redirectToRoute('catalog_crowdfundings');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $cart = $em->getRepository('AppBundle:Cart')->find($cart_id);
+
+        if($cart->getUser() == null && $user != null) {
+            $cart->setUser($user);
+            $em->persist($cart);
+            $em->flush();
+        }
+
+        $form_view = null;
+
+        // Registration form
+        if(!$user) {
+            /** @var $formFactory FactoryInterface */
+            $formFactory = $this->get('fos_user.registration.form.factory');
+            /** @var $userManager UserManagerInterface */
+            $userManager = $this->get('fos_user.user_manager');
+            /** @var $dispatcher EventDispatcherInterface */
+            $dispatcher = $this->get('event_dispatcher');
+
+            $user = $userManager->createUser();
+            $user->setEnabled(true);
+
+            $event = new GetResponseUserEvent($user, $request);
+            $dispatcher->dispatch(FOSUserEvents::REGISTRATION_INITIALIZE, $event);
+
+            if (null !== $event->getResponse()) {
+                return $event->getResponse();
+            }
+
+            $form = $formFactory->createForm();
+            $form->setData($user);
+
+            $form->handleRequest($request);
+
+            $form_view = $form->createView();
+
+            if ($form->isSubmitted()) {
+                if ($form->isValid()) {
+                    $event = new FormEvent($form, $request);
+                    $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
+
+                    $userManager->updateUser($user);
+
+                    if (null === $response = $event->getResponse()) {
+                        $url = $this->generateUrl('fos_user_registration_confirmed');
+                        $response = new RedirectResponse($url);
+                    }
+
+                    $dispatcher->dispatch(FOSUserEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+
+                    $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+                    $this->get('security.token_storage')->setToken($token);
+                    $this->get('session')->set('_security_main', serialize($token));
+                    $event = new InteractiveLoginEvent($request, $token);
+                    $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+
+                    $form_view = null;
+
+                    $this->addFlash('notice', 'notices.registration');
+                    return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+                }
+                else {
+                    $event = new FormEvent($form, $request);
+                    $dispatcher->dispatch(FOSUserEvents::REGISTRATION_FAILURE, $event);
+                }
+
+            }
+        }
+
+        return $this->render('@App/User/pay_cart.html.twig', array(
+            'cart' => $cart,
+            'error_conditions' => false,
+            'contract_fan' => $cart->getFirst(),
+            'form' => $form_view,
+        ));
+    }
+
+
 
     /**
      * @Route("/artists", name="catalog_artists")

@@ -236,9 +236,7 @@
                     {% if state not in contract.uncrowdableStates %}
                         {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
-                        {% if app.user %}
-                            {{ form_start(form) }}
-                        {% endif %}
+                        {{ form_start(form) }}
 
                         {% for purchase in form.purchases %}
                             {% set counterpart = purchase.vars.value.counterpart %}
@@ -266,15 +264,15 @@
                                 </div>
                             </div>
                         {% endfor %}
-                        {% if app.user %}
-                            {{ form_widget(form.submit) }}
-                            {{ form_end(form) }}
-                        {% else %}
+
+                        {{ form_widget(form.submit) }}
+                        {{ form_end(form) }}
+                            {#
                             <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<br /><a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
                             <div class="text-center">
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
                             </div>
-                        {% endif %}
+                            #}
                     {% else %}
                         <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
                     {% endif %}
