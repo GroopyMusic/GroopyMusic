@@ -52,6 +52,9 @@ home:
     content_3: <strong>Vous désirez proposer une salle à nos artistes ?</strong> <a href="%contact_url%">Prenez contact avec l'équipe Un-Mute</a>.
     more_info: Plus d'infos
     login_link: Rejoindre Un-Mute
+  #new
+  partners:
+    title: Nos partenaires
 
 navigation: Navigation
 static_menu:

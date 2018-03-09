@@ -69,6 +69,7 @@
         {% endfor %}
         </div>
     </div>
+
     <div id="join-us" class="container-fluid bg-grey text-center">
         <h3>{{ 'home.join_us.title'|trans|raw }}</h3>
         <p class="text-center">
@@ -87,4 +88,18 @@
         </p>
     </div>
 
+    <div class="container-fluid bg-body-strong text-center py-4" id="friends">
+
+        <h3>{{ 'home.partners.title'|trans }}</h3>
+        <div id="friends-carousel" class="carousel slide py-4" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="my-auto col-4 col-sm-2 offset-1 offset-sm-3"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/tacite.png') }}" alt="Tacite, l'Allié des Artistes"></a></div>
+                        <div class="my-auto col-7 col-sm-4"><a href="http://www.musicaction.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/musicaction.png') }}" alt="Music Action"></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
