@@ -306,10 +306,10 @@
                     bancontact: {
                         preferred_language: 'fr'
                     },
-                    {#owner: {
+                    owner: {
                         name: '{{ app.user.displayName }}',
                         email: '{{ app.user.email }}'
-                    },#}
+                    },
                     redirect: {
                         return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
                     },
@@ -389,8 +389,8 @@
                 displayLoader();
                 scrollToLoader();
                 var extraDetails = {
-                    {# name: '{{ app.user.displayName }}',
-                    email: '{{ app.user.username }}'#}
+                    name: '{{ app.user.displayName }}',
+                    email: '{{ app.user.username }}'
                 };
                 stripe.createToken(cardNumberElement, extraDetails).then(onToken);
             });
