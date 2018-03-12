@@ -593,7 +593,7 @@ notices:
     registration_success: Votre compte Un-Mute a bien été créé avec vos données de Facebook. Vous pouvez définir un mot de passe à tout moment dans votre page de profil si vous souhaitez également pouvoir vous connecter à Un-Mute sans passer par Facebook.
   proposition: Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.
   #new
-  registration: Votre inscription a bien été enregistrée. Bienvenue sur Un-Mute !
+  registration: Votre inscription a bien été enregistrée. Vous pouvez désormais passer au paiement. Notez que vous avez reçu un e-mail contenant un lien d'activation de votre compte. Il vous faudra cliquer sur ce lien pour pouvoir vous connecter ultérieurement à la plateforme.
 
 errors:
   change_email_token_expired: Ce jeton est expiré.

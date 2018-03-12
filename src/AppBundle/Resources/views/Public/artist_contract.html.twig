@@ -161,7 +161,7 @@
                             <span class="contract-info-content">
                                 {{ contract.step.minTickets }}
                             </span>
-                            {% set progress_100 = contract.percentObjective %}
+                            {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
                             <div class="progress">
                                 <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                             </div>

@@ -349,6 +349,8 @@ class UserController extends Controller
                 $response->headers->clearCookie($cookieName);
             }
 
+            $this->addFlash('notice', 'notices.account_deletion');
+
             return $response;
         }
 
