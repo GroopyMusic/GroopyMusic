@@ -153,7 +153,7 @@ class BaseContractArtist
 
     public function getContractsFanPaid() {
         return array_filter($this->contractsFan->toArray(), function(ContractFan $contractFan) {
-            return $contractFan->isPaid();
+            return $contractFan->isPaid() && !$contractFan->isRefunded();
         });
     }
 

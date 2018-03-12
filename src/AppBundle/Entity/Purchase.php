@@ -17,7 +17,7 @@ class Purchase
 
     public function __toString()
     {
-        return $this->counterpart . ' (x'.$this->quantity.') ' . $this->getActuallyAppliedPromotionsString() ;
+        return $this->counterpart . ' (x'.$this->quantity.')' . $this->getActuallyAppliedPromotionsString() ;
     }
 
     public function __construct()
@@ -45,7 +45,7 @@ class Purchase
     public function getActuallyAppliedPromotionsString() {
         $string = '';
         foreach($this->getActuallyAppliedPromotions() as $promotion) {
-            $string .= '- ' . $promotion;
+            $string .= ' - ' . $promotion;
         }
     }
 

@@ -354,11 +354,8 @@ class PublicController extends Controller
 
             if($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
                 $em->remove($other_potential_cart);
-                $em->flush();
             }
-        }
 
-        if($cart->getUser() == null && $user != null) {
             $cart->setUser($user);
             $em->persist($cart);
             $em->flush();
