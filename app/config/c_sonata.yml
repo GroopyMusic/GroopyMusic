@@ -42,6 +42,8 @@ sonata_admin:
                   #- AppBundle\Admin\PartnerAdmin
                   - AppBundle\Admin\ContactPersonAdmin
                   - AppBundle\Admin\HallAdmin
+                  - AppBundle\Admin\CategoryAdmin
+                  - AppBundle\Admin\LevelAdmin
            app.admin.group.events:
                label: app.admin.group.events
                label_catalogue: SonataAdminBundle
@@ -216,4 +218,16 @@ services:
         arguments: [~, AppBundle\Entity\SuggestionTypeEnum, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.suggestiontypeenum }
+        public: true
+
+    AppBundle\Admin\CategoryAdmin:
+        arguments: [~, AppBundle\Entity\Category, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.category }
+        public: true
+
+    AppBundle\Admin\LevelAdmin:
+        arguments: [~, AppBundle\Entity\Level, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.level }
         public: true

@@ -126,6 +126,17 @@
                 <source>app.admin.address</source>
                 <target>Adresse</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.category">
+                <source>app.admin.category</source>
+                <target>Catégorie</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.level">
+                <source>app.admin.level</source>
+                <target>Palier</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

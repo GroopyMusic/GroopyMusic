@@ -16,7 +16,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  * Level
  *
  * @ORM\Table(name="level")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\LevelCategory")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\LevelRepository")
  */
 class Level implements TranslatableInterface
 {
@@ -84,7 +84,7 @@ class Level implements TranslatableInterface
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="Level", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="level", cascade={"persist"})
      */
     private $statistics;
 
