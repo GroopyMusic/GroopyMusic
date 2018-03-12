@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad46258f82b7b6d195123eec7de92b4f",
+    "content-hash": "2d1da1ee74393eead605e9cba0ac5bc4",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -4544,59 +4544,65 @@
         },
         {
             "name": "sonata-project/admin-bundle",
-            "version": "3.32.0",
+            "version": "3.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "7f07dbf2cb5abf0e7eedafb08e78d6e1722afd1d"
+                "reference": "907fad7382eee6fa518bc4210550ef42f4125e00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/7f07dbf2cb5abf0e7eedafb08e78d6e1722afd1d",
-                "reference": "7f07dbf2cb5abf0e7eedafb08e78d6e1722afd1d",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/907fad7382eee6fa518bc4210550ef42f4125e00",
+                "reference": "907fad7382eee6fa518bc4210550ef42f4125e00",
                 "shasum": ""
             },
             "require": {
-                "doctrine/common": "^2.2",
-                "doctrine/inflector": "^1.0",
-                "knplabs/knp-menu-bundle": "^2.1.1",
+                "doctrine/common": "^2.7",
+                "doctrine/inflector": "^1.1",
+                "knplabs/knp-menu-bundle": "^2.2",
                 "php": "^5.6 || ^7.0",
                 "sonata-project/block-bundle": "^3.11",
-                "sonata-project/core-bundle": "^3.6",
-                "sonata-project/exporter": "^1.7.1",
+                "sonata-project/core-bundle": "^3.9",
+                "sonata-project/exporter": "^1.8",
                 "symfony/asset": "^2.8 || ^3.2 || ^4.0",
                 "symfony/class-loader": "^2.8 || ^3.2",
                 "symfony/config": "^2.8 || ^3.2 || ^4.0",
                 "symfony/console": "^2.8 || ^3.2 || ^4.0",
                 "symfony/dependency-injection": "^2.8 || ^3.2 || ^4.0",
+                "symfony/event-dispatcher": "^2.8 || ^3.2 || ^4.0",
                 "symfony/expression-language": "^2.8 || ^3.2 || ^4.0",
                 "symfony/form": "^2.8 || ^3.2 || ^4.0",
+                "symfony/framework-bundle": "^2.8 || ^3.2 || ^4.0",
                 "symfony/http-foundation": "^2.8 || ^3.2 || ^4.0",
+                "symfony/http-kernel": "^2.8 || ^3.2 || ^4.0",
+                "symfony/options-resolver": "^2.8 || ^3.2 || ^4.0",
                 "symfony/property-access": "^2.8 || ^3.2 || ^4.0",
                 "symfony/routing": "^2.8 || ^3.2 || ^4.0",
                 "symfony/security-acl": "^2.8 || ^3.0",
                 "symfony/security-bundle": "^2.8 || ^3.2 || ^4.0",
+                "symfony/security-core": "^2.8 || ^3.2 || ^4.0",
+                "symfony/security-csrf": "^2.8 || ^3.2 || ^4.0",
                 "symfony/templating": "^2.8 || ^3.2 || ^4.0",
                 "symfony/translation": "^2.8 || ^3.2 || ^4.0",
                 "symfony/twig-bridge": "^2.8 || ^3.2 || ^4.0",
                 "symfony/twig-bundle": "^2.8 || ^3.2 || ^4.0",
                 "symfony/validator": "^2.8 || ^3.2 || ^4.0",
-                "twig/extensions": "^1.0",
+                "twig/extensions": "^1.5",
                 "twig/twig": "^1.34 || ^2.0"
             },
             "conflict": {
-                "jms/di-extra-bundle": "<1.7.0",
-                "sonata-project/exporter": "1.6.0",
-                "sonata-project/media-bundle": "<3.7.0",
-                "sonata-project/user-bundle": "<3.3.0"
+                "jms/di-extra-bundle": "<1.9",
+                "sonata-project/media-bundle": "<3.7",
+                "sonata-project/user-bundle": "<3.3"
             },
             "require-dev": {
-                "jms/di-extra-bundle": "^1.7",
-                "jms/translation-bundle": "^1.2",
+                "jms/di-extra-bundle": "^1.9",
+                "jms/translation-bundle": "^1.4",
                 "matthiasnoback/symfony-dependency-injection-test": "^1.1",
                 "sensio/generator-bundle": "^3.1",
-                "sonata-project/intl-bundle": "^2.2.4",
-                "symfony/phpunit-bridge": "^3.4 || ^4.0",
+                "sonata-project/intl-bundle": "^2.4",
+                "symfony/filesystem": "^2.8 || ^3.2 || ^4.0",
+                "symfony/phpunit-bridge": "^4.0",
                 "symfony/yaml": "^2.8 || ^3.2 || ^4.0"
             },
             "suggest": {
@@ -4639,20 +4645,20 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2018-02-28T16:59:32+00:00"
+            "time": "2018-03-12T10:09:45+00:00"
         },
         {
             "name": "sonata-project/block-bundle",
-            "version": "3.12.0",
+            "version": "3.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataBlockBundle.git",
-                "reference": "e88bf24dcf1c89db9b7ad68d164f339465f15b7a"
+                "reference": "8196b71f73282c884f2176a1b90ba05cb6c99eaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/e88bf24dcf1c89db9b7ad68d164f339465f15b7a",
-                "reference": "e88bf24dcf1c89db9b7ad68d164f339465f15b7a",
+                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/8196b71f73282c884f2176a1b90ba05cb6c99eaa",
+                "reference": "8196b71f73282c884f2176a1b90ba05cb6c99eaa",
                 "shasum": ""
             },
             "require": {
@@ -4661,8 +4667,15 @@
                 "sonata-project/cache": "^1.0 || ^2.0",
                 "sonata-project/core-bundle": "^3.4",
                 "symfony/asset": "^2.8 || ^3.2 || ^4.0",
+                "symfony/config": "^2.8 || ^3.2 || ^4.0",
+                "symfony/console": "^2.8 || ^3.2 || ^4.0",
+                "symfony/dependency-injection": "^2.8 || ^3.2 || ^4.0",
+                "symfony/event-dispatcher": "^2.8 || ^3.2 || ^4.0",
                 "symfony/form": "^2.8 || ^3.2 || ^4.0",
+                "symfony/framework-bundle": "^2.8 || ^3.2 || ^4.0",
+                "symfony/http-foundation": "^2.8 || ^3.2 || ^4.0",
                 "symfony/http-kernel": "^2.8 || ^3.2 || ^4.0",
+                "symfony/options-resolver": "^2.8 || ^3.2 || ^4.0",
                 "symfony/templating": "^2.8 || ^3.2 || ^4.0",
                 "symfony/twig-bundle": "^2.8 || ^3.2 || ^4.0",
                 "twig/twig": "^1.34 || ^2.0"
@@ -4674,6 +4687,7 @@
                 "jms/di-extra-bundle": "^1.7",
                 "knplabs/knp-menu-bundle": "^2.0",
                 "sonata-project/admin-bundle": "^3.22",
+                "symfony/debug": "^2.8 || ^3.2 || ^4.0",
                 "symfony/phpunit-bridge": "^4.0",
                 "symfony/stopwatch": "^2.8 || ^3.2 || ^4.0"
             },
@@ -4717,7 +4731,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2018-02-08T09:59:45+00:00"
+            "time": "2018-03-12T10:03:52+00:00"
         },
         {
             "name": "sonata-project/cache",
@@ -5197,26 +5211,26 @@
         },
         {
             "name": "spipu/html2pdf",
-            "version": "v5.1.0",
+            "version": "v5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spipu/html2pdf.git",
-                "reference": "7953415df897c2c9450d7a90480f18f7e044a2e9"
+                "reference": "6bbfb4618cb1b07c85efa694efe394f6b776c041"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spipu/html2pdf/zipball/7953415df897c2c9450d7a90480f18f7e044a2e9",
-                "reference": "7953415df897c2c9450d7a90480f18f7e044a2e9",
+                "url": "https://api.github.com/repos/spipu/html2pdf/zipball/6bbfb4618cb1b07c85efa694efe394f6b776c041",
+                "reference": "6bbfb4618cb1b07c85efa694efe394f6b776c041",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.4 || ^7.0",
-                "tecnickcom/tcpdf": "^6.2"
+                "php": "~5.4 || ~7.0",
+                "tecnickcom/tcpdf": "~6.2"
             },
             "require-dev": {
-                "phake/phake": "^2.0",
-                "phpunit/phpunit": "^4.0 || ^5.0",
-                "squizlabs/php_codesniffer": "^3.0"
+                "phake/phake": "~2.0",
+                "phpunit/phpunit": "~4.0 || ~5.0",
+                "squizlabs/php_codesniffer": "~2"
             },
             "suggest": {
                 "ext-gd": "Allows to embed images into the PDF",
@@ -5246,7 +5260,7 @@
                 "html2pdf",
                 "pdf"
             ],
-            "time": "2018-01-23T13:32:32+00:00"
+            "time": "2017-06-15T20:27:05+00:00"
         },
         {
             "name": "stripe/stripe-php",
@@ -5956,12 +5970,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "07cccd53df3dbc20466a6e8210d4512cbad41fc3"
+                "reference": "2655496eba98a3f484fdf774e53a3d40e7cfcf09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/07cccd53df3dbc20466a6e8210d4512cbad41fc3",
-                "reference": "07cccd53df3dbc20466a6e8210d4512cbad41fc3",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/2655496eba98a3f484fdf774e53a3d40e7cfcf09",
+                "reference": "2655496eba98a3f484fdf774e53a3d40e7cfcf09",
                 "shasum": ""
             },
             "require": {
@@ -6102,7 +6116,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2018-03-06T09:27:07+00:00"
+            "time": "2018-03-11T18:19:37+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",

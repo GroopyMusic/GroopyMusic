@@ -366,6 +366,11 @@ pay_cart:
             unitprice: Prix unitaire
             total: Total
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
+    #new
+    not_authenticated:
+      intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute.
+      signin_label: J'ai un compte sur Un-Mute
+      signup_label: Je n'ai pas encore de compte Un-Mute
 
 my_orders:
     title: Mes commandes
@@ -587,6 +592,8 @@ notices:
     connection_oauth_confirmed: Vous êtes désormais connecté au travers de votre compte Facebook.
     registration_success: Votre compte Un-Mute a bien été créé avec vos données de Facebook. Vous pouvez définir un mot de passe à tout moment dans votre page de profil si vous souhaitez également pouvoir vous connecter à Un-Mute sans passer par Facebook.
   proposition: Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.
+  #new
+  registration: Votre inscription a bien été enregistrée. Bienvenue sur Un-Mute !
 
 errors:
   change_email_token_expired: Ce jeton est expiré.

@@ -37,6 +37,9 @@ security:
                 facebook:           "/login/check-facebook"
               login_path:        fos_user_security_login
               failure_path:      fos_user_security_login
+              default_target_path: homepage
+              use_referer: true
+              always_use_default_target_path: false
 
               oauth_user_provider:
                   #this is my custom user provider, created from FOSUBUserProvider - will manage the

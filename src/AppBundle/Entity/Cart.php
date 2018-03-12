@@ -95,12 +95,13 @@ class Cart
     private $paid;
 
     /**
-     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart", cascade={"all"})
      */
     private $contracts;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="carts")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 
