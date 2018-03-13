@@ -33,22 +33,26 @@
 {% endblock %}
 
 {% block page %}
-    <div id="header">
+    <page backtop="7mm" backbottom="7mm" backleft="10mm" backright="10mm">
         {% block header %}
-            <img src="{{ absolute_url(asset('images/logo.png')) }}" height="100" alt="Un-Mute ASBL" />
+            <page_header>
+                <div id="header">
+                    <img src="{{ absolute_url(asset('images/logo.png')) }}" height="100" alt="Un-Mute ASBL" />
+                </div>
+            </page_header>
         {% endblock %}
-    </div>
 
-    <div id="content">
         {% block content %}
         {% endblock %}
-    </div>
 
-    <div id="footer">
         {% block footer %}
-            <p>
-                Un-Mute ASBL - IBAN BE46 0689 3185 0836 - pierre@un-mute.be - Place Saint-Antoine 3, 1040 Bruxelles - https://un-mute.be
-            </p>
+            <page_footer>
+                <div id="footer">
+                    <p>
+                        Un-Mute ASBL - IBAN BE46 0689 3185 0836 - pierre@un-mute.be - Place Saint-Antoine 3, 1040 Bruxelles - https://un-mute.be
+                    </p>
+                </div>
+            </page_footer>
         {% endblock %}
-    </div>
+    </page>
 {% endblock %}

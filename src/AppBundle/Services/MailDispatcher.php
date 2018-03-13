@@ -222,7 +222,7 @@ class MailDispatcher
 
     public function sendOrderRecap(ContractFan $contractFan) {
         // TODO should be another way of getting pdf path
-        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '/../web/pdf/orders/' . $contractFan->getBarcodeText().'.pdf'];
+        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '/../web/' . $contractFan->getPdfPath()];
 
         $to = [$contractFan->getFan()->getEmail()];
         $toName = [$contractFan->getFan()->getDisplayName()];
@@ -233,70 +233,30 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::ORDER_RECAP_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
-    public function sendDetailsKnownArtist(ContractArtist $contractArtist) {
-        $users = $contractArtist->getArtistProfiles();
-        // mail to artists
-        $bcc = array_map(function(User $elem) {
-            return $elem->getEmail();
-        }, $users);
-
-        $firstParts = $contractArtist->getCoartists();
+    public function sendTickets(ContractFan $cf, ContractArtist $ca) {
+        $firstParts = $ca->getCoartists();
 
         $first = $firstParts[0] ?: null;
         $second = $firstParts[1] ?: null;
 
         $params = [
-            'artist' => $contractArtist->getArtist(),
-            'contract' => $contractArtist,
-            'first' => $first, 
-            'second' => $second,
-        ];
-        $subject_params = [];
-        $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE, 'subjects.concert.artist.details', $params, $subject_params, $bcc);
-
-    }
-
-    public function sendDetailsKnownFan(ContractArtist $contractArtist, $cf = null) {
-        $firstParts = $contractArtist->getCoartists();
-
-        $first = $firstParts[0] ?: null;
-        $second = $firstParts[1] ?: null;
-
-        $params = [
-            'artist' => $contractArtist->getArtist(),
-            'contract' => $contractArtist,
+            'artist' => $ca->getArtist(),
+            'contract' => $ca,
             'first' => $first,
             'second' => $second,
         ];
 
-        $html2pdf = new Html2Pdf();
+        $attachments = ['um-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
 
-        $cfs = $cf == null ? $contractArtist->getContractsFan() : [$cf];
+        $to = [$cf->getFan()->getEmail()];
+        $toName = [$cf->getFan()->getDisplayName()];
 
-        foreach($cfs as $contractFan) {
+        $subject = 'subjects.concert.fan.tickets';
+        $subject_params = ['%artist%' => $ca->getArtist()->getArtistname()];
 
-            $contractFan->generateTickets();
-
-            $html2pdf->writeHTML($this->twig->render('@App/PDF/tickets.html.twig', ['contractFan' => $contractFan]));
-            $html2pdf->output($contractFan->getTicketsPath(), 'F');
-
-            $attachments = ['votreTicket.pdf' => $this->get('kernel')->getRootDir() . '/../web/' . $contractFan->getTicketsPath()];
-
-            $to = [$contractFan->getFan()->getEmail()];
-            $toName = [$contractFan->getFan()->getDisplayName()];
-
-            $subject = 'subjects.concert.fan.tickets';
-            $subject_params = ['%artist%' => $contractArtist->getArtist()->getArtistname()];
-
-            $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
-            $this->notification_dispatcher->notifyTicket($contractFan->getFan(), $contractFan);
-        }
-
-        if($cf == null) {
-            $this->sendAdminTicketsSent($contractArtist);
-            $contractArtist->setTicketsSent(true);
-        }
+        $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
+
 
     public function sendAdminContact(SuggestionBox $suggestionBox) {
         $params = ['suggestionBox' => $suggestionBox];
@@ -362,4 +322,28 @@ class MailDispatcher
         $subject_params = [];
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_PROPOSITION_SUBMIT, $subject, $params, $subject_params);
     }
+
+    /*
+    public function sendDetailsKnownArtist(ContractArtist $contractArtist) {
+        $users = $contractArtist->getArtistProfiles();
+        // mail to artists
+        $bcc = array_map(function(User $elem) {
+            return $elem->getEmail();
+        }, $users);
+
+        $firstParts = $contractArtist->getCoartists();
+
+        $first = $firstParts[0] ?: null;
+        $second = $firstParts[1] ?: null;
+
+        $params = [
+            'artist' => $contractArtist->getArtist(),
+            'contract' => $contractArtist,
+            'first' => $first,
+            'second' => $second,
+        ];
+        $subject_params = [];
+        $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE, 'subjects.concert.artist.details', $params, $subject_params, $bcc);
+    }
+    */
 }

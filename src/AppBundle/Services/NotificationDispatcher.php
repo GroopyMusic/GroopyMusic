@@ -112,9 +112,8 @@ class NotificationDispatcher
         ]);
     }
 
-    public function notifyTicket(User $user, ContractFan $contractFan) {
-        $contractArtist = $contractFan->getContractArtist();
-        $this->addNotification($user, self::TICKET_SENT_TYPE, ['date' => $contractArtist->getDateConcert(), 'hall_name' => $contractArtist->getHallConcert()->getName()]);
+    public function notifyTickets($users, ContractArtist $contractArtist) {
+        $this->addNotifications($users, self::TICKET_SENT_TYPE, ['date' => $contractArtist->getDateConcert(), 'hall_name' => $contractArtist->getHallConcert()->getName()]);
     }
 
     public function notifyOngoingCart($users, ContractArtist $contract) {

@@ -6,8 +6,11 @@ use AppBundle\Entity\ConcertPossibility;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
 use AppBundle\Form\ContractArtistPreValidationType;
+use AppBundle\Form\ContractArtistSendTicketsType;
 use AppBundle\Form\ContractArtistValidationType;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\PDFWriter;
+use AppBundle\Services\TicketingManager;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -176,15 +179,11 @@ class ContractArtistAdminController extends Controller
 
                 $contract->setSuccessful(true)->setFailed(false);
 
-                foreach($contract->getContractsFan() as $cf) {
-                    if(!$cf->getRefunded()) {
-                        /*
-                         * @var ContractFan $cf
-                         */
-                        $cf_user = $cf->getUser();
-                        $cf_user->addCredits($cf->getAmount());
-                        $em->persist($cf_user);
-                    }
+                foreach($contract->getContractsFanPaid() as $cf) {
+                    /** @var ContractFan $cf */
+                    $cf_user = $cf->getUser();
+                    $cf_user->addCredits($cf->getAmount());
+                    $em->persist($cf_user);
                 }
 
                 $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, true);
@@ -215,6 +214,51 @@ class ContractArtistAdminController extends Controller
             'contract' => $contract,
         ));
     }
+
+    public function ticketsAction(Request $request, UserInterface $user) {
+        $em = $this->getDoctrine()->getManager();
+        $contract = $this->admin->getSubject();
+
+        /** @var ContractArtist $contract */
+        if (!$contract) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $contract->getId()));
+        }
+
+        $form = $this->createForm(ContractArtistSendTicketsType::class, $contract);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->get('send')->isClicked()) {
+                $this->get(TicketingManager::class)->sendUnSentTicketsForContractArtist($contract);
+                // Marks the contract so that we later will automatically send the tickets
+                $contract->setTicketsSent(true);
+
+                $em->persist($contract);
+                $em->flush();
+
+                $this->addFlash('sonata_flash_success', "Les tickets pour cet événement vont être envoyés.");
+
+                return new RedirectResponse($this->admin->generateUrl('list'));
+            }
+
+            elseif($form->get('preview')->isClicked()) {
+                $this->get(TicketingManager::class)->getTicketPreview($contract, $user);
+            }
+
+            // cancel
+            else {
+                return new RedirectResponse($this->admin->generateUrl('list'));
+            }
+        }
+
+        return $this->render('@App/Admin/ContractArtist/action_tickets.html.twig', array(
+            'form' => $form->createView(),
+            'contract' => $contract,
+        ));
+    }
+
 
    /* public function editAction($id = null)
     {

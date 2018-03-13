@@ -1,11 +1,31 @@
 {% extends '@App/PDF/layout.html.twig' %}
 
+{% block header %}{# not necessary #}{% endblock %}
+
 {% block content %}
-    {% for ticket in contractFan.tickets %}
-        <page>
-            <img src="data:image/png;base64,
-            {{ barcode({code: ticket.barCodeText, type: 'qrcode', format: 'png', width: 10, height: 10, color: 'black'}) }}
-            " />
-        </page>
+    {% for ticket in cf.tickets %}
+
+        <table>
+            <tr>
+                <td style="text-align: center;">{{ ticket.counterpart.price }} €</td>
+                <td>{{ cf.user.displayName }}</td>
+                <td>{{ 'tickets_pdf.is_entry'|trans }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <qrcode value="{{ ticket.barCodeText }}" ec="H" style="width: 40mm; background-color: white; color: black;"></qrcode>
+                    {#{{ barcode({code: ticket.barCodeText, type: 'pdf417', format: 'html', color: 'black'}) }}#}
+                </td>
+                <td colspan="2">
+                    <h2>{{ 'tickets_pdf.ticket.title'|trans({'%hall_name%': cf.contractArtist.hallConcert.name}) }}</h2>
+                    <h3>{{ cf.contractArtist.dateConcert|date('d/m/Y') }}</h3>
+                </td>
+            </tr>
+        </table>
+
+        {% if loop.index % 2 == 0 %}
+            </page>
+            <page>
+        {% endif %}
     {% endfor %}
 {% endblock %}

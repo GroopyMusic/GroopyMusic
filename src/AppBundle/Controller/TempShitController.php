@@ -6,6 +6,7 @@ use AppBundle\Entity\VIPInscription;
 use AppBundle\Form\VIPInscriptionType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
+use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class TempShitController extends Controller
 {
@@ -61,6 +63,17 @@ class TempShitController extends Controller
             'form' => $form->createView(),
             'inscription' => $inscription,
         ));
+    }
+
+    /**
+     * @Route("/test", name="testpage")
+     * @Security("has_role('ROLE_SUPER_ADMIN')")
+     */
+    public function testPageAction(TicketingManager $manager, UserInterface $user, EntityManagerInterface $em) {
+        $contractArtist = $em->getRepository('AppBundle:ContractArtist')->find(14);
+        $manager->getTicketPreview($contractArtist, $user);
+
+        return new Response('OK');
     }
 
 

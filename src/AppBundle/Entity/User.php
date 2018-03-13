@@ -112,6 +112,18 @@ class User extends BaseUser implements RecipientInterface
         });
     }
 
+    public function getArtistsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->getArtists() as $key => $val) {
+            /** @var $val Artist */
+            $exportList[] = $i .
+                ') ' . $val->getArtistname();
+            $i++;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+    }
+
     // Form only
     public $accept_conditions;
 
