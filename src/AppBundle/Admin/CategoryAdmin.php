@@ -62,10 +62,15 @@ class CategoryAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $form
+            ->with('Champs traductibles')
+            ->add('translations', TranslationsType::class)
+            ->end()
             ->with('Données de la catégorie')
                 ->add('formula', TextType::class, array(
                     'label' => 'Formule',
                 ))
+            ->end()
+            ->with('Paliers')
             ->add('levels', 'sonata_type_collection', array(
                 'label' => 'Paliers',
                 'by_reference' => false,
@@ -76,9 +81,6 @@ class CategoryAdmin extends BaseAdmin
                     'admin_code'      => LevelAdmin::class,
                 )
             )
-            ->end()
-            ->with('Champs traductibles')
-                ->add('translations', TranslationsType::class)
             ->end()
         ;
     }

@@ -79,12 +79,12 @@ class Category implements TranslatableInterface
     private $formula;
 
     /**
-     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="category", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="category", cascade={"all"}, orphanRemoval=true)
      */
     private $user_statistics;
 
     /**
-     * @ORM\OneToMany(targetEntity="Level", mappedBy="category", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Level", mappedBy="category", cascade={"all"}, orphanRemoval=true)
      */
     private $levels;
 

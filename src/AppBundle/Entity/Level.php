@@ -84,7 +84,7 @@ class Level implements TranslatableInterface
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="level", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="level", cascade={"all"}, orphanRemoval=true)
      */
     private $statistics;
 
