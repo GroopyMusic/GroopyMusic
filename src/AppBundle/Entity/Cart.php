@@ -95,7 +95,7 @@ class Cart
     private $paid;
 
     /**
-     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart", cascade={"all"})
      */
     private $contracts;
 

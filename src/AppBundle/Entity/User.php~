@@ -3,24 +3,92 @@
 namespace AppBundle\Entity;
 
 use Azine\EmailBundle\Entity\RecipientInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="fos_user")
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"user_artist" = "UserArtist", "user_fan" = "UserFan"})
  */
-abstract class User extends BaseUser implements RecipientInterface
+class User extends BaseUser implements RecipientInterface
 {
+    public function __toString()
+    {
+        return $this->getDisplayName();
+    }
+
     public function __construct()
     {
         parent::__construct();
-        $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY);
-        $this->setNewsletter(true);
+        $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY); // For Azine but not actually used
+        $this->setNewsletter(false);
+        $this->credits = 0;
+        $this->addRole("ROLE_FAN");
+        $this->inscription_date = new \DateTime();
+        $this->accept_conditions = false;
+        $this->deleted = false;
+    }
+
+    public function owns(Artist $artist) {
+        foreach($this->artists_user as $au) {
+            /** @var Artist_User $au */
+            if($au->getArtist() == $artist) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public function removeCredits($n) {
+        $this->credits -= $n;
+    }
+
+    public function addCredits($n) {
+        $this->credits += $n;
+    }
+
+    public function anonymize() {
+        $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';
+        $this->setUsername($code);
+        $this->setUsernameCanonical($code);
+        $this->setAddress(null);
+        $this->setEmail($code);
+        $this->setEmailCanonical($code);
+        $this->setEnabled(false);
+        $this->setLastLogin(null);
+        $this->setConfirmationToken(null);
+        $this->setPasswordRequestedAt(null);
+        $this->setRoles([]);
+        $this->setLastname('NO_ONE');
+        $this->setFirstname('NO_ONE');
+        $this->setCredits(0);
+        $this->setNewsletter(false);
+        $this->setStripeCustomerId(null);
+        $this->setInscriptionDate(null);
+        $this->setAskedEmail(null);
+        $this->setAskedEmailToken(null);
+        $this->setBirthday(null);
+        $this->setFacebookAccessToken(null);
+        $this->setFacebookId(null);
+
+        foreach($this->artists_user as $au) {
+            $this->removeArtistsUser($au);
+        }
+    }
+
+    /**
+     * @override
+     */
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+
+        return $this;
     }
 
     /**
@@ -28,19 +96,51 @@ abstract class User extends BaseUser implements RecipientInterface
      */
     public function getDisplayName()
     {
-        $firstName = $this->getFirstName();
-        $lastName = $this->getLastName();
-        $username = $this->getUsername();
+        $firstName = $this->getFirstname();
+        $lastName = $this->getLastname();
 
-        $displayName = $username;
-        if ($firstName) {
-            $displayName = $firstName;
-        } elseif ($lastName) {
-            $displayName = $this->getSalutation()." ".$lastName;
-        }
+        $displayName = $firstName . ' ' . $lastName;
 
         return ucwords($displayName);
     }
+
+    public function getArtists() {
+        return array_filter(array_map(function(Artist_User $elem) {
+            return $elem->getArtist();
+        }, $this->artists_user->toArray()), function(Artist $artist) {
+            return $artist->isActive();
+        });
+    }
+
+    // Form only
+    public $accept_conditions;
+
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(name="lastname", type="string", length=255)
+     */
+    protected $lastname;
+
+    /**
+     * @ORM\Column(name="firstname", type="string", length=255)
+     */
+    protected $firstname;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Cart", mappedBy="user")
+     */
+    private $carts;
+
+    /**
+     * @ORM\Column(name="credits", type="integer")
+     */
+    private $credits;
 
     /**
      * @var string
@@ -58,9 +158,76 @@ abstract class User extends BaseUser implements RecipientInterface
     protected $notification_mode;
 
     /**
-     * @var boolean
+     * @ORM\Column(name="newsletter", type="boolean")
      */
     protected $newsletter;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="user")
+     */
+    protected $payments;
+
+    /**
+     * @ORM\Column(name="stripe_customer_id", type="string", length=255, nullable=true)
+     */
+    protected $stripe_customer_id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Artist_User", mappedBy="user")
+     */
+    protected $artists_user;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Genre")
+     */
+    private $genres;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Address", cascade={"all"}, orphanRemoval=true)
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(name="inscription_date", type="datetime", nullable=true)
+     */
+    private $inscription_date;
+
+    /**
+     * @ORM\Column(name="asked_email", type="string", length=255, nullable=true)
+     */
+    private $asked_email;
+
+    /**
+     * @ORM\Column(name="asked_email_token", type="text", nullable=true)
+     */
+    private $asked_email_token;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Notification", mappedBy="user")
+     */
+    private $notifications;
+
+    /**
+     * @ORM\Column(name="birthday", type="date", nullable=true)
+     */
+    private $birthday;
+
+    /**
+     * @ORM\Column(name="deleted", type="boolean")
+     */
+    private $deleted;
+
+    /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
+    protected $facebook_id;
+
+    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    protected $facebook_access_token;
+
+    /**
+     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="User", cascade={"persist"}, orphanRemoval=true)
+     */
+    private $category_statistics;
 
     /**
      * @param mixed $salutation
@@ -128,32 +295,6 @@ abstract class User extends BaseUser implements RecipientInterface
 
 
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
-    /**
-     * @ORM\Column(name="lastname", type="string", length=255)
-     * TODO traduire
-     * @Assert\NotBlank(message="Please enter your last name.", groups={"Registration", "Profile"})
-     * @Assert\Length(
-     *     min=3,
-     *     max=255,
-     *     minMessage="The last name is too short.",
-     *     maxMessage="The last name is too long.",
-     *     groups={"Registration", "Profile"}
-     * )
-     */
-    protected $lastname;
-
-    /**
-     * @ORM\Column(name="firstname", type="string", length=255)
-     */
-    protected $firstname;
-
-    /**
      * @return mixed
      */
     public function getId()
@@ -211,4 +352,449 @@ abstract class User extends BaseUser implements RecipientInterface
     }
 
 
+
+    /**
+     * Add payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     *
+     * @return User
+     */
+    public function addPayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     */
+    public function removePayment(\AppBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+
+
+    /**
+     * Set stripeCustomerId
+     *
+     * @param string $stripeCustomerId
+     *
+     * @return User
+     */
+    public function setStripeCustomerId($stripeCustomerId)
+    {
+        $this->stripe_customer_id = $stripeCustomerId;
+
+        return $this;
+    }
+
+    /**
+     * Get stripeCustomerId
+     *
+     * @return string
+     */
+    public function getStripeCustomerId()
+    {
+        return $this->stripe_customer_id;
+    }
+
+    /**
+     * Add cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     *
+     * @return User
+     */
+    public function addCart(\AppBundle\Entity\Cart $cart)
+    {
+        $this->carts[] = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Remove cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     */
+    public function removeCart(\AppBundle\Entity\Cart $cart)
+    {
+        $this->carts->removeElement($cart);
+    }
+
+    /**
+     * Get carts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCarts()
+    {
+        return $this->carts;
+    }
+
+    /**
+     * Set credits
+     *
+     * @param integer $credits
+     *
+     * @return User
+     */
+    public function setCredits($credits)
+    {
+        $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * Get credits
+     *
+     * @return integer
+     */
+    public function getCredits()
+    {
+        return $this->credits;
+    }
+
+    /**
+     * Add artistsUser
+     *
+     * @param \AppBundle\Entity\Artist_User $artistsUser
+     *
+     * @return User
+     */
+    public function addArtistsUser(\AppBundle\Entity\Artist_User $artistsUser)
+    {
+        $this->artists_user[] = $artistsUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove artistsUser
+     *
+     * @param \AppBundle\Entity\Artist_User $artistsUser
+     */
+    public function removeArtistsUser(\AppBundle\Entity\Artist_User $artistsUser)
+    {
+        $this->artists_user->removeElement($artistsUser);
+    }
+
+    /**
+     * Get artistsUser
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArtistsUser()
+    {
+        return $this->artists_user;
+    }
+
+    /**
+     * Add genre
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     *
+     * @return User
+     */
+    public function addGenre(\AppBundle\Entity\Genre $genre)
+    {
+        $this->genres[] = $genre;
+
+        return $this;
+    }
+
+    /**
+     * Remove genre
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     */
+    public function removeGenre(\AppBundle\Entity\Genre $genre)
+    {
+        $this->genres->removeElement($genre);
+    }
+
+    /**
+     * Get genres
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGenres()
+    {
+        return $this->genres;
+    }
+
+    /**
+     * Set inscriptionDate
+     *
+     * @param \DateTime $inscriptionDate
+     *
+     * @return User
+     */
+    public function setInscriptionDate($inscriptionDate)
+    {
+        $this->inscription_date = $inscriptionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get inscriptionDate
+     *
+     * @return \DateTime
+     */
+    public function getInscriptionDate()
+    {
+        return $this->inscription_date;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return User
+     */
+    public function setAddress($address = null)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return User
+     */
+    public function setAddressForm($address = null)
+    {
+        if(is_array($address))
+            if(empty($address)){
+                $this->address = null;
+            }
+            else {
+                $this->address = array_pop($address);
+            }
+        else
+            $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddressForm()
+    {
+        return $this->address == null ? null : array($this->address);
+    }
+
+    /**
+     * Set askedEmail
+     *
+     * @param string $askedEmail
+     *
+     * @return User
+     */
+    public function setAskedEmail($askedEmail)
+    {
+        $this->asked_email = $askedEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get askedEmail
+     *
+     * @return string
+     */
+    public function getAskedEmail()
+    {
+        return $this->asked_email;
+    }
+
+    /**
+     * Add notification
+     *
+     * @param \AppBundle\Entity\Notification $notification
+     *
+     * @return User
+     */
+    public function addNotification(\AppBundle\Entity\Notification $notification)
+    {
+        $this->notifications[] = $notification;
+        $notification->setUser($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove notification
+     *
+     * @param \AppBundle\Entity\Notification $notification
+     */
+    public function removeNotification(\AppBundle\Entity\Notification $notification)
+    {
+        $this->notifications->removeElement($notification);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * Set askedEmailToken
+     *
+     * @param string $askedEmailToken
+     *
+     * @return User
+     */
+    public function setAskedEmailToken($askedEmailToken)
+    {
+        $this->asked_email_token = $askedEmailToken;
+
+        return $this;
+    }
+
+    /**
+     * Get askedEmailToken
+     *
+     * @return string
+     */
+    public function getAskedEmailToken()
+    {
+        return $this->asked_email_token;
+    }
+
+    /**
+     * Set birthday
+     *
+     * @param \DateTime $birthday
+     *
+     * @return User
+     */
+    public function setBirthday($birthday)
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    /**
+     * Get birthday
+     *
+     * @return \DateTime
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+
+    /**
+     * Set deleted
+     *
+     * @param boolean $deleted
+     *
+     * @return User
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * Get deleted
+     *
+     * @return boolean
+     */
+    public function getDeleted()
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * Set facebookId
+     *
+     * @param string $facebookId
+     *
+     * @return User
+     */
+    public function setFacebookId($facebookId)
+    {
+        $this->facebook_id = $facebookId;
+
+        return $this;
+    }
+
+    /**
+     * Get facebookId
+     *
+     * @return string
+     */
+    public function getFacebookId()
+    {
+        return $this->facebook_id;
+    }
+
+    /**
+     * Set facebookAccessToken
+     *
+     * @param string $facebookAccessToken
+     *
+     * @return User
+     */
+    public function setFacebookAccessToken($facebookAccessToken)
+    {
+        $this->facebook_access_token = $facebookAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * Get facebookAccessToken
+     *
+     * @return string
+     */
+    public function getFacebookAccessToken()
+    {
+        return $this->facebook_access_token;
+    }
 }

@@ -347,7 +347,15 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
         $cart = $em->getRepository('AppBundle:Cart')->find($cart_id);
 
-        if($cart->getUser() == null && $user != null) {
+        // When user logs in at this point, we could find another cart already related to him
+        // -> that potential cart must be removed from DB as we should only use the $cart instance
+        if($user != null) {
+            $other_potential_cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+
+            if($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
+                $em->remove($other_potential_cart);
+            }
+
             $cart->setUser($user);
             $em->persist($cart);
             $em->flush();

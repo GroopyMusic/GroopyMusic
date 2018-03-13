@@ -20,7 +20,11 @@ class Payment
 
     public function __toString()
     {
-        return 'Paiement de ' . $this->getUser() . ' de ' . $this->getAmount() . ' € pour l\'événement "' . $this->getContractArtist() . '" (' . $this->contractFan . ')';
+        $str = 'Paiement de ' . $this->getUser() . ' de ' . $this->getAmount() . ' € pour l\'événement "' . $this->getContractArtist() . '" (' . $this->contractFan . ')';
+        if($this->refunded) {
+            $str .= ' - REMBOURSE';
+        }
+        return $str;
     }
 
     public function __construct() {

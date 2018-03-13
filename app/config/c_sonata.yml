@@ -33,6 +33,7 @@ sonata_admin:
                   - AppBundle\Admin\SuggestionBoxAdmin
                   - AppBundle\Admin\SuggestionTypeEnumAdmin
                   - AppBundle\Admin\VIPInscriptionAdmin
+                  - AppBundle\Admin\PropositionContractArtistAdmin
            app.admin.group.content:
                 label: app.admin.group.content
                 label_catalogue: SonataAdminBundle
@@ -218,16 +219,4 @@ services:
         arguments: [~, AppBundle\Entity\SuggestionTypeEnum, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.suggestiontypeenum }
-        public: true
-
-    AppBundle\Admin\CategoryAdmin:
-        arguments: [~, AppBundle\Entity\Category, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.category }
-        public: true
-
-    AppBundle\Admin\LevelAdmin:
-        arguments: [~, AppBundle\Entity\Level, ~]
-        tags:
-            - { name: sonata.admin, manager_type: orm, label: app.admin.level }
         public: true
