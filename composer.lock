@@ -8,30 +8,38 @@
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/a2lix/TranslationFormBundle.git",
-                "reference": "0ccc843bb048d0e0550abee0e16f37e2d0fc6e49"
+                "reference": "51ab0cdcb634ea28e7bd909de8dbbb72f2bd4452"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/0ccc843bb048d0e0550abee0e16f37e2d0fc6e49",
-                "reference": "0ccc843bb048d0e0550abee0e16f37e2d0fc6e49",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/51ab0cdcb634ea28e7bd909de8dbbb72f2bd4452",
+                "reference": "51ab0cdcb634ea28e7bd909de8dbbb72f2bd4452",
                 "shasum": ""
             },
             "require": {
-                "symfony/event-dispatcher": "^2.3 || ^3.0",
-                "symfony/form": "^2.3 || ^3.0",
-                "symfony/validator": "^2.3 || ^3.0"
+                "php": "^5.4 || ^7.0",
+                "symfony/config": "^2.3 || ^3.0 || ^4.0",
+                "symfony/dependency-injection": "^2.3 || ^3.0 || ^4.0",
+                "symfony/event-dispatcher": "^2.3 || ^3.0 || ^4.0",
+                "symfony/form": "^2.3 || ^3.0 || ^4.0",
+                "symfony/http-foundation": "^2.3 || ^3.0 || ^4.0",
+                "symfony/http-kernel": "^2.3 || ^3.0 || ^4.0",
+                "symfony/options-resolver": "^2.3 || ^3.0 || ^4.0"
             },
             "require-dev": {
-                "doctrine/common": "~2.3",
+                "doctrine/common": "^2.3",
                 "doctrine/doctrine-bundle": "^1.0",
                 "doctrine/orm": "^2.4",
-                "gedmo/doctrine-extensions": "~2.4",
-                "knplabs/doctrine-behaviors": "1.0.*",
-                "phpunit/phpunit": "~4.1"
+                "gedmo/doctrine-extensions": "^2.4",
+                "knplabs/doctrine-behaviors": "^1.0",
+                "matthiasnoback/symfony-dependency-injection-test": "^0.7 || ^1.2",
+                "symfony/doctrine-bridge": "^2.3.5 || ^3.0 || ^4.0",
+                "symfony/phpunit-bridge": "^4.0",
+                "symfony/validator": "^2.3 || ^3.0 || ^4.0"
             },
             "suggest": {
                 "a2lix/i18n-doctrine-bundle": "For A2lix strategy",
@@ -58,22 +66,27 @@
                 {
                     "name": "David ALLIX",
                     "homepage": "http://a2lix.fr"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/a2lix/TranslationFormBundle/contributors"
                 }
             ],
             "description": "Translate your doctrine objects easily with some helps",
             "homepage": "https://github.com/a2lix/TranslationFormBundle",
             "keywords": [
-                "Symfony2",
                 "doctrine2",
                 "form",
                 "gedmo",
                 "i18n",
                 "internationalization",
                 "knplabs",
+                "prezent",
+                "symfony",
                 "translatable",
                 "translation"
             ],
-            "time": "2018-02-26T19:12:26+00:00"
+            "time": "2018-03-12T22:21:07+00:00"
         },
         {
             "name": "azine/email-bundle",

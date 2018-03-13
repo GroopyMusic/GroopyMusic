@@ -1,0 +1,57 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+    <ul class="nav nav-tabs nav-justified">
+        {% for category in categories %}
+            {% if loop.index == 1 %}
+                <li class="active"><a data-toggle="tab" href="#{{ category.name }}">{{ category.name }}</a></li>
+            {% else %}
+                <li><a data-toggle="tab" href="#{{ category.name }}">{{ category.name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <br>
+    <div class="tab-content">
+        {% for category in categories %}
+            {% if loop.index == 1 %}
+                <div id="{{ category.name }}" class="tab-pane fade in active">
+            {%  else %}
+                    <div id="{{ category.name }}" class="tab-pane fade">
+            {% endif %}
+                    <div>
+                        {% for level in category.levels %}
+                            <div class="panel panel-default">
+                                <div class="panel-body">{{ level.name }} - {{ level.step }} points</div>
+                                <table class="table table-bordered table-striped sonata-ba-list">
+                                    <thead>
+                                    <tr>
+                                        <th>Nom complet</th>
+                                        <th>Points</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>John</td>
+                                        <td>Doe</td>
+                                        <td>john@example.com</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mary</td>
+                                        <td>Moe</td>
+                                        <td>mary@example.com</td>
+                                    </tr>
+                                    <tr>
+                                        <td>July</td>
+                                        <td>Dooley</td>
+                                        <td>july@example.com</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+        {% endfor %}
+    </div>
+{% endblock %}
