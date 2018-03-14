@@ -20,13 +20,8 @@ class CategoryRepository  extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN l.translations lt
                   LEFT JOIN l.statistics s
                   LEFT JOIN s.user u 
-                  WHERE l.category = c 
-                  AND ct.translatable = c
-                  AND lt.translatable = l
-                  AND ct.locale = :locale
-                  AND lt.locale = :locale
+                  ORDER BY c.id ASC, l.step DESC, s.statistic DESC 
                   ')
-            ->setParameter('locale', 'fr')
             ->getResult();
     }
 }
