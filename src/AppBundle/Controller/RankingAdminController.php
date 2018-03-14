@@ -25,7 +25,7 @@ class RankingAdminController extends Controller
     public function listAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository('AppBundle:Category')->findAll();
+        $categories = $em->getRepository('AppBundle:Category')->findForRaking();
         return $this->render('@App/Admin/Ranking/ranking_view.html.twig',array(
             'categories' => $categories
         ));

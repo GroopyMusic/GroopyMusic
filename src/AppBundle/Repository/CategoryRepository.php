@@ -13,16 +13,19 @@ class CategoryRepository  extends \Doctrine\ORM\EntityRepository
 {
     public function findForRaking() {
         return $this->getEntityManager()->createQuery(
-            'SELECT c 
-                  FROM AppBundle:Category c 
+            'SELECT c, l, ct, lt, s, u
+                  FROM AppBundle:Category c
                   LEFT JOIN c.translations ct
-                  LEFT JOIN c.level l
+                  LEFT JOIN c.levels l
                   LEFT JOIN l.translations lt
+                  LEFT JOIN l.statistics s
+                  LEFT JOIN s.user u 
                   WHERE l.category = c 
                   AND ct.translatable = c
                   AND lt.translatable = l
                   AND ct.locale = :locale
-                  AND lt.locale = :locale')
+                  AND lt.locale = :locale
+                  ')
             ->setParameter('locale', 'fr')
             ->getResult();
     }

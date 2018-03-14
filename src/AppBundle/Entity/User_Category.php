@@ -52,7 +52,7 @@ class User_Category
     private $category;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="statistics")
+     * @ORM\ManyToOne(targetEntity="Level", inversedBy="statistics")
      */
     private $level;
 

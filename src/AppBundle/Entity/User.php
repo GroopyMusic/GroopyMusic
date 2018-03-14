@@ -226,7 +226,7 @@ class User extends BaseUser implements RecipientInterface
     protected $facebook_access_token;
 
     /**
-     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="User", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="user", cascade={"all"}, orphanRemoval=true)
      */
     private $category_statistics;
 

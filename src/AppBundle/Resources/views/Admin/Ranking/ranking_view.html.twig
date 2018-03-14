@@ -1,57 +1,117 @@
-{% extends '@SonataAdmin/standard_layout.html.twig' %}
+{% extends 'sonata_admin_layout.html.twig' %}
 
 {% block sonata_admin_content %}
-    <ul class="nav nav-tabs nav-justified">
-        {% for category in categories %}
-            {% if loop.index == 1 %}
-                <li class="active"><a data-toggle="tab" href="#{{ category.name }}">{{ category.name }}</a></li>
-            {% else %}
-                <li><a data-toggle="tab" href="#{{ category.name }}">{{ category.name }}</a></li>
+<ul class="nav nav-tabs nav-justified">
+    {% for category in categories %}
+        {% if loop.index == 1 %}
+            <li class="active"><a data-toggle="tab" href="#{{ category.name }}">{{ category.name }}</a></li>
+        {% else %}
+            <li><a data-toggle="tab" href="#{{ category.name }}">{{ category.name }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+<br>
+<div class="tab-content">
+    {% for category in categories %}
+    {% if loop.index == 1 %}
+    <div id="{{ category.name }}" class="tab-pane fade in active">
+        {% else %}
+        <div id="{{ category.name }}" class="tab-pane fade">
             {% endif %}
-        {% endfor %}
-    </ul>
-    <br>
-    <div class="tab-content">
-        {% for category in categories %}
-            {% if loop.index == 1 %}
-                <div id="{{ category.name }}" class="tab-pane fade in active">
-            {%  else %}
-                    <div id="{{ category.name }}" class="tab-pane fade">
-            {% endif %}
-                    <div>
-                        {% for level in category.levels %}
-                            <div class="panel panel-default">
-                                <div class="panel-body">{{ level.name }} - {{ level.step }} points</div>
-                                <table class="table table-bordered table-striped sonata-ba-list">
-                                    <thead>
-                                    <tr>
-                                        <th>Nom complet</th>
-                                        <th>Points</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>John</td>
-                                        <td>Doe</td>
-                                        <td>john@example.com</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mary</td>
-                                        <td>Moe</td>
-                                        <td>mary@example.com</td>
-                                    </tr>
-                                    <tr>
-                                        <td>July</td>
-                                        <td>Dooley</td>
-                                        <td>july@example.com</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+            <div>
+                {% for level in category.levels %}
+                    <div id="{{ level.id }}" class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="form-inline clearfix">
+                                <div class="pull-left">
+                                    <strong><u>{{ level.name }} - {{ level.step }} points</u></strong>
+                                </div>
+                                <div class="pull-right">
+                                    <button class="btn btn-success toCheck" onclick="checkAll({{ level.id }})">
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                        Tout cocher
+                                    </button>
+                                    <button class="btn btn-success toUncheck" onclick="uncheckAll({{ level.id }})">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                        Tout décocher
+                                    </button>
+                                </div>
                             </div>
-                        {% endfor %}
+                        </div>
+                        <table class="table table-bordered table-striped sonata-ba-list rankingTable">
+                            <thead>
+                            <tr>
+                                <th>Sélection</th>
+                                <th>Nom complet</th>
+                                <th>Points</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for stat in level.statistics %}
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>{{ stat.user.displayName }}</td>
+                                    <td>{{ stat.statistic }}</td>
+                                    <td>
+                                        <button class="btn">
+                                            <span class="glyphicon glyphicon-gift"></span>
+                                            Attribuer récompense
+                                        </button>
+                                        <button class="btn">
+                                            <span class="glyphicon glyphicon-envelope"></span>
+                                            Envoyer un email
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <div class="form-inline clearfix">
+                            <strong>&nbsp; Eléments sélectionnés : </strong>
+                            <select style="width: auto;height: auto">
+                                <option>
+                                    Attribuer récompense aux utilisateurs sélectionnés
+                                </option>
+                                <option>
+                                    Envoyer un email aux utilisateurs sélectionnés
+                                </option>
+                            </select>
+                            <button class="btn btn-primary">
+                                OK
+                            </button>
+                        </div>
+                        <br>
                     </div>
-                </div>
+                {% endfor %}
+            </div>
+        </div>
         {% endfor %}
     </div>
-{% endblock %}
+    {% endblock %}
+    {% block sonata_javascript_pool %}
+        {{ parent() }}
+        <script type="text/javascript">
+            function checkAll(id){
+                $('#'+id+' input[type="checkbox"]').each(function(){
+
+                    //normal use case : check the checkbox
+                    $(this).prop("checked",true);
+
+                    //To check the checkbox, we need add "checked" class to a parent div because of the bundle
+                    $(this).parent().addClass('checked');
+                })
+            }
+            function uncheckAll(id){
+                $('#'+id+' input[type="checkbox"]').each(function(){
+
+                    //normal use case : uncheck the checkbox
+                    $(this).prop("checked",false);
+
+                    //To uncheck the checkbox, we need remove "checked" class to a parent div because of the bundle
+                    $(this).parent().removeClass('checked');
+                })
+            }
+        </script>
+    {% endblock %}
