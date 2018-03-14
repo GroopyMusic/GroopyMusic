@@ -29,14 +29,21 @@ class TicketingManager
         $this->em = $em;
     }
 
-    protected function generateTicketsForContractFan(ContractFan $contractFan) {
+    public function generateTicketsForContractFan(ContractFan $contractFan) {
         $contractFan->generateBarCode();
-        if(empty($contractFan->getTickets)) {
+        if(empty($contractFan->getTickets())) {
             foreach ($contractFan->getPurchases() as $purchase) {
                 /** @var Purchase $purchase */
-                for ($j = 1; $j < $purchase->getQuantity(); $j++) {
-                    $counterPart = $purchase->getCounterpart();
-                    $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j));
+                $counterPart = $purchase->getCounterpart();
+
+                $j = 1;
+                while($j <= $purchase->getQuantityOrganic()) {
+                    $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice()));
+                    $j++;
+                }
+                for($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
+                    $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0));
+                    $i++;
                 }
             }
         }
@@ -51,7 +58,8 @@ class TicketingManager
         $cf->generateBarCode();
         $counterpart = new CounterPart();
         $counterpart->setPrice(12);
-        $cf->addTicket(new Ticket($cf, $counterpart, 1));
+        $cf->addTicket(new Ticket($cf, $counterpart, 1, 12));
+        $cf->addTicket(new Ticket($cf, $counterpart, 2, 0));
 
         $this->writer->writeTicketPreview($cf);
     }
@@ -59,16 +67,12 @@ class TicketingManager
     protected function sendTicketsForContractFan(ContractFan $cf) {
         $this->generateTicketsForContractFan($cf);
         $this->writer->writeTickets($cf);
-        $this->mailDispatcher->sendTicket($cf, true);
+        $this->mailDispatcher->sendTickets($cf, $cf->getContractArtist());
         $this->em->persist($cf);
     }
 
     protected function sendNotificationTicketsSent(array $users, $contractArtist) {
-        try {
-            $this->notificationDispatcher->notifyTickets($users, $contractArtist);
-        } catch(\Exception $e) {
-            $this->logger->error("Erreur lors de l'envoi de notifications pour les tickets du contrat d'artiste ");
-        }
+        $this->notificationDispatcher->notifyTickets($users, $contractArtist);
     }
 
     public function sendUnSentTicketsForContractArtist(ContractArtist $contractArtist) {
@@ -82,13 +86,19 @@ class TicketingManager
                     $cf->setcounterpartsSent(true);
                     $users[] = $cf->getUser();
                 } catch(\Exception $e) {
-                    $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
+                    $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage() . ' \n ' . $e->getTraceAsString());
+                    return $e;
                 }
             }
-
-            $this->sendNotificationTicketsSent($users, $contractArtist);
+            try {
+                $this->sendNotificationTicketsSent($users, $contractArtist);
+            } catch(\Exception $e) {
+                $this->logger->error("Erreur lors de l'envoi de notifications pour les tickets du contrat d'artiste ");
+                return $e;
+            }
         }
         $this->em->flush();
+        return null;
     }
 
     public function sendUnSentTicketsForContractFan(ContractFan $cf) {
@@ -99,9 +109,11 @@ class TicketingManager
                 $this->sendNotificationTicketsSent([$cf->getUser()], $cf->getContractArtist());
             } catch(\Exception $e) {
                 $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
+                return $e;
             }
         }
 
         $this->em->flush();
+        return null;
     }
 }

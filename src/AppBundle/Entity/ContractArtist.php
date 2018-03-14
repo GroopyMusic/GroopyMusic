@@ -277,6 +277,10 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
+    public function getCounterPartsSent() {
+        return $this->getTicketsSent();
+    }
+
     public function getNbPayments() {
         return count(array_filter($this->payments->toArray(), function($elem) {
             return !$elem->getRefunded();

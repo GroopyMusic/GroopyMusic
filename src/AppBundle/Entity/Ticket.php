@@ -18,11 +18,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct(ContractFan $cf, CounterPart $counterPart, $num)
+    public function __construct(ContractFan $cf, CounterPart $counterPart, $num, $price)
     {
         $this->contractFan = $cf;
         $this->barcode_text = $cf->getBarcodeText() . '' . $num;
         $this->counterPart = $counterPart;
+        $this->price = $price;
     }
 
     /**
@@ -48,6 +49,11 @@ class Ticket
      * @ORM\ManyToOne(targetEntity="CounterPart")
      */
     private $counterPart;
+
+    /**
+     * @ORM\Column(name="price", type="smallint")
+     */
+    private $price;
 
     /**
      * Get id
@@ -129,5 +135,29 @@ class Ticket
     public function getCounterPart()
     {
         return $this->counterPart;
+    }
+
+    /**
+     * Set price
+     *
+     * @param integer $price
+     *
+     * @return Ticket
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return integer
+     */
+    public function getPrice()
+    {
+        return $this->price;
     }
 }

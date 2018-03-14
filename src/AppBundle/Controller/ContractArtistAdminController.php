@@ -15,6 +15,7 @@ use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -231,16 +232,21 @@ class ContractArtistAdminController extends Controller
         if($form->isSubmitted() && $form->isValid()) {
 
             if ($form->get('send')->isClicked()) {
-                $this->get(TicketingManager::class)->sendUnSentTicketsForContractArtist($contract);
                 // Marks the contract so that we later will automatically send the tickets
-                $contract->setTicketsSent(true);
 
-                $em->persist($contract);
-                $em->flush();
+                if(null === $tickets_send_result = $this->get(TicketingManager::class)->sendUnSentTicketsForContractArtist($contract)) {
+                    $contract->setTicketsSent(true);
 
-                $this->addFlash('sonata_flash_success', "Les tickets pour cet événement vont être envoyés.");
+                    $em->persist($contract);
+                    $em->flush();
 
-                return new RedirectResponse($this->admin->generateUrl('list'));
+                    $this->addFlash('sonata_flash_success', "Les tickets pour cet événement vont être envoyés.");
+
+                    return new RedirectResponse($this->admin->generateUrl('list'));
+                }
+                else {
+                    $form->addError(new FormError('Une erreur est survenue lors de la génération des tickets.'));
+                }
             }
 
             elseif($form->get('preview')->isClicked()) {

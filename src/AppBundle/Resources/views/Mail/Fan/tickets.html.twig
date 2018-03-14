@@ -5,11 +5,12 @@
 
         {% block content %}
             {{ email_content('concert.fan.tickets', {
+                '%username%': username,
                 '%invited1%': first.artistName,
                 '%invited2%': second.artistName,
                 '%host%': artist.artistName,
                 '%hall%': contract.reality.hall.name,
-                '%date%': contract.reality.date,
+                '%date%': contract.reality.date|date('d/m/Y'),
             })|raw }}
         {% endblock %}
     {% endspaceless %}

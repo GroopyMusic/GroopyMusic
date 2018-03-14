@@ -1,0 +1,43 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+
+    <div class="content-box">
+        <div class="content-box-content">
+            <h2>Envoi des tickets pour {{ contract }}</h2>
+
+            <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.artist.slug}) }}">Voir la page de l'événement.</a></p>
+
+            {% if not contract.successful %}
+                <p>
+                    Cet événement n'est pas marqué comme réussi ; impossible d'envoyer des tickets !
+                </p>
+            {% else %}
+                {# No deadline hit -> success before deadline #}
+                <p>
+                    Cet événement est marqué comme réussi. Tu peux donc expédier les tickets. Ils seront envoyés par mail.
+                </p>
+
+                {% if contract.coartists|length < 2 %}
+                    <p class="alert alert-warning">
+                        Attention, tu n'as pas renseigné 2 premières parties pour ce concert.
+                        Le ticket contiendra donc un trou dans le timing. <a target="_blank" href="{{ admin.generateObjectUrl('edit', contract) }}">Editer l'événement</a>
+                    </p>
+                {% endif %}
+
+                <div>
+                    {{ form_errors(form) }}
+                    {{ form_start(form) }}
+
+                    <div class="form-group">
+                        {{ form_widget(form.send) }}
+                        {{ form_widget(form.preview) }}
+                        {{ form_widget(form.cancel) }}
+                    </div>
+
+                    {{ form_rest(form) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

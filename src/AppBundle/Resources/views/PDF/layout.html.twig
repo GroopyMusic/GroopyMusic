@@ -13,7 +13,6 @@
         h1 {
             text-align:center;
             color: #f39326;
-            border: dotted 1mm #4a4b4d;
         }
         td, th {
             padding: 5px 10px;
@@ -29,30 +28,56 @@
             text-align:center;
             color: white;
         }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-secondary {
+           color: #4a4b4d;
+        }
+
+        .text-bold {
+            font-weight: bold;
+        }
+
+        {% block additional_styles %}
+        {% endblock %}
     </style>
 {% endblock %}
 
 {% block page %}
-    <page backtop="7mm" backbottom="7mm" backleft="10mm" backright="10mm">
+    <page {% block page_margins %}backtop="25mm" backbottom="30mm" backleft="10mm" backright="10mm"{% endblock %}>
         {% block header %}
             <page_header>
                 <div id="header">
-                    <img src="{{ absolute_url(asset('images/logo.png')) }}" height="100" alt="Un-Mute ASBL" />
+                    {% block header_content %}
+                        <img src="{{ absolute_url(asset('images/logo.png')) }}" height="100" alt="Un-Mute ASBL" />
+                    {% endblock %}
                 </div>
             </page_header>
         {% endblock %}
-
-        {% block content %}
-        {% endblock %}
-
         {% block footer %}
             <page_footer>
                 <div id="footer">
-                    <p>
-                        Un-Mute ASBL - IBAN BE46 0689 3185 0836 - pierre@un-mute.be - Place Saint-Antoine 3, 1040 Bruxelles - https://un-mute.be
-                    </p>
+                    {% block footer_content %}
+                        <p>
+                            Un-Mute ASBL - IBAN BE46 0689 3185 0836 - pierre@un-mute.be - Place Saint-Antoine 3, 1040 Bruxelles - https://un-mute.be
+                        </p>
+                    {% endblock %}
                 </div>
             </page_footer>
+        {% endblock %}
+
+        {% block content %}
         {% endblock %}
     </page>
 {% endblock %}

@@ -22,7 +22,7 @@ class Address
 
     public function __toString()
     {
-        return $this->street . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city . ' (' . $this->country . ')';
+        return $this->street . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city; // . ' (' . $this->country . ')';
     }
 
     /**

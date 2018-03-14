@@ -74,7 +74,7 @@ class ContractFan
     }
 
     public function getOrderFileName() {
-        return $this->getBarcodeText() . '-tickets.pdf';
+        return $this->getBarcodeText() . '.pdf';
     }
 
     public function getPdfPath() {
@@ -86,7 +86,7 @@ class ContractFan
     }
 
     public function getTicketsFileName() {
-        return $this->getBarcodeText() . '.pdf';
+        return $this->getBarcodeText() . '-tickets.pdf';
     }
 
     public function getAmount() {

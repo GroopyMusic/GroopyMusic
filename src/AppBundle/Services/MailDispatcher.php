@@ -236,14 +236,22 @@ class MailDispatcher
     public function sendTickets(ContractFan $cf, ContractArtist $ca) {
         $firstParts = $ca->getCoartists();
 
-        $first = $firstParts[0] ?: null;
-        $second = $firstParts[1] ?: null;
+        $first = null; $second = null;
+
+        if(!empty($firstParts)) {
+            if(isset($firstParts[0]))
+                $first = $firstParts[0];
+            if(isset($firstParts[1]))
+                $second = $firstParts[1];
+        }
+
 
         $params = [
             'artist' => $ca->getArtist(),
             'contract' => $ca,
             'first' => $first,
             'second' => $second,
+            'username' => $cf->getFan()->getFirstname(),
         ];
 
         $attachments = ['um-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
@@ -254,7 +262,7 @@ class MailDispatcher
         $subject = 'subjects.concert.fan.tickets';
         $subject_params = ['%artist%' => $ca->getArtist()->getArtistname()];
 
-        $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
+        $this->sendEmail(MailTemplateProvider::TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
 

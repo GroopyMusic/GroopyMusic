@@ -7,15 +7,15 @@ Days 5: Vendredi
 Days 6: Samedi
 
 #new
-months.1: Janvier
-months.2: Février
-months.3: Mars
-months.4: Avril
-months.5: Mai
-months.6: Juin
-months.7: Juillet
-months.8: Août
-months.9: Septembre
+months.01: Janvier
+months.02: Février
+months.03: Mars
+months.04: Avril
+months.05: Mai
+months.06: Juin
+months.07: Juillet
+months.08: Août
+months.09: Septembre
 months.10: Octobre
 months.11: Novembre
 months.12: Décembre
@@ -566,7 +566,9 @@ order_pdf:
 
 #new
 tickets_pdf:
-  is_entry: Ce ticket est votre droit d'entrée. Merci de le présenter sur un support lisible.
+  is_entry: |
+    Ce ticket est votre droit d'entrée.
+    Merci de le présenter sur un support lisible.
   ticket:
     title: Festival Un-Mute @%hall_name%
 
