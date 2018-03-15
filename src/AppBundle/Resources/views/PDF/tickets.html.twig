@@ -3,6 +3,8 @@
 {% block header %}{# not necessary #}{% endblock %}
 
 {% block additional_styles %}
+
+
     table.ticket {
         position: relative;
         background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
@@ -46,7 +48,7 @@
             <tr class="text-white">
                 <td style="text-align: center;">{{ ticket.price }} €</td>
                 <td>{{ cf.user.displayName }}</td>
-                <td class="text-right">{{ 'tickets_pdf.is_entry'|trans|nl2br }}</td>
+                <td class="text-right">{{ 'tickets_pdf.ticket.is_entry'|trans|nl2br }}</td>
             </tr>
             <tr class="text-white">
                 <td style="width: 30mm;">
@@ -64,7 +66,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="width: 30mm;" ></td>
+                <td style="width: 30mm; font-size: 3mm;" valign="bottom">{{ ticket.barCodeText }}</td>
                 <td colspan="2" class="td-timing">
                     <p class="next-to-logo text-bold text-secondary">
                         18:00 Doors<br />
@@ -80,11 +82,13 @@
         </table>
         {% if loop.index % 2 == 0 or loop.last %}
             <div class="between-tickets"></div>
+            <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw }}</p>
             {{ lorem_ipsum() }}
 
             {% if loop.index % 2 == 0 and not loop.last %}
                 </page>
                 <page>
+                {{ block('footer') }}
             {% endif %}
         {% endif %}
     {% endfor %}

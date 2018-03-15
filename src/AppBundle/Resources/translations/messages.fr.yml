@@ -566,11 +566,12 @@ order_pdf:
 
 #new
 tickets_pdf:
-  is_entry: |
-    Ce ticket est votre droit d'entrée.
-    Merci de le présenter sur un support lisible.
   ticket:
     title: Festival Un-Mute @%hall_name%
+    is_entry: |
+        Ce ticket est votre droit d'entrée.
+        Merci de le présenter sur un support lisible.
+  conditions: Nos conditions générales de vente sont disponibles à l'adresse <a href="%conditionsUrl%">%conditionsUrl%</a>
 
 header:
   slogan: Découvrez. Soutenez. Produisez les artistes belges de demain.

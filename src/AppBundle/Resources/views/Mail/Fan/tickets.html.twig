@@ -3,11 +3,20 @@
     {% spaceless %}
         {% block title %}{{ subject }}{% endblock %}
 
+        {% set invited_text %}
+            {% if first is not null %}
+                {% if second is not null %}
+                    {{ 'concert.fan.details.invited2'|trans({'%invited1%': first.artistName, '%invited2%': second.artistName}, 'emails') }}
+                {% else %}
+                    {{ 'concert.fan.details.invited1'|trans({'%invited1%': first.artistName}, 'emails') }}
+                {% endif %}
+            {% else %}{% endif %}
+        {% endset %}
+
         {% block content %}
             {{ email_content('concert.fan.tickets', {
                 '%username%': username,
-                '%invited1%': first.artistName,
-                '%invited2%': second.artistName,
+                '%invited%': invited_text,
                 '%host%': artist.artistName,
                 '%hall%': contract.reality.hall.name,
                 '%date%': contract.reality.date|date('d/m/Y'),

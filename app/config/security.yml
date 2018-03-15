@@ -4,10 +4,11 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_ADMIN:               ROLE_FAN, ROLE_SONATA_ADMIN
+        ROLE_ADMIN:               ROLE_FAN, ROLE_SONATA_ADMIN, ROLE_TICKETING
         ROLE_PAYMENTS_ADMIN:      ROLE_ADMIN
         ROLE_TRANSLATIONS_ADMIN:  ROLE_ADMIN
         ROLE_SUPER_ADMIN:         ROLE_PAYMENTS_ADMIN, ROLE_TRANSLATIONS_ADMIN
+        ROLE_TICKETING:           ROLE_FAN
         ROLE_FAN:                 ROLE_USER
 
     providers:

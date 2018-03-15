@@ -481,7 +481,7 @@ class UserController extends Controller
             $em->flush();
             $finder = new Finder();
             $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
-            $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::TICKETS_DIRECTORY);
+            $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::TICKETS_DIRECTORY);
         }
 
         foreach($finder as $file) {

@@ -24,6 +24,19 @@ class Ticket
         $this->barcode_text = $cf->getBarcodeText() . '' . $num;
         $this->counterPart = $counterPart;
         $this->price = $price;
+        $this->validated = false;
+    }
+
+    public function getContractArtist() {
+        return $this->getContractFan()->getContractArtist();
+    }
+
+    public function getUser() {
+        return $this->getContractFan()->getUser();
+    }
+
+    public function isValidated() {
+        return $this->getValidated();
     }
 
     /**
@@ -54,6 +67,11 @@ class Ticket
      * @ORM\Column(name="price", type="smallint")
      */
     private $price;
+
+    /**
+     * @ORM\Column(name="validated", type="boolean")
+     */
+    private $validated;
 
     /**
      * Get id
@@ -159,5 +177,29 @@ class Ticket
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set validated
+     *
+     * @param boolean $validated
+     *
+     * @return Ticket
+     */
+    public function setValidated($validated)
+    {
+        $this->validated = $validated;
+
+        return $this;
+    }
+
+    /**
+     * Get validated
+     *
+     * @return boolean
+     */
+    public function getValidated()
+    {
+        return $this->validated;
     }
 }

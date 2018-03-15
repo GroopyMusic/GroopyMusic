@@ -83,13 +83,11 @@ concert:
     tickets: |
       Bonjour %username%,
 
-      Voici les informations pratiques concernant le concert de %host% du %date% dans la salle "%hall%".
-
-      Les artistes invités au concert sont %invited1% et %invited2%.
+      Voici les informations pratiques concernant le festival du %date% dans la salle "%hall%" dont la tête d'affiche est %host%. %invited%
 
       Vous trouverez votre ou vos ticket(s) de concert en pièce jointe (format PDF).
 
-      Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du concert car il s'agira de votre laissez-passer.
+      Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
 
       Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
     failure: |
@@ -102,6 +100,11 @@ concert:
       Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d'un prochain évènement !
 
       Envie de soutenir d'autres artistes ? Rendez-vous sur %artistCatalogUrl% !
+    #new
+    details:
+      invited2: Les artistes invités au festival sont %invited1% et %invited2%.
+      invited1: L'artiste invité au festival est %invited1%.
+
 
   admin:
     newly_successful: |

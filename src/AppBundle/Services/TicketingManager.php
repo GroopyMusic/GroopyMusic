@@ -31,7 +31,12 @@ class TicketingManager
 
     public function generateTicketsForContractFan(ContractFan $contractFan) {
         $contractFan->generateBarCode();
-        if(empty($contractFan->getTickets())) {
+
+        foreach($contractFan->getTickets() as $ticket) {
+            $contractFan->removeTicket($ticket);
+        }
+
+        if(!empty($contractFan->getTickets())) {
             foreach ($contractFan->getPurchases() as $purchase) {
                 /** @var Purchase $purchase */
                 $counterPart = $purchase->getCounterpart();
@@ -115,5 +120,17 @@ class TicketingManager
 
         $this->em->flush();
         return null;
+    }
+
+    public function getTicketsInfoArray(Ticket $ticket) {
+        return [
+            'Identifiant du ticket' => $ticket->getId(),
+            'Acheteur' => $ticket->getUser()->getDisplayName(),
+            'Type de ticket' => $ticket->getCounterPart()->__toString(),
+            'Prix' => $ticket->getPrice(). ' €',
+            'Event' => $ticket->getContractArtist()->__toString(),
+            'CF associé' => $ticket->getContractFan()->getBarcodeText(),
+            'validated' => $ticket->getValidated(),
+        ];
     }
 }
