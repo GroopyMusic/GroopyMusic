@@ -243,5 +243,5 @@ services:
     AppBundle\Admin\RankingAdmin:
         arguments: [ ~, null , AppBundle:RankingAdmin]
         tags:
-            - { name: sonata.admin, manager_type: orm, label: Classement }
+            - { name: sonata.admin, manager_type: orm, label: app.admin.ranking }
         public: true

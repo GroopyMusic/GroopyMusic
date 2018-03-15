@@ -137,6 +137,11 @@
                 <target>Palier</target>
             </trans-unit>
 
+            <trans-unit id="app.admin.ranking">
+                <source>app.admin.ranking</source>
+                <target>Classement</target>
+             </trans-unit>
+
 
             <trans-unit id="app.admin.propositioncontractartist">
                 <source>app.admin.propositioncontractartist</source>

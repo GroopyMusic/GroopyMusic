@@ -3,7 +3,7 @@
 {% block sonata_admin_content %}
     <ul class="nav nav-tabs nav-justified">
         {% for category in categories %}
-            <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab"
+            <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="tab-link"
                                                                       href="#{{ category.name }}">{{ category.name }}</a>
             </li>
         {% endfor %}
@@ -14,7 +14,7 @@
             <div id="{{ category.name }}" {% if loop.index == 1 %} class="tab-pane fade in active" {% else %} class="tab-pane fade" {% endif %}>
                 <div>
                     {% for level in category.levels %}
-                        <div id="{{ level.id }}" class="panel panel-default">
+                        <div id="level{{ level.id }}" class="panel panel-default">
                             <div class="panel-body">
                                 <div class="form-inline clearfix">
                                     <div class="pull-left">
@@ -64,7 +64,7 @@
                             <br>
                             <div class="form-inline clearfix">
                                 <strong>&nbsp; Eléments sélectionnés : </strong>
-                                <select style="width: auto;height: auto">
+                                <select style="width: auto;height: auto;">
                                     <option>
                                         Attribuer récompense aux utilisateurs sélectionnés
                                     </option>
@@ -88,7 +88,7 @@
     {{ parent() }}
     <script type="text/javascript">
         function checkAll(id) {
-            $('#' + id + ' input[type="checkbox"]').each(function () {
+            $('#level' + id + ' input[type="checkbox"]').each(function () {
 
                 //normal use case : check the checkbox
                 $(this).prop("checked", true);
@@ -99,7 +99,7 @@
         }
 
         function uncheckAll(id) {
-            $('#' + id + ' input[type="checkbox"]').each(function () {
+            $('#level' + id + ' input[type="checkbox"]').each(function () {
 
                 //normal use case : uncheck the checkbox
                 $(this).prop("checked", false);
@@ -109,4 +109,13 @@
             })
         }
     </script>
+{% endblock %}
+{% block stylesheets %}
+    {{  parent() }}
+    <style>
+        .tab-link {
+            color: black;
+            font-size: 17px
+        }
+    </style>
 {% endblock %}
