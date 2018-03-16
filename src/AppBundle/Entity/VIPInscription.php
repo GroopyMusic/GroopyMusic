@@ -9,10 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="vip_inscription")
  * @ORM\Entity
  **/
-class VIPInscription
+class VIPInscription implements PhysicalPersonInterface
 {
     public function __construct()
     {
+        $this->counterparts_sent = false;
     }
 
     public function __toString()
@@ -21,7 +22,7 @@ class VIPInscription
     }
 
     public function getDisplayName() {
-        return $this->first_name . ' ' . strtoupper($this->last_name);
+        return $this->first_name . ' ' . strtoupper($this->last_name) . ' (' . $this->company . ')';
     }
 
     /**
@@ -34,6 +35,7 @@ class VIPInscription
     private $id;
 
     /**
+     * @var ContractArtist
      * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="vip_inscriptions")
      */
     private $contract_artist;
@@ -62,6 +64,11 @@ class VIPInscription
      * @ORM\Column(name="function", type="string", length=255)
      */
     private $function;
+
+    /**
+     * @ORM\Column(name="counterparts_sent", type="boolean")
+     */
+    private $counterparts_sent;
 
     /**
      * Get id
@@ -215,5 +222,29 @@ class VIPInscription
     public function getContractArtist()
     {
         return $this->contract_artist;
+    }
+
+    /**
+     * Set counterpartsSent
+     *
+     * @param boolean $counterpartsSent
+     *
+     * @return VIPInscription
+     */
+    public function setCounterpartsSent($counterpartsSent)
+    {
+        $this->counterparts_sent = $counterpartsSent;
+
+        return $this;
+    }
+
+    /**
+     * Get counterpartsSent
+     *
+     * @return boolean
+     */
+    public function getCounterpartsSent()
+    {
+        return $this->counterparts_sent;
     }
 }

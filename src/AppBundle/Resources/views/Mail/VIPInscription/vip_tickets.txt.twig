@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('vip_inscription.copy', {
+        '%host%': contract.artist.artistName,
+        '%hall%': contract.hallConcert.name
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/VIPInscription:vip_tickets.html.twig' %}
+{% endblock %}

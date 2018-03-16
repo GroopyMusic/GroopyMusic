@@ -34,6 +34,7 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('email_link', array($this, 'email_link', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('facebook_like_widget', array($this, 'facebook_like_widget', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('facebook_connect_widget', array($this, 'facebook_connect_widget', array('is_safe' => array('html')))),
+            new \Twig_SimpleFunction('lorem_ipsum', array($this, 'lorem_ipsum', array('is_safe' => array('html')))),
         );
     }
 
@@ -112,6 +113,12 @@ class UtilitiesExtension extends \Twig_Extension
     public function facebook_connect_widget($with_pp = true) {
         return $this->twig->render(':patterns/utils:facebook_connect_widget.html.twig', array(
             'with_pp' => $with_pp,
+        ));
+    }
+
+    public function lorem_ipsum($lorem_nb = 1) {
+        return $this->twig->render(':patterns/utils:lorem_ipsum.html.twig', array(
+            'lorem_nb' => $lorem_nb,
         ));
     }
 

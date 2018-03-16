@@ -79,6 +79,18 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
+    public static function getPassedStates() {
+        return [
+            self::STATE_SUCCESS_PASSED,
+            self::STATE_FAILED,
+            self::STATE_REFUNDED,
+        ];
+    }
+
+    public function isPassed() {
+        return in_array($this->getState(), self::getPassedStates());
+    }
+
     public function getPercentObjective() {
        return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
     }
@@ -275,6 +287,10 @@ class ContractArtist extends BaseContractArtist
         else {
             return $this->preferences->getDate();
         }
+    }
+
+    public function getCounterPartsSent() {
+        return $this->getTicketsSent();
     }
 
     public function getNbPayments() {

@@ -8,6 +8,7 @@ use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
 use AppBundle\Form\ProfileType;
 use AppBundle\Services\PDFWriter;
+use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -447,7 +448,7 @@ class UserController extends Controller
             $response->headers->set('Content-Type', 'PDF');
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $contract->getOrderFileName()
+                'um-order.pdf'
             ));
 
             return $response;
@@ -457,28 +458,41 @@ class UserController extends Controller
     /**
      * @Route("/user/tickets/{id}", name="user_get_tickets")
      */
-    public function getTicketsAction(Request $request, UserInterface $user, Cart $cart) {
+    public function getTicketsAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em) {
 
         $contract = $cart->getFirst();
-        if($contract->getUser() != $user) {
+        if($contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
             throw $this->createAccessDeniedException();
         }
 
         $finder = new Finder();
-        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
-        $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
+        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
+        $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::TICKETS_DIRECTORY);
+
+        if(count($finder) == 0) {
+
+            $writer->writeOrder($contract);
+
+            $ticketingManager->generateTicketsForContractFan($contract);
+            $writer->writeTickets($contract);
+            $contract->setcounterpartsSent(true);
+
+            $em->persist($contract);
+            $em->flush();
+            $finder = new Finder();
+            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
+            $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::TICKETS_DIRECTORY);
+        }
 
         foreach($finder as $file) {
-
             $response = new BinaryFileResponse($filePath);
             // Set headers
             $response->headers->set('Cache-Control', 'private');
             $response->headers->set('Content-Type', 'PDF');
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $contract->getOrderFileName()
+                'um-tickets.pdf'
             ));
-
             return $response;
         }
     }

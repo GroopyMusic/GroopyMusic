@@ -897,4 +897,38 @@ class BaseContractArtist
     {
         return $this->promotions;
     }
+
+    /**
+     * Add vipInscription
+     *
+     * @param \AppBundle\Entity\VIPInscription $vipInscription
+     *
+     * @return BaseContractArtist
+     */
+    public function addVipInscription(\AppBundle\Entity\VIPInscription $vipInscription)
+    {
+        $this->vip_inscriptions[] = $vipInscription;
+
+        return $this;
+    }
+
+    /**
+     * Remove vipInscription
+     *
+     * @param \AppBundle\Entity\VIPInscription $vipInscription
+     */
+    public function removeVipInscription(\AppBundle\Entity\VIPInscription $vipInscription)
+    {
+        $this->vip_inscriptions->removeElement($vipInscription);
+    }
+
+    /**
+     * Get vipInscriptions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVipInscriptions()
+    {
+        return $this->vip_inscriptions;
+    }
 }
