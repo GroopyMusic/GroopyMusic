@@ -13,12 +13,14 @@ use AppBundle\Services\RankingService;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class RankingAdminController extends Controller
 {
     protected $container;
     private $rankingervice;
-    public function __construct(ContainerInterface $container,RankingService $rankingService)
+
+    public function __construct(ContainerInterface $container, RankingService $rankingService)
     {
         $this->container = $container;
         $this->configure();
@@ -29,8 +31,17 @@ class RankingAdminController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $categories = $em->getRepository('AppBundle:Category')->findForRaking();
-        //$this->rankingervice->sortLevelDesc($categories[0]->getLevels()->getData());
-        return $this->render('@App/Admin/Ranking/ranking_view.html.twig',array(
+        return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
+            'categories' => $categories
+        ));
+    }
+
+    public function computeAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $this->rankingervice->computeAllStatistic();
+        $categories = $em->getRepository('AppBundle:Category')->findForRaking();
+        return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
             'categories' => $categories
         ));
     }

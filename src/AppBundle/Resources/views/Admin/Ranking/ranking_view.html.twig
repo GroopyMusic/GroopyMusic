@@ -29,64 +29,99 @@
                                             <span class="glyphicon glyphicon-remove"></span>
                                             Tout décocher
                                         </button>
+                                        <button id="butCollapse{{ level.id }}" class="btn btn-default"
+                                                data-toggle="collapse" data-target="#table{{ level.id }}">
+                                            <span class="glyphicon glyphicon-menu-down"></span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-bordered table-striped sonata-ba-list rankingTable">
-                                <thead>
-                                <tr>
-                                    <th>Sélection</th>
-                                    <th>Nom complet</th>
-                                    <th>Points</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for stat in level.statistics %}
+                            <div id="table{{ level.id }}" class="collapse collapsable">
+                                <table class="table table-bordered table-striped sonata-ba-list rankingTable">
+                                    <thead>
                                     <tr>
-                                        <td><input type="checkbox"></td>
-                                        <td>{{ stat.user.displayName }}</td>
-                                        <td>{{ stat.statistic }}</td>
-                                        <td>
-                                            <button class="btn">
-                                                <span class="glyphicon glyphicon-gift"></span>
-                                                Attribuer récompense
-                                            </button>
-                                            <button class="btn">
-                                                <span class="glyphicon glyphicon-envelope"></span>
-                                                Envoyer un email
-                                            </button>
-                                        </td>
+                                        <th>Sélection</th>
+                                        <th>Nom complet</th>
+                                        <th>Points</th>
+                                        <th>Action</th>
                                     </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <br>
-                            <div class="form-inline clearfix">
-                                <strong>&nbsp; Eléments sélectionnés : </strong>
-                                <select style="width: auto;height: auto;">
-                                    <option>
-                                        Attribuer récompense aux utilisateurs sélectionnés
-                                    </option>
-                                    <option>
-                                        Envoyer un email aux utilisateurs sélectionnés
-                                    </option>
-                                </select>
-                                <button class="btn btn-primary">
-                                    OK
-                                </button>
+                                    </thead>
+                                    <tbody>
+                                    {% for stat in level.statistics %}
+                                        <tr>
+                                            <td><input type="checkbox"></td>
+                                            <td>{{ stat.user.displayName }}</td>
+                                            <td>{{ stat.statistic }}</td>
+                                            <td>
+                                                <button class="btn">
+                                                    <span class="glyphicon glyphicon-gift"></span>
+                                                    Attribuer récompense
+                                                </button>
+                                                <button class="btn">
+                                                    <span class="glyphicon glyphicon-envelope"></span>
+                                                    Envoyer un email
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <br>
+                                <div class="form-inline clearfix">
+                                    <strong>&nbsp; Eléments sélectionnés : </strong>
+                                    <select style="width: auto;height: auto;">
+                                        <option>
+                                            Attribuer récompense aux utilisateurs sélectionnés
+                                        </option>
+                                        <option>
+                                            Envoyer un email aux utilisateurs sélectionnés
+                                        </option>
+                                    </select>
+                                    <button class="btn btn-primary">
+                                        OK
+                                    </button>
+                                </div>
+                                <br>
                             </div>
-                            <br>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         {% endfor %}
     </div>
+    <div class="text-center">
+        <a href="{{ admin.generateObjectUrl('compute',null) }}" class="page-link">
+            <button class="btn btn-primary">
+                Mettre à jour les classements
+            </button>
+        </a>
+        <div class="alert-text">
+            <strong>Attention cette opération peut prendre quelques secondes !</strong>
+        </div>
+    </div>
 {% endblock %}
 {% block sonata_javascript_pool %}
     {{ parent() }}
     <script type="text/javascript">
+
+        $('document').ready(function () {
+
+            //change icon collapse button
+            $('.collapsable').on("hidden.bs.collapse", function () {
+                var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
+                $(mySpan).removeClass();
+                $(mySpan).addClass('glyphicon glyphicon-menu-down');
+
+            });
+
+            //change icon collapse button
+            $('.collapsable').on("shown.bs.collapse", function () {
+                var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
+                $(mySpan).removeClass();
+                $(mySpan).addClass('glyphicon glyphicon-menu-up');
+            });
+        });
+
         function checkAll(id) {
             $('#level' + id + ' input[type="checkbox"]').each(function () {
 
@@ -111,11 +146,20 @@
     </script>
 {% endblock %}
 {% block stylesheets %}
-    {{  parent() }}
+    {{ parent() }}
     <style>
         .tab-link {
             color: black;
             font-size: 17px
+        }
+
+        .alert-text {
+            font-size: 11px;
+            color: orangered;
+        }
+
+        .page-link, .page-link :hover {
+            color: white;
         }
     </style>
 {% endblock %}

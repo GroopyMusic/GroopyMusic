@@ -9,7 +9,7 @@
 namespace AppBundle\Repository;
 
 
-class CategoryRepository  extends \Doctrine\ORM\EntityRepository
+class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
     public function findForRaking() {
         return $this->getEntityManager()->createQuery(
@@ -21,6 +21,18 @@ class CategoryRepository  extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN l.statistics s
                   LEFT JOIN s.user u 
                   ORDER BY c.id ASC, l.step DESC, s.statistic DESC 
+                  ')
+            ->getResult();
+    }
+
+    public function findLevelsByCategories() {
+        return $this->getEntityManager()->createQuery(
+            'SELECT c,l
+                  FROM AppBundle:Category c
+                  LEFT JOIN c.translations ct
+                  LEFT JOIN c.levels l
+                  LEFT JOIN l.translations lt
+                  ORDER BY c.id ASC, l.step DESC 
                   ')
             ->getResult();
     }

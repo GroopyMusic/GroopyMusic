@@ -141,11 +141,11 @@ class User_Category
     /**
      * Set level
      *
-     * @param \AppBundle\Entity\Category $level
+     * @param \AppBundle\Entity\Level $level
      *
      * @return User_Category
      */
-    public function setLevel(\AppBundle\Entity\Category $level = null)
+    public function setLevel(\AppBundle\Entity\Level $level = null)
     {
         $this->level = $level;
 
@@ -155,7 +155,7 @@ class User_Category
     /**
      * Get level
      *
-     * @return \AppBundle\Entity\Category
+     * @return \AppBundle\Entity\Level
      */
     public function getLevel()
     {

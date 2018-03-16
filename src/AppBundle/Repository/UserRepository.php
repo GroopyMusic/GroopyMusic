@@ -25,4 +25,19 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
         return $qb->getQuery()->getResult();
     }
 
+    public function countUserStatistic($user_id){
+        return $this->getEntityManager()->createQuery(
+            'SELECT COUNT(t.id),COUNT(ca.id)
+                  FROM AppBundle:User u
+                  LEFT JOIN u.payments p
+                  LEFT JOIN p.contractFan cf 
+                  LEFT JOIN p.contractArtist ca
+                  LEFT JOIN cf.tickets t
+                  WHERE u.id = ?1
+                  AND ca.successful = TRUE
+                  ')
+            ->setParameter(1, $user_id)
+            ->getScalarResult();
+    }
+
 }
