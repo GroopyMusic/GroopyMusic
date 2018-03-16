@@ -1,3 +1,7 @@
-{% if object.successful and not object.ticketsSent %}
-    <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('tickets', object) }}">Envoyer les tickets</a>
+{% if object.successful %}
+    {% if not object.ticketsSent %}
+        <br /><a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('tickets', object) }}">Envoyer les tickets</a>
+    {% elseif not object.isPassed %}
+        <br /><a class="btn btn-sm btn-default" href="{{ path('ticketing_generate', {'id': object.id}) }}">Ticketing</a>
+    {% endif %}
 {% endif %}

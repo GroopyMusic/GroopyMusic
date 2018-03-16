@@ -67,7 +67,7 @@
 
         function displayResults(data) {
             if(data.error != null) {
-                $results.html('<p class=alert alert-error>' + data.error + '</p>');
+                $results.html('<p class="alert alert-warning">' + data.error + '</p>');
             }
             else {
                 var output = '<table class="table">';

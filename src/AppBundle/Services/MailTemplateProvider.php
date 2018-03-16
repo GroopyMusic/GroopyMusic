@@ -26,6 +26,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const TICKET_TEMPLATE = 'AppBundle:Mail/Fan:ticket.txt.twig';
     const ORDER_RECAP_TEMPLATE = 'AppBundle:Mail/Fan:order.txt.twig';
     const TICKETS_TEMPLATE = 'AppBundle:Mail/Fan:tickets.txt.twig';
+    const VIP_TICKETS_TEMPLATE = 'AppBundle:Mail/VIPInscription:vip_tickets.txt.twig';
 
     const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/User:change_email_confirmation.txt.twig';
 
@@ -150,6 +151,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
             self::TICKET_TEMPLATE,
             self::ORDER_RECAP_TEMPLATE,
             self::TICKETS_TEMPLATE,
+            self::VIP_TICKETS_TEMPLATE,
 
             self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,
 

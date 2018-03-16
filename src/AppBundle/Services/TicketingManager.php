@@ -6,14 +6,22 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\PhysicalPersonInterface;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
+use AppBundle\Entity\VIPInscription;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
+
 class TicketingManager
 {
+    const VIP_DIRECTORY = 'pdf/viptickets/';
+    const PH_DIRECTORY = 'pdf/phtickets/';
+    const VIP_PREFIX = 'vip';
+    const PH_PREFIX = 'ph';
+
     private $writer;
     private $mailDispatcher;
     private $notificationDispatcher;
@@ -29,6 +37,14 @@ class TicketingManager
         $this->em = $em;
     }
 
+    /**
+     * Generates all tickets linked to a fan order
+     * Each ticket being related to a counterpart of the order, its price and a unique (for this order) ticket number
+     * Calling this function sets attribute $contractFan->tickets
+     *
+     * @param ContractFan $contractFan
+     *
+     */
     public function generateTicketsForContractFan(ContractFan $contractFan) {
         $contractFan->generateBarCode();
 
@@ -54,6 +70,43 @@ class TicketingManager
         }
     }
 
+    public function generateTicketsForPhysicalPerson(PhysicalPersonInterface $physicalPerson, ContractArtist $contractArtist, $counterPart, $nb) {
+        $tickets = [];
+
+        for($i = 1; $i <= $nb; $i++) {
+            $ticket = new Ticket($cf = null, $counterPart, $i, 0, $physicalPerson, $contractArtist);
+            $this->em->persist($ticket);
+            $tickets[] = $ticket;
+        }
+
+        if($physicalPerson instanceof VIPInscription) {
+            $prefix = self::VIP_PREFIX;
+            $directory = self::VIP_DIRECTORY;
+        }
+        else {
+            $prefix = self::PH_PREFIX;
+            $directory = self::PH_DIRECTORY;
+        }
+
+        $slug = StringHelper::slugify($physicalPerson->getDisplayName()) . (new \DateTime())->format('ymdHis');
+
+        $path = $directory . $prefix . $slug . '.pdf';
+
+        // Write PDF file
+        $this->writer->writeTickets($path, $tickets);
+        // And send it
+        $this->mailDispatcher->sendTicketsForPhysicalPerson($physicalPerson, $contractArtist, $path);
+
+        // could be one final flush
+        $this->em->flush();
+    }
+
+    /**
+     * Generates arbitrary tickets and writes them on a flying PDF (sent to navigator, but not stored on server)
+     *
+     * @param ContractArtist $contractArtist
+     * @param User $user
+     */
     public function getTicketPreview(ContractArtist $contractArtist, User $user) {
 
         $cart = new Cart();
@@ -69,17 +122,38 @@ class TicketingManager
         $this->writer->writeTicketPreview($cf);
     }
 
-    protected function sendTicketsForContractFan(ContractFan $cf) {
-        $this->generateTicketsForContractFan($cf);
-        $this->writer->writeTickets($cf);
-        $this->mailDispatcher->sendTickets($cf, $cf->getContractArtist());
-        $this->em->persist($cf);
+    /**
+     * Sends tickets for one order only
+     * & adds notification to user
+     * To be used when tickets are already sent for an event & there is a new order for that event
+     *
+     * @param ContractFan $cf
+     * @return \Exception|null
+     */
+    public function sendUnSentTicketsForContractFan(ContractFan $cf) {
+        if(!$cf->getcounterpartsSent()) {
+            try {
+                $this->sendTicketsForContractFan($cf);
+                $cf->setcounterpartsSent(true);
+                $this->sendNotificationTicketsSent([$cf->getUser()], $cf->getContractArtist());
+            } catch(\Exception $e) {
+                $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
+                return $e;
+            }
+        }
+
+        $this->em->flush();
+        return null;
     }
 
-    protected function sendNotificationTicketsSent(array $users, $contractArtist) {
-        $this->notificationDispatcher->notifyTickets($users, $contractArtist);
-    }
-
+    /**
+     * Generates tickets for an event, grouped by order
+     * & sends them
+     * & notifies users
+     *
+     * @param ContractArtist $contractArtist
+     * @return \Exception|null
+     */
     public function sendUnSentTicketsForContractArtist(ContractArtist $contractArtist) {
         $users = [];
 
@@ -106,31 +180,63 @@ class TicketingManager
         return null;
     }
 
-    public function sendUnSentTicketsForContractFan(ContractFan $cf) {
-        if(!$cf->getcounterpartsSent()) {
-            try {
-                $this->sendTicketsForContractFan($cf);
-                $cf->setcounterpartsSent(true);
-                $this->sendNotificationTicketsSent([$cf->getUser()], $cf->getContractArtist());
-            } catch(\Exception $e) {
-                $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
-                return $e;
+    public function sendUnSentVIPTicketsForContractArtist(ContractArtist $contractArtist)
+    {
+        foreach($contractArtist->getVipInscriptions() as $vipInscription) {
+            /** @var $vipInscription VIPInscription */
+            if(!$vipInscription->getCounterpartsSent()) {
+                $this->generateTicketsForPhysicalPerson($vipInscription, $contractArtist, null, 1);
+                $vipInscription->setCounterpartsSent(true);
+                $this->em->persist($vipInscription);
             }
         }
-
-        $this->em->flush();
-        return null;
     }
 
+    /**
+     * Generates & sends tickets for one order
+     *
+     * @param ContractFan $cf
+     */
+    protected function sendTicketsForContractFan(ContractFan $cf) {
+        $this->generateTicketsForContractFan($cf);
+        $this->writer->writeTickets($cf->getTicketsPath(), $cf->getTickets());
+        $this->mailDispatcher->sendTicketsForContractFan($cf, $cf->getContractArtist());
+        $this->em->persist($cf);
+    }
+
+    /**
+     * Adds a notification to all $users that their tickets for $contractArtist are ready
+     *
+     * @param array $users
+     * @param $contractArtist
+     */
+    protected function sendNotificationTicketsSent(array $users, $contractArtist) {
+        $this->notificationDispatcher->notifyTickets($users, $contractArtist);
+    }
+
+
+    /**
+     * Returns an array of data corresponding to $ticket
+     * which can be used to generate some JSON response
+     *
+     * @param Ticket $ticket
+     * @return array
+     */
     public function getTicketsInfoArray(Ticket $ticket) {
-        return [
+        $arr = [
             'Identifiant du ticket' => $ticket->getId(),
-            'Acheteur' => $ticket->getUser()->getDisplayName(),
+            'Acheteur' => $ticket->getName(),
             'Type de ticket' => $ticket->getCounterPart()->__toString(),
             'Prix' => $ticket->getPrice(). ' €',
             'Event' => $ticket->getContractArtist()->__toString(),
-            'CF associé' => $ticket->getContractFan()->getBarcodeText(),
             'validated' => $ticket->getValidated(),
         ];
+        if($ticket->getContractFan() != null) {
+            $arr['CF associé'] = $ticket->getContractFan()->getBarcodeText();
+        }
+        else {
+            $arr['VIP'] = 'Oui';
+        }
+        return $arr;
     }
 }

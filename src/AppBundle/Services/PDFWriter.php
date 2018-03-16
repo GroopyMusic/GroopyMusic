@@ -57,11 +57,11 @@ class PDFWriter
         $this->write(self::ORDER_TEMPLATE, $cf->getPdfPath(), ['cf' => $cf]);
     }
 
-    public function writeTickets(ContractFan $cf) {
-        $this->write(self::TICKETS_TEMPLATE, $cf->getTicketsPath(), ['cf' => $cf]);
+    public function writeTickets($path, $tickets) {
+        $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets]);
     }
 
     public function writeTicketPreview(ContractFan $cf) {
-        $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['cf' => $cf], 'D');
+        $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $cf->getTickets()], 'D');
     }
 }

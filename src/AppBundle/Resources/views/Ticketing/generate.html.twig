@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container content-box">
+
+        <h2 class="text-center">Génération de tickets<br />{{ contract }}</h2>
+
+        <div id="generation-section" class="content-box-content">
+
+            {% if not contract.counterPartsSent %}
+                <p class="alert alert-warning">Attention, les tickets regular n'ont pas encore été envoyés pour cet event, tu es sûr de ce que tu fais ?</p>
+            {% endif %}
+
+            <div id="generation-results">{{ hidden_loader() }}</div>
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <input type='reset' class="invisible" id='resetform' value='reset' />
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="container content-box">
+        <div id="vip-section" class="content-box-content">
+            Inscriptions VIP pour lesquelles les tickets n'ont pas encore été envoyées :
+
+            <ul id="vip_list">
+                {% for inscription in vipinscriptions %}
+                    <li>{{ inscription }}</li>
+                {% else %}
+                    <li>Aucune</li>
+                {% endfor %}
+            </ul>
+
+            {% if vipinscriptions is not empty %}
+                {{ hidden_loader() }}
+                <div id="vip-results"></div>
+                <div class="text-center"><button id="vip_send_button" class="btn btn-primary" type="submit">Envoyer les tickets</button></div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_javascripts %}
+
+    <script>
+        $('form').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                beforeSend: function() {
+                    $('#generation-section .loader').show();
+                },
+                type: "POST",
+                url: '{{ url(app.request.get('_route'), app.request.get('_route_params')) }}',
+                data: $(this).serialize(), // serializes the form's elements.
+                success: function(data)
+                {
+                    $('#generation-results').html('<p class="alert alert-success">Le ticket a été envoyé.</p>');
+                    $('#resetform').click();
+                },
+                error: function() {
+                    $('#generation-results').html('<p class="alert alert-danger">Le ticket n\'a pas pu être envoyés.</p>');
+                },
+                done: function(data) {
+                    $('#generation-section .loader').hide();
+                }
+            })
+        });
+
+        $('#vip_send_button').click(function() {
+            $(this).prop('disabled', true);
+
+            $.ajax({
+                beforeSend: function() {
+                    $('#vip-section .loader').show();
+                },
+                type: "POST",
+                url: '{{ url('ticketing_generate_send_vip') }}',
+                data: {
+                    event_id: {{ contract.id }}
+                },
+                success: function(data)
+                {
+                    $('#vip-results').html('<p class="alert alert-success">Les tickets ont été générés & envoyés.</p>');
+                    $('#vip_list').remove();
+                    $(this).remove();
+                },
+                error: function() {
+                    $('#vip-results').html('<p class="alert alert-danger">Lse tickets n\'ont pas pu être envoyés.</p>');
+                },
+                done: function(data) {
+                    $('#vip-section .loader').hide();
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

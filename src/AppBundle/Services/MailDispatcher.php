@@ -7,6 +7,7 @@ use AppBundle\Entity\ArtistOwnershipRequest;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\PhysicalPersonInterface;
 use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
@@ -233,7 +234,20 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::ORDER_RECAP_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
-    public function sendTickets(ContractFan $cf, ContractArtist $ca) {
+    public function sendTicketsForPhysicalPerson(PhysicalPersonInterface $physicalPerson, ContractArtist $contractArtist, $path) {
+        $attachments = ['um-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $path];
+        $params = ['contract' => $contractArtist];
+
+        $toName = [$physicalPerson->getDisplayName()];
+        $to = [$physicalPerson->getEmail()];
+
+        $subject = 'subjects.concert.fan.viptickets';
+        $subject_params = ['%artist%' => $contractArtist->getArtist()->getArtistname()];
+
+        $this->sendEmail(MailTemplateProvider::VIP_TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
+    }
+
+    public function sendTicketsForContractFan(ContractFan $cf, ContractArtist $ca) {
         $firstParts = $ca->getCoartists();
 
         $first = null; $second = null;
@@ -244,7 +258,6 @@ class MailDispatcher
             if(isset($firstParts[1]))
                 $second = $firstParts[1];
         }
-
 
         $params = [
             'artist' => $ca->getArtist(),

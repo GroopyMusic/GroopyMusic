@@ -18,23 +18,36 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct(ContractFan $cf, CounterPart $counterPart, $num, $price)
+    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null)
     {
         $this->contractFan = $cf;
-        $this->barcode_text = $cf->getBarcodeText() . '' . $num;
         $this->counterPart = $counterPart;
         $this->price = $price;
         $this->validated = false;
+
+        if($cf != null) {
+            $this->barcode_text = $cf->getBarcodeText() . '' . $num;
+            $this->contractArtist = $cf->getContractArtist();
+            $this->name = $cf->getUser()->getDisplayName();
+        }
+        else {
+            $this->barcode_text = $this->generateBarCode($num);
+            $this->contractArtist = $contractArtist;
+            $this->name = $physicalPerson->getDisplayName();
+        }
     }
 
-    public function getContractArtist() {
-        return $this->getContractFan()->getContractArtist();
+    /**
+     * @param $num
+     * @return string
+     */
+    private function generateBarCode($num) {
+        return 'ph' . rand(1, $num) . substr(md5(uniqid()), 0, 15) . $num;
     }
 
-    public function getUser() {
-        return $this->getContractFan()->getUser();
-    }
-
+    /**
+     * @return bool
+     */
     public function isValidated() {
         return $this->getValidated();
     }
@@ -55,6 +68,7 @@ class Ticket
 
     /**
      * @ORM\ManyToOne(targetEntity="ContractFan", inversedBy="tickets")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $contractFan;
 
@@ -72,6 +86,16 @@ class Ticket
      * @ORM\Column(name="validated", type="boolean")
      */
     private $validated;
+
+    /**
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ContractArtist")
+     */
+    private $contractArtist;
 
     /**
      * Get id
@@ -201,5 +225,53 @@ class Ticket
     public function getValidated()
     {
         return $this->validated;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Ticket
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set contractArtist
+     *
+     * @param \AppBundle\Entity\ContractArtist $contractArtist
+     *
+     * @return Ticket
+     */
+    public function setContractArtist(\AppBundle\Entity\ContractArtist $contractArtist = null)
+    {
+        $this->contractArtist = $contractArtist;
+
+        return $this;
+    }
+
+    /**
+     * Get contractArtist
+     *
+     * @return \AppBundle\Entity\ContractArtist
+     */
+    public function getContractArtist()
+    {
+        return $this->contractArtist;
     }
 }

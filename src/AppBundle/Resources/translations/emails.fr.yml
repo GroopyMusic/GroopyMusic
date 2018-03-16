@@ -10,6 +10,7 @@ subjects:
     fan:
       known_outcome: "Concert de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
+      viptickets: Votre ticket Un-Mute pour %artist% #new
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -83,13 +84,26 @@ concert:
     tickets: |
       Bonjour %username%,
 
-      Voici les informations pratiques concernant le festival du %date% dans la salle "%hall%" dont la tête d'affiche est %host%. %invited%
+      Nous voici à quelques jours du festival du %date% dans la salle "%hall%" dont la tête d'affiche est %host%. %invited%
 
       Vous trouverez votre ou vos ticket(s) de concert en pièce jointe (format PDF).
 
       Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
 
       Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
+
+    #new
+    vip_tickets: |
+      Bonjour,
+
+      Vous trouverez en pièces jointes votre ticket offert pour le Festival Un-Mute dans la salle "%hall%" dont la tête d'affiche est %host%.
+
+      Toutes les informations pratiques s'y trouvent.
+
+      Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
+
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
+
     failure: |
       Cher producteur,
 
