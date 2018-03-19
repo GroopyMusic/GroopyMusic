@@ -70,6 +70,5 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
             ->createQuery('SELECT a FROM AppBundle:Artist a WHERE a.deleted = false AND a.artistname LIKE :q')
             ->setParameter('q', $q['artistname'] . '%')
             ->getResult();
-
     }
 }
