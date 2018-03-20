@@ -27,7 +27,7 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 
     public function findLevelsByCategories() {
         return $this->getEntityManager()->createQuery(
-            'SELECT c,l
+            'SELECT c,l,ct,lt
                   FROM AppBundle:Category c
                   LEFT JOIN c.translations ct
                   LEFT JOIN c.levels l

@@ -61,6 +61,11 @@ class Level implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
+    public function setStatistics($statistics){
+        $this->statistics = $statistics;
+        return $this;
+    }
+
     /**
      * @var int
      *

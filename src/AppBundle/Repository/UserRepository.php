@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\Query;
+
 class UserRepository extends \Doctrine\ORM\EntityRepository {
 
     public function findWithPaymentLastXDays($X) {
@@ -25,19 +27,28 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
         return $qb->getQuery()->getResult();
     }
 
-    public function countUserStatistic($user_id){
+    public function countUsersStatistic(){
         return $this->getEntityManager()->createQuery(
-            'SELECT COUNT(t.id),COUNT(ca.id)
-                  FROM AppBundle:User u
-                  LEFT JOIN u.payments p
-                  LEFT JOIN p.contractFan cf 
-                  LEFT JOIN p.contractArtist ca
-                  LEFT JOIN cf.tickets t
-                  WHERE u.id = ?1
-                  AND ca.successful = TRUE
+            'SELECT u.id, SUM(p.quantity) AS pr, COUNT( DISTINCT ca.id) AS me
+                  FROM AppBundle:User u INDEX BY u.id
+                  LEFT JOIN u.carts c
+                  LEFT JOIN c.contracts co
+                  LEFT JOIN co.contractArtist ca
+                  LEFT JOIN co.purchases p
+                  WHERE ca.successful = TRUE
+                  GROUP BY u.id
                   ')
-            ->setParameter(1, $user_id)
-            ->getScalarResult();
+                ->getResult(Query::HYDRATE_ARRAY);
     }
 
+    public function findUsersNotDeleted(){
+        return $this->getEntityManager()->createQuery(
+            'SELECT u,s,c
+                  FROM AppBundle:User u
+                  LEFT JOIN u.category_statistics s
+                  LEFT JOIN s.category c
+                  WHERE u.deleted = 0
+                  ')
+            ->getResult();
+    }
 }

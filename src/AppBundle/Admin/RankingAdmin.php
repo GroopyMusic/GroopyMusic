@@ -16,6 +16,7 @@ class RankingAdmin extends BaseAdmin
             ->remove('delete')
             ->remove('create')
             ->add('compute', '/compute')
+            ->add('displayMore', '/displayMore')
         ;
     }
 }

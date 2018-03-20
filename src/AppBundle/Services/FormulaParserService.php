@@ -29,18 +29,11 @@ class FormulaParserService
         $this->logger = $logger;
     }
 
-    /**
-     * compute all catgory point for $user_id
-     *
-     * @param $user_id
-     *
-     */
-    public function setUserStatisticVariables($user_id){
-        $arrayResult = $this->em->getRepository('AppBundle:User')->countUserStatistic($user_id);
-        $arrayResult = array_pop($arrayResult);
+    public function setUserStatisticsVariables($statistic){
+        $this->logger->warning('f',[$statistic]);
         $this->evaluator->setVariables([
-            "p" =>  $arrayResult[1],
-            "m" =>  $arrayResult[2],
+            "p" =>  intval($statistic['pr']),
+            "m" =>  intval($statistic['me']),
             "a" => 10
             //TODO Ambasadorat querry + Transform in 1 Querry
         ]);

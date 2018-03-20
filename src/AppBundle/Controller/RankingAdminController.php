@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\AppBundle;
 use AppBundle\Services\RankingService;
+use Psr\Log\LoggerInterface;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,20 +20,25 @@ class RankingAdminController extends Controller
 {
     protected $container;
     private $rankingervice;
+    private $logger;
 
-    public function __construct(ContainerInterface $container, RankingService $rankingService)
+    public function __construct(ContainerInterface $container, RankingService $rankingService, LoggerInterface $logger)
     {
         $this->container = $container;
         $this->configure();
         $this->rankingervice = $rankingService;
+        $this->logger = $logger;
     }
 
     public function listAction()
     {
         $em = $this->getDoctrine()->getManager();
         $categories = $em->getRepository('AppBundle:Category')->findForRaking();
+        $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
+        $this->limitStatistics($categories);
         return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
-            'categories' => $categories
+            'categories' => $categories,
+            'maximums' => $maximums
         ));
     }
 
@@ -41,8 +47,29 @@ class RankingAdminController extends Controller
         $em = $this->getDoctrine()->getManager();
         $this->rankingervice->computeAllStatistic();
         $categories = $em->getRepository('AppBundle:Category')->findForRaking();
+        $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
+        $this->limitStatistics($categories);
         return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
-            'categories' => $categories
+            'categories' => $categories,
+            'maximums' => $maximums
         ));
+    }
+
+    public function displayMoreAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $statistics = $em->getRepository('AppBundle:User_Category')->findStatLimit($request->get('level_id'), $request->get('limit'));
+        return $this->render('@App/Admin/ranking/ranking_table_preview.html.twig', array(
+            'statistics' => $statistics
+        ));
+    }
+
+    private function limitStatistics($categories)
+    {
+        foreach ($categories as $category) {
+            foreach ($category->getLevels()->toArray() as $level) {
+                $level->setStatistics(array_slice($level->getStatistics()->toArray(), 0, 5, true));
+            }
+        }
     }
 }

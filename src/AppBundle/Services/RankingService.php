@@ -32,27 +32,32 @@ class RankingService
     public function computeAllStatistic()
     {
         $categories = $this->em->getRepository('AppBundle:Category')->findLevelsByCategories();
-        $users = $this->em->getRepository('AppBundle:User')->findAll();
-        //TODO ChangeQuerry Minimum 1 Achat
-        $user_stat = null;
+        $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeleted();
+        $statistics = $this->em->getRepository('AppBundle:User')->countUsersStatistic();
+        $point = null;
         $user_category = null;
         foreach ($users as $user) {
-            $this->formulaParserService->setUserStatisticVariables($user->getId());
+            if (!array_key_exists($user->getId(), $statistics)) {
+                continue;
+            } else {
+                $this->formulaParserService->setUserStatisticsVariables($statistics[$user->getId()]);
+            }
             foreach ($categories as $category) {
                 $levels = $category->getLevels()->toArray();
-                $user_stat = $this->formulaParserService->computeStatistic($category->getFormula());
-                if ($user_stat == 0) {
+                $point = $this->formulaParserService->computeStatistic($category->getFormula());
+                if ($point == 0) {
                     continue;
                 } else {
-                    $user_category = $this->em->getRepository('AppBundle:User_Category')->findOneBy(array('category' => $category, 'user' => $user));
+                    $user_category = $this->getCategory($user->getCategoryStatistics()->toArray(), $category->getId());
+                    $this->logger->warning("rep", [$user_category]);
                     if ($user_category == null) {
                         $user_category = new User_Category();
                         $user_category->setUser($user);
                         $user_category->setCategory($category);
-                    }else if($user_category->getStatistic() == $user_stat){
+                    } else if ($user_category->getStatistic() == $point) {
                         continue;
                     }
-                    $user_category->setStatistic($user_stat);
+                    $user_category->setStatistic($point);
                     $user_category = $this->checkLevel($user_category, $levels);
                     $this->em->persist($user_category);
                 }
@@ -75,5 +80,16 @@ class RankingService
             }
         }
         return $user_category->setLevel($correctLevel);
+    }
+
+    private function getCategory($stats, $id)
+    {
+        $this->logger->warning("cat", [$stats, $id]);
+        foreach ($stats as $stat) {
+            if ($stat->getCategory()->getId() === $id) {
+                return $stat;
+            }
+        }
+        return null;
     }
 }

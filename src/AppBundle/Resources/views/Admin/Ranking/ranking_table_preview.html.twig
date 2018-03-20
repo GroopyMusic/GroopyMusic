@@ -1,0 +1,17 @@
+{% for stat in statistics %}
+    <tr>
+        <td><input type="checkbox"></td>
+        <td>{{ stat.user.displayName }}</td>
+        <td>{{ stat.statistic }}</td>
+        <td>
+            <button class="btn">
+                <span class="glyphicon glyphicon-gift"></span>
+                Attribuer récompense
+            </button>
+            <button class="btn">
+                <span class="glyphicon glyphicon-envelope"></span>
+                Envoyer un email
+            </button>
+        </td>
+    </tr>
+{% endfor %}
