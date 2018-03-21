@@ -37,8 +37,8 @@ class PDFWriter
     public function write($template, $path, $params = [], $dest = 'F') {
         $html = $this->twig->render('AppBundle:PDF:' . $template, $params);
         $html2pdf = new Html2Pdf();
-        $html2pdf->setDefaultFont('montserrat');
-        /*
+        /*$html2pdf->setDefaultFont('montserrat');
+
         try {
             // todo more robust way of adding font in PDF ; if font isn't find, HTML2PDF simply dies...
             $html2pdf->addFont('montserrat', '', 'pdf/font/montserrat.php');
