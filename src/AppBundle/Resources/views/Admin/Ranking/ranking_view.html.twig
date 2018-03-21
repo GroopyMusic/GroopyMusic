@@ -3,7 +3,7 @@
 {% block sonata_admin_content %}
     <ul class="nav nav-tabs nav-justified">
         {% for category in categories %}
-            <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="tab-link"
+            <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="ranking-title-tab"
                                                                       href="#{{ category.name }}">{{ category.name }}</a>
             </li>
         {% endfor %}
@@ -67,7 +67,7 @@
                                 <br>
                                 <div class="form-inline clearfix">
                                     <strong>&nbsp; Eléments sélectionnés : </strong>
-                                    <select style="width: auto;height: auto;">
+                                    <select class="ranking-select-action">
                                         <option>
                                             Attribuer récompense aux utilisateurs sélectionnés
                                         </option>
@@ -88,12 +88,12 @@
         {% endfor %}
     </div>
     <div class="text-center">
-        <a href="{{ admin.generateObjectUrl('compute',null) }}" class="page-link">
+        <a href="{{ admin.generateObjectUrl('compute',null) }}" class="compute-button">
             <button class="btn btn-primary">
                 Mettre à jour les classements
             </button>
         </a>
-        <div class="alert-text">
+        <div class="compute-alert">
             Attention cette opération peut prendre quelques secondes !
         </div>
     </div>
@@ -167,13 +167,24 @@
             }
         }
 
+        function showLoader(level_id) {
+            $('#tfoot' + level_id).hide();
+            $('.loader').show();
+            console.log(level_id);
+        }
+
+        function hideLoader(level_id) {
+            $('.loader').hide();
+            $('#tfoot' + level_id).show();
+        }
+
         //ajax --> display more
         function displayMore(level_id) {
-            $('.loader').show();
+            showLoader(level_id);
             var url = "{{ admin.generateObjectUrl('displayMore',null) }}";
             var limit = $('#level' + level_id + ' tbody tr').length + 5;
             $.post(url, {level_id: level_id, limit: limit}, function (html) {
-                    $('.loader').hide();
+                    hideLoader(level_id);
                     $('#level' + level_id + ' tbody').children().remove();
                     Admin.shared_setup($('#level' + level_id + ' tbody').html(html));
                     checkIfDisplayed(level_id);
@@ -181,22 +192,4 @@
             )
         }
     </script>
-{% endblock %}
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .tab-link {
-            color: black;
-            font-size: 17px
-        }
-
-        .alert-text {
-            font-size: 11px;
-            color: black;
-        }
-
-        .page-link, .page-link :hover {
-            color: white;
-        }
-    </style>
 {% endblock %}
