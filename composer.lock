@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "85ce4ba598ccb881e1673d07374ee5e8",
+    "content-hash": "ac547c214145b17a3ba1c2ee45cf3ee6",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
-            "version": "2.3.0",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/a2lix/TranslationFormBundle.git",
-                "reference": "51ab0cdcb634ea28e7bd909de8dbbb72f2bd4452"
+                "reference": "bfdc238ec7afebdffd9197435dba1be5d7c96cd7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/51ab0cdcb634ea28e7bd909de8dbbb72f2bd4452",
-                "reference": "51ab0cdcb634ea28e7bd909de8dbbb72f2bd4452",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/bfdc238ec7afebdffd9197435dba1be5d7c96cd7",
+                "reference": "bfdc238ec7afebdffd9197435dba1be5d7c96cd7",
                 "shasum": ""
             },
             "require": {
@@ -48,15 +48,13 @@
                 "prezent/doctrine-translatable-bundle": "For Prezent strategy"
             },
             "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "A2lix\\TranslationFormBundle\\": ""
-                }
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -86,7 +84,7 @@
                 "translatable",
                 "translation"
             ],
-            "time": "2018-03-12T22:21:07+00:00"
+            "time": "2018-03-18T10:42:18+00:00"
         },
         {
             "name": "azine/email-bundle",
@@ -95,12 +93,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/azine/email-bundle.git",
-                "reference": "9cd49cb5dcd8d9dd5cb7d9a1571cb27c950c55b9"
+                "reference": "306e8b56a326d166be24a7e48e689f2bade888cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/azine/email-bundle/zipball/9cd49cb5dcd8d9dd5cb7d9a1571cb27c950c55b9",
-                "reference": "9cd49cb5dcd8d9dd5cb7d9a1571cb27c950c55b9",
+                "url": "https://api.github.com/repos/azine/email-bundle/zipball/306e8b56a326d166be24a7e48e689f2bade888cf",
+                "reference": "306e8b56a326d166be24a7e48e689f2bade888cf",
                 "shasum": ""
             },
             "require": {
@@ -148,7 +146,7 @@
                 "notification",
                 "updates"
             ],
-            "time": "2018-02-13T12:48:20+00:00"
+            "time": "2018-03-20T08:53:59+00:00"
         },
         {
             "name": "behat/transliterator",
@@ -2315,16 +2313,16 @@
         },
         {
             "name": "knplabs/knp-components",
-            "version": "1.3.5",
+            "version": "v1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/knp-components.git",
-                "reference": "a03bbd87ecf9e56db6f7533db2c63d6da6cd5f33"
+                "reference": "9e8df46807bb288567a6906f490d4f2815e2c2af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/knp-components/zipball/a03bbd87ecf9e56db6f7533db2c63d6da6cd5f33",
-                "reference": "a03bbd87ecf9e56db6f7533db2c63d6da6cd5f33",
+                "url": "https://api.github.com/repos/KnpLabs/knp-components/zipball/9e8df46807bb288567a6906f490d4f2815e2c2af",
+                "reference": "9e8df46807bb288567a6906f490d4f2815e2c2af",
                 "shasum": ""
             },
             "require": {
@@ -2384,7 +2382,7 @@
                 "pager",
                 "paginator"
             ],
-            "time": "2017-09-15T12:50:01+00:00"
+            "time": "2018-03-20T10:18:20+00:00"
         },
         {
             "name": "knplabs/knp-menu",
@@ -2825,6 +2823,53 @@
                 "psr-3"
             ],
             "time": "2017-06-19T01:22:40+00:00"
+        },
+        {
+            "name": "mossadal/math-parser",
+            "version": "v1.3.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mossadal/math-parser.git",
+                "reference": "5341fedeb4771e155890acccaafa6434836b5628"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mossadal/math-parser/zipball/5341fedeb4771e155890acccaafa6434836b5628",
+                "reference": "5341fedeb4771e155890acccaafa6434836b5628",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpdocumentor/phpdocumentor": "2.*",
+                "phpunit/php-code-coverage": "~3",
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MathParser\\": "src/MathParser"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Frank Wikström",
+                    "email": "frank@mossadal.se",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP parser for mathematical expressions, including elementary functions, variables and implicit multiplication. Also supports symbolic differentiation.",
+            "homepage": "https://github.com/mossadal/math-parser",
+            "keywords": [
+                "mathematics",
+                "parser"
+            ],
+            "time": "2018-01-04T09:33:36+00:00"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -5983,12 +6028,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "985ef53b51e79b93dd96df1f4a69f00de1990bc8"
+                "reference": "7af20bceaed0caaa7827201c90a74c275b760fe4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/985ef53b51e79b93dd96df1f4a69f00de1990bc8",
-                "reference": "985ef53b51e79b93dd96df1f4a69f00de1990bc8",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/7af20bceaed0caaa7827201c90a74c275b760fe4",
+                "reference": "7af20bceaed0caaa7827201c90a74c275b760fe4",
                 "shasum": ""
             },
             "require": {
@@ -6129,7 +6174,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2018-03-13T14:46:25+00:00"
+            "time": "2018-03-21T07:14:22+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -6349,16 +6394,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.4.6",
+            "version": "v2.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f"
+                "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d2117ec118c1ff3d28ccddca8212d82787a4809f",
-                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/69aacd44dbbaa3199d5afb68605c996d577896fc",
+                "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc",
                 "shasum": ""
             },
             "require": {
@@ -6367,8 +6412,8 @@
             },
             "require-dev": {
                 "psr/container": "^1.0",
-                "symfony/debug": "~2.7",
-                "symfony/phpunit-bridge": "~3.3@dev"
+                "symfony/debug": "^2.7",
+                "symfony/phpunit-bridge": "^3.3"
             },
             "type": "library",
             "extra": {
@@ -6411,7 +6456,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2018-03-03T16:23:01+00:00"
+            "time": "2018-03-20T04:31:17+00:00"
         },
         {
             "name": "vich/uploader-bundle",
@@ -7368,16 +7413,16 @@
         },
         {
             "name": "jms/di-extra-bundle",
-            "version": "1.9.1",
+            "version": "1.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSDiExtraBundle.git",
-                "reference": "71fac349dfdfa85a7ebcc3b95a9cd82f4de59052"
+                "reference": "fa82a4e6c9dc84df8015805028575217c0be4a54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSDiExtraBundle/zipball/71fac349dfdfa85a7ebcc3b95a9cd82f4de59052",
-                "reference": "71fac349dfdfa85a7ebcc3b95a9cd82f4de59052",
+                "url": "https://api.github.com/repos/schmittjoh/JMSDiExtraBundle/zipball/fa82a4e6c9dc84df8015805028575217c0be4a54",
+                "reference": "fa82a4e6c9dc84df8015805028575217c0be4a54",
                 "shasum": ""
             },
             "require": {
@@ -7437,7 +7482,7 @@
                 "annotations",
                 "dependency injection"
             ],
-            "time": "2017-12-03T20:26:53+00:00"
+            "time": "2018-01-12T19:04:30+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -8035,6 +8080,7 @@
             "keywords": [
                 "Socket"
             ],
+            "abandoned": "react/socket",
             "time": "2016-12-06T10:54:49+00:00"
         },
         {

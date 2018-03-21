@@ -45,7 +45,14 @@ class RankingAdminController extends Controller
     public function computeAction(Request $request)
     {
         $this->rankingervice->computeAllStatistic();
-        return $this->listAction();
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('AppBundle:Category')->findForRaking();
+        $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
+        $this->limitStatistics($categories);
+        return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
+            'categories' => $categories,
+            'maximums' => $maximums
+        ));
     }
 
     public function displayMoreAction(Request $request)
