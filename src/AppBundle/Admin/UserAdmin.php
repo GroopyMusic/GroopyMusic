@@ -65,6 +65,13 @@ class UserAdmin extends BaseAdmin
                     'label' => 'Adresse',
                 ))
             ->end()
+            ->with('Artistes')
+                ->add('getArtistsExport', 'sonata_collection', array(
+                    'label' => 'Artistes',
+                    'route' => ['name' => 'show'],
+                    'safe' => true,
+                ))
+            ->end()
             ->with('Activité')
                 ->add('payments', null, array(
                     'label' => 'Paiements',

@@ -21,6 +21,7 @@ class ContractArtistAdmin extends BaseAdmin
             ->add('refund', $this->getRouterIdParameter().'/refund')
             ->add('validate', $this->getRouterIdParameter().'/validate')
             ->add('prevalidate', $this->getRouterIdParameter().'/prevalidate')
+            ->add('tickets', $this->getRouterIdParameter().'/tickets')
         ;
     }
 
@@ -76,6 +77,9 @@ class ContractArtistAdmin extends BaseAdmin
                     'prevalidate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_prevalidate.html.twig',
                     ),
+                    'tickets' => array(
+                        'template' => 'AppBundle:Admin/ContractArtist:icon_tickets.html.twig',
+                    )
                 )))
         ;
     }

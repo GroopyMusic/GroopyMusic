@@ -8,6 +8,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
+use AppBundle\Services\TicketingManager;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -177,6 +178,7 @@ class PaymentController extends Controller
         $writer->writeOrder($cf);
 
         $em = $this->getDoctrine()->getManager();
+
         $em->persist($cf);
         $em->flush();
 
@@ -186,11 +188,11 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/send-recap-{id}", name="user_cart_send_order_recap")
      */
-    public function sendOrderRecap(ContractFan $cf, MailDispatcher $dispatcher) {
+    public function sendOrderRecap(ContractFan $cf, MailDispatcher $dispatcher, TicketingManager $ticketingManager) {
         $dispatcher->sendOrderRecap($cf);
 
-        if($cf->getContractArtist()->getTicketsSent()) {
-            $dispatcher->sendDetailsKnownFan($cf->getContractArtist(), $cf);
+        if($cf->getContractArtist()->getCounterPartsSent()) {
+            $ticketingManager->sendUnSentTicketsForContractFan($cf);
         }
 
         return $this->redirectToRoute('user_paid_carts');

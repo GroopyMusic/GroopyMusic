@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="contact_person")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ContactPersonRepository")
  */
-class ContactPerson
+class ContactPerson implements PhysicalPersonInterface
 {
     public function __toString()
     {
@@ -32,6 +32,11 @@ class ContactPerson
 
     public function getDisplayName() {
         return $this->getFirstname() . ' ' . $this->getLastname();
+    }
+
+    public function getEmail()
+    {
+        return $this->getMail();
     }
 
     /**

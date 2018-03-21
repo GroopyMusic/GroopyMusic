@@ -36,3 +36,5 @@ web/uploads/hall_technicalspecs/*
 !web/css/compiled
 web/js/compiled/*
 web/css/compiled/*
+!/vendor/tecnickcom/tcpdf/fonts/montserrat.z
+!/vendor/tecnickcom/tcpdf/fonts/montserrat.php

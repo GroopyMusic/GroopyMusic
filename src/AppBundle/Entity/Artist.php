@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ArtistRepository")
  * @ORM\Table(name="artist")
- * @UniqueEntity("artistname", repositoryMethod="findNotDeletedBy")
+ * @UniqueEntity("artistname", repositoryMethod="findNotDeleted")
  */
 class Artist implements TranslatableInterface
 {
