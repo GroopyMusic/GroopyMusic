@@ -70,7 +70,7 @@ class CategoryAdmin extends BaseAdmin
                     'label' => 'Formule',
                 ))
             ->end()
-            ->with('Paliers')
+            ->with('Paliers  (La catégorie doit être créée avant d\'ajouter les paliers) ')
             ->add('levels', 'sonata_type_collection', array(
                 'label' => 'Paliers',
                 'by_reference' => false,

@@ -44,15 +44,8 @@ class RankingAdminController extends Controller
 
     public function computeAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
         $this->rankingervice->computeAllStatistic();
-        $categories = $em->getRepository('AppBundle:Category')->findForRaking();
-        $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
-        $this->limitStatistics($categories);
-        return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
-            'categories' => $categories,
-            'maximums' => $maximums
-        ));
+        return $this->listAction();
     }
 
     public function displayMoreAction(Request $request)
@@ -64,6 +57,13 @@ class RankingAdminController extends Controller
         ));
     }
 
+
+    /**
+     * get only the first 5 lines of each category level
+     *
+     * @param $categories
+     *
+     */
     private function limitStatistics($categories)
     {
         foreach ($categories as $category) {

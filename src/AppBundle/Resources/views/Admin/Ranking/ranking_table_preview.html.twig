@@ -1,7 +1,8 @@
 {% for stat in statistics %}
     <tr>
         <td><input type="checkbox"></td>
-        <td>{{ stat.user.displayName }}</td>
+        <td><a href="{{ path('admin_app_user_show',{'id': stat.user.id}) }}">{{ stat.user.displayName }}</a>
+        </td>
         <td>{{ stat.statistic }}</td>
         <td>
             <button class="btn">

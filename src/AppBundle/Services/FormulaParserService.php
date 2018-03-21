@@ -29,8 +29,12 @@ class FormulaParserService
         $this->logger = $logger;
     }
 
+    /**
+     * set category statistics variables
+     *
+     * @param $statistic
+     */
     public function setUserStatisticsVariables($statistic){
-        $this->logger->warning('f',[$statistic]);
         $this->evaluator->setVariables([
             "p" =>  intval($statistic['pr']),
             "m" =>  intval($statistic['me']),

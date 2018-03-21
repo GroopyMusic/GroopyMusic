@@ -36,6 +36,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
                   LEFT JOIN co.contractArtist ca
                   LEFT JOIN co.purchases p
                   WHERE ca.successful = TRUE
+                  AND u.deleted = 0
                   GROUP BY u.id
                   ')
                 ->getResult(Query::HYDRATE_ARRAY);
