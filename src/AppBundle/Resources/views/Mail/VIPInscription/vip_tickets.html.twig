@@ -4,6 +4,10 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
+            {{ email_content('concert.fan.vip_tickets', {
+                '%host%': contract.artist.artistName,
+                '%hall%': contract.hallConcert.name
+            })|raw }}
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

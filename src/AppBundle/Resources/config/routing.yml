@@ -21,6 +21,11 @@ app_payment:
     type:     annotation
     prefix: /secure-zone
 
+app_ticketing:
+    resource: "@AppBundle/Controller/TicketingController.php"
+    type:     annotation
+    prefix:   /ticketing
+
 admin_ajax:
     resource: "@AppBundle/Controller/AdminAjaxController.php"
     type:     annotation

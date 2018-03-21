@@ -41,7 +41,7 @@ class ContractFan
             $this->addPurchase($purchase);
         }
 
-        $this->ticket_sent = false;
+        $this->counterparts_sent = false;
         $this->date = new \DateTime();
         $this->refunded = false;
         $this->tickets = new ArrayCollection();
@@ -61,6 +61,7 @@ class ContractFan
     }
 
     public function generateTickets() {
+        $this->generateBarCode();
         if(empty($this->tickets)) {
             foreach ($this->purchases as $purchase) {
                 /** @var Purchase $purchase */
@@ -85,7 +86,7 @@ class ContractFan
     }
 
     public function getTicketsFileName() {
-        return $this->getBarcodeText() . '.pdf';
+        return $this->getBarcodeText() . '-tickets.pdf';
     }
 
     public function getAmount() {
@@ -161,9 +162,9 @@ class ContractFan
     private $purchases;
 
     /**
-     * @ORM\Column(name="ticket_sent", type="boolean")
+     * @ORM\Column(name="counterparts_sent", type="boolean")
      */
-    private $ticket_sent;
+    private $counterparts_sent;
 
     /**
      * @ORM\Column(name="barcode_text", type="string", length=255, nullable=true)
@@ -284,27 +285,27 @@ class ContractFan
     }
 
     /**
-     * Set ticketSent
+     * Set counterpartsSent
      *
-     * @param boolean $ticketSent
+     * @param boolean $counterpartsSent
      *
      * @return ContractFan
      */
-    public function setTicketSent($ticketSent)
+    public function setcounterpartsSent($counterpartsSent)
     {
-        $this->ticket_sent = $ticketSent;
+        $this->counterparts_sent = $counterpartsSent;
 
         return $this;
     }
 
     /**
-     * Get ticketSent
+     * Get counterpartsSent
      *
      * @return boolean
      */
-    public function getTicketSent()
+    public function getcounterpartsSent()
     {
-        return $this->ticket_sent;
+        return $this->counterparts_sent;
     }
 
     /**

@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container text-center">
+        <form>
+            <div class="m-4">
+                <label>Evénement</label>
+                <select id="select-event">
+                    {% for event in events %}
+                        <option value="{{ event.id }}"{% if loop.first %} selected{% endif %}>{{ event }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="m-4">
+                <label>Code barre</label>
+                <input id="barcode" type="text" name="barcode" placeholder="Entrez le code barre..." />
+            </div>
+            <div class="m-4">
+                <input type="submit" class="btn btn-primary" value="Valider" />
+            </div>
+        </form>
+    </div>
+
+    <div class="container content-box">
+        <div class="content-box-content">
+            {{ hidden_loader() }}
+            <div id="validation-results">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block additional_javascripts %}
+    <script>
+        var $results = $('#validation-results');
+        var $barcode = $('#barcode');
+
+        $('form').submit(function(e) {
+            e.preventDefault();
+            $('.loader').show();
+            $results.html('');
+            var barcode = $barcode.val();
+            var event_id = $('#select-event option:selected').val();
+
+            $.ajax({
+                method: "GET",
+                url: "{{ url('ticketing_validate_get') }}",
+                data: { event_id: event_id, barcode: barcode }
+            })
+            .error(function() {
+                var data = {error: 'Une erreur est survenue lors du scan du ticket.'};
+                displayResults(data);
+            })
+            .success(function(data) {
+                displayResults(data);
+            })
+            .done(function() {
+                $('.loader').hide();
+                $barcode.val('');
+                $barcode.focusin();
+            });
+
+        });
+
+        function displayResults(data) {
+            if(data.error != null) {
+                $results.html('<p class="alert alert-warning">' + data.error + '</p>');
+            }
+            else {
+                var output = '<table class="table">';
+                for (var property in data) {
+                    output += '<tr><td class="contract-info-title text-left">' +  property + '</td><td> ' + data[property] +' </td></tr> ';
+                }
+                output += '</table>';
+
+                if(data.validated) {
+                    $results.html('<p class="alert alert-danger">Ce ticket a déjà été validé.</p>');
+                }
+                else {
+                    $results.html('<p class="alert alert-success">Ce ticket a bien été validé</p>');
+                }
+
+                $results.append(output);
+
+            }
+        }
+
+    </script>
+{% endblock %}

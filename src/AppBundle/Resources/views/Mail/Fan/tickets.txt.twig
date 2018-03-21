@@ -1,0 +1,33 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+     {% set invited_text %}
+        {% if first is not null %}
+            {% if second is not null %}
+                {{ 'concert.fan.details.invited2'|trans({'%invited1%': first.artistName, '%invited2%': second.artistName}, 'emails') }}
+            {% else %}
+                {{ 'concert.fan.details.invited1'|trans({'%invited1%': first.artistName}, 'emails') }}
+            {% endif %}
+        {% else %}
+            ''
+        {% endif %}
+    {% endset %}
+
+    {{ email_content('concert.fan.tickets', {
+                '%username%': username,
+                '%invited%': invited_text,
+                '%host%': artist.artistName,
+                '%hall%': contract.reality.hall.name,
+                '%date%': contract.reality.date|date('d/m/Y'),
+            })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Fan:tickets.html.twig' %}
+{% endblock %}

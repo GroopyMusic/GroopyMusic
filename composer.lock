@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "10140c955b506e277eddbdcc9b3686a1",
+    "content-hash": "85ce4ba598ccb881e1673d07374ee5e8",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -2825,53 +2825,6 @@
                 "psr-3"
             ],
             "time": "2017-06-19T01:22:40+00:00"
-        },
-        {
-            "name": "mossadal/math-parser",
-            "version": "v1.3.13",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mossadal/math-parser.git",
-                "reference": "5341fedeb4771e155890acccaafa6434836b5628"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mossadal/math-parser/zipball/5341fedeb4771e155890acccaafa6434836b5628",
-                "reference": "5341fedeb4771e155890acccaafa6434836b5628",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpdocumentor/phpdocumentor": "2.*",
-                "phpunit/php-code-coverage": "~3",
-                "phpunit/phpunit": "5.1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MathParser\\": "src/MathParser"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Frank Wikström",
-                    "email": "frank@mossadal.se",
-                    "role": "Developer"
-                }
-            ],
-            "description": "PHP parser for mathematical expressions, including elementary functions, variables and implicit multiplication. Also supports symbolic differentiation.",
-            "homepage": "https://github.com/mossadal/math-parser",
-            "keywords": [
-                "mathematics",
-                "parser"
-            ],
-            "time": "2018-01-04T09:33:36+00:00"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -8082,7 +8035,6 @@
             "keywords": [
                 "Socket"
             ],
-            "abandoned": "react/socket",
             "time": "2016-12-06T10:54:49+00:00"
         },
         {

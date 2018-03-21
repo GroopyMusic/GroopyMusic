@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="fos_user")
  */
-class User extends BaseUser implements RecipientInterface
+class User extends BaseUser implements RecipientInterface, PhysicalPersonInterface
 {
     public function __toString()
     {
@@ -74,6 +74,7 @@ class User extends BaseUser implements RecipientInterface
         $this->setBirthday(null);
         $this->setFacebookAccessToken(null);
         $this->setFacebookId(null);
+        $this->setDeleted(true);
 
         foreach($this->artists_user as $au) {
             $this->removeArtistsUser($au);
@@ -111,6 +112,18 @@ class User extends BaseUser implements RecipientInterface
         }, $this->artists_user->toArray()), function(Artist $artist) {
             return $artist->isActive();
         });
+    }
+
+    public function getArtistsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->getArtists() as $key => $val) {
+            /** @var $val Artist */
+            $exportList[] = $i .
+                ') ' . $val->getArtistname();
+            $i++;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
     // Form only

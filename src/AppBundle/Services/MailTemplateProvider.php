@@ -19,14 +19,14 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:reminder_contract_artist.txt.twig';
     const FAILED_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:failed_contract_artist.txt.twig';
     const SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:successful_contract_artist.txt.twig';
-    const DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:contract_details_known_artist.txt.twig';
 
     const FAILED_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:failed_contract_fan.txt.twig';
     const SUCCESSFUL_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:successful_contract_fan.txt.twig';
     const ONGOING_CART_TEMPLATE = 'AppBundle:Mail/Fan:ongoing_cart.txt.twig';
     const TICKET_TEMPLATE = 'AppBundle:Mail/Fan:ticket.txt.twig';
     const ORDER_RECAP_TEMPLATE = 'AppBundle:Mail/Fan:order.txt.twig';
-    const DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Artist:contract_details_known_fan.txt.twig';
+    const TICKETS_TEMPLATE = 'AppBundle:Mail/Fan:tickets.txt.twig';
+    const VIP_TICKETS_TEMPLATE = 'AppBundle:Mail/VIPInscription:vip_tickets.txt.twig';
 
     const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/User:change_email_confirmation.txt.twig';
 
@@ -150,8 +150,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
             self::ONGOING_CART_TEMPLATE,
             self::TICKET_TEMPLATE,
             self::ORDER_RECAP_TEMPLATE,
-            self::DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE,
-            self::DETAILS_KNOWN_CONTRACT_FAN_TEMPLATE,
+            self::TICKETS_TEMPLATE,
+            self::VIP_TICKETS_TEMPLATE,
 
             self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,
 

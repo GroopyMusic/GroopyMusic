@@ -5,6 +5,21 @@ Days 3: Mercredi
 Days 4: Jeudi
 Days 5: Vendredi
 Days 6: Samedi
+
+#new
+months.01: Janvier
+months.02: Février
+months.03: Mars
+months.04: Avril
+months.05: Mai
+months.06: Juin
+months.07: Juillet
+months.08: Août
+months.09: Septembre
+months.10: Octobre
+months.11: Novembre
+months.12: Décembre
+
 Jan: Jan
 Feb: Fév
 Mar: Mars
@@ -548,6 +563,15 @@ order_pdf:
     content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce concert. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>
   footer:
     tracking: "Cette confirmation de commande a été générée le %date%. Identifiant commande : %id%"
+
+#new
+tickets_pdf:
+  ticket:
+    title: Festival Un-Mute @%hall_name%
+    is_entry: |
+        Ce ticket est votre droit d'entrée.
+        Merci de le présenter sur un support lisible.
+  conditions: Nos conditions générales de vente sont disponibles à l'adresse <a href="%conditionsUrl%">%conditionsUrl%</a>
 
 header:
   slogan: Découvrez. Soutenez. Produisez les artistes belges de demain.
