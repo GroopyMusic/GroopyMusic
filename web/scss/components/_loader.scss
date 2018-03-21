@@ -66,9 +66,3 @@
     stroke: $l-color-4;
   }
 }
-
-.loader-explanation {
-  @extend .alert-warning;
-  @extend .p-3;
-  @extend .text-center;
-}
