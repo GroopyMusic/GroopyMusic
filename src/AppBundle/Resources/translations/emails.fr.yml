@@ -86,9 +86,11 @@ concert:
 
       Nous voici à quelques jours du festival du %date% dans la salle "%hall%" dont la tête d'affiche est %host%. %invited%
 
-      Vous trouverez votre ou vos ticket(s) de concert en pièce jointe (format PDF).
+      Vous trouverez votre ou vos ticket(s) en pièce jointe (format PDF).
 
-      Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
+      Nous vous demandons de bien vouloir le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
+
+      %additional_info%
 
       Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
 
@@ -100,7 +102,9 @@ concert:
 
       Toutes les informations pratiques s'y trouvent.
 
-      Nous vous demandons de bien vouloir imprimer ce(s) ticket(s) et de le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
+      Nous vous demandons de bien vouloir le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
+
+      %additional_info%
 
       Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
 

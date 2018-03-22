@@ -188,6 +188,9 @@ class ContractArtistAdmin extends BaseAdmin
                     'associated_property' => 'artist',
                     'label' => 'Premières parties',
                 ))
+                ->add('additional_info', null, array(
+                    'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
+                ))
             ->end()
             ->with('Soutien')
                 ->add('payments', null, array(
@@ -201,41 +204,41 @@ class ContractArtistAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('dateEnd', 'date', array(
-                'required' => true,
-                'label' => 'Échéance',
-                'html5' => false,
-                'widget' => 'single_text',
-                'format' => 'MM/dd/yyyy',
-                'attr' => ['class' => 'datePicker'],
-            ))
-            ->add('motivations', null, array(
-                'required' => false,
-                'label' => 'Motivations du groupe',
-            ))
-            ->add('province', null, array(
-                'required' => true,
-                'label' => 'Province',
-            ))
-            ->add('tickets_reserved', null, array(
-                'required' => true,
-                'label' => 'Tickets réservés',
-            ))
+                ->add('dateEnd', 'date', array(
+                    'required' => true,
+                    'label' => 'Échéance',
+                    'html5' => false,
+                    'widget' => 'single_text',
+                    'format' => 'MM/dd/yyyy',
+                    'attr' => ['class' => 'datePicker'],
+                ))
+                ->add('motivations', null, array(
+                    'required' => false,
+                    'label' => 'Motivations du groupe',
+                ))
+                ->add('province', null, array(
+                    'required' => true,
+                    'label' => 'Province',
+                ))
+                ->add('tickets_reserved', null, array(
+                    'required' => true,
+                    'label' => 'Tickets réservés',
+                ))
             ->end()
         ;
 
         $form
             ->with('Détails connus')
-            ->add('reality', ConcertPossibilityType::class, array(
-                'label' => false,
-                'required' => false,
-                'required_reality' => false,
-                'is_reality' => true,
-            ))
+                ->add('reality', ConcertPossibilityType::class, array(
+                    'label' => false,
+                    'required' => false,
+                    'required_reality' => false,
+                    'is_reality' => true,
+                ))
             ->end();
 
         $form
-            ->with('Premières parties')
+            ->with('Autres')
                 ->add( 'coartists_list', 'sonata_type_collection', array(
                     'label' => false,
                     'by_reference' => false,
@@ -246,6 +249,9 @@ class ContractArtistAdmin extends BaseAdmin
                         'admin_code'      => ContractArtistArtistAdmin::class,
                     )
                 )
+                ->add('additional_info', null, array(
+                    'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
+                ))
             ->end()
         ;
 

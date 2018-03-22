@@ -82,8 +82,7 @@
         </table>
         {% if loop.index % 2 == 0 or loop.last %}
             <div class="between-tickets"></div>
-            <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw }}</p>
-            {{ lorem_ipsum() }}
+            <p style="font-size: 80%;">{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
 
             {% if loop.index % 2 == 0 and not loop.last %}
                 </page>

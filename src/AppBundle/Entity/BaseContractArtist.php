@@ -335,7 +335,12 @@ class BaseContractArtist
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="VIPInscription", mappedBy="contract_artist")
      */
-    private $vip_inscriptions;
+    protected $vip_inscriptions;
+
+    /**
+     * @ORM\Column(name="additional_info", type="text", nullable=true)
+     */
+    protected $additional_info;
 
     // Discriminator
     protected $type;
@@ -930,5 +935,29 @@ class BaseContractArtist
     public function getVipInscriptions()
     {
         return $this->vip_inscriptions;
+    }
+
+    /**
+     * Set additionalInfo
+     *
+     * @param string $additionalInfo
+     *
+     * @return BaseContractArtist
+     */
+    public function setAdditionalInfo($additionalInfo)
+    {
+        $this->additional_info = $additionalInfo;
+
+        return $this;
+    }
+
+    /**
+     * Get additionalInfo
+     *
+     * @return string
+     */
+    public function getAdditionalInfo()
+    {
+        return $this->additional_info;
     }
 }

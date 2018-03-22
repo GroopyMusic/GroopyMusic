@@ -6,7 +6,8 @@
         {% block content %}
             {{ email_content('concert.fan.vip_tickets', {
                 '%host%': contract.artist.artistName,
-                '%hall%': contract.hallConcert.name
+                '%hall%': contract.hallConcert.name,
+                '%additional_info%': contract.additionalInfo,
             })|raw }}
         {% endblock %}
     {% endspaceless %}
