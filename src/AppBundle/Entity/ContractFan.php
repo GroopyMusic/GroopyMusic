@@ -48,7 +48,7 @@ class ContractFan
     }
 
     public function isPaid() {
-        return !$this->isRefunded();
+        return $this->getPaid();
     }
 
     public function isRefunded() {
@@ -96,7 +96,7 @@ class ContractFan
     }
 
     public function getPaid() {
-        return $this->cart->getPaid();
+        return $this->cart->getPaid() && !$this->refunded;
     }
 
     public function getCounterPartsQuantity() {
