@@ -20,6 +20,7 @@
                 '%host%': artist.artistName,
                 '%hall%': contract.reality.hall.name,
                 '%date%': contract.reality.date|date('d/m/Y'),
+                '%additional_info%': contract.additionalInfo,
             })|raw }}
         {% endblock %}
     {% endspaceless %}
