@@ -12,6 +12,14 @@ namespace AppBundle\Repository;
 class User_CategoryRepository  extends \Doctrine\ORM\EntityRepository
 {
 
+
+    /**
+     * retrieves rows of statistics from a level with limits
+     *
+     * @param $level_id
+     * @param $limit
+     * @return array
+     */
     public function findStatLimit($level_id,$limit){
         return $this->getEntityManager()->createQuery(
             'SELECT stat

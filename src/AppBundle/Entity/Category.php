@@ -88,6 +88,7 @@ class Category implements TranslatableInterface
      */
     private $levels;
 
+
     /**
      * Get id
      *
@@ -189,5 +190,4 @@ class Category implements TranslatableInterface
     {
         return $this->levels;
     }
-
 }

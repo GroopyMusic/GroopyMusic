@@ -79,5 +79,4 @@ class CategoryTranslation
     {
         return $this->description;
     }
-
 }

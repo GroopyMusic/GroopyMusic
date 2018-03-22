@@ -37,21 +37,20 @@ class RankingService
         $point = null;
         $exceptions = 0;
         $user_category = null;
-        try {
-            $categories = $this->em->getRepository('AppBundle:Category')->findLevelsByCategories();
-            $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeleted();
-            $statistics = $this->em->getRepository('AppBundle:User')->countUsersStatistic();
-        } catch (Exception $ex) {
-            $this->logger->warning("exception", [$ex->getMessage()]);
-            return false;
-        }
+        $last_exception_message = null;
+
+        $categories = $this->em->getRepository('AppBundle:Category')->findLevelsByCategories();
+        $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeleted();
+        $statistics = $this->em->getRepository('AppBundle:User')->countUsersStatistic();
+
         foreach ($users as $user) {
             if ($exceptions > 5) {
-                $this->logger->warning("too much exceptions", ["number of exceptions : " . $exceptions]);
-                return false;
+                $this->logger->warning("Number of exceptions > 5", []);
+                throw new Exception($last_exception_message);
             }
             try {
                 if (!array_key_exists($user->getId(), $statistics)) {
+                    $this->deleteStatistic($user);
                     continue;
                 } else {
                     $this->formulaParserService->setUserStatisticsVariables($statistics[$user->getId()]);
@@ -68,6 +67,8 @@ class RankingService
                             $user_category->setUser($user);
                             $user_category->setCategory($category);
                         } else if ($user_category->getStatistic() == $point) {
+                            $user_category = $this->checkLevel($user_category, $levels);
+                            $this->em->persist($user_category);
                             continue;
                         }
                         $user_category->setStatistic($point);
@@ -77,12 +78,12 @@ class RankingService
                 }
             } catch (\Exception $ex) {
                 $exceptions++;
-                $this->logger->warning("exception compute", [$ex->getMessage()]);
+                $last_exception_message = $ex->getMessage();
+                $this->logger->warning("Exception compute stat user", [$last_exception_message]);
                 continue;
             }
         }
         $this->em->flush();
-        return true;
     }
 
     /**
@@ -123,5 +124,33 @@ class RankingService
             }
         }
         return null;
+    }
+
+    /**
+     * remove the user_categories of $user
+     *
+     * @param $user
+     *
+     */
+    private function deleteStatistic($user)
+    {
+        foreach ($user->getCategoryStatistics() as $stat) {
+            $this->em->remove($stat);
+        }
+    }
+
+    /**
+     * build description of each category formula
+     *
+     * @param $categories
+     * @return array | key => category_id | value => formula_descriptions
+     */
+    public function buildFormulaDescription($categories)
+    {
+        $formula_descriptions = [];
+        foreach ($categories as $category) {
+            $formula_descriptions[$category->getId()] = strtr($category->getFormula(), $this->formulaParserService->querry_descritpions);
+        }
+        return $formula_descriptions;
     }
 }

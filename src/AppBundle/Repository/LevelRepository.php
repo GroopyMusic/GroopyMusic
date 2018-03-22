@@ -12,7 +12,12 @@ use Doctrine\ORM\Query;
 
 class LevelRepository extends \Doctrine\ORM\EntityRepository
 {
-    
+    /**
+     * Count the number of statistics in each level
+     *
+     * @return array : Key = level, value = number of statistics
+     *
+     */
     public function countMaximums()
     {
         return $this->getEntityManager()->createQuery(

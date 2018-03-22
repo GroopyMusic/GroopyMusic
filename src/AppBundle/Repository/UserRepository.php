@@ -27,6 +27,12 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
         return $qb->getQuery()->getResult();
     }
 
+
+    /**
+     * Count all users' statistics results for the category
+     *
+     * @return array
+     */
     public function countUsersStatistic(){
         return $this->getEntityManager()->createQuery(
             'SELECT u.id, SUM(p.quantity) AS pr, COUNT( DISTINCT ca.id) AS me
@@ -36,12 +42,20 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
                   LEFT JOIN co.contractArtist ca
                   LEFT JOIN co.purchases p
                   WHERE ca.successful = TRUE
-                  AND u.deleted = 0
+                  AND u.deleted = FALSE
+                  AND co.refunded = FALSE
+                  AND c.paid = TRUE
                   GROUP BY u.id
                   ')
                 ->getResult(Query::HYDRATE_ARRAY);
     }
 
+    /**
+     * get all users not deleted
+     *
+     * @return array
+     *
+     */
     public function findUsersNotDeleted(){
         return $this->getEntityManager()->createQuery(
             'SELECT u,s,c

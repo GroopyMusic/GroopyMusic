@@ -7,6 +7,7 @@
  */
 
 namespace AppBundle\Admin;
+
 use AppBundle\Entity\Level;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
@@ -37,9 +38,9 @@ class CategoryAdmin extends BaseAdmin
                         'delete' => array(),
                     )
                 )
-            )
-        ;
+            );
     }
+
     public function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -56,32 +57,41 @@ class CategoryAdmin extends BaseAdmin
             ->add('levels', null, array(
                 'label' => 'Paliers',
             ))
-            ->end()
-        ;
+            ->end();
     }
+
     public function configureFormFields(FormMapper $form)
     {
         $form
             ->with('Champs traductibles')
-            ->add('translations', TranslationsType::class)
+            ->add('translations', TranslationsType::class, array(
+                'locales' => array('fr', 'en'),
+                'fields' => [
+                    'name' => [
+                        'label' => 'Nom de la catégorie',
+                    ],
+                    'description' => [
+                        'label' => 'Description de la catégorie'
+                    ]
+                ]
+            ))
             ->end()
             ->with('Données de la catégorie')
-                ->add('formula', TextType::class, array(
-                    'label' => 'Formule',
-                ))
+            ->add('formula', TextType::class, array(
+                'label' => 'Formule',
+            ))
             ->end()
             ->with('Paliers  (La catégorie doit être créée avant d\'ajouter les paliers) ')
             ->add('levels', 'sonata_type_collection', array(
                 'label' => 'Paliers',
                 'by_reference' => false,
             ), array(
-                    'edit'            => 'inline',
-                    'inline'          => 'table',
-                    'sortable'        => 'position',
-                    'admin_code'      => LevelAdmin::class,
+                    'edit' => 'inline',
+                    'inline' => 'table',
+                    'sortable' => 'position',
+                    'admin_code' => LevelAdmin::class,
                 )
             )
-            ->end()
-        ;
+            ->end();
     }
 }

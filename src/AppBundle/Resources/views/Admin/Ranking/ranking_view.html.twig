@@ -1,6 +1,13 @@
 {% extends 'sonata_admin_layout.html.twig' %}
 
 {% block sonata_admin_content %}
+    <div>
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
     <ul class="nav nav-tabs nav-justified">
         {% for category in categories %}
             <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="ranking-title-tab"
@@ -13,6 +20,10 @@
         {% for category in categories %}
             <div id="{{ category.name }}" {% if loop.index == 1 %} class="tab-pane fade in active" {% else %} class="tab-pane fade" {% endif %}>
                 <div>
+                    <div class="formula-desc">
+                        {{ formula_desc[category.id] }}
+                    </div>
+                    <br>
                     {% for level in category.levels %}
                         <div id="level{{ level.id }}" class="panel panel-default">
                             <div class="panel-body">
@@ -63,7 +74,9 @@
                                     </tr>
                                     </tfoot>
                                 </table>
-                                {{ hidden_loader() }}
+                                <div id="loader{{ level.id }}">
+                                    {{ hidden_loader() }}
+                                </div>
                                 <br>
                                 <div class="form-inline clearfix">
                                     <strong>&nbsp; Eléments sélectionnés : </strong>
@@ -169,12 +182,11 @@
 
         function showLoader(level_id) {
             $('#tfoot' + level_id).hide();
-            $('.loader').show();
-            console.log(level_id);
+            $('#loader' + level_id).find('.loader').show();
         }
 
         function hideLoader(level_id) {
-            $('.loader').hide();
+            $('#loader' + level_id).find('.loader').hide();
             $('#tfoot' + level_id).show();
         }
 

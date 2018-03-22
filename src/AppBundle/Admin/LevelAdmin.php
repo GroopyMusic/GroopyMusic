@@ -70,7 +70,14 @@ class LevelAdmin extends BaseAdmin
             ))
             ->end()
             ->with('Champs traductibles')
-            ->add('translations', TranslationsType::class)
+            ->add('translations', TranslationsType::class, array(
+                'locales' => array('fr', 'en'),
+                'fields' => [
+                    'name' => [
+                        'label' => 'Nom du palier',
+                    ]
+                ]
+            ))
             ->end()
         ;
     }

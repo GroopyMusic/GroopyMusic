@@ -11,6 +11,12 @@ namespace AppBundle\Repository;
 
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * Get all the important elements for the rankings
+     *
+     * @return array of important elements
+     */
     public function findForRaking() {
         return $this->getEntityManager()->createQuery(
             'SELECT c, l, ct, lt, s, u
@@ -25,6 +31,12 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+
+    /**
+     * get categories and their levels
+     *
+     * @return array
+     */
     public function findLevelsByCategories() {
         return $this->getEntityManager()->createQuery(
             'SELECT c,l,ct,lt
