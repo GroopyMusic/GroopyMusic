@@ -168,15 +168,18 @@ class TicketingManager
                     $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage() . ' \n ' . $e->getTraceAsString());
                     return $e;
                 }
-            }
-            try {
-                $this->sendNotificationTicketsSent($users, $contractArtist);
-            } catch(\Exception $e) {
-                $this->logger->error("Erreur lors de l'envoi de notifications pour les tickets du contrat d'artiste ");
-                return $e;
+
             }
         }
+
         $this->em->flush();
+
+        try {
+            $this->sendNotificationTicketsSent($users, $contractArtist);
+        } catch(\Exception $e) {
+            $this->logger->error("Erreur lors de l'envoi de notifications pour les tickets du contrat d'artiste " . $contractArtist->getId());
+        }
+
         return null;
     }
 
