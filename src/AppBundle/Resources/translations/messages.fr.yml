@@ -747,6 +747,11 @@ labels:
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"
 
+  #new
+  conditions:
+    accept_new: J'ai lu et j'accepte les dernières <a href="%conditionsUrl%">conditions générales d'utilisation de la plateforme Un-Mute</a>
+    submit: Continuer sur le site
+
 #new
   proposition_hall:
     name: Nom de la salle

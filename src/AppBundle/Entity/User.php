@@ -29,7 +29,8 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->inscription_date = new \DateTime();
         $this->accept_conditions = false;
         $this->deleted = false;
-        $this->category_statistics = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->category_statistics = new ArrayCollection();
+        $this->user_conditions = new ArrayCollection();
     }
 
     public function owns(Artist $artist) {
@@ -126,6 +127,20 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
+    public function getAcceptedConditions() {
+        return array_map(function(User_Conditions $uc) {
+            return $uc->getConditions();
+        }, $this->user_conditions->toArray());
+    }
+
+    public function hasAccepted(Conditions $conditions) {
+        return in_array($conditions, $this->getAcceptedConditions());
+    }
+
+    public function isFirstVisit() {
+        return $this->user_conditions->isEmpty();
+    }
+
     // Form only
     public $accept_conditions;
 
@@ -149,12 +164,12 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     /**
      * @ORM\OneToMany(targetEntity="Cart", mappedBy="user")
      */
-    private $carts;
+    protected $carts;
 
     /**
      * @ORM\Column(name="credits", type="integer")
      */
-    private $credits;
+    protected $credits;
 
     /**
      * @var string
@@ -194,43 +209,43 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     /**
      * @ORM\ManyToMany(targetEntity="Genre")
      */
-    private $genres;
+    protected $genres;
 
     /**
      * @ORM\OneToOne(targetEntity="Address", cascade={"all"}, orphanRemoval=true)
      * @ORM\JoinColumn(nullable=true)
      */
-    private $address;
+    protected $address;
 
     /**
      * @ORM\Column(name="inscription_date", type="datetime", nullable=true)
      */
-    private $inscription_date;
+    protected $inscription_date;
 
     /**
      * @ORM\Column(name="asked_email", type="string", length=255, nullable=true)
      */
-    private $asked_email;
+    protected $asked_email;
 
     /**
      * @ORM\Column(name="asked_email_token", type="text", nullable=true)
      */
-    private $asked_email_token;
+    protected $asked_email_token;
 
     /**
      * @ORM\OneToMany(targetEntity="Notification", mappedBy="user")
      */
-    private $notifications;
+    protected $notifications;
 
     /**
      * @ORM\Column(name="birthday", type="date", nullable=true)
      */
-    private $birthday;
+    protected $birthday;
 
     /**
      * @ORM\Column(name="deleted", type="boolean")
      */
-    private $deleted;
+    protected $deleted;
 
     /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
     protected $facebook_id;
@@ -241,7 +256,13 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     /**
      * @ORM\OneToMany(targetEntity="User_Category", mappedBy="user", cascade={"all"}, orphanRemoval=true)
      */
-    private $category_statistics;
+    protected $category_statistics;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="User_Conditions", mappedBy="user", fetch="EAGER")
+     */
+    protected $user_conditions;
 
     /**
      * @param mixed $salutation
@@ -844,5 +865,39 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getCategoryStatistics()
     {
         return $this->category_statistics;
+    }
+
+    /**
+     * Add userCondition
+     *
+     * @param \AppBundle\Entity\User_Conditions $userCondition
+     *
+     * @return User
+     */
+    public function addUserCondition(\AppBundle\Entity\User_Conditions $userCondition)
+    {
+        $this->user_conditions[] = $userCondition;
+
+        return $this;
+    }
+
+    /**
+     * Remove userCondition
+     *
+     * @param \AppBundle\Entity\User_Conditions $userCondition
+     */
+    public function removeUserCondition(\AppBundle\Entity\User_Conditions $userCondition)
+    {
+        $this->user_conditions->removeElement($userCondition);
+    }
+
+    /**
+     * Get userConditions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserConditions()
+    {
+        return $this->user_conditions;
     }
 }

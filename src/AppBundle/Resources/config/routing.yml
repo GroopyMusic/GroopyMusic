@@ -26,6 +26,11 @@ app_ticketing:
     type:     annotation
     prefix:   /ticketing
 
+app_conditions:
+    resource: "@AppBundle/Controller/ConditionsController.php"
+    type:     annotation
+    prefix:   /conditions
+
 admin_ajax:
     resource: "@AppBundle/Controller/AdminAjaxController.php"
     type:     annotation

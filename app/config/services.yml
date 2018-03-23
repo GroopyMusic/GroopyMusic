@@ -71,6 +71,10 @@ services:
       tags:
         - {name: kernel.event_subscriber }
 
+    AppBundle\EventListener\KernelListener:
+      tags:
+        - {name: kernel.event_subscriber }
+
     AppBundle\Services\:
       resource: '../../src/AppBundle/Services/*'
 

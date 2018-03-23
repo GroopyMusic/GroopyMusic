@@ -24,13 +24,14 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
             new FOS\UserBundle\FOSUserBundle(),
-            new \Azine\EmailBundle\AzineEmailBundle(),
+            new Azine\EmailBundle\AzineEmailBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Sonata\TranslationBundle\SonataTranslationBundle(),
+            new Sonata\FormatterBundle\SonataFormatterBundle(),
             new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
             new JMose\CommandSchedulerBundle\JMoseCommandSchedulerBundle(),
             new JMS\I18nRoutingBundle\JMSI18nRoutingBundle(),
@@ -38,6 +39,7 @@ class AppKernel extends Kernel
             new Skies\QRcodeBundle\SkiesQRcodeBundle(),
             new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+            new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
             new A2lix\TranslationFormBundle\A2lixTranslationFormBundle(),
             new Oneup\UploaderBundle\OneupUploaderBundle(),
             new Vich\UploaderBundle\VichUploaderBundle(),
@@ -47,6 +49,7 @@ class AppKernel extends Kernel
             new cspoo\Swiftmailer\MailgunBundle\cspooSwiftmailerMailgunBundle(),
             new Http\HttplugBundle\HttplugBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+            new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

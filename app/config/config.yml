@@ -51,6 +51,7 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     form_themes:
+      - '@SonataFormatter/Form/formatter.html.twig'
       - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
       - ':Form:jquery.collection.html.twig'
       - ':Form:bootstrap_4_horizontal_layout.html.twig'
@@ -72,3 +73,8 @@ swiftmailer:
     username:   "%mailer_user%"
     password:   "%mailer_password%"
 
+ivory_ck_editor:
+  configs:
+    my_config:
+      toolbar: "full"
+  default_config: my_config
