@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Services\FormulaParserService;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;

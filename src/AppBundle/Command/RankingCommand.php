@@ -9,6 +9,7 @@
 namespace AppBundle\Command;
 
 
+use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\RankingService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,18 +34,23 @@ class RankingCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $rankingService = $this->getContainer()->get(RankingService::class);
+        $notificationDispatcher = $this->getContainer()->get(NotificationDispatcher::class);
         $output->writeln('-------------------------------');
         $output->writeln('Starting COMPUTE STAT command');
         $output->writeln('-------------------------------');
-        if($rankingService->computeAllStatistic()){
-            $output->writeln('-------------------------------');
-            $output->writeln('DONE');
-            $output->writeln('-------------------------------');
-        }else{
+        try {
+            $rankingService->computeAllStatistic();
+        } catch (\Exception $ex) {
+            $notificationDispatcher->notifyAdminErrorStatisticComputation($ex->getMessage());
             $output->writeln('-------------------------------');
             $output->writeln('ERROR');
             $output->writeln('-------------------------------');
+            return;
         }
+        $output->writeln('-------------------------------');
+        $output->writeln('DONE');
+        $output->writeln('-------------------------------');
+
     }
 
 }

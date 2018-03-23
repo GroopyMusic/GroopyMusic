@@ -9,11 +9,13 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Entity\Level;
+use AppBundle\Services\FormulaParserService;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\CoreBundle\Form\Type\CollectionType;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
@@ -93,5 +95,19 @@ class CategoryAdmin extends BaseAdmin
                 )
             )
             ->end();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        $formulaParserService = $this->getConfigurationPool()->getContainer()->get(FormulaParserService::class);
+        try {
+            $formulaParserService->setUserStatisticsVariables(['pr' => '10', 'me' => '5', 'am' => '4']);
+            $formulaParserService->computeStatistic($object->getFormula());
+        } catch (\Exception $ex) {
+            $errorElement->with('formula')->addViolation('Le format de la formule n\'est pa correct : ' . $ex->getMessage())->end();
+        }
     }
 }

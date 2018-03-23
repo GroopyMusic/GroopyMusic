@@ -1,0 +1,10 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'Une erreur est survenue' %}
+{%- set content -%}
+    <span>Une erreur est survenue lors de l'éxecution du JOB CRON qui calcule les statistiques des utilisateurs</span>
+    <br>
+    <span>Message de l'exception : {{ message }}</span>
+{%- endset -%}
