@@ -28,6 +28,7 @@ class NotificationDispatcher
     const ADMIN_NEW_CONTACT_FORM_TYPE = 'Admin/new_contact_form';
     const ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE = 'Admin/new_vip_inscription';
     const ADMIN_NEW_PROPOSITION_FORM_TYPE = 'Admin/new_proposition';
+    const ADMIN_STATISTIC_COMPUTATION_ERROR_TYPE = 'Admin/statistic_computation_error';
 
     private $em;
     private $rolesManager;
@@ -38,7 +39,8 @@ class NotificationDispatcher
         $this->rolesManager = $rolesManager;
     }
 
-    public function addNotification(User $user, $type, array $params = []) {
+    public function addNotification(User $user, $type, array $params = [])
+    {
         $notif = new Notification();
         $notif->setUser($user)->setType($type)->setParams($params);
 
@@ -46,17 +48,19 @@ class NotificationDispatcher
         $this->em->flush();
     }
 
-    public function addAdminNotification($type, array $params = []) {
+    public function addAdminNotification($type, array $params = [])
+    {
         $admin_roles = $this->rolesManager->getParentRoles(['ROLE_ADMIN']);
         $admin_profiles = $this->em->getRepository('AppBundle:User')->findUsersWithRoles($admin_roles);
         $this->addNotifications($admin_profiles, $type, $params);
     }
 
-    public function addNotifications($users, $type, array $params = []) {
+    public function addNotifications($users, $type, array $params = [])
+    {
         $users = array_unique($users);
 
         $notifs = [];
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $notif = new Notification();
             $notif->setUser($user)->setType($type)->setParams($params);
 
@@ -67,15 +71,18 @@ class NotificationDispatcher
         $this->em->flush();
     }
 
-    public function getUnseenNb(User $user) {
+    public function getUnseenNb(User $user)
+    {
         return count($this->em->getRepository('AppBundle:Notification')->findBy(['user' => $user, 'seen' => false]));
     }
 
-    public function notifyProblematicCart(Cart $cart) {
+    public function notifyProblematicCart(Cart $cart)
+    {
         $this->addNotification($cart->getUser(), self::PROBLEMATIC_CART_TYPE);
     }
 
-    public function notifyReminderArtistContract($users, ContractArtist $contract, $nb_days, $places) {
+    public function notifyReminderArtistContract($users, ContractArtist $contract, $nb_days, $places)
+    {
         $this->addNotifications($users, self::REMINDER_ARTIST_CONTRACT_TYPE, [
             'nbDays' => $nb_days,
             // TODO handle this case where step name won't be translated... should it be handled with IDs ?
@@ -85,18 +92,20 @@ class NotificationDispatcher
         ]);
     }
 
-    public function notifyKnownOutcomeContract($users, ContractArtist $contract, $artist, $success) {
+    public function notifyKnownOutcomeContract($users, ContractArtist $contract, $artist, $success)
+    {
 
-        if($artist) {
+        if ($artist) {
             $type = $success ? self::SUCCESSFUL_CONTRACT_ARTIST_TYPE : self::FAILED_CONTRACT_ARTIST_TYPE;
-        }
-        else {
+        } else {
             $type = $success ? self::SUCCESSFUL_CONTRACT_FAN_TYPE : self::FAILED_CONTRACT_FAN_TYPE;
         }
 
-        $hall_id = null; $hall_name = null; $date = null;
+        $hall_id = null;
+        $hall_name = null;
+        $date = null;
 
-        if($contract->getReality() != null && $contract->getReality()->getDate() != null && $contract->getReality()->getHall() != null) {
+        if ($contract->getReality() != null && $contract->getReality()->getDate() != null && $contract->getReality()->getHall() != null) {
             $hall_id = $contract->getReality()->getHall()->getId();
             $hall_name = $contract->getReality()->getHall()->getName();
             $date = $contract->getReality()->getDate()->format('d/m/Y');
@@ -112,26 +121,36 @@ class NotificationDispatcher
         ]);
     }
 
-    public function notifyTickets($users, ContractArtist $contractArtist) {
+    public function notifyTickets($users, ContractArtist $contractArtist)
+    {
         $this->addNotifications($users, self::TICKET_SENT_TYPE, ['date' => $contractArtist->getDateConcert()->format('d/m/Y'), 'hall_name' => $contractArtist->getHallConcert()->getName()]);
     }
 
-    public function notifyOngoingCart($users, ContractArtist $contract) {
+    public function notifyOngoingCart($users, ContractArtist $contract)
+    {
         $this->addNotifications($users, self::ONGOING_CART_TYPE, ['contract' => $contract]);
     }
 
     // --------------------
     // Admin notifs
     // --------------------
-    public function notifyAdminContact(SuggestionBox $suggestionBox) {
+    public function notifyAdminContact(SuggestionBox $suggestionBox)
+    {
         $this->addAdminNotification(self::ADMIN_NEW_CONTACT_FORM_TYPE, ['object' => $suggestionBox->getObject()]);
     }
 
-    public function notifyAdminVIPInscription(VIPInscription $inscription) {
+    public function notifyAdminVIPInscription(VIPInscription $inscription)
+    {
         $this->addAdminNotification(self::ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE, ['inscription_string' => $inscription->__toString()]);
     }
 
-    public function notifyAdminProposition(PropositionContractArtist $proposition) {
+    public function notifyAdminProposition(PropositionContractArtist $proposition)
+    {
         $this->addAdminNotification(self::ADMIN_NEW_PROPOSITION_FORM_TYPE, []);
+    }
+
+    public function notifyAdminErrorStatisticComputation($message)
+    {
+        $this->addAdminNotification(self::ADMIN_STATISTIC_COMPUTATION_ERROR_TYPE, ['message' => $message]);
     }
 }

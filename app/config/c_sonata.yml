@@ -43,6 +43,9 @@ sonata_admin:
                   #- AppBundle\Admin\PartnerAdmin
                   - AppBundle\Admin\ContactPersonAdmin
                   - AppBundle\Admin\HallAdmin
+                  - AppBundle\Admin\CategoryAdmin
+                  - AppBundle\Admin\LevelAdmin
+                  - AppBundle\Admin\RankingAdmin
            app.admin.group.events:
                label: app.admin.group.events
                label_catalogue: SonataAdminBundle
@@ -223,4 +226,22 @@ services:
         arguments : [~, AppBundle\Entity\PropositionContractArtist, ~]
         tags :
             - { name: sonata.admin, manager_type: orm, label: app.admin.propositioncontractartist }
+        public: true
+
+    AppBundle\Admin\CategoryAdmin:
+        arguments: [~, AppBundle\Entity\Category, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.category }
+        public: true
+
+    AppBundle\Admin\LevelAdmin:
+        arguments: [~, AppBundle\Entity\Level, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.level }
+        public: true
+
+    AppBundle\Admin\RankingAdmin:
+        arguments: [ ~, null , AppBundle:RankingAdmin]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.ranking }
         public: true

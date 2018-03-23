@@ -59,6 +59,7 @@
         "php-http/guzzle5-adapter": "^1.0",
         "hwi/oauth-bundle": "^0.6.1",
         "php-http/httplug-bundle": "^1.8",
+        "mossadal/math-parser": "^1.3",
         "tecnickcom/tcpdf": "6.2.17"
     },
     "scripts": {

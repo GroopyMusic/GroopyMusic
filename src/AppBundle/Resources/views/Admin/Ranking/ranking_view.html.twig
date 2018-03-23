@@ -1,0 +1,207 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+    <div>
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    <ul class="nav nav-tabs nav-justified">
+        {% for category in categories %}
+            <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="ranking-title-tab"
+                                                                      href="#{{ category.name }}">{{ category.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <div class="tab-content">
+        {% for category in categories %}
+            <div id="{{ category.name }}" {% if loop.index == 1 %} class="tab-pane fade in active" {% else %} class="tab-pane fade" {% endif %}>
+                <div>
+                    <div class="formula-desc">
+                        {{ formula_desc[category.id] }}
+                    </div>
+                    <br>
+                    {% for level in category.levels %}
+                        <div id="level{{ level.id }}" class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="form-inline clearfix">
+                                    <div class="pull-left">
+                                        <strong><u>{{ level.name }} - {{ level.step }} points</u></strong>
+                                    </div>
+                                    <div class="pull-right">
+                                        <button class="btn btn-success toCheck" onclick="checkAll({{ level.id }})">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                            Tout cocher
+                                        </button>
+                                        <button class="btn btn-success toUncheck" onclick="uncheckAll({{ level.id }})">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                            Tout décocher
+                                        </button>
+                                        <button id="butCollapse{{ level.id }}" class="btn btn-default"
+                                                data-toggle="collapse" data-target="#table{{ level.id }}">
+                                            <span class="glyphicon glyphicon-menu-down"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="table{{ level.id }}" class="collapse collapsable">
+                                <table class="table table-bordered table-striped sonata-ba-list rankingTable">
+                                    <thead>
+                                    <tr>
+                                        <th>Sélection</th>
+                                        <th>Nom complet</th>
+                                        <th>Points</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% include '@App/Admin/Ranking/ranking_table_preview.html.twig' with {'statistics': level.statistics } %}
+                                    </tbody>
+                                    <tfoot id="tfoot{{ level.id }}">
+                                    <tr>
+                                        <td colspan=4>
+                                            <div class="text-center">
+                                                <button class="displayMore btn btn-link"
+                                                        onclick="displayMore({{ level.id }})">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                    Afficher
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                <div id="loader{{ level.id }}">
+                                    {{ hidden_loader() }}
+                                </div>
+                                <br>
+                                <div class="form-inline clearfix">
+                                    <strong>&nbsp; Eléments sélectionnés : </strong>
+                                    <select class="ranking-select-action">
+                                        <option>
+                                            Attribuer récompense aux utilisateurs sélectionnés
+                                        </option>
+                                        <option>
+                                            Envoyer un email aux utilisateurs sélectionnés
+                                        </option>
+                                    </select>
+                                    <button class="btn btn-primary">
+                                        OK
+                                    </button>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="text-center">
+        <a href="{{ admin.generateObjectUrl('compute',null) }}" class="compute-button">
+            <button class="btn btn-primary">
+                Mettre à jour les classements
+            </button>
+        </a>
+        <div class="compute-alert">
+            Attention cette opération peut prendre quelques secondes !
+        </div>
+    </div>
+{% endblock %}
+{% block sonata_javascript_pool %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        var maximums = [];
+
+        $('document').ready(function () {
+
+            //store maximums in global variable maximums
+            {% for key, value in maximums %}
+            maximums[{{ key }}] = {{ value['maxi'] }};
+            {% endfor %}
+
+            //foreach levels, check if button display more is displayed
+            {% for category in categories %}
+            {% for level in category.levels %}
+            checkIfDisplayed({{ level.id }})
+            {% endfor %}
+            {% endfor %}
+
+            //change icon collapse button
+            $('.collapsable').on("hidden.bs.collapse", function () {
+                var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
+                $(mySpan).removeClass();
+                $(mySpan).addClass('glyphicon glyphicon-menu-down');
+
+            });
+
+            //change icon collapse button
+            $('.collapsable').on("shown.bs.collapse", function () {
+                var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
+                $(mySpan).removeClass();
+                $(mySpan).addClass('glyphicon glyphicon-menu-up');
+            });
+        });
+
+        //check all checkbox
+        function checkAll(id) {
+            $('#level' + id + ' input[type="checkbox"]').each(function () {
+
+                //normal use case : check the checkbox
+                $(this).prop("checked", true);
+
+                //To check the checkbox, we need add "checked" class to a parent div because of the bundle
+                $(this).parent().addClass('checked');
+            })
+        }
+
+        //uncheck all checkbox
+        function uncheckAll(id) {
+            $('#level' + id + ' input[type="checkbox"]').each(function () {
+
+                //normal use case : uncheck the checkbox
+                $(this).prop("checked", false);
+
+                //To uncheck the checkbox, we need remove "checked" class to a parent div because of the bundle
+                $(this).parent().removeClass('checked');
+            })
+        }
+
+        //check if button displayMore is displayed
+        function checkIfDisplayed(level_id) {
+            if ($('#level' + level_id + ' tbody tr').length == maximums[level_id]) {
+                $('#tfoot' + level_id).hide();
+            } else {
+                $('#tfoot' + level_id).show();
+            }
+        }
+
+        function showLoader(level_id) {
+            $('#tfoot' + level_id).hide();
+            $('#loader' + level_id).find('.loader').show();
+        }
+
+        function hideLoader(level_id) {
+            $('#loader' + level_id).find('.loader').hide();
+            $('#tfoot' + level_id).show();
+        }
+
+        //ajax --> display more
+        function displayMore(level_id) {
+            showLoader(level_id);
+            var url = "{{ admin.generateObjectUrl('displayMore',null) }}";
+            var limit = $('#level' + level_id + ' tbody tr').length + 5;
+            $.post(url, {level_id: level_id, limit: limit}, function (html) {
+                    hideLoader(level_id);
+                    $('#level' + level_id + ' tbody').children().remove();
+                    Admin.shared_setup($('#level' + level_id + ' tbody').html(html));
+                    checkIfDisplayed(level_id);
+                }
+            )
+        }
+    </script>
+{% endblock %}

@@ -29,6 +29,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->inscription_date = new \DateTime();
         $this->accept_conditions = false;
         $this->deleted = false;
+        $this->category_statistics = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function owns(Artist $artist) {
@@ -236,6 +237,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
 
     /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
     protected $facebook_access_token;
+
+    /**
+     * @ORM\OneToMany(targetEntity="User_Category", mappedBy="user", cascade={"all"}, orphanRemoval=true)
+     */
+    private $category_statistics;
 
     /**
      * @param mixed $salutation
@@ -804,5 +810,39 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getFacebookAccessToken()
     {
         return $this->facebook_access_token;
+    }
+
+    /**
+     * Add categoryStatistic
+     *
+     * @param \AppBundle\Entity\User_Category $categoryStatistic
+     *
+     * @return User
+     */
+    public function addCategoryStatistic(\AppBundle\Entity\User_Category $categoryStatistic)
+    {
+        $this->category_statistics[] = $categoryStatistic;
+
+        return $this;
+    }
+
+    /**
+     * Remove categoryStatistic
+     *
+     * @param \AppBundle\Entity\User_Category $categoryStatistic
+     */
+    public function removeCategoryStatistic(\AppBundle\Entity\User_Category $categoryStatistic)
+    {
+        $this->category_statistics->removeElement($categoryStatistic);
+    }
+
+    /**
+     * Get categoryStatistics
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCategoryStatistics()
+    {
+        return $this->category_statistics;
     }
 }
