@@ -1,6 +1,6 @@
 {% for stat in statistics %}
     <tr>
-        <td><input type="checkbox"></td>
+        <td><input type="checkbox" id="checkbox{{ stat.id }}"></td>
         <td><a href="{{ path('admin_app_user_show',{'id': stat.user.id}) }}">{{ stat.user.displayName }}</a>
         </td>
         <td>{{ stat.statistic }}</td>
@@ -9,7 +9,7 @@
                 <span class="glyphicon glyphicon-gift"></span>
                 Attribuer récompense
             </button>
-            <button class="btn">
+            <button class="btn" onclick="createSingleEmail({{ stat.id }},{{ stat.level.id }})">
                 <span class="glyphicon glyphicon-envelope"></span>
                 Envoyer un email
             </button>

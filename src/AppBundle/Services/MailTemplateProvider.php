@@ -36,6 +36,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const SUGGESTIONBOXCOPY_TEMPLATE = 'AppBundle:Mail/SuggestionBox:copy.txt.twig';
     const VIPINSCRIPTIONCOPY_TEMPLATE = 'AppBundle:Mail/VIPInscription:copy.txt.twig';
 
+    const RANKING_EMAIL_USER_TEMPLATE = "AppBundle:Mail/User:ranking_email.txt.twig";
+
     // Admin mails templates
     const ADMIN_TEST_TEMPLATE = 'AppBundle:Mail/Admin:test.txt.twig';
     const ADMIN_REMINDER_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract.txt.twig';

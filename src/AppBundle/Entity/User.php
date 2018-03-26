@@ -30,12 +30,14 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->accept_conditions = false;
         $this->deleted = false;
         $this->category_statistics = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->rewards = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function owns(Artist $artist) {
-        foreach($this->artists_user as $au) {
+    public function owns(Artist $artist)
+    {
+        foreach ($this->artists_user as $au) {
             /** @var Artist_User $au */
-            if($au->getArtist() == $artist) {
+            if ($au->getArtist() == $artist) {
                 return true;
             }
         }
@@ -43,15 +45,18 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
 
-    public function removeCredits($n) {
+    public function removeCredits($n)
+    {
         $this->credits -= $n;
     }
 
-    public function addCredits($n) {
+    public function addCredits($n)
+    {
         $this->credits += $n;
     }
 
-    public function anonymize() {
+    public function anonymize()
+    {
         $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';
         $this->setUsername($code);
         $this->setUsernameCanonical($code);
@@ -76,7 +81,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->setFacebookId(null);
         $this->setDeleted(true);
 
-        foreach($this->artists_user as $au) {
+        foreach ($this->artists_user as $au) {
             $this->removeArtistsUser($au);
         }
     }
@@ -106,15 +111,17 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return ucwords($displayName);
     }
 
-    public function getArtists() {
-        return array_filter(array_map(function(Artist_User $elem) {
+    public function getArtists()
+    {
+        return array_filter(array_map(function (Artist_User $elem) {
             return $elem->getArtist();
-        }, $this->artists_user->toArray()), function(Artist $artist) {
+        }, $this->artists_user->toArray()), function (Artist $artist) {
             return $artist->isActive();
         });
     }
 
-    public function getArtistsExport() {
+    public function getArtistsExport()
+    {
         $exportList = array();
         $i = 1;
         foreach ($this->getArtists() as $key => $val) {
@@ -244,6 +251,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     private $category_statistics;
 
     /**
+     * @ORM\OneToMany(targetEntity="User_Reward", mappedBy="user", cascade={"all"}, orphanRemoval=true)
+     */
+    private $rewards;
+
+    /**
      * @param mixed $salutation
      */
     public function setSalutation($salutation)
@@ -366,7 +378,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
 
-
     /**
      * Add payment
      *
@@ -400,7 +411,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     {
         return $this->payments;
     }
-
 
 
     /**
@@ -610,11 +620,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function setAddressForm($address = null)
     {
-        if(is_array($address))
-            if(empty($address)){
+        if (is_array($address))
+            if (empty($address)) {
                 $this->address = null;
-            }
-            else {
+            } else {
                 $this->address = array_pop($address);
             }
         else
@@ -844,5 +853,39 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getCategoryStatistics()
     {
         return $this->category_statistics;
+    }
+
+    /**
+     * Add reward
+     *
+     * @param \AppBundle\Entity\User_Reward $reward
+     *
+     * @return User
+     */
+    public function addReward(\AppBundle\Entity\User_Reward $reward)
+    {
+        $this->rewards[] = $reward;
+
+        return $this;
+    }
+
+    /**
+     * Remove reward
+     *
+     * @param \AppBundle\Entity\User_Reward $reward
+     */
+    public function removeReward(\AppBundle\Entity\User_Reward $reward)
+    {
+        $this->rewards->removeElement($reward);
+    }
+
+    /**
+     * Get rewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRewards()
+    {
+        return $this->rewards;
     }
 }

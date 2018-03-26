@@ -88,7 +88,7 @@
                                             Envoyer un email aux utilisateurs sélectionnés
                                         </option>
                                     </select>
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary" onclick="createMultpipleEmail({{ level.id }})">
                                         OK
                                     </button>
                                 </div>
@@ -100,6 +100,7 @@
             </div>
         {% endfor %}
     </div>
+
     <div class="text-center">
         <a href="{{ admin.generateObjectUrl('compute',null) }}" class="compute-button">
             <button class="btn btn-primary">
@@ -116,6 +117,7 @@
     <script type="text/javascript">
 
         var maximums = [];
+        var checkedStats = [];
 
         $('document').ready(function () {
 
@@ -145,6 +147,7 @@
                 $(mySpan).removeClass();
                 $(mySpan).addClass('glyphicon glyphicon-menu-up');
             });
+
         });
 
         //check all checkbox
@@ -197,11 +200,67 @@
             var limit = $('#level' + level_id + ' tbody tr').length + 5;
             $.post(url, {level_id: level_id, limit: limit}, function (html) {
                     hideLoader(level_id);
-                    $('#level' + level_id + ' tbody').children().remove();
+                    $('#level' + level_id + ' tbody').children().remove(); //check
                     Admin.shared_setup($('#level' + level_id + ' tbody').html(html));
                     checkIfDisplayed(level_id);
                 }
             )
         }
+
+        function createSingleEmail(stat_id, level_id) {
+            checkedStats = [];
+            checkedStats.push(stat_id);
+            displayModal(level_id);
+        }
+
+        function createMultpipleEmail(level_id) {
+            getCheckedUsers(level_id);
+            displayModal(level_id);
+        }
+
+
+        function displayModal(level_id) {
+            var url = "{{ admin.generateObjectUrl('displayModal',null) }}";
+            $.post(url, {stats: checkedStats, level: level_id}, function (html) {
+                    Admin.shared_setup($(html).insertAfter($('.tab-content')));
+                    $("#sendEmailModal").on("hidden.bs.modal", function () {
+                        $(".sendEmailModal").remove();
+                    }).modal();
+                }
+            )
+        }
+
+        function getCheckedUsers(level_id) {
+            checkedStats = [];
+            $('#level' + level_id + ' input[type="checkbox"]').each(function () {
+                // normal || sonata
+                if ($(this).is(':checked') || $(this).parent().hasClass("checked")) {
+                    checkedStats.push($(this).attr('id').replace("checkbox", ""));
+                }
+            })
+        }
+
+        function sendEmail(level_id) {
+            $('#modalLoader').find('.loader').show();
+            $('#modalContent').hide();
+            var url = "{{ admin.generateObjectUrl('sendEmail',null) }}";
+            $.post(url, {
+                    level: level_id,
+                    stats: checkedStats,
+                    mailObject: $("#mailObject").val(),
+                    mailContent: $("#mailContent").val()
+                }, function (html) {
+                    $('#modalLoader').find('.loader').hide();
+                    $("#sendEmailModal").on("hidden.bs.modal", function () {
+                        $(".sendEmailModal").remove();
+                        Admin.shared_setup($(html).insertAfter($('.tab-content')));
+                        $("#sendEmailModal").on("hidden.bs.modal", function () {
+                            $(".sendEmailModal").remove();
+                        }).modal();
+                    }).modal('hide');
+                }
+            )
+        }
+
     </script>
 {% endblock %}
