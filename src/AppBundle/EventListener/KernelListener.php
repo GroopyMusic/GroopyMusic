@@ -25,7 +25,7 @@ class KernelListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents() {
         return [
-         //   KernelEvents::CONTROLLER => 'onController',
+            KernelEvents::CONTROLLER => 'onController',
         ];
     }
 
