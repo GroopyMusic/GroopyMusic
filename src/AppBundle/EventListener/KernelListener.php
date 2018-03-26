@@ -3,6 +3,7 @@
 namespace AppBundle\EventListener;
 
 use AppBundle\Controller\ConditionsController;
+use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -24,7 +25,7 @@ class KernelListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents() {
         return [
-            KernelEvents::CONTROLLER => 'onController',
+         //   KernelEvents::CONTROLLER => 'onController',
         ];
     }
 
@@ -32,7 +33,13 @@ class KernelListener implements EventSubscriberInterface
 
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if($user == null)
+        $controller = $this->conditionsController;
+        $callable = $event->getController();
+
+        if(is_array($callable) && $callable[0] == $controller)
+            return;
+
+        if(!$user instanceof User)
             return;
 
         $last_conditions = $this->em->getRepository('AppBundle:Conditions')->findLast();
@@ -45,7 +52,6 @@ class KernelListener implements EventSubscriberInterface
 
         $session->set('requested_url', $request->getRequestUri());
 
-        $controller = $this->conditionsController;
         $event->setController(array($controller, 'acceptLastAction'));
     }
 

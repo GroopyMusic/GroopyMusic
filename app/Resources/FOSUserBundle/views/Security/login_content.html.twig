@@ -45,17 +45,17 @@
                             --></button>
                         </div>
                     </form>
-                    {#
-                        <div class="py-4 mt-4" style="min-height: 100px;">
-                            <div class="h-line h-line-login-choice"></div>
-                            <h6 class="rounded-title-login-choice">{{ 'or'|trans({}, 'messages') }}</h6>
-                        </div>
+
+                    <div class="py-4 mt-4" style="min-height: 100px;">
+                        <div class="h-line h-line-login-choice"></div>
+                        <h6 class="rounded-title-login-choice">{{ 'or'|trans({}, 'messages') }}</h6>
+                    </div>
 
 
-                        <div class="mb-4 mt-1 text-center">
-                            {{ facebook_connect_widget()|raw }}
-                         </div>
-                     #}
+                    <div class="mb-4 mt-1 text-center">
+                        {{ facebook_connect_widget()|raw }}
+                     </div>
+
                 </div>
             </div>
         </div>

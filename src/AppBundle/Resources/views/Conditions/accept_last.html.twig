@@ -1,7 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <div class="container text-center">
+        {% if app.user.acceptedConditions|length == 0 %}
+            {{ 'conditions.accept_last.intro_social'|trans|raw }}
+        {% else %}
+            {{ 'conditions.accept_last.intro'|trans|raw }}
+        {% endif %}
 
-    {{ form(form) }}
+        {{ form_start(form) }}
+            <div class="mx-auto my-3">
+                {{ form_widget(form.accept) }}
+            </div>
 
+            <div class="mx-auto my-3">
+                {{ form_widget(form.submit) }}
+                <a href="{{ path('fos_user_security_logout') }}" class="btn small btn-outline-secondary mt-2 mt-md-0">{{ 'labels.conditions.logout'|trans|raw }}</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

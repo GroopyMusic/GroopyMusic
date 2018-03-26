@@ -2,9 +2,6 @@
 
  {% if not app.user %}
      <p class="text-center mb-4">{{ 'registration.intro'|trans|raw }}</p>
- {% endif %}
-
-        {#
         <ul class="nav nav-tabs text-right">
             <li class="nav-item">
                 <a class="nav-link active" id="registration-tab-link-um" href="#registration-tab-um" data-toggle="tab" role="tab" aria-selected="true">{{ 'registration.tab-um-title'|trans|raw }}</a>
@@ -12,14 +9,21 @@
             <li class="nav-item">
                 <a class="nav-link" id="registration-tab-link-fb" href="#registration-tab-fb" data-toggle="tab" role="tab" aria-selected="false">{{ 'registration.tab-fb-title'|trans|raw }}</a>
             </li>
-        </ul>#}
+        </ul>
+ {% endif %}
+
 <div class="content-box">
     <div class="content-box-content text-center">
         {% if app.user %}
-            <p>{{ 'registration.already_logged.message'|trans|raw }}</p>
+            <p>{{ 'registration.already_logged.message'|trans({
+                    '%eventsUrl%': url('catalog_crowdfundings'),
+                    '%hallsUrl%': url('catalog_halls'),
+                    '%artistsUrl%': url('catalog_artists'),
+                    '%profileUrl%': url('fos_user_profile_show'),
+                })|raw }}</p>
             <div>
                 <a href="{{ path('homepage') }}" class="btn btn-outline-primary mt-2 mt-md-0">{{ 'registration.already_logged.back'|trans|raw }}</a>
-                <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-secondary mt-2 mt-md-0">{{ 'registration.already_logged.logout'|trans|raw }}</a>
+                <a href="{{ path('fos_user_security_logout') }}" class="btn small btn-outline-secondary mt-2 mt-md-0">{{ 'registration.already_logged.logout'|trans|raw }}</a>
             </div>
         {% else %}
             <div class="tab-content">
@@ -55,14 +59,14 @@
                     </div>
                     {{ form_end(form) }}
                 </div>
-                {#
+
                 <div class="tab-pane fade" role="tabpanel" id="registration-tab-fb" aria-labelledby="#registration-tab-link-um">
                     <p class="text-left">{{ 'registration.tab-fb.intro'|trans({'%conditions_url%': url('conditions')})|raw|nl2br }}</p>
                     <div class="mb-4 mt-1 text-center">
                         {{ facebook_connect_widget()|raw }}
                     </div>
                 </div>
-                 #}
+
             </div>
         {% endif %}
     </div>

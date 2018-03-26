@@ -3,7 +3,6 @@
 namespace AppBundle\Admin;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
-use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -11,7 +10,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\FormatterBundle\Form\Type\FormatterType;
 use Sonata\FormatterBundle\Form\Type\SimpleFormatterType;
 
-class ConditionsAdmin extends AbstractAdmin
+class ConditionsAdmin extends BaseAdmin
 {
     protected function configureListFields(ListMapper $listMapper)
     {
@@ -22,7 +21,7 @@ class ConditionsAdmin extends AbstractAdmin
             ->add('date', null, array(
                 'label' => 'Date de création',
             ))
-            ->add('_action', null, [
+            ->add('_action', 'actions', [
                 'actions' => [
                     'show' => [],
                     'edit' => [],
@@ -41,7 +40,8 @@ class ConditionsAdmin extends AbstractAdmin
                         'content' => [
                             'label' => 'Contenu',
                             'field_type' => SimpleFormatterType::class,
-                            'format' => 'richhtml'
+                            'format' => 'richhtml',
+                            'ckeditor_context' => 'my_config',
                         ]
                     ]
                 ))

@@ -28,9 +28,17 @@ registration:
   tab-fb-title: S'inscrire avec Facebook
   tab-fb:
     intro: |
-      Vous pouvez également vous créer un profil en vous connectant avec votre compte Facebook. Vous déclarez dans ce cas avoir lu et accepté <a href="%conditions_url%">nos conditions générales d'utilisation</a>.
+      Vous pouvez également vous créer un profil en vous connectant avec votre compte Facebook. Cela créera automatiquement un compte Un-Mute lié à l'adresse e-mail de votre compte Facebook.
   already_logged:
-    message: Vous êtes connecté, nous ne pouvons donc pas vous ré-inscrire. ;-)
+    #new
+    message: |
+      Vous êtes bien connecté à votre compte Un-Mute. Avez-vous déjà vu les pages suivantes ?
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action" href="%eventsUrl%">Nos festivals à venir</a>
+        <a class="list-group-item list-group-item-action" href="%artistsUrl%">Nos artistes</a>
+        <a class="list-group-item list-group-item-action" href="%hallsUrl%">Nos salles partenaires</a>
+        <a class="list-group-item list-group-item-action" href="%profileUrl%">Votre compte</a>
+      </div>
     back: Retour à l'accueil
     logout: Je souhaite me déconnecter
   back: Retour sur le site

@@ -167,12 +167,14 @@
                             <span class="custom-control-indicator"></span>
                             <span class="custom-control-description">{{ 'pay_cart.not_authenticated.signup_label'|trans|raw }}</span>
                         </label>
+
+                        <div id="sign-up-block">
+                            {% include '@FOSUser/Registration/register_content.html.twig' %}
+                        </div>
                     </div>
                 </div>
 
-                <div id="sign-up-block">
-                    {% include '@FOSUser/Registration/register_content.html.twig' %}
-                </div>
+
             {% endif %}
             </div>
 

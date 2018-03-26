@@ -22,6 +22,16 @@ class ConditionsController extends Controller
     }
 
     /**
+     * @Route("/", name="conditions")
+     */
+    public function conditionsAction() {
+        $last_terms = $this->getDoctrine()->getManager()->getRepository('AppBundle:Conditions')->findLast();
+        return $this->render('AppBundle:Conditions:conditions.html.twig', array(
+            'last_terms' => $last_terms,
+        ));
+    }
+
+    /**
      * @Route("/accept-new-conditions", name="conditions_accept_last")
      *
      * @param Request $request
@@ -31,7 +41,8 @@ class ConditionsController extends Controller
      */
     public function acceptLastAction(Request $request, UserInterface $user)
     {
-        $form = $this->createFormBuilder()
+        $form = $this
+            ->createFormBuilder()
             ->add('accept', CheckboxType::class, array(
                 'required' => true,
                 'constraints' => new NotBlank(),
@@ -39,8 +50,10 @@ class ConditionsController extends Controller
             ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.conditions.submit',
+                'attr' => ['class' => 'btn btn-primary'],
             ))
-            ->getForm();
+            ->getForm()
+        ;
 
         $form->handleRequest($request);
 
