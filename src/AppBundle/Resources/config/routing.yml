@@ -35,3 +35,8 @@ admin_ajax:
     resource: "@AppBundle/Controller/AdminAjaxController.php"
     type:     annotation
     prefix: /admin/ajax/
+
+app_webhooks:
+    resource: "@AppBundle/Controller/WebHooksController.php"
+    type:     annotation
+    prefix: /wh/
