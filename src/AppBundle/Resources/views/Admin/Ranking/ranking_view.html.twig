@@ -80,15 +80,15 @@
                                 <br>
                                 <div class="form-inline clearfix">
                                     <strong>&nbsp; Eléments sélectionnés : </strong>
-                                    <select class="ranking-select-action">
-                                        <option>
+                                    <select id="select{{ level.id }}" class="ranking-select-action">
+                                        <option id="{{ level.id }}select-option1" value="reward">
                                             Attribuer récompense aux utilisateurs sélectionnés
                                         </option>
-                                        <option>
+                                        <option id="{{ level.id }}select-option2" value="email">
                                             Envoyer un email aux utilisateurs sélectionnés
                                         </option>
                                     </select>
-                                    <button class="btn btn-primary" onclick="createMultpipleEmail({{ level.id }})">
+                                    <button class="btn btn-primary" onclick="defineAction({{ level.id }})">
                                         OK
                                     </button>
                                 </div>
@@ -205,6 +205,14 @@
                     checkIfDisplayed(level_id);
                 }
             )
+        }
+
+        function defineAction(level_id) {
+            if ($('#s2id_select' + level_id + ' a .select2-chosen').text() === $('#' + level_id + 'select-option1').text() || $('#' + level_id + 'select-option1').is(':selected')) {
+
+            } else if ($('#s2id_select' + level_id + ' a .select2-chosen').text() === $('#' + level_id + 'select-option2').text() || $('#' + level_id + 'select-option2').is(':selected')) {
+                createMultpipleEmail(level_id);
+            }
         }
 
         function createSingleEmail(stat_id, level_id) {

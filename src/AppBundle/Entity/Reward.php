@@ -97,7 +97,7 @@ abstract class Reward implements TranslatableInterface
     private $restrictions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Category", mappedBy="rewards", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="Category", inversedBy="rewards", cascade={"all"})
      */
     private $categories;
 

@@ -31,25 +31,35 @@
                         {{ hidden_loader() }}
                     </div>
                     <div id="modalContent">
-                        <label>Destinataires</label>
-                        <table class="table table-bordered table-striped sonata-ba-list rankingTable">
-                            <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>Nom complet</th>
-                                <th>Adresse email</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for rec in recipients %}
+                        <div class="form-inline clearfix">
+                            <div class="pull-left">
+                                <label>Destinataires</label>
+                            </div>
+                            <div class="pull-right">
+                                <a class="btn btn-link" data-toggle="collapse"
+                                   data-target="#recipients">Afficher/Reduire</a>
+                            </div>
+                        </div>
+                        <div id="recipients" class="collapse collapsable">
+                            <table class="table table-bordered table-striped sonata-ba-list">
+                                <thead>
                                 <tr>
-                                    <td>{{ rec.id }}</td>
-                                    <td>{{ rec.displayName }}</td>
-                                    <td>{{ rec.email }}</td>
+                                    <th>id</th>
+                                    <th>Nom complet</th>
+                                    <th>Adresse email</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                {% for rec in recipients %}
+                                    <tr>
+                                        <td>{{ rec.id }}</td>
+                                        <td>{{ rec.displayName }}</td>
+                                        <td>{{ rec.email }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                         <br>
                         <div class="form-group">
                             <label for="mailObject">Objet de l'email</label>
