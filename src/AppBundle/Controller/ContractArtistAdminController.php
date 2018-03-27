@@ -9,6 +9,7 @@ use AppBundle\Form\ContractArtistPreValidationType;
 use AppBundle\Form\ContractArtistSendTicketsType;
 use AppBundle\Form\ContractArtistValidationType;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\PaymentManager;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\TicketingManager;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
@@ -39,6 +40,7 @@ class ContractArtistAdminController extends Controller
             throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $contract->getId()));
         }
 
+        /** @var ContractArtist $contract */
         if($contract->isAskedRefundBy($user)) {
             $this->addFlash('sonata_flash_error', 'Tu as déjà demandé à rembourser ce crowdfunding');
 
@@ -69,25 +71,11 @@ class ContractArtistAdminController extends Controller
                 $message = 'Demande validée';
 
                 if ($contract->isRefundReady()) {
-
-                    $payments = $contract->getPayments();
-
-                    foreach ($payments as $payment) {
-                        /** @var Payment $payment */
-                        if (!$payment->getRefunded()) {
-                            \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
-
-                            \Stripe\Refund::create(array(
-                                "charge" => $payment->getChargeId(),
-                            ));
-                            $payment->setRefunded(true);
-                            $payment->setAskingRefund($contract->getAskingRefund());
-                            $em->persist($payment);
-                        }
-                    }
-
-                    $message = 'Crowdfunding remboursé !';
                     $contract->setRefunded(true)->setFailed(true);
+                    $payments = $contract->getPaymentsArray();
+                    $this->get(PaymentManager::class)->refundStripeAndUMPayments($payments);
+
+                    $message = 'Les paiements ont été remboursés !';
                 }
 
                 $em->persist($contract);

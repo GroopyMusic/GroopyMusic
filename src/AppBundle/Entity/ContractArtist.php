@@ -249,21 +249,6 @@ class ContractArtist extends BaseContractArtist
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
-    // Facilitates admin list export
-    public function getPaymentsExport() {
-        $exportList = array();
-        $i = 1;
-        foreach ($this->payments as $key => $val) {
-            /** @var Payment $val */
-            if(!$val->getRefunded()) {
-                $exportList[] = $i .
-                    ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
-                $i++;
-            }
-        }
-        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
-    }
-
     public function addTicketsSold($quantity) {
         $this->tickets_sold += $quantity;
     }

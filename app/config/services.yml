@@ -88,6 +88,10 @@ services:
         $hierarchy: "%security.role_hierarchy.roles%"
     user_roles_manager: '@AppBundle\Services\UserRolesManager'
 
+    AppBundle\Services\PaymentManager:
+      arguments:
+        $stripe_api_secret: "%stripe_api_secret%"
+
     AppBundle\Form\ContractArtistFlow:
       parent: craue.form.flow
       autowire: true

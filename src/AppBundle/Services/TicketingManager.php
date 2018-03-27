@@ -233,7 +233,9 @@ class TicketingManager
             'Prix' => $ticket->getPrice(). ' €',
             'Event' => $ticket->getContractArtist()->__toString(),
             'validated' => $ticket->getValidated(),
+            'refunded' => $ticket->isRefunded(),
         ];
+
         if($ticket->getContractFan() != null) {
             $arr['CF associé'] = $ticket->getContractFan()->getBarcodeText();
         }
@@ -241,5 +243,17 @@ class TicketingManager
             $arr['VIP'] = 'Oui';
         }
         return $arr;
+    }
+
+    /**
+     * Marks ticket as validated
+     * @param Ticket $ticket
+     */
+    public function validateTicket(Ticket $ticket) {
+        if(!$ticket->isValidated()) {
+            $ticket->setValidated(true);
+            $this->em->persist($ticket);
+            $this->em->flush();
+        }
     }
 }

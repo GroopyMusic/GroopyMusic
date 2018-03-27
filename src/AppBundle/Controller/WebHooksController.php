@@ -2,8 +2,11 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ContractArtist;
+use AppBundle\Services\PaymentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class WebHooksController extends Controller
@@ -26,7 +29,7 @@ class WebHooksController extends Controller
         \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
 
         // You can find your endpoint's secret in your webhook settings
-        $endpoint_secret = "whsec_lLtpkc1tsO9U18ELntV6EQiUFc9jEEHg";
+        $endpoint_secret = "whsec_gvp510gYzBHMgUkqgUM0xsW6Ty55c3zb";
 
         $payload = @file_get_contents("php://input");
         $sig_header = $_SERVER["HTTP_STRIPE_SIGNATURE"];
@@ -38,26 +41,18 @@ class WebHooksController extends Controller
             );
         } catch(\UnexpectedValueException $e) {
             // Invalid payload
-            http_response_code(400); // PHP 5.4 or greater
-            exit();
+            throw $this->createAccessDeniedException();
         } catch(\Stripe\Error\SignatureVerification $e) {
             // Invalid signature
-            http_response_code(400); // PHP 5.4 or greater
-            exit();
+            throw $this->createAccessDeniedException();
         }
 
         $charge_id = $event->data->object->id;
         $payment = $em->getRepository('AppBundle:Payment')->findOneBy(['chargeId' => $charge_id]);
 
-        // TODO SOA
-        $payment->setRefunded(true);
-        $payment->getContractFan()->setRefunded(true);
-
-        $em->persist($payment);
-        $em->persist($payment->getContractFan());
-
-        $em->flush();
-
-        http_response_code(200); // PHP 5.4 or greater
+        if($payment != null) {
+            $this->get(PaymentManager::class)->refundPayment($payment);
+        }
+        return new Response('OK');
     }
 }

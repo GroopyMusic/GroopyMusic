@@ -37,7 +37,7 @@ class TicketingController extends Controller
     {
         $events = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
         $events = array_filter($events, function(ContractArtist $contractArtist) {
-            return true;// $contractArtist->getDateConcert()->diff((new \DateTime()))->days <= 1;
+            return $contractArtist->getDateConcert()->diff((new \DateTime()))->days <= 1;
         });
 
         return $this->render('@App/Ticketing/index.html.twig', array(
@@ -110,21 +110,22 @@ class TicketingController extends Controller
         elseif($contractArtist === null) {
             $ticket_array = ['error' => 'Cet événement n\'existe pas.'];
         }
-/*
+
         elseif($contractArtist->getDateConcert()->diff((new \DateTime()))->days > 1) {
             $ticket_array = ['error' => "Cet événement n'a pas lieu aujourd'hui."];
         }
-*/
+
         else {
             $ticket_array = $manager->getTicketsInfoArray($ticket);
             if($ticket->getContractArtist()->getId() != $contractArtist->getId()) {
                 $ticket_array['error'] = 'Ce ticket ne correspond pas à l\'évenement sélectionné';
             }
+            elseif($ticket->isRefunded()) {
+                $ticket_array['error'] = 'Ce ticket a été remboursé et n\'est donc plus valide.';
+            }
             else {
                 $ticket_array['error'] = null;
-                $ticket->setValidated(true);
-                $em->persist($ticket);
-                $em->flush();
+                $manager->validateTicket($ticket);
             }
         }
 
