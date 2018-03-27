@@ -20,35 +20,36 @@ class ReductionReward extends Reward
 {
     public function __construct()
     {
+        parent::__construct();
     }
 
     /**
      * @ORM\Column(name="reduction", type="integer")
      */
-    private $quantity;
+    private $reduction;
 
 
     /**
-     * Set quantity
+     * Set reduction
      *
-     * @param integer $quantity
+     * @param integer $reduction
      *
      * @return ReductionReward
      */
-    public function setQuantity($quantity)
+    public function setReduction($reduction)
     {
-        $this->quantity = $quantity;
+        $this->reduction = $reduction;
 
         return $this;
     }
 
     /**
-     * Get quantity
+     * Get reduction
      *
      * @return integer
      */
-    public function getQuantity()
+    public function getReduction()
     {
-        return $this->quantity;
+        return $this->reduction;
     }
 }

@@ -2,36 +2,31 @@
 /**
  * Created by PhpStorm.
  * User: Jean-François Cochar
- * Date: 12/03/2018
- * Time: 14:18
+ * Date: 27/03/2018
+ * Time: 09:55
  */
 
 namespace AppBundle\Admin;
 
 
-namespace AppBundle\Admin;
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\Reward;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\Type\ModelListType;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class LevelAdmin extends BaseAdmin
+class RewardRestrictionAdmin extends BaseAdmin
 {
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->add('name', null, array(
-                'label' => 'Nom',
+                'label' => 'Nom'
             ))
-            ->add('step', null, array(
-                'label' => 'Seuil',
-            ))
-            ->add('category', null, array(
-                'label' => 'Catégorie',
+            ->add('querry_name', null, array(
+                'label' => 'Nom du querry'
             ))
             ->add('_action', 'actions', array(
                     'actions' => array(
@@ -40,48 +35,47 @@ class LevelAdmin extends BaseAdmin
                         'delete' => array(),
                     )
                 )
-            )
-        ;
+            );
+
     }
 
     public function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->with('Données du palier')
             ->add('name', null, array(
-                'label' => 'Nom',
+                'label' => 'Nom'
             ))
-            ->add('step', null, array(
-                'label' => 'Seuil',
+            ->add('description', null, array(
+                'label' => 'Description'
             ))
-            ->add('category', null, array(
-                'label' => 'Catégorie',
+            ->add('querry_name', null, array(
+                'label' => 'Nom du querry'
             ))
             ->add('rewards',null,array(
                 'label' => 'Récompenses'
-            ))
-            ->end()
-        ;
+            ));
+
     }
+
     public function configureFormFields(FormMapper $form)
     {
         $form
-            ->with('Données du palier')
-            ->add('step', TextType::class, array(
-                'label' => 'Seuil',
-            ))
-            ->add('category', ModelListType::class, array(
-                'label' => 'Catégorie',
-            ))
-            ->end()
             ->with('Champs traductibles')
             ->add('translations', TranslationsType::class, array(
                 'locales' => array('fr', 'en'),
                 'fields' => [
                     'name' => [
-                        'label' => 'Nom du palier',
+                        'label' => 'Nom de la réstrictions',
+                    ],
+                    'description' => [
+                        'label' => 'Description de la réstrictions'
                     ]
                 ]
+            ))
+            ->end()
+            ->with('Données de la réstrictions')
+            ->add('querry_name', TextType::class, array(
+                'label' => 'Nom du querry',
             ))
             ->end()
             ->with('Récompenses')
@@ -91,6 +85,5 @@ class LevelAdmin extends BaseAdmin
                 'required' => false
             ])
             ->end();
-
     }
 }

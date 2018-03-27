@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -27,6 +28,7 @@ class RewardRestriction implements TranslatableInterface
      */
     public function __construct()
     {
+        $this->rewards = new ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -77,9 +79,9 @@ class RewardRestriction implements TranslatableInterface
     private $querry_name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Reward", inversedBy="restrictions")
+     * @ORM\ManyToMany(targetEntity="Reward", inversedBy="restrictions")
      */
-    private $reward;
+    private $rewards;
 
     /**
      * Get id
@@ -117,26 +119,36 @@ class RewardRestriction implements TranslatableInterface
     }
 
     /**
-     * Set reward
+     * Add reward
      *
      * @param \AppBundle\Entity\Reward $reward
      *
      * @return RewardRestriction
      */
-    public function setReward(\AppBundle\Entity\Reward $reward = null)
+    public function addReward(\AppBundle\Entity\Reward $reward)
     {
-        $this->reward = $reward;
+        $this->rewards[] = $reward;
 
         return $this;
     }
 
     /**
-     * Get reward
+     * Remove reward
      *
-     * @return \AppBundle\Entity\Reward
+     * @param \AppBundle\Entity\Reward $reward
      */
-    public function getReward()
+    public function removeReward(\AppBundle\Entity\Reward $reward)
     {
-        return $this->reward;
+        $this->rewards->removeElement($reward);
+    }
+
+    /**
+     * Get rewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRewards()
+    {
+        return $this->rewards;
     }
 }

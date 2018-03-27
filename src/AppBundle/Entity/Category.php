@@ -90,7 +90,7 @@ class Category implements TranslatableInterface
     private $levels;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Reward", mappedBy="categories", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="Reward", cascade={"all"})
      */
     private $rewards;
 

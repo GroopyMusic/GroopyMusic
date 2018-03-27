@@ -67,6 +67,21 @@ abstract class Reward implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
+    public function getType()
+    {
+        if ($this instanceof InvitationReward) {
+            $type = "Invitation";
+        } elseif ($this instanceof ConsomableReward) {
+            $type = "Consommation";
+        } elseif ($this instanceof ReductionReward) {
+            $type = "Réduction";
+        } else {
+            $type = explode('\\', get_class($this));
+            $type = end($type);
+        }
+        return $type;
+    }
+
     /**
      * @var int
      *
@@ -77,9 +92,9 @@ abstract class Reward implements TranslatableInterface
     protected $id;
 
     /**
-     * @ORM\Column(name="remain_use", type="boolean")
+     * @ORM\Column(name="max_use", type="integer")
      */
-    protected $remain_use;
+    protected $max_use;
 
     /**
      * @ORM\Column(name="validity_period", type="integer")
@@ -89,17 +104,12 @@ abstract class Reward implements TranslatableInterface
     /**
      * @ORM\OneToMany(targetEntity="User_Reward", mappedBy="reward", cascade={"all"}, orphanRemoval=true)
      */
-    private $user_rewards;
+    protected $user_rewards;
 
     /**
-     * @ORM\OneToMany(targetEntity="RewardRestriction", mappedBy="reward", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="RewardRestriction", mappedBy="rewards", cascade={"all"})
      */
-    private $restrictions;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Category", inversedBy="rewards", cascade={"all"})
-     */
-    private $categories;
+    protected $restrictions;
 
 
     /**
@@ -113,27 +123,27 @@ abstract class Reward implements TranslatableInterface
     }
 
     /**
-     * Set remainUse
+     * Set maxUse
      *
-     * @param boolean $remainUse
+     * @param boolean $maxUse
      *
      * @return Reward
      */
-    public function setRemainUse($remainUse)
+    public function setMaxUse($maxUse)
     {
-        $this->remain_use = $remainUse;
+        $this->max_use = $maxUse;
 
         return $this;
     }
 
     /**
-     * Get remainUse
+     * Get maxUse
      *
      * @return boolean
      */
-    public function getRemainUse()
+    public function getMaxUse()
     {
-        return $this->remain_use;
+        return $this->max_use;
     }
 
     /**
@@ -227,39 +237,5 @@ abstract class Reward implements TranslatableInterface
     public function getRestrictions()
     {
         return $this->restrictions;
-    }
-
-    /**
-     * Add category
-     *
-     * @param \AppBundle\Entity\Category $category
-     *
-     * @return Reward
-     */
-    public function addCategory(\AppBundle\Entity\Category $category)
-    {
-        $this->categories[] = $category;
-
-        return $this;
-    }
-
-    /**
-     * Remove category
-     *
-     * @param \AppBundle\Entity\Category $category
-     */
-    public function removeCategory(\AppBundle\Entity\Category $category)
-    {
-        $this->categories->removeElement($category);
-    }
-
-    /**
-     * Get categories
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCategories()
-    {
-        return $this->categories;
     }
 }

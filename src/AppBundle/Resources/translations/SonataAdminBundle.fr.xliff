@@ -32,6 +32,11 @@
                 <target>Conditions générales</target>
             </trans-unit>
 
+            <trans-unit id="app.admin.group.ranking">
+                <source>app.admin.group.ranking</source>
+                <target>Classements</target>
+            </trans-unit>
+
             <trans-unit id="app.admin.step">
                 <source>app.admin.step</source>
                 <target>Palier</target>
@@ -144,7 +149,7 @@
 
             <trans-unit id="app.admin.ranking">
                 <source>app.admin.ranking</source>
-                <target>Classement</target>
+                <target>Classements</target>
              </trans-unit>
 
             <trans-unit id="app.admin.propositioncontractartist">
@@ -155,6 +160,21 @@
             <trans-unit id="app.admin.conditions">
                 <source>app.admin.conditions</source>
                 <target>Conditions générales</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.rewardrestriction">
+                <source>app.admin.rewardrestriction</source>
+                <target>Réstriction de récompense</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.reward">
+                <source>app.admin.reward</source>
+                <target>Récompense</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.userreward">
+                <source>app.admin.userreward</source>
+                <target>Récompenses utilisateurs</target>
             </trans-unit>
         </body>
     </file>

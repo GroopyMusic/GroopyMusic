@@ -20,6 +20,7 @@ class ConsomableReward extends Reward
 {
     public function __construct()
     {
+        parent::__construct();
     }
 
     /**

@@ -19,6 +19,7 @@ class InvitationReward extends Reward
 {
     public function __construct()
     {
+        parent::__construct();
     }
 
     /**

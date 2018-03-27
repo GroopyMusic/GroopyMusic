@@ -27,6 +27,7 @@ sonata_admin:
                items:
                    - AppBundle\Admin\UserAdmin
                    - AppBundle\Admin\ArtistAdmin
+                   - AppBundle\Admin\User_RewardAdmin
            app.admin.group.contact:
                 label_catalogue: SonataAdminBundle
                 items:
@@ -45,14 +46,21 @@ sonata_admin:
                   - AppBundle\Admin\HallAdmin
                   - AppBundle\Admin\CategoryAdmin
                   - AppBundle\Admin\LevelAdmin
-                  - AppBundle\Admin\RankingAdmin
+                  - AppBundle\Admin\RewardAdmin
+                  - AppBundle\Admin\RewardRestrictionAdmin
+
+
+           app.admin.group.ranking:
+              label: app.admin.group.ranking
+              label_catalogue: SonataAdminBundle
+              items:
+                - AppBundle\Admin\RankingAdmin
 
            app.admin.group.conditions:
               label: app.admin.group.conditions
               label_catalogue: SonataAdminBundle
               items:
                 - AppBundle\Admin\ConditionsAdmin
-
            app.admin.group.events:
                label: app.admin.group.events
                label_catalogue: SonataAdminBundle
@@ -310,4 +318,24 @@ services:
         arguments: [ ~, AppBundle\Entity\Conditions , ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.conditions }
+        public: true
+
+    AppBundle\Admin\RewardRestrictionAdmin:
+        arguments: [~, AppBundle\Entity\RewardRestriction, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.rewardrestriction }
+        public: true
+
+    AppBundle\Admin\RewardAdmin:
+        arguments: [~, AppBundle\Entity\Reward, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.reward }
+        calls:
+            - [ setSubClasses,[{Invitation: AppBundle\Entity\InvitationReward, Consommation: AppBundle\Entity\ConsomableReward,Réduction: AppBundle\Entity\ReductionReward}]]
+        public: true
+
+    AppBundle\Admin\User_RewardAdmin:
+        arguments: [~, AppBundle\Entity\User_Reward, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.userreward }
         public: true
