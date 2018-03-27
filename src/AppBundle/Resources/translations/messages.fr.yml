@@ -292,6 +292,15 @@ event:
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
+
+#new
+conditions:
+  last_update: "Dernière mise-à-jour effectuée le : %date%"
+  accept_last:
+    intro: Nos conditions générales ont évolué depuis votre dernière visite. Pour poursuivre votre navigation, il vous faut marquer votre accord.
+    intro_social: Pour poursuivre sur Un-Mute, il vous faut marquer votre accord avec nos conditions générales.
+
+
 faq:
   title: FAQ
   confirmed_show:
@@ -583,7 +592,7 @@ tickets_pdf:
 
 
 header:
-  slogan: Découvrez. Soutenez. Produisez les artistes belges de demain.
+  slogan: La plateforme de financement participatif de concerts
   search_placeholder: Rechercher un concert...
   nav:
     home: Accueil
@@ -747,6 +756,11 @@ labels:
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"
 
+  #new
+  conditions:
+    accept_new: J'ai lu et j'accepte les dernières <a href="%conditionsUrl%" target="_blank">conditions générales d'utilisation de la plateforme Un-Mute</a>
+    submit: Accepter et continuer sur le site
+    logout: Je souhaite me déconnecter
 #new
   proposition_hall:
     name: Nom de la salle

@@ -5,15 +5,14 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Genre
  *
- * @ORM\Table(name="genre")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\GenreRepository")
+ * @ORM\Table(name="conditions")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ConditionsRepository")
  */
-class Genre implements TranslatableInterface
+class Conditions implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
 
@@ -42,9 +41,9 @@ class Genre implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
-    public function __toString()
+    public function __construct()
     {
-        return '' . $this->getName();
+        $this->date = new \DateTime();
     }
 
     /**
@@ -56,6 +55,12 @@ class Genre implements TranslatableInterface
      */
     private $id;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
 
     /**
      * Get id
@@ -65,5 +70,29 @@ class Genre implements TranslatableInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Conditions
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 }

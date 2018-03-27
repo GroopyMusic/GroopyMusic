@@ -40,7 +40,7 @@
         <label class="custom-control custom-checkbox pr-3{% if required %} required{% endif %}" for="{{ id }}">
             {{ parent() }}
             <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">{% if label is not same as(false) %} {{ label|trans }}{% endif %}</span>
+            <span class="custom-control-description">{% if label is not same as(false) %} {{ label|trans|raw }}{% endif %}</span>
         </label>
     {%- endif -%}
 {%- endblock checkbox_widget %}
@@ -111,7 +111,7 @@
             {%- endif -%}
         {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-            {{- widget|raw }} {{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain)) -}}
+            {{- widget|raw }} {{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain)|raw) -}}
         </label>
     {%- endif -%}
 {%- endblock checkbox_radio_label %}

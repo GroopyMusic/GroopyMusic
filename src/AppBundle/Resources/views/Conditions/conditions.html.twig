@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid" style="padding-top:0 !important;">
+
+         <div class="row">
+            <div class="col-12 col-md-4 content-box">
+                <div id="static-toc" class="fixed-toc col-12 col-md-4">
+                    <div class="content-box-header">
+                        <h3>Navigation</h3>
+                    </div>
+                    <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
+                        <div class="list-group">
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-8 static-content">
+
+                <div class="content-box">
+                    <div class="content-box-content">
+                        <p>
+                            {{ 'conditions.last_update'|trans({'%date%': last_terms.date|date('d/m/Y')}) }}
+                        </p>
+
+                        {{ last_terms.getContent|raw }}
+                     </div>
+                </div>
+            </div>
+         </div>
+    </div>
+{% endblock %}
+
+{% block additional_javascripts %}
+
+    <script type="text/javascript">
+
+        var $nav = $('#toc-nav .list-group');
+        $(".static-content h2").each(function(i) {
+            var current = $(this);
+            current.attr("id", "title" + i);
+            $nav.append("<a class=\"list-group-item list-group-item-action\" id='link" + i + "' href='#title" +
+                i + "' title='" + current.html() + "'>" +
+                current.html() + "</a>");
+        });
+
+
+    </script>
+
+
+{% endblock %}

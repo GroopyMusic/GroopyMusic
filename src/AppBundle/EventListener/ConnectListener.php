@@ -2,6 +2,10 @@
 
 namespace AppBundle\EventListener;
 
+use AppBundle\Entity\User_Conditions;
+use Doctrine\ORM\EntityManagerInterface;
+use FOS\UserBundle\Event\FilterUserResponseEvent;
+use FOS\UserBundle\FOSUserEvents;
 use HWI\Bundle\OAuthBundle\Event\GetResponseUserEvent;
 use HWI\Bundle\OAuthBundle\HWIOAuthEvents;
 use Symfony\Component\EventDispatcher\Event;
@@ -18,18 +22,21 @@ class ConnectListener implements EventSubscriberInterface {
     private $router;
     private $session;
     private $translator;
+    private $em;
 
-    public function __construct(UrlGeneratorInterface $router, Session $session, TranslatorInterface $translator) {
+    public function __construct(UrlGeneratorInterface $router, Session $session, TranslatorInterface $translator, EntityManagerInterface $em) {
         $this->router = $router;
         $this->session = $session;
         $this->translator = $translator;
+        $this->em = $em;
     }
 
     public static function getSubscribedEvents() {
         return [
-            HWIOAuthEvents::CONNECT_CONFIRMED => 'onConnectConfirmed',
-            HWIOAuthEvents::CONNECT_COMPLETED => 'onConnectCompleted',
-            HWIOAuthEvents::REGISTRATION_SUCCESS => 'onRegistrationSuccess',
+            HWIOAuthEvents::CONNECT_CONFIRMED => 'onSocialConnectConfirmed',
+            HWIOAuthEvents::CONNECT_COMPLETED => 'onSocialConnectCompleted',
+            HWIOAuthEvents::REGISTRATION_SUCCESS => 'onSocialRegistrationSuccess',
+            FOSUserEvents::REGISTRATION_COMPLETED => 'onRegistrationCompleted',
         ];
     }
 
@@ -38,7 +45,7 @@ class ConnectListener implements EventSubscriberInterface {
     }
 
     // Connection through email
-    public function onConnectConfirmed(GetResponseUserEvent $event) {
+    public function onSocialConnectConfirmed(GetResponseUserEvent $event) {
         $is_new_user = boolval($event->getRequest()->query->get('oauth_new_user'));
 
         $message = $this->translator->trans('notices.social.connection_email_confirmed');
@@ -52,12 +59,20 @@ class ConnectListener implements EventSubscriberInterface {
     }
 
     // Connection through facebook_id
-    public function onConnectCompleted(Event $event) {
+    public function onSocialConnectCompleted(Event $event) {
         $this->addSessionMessage('notices.social.connection_oauth_confirmed');
     }
 
-    // Registration
-    public function onRegistrationSuccess(Event $event) {
+    // Registration with Facebook
+    public function onSocialRegistrationSuccess(Event $event) {
         $this->addSessionMessage('notices.social.registration_success');
+    }
+
+    // Registration with FOSUserBundle
+    public function onRegistrationCompleted(FilterUserResponseEvent $event) {
+        $last_terms = $this->em->getRepository('AppBundle:Conditions')->findLast();
+        $user_conditions = new User_Conditions($event->getUser(), $last_terms);
+        $this->em->persist($user_conditions);
+        $this->em->flush();
     }
 }

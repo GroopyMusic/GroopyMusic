@@ -18,7 +18,7 @@ sonata_admin:
              position: right
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.events, app.admin.group.orders]
+               groups: [app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
 
        groups:
            app.admin.group.user:
@@ -46,6 +46,13 @@ sonata_admin:
                   - AppBundle\Admin\CategoryAdmin
                   - AppBundle\Admin\LevelAdmin
                   - AppBundle\Admin\RankingAdmin
+
+           app.admin.group.conditions:
+              label: app.admin.group.conditions
+              label_catalogue: SonataAdminBundle
+              items:
+                - AppBundle\Admin\ConditionsAdmin
+
            app.admin.group.events:
                label: app.admin.group.events
                label_catalogue: SonataAdminBundle
@@ -61,6 +68,20 @@ sonata_admin:
                    - AppBundle\Admin\ContractFanAdmin
                    - AppBundle\Admin\PaymentAdmin
                roles: [ROLE_PAYMENTS_ADMIN]
+
+   assets:
+      extra_javascripts:
+         - bundles/ivoryckeditor/ckeditor.js
+         - bundles/sonataformatter/vendor/markitup-markitup/markitup/jquery.markitup.js
+         - bundles/sonataformatter/markitup/sets/markdown/set.js
+         - bundles/sonataformatter/markitup/sets/html/set.js
+         - bundles/sonataformatter/markitup/sets/textile/set.js
+
+      extra_stylesheets:
+         - bundles/sonataformatter/markitup/skins/sonata/style.css
+         - bundles/sonataformatter/markitup/sets/markdown/style.css
+         - bundles/sonataformatter/markitup/sets/html/style.css
+         - bundles/sonataformatter/markitup/sets/textile/style.css
 
 sonata_block:
      default_contexts: [cms]
@@ -78,6 +99,45 @@ sonata_translation:
    default_locale: "%locale%"
    knplabs:
      enabled: true
+
+sonata_formatter:
+    default_formatter: text
+    formatters:
+        markdown:
+            service: sonata.formatter.text.markdown
+            extensions:
+                - sonata.formatter.twig.control_flow
+                - sonata.formatter.twig.gist
+        #        - sonata.media.formatter.twig #keep this commented unless you are using media bundle.
+
+
+        text:
+            service: sonata.formatter.text.text
+            extensions:
+                - sonata.formatter.twig.control_flow
+                - sonata.formatter.twig.gist
+        #        - sonata.media.formatter.twig
+
+
+        rawhtml:
+            service: sonata.formatter.text.raw
+            extensions:
+                - sonata.formatter.twig.control_flow
+                - sonata.formatter.twig.gist
+        #        - sonata.media.formatter.twig
+
+
+        richhtml:
+            service: sonata.formatter.text.raw
+            extensions:
+                - sonata.formatter.twig.control_flow
+                - sonata.formatter.twig.gist
+        #        - sonata.media.formatter.twig
+
+
+        twig:
+            service: sonata.formatter.text.twigengine
+            extensions: [] # Twig formatter cannot have extensions
 
 ########################################################### Services
 services:
@@ -244,4 +304,10 @@ services:
         arguments: [ ~, null , AppBundle:RankingAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.ranking }
+        public: true
+
+    AppBundle\Admin\ConditionsAdmin:
+        arguments: [ ~, AppBundle\Entity\Conditions , ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.conditions }
         public: true

@@ -29,15 +29,15 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->inscription_date = new \DateTime();
         $this->accept_conditions = false;
         $this->deleted = false;
-        $this->category_statistics = new \Doctrine\Common\Collections\ArrayCollection();
         $this->rewards = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->category_statistics = new ArrayCollection();
+        $this->user_conditions = new ArrayCollection();
     }
 
-    public function owns(Artist $artist)
-    {
-        foreach ($this->artists_user as $au) {
+    public function owns(Artist $artist) {
+        foreach($this->artists_user as $au) {
             /** @var Artist_User $au */
-            if ($au->getArtist() == $artist) {
+            if($au->getArtist() == $artist) {
                 return true;
             }
         }
@@ -45,18 +45,15 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
 
-    public function removeCredits($n)
-    {
+    public function removeCredits($n) {
         $this->credits -= $n;
     }
 
-    public function addCredits($n)
-    {
+    public function addCredits($n) {
         $this->credits += $n;
     }
 
-    public function anonymize()
-    {
+    public function anonymize() {
         $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';
         $this->setUsername($code);
         $this->setUsernameCanonical($code);
@@ -81,7 +78,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->setFacebookId(null);
         $this->setDeleted(true);
 
-        foreach ($this->artists_user as $au) {
+        foreach($this->artists_user as $au) {
             $this->removeArtistsUser($au);
         }
     }
@@ -111,17 +108,15 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return ucwords($displayName);
     }
 
-    public function getArtists()
-    {
-        return array_filter(array_map(function (Artist_User $elem) {
+    public function getArtists() {
+        return array_filter(array_map(function(Artist_User $elem) {
             return $elem->getArtist();
-        }, $this->artists_user->toArray()), function (Artist $artist) {
+        }, $this->artists_user->toArray()), function(Artist $artist) {
             return $artist->isActive();
         });
     }
 
-    public function getArtistsExport()
-    {
+    public function getArtistsExport() {
         $exportList = array();
         $i = 1;
         foreach ($this->getArtists() as $key => $val) {
@@ -131,6 +126,20 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
             $i++;
         }
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+    }
+
+    public function getAcceptedConditions() {
+        return array_map(function(User_Conditions $uc) {
+            return $uc->getConditions();
+        }, $this->user_conditions->toArray());
+    }
+
+    public function hasAccepted(Conditions $conditions) {
+        return in_array($conditions, $this->getAcceptedConditions());
+    }
+
+    public function isFirstVisit() {
+        return $this->user_conditions->isEmpty();
     }
 
     // Form only
@@ -156,12 +165,12 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     /**
      * @ORM\OneToMany(targetEntity="Cart", mappedBy="user")
      */
-    private $carts;
+    protected $carts;
 
     /**
      * @ORM\Column(name="credits", type="integer")
      */
-    private $credits;
+    protected $credits;
 
     /**
      * @var string
@@ -201,43 +210,43 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     /**
      * @ORM\ManyToMany(targetEntity="Genre")
      */
-    private $genres;
+    protected $genres;
 
     /**
      * @ORM\OneToOne(targetEntity="Address", cascade={"all"}, orphanRemoval=true)
      * @ORM\JoinColumn(nullable=true)
      */
-    private $address;
+    protected $address;
 
     /**
      * @ORM\Column(name="inscription_date", type="datetime", nullable=true)
      */
-    private $inscription_date;
+    protected $inscription_date;
 
     /**
      * @ORM\Column(name="asked_email", type="string", length=255, nullable=true)
      */
-    private $asked_email;
+    protected $asked_email;
 
     /**
      * @ORM\Column(name="asked_email_token", type="text", nullable=true)
      */
-    private $asked_email_token;
+    protected $asked_email_token;
 
     /**
      * @ORM\OneToMany(targetEntity="Notification", mappedBy="user")
      */
-    private $notifications;
+    protected $notifications;
 
     /**
      * @ORM\Column(name="birthday", type="date", nullable=true)
      */
-    private $birthday;
+    protected $birthday;
 
     /**
      * @ORM\Column(name="deleted", type="boolean")
      */
-    private $deleted;
+    protected $deleted;
 
     /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
     protected $facebook_id;
@@ -248,7 +257,13 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     /**
      * @ORM\OneToMany(targetEntity="User_Category", mappedBy="user", cascade={"all"}, orphanRemoval=true)
      */
-    private $category_statistics;
+    protected $category_statistics;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="User_Conditions", mappedBy="user", fetch="EAGER")
+     */
+    protected $user_conditions;
 
     /**
      * @ORM\OneToMany(targetEntity="User_Reward", mappedBy="user", cascade={"all"}, orphanRemoval=true)
@@ -378,6 +393,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
 
+
     /**
      * Add payment
      *
@@ -411,6 +427,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     {
         return $this->payments;
     }
+
 
 
     /**
@@ -620,10 +637,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function setAddressForm($address = null)
     {
-        if (is_array($address))
-            if (empty($address)) {
+        if(is_array($address))
+            if(empty($address)){
                 $this->address = null;
-            } else {
+            }
+            else {
                 $this->address = array_pop($address);
             }
         else
@@ -887,5 +905,39 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getRewards()
     {
         return $this->rewards;
+    }
+
+    /**
+     * Add userCondition
+     *
+     * @param \AppBundle\Entity\User_Conditions $userCondition
+     *
+     * @return User
+     */
+    public function addUserCondition(\AppBundle\Entity\User_Conditions $userCondition)
+    {
+        $this->user_conditions[] = $userCondition;
+
+        return $this;
+    }
+
+    /**
+     * Remove userCondition
+     *
+     * @param \AppBundle\Entity\User_Conditions $userCondition
+     */
+    public function removeUserCondition(\AppBundle\Entity\User_Conditions $userCondition)
+    {
+        $this->user_conditions->removeElement($userCondition);
+    }
+
+    /**
+     * Get userConditions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserConditions()
+    {
+        return $this->user_conditions;
     }
 }

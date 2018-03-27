@@ -27,6 +27,11 @@
                 <target>Commandes et paiements</target>
             </trans-unit>
 
+            <trans-unit id="app.admin.group.conditions">
+                <source>app.admin.group.conditions</source>
+                <target>Conditions générales</target>
+            </trans-unit>
+
             <trans-unit id="app.admin.step">
                 <source>app.admin.step</source>
                 <target>Palier</target>
@@ -142,10 +147,14 @@
                 <target>Classement</target>
              </trans-unit>
 
-
             <trans-unit id="app.admin.propositioncontractartist">
                 <source>app.admin.propositioncontractartist</source>
                 <target>Proposition de concert</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.conditions">
+                <source>app.admin.conditions</source>
+                <target>Conditions générales</target>
             </trans-unit>
         </body>
     </file>
