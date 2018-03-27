@@ -83,7 +83,8 @@ class UserAdmin extends BaseAdmin
             ->end()
             ->with('Récompenses')
             ->add('rewards', null, array(
-                'label' => 'Récompenses reçues'
+                'label' => 'Récompenses reçues',
+                'route' => ['name' => 'show']
             ))
             ->end()
         ;

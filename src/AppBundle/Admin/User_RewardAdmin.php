@@ -8,6 +8,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\User;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
@@ -30,7 +31,8 @@ class User_RewardAdmin extends BaseAdmin
                 'label' => 'Récompense',
             ))
             ->add('user', null, array(
-                'label' => 'Utilisateurs'
+                'label' => 'Utilisateurs',
+                'route' => ['name' => 'show']
             ))
             ->add('_action', 'actions', array(
                     'actions' => array(
@@ -51,6 +53,7 @@ class User_RewardAdmin extends BaseAdmin
             ))
             ->add('user', null, array(
                 'label' => 'Utilisateur',
+                'route' => ['name' => 'show']
             ))
             ->add('reward', null, array(
                 'label' => 'Récompense',

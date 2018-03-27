@@ -22,6 +22,10 @@ class User_Reward
     {
     }
 
+    public function __toString()
+    {
+        return ' ' . $this->getReward()->getName();
+    }
     /**
      * @var int
      *
