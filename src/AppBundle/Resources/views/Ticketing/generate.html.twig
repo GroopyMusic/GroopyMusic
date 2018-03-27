@@ -54,11 +54,11 @@
                 data: $(this).serialize(), // serializes the form's elements.
                 success: function(data)
                 {
-                    $('#generation-results').html('<p class="alert alert-success">Le ticket a été envoyé.</p>');
+                    $('#generation-results').html('<p class="alert alert-success">Le(s) ticket(s) a (ont) été envoyé(s).</p>');
                     $('#resetform').click();
                 },
                 error: function() {
-                    $('#generation-results').html('<p class="alert alert-danger">Le ticket n\'a pas pu être envoyés.</p>');
+                    $('#generation-results').html('<p class="alert alert-danger">Le(s) ticket(s) n\'a(ont) pas pu être envoyé(s).</p>');
                 },
                 done: function(data) {
                     $('#generation-section .loader').hide();

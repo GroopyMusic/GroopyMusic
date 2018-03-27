@@ -64,7 +64,7 @@ class TicketingController extends Controller
 
             $physicalPerson = new PhysicalPerson($data['firstname'], $data['lastname'], $data['email'], $data['other_names']);
             $counterpart = $data['counterpart'];
-            $nb = 1; //$data['nb'];
+            $nb = $data['nb'];
 
             $ticketingManager->generateTicketsForPhysicalPerson($physicalPerson, $contractArtist, $counterpart, $nb);
 

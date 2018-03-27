@@ -474,7 +474,7 @@ class UserController extends Controller
             $writer->writeOrder($contract);
 
             $ticketingManager->generateTicketsForContractFan($contract);
-            $writer->writeTickets($contract);
+            $writer->writeTickets($contract->getTicketsPath(), $contract->getTickets());
             $contract->setcounterpartsSent(true);
 
             $em->persist($contract);
