@@ -11,6 +11,7 @@ subjects:
       known_outcome: "Concert de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
       viptickets: Votre ticket Un-Mute pour %artist% #new
+  refunded_payment: Nous avons remboursé vos tickets #new
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -182,3 +183,12 @@ vip_inscription:
     Nous vous attendons donc à 18h le %date% pour le %event%.
 
     Pour toute question, n'hésitez pas à nous contacter à ce lien : %contact_url%
+
+#new
+payment:
+  refunded: |
+    Cher Producteur,
+
+    Vos tickets achetés pour le %event% ont été entièrement remboursés (numéro de commande : %cf%).
+
+    Rendez-vous sur Un-Mute pour soutenir d'autres artistes et les faire monter sur scène !

@@ -35,8 +35,12 @@ class PhysicalPersonTicketType extends AbstractType
                 'label' => 'Adresse e-mail',
             ))
             ->add('counterpart', EntityType::class, array(
+                'label' => 'Contrepartie',
                 'class' => CounterPart::class,
                 'multiple' => false,
+            ))
+            ->add('nb', IntegerType::class, array(
+                'label' => 'Nombre',
             ))
             ->add('submit', SubmitType::class, array(
                 'attr' => ['class' => 'btn btn-primary'],

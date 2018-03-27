@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Payment;
+use AppBundle\Services\PaymentManager;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -64,26 +65,9 @@ class PaymentAdminController extends Controller
                 $message = 'Demande validée';
 
                 if($payment->isRefundReady()) {
-                    \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
-
-                    \Stripe\Refund::create(array(
-                        "charge" => $payment->getChargeId(),
-                    ));
-
-                    $payment->setRefunded(true);
-                    $payment->getContractFan()->setRefunded(true);
-
-                    // Concert
-                    if($payment->getContractArtist() instanceof ContractArtist) {
-                        $payment->getContractArtist()->removeTicketsSold($payment->getContractFan()->getCounterPartsQuantity());
-                    }
-
+                    $this->get(PaymentManager::class)->refundStripeAndUMPayment($payment);
                     $message = 'Paiement remboursé !';
                 }
-
-
-                $em->persist($payment);
-                $em->flush();
 
                 $this->addFlash('sonata_flash_success', $message);
 

@@ -7,6 +7,7 @@ use AppBundle\Entity\ArtistOwnershipRequest;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\Payment;
 use AppBundle\Entity\PhysicalPersonInterface;
 use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\SuggestionBox;
@@ -278,7 +279,24 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
+    public function sendRefundedPayment(Payment $payment) {
+        $params = [
+            'payment' => $payment,
+        ];
 
+        $to = [$payment->getUser()->getEmail()];
+        $toName = [$payment->getUser()->getDisplayName()];
+
+        $subject = 'subjects.refunded_payment';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::REFUNDED_PAYMENT_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+
+    // ----------------------
+    // ADMIN EMAILS
+    // ----------------------
     public function sendAdminContact(SuggestionBox $suggestionBox) {
         $params = ['suggestionBox' => $suggestionBox];
 

@@ -73,7 +73,7 @@ class ContractArtistType extends AbstractType
                     $builder
                         ->add('testPeriod', CheckboxType::class, array(
                             'required' => false,
-                            'label' => 'Doit avoir une période de test de ' . BaseContractArtist::NB_TEST_PERIOD_DAYS . ' jours',
+                            'label' => 'Doit avoir une période de test',
                         ))
                         ->add('reality', ConcertPossibilityType::class, array(
                             'label' => 'Détails connus',

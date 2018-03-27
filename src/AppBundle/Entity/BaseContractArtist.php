@@ -104,6 +104,22 @@ class BaseContractArtist
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
+    // Facilitates admin list export
+    public function getPaymentsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->payments as $key => $val) {
+            /** @var Payment $val */
+            if(!$val->getRefunded()) {
+                $exportList[] = $i .
+                    ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
+                $i++;
+            }
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+    }
+
+
     public function isRefundReady() {
         return count($this->asking_refund) >= self::VOTES_TO_REFUND;
     }
@@ -205,6 +221,13 @@ class BaseContractArtist
                 $fans[] = $cf->getUser();
         }
         return $fans;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentsArray() {
+        return $this->getPayments()->toArray();
     }
 
     /**

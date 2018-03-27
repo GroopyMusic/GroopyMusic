@@ -5,7 +5,7 @@
 {% set title = 'failed_contract_artist.title'|trans|raw %}
 {%- set content -%}
     {{ 'failed_contract_artist.content'|trans({
-        '%event_url%': path('artist_contract', {'id':contract_id }),
+        '%event_url%': url('artist_contract', {'id':contract_id }),
         '%step%': step
     })|raw|nl2br }}
 {%- endset -%}

@@ -14,7 +14,19 @@ class Cart
 {
     public function __toString()
     {
-        return 'Panier de ' . $this->user . ' payé le ' . $this->date_creation->format('d/m/Y')  . ' (valeur : ' . $this->getAmount() . ' €)';
+        $str = 'Panier ';
+
+        if($this->user != null) {
+            $str .= 'de ' . $this->user;
+        }
+        else {
+            $str .= 'anonyme ';
+        }
+        if($this->paid) {
+            $str .= ' payé le ' . $this->date_creation->format('d/m/Y');
+        }
+
+        return $str . ' (valeur : ' . $this->getAmount() . ' €)';
     }
 
     public function __construct()

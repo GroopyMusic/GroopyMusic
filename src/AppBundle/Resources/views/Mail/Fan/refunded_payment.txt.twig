@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('payment.refunded', {
+        '%event%': email_link(url('artist_contract', {'id': payment.contractArtist.id}), payment.contractArtist.displayName),
+        '%cf%': payment.contractFan.barcodeText,
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/Fan:refunded_payment.html.twig' %}
+{% endblock %}

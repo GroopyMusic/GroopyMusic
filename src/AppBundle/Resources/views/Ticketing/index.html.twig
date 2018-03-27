@@ -67,25 +67,23 @@
 
         function displayResults(data) {
             if(data.error != null) {
-                $results.html('<p class="alert alert-warning">' + data.error + '</p>');
+                $results.html('<p class="alert alert-danger">' + data.error + '</p>');
+            }
+            else if(data.validated) {
+                $results.html('<p class="alert alert-warning">Ce ticket a déjà été validé.</p>');
             }
             else {
-                var output = '<table class="table">';
-                for (var property in data) {
-                    output += '<tr><td class="contract-info-title text-left">' +  property + '</td><td> ' + data[property] +' </td></tr> ';
-                }
-                output += '</table>';
-
-                if(data.validated) {
-                    $results.html('<p class="alert alert-danger">Ce ticket a déjà été validé.</p>');
-                }
-                else {
-                    $results.html('<p class="alert alert-success">Ce ticket a bien été validé</p>');
-                }
-
-                $results.append(output);
-
+                $results.html('<p class="alert alert-success">Ce ticket a bien été validé</p>');
             }
+
+            var output = '<table class="table">';
+            for (var property in data) {
+                output += '<tr><td class="contract-info-title text-left">' +  property + '</td><td> ' + data[property] +' </td></tr> ';
+            }
+            output += '</table>';
+
+            $results.append(output);
+
         }
 
     </script>
