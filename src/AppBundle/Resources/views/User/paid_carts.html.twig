@@ -73,11 +73,13 @@
                                 {{ cart.amount }} €
                             </td>
                             <td class="text-center">
-                                <a href="{{ path('user_get_order', {'id': cart.id}) }}"
-                                   download="um_commande_{{ cart.first.id }}.pdf"><img src="{{ asset('images/download.svg') }}" class="responsive-img" /></a>
+                                {% if not cart.first.refunded %}
+                                    <a href="{{ path('user_get_order', {'id': cart.id}) }}"
+                                    download="um_order_{{ cart.first.id }}.pdf"><img src="{{ asset('images/download.svg') }}" class="responsive-img" /></a>
+                                {% endif %}
                             </td>
                             <td class="text-center">
-                                {% if cart.first.contractArtist.ticketsSent %}
+                                {% if cart.first.contractArtist.ticketsSent and not cart.first.refunded %}
                                     <a href="{{ path('user_get_tickets', {'id': cart.id}) }}"
                                        download="um_ticket_{{ cart.first.id }}.pdf"><img src="{{ asset('images/download.svg') }}" class="responsive-img" /></a>
                                 {% endif %}

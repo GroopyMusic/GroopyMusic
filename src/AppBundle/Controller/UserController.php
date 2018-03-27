@@ -420,7 +420,7 @@ class UserController extends Controller
     public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em) {
 
         $contract = $cart->getFirst();
-        if($contract->getUser() != $user) {
+        if($contract->isRefunded() || $contract->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
 
@@ -461,7 +461,7 @@ class UserController extends Controller
     public function getTicketsAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em) {
 
         $contract = $cart->getFirst();
-        if($contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
+        if($contract->isRefunded() || $contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
             throw $this->createAccessDeniedException();
         }
 

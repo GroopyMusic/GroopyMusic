@@ -51,7 +51,7 @@ class WebHooksController extends Controller
         $payment = $em->getRepository('AppBundle:Payment')->findOneBy(['chargeId' => $charge_id]);
 
         if($payment != null) {
-            $this->get(PaymentManager::class)->refundPayment($payment);
+            $this->get(PaymentManager::class)->refundUMPayment($payment);
         }
         return new Response('OK');
     }

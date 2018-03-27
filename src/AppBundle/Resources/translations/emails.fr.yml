@@ -11,7 +11,7 @@ subjects:
       known_outcome: "Concert de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
       viptickets: Votre ticket Un-Mute pour %artist% #new
-  refunded_payment: Nous avons remboursé votre paiement
+  refunded_payment: Nous avons remboursé vos tickets #new
 
 others:
   message_from_artist: "Message de l'artiste :"

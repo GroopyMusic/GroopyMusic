@@ -16,7 +16,7 @@ use AppBundle\Entity\ContractArtist;
  */
 class Payment
 {
-    const VOTES_TO_REFUND = 1;
+    const VOTES_TO_REFUND = 2;
 
     public function __toString()
     {
