@@ -534,6 +534,9 @@ class Artist implements TranslatableInterface
     public function setDeleted($deleted)
     {
         $this->deleted = $deleted;
+        if($deleted) {
+            $this->setVisible(false);
+        }
 
         return $this;
     }

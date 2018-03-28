@@ -33,6 +33,9 @@ class ArtistAdmin extends BaseAdmin
                 'label' => 'Visible sur la plateforme',
                 'editable' => true,
             ))
+            ->add('isActive', 'boolean', array(
+                'label' => 'Actif',
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
@@ -67,6 +70,9 @@ class ArtistAdmin extends BaseAdmin
                 ))
                 ->add('getBiography', null, array(
                     'label' => 'Biographie',
+                ))
+                ->add('phone', null, array(
+                    'label' => 'Téléphone',
                 ))
             ->end()
             ->with('Etat')
