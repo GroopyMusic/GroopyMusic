@@ -421,6 +421,8 @@ new_artist:
       Pendant ce temps, vous pourrez ajouter des photos et vidéos à cet artiste et étoffer son profil.
   warning: En créant un artiste, vous certifiez en être le représentant, ou l'un des membres s'il s'agit d'un groupe.
   urls_explanation: Dans les champs suivants, veuillez introduire vos éventuels liens sous forme d'URL valides <strong>commençant par <em>http://</em> ou <em>https://</em></strong>
+  #new
+  phone_explanation: Si vous renseignez un numéro de téléphone, il ne sera utilisé que par l'équipe Un-Mute afin de vous contacter. Ce numéro ne sera pas rendu public.
 
 my_artists:
   title: Mes artistes
@@ -702,7 +704,7 @@ labels:
     twitter: Lien Twitter
     website: Site Web
     #new
-    phone: Numéro de téléphone <a href="#" data-toggle="popover" title="" class="ml-2 px-1 py-0 btn btn-outline-primary" data-content="Si vous renseignez un numéro de téléphone, il ne sera utilisé que par l'équipe Un-Mute afin de vous contacter. Ce numéro ne sera pas rendu public.">?</a>
+    phone: Numéro de téléphone
 
   artist_medias:
     submit: Enregistrer les modifications
