@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Artist;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
@@ -29,6 +30,7 @@ class NotificationDispatcher
     const ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE = 'Admin/new_vip_inscription';
     const ADMIN_NEW_PROPOSITION_FORM_TYPE = 'Admin/new_proposition';
     const ADMIN_STATISTIC_COMPUTATION_ERROR_TYPE = 'Admin/statistic_computation_error';
+    const ADMIN_NEW_ARTIST_TYPE = 'Admin/new_artist';
 
     private $em;
     private $rolesManager;
@@ -134,6 +136,10 @@ class NotificationDispatcher
     // --------------------
     // Admin notifs
     // --------------------
+    public function notifyAdminNewArtist(Artist $artist) {
+        $this->addAdminNotification(self::ADMIN_NEW_ARTIST_TYPE, ['artist_name' => $artist->getArtistname()]);
+    }
+
     public function notifyAdminContact(SuggestionBox $suggestionBox)
     {
         $this->addAdminNotification(self::ADMIN_NEW_CONTACT_FORM_TYPE, ['object' => $suggestionBox->getObject()]);

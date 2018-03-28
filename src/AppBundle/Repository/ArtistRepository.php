@@ -5,6 +5,7 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
+use AppBundle\Services\UserRolesManager;
 
 class ArtistRepository extends \Doctrine\ORM\EntityRepository
 {
@@ -46,6 +47,7 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
 
          return $qb->setParameter('ids' ,$visible_contracts_ids)
                 ->andWhere('a2.deleted = 0')
+                ->andWhere('a2.visible = 1')
                 ->andWhere($qb->expr()->notIn('a2.id', $nots->getDQL()));
     }
 
@@ -54,9 +56,8 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
     }
 
     // Handles the case where an admin wants to create an event
-    public function findAvailableForNewContract(User $user) {
-        // TODO ROLE_ADMIN
-        if($user->hasRole('ROLE_SUPER_ADMIN')) {
+    public function findAvailableForNewContract(User $user, UserRolesManager $rolesManager) {
+        if($rolesManager->userHasRole($user, 'ROLE_ADMIN')) {
             return $this->queryNotCurrentlyBusy(null)->getQuery()->getResult();
         }
         else {
@@ -64,10 +65,32 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
+    public function findVisible() {
+        return $this->createQueryBuilder('a')
+            ->where('a.deleted = 0')
+            ->andWhere('a.visible = 1')
+            ->orderBy('a.artistname', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findNewArtists($limit) {
+
+        return $this->createQueryBuilder('a')
+            ->where('a.deleted = 0')
+            ->andWhere('a.visible = 1')
+            ->orderBy('a.date_creation', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findNotDeleted($q)
     {
         return $this->getEntityManager()
-            ->createQuery('SELECT a FROM AppBundle:Artist a WHERE a.deleted = false AND a.artistname LIKE :q')
+            ->createQuery('SELECT a FROM AppBundle:Artist a WHERE a.deleted = false AND a.visible = 1 AND a.artistname LIKE :q')
             ->setParameter('q', $q['artistname'] . '%')
             ->getResult();
     }

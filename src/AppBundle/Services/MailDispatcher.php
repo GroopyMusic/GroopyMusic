@@ -293,10 +293,35 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::REFUNDED_PAYMENT_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
+    public function sendArtistValidated(Artist $artist) {
+        $params = [
+            'artist' => $artist,
+        ];
+
+        $to = array_map(function(User $user) {
+            return $user->getEmail();
+        }, $artist->getOwners());
+
+        $toName = [];
+
+        $subject = 'subjects.artist_validated';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::ARTIST_VALIDATED_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
 
     // ----------------------
     // ADMIN EMAILS
     // ----------------------
+
+    public function sendAdminNewArtist(Artist $artist) {
+        $params = ['artist' => $artist];
+        $subject = 'Nouvel artiste inscrit sur Un-Mute';
+        $subject_params = [];
+
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_NEW_ARTIST, $subject, $params, $subject_params);
+    }
+
     public function sendAdminContact(SuggestionBox $suggestionBox) {
         $params = ['suggestionBox' => $suggestionBox];
 

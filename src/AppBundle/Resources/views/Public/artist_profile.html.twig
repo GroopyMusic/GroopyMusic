@@ -1,10 +1,20 @@
 {% extends "base.html.twig" %}
 
-{% block headtitle %}{{ artist.artistname }}{% endblock %}
+{% set owned = app.user is not null and (app.user.owns(artist) or is_granted('ROLE_ADMIN'))  %}
+
+{% if artist.visible %}
+    {% block headtitle %}{{ artist.artistname }}{% endblock %}
+{% endif %}
 
 {% block body %}
-
     <div class="container container-large-margins w-md-75 mx-auto">
+        {% if artist.deleted %}
+            <h2>{{ 'artist_profile.see.deleted.title'|trans|raw }}</h2>
+            <p>{{ 'artist_profile.see.deleted.content'|trans|raw }}</p>
+        {% elseif not artist.visible and not owned %}
+            <h2>{{ artist }}</h2>
+            <p>{{ 'artist_profile.see.invisible.content'|trans|raw }}</p>
+        {% else %}
             <div id="artist-profile-photos-carousel" class="carousel slide" data-ride="carousel" data-interval="8000">
                 <div class="carousel-inner h-100">
                     {% if artist.profilepic is not null %}
@@ -40,113 +50,122 @@
                 <div class="artist-profile-title"><h3>{{ artist.artistname }}</h3></div>
             </div>
 
-        <ul class="nav nav-tabs nav-justified artist-profile-tabs mt-5">
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="home" aria-expanded="true" href="#artist-profile-home">{{ 'artist_profile.see.tabs.profile'|trans|raw }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="bio" aria-expanded="false"  href="#artist-profile-bio">{{ 'artist_profile.see.tabs.biography'|trans|raw }}</a>
-            </li>
-            {% if app.user is not null and app.user.owns(artist) %}
+            <ul class="nav nav-tabs nav-justified artist-profile-tabs mt-5">
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="{{ path('artist_profile_edit', {'id':artist.id}) }}">{{ 'artist_profile.see.tabs.edition'|trans|raw }}</a>
+                    <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="home" aria-expanded="true" href="#artist-profile-home">{{ 'artist_profile.see.tabs.profile'|trans|raw }}</a>
                 </li>
-            {% endif %}
-        </ul>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" role="tab" aria-controls="bio" aria-expanded="false"  href="#artist-profile-bio">{{ 'artist_profile.see.tabs.biography'|trans|raw }}</a>
+                </li>
+                {% if owned %}
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="{{ path('artist_profile_edit', {'id':artist.id}) }}">{{ 'artist_profile.see.tabs.edition'|trans|raw }}</a>
+                    </li>
+                {% endif %}
+            </ul>
 
-        <div class="content-box">
-            <div class="tab-content artist-profile-content content-box-content border-left pl-md-5">
-                <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
+            <div class="content-box">
 
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="um-label um-semi-bold pr-2">
-                                {{ 'artist_profile.see.short_description'|trans|raw }}
+                {% if not artist.validated and not artist.visible and owned %}
+                    <p class="p-info">{{ 'artist_profile.see.owned.to_be_examined'|trans|raw }}</p>
+                {% elseif artist.validated and not artist.visible and owned %}
+                    <p class="p-info">{{ 'artist_profile.see.owned.invisible'|trans|raw }}</p>
+                {% elseif not artist.validated and artist.visible and owned %}
+                    <p class="p-info">{{ 'artist_profile.see.owned.not_validated'|trans|raw }}</p>
+                {% endif %}
+
+                <div class="tab-content artist-profile-content content-box-content border-left pl-md-5">
+                    <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
+
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="um-label um-semi-bold pr-2">
+                                    {{ 'artist_profile.see.short_description'|trans|raw }}
+                                </div>
+                                <p>
+                                    {{ artist.getShortDescription()|nl2br }}
+                                </p>
                             </div>
-                            <p>
-                                {{ artist.getShortDescription()|nl2br }}
-                            </p>
+                            <div class="col-12 col-md-6">
+                                {% if artist.genres is not empty %}
+                                    <div class="um-label um-semi-bold">{{ 'artist_profile.see.genres'|trans|raw }}</div>
+                                    <ul class="um-list">
+                                        {% for genre in artist.genres %}
+                                            <li>{{ genre }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            {% if artist.genres is not empty %}
-                                <div class="um-label um-semi-bold">{{ 'artist_profile.see.genres'|trans|raw }}</div>
-                                <ul class="um-list">
-                                    {% for genre in artist.genres %}
-                                        <li>{{ genre }}</li>
-                                    {% endfor %}
-                                </ul>
+
+                        <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
+                        {% for video in artist.videos %}
+                            {{ video.embedVideo|raw }}
+                        {% else %}
+                            <p>{{ 'artist_profile.see.videos.empty'|trans|raw }}</p>
+                        {% endfor %}
+
+                        {% if artist.hasOneLink %}
+                            <h4 class="mt-4">{{ 'artist_profile.see.links.title'|trans|raw }}</h4>
+                            <ul class="um-list">
+                                {% if artist.website is not null and artist.website is not empty %}
+                                    <li>
+                                        <a href="{{ artist.website }}">{{ 'artist_profile.see.links.website'|trans|raw }}</a>
+                                    </li>
+                                {% endif %}
+                                {% if artist.spotify is not null and artist.spotify is not empty %}
+                                    <li>
+                                        <a href="{{ artist.spotify }}">{{ 'artist_profile.see.links.spotify'|trans|raw }}</a>
+                                    </li>
+                                {% endif %}
+                                {% if artist.twitter is not null and artist.twitter is not empty %}
+                                    <li>
+                                        <a href="{{ artist.twitter }}">{{ 'artist_profile.see.links.twitter'|trans|raw }}</a>
+                                    </li>
+                                {% endif %}
+                                {% if artist.facebook is not null and artist.facebook is not empty %}
+                                    <li>
+                                        <a href="{{ artist.facebook }}">{{ 'artist_profile.see.links.facebook'|trans|raw }}</a>
+                                    </li>
+                                {% endif %}
+                                {% if artist.instagram is not null and artist.bandcamp is not empty %}
+                                    <li>
+                                        <a href="{{ artist.instagram }}">{{ 'artist_profile.see.links.instagram'|trans|raw }}</a>
+                                    </li>
+                                {% endif %}
+                                {% if artist.soundcloud is not null and artist.soundcloud is not empty %}
+                                    <li>
+                                        <a href="{{ artist.soundcloud }}">{{ 'artist_profile.see.links.soundcloud'|trans|raw }}</a>
+                                    </li>
+                                {% endif %}
+                                {% if artist.bandcamp is not null and artist.bandcamp is not empty %}
+                                    <li>
+                                        <a href="{{ artist.bandcamp }}">{{ 'artist_profile.see.links.bandcamp'|trans|raw }}</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+
+                        {% set currentContract = artist.currentContract %}
+                        {% if currentContract is not null %}
+                            <h4 class="mt-4">{{ 'artist_profile.see.current_event'|trans|raw }}</h4>
+                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
+                        {% endif %}
+
+                        {% for contract in artist.passedSuccessfulContracts() %}
+                            {% if loop.first %}
+                                <h3 class="mt-4">{{ 'artist_profile.see.passed_events'|trans|raw }}</h3>
                             {% endif %}
-                        </div>
+                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' %}
+                        {% endfor %}
                     </div>
 
-                    <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
-                    {% for video in artist.videos %}
-                        {{ video.embedVideo|raw }}
-                    {% else %}
-                        <p>{{ 'artist_profile.see.videos.empty'|trans|raw }}</p>
-                    {% endfor %}
-
-                    {% if artist.hasOneLink %}
-                        <h4 class="mt-4">{{ 'artist_profile.see.links.title'|trans|raw }}</h4>
-                        <ul class="um-list">
-                            {% if artist.website is not null and artist.website is not empty %}
-                                <li>
-                                    <a href="{{ artist.website }}">{{ 'artist_profile.see.links.website'|trans|raw }}</a>
-                                </li>
-                            {% endif %}
-                            {% if artist.spotify is not null and artist.spotify is not empty %}
-                                <li>
-                                    <a href="{{ artist.spotify }}">{{ 'artist_profile.see.links.spotify'|trans|raw }}</a>
-                                </li>
-                            {% endif %}
-                            {% if artist.twitter is not null and artist.twitter is not empty %}
-                                <li>
-                                    <a href="{{ artist.twitter }}">{{ 'artist_profile.see.links.twitter'|trans|raw }}</a>
-                                </li>
-                            {% endif %}
-                            {% if artist.facebook is not null and artist.facebook is not empty %}
-                                <li>
-                                    <a href="{{ artist.facebook }}">{{ 'artist_profile.see.links.facebook'|trans|raw }}</a>
-                                </li>
-                            {% endif %}
-                            {% if artist.instagram is not null and artist.bandcamp is not empty %}
-                                <li>
-                                    <a href="{{ artist.instagram }}">{{ 'artist_profile.see.links.instagram'|trans|raw }}</a>
-                                </li>
-                            {% endif %}
-                            {% if artist.soundcloud is not null and artist.soundcloud is not empty %}
-                                <li>
-                                    <a href="{{ artist.soundcloud }}">{{ 'artist_profile.see.links.soundcloud'|trans|raw }}</a>
-                                </li>
-                            {% endif %}
-                            {% if artist.bandcamp is not null and artist.bandcamp is not empty %}
-                                <li>
-                                    <a href="{{ artist.bandcamp }}">{{ 'artist_profile.see.links.bandcamp'|trans|raw }}</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    {% endif %}
-
-                    {% set currentContract = artist.currentContract %}
-                    {% if currentContract is not null %}
-                        <h4 class="mt-4">{{ 'artist_profile.see.current_event'|trans|raw }}</h4>
-                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
-                    {% endif %}
-
-                    {% for contract in artist.passedSuccessfulContracts() %}
-                        {% if loop.first %}
-                            <h3 class="mt-4">{{ 'artist_profile.see.passed_events'|trans|raw }}</h3>
-                        {% endif %}
-                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' %}
-                    {% endfor %}
-                </div>
-
-                <div id="artist-profile-bio" class="tab-pane" role="tabpanel">
-                    <h3>{{ 'artist_profile.see.tabs.biography'|trans|raw }}</h3>
-                    <p>{{ artist.getBiography()|nl2br }}</p>
+                    <div id="artist-profile-bio" class="tab-pane" role="tabpanel">
+                        <h3>{{ 'artist_profile.see.tabs.biography'|trans|raw }}</h3>
+                        <p>{{ artist.getBiography()|nl2br }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </div>
-
 {% endblock %}

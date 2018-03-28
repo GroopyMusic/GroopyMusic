@@ -54,6 +54,8 @@ class Artist implements TranslatableInterface
         $this->videos = new ArrayCollection();
         $this->date_creation = new \DateTime();
         $this->accept_conditions = false;
+        $this->visible = false;
+        $this->validated = false;
     }
 
     public function getSluggableFields() {
@@ -292,6 +294,22 @@ class Artist implements TranslatableInterface
      */
     private $contracts;
 
+    /**
+     * @var bool
+     * @ORM\Column(name="visible", type="boolean")
+     */
+    private $visible;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="validated", type="boolean")
+     */
+    private $validated;
+
+    /**
+     * @ORM\Column(name="phone", type="string", length=255, nullable=true)
+     */
+    private $phone;
 
     // Form only
     public $ownership_requests_form;
@@ -880,5 +898,77 @@ class Artist implements TranslatableInterface
     public function getInstagram()
     {
         return $this->instagram;
+    }
+
+    /**
+     * Set visible
+     *
+     * @param boolean $visible
+     *
+     * @return Artist
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Get visible
+     *
+     * @return boolean
+     */
+    public function getVisible()
+    {
+        return $this->visible;
+    }
+
+    /**
+     * Set validated
+     *
+     * @param boolean $validated
+     *
+     * @return Artist
+     */
+    public function setValidated($validated)
+    {
+        $this->validated = $validated;
+
+        return $this;
+    }
+
+    /**
+     * Get validated
+     *
+     * @return boolean
+     */
+    public function getValidated()
+    {
+        return $this->validated;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     *
+     * @return Artist
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
     }
 }

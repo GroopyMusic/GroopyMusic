@@ -38,6 +38,11 @@ class ArtistType extends AbstractType
                 'label' => 'labels.artist.province',
                 'class' => Province::class,
             ))
+            ->add('phone', TextType::class, array(
+                'required' => false,
+                'label' => 'labels.artist.phone',
+                'constraints' => new Length(['max' => 63]),
+            ))
             ->add('translations', TranslationsType::class, array(
                 'label' => $options['edit'] ? false : 'labels.artist.translations',
                 'locales' => ['fr'],

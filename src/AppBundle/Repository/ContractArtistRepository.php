@@ -58,7 +58,7 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
             $this->queryVisible(true)->getQuery()->getResult(),
 
             function(ContractArtist $contractArtist) use ($user, $rolesManager) {
-                return  in_array('ROLE_ADMIN', $rolesManager->getAllRoles($user)) ||
+                return  $rolesManager->userHasRole($user, 'ROLE_ADMIN') ||
                         $user->owns($contractArtist->getArtist());
             }
         );

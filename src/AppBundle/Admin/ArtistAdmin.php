@@ -15,6 +15,7 @@ class ArtistAdmin extends BaseAdmin
         $collection
             ->remove('delete')
             ->remove('create')
+            ->add('validate', $this->getRouterIdParameter().'/validate')
         ;
     }
 
@@ -25,10 +26,20 @@ class ArtistAdmin extends BaseAdmin
             ->add('artistname', null, array(
                 'label' => "Nom de l'artiste",
             ))
+            ->add('validated', null, array(
+                'label' => 'Vérifié',
+            ))
+            ->add('visible', null, array(
+                'label' => 'Visible sur la plateforme',
+                'editable' => true,
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
+                    'validate' => array(
+                        'template' => 'AppBundle:Admin/Artist:icon_validate.html.twig'
+                    ),
                 )
             ))
         ;
@@ -40,9 +51,6 @@ class ArtistAdmin extends BaseAdmin
             ->with('Généralités')
                 ->add('artistname', null, array(
                     'label' => "Nom de l'artiste",
-                ))
-                ->add('active', 'boolean', array(
-                    'label' => 'Actif',
                 ))
                 ->add('phase', null, array(
                     'label' => "Phase de l'artiste",
@@ -59,6 +67,17 @@ class ArtistAdmin extends BaseAdmin
                 ))
                 ->add('getBiography', null, array(
                     'label' => 'Biographie',
+                ))
+            ->end()
+            ->with('Etat')
+                ->add('active', 'boolean', array(
+                    'label' => 'Actif',
+                ))
+                ->add('validated', 'boolean', array(
+                    'label' => 'Vérifié par un administrateur Un-Mute',
+                ))
+                ->add('visible', 'boolean', array(
+                    'label' => 'Visible sur la plateforme',
                 ))
             ->end()
             ->with('Médias')
@@ -114,9 +133,13 @@ class ArtistAdmin extends BaseAdmin
             ->end()
 
             ->with('Autres')
+                ->add('visible', null, array(
+                    'required' => false,
+                    'label' => 'Laisser visible sur la plateforme par le grand public',
+                ))
                 ->add('deleted', null, array(
                     'required' => false,
-                    'label' => "Cacher l'artiste (il ne sera plus visible sur la plateforme)",
+                    'label' => "\"Supprimer\" l'artiste (il ne sera plus visible sur la plateforme NI accessible par ses gestionnaire)",
                 ))
             ->end()
         ;

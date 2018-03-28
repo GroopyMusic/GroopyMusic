@@ -12,6 +12,7 @@ subjects:
       tickets: Vos tickets Un-Mute pour %artist%
       viptickets: Votre ticket Un-Mute pour %artist% #new
   refunded_payment: Nous avons remboursé vos tickets #new
+  artist_validated: Votre artiste sur Un-Mute a été vérifié #new
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -160,6 +161,10 @@ ownershiprequest:
     Pour confirmer ou non votre appartenance à cet artiste, inscrivez-vous sur www.Un-Mute.be puis cliquez sur le lien suivant : %confirmationUrl%
 
 admin :
+  new_artist: |
+    Un nouvel artiste s'est inscrit sur la plateforme. Son nom de scène : %artist%
+
+    Pour voir ses infos et le contacter/le rendre visible, rendez-vous sur l'espace d'admin !
   proposition :
     submit : |
      Une proposition a été soumise.
@@ -170,6 +175,13 @@ admin :
       -- Adresse email : %mailContact%
 
       Raison de l'événement : %reasonEvent%
+
+#new
+artist:
+  validated: |
+    Le profil artiste que vous avez créé sur Un-Mute (nom de scène : %artist%) a bien été vérifié par un administrateur.
+
+    Il est à présent visible publiquement sur la plateforme et éligible pour participer à des Festivals Un-Mute.
 
 #new
 vip_inscription:

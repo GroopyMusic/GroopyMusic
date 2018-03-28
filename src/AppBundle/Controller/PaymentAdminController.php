@@ -24,8 +24,6 @@ class PaymentAdminController extends Controller
 
     public function refundAction(Request $request, UserInterface $user) {
 
-        $em = $this->getDoctrine()->getManager();
-
         /** @var Payment $payment */
         $payment = $this->admin->getSubject();
 

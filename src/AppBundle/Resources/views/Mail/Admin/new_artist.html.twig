@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('admin.new_artist', {
+                '%artist%': artist.artistname
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

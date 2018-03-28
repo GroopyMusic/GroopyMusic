@@ -7,8 +7,11 @@ use AppBundle\Entity\Notification;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProfilePreferencesType;
 use AppBundle\Form\ProfileType;
+use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\TicketingManager;
+use AppBundle\Services\UserRolesManager;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -154,7 +157,7 @@ class UserController extends Controller
     /**
      * @Route("/new-artist", name="user_new_artist")
      */
-    public function newArtistAction(Request $request, UserInterface $user, TranslatorInterface $translator) {
+    public function newArtistAction(Request $request, UserInterface $user, TranslatorInterface $translator, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher) {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -173,6 +176,9 @@ class UserController extends Controller
             $em->persist($au);
 
             $em->flush();
+
+            $mailDispatcher->sendAdminNewArtist($artist);
+            $notificationDispatcher->notifyAdminNewArtist($artist);
 
             $this->addFlash('notice', $translator->trans('notices.artist_create', ['%artist%' => $artist->getArtistname()]));
 
@@ -200,7 +206,7 @@ class UserController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $av_artists = $em->getRepository('AppBundle:Artist')->findAvailableForNewContract($user);
+        $av_artists = $em->getRepository('AppBundle:Artist')->findAvailableForNewContract($user, $this->get(UserRolesManager::class));
 
         if(count($av_artists) == 0) {
             return $this->render('@App/User/Artist/new_contract.html.twig', array(

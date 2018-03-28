@@ -417,9 +417,8 @@ notifs:
 new_artist:
   title: Nouvel artiste
   intro: |
-      Pour créer un artiste sur Un-Mute, merci de remplir le formulaire suivant.
-      Une fois votre artiste créé, il apparaîtra dans le <a href="%catalog_url%">catalogue des artistes Un-Mute</a>
-      et vous pourrez ajouter des photos et vidéos de cet artiste.
+      Pour créer un artiste sur Un-Mute, merci de remplir le formulaire suivant. Nous vous contacterons avant de rendre public le profil que vous aurez créé.
+      Pendant ce temps, vous pourrez ajouter des photos et vidéos à cet artiste et étoffer son profil.
   warning: En créant un artiste, vous certifiez en être le représentant, ou l'un des membres s'il s'agit d'un groupe.
   urls_explanation: Dans les champs suivants, veuillez introduire vos éventuels liens sous forme d'URL valides <strong>commençant par <em>http://</em> ou <em>https://</em></strong>
 
@@ -466,6 +465,17 @@ artist_profile:
     see: Voir le profil
     leave: Quitter l'artiste
   see:
+    #new
+    deleted:
+      title: Artiste supprimé
+      content: Cet artiste a malheureusement été supprimé par ses propriétaires. Son profil n'est donc plus accessible.
+    invisible:
+      content: Le profil de cet artiste n'est pas public.
+    #new
+    owned:
+      to_be_examined: Le profil de votre artiste doit être vérifié par un administrateur avant d'être rendu public. Vous allez probablement être contacté par un administrateur dans les jours qui viennent.
+      invisible: Le profil de votre artiste n'est pas visible du grand public.
+      not_validated: Votre artiste n'a pas encore été vérifié par un administrateur Un-Mute mais sa page est déjà publique.
     tabs:
       profile: Profil
       biography: Biographie
@@ -612,7 +622,8 @@ header:
 notices:
   edition: Les modifications ont été enregistrées.
   event_create: Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans son organisation !
-  artist_create: L'artiste %artist% a bien été créé.
+  #new
+  artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; vous allez être contacté(e) par l'équipe Un-Mute dans les jours qui viennent.
   artist_role: Votre rôle a bien été enregistré.
   # Next line : invitation to become administrator of a specific artist on Un-Mute
   artist_ownership_requests: Les invitations ont été envoyées.
@@ -690,6 +701,8 @@ labels:
     submit: Valider
     twitter: Lien Twitter
     website: Site Web
+    #new
+    phone: Numéro de téléphone <a href="#" data-toggle="popover" title="" class="ml-2 px-1 py-0 btn btn-outline-primary" data-content="Si vous renseignez un numéro de téléphone, il ne sera utilisé que par l'équipe Un-Mute afin de vous contacter. Ce numéro ne sera pas rendu public.">?</a>
 
   artist_medias:
     submit: Enregistrer les modifications
