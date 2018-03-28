@@ -52,4 +52,17 @@ class ReductionReward extends Reward
     {
         return $this->reduction;
     }
+
+    public function getVariables()
+    {
+        $vars = [];
+        $reflect = new \ReflectionClass(__CLASS__);
+        foreach (get_object_vars($this) as $key => $value) {
+            $property = $reflect->getProperty($key);
+            if ($property != null && $property->class == __CLASS__) {
+                $vars[$key] = $value;
+            }
+        }
+        return $vars;
+    }
 }

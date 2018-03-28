@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use DateInterval;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,14 +19,22 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User_Reward
 {
-    public function __construct()
+    public function __construct(Reward $reward, User $user)
     {
+        $this->reward = $reward;
+        $this->user = $user;
+        $this->creation_date = new \DateTime();
+        $this->limit_date = new \DateTime();
+        date_add($this->limit_date, new DateInterval('P' . $reward->getValidityPeriod() . 'D'));
+        $this->active = true;
+        $this->reward_type_parameters = $reward->getVariables();
     }
 
     public function __toString()
     {
         return ' ' . $this->getReward()->getName();
     }
+
     /**
      * @var int
      *
@@ -38,7 +47,7 @@ class User_Reward
     /**
      * @var int
      *
-     * @ORM\Column(name="reduction", type="integer")
+     * @ORM\Column(name="reduction", type="integer",nullable=true)
      */
     private $reduction;
 
@@ -107,6 +116,7 @@ class User_Reward
     {
         return $this->id;
     }
+
 
     /**
      * Set reduction
@@ -371,4 +381,6 @@ class User_Reward
     {
         return $this->reward;
     }
+
+
 }

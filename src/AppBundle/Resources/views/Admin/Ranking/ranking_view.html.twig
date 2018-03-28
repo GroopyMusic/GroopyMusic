@@ -81,14 +81,14 @@
                                 <div class="form-inline clearfix">
                                     <strong>&nbsp; Eléments sélectionnés : </strong>
                                     <select id="select{{ level.id }}" class="ranking-select-action">
-                                        <option id="{{ level.id }}select-option1" value="reward">
+                                        <option value="reward">
                                             Attribuer récompense aux utilisateurs sélectionnés
                                         </option>
-                                        <option id="{{ level.id }}select-option2" value="email">
+                                        <option value="email">
                                             Envoyer un email aux utilisateurs sélectionnés
                                         </option>
                                     </select>
-                                    <button class="btn btn-primary" onclick="defineAction({{ level.id }})">
+                                    <button class="btn btn-primary actionButton" onclick="defineAction({{ level.id }})">
                                         OK
                                     </button>
                                 </div>
@@ -117,7 +117,7 @@
     <script type="text/javascript">
 
         var maximums = [];
-        var checkedStats = [];
+        var checkedUsers = [];
 
         $('document').ready(function () {
 
@@ -208,42 +208,43 @@
         }
 
         function defineAction(level_id) {
-            if ($('#s2id_select' + level_id + ' a .select2-chosen').text() === $('#' + level_id + 'select-option1').text() || $('#' + level_id + 'select-option1').is(':selected')) {
-
-            } else if ($('#s2id_select' + level_id + ' a .select2-chosen').text() === $('#' + level_id + 'select-option2').text() || $('#' + level_id + 'select-option2').is(':selected')) {
-                createMultpipleEmail(level_id);
+            if ($('#select' + level_id).find(":selected").val() === "reward") {
+                selectMultipleUser(level_id, "displayRewardModal");
+            } else if ($('#select' + level_id).find(":selected").val() === "email") {
+                selectMultipleUser(level_id, "displayEmailModal");
             }
         }
 
-        function createSingleEmail(stat_id, level_id) {
-            checkedStats = [];
-            checkedStats.push(stat_id);
-            displayModal(level_id);
+        function selectSingleUser(stat_id, level_id, route) {
+            checkedUsers = [];
+            checkedUsers.push(stat_id);
+            displayModal(level_id, route);
         }
 
-        function createMultpipleEmail(level_id) {
+        function selectMultipleUser(level_id, route) {
             getCheckedUsers(level_id);
-            displayModal(level_id);
+            displayModal(level_id, route);
         }
 
-
-        function displayModal(level_id) {
-            var url = "{{ admin.generateObjectUrl('displayModal',null) }}";
-            $.post(url, {stats: checkedStats, level: level_id}, function (html) {
+        function displayModal(level_id, route) {
+            $(".actionButton").prop('disabled', true);
+            url = "{{ admin.generateObjectUrl("displayModal",null) }}";
+            $.post(url, {stats: checkedUsers, level: level_id, route: route}, function (html) {
                     Admin.shared_setup($(html).insertAfter($('.tab-content')));
-                    $("#sendEmailModal").on("hidden.bs.modal", function () {
-                        $(".sendEmailModal").remove();
+                    $("#modalAction").on("hidden.bs.modal", function () {
+                        $(".actionButton").prop('disabled', false);
+                        $(".modalAction").remove();
                     }).modal();
                 }
             )
         }
 
         function getCheckedUsers(level_id) {
-            checkedStats = [];
+            checkedUsers = [];
             $('#level' + level_id + ' input[type="checkbox"]').each(function () {
                 // normal || sonata
                 if ($(this).is(':checked') || $(this).parent().hasClass("checked")) {
-                    checkedStats.push($(this).attr('id').replace("checkbox", ""));
+                    checkedUsers.push($(this).attr('id').replace("checkbox", ""));
                 }
             })
         }
@@ -254,21 +255,41 @@
             var url = "{{ admin.generateObjectUrl('sendEmail',null) }}";
             $.post(url, {
                     level: level_id,
-                    stats: checkedStats,
+                    stats: checkedUsers,
                     mailObject: $("#mailObject").val(),
                     mailContent: $("#mailContent").val()
                 }, function (html) {
                     $('#modalLoader').find('.loader').hide();
-                    $("#sendEmailModal").on("hidden.bs.modal", function () {
-                        $(".sendEmailModal").remove();
+                    $("#modalAction").on("hidden.bs.modal", function () {
+                        $(".modalAction").remove();
                         Admin.shared_setup($(html).insertAfter($('.tab-content')));
-                        $("#sendEmailModal").on("hidden.bs.modal", function () {
-                            $(".sendEmailModal").remove();
+                        $("#modalAction").on("hidden.bs.modal", function () {
+                            $(".modalAction").remove();
                         }).modal();
                     }).modal('hide');
                 }
             )
         }
 
+        function giveReward(level_id) {
+            $('#modalLoader').find('.loader').show();
+            $('#modalContent').hide();
+            var url = "{{ admin.generateObjectUrl('giveReward',null) }}";
+            $.post(url, {
+                    level: level_id,
+                    stats: checkedUsers,
+                    reward: $('#selectReward').find(":selected").val()
+                }, function (html) {
+                    $('#modalLoader').find('.loader').hide();
+                    $("#modalAction").on("hidden.bs.modal", function () {
+                        $(".modalAction").remove();
+                        Admin.shared_setup($(html).insertAfter($('.tab-content')));
+                        $("#modalAction").on("hidden.bs.modal", function () {
+                            $(".modalAction").remove();
+                        }).modal();
+                    }).modal('hide');
+                }
+            )
+        }
     </script>
 {% endblock %}

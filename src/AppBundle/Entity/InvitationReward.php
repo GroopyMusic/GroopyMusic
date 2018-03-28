@@ -9,6 +9,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * InvitationReward
  *
@@ -32,7 +33,6 @@ class InvitationReward extends Reward
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
      */
     private $end_date;
-
 
 
     /**
@@ -81,5 +81,18 @@ class InvitationReward extends Reward
     public function getEndDate()
     {
         return $this->end_date;
+    }
+
+    public function getVariables()
+    {
+        $vars = [];
+        $reflect = new \ReflectionClass(__CLASS__);
+        foreach (get_object_vars($this) as $key => $value) {
+            $property = $reflect->getProperty($key);
+            if ($property != null && $property->class == __CLASS__) {
+                $vars[$key] = $value;
+            }
+        }
+        return $vars;
     }
 }

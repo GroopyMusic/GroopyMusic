@@ -35,10 +35,13 @@ class User_CategoryRepository  extends \Doctrine\ORM\EntityRepository
 
     public function findAllStatByLevel($level_id){
         return $this->getEntityManager()->createQuery(
-            'SELECT stat
+            'SELECT stat, l, c, lt, ct
                   FROM AppBundle:User_Category stat INDEX BY stat.id
                   LEFT JOIN stat.user u
                   LEFT JOIN stat.level l
+                  LEFT JOIN l.category c
+                  LEFT JOIN l.translations lt
+                  LEFT JOIN c.translations ct
                   WHERE l.id = ?1
                   GROUP BY stat.id
                   ')

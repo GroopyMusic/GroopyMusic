@@ -5,11 +5,11 @@
         </td>
         <td>{{ stat.statistic }}</td>
         <td>
-            <button class="btn">
+            <button class="btn actionButton" onclick="selectSingleUser({{ stat.id }},{{ stat.level.id }},'displayRewardModal')">
                 <span class="glyphicon glyphicon-gift"></span>
                 Attribuer récompense
             </button>
-            <button class="btn" onclick="createSingleEmail({{ stat.id }},{{ stat.level.id }})">
+            <button class="btn actionButton" onclick="selectSingleUser({{ stat.id }},{{ stat.level.id }},'displayEmailModal')">
                 <span class="glyphicon glyphicon-envelope"></span>
                 Envoyer un email
             </button>

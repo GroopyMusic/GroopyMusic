@@ -18,7 +18,7 @@ sonata_admin:
              position: right
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
+               groups: [app.admin.group.ranking, app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
 
        groups:
            app.admin.group.user:
@@ -48,7 +48,6 @@ sonata_admin:
                   - AppBundle\Admin\LevelAdmin
                   - AppBundle\Admin\RewardAdmin
                   - AppBundle\Admin\RewardRestrictionAdmin
-
 
            app.admin.group.ranking:
               label: app.admin.group.ranking

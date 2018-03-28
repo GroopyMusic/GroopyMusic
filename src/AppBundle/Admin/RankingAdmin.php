@@ -17,8 +17,8 @@ class RankingAdmin extends BaseAdmin
             ->remove('create')
             ->add('compute', 'compute')
             ->add('displayMore', 'displayMore')
-            ->add('displayModal','displayModal')
-            ->add('sendEmail','sendEmail')
-        ;
+            ->add('displayModal', 'displayModal')
+            ->add('sendEmail', 'sendEmail')
+            ->add('giveReward', 'giveReward');
     }
 }

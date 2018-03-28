@@ -110,4 +110,17 @@ class ConsomableReward extends Reward
     {
         return $this->type_consomable;
     }
+
+    public function getVariables()
+    {
+        $vars = [];
+        $reflect = new \ReflectionClass(__CLASS__);
+        foreach (get_object_vars($this) as $key => $value) {
+            $property = $reflect->getProperty($key);
+            if ($property != null && $property->class == __CLASS__) {
+                $vars[$key] = $value;
+            }
+        }
+        return $vars;
+    }
 }

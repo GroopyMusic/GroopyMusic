@@ -11,6 +11,7 @@ use AppBundle\Entity\PhysicalPersonInterface;
 use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
+use AppBundle\Entity\User_Category;
 use AppBundle\Entity\VIPInscription;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
@@ -370,11 +371,11 @@ class MailDispatcher
     {
         $params = ['content' => $content];
         $subject_params = [];
-        $to = array_map(function (User $elem) {
-            return $elem->getEmail();
+        $to = array_map(function (User_Category $elem) {
+            return $elem->getUser()->getEmail();
         }, $users);
-        $to_name = array_map(function (User $elem) {
-            return $elem->getDisplayName();
+        $to_name = array_map(function (User_Category $elem) {
+            return $elem->getUser()->getDisplayName();
         }, $users);
         $this->sendEmail(MailTemplateProvider::RANKING_EMAIL_USER_TEMPLATE, $object,
             $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);

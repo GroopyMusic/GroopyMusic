@@ -16,7 +16,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  * Reward
  *
  * @ORM\Table(name="reward")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RewardRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"invitation_reward" = "InvitationReward", "consomable_reward" = "ConsomableReward", "reduction_reward" = "ReductionReward"})
@@ -81,6 +81,8 @@ abstract class Reward implements TranslatableInterface
         }
         return $type;
     }
+
+    abstract public function getVariables();
 
     /**
      * @var int
