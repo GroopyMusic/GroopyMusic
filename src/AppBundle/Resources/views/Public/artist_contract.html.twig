@@ -2,17 +2,18 @@
 
 {% set artist = contract.artist %}
 
+{% set og_src = absolute_url(asset('images/contract-card-default.jpg')) %}
+
+{% set photos = artist.allPhotos %}
+
+{% if photos is not empty %}
+    {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
+{% endif %}
+
 {% block open_graph %}
     <meta property="og:title" content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - {{ 'event.og_title'|trans({'%artist%':contract.artist.artistname})|raw }}"  />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
-    {% set og_src = absolute_url(asset('images/contract-card-default.jpg')) %}
-
-    {% set photos = artist.allPhotos %}
-
-    {% if photos is not empty %}
-        {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
-    {% endif %}
     <meta property="og:image" content="{{ og_src }}" />
 {% endblock %}
 
@@ -317,13 +318,35 @@
                         </div>
                     </div>
                 {% endif %}
+                <div id="google-event-infos" class="col-12 content-box mt-4">
+                    <div class="content-box-header">
+                        <h3>Infos</h3>
+                    </div>
+                    <div class="content-box-content">
+                        <ul class="um-list">
+                            <li>Artiste hôte : {{ artist }}</li>
+                            <li>Nom de l'événement : {{ artist }} - Un-Mute Festival</li>
+                            <li>Date : {{ contract.dateConcert|date('d/m/Y') }}</li>
+                            {% if hall_confirmed %}
+                                <li>
+                                    Nom de la salle : {{ contract.hallConcert }}<br />
+                                    Adresse : {{ contract.hallConcert.address }}
+                                </li>
+                            {% endif %}
+                            <li>Image : <img class="img-fluid" src="{{ og_src }}" />
+                            </li>
+                            <li class="word-break-all">URL : {{ url('artist_contract', {'id': contract.id, 'slug': artist.slug}) }}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
 {% endblock %}
 
-{% block js_vars %}
-    <div id="modal-dialog">
-    </div>
+{% block additional_javascripts %}
+     <script>
+         $('#google-event-infos').remove();
+     </script>
 {% endblock %}
