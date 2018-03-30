@@ -10,7 +10,8 @@ subjects:
     fan:
       known_outcome: "Concert de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
-      viptickets: Votre ticket Un-Mute pour %artist% #new
+      # TODO add pluralization
+      viptickets: Vos tickets Un-Mute pour %artist% #new
   refunded_payment: Nous avons remboursé vos tickets #new
   artist_validated: Votre artiste sur Un-Mute a été vérifié #new
 
@@ -100,7 +101,7 @@ concert:
     vip_tickets: |
       Bonjour,
 
-      Vous trouverez en pièces jointes votre ticket offert pour le Festival Un-Mute dans la salle "%hall%" dont la tête d'affiche est %host%.
+      Vous trouverez en pièces jointes vos tickets pour le Festival Un-Mute dans la salle "%hall%" dont la tête d'affiche est %host%.
 
       Toutes les informations pratiques s'y trouvent.
 
