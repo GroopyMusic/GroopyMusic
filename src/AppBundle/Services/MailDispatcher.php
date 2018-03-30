@@ -367,17 +367,31 @@ class MailDispatcher
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_PROPOSITION_SUBMIT, $subject, $params, $subject_params);
     }
 
-    public function sendRankingEmail($users, $object, $content)
+    public function sendRankingEmail($stats, $object, $content)
     {
         $params = ['content' => $content];
         $subject_params = [];
         $to = array_map(function (User_Category $elem) {
             return $elem->getUser()->getEmail();
-        }, $users);
+        }, $stats);
         $to_name = array_map(function (User_Category $elem) {
             return $elem->getUser()->getDisplayName();
-        }, $users);
+        }, $stats);
         $this->sendEmail(MailTemplateProvider::RANKING_EMAIL_USER_TEMPLATE, $object,
+            $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendEmailRewardAttribution($stats, $content, $reward)
+    {
+        $params = ['content' => $content, 'reward' => $reward];
+        $subject = "subjects.reward_attribution";
+        $to = array_map(function (User_Category $elem) {
+            return $elem->getUser()->getEmail();
+        }, $stats);
+        $to_name = array_map(function (User_Category $elem) {
+            return $elem->getUser()->getDisplayName();
+        }, $stats);
+        $this->sendEmail(MailTemplateProvider::REWARD_ATTRIBUTION_TEMPLATE, $subject,
             $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);
     }
 

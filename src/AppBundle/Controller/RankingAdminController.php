@@ -13,9 +13,12 @@ use AppBundle\Entity\ConsomableReward;
 use AppBundle\Entity\InvitationReward;
 use AppBundle\Entity\Reward;
 use AppBundle\Entity\User;
+use AppBundle\Entity\User_Category;
 use AppBundle\Entity\User_Reward;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\RankingService;
+use AppBundle\Services\RewardAttributionService;
 use Psr\Log\LoggerInterface;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -80,12 +83,12 @@ class RankingAdminController extends Controller
     public function computeAction(Request $request)
     {
         try {
-            $em = $this->getDoctrine()->getManager();
             $this->rankingervice->computeAllStatistic();
         } catch (\Exception $ex) {
             $this->addFlash('notice', 'Exception : ' . $ex->getMessage());
             $this->logger->warning("Exception computeAction", [$ex->getMessage()]);
         } finally {
+            $em = $this->getDoctrine()->getManager();
             $categories = $em->getRepository('AppBundle:Category')->findForRaking();
             $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
             $this->limitStatistics($categories);
@@ -156,7 +159,7 @@ class RankingAdminController extends Controller
         return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'success'));
     }
 
-    public function giveRewardAction(Request $request)
+    public function giveRewardAction(Request $request, RewardAttributionService $rewardAttributionService)
     {
         $em = $this->getDoctrine()->getManager();
         $checkedStatistics = $request->get('stats');
@@ -168,7 +171,7 @@ class RankingAdminController extends Controller
             $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
             $stats = $this->getSelectedStats($checkedStatistics, $allStatistics);
             $reward = $em->getRepository('AppBundle:Reward')->find(intval($request->get('reward')));
-            $this->giveRewardToUser($stats, $reward);
+            $rewardAttributionService->giveReward($stats, $reward, $request->get('notification'), $request->get('email'), $request->get('emailContent'));
         } catch (\Exception $ex) {
             return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'error', 'exception' => $ex->getMessage()));
         }
@@ -184,20 +187,6 @@ class RankingAdminController extends Controller
         }
         return $users;
     }
-
-    private function giveRewardToUser($stats, $reward)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $this->logger->warning('re', [$reward->getVariables()]);
-        foreach ($stats as $stat) {
-            $user = $stat->getUser();
-            $user_reward = new User_Reward($reward, $user);
-            $user_reward->setUser($user);
-            $em->persist($user_reward);
-        }
-        $em->flush();
-    }
-
 
     /**
      * get only the first 5 lines of each category level

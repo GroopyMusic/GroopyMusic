@@ -9,6 +9,7 @@
 namespace AppBundle\Entity;
 
 use DateInterval;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +29,10 @@ class User_Reward
         date_add($this->limit_date, new DateInterval('P' . $reward->getValidityPeriod() . 'D'));
         $this->active = true;
         $this->reward_type_parameters = $reward->getVariables();
+        $this->artists = new ArrayCollection();
+        $this->base_contract_artists = new ArrayCollection();
+        $this->base_steps = new ArrayCollection();
+        $this->counter_parts = new ArrayCollection();
     }
 
     public function __toString()
@@ -76,24 +81,24 @@ class User_Reward
     private $reward_type_parameters;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BaseContractArtist")
+     * @ORM\ManyToMany(targetEntity="BaseContractArtist",cascade={"all"})
      */
-    private $base_contract_artist;
+    private $base_contract_artists;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BaseStep")
+     * @ORM\ManyToMany(targetEntity="BaseStep",cascade={"all"})
      */
-    private $base_step;
+    private $base_steps;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CounterPart")
+     * @ORM\ManyToMany(targetEntity="CounterPart",cascade={"all"})
      */
-    private $counter_part;
+    private $counter_parts;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Artist")
+     * @ORM\ManyToMany(targetEntity="Artist",cascade={"all"})
      */
-    private $artist;
+    private $artists;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="rewards")
@@ -239,102 +244,6 @@ class User_Reward
     }
 
     /**
-     * Set baseContractArtist
-     *
-     * @param \AppBundle\Entity\BaseContractArtist $baseContractArtist
-     *
-     * @return User_Reward
-     */
-    public function setBaseContractArtist(BaseContractArtist $baseContractArtist = null)
-    {
-        $this->base_contract_artist = $baseContractArtist;
-
-        return $this;
-    }
-
-    /**
-     * Get baseContractArtist
-     *
-     * @return \AppBundle\Entity\BaseContractArtist
-     */
-    public function getBaseContractArtist()
-    {
-        return $this->base_contract_artist;
-    }
-
-    /**
-     * Set baseStep
-     *
-     * @param \AppBundle\Entity\BaseStep $baseStep
-     *
-     * @return User_Reward
-     */
-    public function setBaseStep(BaseStep $baseStep = null)
-    {
-        $this->base_step = $baseStep;
-
-        return $this;
-    }
-
-    /**
-     * Get baseStep
-     *
-     * @return \AppBundle\Entity\BaseStep
-     */
-    public function getBaseStep()
-    {
-        return $this->base_step;
-    }
-
-    /**
-     * Set counterPart
-     *
-     * @param \AppBundle\Entity\CounterPart $counterPart
-     *
-     * @return User_Reward
-     */
-    public function setCounterPart(CounterPart $counterPart = null)
-    {
-        $this->counter_part = $counterPart;
-
-        return $this;
-    }
-
-    /**
-     * Get counterPart
-     *
-     * @return \AppBundle\Entity\CounterPart
-     */
-    public function getCounterPart()
-    {
-        return $this->counter_part;
-    }
-
-    /**
-     * Set artist
-     *
-     * @param \AppBundle\Entity\Artist $artist
-     *
-     * @return User_Reward
-     */
-    public function setArtist(Artist $artist = null)
-    {
-        $this->artist = $artist;
-
-        return $this;
-    }
-
-    /**
-     * Get artist
-     *
-     * @return \AppBundle\Entity\Artist
-     */
-    public function getArtist()
-    {
-        return $this->artist;
-    }
-
-    /**
      * Set user
      *
      * @param \AppBundle\Entity\User $user
@@ -383,4 +292,139 @@ class User_Reward
     }
 
 
+    /**
+     * Add baseContractArtist
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $baseContractArtist
+     *
+     * @return User_Reward
+     */
+    public function addBaseContractArtist(\AppBundle\Entity\BaseContractArtist $baseContractArtist)
+    {
+        $this->base_contract_artists[] = $baseContractArtist;
+
+        return $this;
+    }
+
+    /**
+     * Remove baseContractArtist
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $baseContractArtist
+     */
+    public function removeBaseContractArtist(\AppBundle\Entity\BaseContractArtist $baseContractArtist)
+    {
+        $this->base_contract_artists->removeElement($baseContractArtist);
+    }
+
+    /**
+     * Get baseContractArtists
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBaseContractArtists()
+    {
+        return $this->base_contract_artists;
+    }
+
+    /**
+     * Add baseStep
+     *
+     * @param \AppBundle\Entity\BaseStep $baseStep
+     *
+     * @return User_Reward
+     */
+    public function addBaseStep(\AppBundle\Entity\BaseStep $baseStep)
+    {
+        $this->base_steps[] = $baseStep;
+
+        return $this;
+    }
+
+    /**
+     * Remove baseStep
+     *
+     * @param \AppBundle\Entity\BaseStep $baseStep
+     */
+    public function removeBaseStep(\AppBundle\Entity\BaseStep $baseStep)
+    {
+        $this->base_steps->removeElement($baseStep);
+    }
+
+    /**
+     * Get baseSteps
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBaseSteps()
+    {
+        return $this->base_steps;
+    }
+
+    /**
+     * Add counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     *
+     * @return User_Reward
+     */
+    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counter_parts[] = $counterPart;
+
+        return $this;
+    }
+
+    /**
+     * Remove counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     */
+    public function removeCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counter_parts->removeElement($counterPart);
+    }
+
+    /**
+     * Get counterParts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCounterParts()
+    {
+        return $this->counter_parts;
+    }
+
+    /**
+     * Add artist
+     *
+     * @param \AppBundle\Entity\Artist $artist
+     *
+     * @return User_Reward
+     */
+    public function addArtist(\AppBundle\Entity\Artist $artist)
+    {
+        $this->artists[] = $artist;
+
+        return $this;
+    }
+
+    /**
+     * Remove artist
+     *
+     * @param \AppBundle\Entity\Artist $artist
+     */
+    public function removeArtist(\AppBundle\Entity\Artist $artist)
+    {
+        $this->artists->removeElement($artist);
+    }
+
+    /**
+     * Get artists
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArtists()
+    {
+        return $this->artists;
+    }
 }

@@ -1,0 +1,10 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+{% autoescape false %}
+{% block title %}{{ subject }}{% endblock %}
+{% block content %}
+    {{ email_content('reward_attribution.content',{'%reward_name%': reward.name,'%content%': content})|trans|raw|nl2br }}
+{% endblock %}
+{% endautoescape %}
+{% block body_html %}
+    {% include 'AppBundle:Mail/User:reward_attribution.html.twig' %}
+{% endblock %}

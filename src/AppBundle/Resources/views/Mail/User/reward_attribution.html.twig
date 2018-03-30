@@ -4,9 +4,10 @@
         {% block title %}{{ subject }}{% endblock %}
         {% block content %}
             <div>
-                <p>
-                    {{ content | nl2br }}
-                </p>
+                <p>{{ email_content('reward_attribution.content',{
+                        '%reward_name%': reward.name,
+                        '%content%': content
+                    })|trans|raw|nl2br }}</p>
             </div>
         {% endblock %}
     {% endspaceless %}

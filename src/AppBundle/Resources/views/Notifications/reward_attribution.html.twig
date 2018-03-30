@@ -1,0 +1,10 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'reward_attribution.title'|trans|raw %}
+{%- set content -%}
+    {{ 'reward_attribution.content'|trans({
+        '%reward_name%': reward_name,
+    })|raw|nl2br }}
+{%- endset -%}

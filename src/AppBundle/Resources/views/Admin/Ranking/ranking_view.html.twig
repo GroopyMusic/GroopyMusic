@@ -79,7 +79,7 @@
                                 </div>
                                 <br>
                                 <div class="form-inline clearfix">
-                                    <strong>&nbsp; Eléments sélectionnés : </strong>
+                                    <label for="select{{ level.id }}">&nbsp; Eléments sélectionnés : </label>
                                     <select id="select{{ level.id }}" class="ranking-select-action">
                                         <option value="reward">
                                             Attribuer récompense aux utilisateurs sélectionnés
@@ -100,7 +100,6 @@
             </div>
         {% endfor %}
     </div>
-
     <div class="text-center">
         <a href="{{ admin.generateObjectUrl('compute',null) }}" class="compute-button">
             <button class="btn btn-primary">
@@ -133,8 +132,10 @@
             {% endfor %}
             {% endfor %}
 
+            var collapsable = $('.collapsable');
+
             //change icon collapse button
-            $('.collapsable').on("hidden.bs.collapse", function () {
+            $(collapsable).on("hidden.bs.collapse", function () {
                 var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
                 $(mySpan).removeClass();
                 $(mySpan).addClass('glyphicon glyphicon-menu-down');
@@ -142,7 +143,7 @@
             });
 
             //change icon collapse button
-            $('.collapsable').on("shown.bs.collapse", function () {
+            $(collapsable).on("shown.bs.collapse", function () {
                 var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
                 $(mySpan).removeClass();
                 $(mySpan).addClass('glyphicon glyphicon-menu-up');
@@ -196,21 +197,23 @@
         //ajax --> display more
         function displayMore(level_id) {
             showLoader(level_id);
+            var tableBody = $('#level' + level_id + ' tbody');
             var url = "{{ admin.generateObjectUrl('displayMore',null) }}";
             var limit = $('#level' + level_id + ' tbody tr').length + 5;
             $.post(url, {level_id: level_id, limit: limit}, function (html) {
                     hideLoader(level_id);
-                    $('#level' + level_id + ' tbody').children().remove(); //check
-                    Admin.shared_setup($('#level' + level_id + ' tbody').html(html));
+                    $(tableBody).children().remove(); //check
+                    Admin.shared_setup($(tableBody).html(html));
                     checkIfDisplayed(level_id);
                 }
             )
         }
 
         function defineAction(level_id) {
-            if ($('#select' + level_id).find(":selected").val() === "reward") {
+            var select = $('#select' + level_id);
+            if ($(select).find(":selected").val() === "reward") {
                 selectMultipleUser(level_id, "displayRewardModal");
-            } else if ($('#select' + level_id).find(":selected").val() === "email") {
+            } else if ($(select).find(":selected").val() === "email") {
                 selectMultipleUser(level_id, "displayEmailModal");
             }
         }
@@ -231,12 +234,23 @@
             url = "{{ admin.generateObjectUrl("displayModal",null) }}";
             $.post(url, {stats: checkedUsers, level: level_id, route: route}, function (html) {
                     Admin.shared_setup($(html).insertAfter($('.tab-content')));
+                    manageTextarea();
                     $("#modalAction").on("hidden.bs.modal", function () {
                         $(".actionButton").prop('disabled', false);
                         $(".modalAction").remove();
                     }).modal();
                 }
             )
+        }
+
+        function manageTextarea() {
+            var checkbox = $("#checkboxSendEmail");
+            $(checkbox).on("ifChecked", function () {
+                $('#textareaEmail').show();
+            });
+            $(checkbox).on("ifUnchecked", function () {
+                $('#textareaEmail').hide();
+            });
         }
 
         function getCheckedUsers(level_id) {
@@ -278,7 +292,10 @@
             $.post(url, {
                     level: level_id,
                     stats: checkedUsers,
-                    reward: $('#selectReward').find(":selected").val()
+                    reward: $('#selectReward').find(":selected").val(),
+                    email: $('#checkboxSendEmail').parent().hasClass('checked'),
+                    emailContent: $('#textareaEmailContent').val(),
+                    notification: $('#checkboxSendNotification').parent().hasClass('checked')
                 }, function (html) {
                     $('#modalLoader').find('.loader').hide();
                     $("#modalAction").on("hidden.bs.modal", function () {

@@ -9,6 +9,8 @@ use AppBundle\Entity\Notification;
 use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
+use AppBundle\Entity\User_Category;
+use AppBundle\Entity\User_Reward;
 use AppBundle\Entity\VIPInscription;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -24,6 +26,7 @@ class NotificationDispatcher
     const SUCCESSFUL_CONTRACT_FAN_TYPE = 'successful_contract_fan';
     const TICKET_SENT_TYPE = 'tickets_sent';
     const ONGOING_CART_TYPE = 'ongoing_cart';
+    const REWARD_ATTRIBUTION_TYPE = 'reward_attribution';
 
     const ADMIN_NEW_CONTACT_FORM_TYPE = 'Admin/new_contact_form';
     const ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE = 'Admin/new_vip_inscription';
@@ -129,6 +132,14 @@ class NotificationDispatcher
     public function notifyOngoingCart($users, ContractArtist $contract)
     {
         $this->addNotifications($users, self::ONGOING_CART_TYPE, ['contract' => $contract]);
+    }
+
+    public function notifyRewardAttribution($stats, $reward)
+    {
+        $users = array_map(function (User_Category $elem) {
+            return $elem->getUser();
+        }, $stats);
+        $this->addNotifications($users, self::REWARD_ATTRIBUTION_TYPE, ['reward_name' => $reward->getName()]);
     }
 
     // --------------------

@@ -27,9 +27,6 @@
                 </div>
             {% else %}
                 <div class="modal-body">
-                    <div id="modalLoader">
-                        {{ hidden_loader() }}
-                    </div>
                     <div id="modalContent">
                         <div class="form-inline clearfix">
                             <div class="pull-left">
@@ -66,7 +63,7 @@
                         </div>
                         <br>
                         <div>
-                            <label for="checkboxSendEmail">Récompense à attribuer</label>
+                            <label for="selectReward">Récompense à attribuer</label>
                             <select id="selectReward">
                                 {% for reward in rewards %}
                                     <option value="{{ reward.id }}">{{ reward.name }}</option>
@@ -79,9 +76,14 @@
                             <input type="checkbox" id="checkboxSendEmail">
                         </div>
                         <br>
+                        <div id="textareaEmail" hidden>
+                            <label for="textareaEmailContent">Contenu à ajouter à l'email</label>
+                            <textarea id="textareaEmailContent" class="form-control"></textarea>
+                        </div>
+                        <br>
                         <div>
                             <label for="checkboxSendNotification">Envoyer une notification</label>
-                            <input type="checkbox" id="">
+                            <input type="checkbox" id="checkboxSendNotification">
                         </div>
                         <br>
                         <div class="modal-footer">

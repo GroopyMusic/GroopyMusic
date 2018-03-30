@@ -10,5 +10,16 @@ namespace AppBundle\Repository;
  */
 class RewardRestrictionRepository extends \Doctrine\ORM\EntityRepository
 {
-
+    public function getMostRecentConfirmedConcert()
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT c, a
+                  FROM AppBundle:ContractArtist c
+                  LEFT JOIN c.artist a
+                  WHERE c.successful = TRUE 
+                  ORDER BY c.dateEnd DESC
+                  ')
+            ->setMaxResults(1)
+            ->getSingleResult();
+    }
 }

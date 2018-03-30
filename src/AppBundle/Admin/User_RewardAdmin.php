@@ -67,16 +67,16 @@ class User_RewardAdmin extends BaseAdmin
             ->add('reward_type_parameters', null, array(
                 'label' => 'Paramètre du type de récompenses',
             ))
-            ->add('base_contract_artist', null, array(
+            ->add('base_contract_artists', null, array(
                 'label' => 'Concert(s) lié(s)',
             ))
-            ->add('base_step', null, array(
+            ->add('base_steps', null, array(
                 'label' => 'Palier(s) de salle lié(s)',
             ))
-            ->add('counter_part', null, array(
+            ->add('counter_parts', null, array(
                 'label' => 'Achat(s) lié(s)',
             ))
-            ->add('artist', null, array(
+            ->add('artists', null, array(
                 'label' => 'Artiste(s) lié(s)',
             ));
 
