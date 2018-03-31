@@ -81,22 +81,22 @@ class User_Reward
     private $reward_type_parameters;
 
     /**
-     * @ORM\ManyToMany(targetEntity="BaseContractArtist",cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="BaseContractArtist")
      */
     private $base_contract_artists;
 
     /**
-     * @ORM\ManyToMany(targetEntity="BaseStep",cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="BaseStep")
      */
     private $base_steps;
 
     /**
-     * @ORM\ManyToMany(targetEntity="CounterPart",cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="CounterPart")
      */
     private $counter_parts;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Artist",cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="Artist")
      */
     private $artists;
 

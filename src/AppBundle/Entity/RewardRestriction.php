@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Services\RewardAttributionService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
@@ -26,7 +27,7 @@ class RewardRestriction implements TranslatableInterface
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(RewardAttributionService $rewardAttributionService)
     {
         $this->rewards = new ArrayCollection();
     }
@@ -61,7 +62,7 @@ class RewardRestriction implements TranslatableInterface
     {
         return $this->getCurrentLocale();
     }
-
+    
     /**
      * @var int
      *
@@ -72,11 +73,18 @@ class RewardRestriction implements TranslatableInterface
     private $id;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="querry_name", type="text")
+     * @ORM\Column(name="querry", type="integer")
      */
-    private $querry_name;
+    private $querry;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="querry_parameter", type="integer",nullable = true)
+     */
+    private $querry_parameter;
 
     /**
      * @ORM\ManyToMany(targetEntity="Reward", inversedBy="restrictions")
@@ -91,31 +99,6 @@ class RewardRestriction implements TranslatableInterface
     public function getId()
     {
         return $this->id;
-    }
-
-
-    /**
-     * Set querryName
-     *
-     * @param string $querryName
-     *
-     * @return RewardRestriction
-     */
-    public function setQuerryName($querryName)
-    {
-        $this->querry_name = $querryName;
-
-        return $this;
-    }
-
-    /**
-     * Get querryName
-     *
-     * @return string
-     */
-    public function getQuerryName()
-    {
-        return $this->querry_name;
     }
 
     /**
@@ -150,5 +133,53 @@ class RewardRestriction implements TranslatableInterface
     public function getRewards()
     {
         return $this->rewards;
+    }
+
+    /**
+     * Set querryParameter
+     *
+     * @param integer $querryParameter
+     *
+     * @return RewardRestriction
+     */
+    public function setQuerryParameter($querryParameter)
+    {
+        $this->querry_parameter = $querryParameter;
+
+        return $this;
+    }
+
+    /**
+     * Get querryParameter
+     *
+     * @return integer
+     */
+    public function getQuerryParameter()
+    {
+        return $this->querry_parameter;
+    }
+
+    /**
+     * Set querry
+     *
+     * @param integer $querry
+     *
+     * @return RewardRestriction
+     */
+    public function setQuerry($querry)
+    {
+        $this->querry = $querry;
+
+        return $this;
+    }
+
+    /**
+     * Get querry
+     *
+     * @return integer
+     */
+    public function getQuerry()
+    {
+        return $this->querry;
     }
 }

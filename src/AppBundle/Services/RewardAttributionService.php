@@ -9,6 +9,7 @@
 namespace AppBundle\Services;
 
 
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\Reward;
 use AppBundle\Entity\RewardRestriction;
 use AppBundle\Entity\User_Reward;
@@ -17,8 +18,9 @@ use Psr\Log\LoggerInterface;
 
 class RewardAttributionService
 {
-
-    const MOST_RECENT_CONFIRMED = "most recent confirmed concert";
+    //TODO tableau
+    const MOST_RECENT_CONFIRMED_CONTRACT_ARTIST = "most recent confirmed concert";
+    const GET_SINGLE_CONTRACT_ARTIST = "single concert";
 
 
     private $notificationDispatcher;
@@ -29,13 +31,18 @@ class RewardAttributionService
 
     private $logger;
 
+    private $querries;
+
     public function __construct(NotificationDispatcher $notificationDispatcher, MailDispatcher $mailDispatcher, EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->notificationDispatcher = $notificationDispatcher;
         $this->mailDispatcher = $mailDispatcher;
         $this->em = $em;
         $this->logger = $logger;
-
+        $this->querries = array(
+            'Concert confirmé le plus récent' => 1,
+            'Un seul concert' => 2
+        );
     }
 
     public function giveReward($stats, Reward $reward, $notification, $email, $emailContent)
@@ -62,12 +69,19 @@ class RewardAttributionService
     {
         $restrictionRepository = $this->em->getRepository("AppBundle:RewardRestriction");
         switch ($restriction->getQuerryName()) {
-            case self::MOST_RECENT_CONFIRMED;
+            case 1;
                 $baseContractArtist = $restrictionRepository->getMostRecentConfirmedConcert();
                 $user_Reward->addBaseContractArtist($baseContractArtist);
                 break;
-            case "";
+            case 2;
+                $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($restriction->getQuerryParameter());
+                $user_Reward->addBaseContractArtist($baseContractArtist);
                 break;
         }
+    }
+
+    public function getQuerryNames()
+    {
+        return $this->querries;
     }
 }
