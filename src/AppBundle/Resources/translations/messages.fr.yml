@@ -292,6 +292,8 @@ event:
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
+  #new
+  description: "Découvrez trois artistes émergents lors d'un Festival Un-Mute. Tête d'affiche : %host%"
 
 #new
 conditions:

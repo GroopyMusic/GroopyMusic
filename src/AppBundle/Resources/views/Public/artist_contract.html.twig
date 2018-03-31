@@ -22,6 +22,7 @@
 
 {% set hall_confirmed = (contract.hallConcert is not null) %}
 {% set hall_potential = (state not in contract.uncrowdableStates and potential_halls is not empty) %}
+{% set first_counterpart = contract.firstCounterPart %}
 
 {% block body %}
 
@@ -233,50 +234,51 @@
 
                         <h3>{{ 'event.buy_tickets.title'|trans|raw }}</h3>
                     </div>
+
                     <div class="content-box-content">
-                    {% if state not in contract.uncrowdableStates %}
-                        {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+                        {% if state not in contract.uncrowdableStates %}
+                            {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
-                        {{ form_start(form) }}
+                            {{ form_start(form) }}
 
-                        {% for purchase in form.purchases %}
-                            {% set counterpart = purchase.vars.value.counterpart %}
-                            <div class="counterpart-form">
+                            {% for purchase in form.purchases %}
+                                {% set counterpart = purchase.vars.value.counterpart %}
+                                <div class="counterpart-form">
 
-                                <div class="form-group form-row">
-                                    {{ form_errors(purchase) }}
+                                    <div class="form-group form-row">
+                                        {{ form_errors(purchase) }}
 
-                                    <div class="col-8">
-                                        <label class="counterpart-label">{{ counterpart.name }}</label>
-                                    </div>
-                                    <div class="col-4 counterpart-price">
-                                        {{ counterpart.price }} €
-                                    </div>
-                                    <div class="col-8">{{ counterpart.getDescription|raw }}</div>
-                                    <div class="col-4">
-                                        <div class="container px-0">
-                                            <div class="count-input space-bottom">
-                                                <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                                {{ form_widget(purchase) }}
-                                                <a class="incr-btn" data-action="increase" data-max="{{ tickets_left }}" href="#">&plus;</a>
+                                        <div class="col-8">
+                                            <label class="counterpart-label">{{ counterpart.name }}</label>
+                                        </div>
+                                        <div class="col-4 counterpart-price">
+                                            {{ counterpart.price }} €
+                                        </div>
+                                        <div class="col-8">{{ counterpart.getDescription|raw }}</div>
+                                        <div class="col-4">
+                                            <div class="container px-0">
+                                                <div class="count-input space-bottom">
+                                                    <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                                    {{ form_widget(purchase) }}
+                                                    <a class="incr-btn" data-action="increase" data-max="{{ tickets_left }}" href="#">&plus;</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
 
-                        {{ form_widget(form.submit) }}
-                        {{ form_end(form) }}
-                            {#
-                            <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<br /><a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
-                            </div>
-                            #}
-                    {% else %}
-                        <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
-                    {% endif %}
+                            {{ form_widget(form.submit) }}
+                            {{ form_end(form) }}
+                                {#
+                                <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<br /><a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
+                                <div class="text-center">
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
+                                </div>
+                                #}
+                        {% else %}
+                            <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -318,27 +320,6 @@
                         </div>
                     </div>
                 {% endif %}
-                <div id="google-event-infos" class="col-12 content-box mt-4">
-                    <div class="content-box-header">
-                        <h3>Infos</h3>
-                    </div>
-                    <div class="content-box-content">
-                        <ul class="um-list">
-                            <li>Artiste hôte : {{ artist }}</li>
-                            <li>Nom de l'événement : {{ artist }} - Un-Mute Festival</li>
-                            <li>Date : {{ contract.dateConcert|date('d/m/Y') }}</li>
-                            {% if hall_confirmed %}
-                                <li>
-                                    Nom de la salle : {{ contract.hallConcert }}<br />
-                                    Adresse : {{ contract.hallConcert.address }}
-                                </li>
-                            {% endif %}
-                            <li>Image : <img class="img-fluid" src="{{ og_src }}" />
-                            </li>
-                            <li class="word-break-all">URL : {{ url('artist_contract', {'id': contract.id, 'slug': artist.slug}) }}</li>
-                        </ul>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -346,7 +327,42 @@
 {% endblock %}
 
 {% block additional_javascripts %}
-     <script>
-         $('#google-event-infos').remove();
-     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "{{ artist }} - Un-Mute Festival",
+      "startDate": "{{ contract.dateConcert|date('Y-m-d') }}T19:00",
+      "endDate": "{{ contract.dateConcert|date('Y-m-d') }}T22:30",
+      {% if hall_confirmed %}
+      "location": {
+        "@type": "Place",
+        "name": "{{ contract.hallConcert }}",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "{{ contract.hallConcert.address.naturalStreet }}",
+          "addressLocality": "{{ contract.hallConcert.address.city }}",
+          "postalCode": "{{ contract.hallConcert.address.zipcode }}",
+          "addressCountry": "{{ contract.hallConcert.address.country }}"
+        }
+      },
+      {% endif %}
+      "image": [
+          "{{ og_src }}"
+       ],
+      "description": "{{ 'event.description'|trans({'%host%': artist.artistName})|raw }}",
+      "offers": {
+        "@type": "Offer",
+        "url": "{{ url('artist_contract', {'id': contract.id, 'slug': artist.slug}) }}",
+        "price": "{{ first_counterpart.price }}",
+        "priceCurrency": "EUR",
+        "availability": "{{ contract.soldOut ? "http://schema.org/OutOfStock" : "http://schema.org/InStock" }}",
+        "validFrom": "{{ contract.startDate|date('Y-m-d') }}"
+      },
+      "performer": {
+        "@type": "PerformingGroup",
+        "name": "{{ artist }}"
+      }
+    }
+</script>
 {% endblock %}

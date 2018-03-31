@@ -140,6 +140,13 @@ class BaseContractArtist
         $this->collected_amount += $amount;
     }
 
+    public function getFirstCounterPart() {
+        foreach($this->getStep()->getCounterParts() as $cp) {
+            return $cp;
+        }
+        return null;
+    }
+
     public function isSoldOut() {
         foreach($this->getStep()->getCounterParts() as $cp) {
             if($this->getNbAvailable($cp) > 0) {
