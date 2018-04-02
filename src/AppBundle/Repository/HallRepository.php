@@ -12,8 +12,30 @@ use AppBundle\Entity\Step;
  */
 class HallRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function baseQueryBuilder() {
+        return $this->createQueryBuilder('h')
+            ->leftJoin('h.province', 'pro')
+            ->leftJoin('h.step', 's')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('h.photos', 'p')
+            ->addSelect('p')
+            ->addSelect('a')
+            ->addSelect('s')
+            ->addSelect('pro')
+        ;
+    }
+
+    public function findVisible() {
+        return $this
+            ->baseQueryBuilder()
+            ->andWhere('h.visible = 1')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findPotential(Step $step, Province $province = null) {
-        $qb = $this->createQueryBuilder('h')
+        $qb = $this->baseQueryBuilder()
             ->where('h.visible = 1')
             ->andWhere('h.step = :step')
             ->setParameter('step', $step)

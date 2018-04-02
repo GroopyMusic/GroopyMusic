@@ -36,15 +36,28 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
             ->join('c.step', 's')
             ->join('c.preferences', 'p')
             ->leftJoin('c.reality', 'r')
+            ->leftJoin('s.counterParts', 'cp')
+            ->leftJoin('a.genres', 'g')
             ->addSelect('a')
             ->addSelect('s')
             ->addSelect('r')
             ->addSelect('p')
+            ->addSelect('cp')
+            ->addSelect('g')
             ->where('c.failed = 0')
             ->andWhere('c.test_period = :prevalidation')
             ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
             ->setParameter('prevalidation', $prevalidation)
             ->setParameter('now', new \DateTime('now'))
+        ;
+    }
+
+    public function findEligibleForTicketGeneration() {
+        return $this->queryVisible()
+            ->andWhere('c.tickets_sent = 1')
+            ->andWhere('c.successful = 1')
+            ->getQuery()
+            ->getResult()
         ;
     }
 
@@ -74,15 +87,11 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
     }
 
     public function findSuccessful() {
-        return $this->createQueryBuilder('c')
+        return $this->queryVisible()
             ->leftJoin('c.contractsFan', 'cf')
-            ->join('c.reality', 'r')
             ->addSelect('cf')
-            ->addSelect('r')
-            ->where('c.successful = 1 OR c.tickets_sold >= c.min_tickets')
+            ->andWhere('c.successful = 1 OR c.tickets_sold >= c.min_tickets')
             ->andWhere('c.failed = 0')
-            ->andWhere('r.date > :now')
-            ->setParameter('now', new \DateTime('now'))
             ->getQuery()
             ->getResult()
         ;

@@ -35,13 +35,16 @@ class TicketingController extends Controller
      */
     public function indexAction(EntityManagerInterface $em)
     {
-        $events = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
-        $events = array_filter($events, function(ContractArtist $contractArtist) {
+        $scan_events = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
+        $scan_events = array_filter($scan_events, function(ContractArtist $contractArtist) {
             return $contractArtist->getDateConcert()->diff((new \DateTime()))->days <= 1;
         });
 
+        $generate_events = $em->getRepository('AppBundle:ContractArtist')->findEligibleForTicketGeneration();
+
         return $this->render('@App/Ticketing/index.html.twig', array(
-            'events' => $events,
+            'scan_events' => $scan_events,
+            'generate_events' => $generate_events,
         ));
     }
 

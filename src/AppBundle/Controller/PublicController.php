@@ -78,7 +78,6 @@ class PublicController extends Controller
      */
     public function indexAction(Request $request, UserInterface $user = null)
     {
-
         $em = $this->getDoctrine()->getManager();
 
         $NB_MAX_NEWS = 4;
@@ -220,7 +219,7 @@ class PublicController extends Controller
      */
     public function hallsAction() {
         $em = $this->getDoctrine()->getManager();
-        $halls = $em->getRepository('AppBundle:Hall')->findBy(array('visible' => true));
+        $halls = $em->getRepository('AppBundle:Hall')->findVisible();
         shuffle($halls);
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(

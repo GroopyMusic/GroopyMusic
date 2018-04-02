@@ -196,6 +196,7 @@ class TicketingManager
                 $this->em->persist($vipInscription);
             }
         }
+        $this->em->flush();
     }
 
     /**

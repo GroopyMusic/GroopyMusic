@@ -372,6 +372,12 @@ class BaseContractArtist
      */
     protected $additional_info;
 
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="date_success", type="datetime", nullable=true)
+     */
+    protected $date_success;
+
     // Discriminator
     protected $type;
 
@@ -989,5 +995,29 @@ class BaseContractArtist
     public function getAdditionalInfo()
     {
         return $this->additional_info;
+    }
+
+    /**
+     * Set dateSuccess
+     *
+     * @param \DateTime $dateSuccess
+     *
+     * @return BaseContractArtist
+     */
+    public function setDateSuccess($dateSuccess)
+    {
+        $this->date_success = $dateSuccess;
+
+        return $this;
+    }
+
+    /**
+     * Get dateSuccess
+     *
+     * @return \DateTime
+     */
+    public function getDateSuccess()
+    {
+        return $this->date_success;
     }
 }

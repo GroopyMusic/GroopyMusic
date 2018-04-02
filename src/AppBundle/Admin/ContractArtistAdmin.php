@@ -158,6 +158,9 @@ class ContractArtistAdmin extends BaseAdmin
                 ->add('successful', null, array(
                     'label' => 'Réussi',
                 ))
+                ->add('date_success', null, array(
+                    'label' => 'Date de réussite',
+                ))
                 ->add('refunded', null, array(
                     'label' => 'Remboursé',
                 ))

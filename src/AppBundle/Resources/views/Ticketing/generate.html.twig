@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container content-box">
+    <div class="container">
+        <p><a href="{{ path('ticketing_index') }}">< Retour à l'accueil du ticketing</a></p>
+    </div>
 
-        <h2 class="text-center">Génération de tickets<br />{{ contract }}</h2>
+    <div class="container content-box">
+        <h2 class="text-center">Un-Mute TicketGen<br />{{ contract }}</h2>
 
         <div id="generation-section" class="content-box-content">
 
@@ -83,6 +86,7 @@
                     $('#vip-results').html('<p class="alert alert-success">Les tickets ont été générés & envoyés.</p>');
                     $('#vip_list').remove();
                     $(this).remove();
+                    $('#vip-section .loader').hide();
                 },
                 error: function() {
                     $('#vip-results').html('<p class="alert alert-danger">Lse tickets n\'ont pas pu être envoyés.</p>');

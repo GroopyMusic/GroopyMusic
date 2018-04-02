@@ -166,14 +166,8 @@ class ContractArtistAdminController extends Controller
 
             if ($form->get('marksuccessful')->isClicked()) {
 
-                $contract->setSuccessful(true)->setFailed(false);
-
-                foreach($contract->getContractsFanPaid() as $cf) {
-                    /** @var ContractFan $cf */
-                    $cf_user = $cf->getUser();
-                    $cf_user->addCredits($cf->getAmount());
-                    $em->persist($cf_user);
-                }
+                // TODO service
+                $contract->setSuccessful(true)->setFailed(false)->setDateSuccess(new \DateTime());
 
                 $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, true);
 
@@ -185,7 +179,7 @@ class ContractArtistAdminController extends Controller
                 return new RedirectResponse($this->admin->generateUrl('list'));
             } elseif ($form->get('markfailed')->isClicked()) {
 
-                $contract->setSuccessful(false)->setFailed(true)->setReality(null);
+                $contract->setSuccessful(false)->setFailed(true)->setReality(null)->setDateSuccess(null);
 
                 $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, false);
 

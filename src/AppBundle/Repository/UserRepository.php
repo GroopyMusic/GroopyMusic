@@ -6,8 +6,23 @@ use Doctrine\ORM\Query;
 
 class UserRepository extends \Doctrine\ORM\EntityRepository {
 
-    public function findWithPaymentLastXDays($X) {
+    public function baseQueryBuilder() {
         return $this->createQueryBuilder('u')
+            ->leftJoin('u.artists_user', 'au')
+            ->leftJoin('u.genres', 'g')
+            ->leftJoin('u.notifications', 'n')
+            ->leftJoin('u.user_conditions', 'uc')
+            ->leftJoin('uc.conditions', 'conditions')
+            ->addSelect('au')
+            ->addSelect('g')
+            ->addSelect('n')
+            ->addSelect('uc')
+            ->addSelect('conditions')
+        ;
+    }
+
+    public function findWithPaymentLastXDays($X) {
+        return $this->baseQueryBuilder()
             ->innerJoin('u.payments', 'p')
             ->where('p.date > :date')
             ->setParameter('date', new \DateTime('today -' . $X . 'days'))
@@ -17,7 +32,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
     }
 
     public function findUsersWithRoles(array $roles) {
-        $qb = $this->createQueryBuilder('u');
+        $qb = $this->baseQueryBuilder();
 
         foreach($roles as $role) {
             $qb->orWhere('u.roles LIKE :role')

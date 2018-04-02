@@ -30,7 +30,7 @@ class User_Conditions
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="user_conditions", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="user_conditions")
      */
     private $user;
 
