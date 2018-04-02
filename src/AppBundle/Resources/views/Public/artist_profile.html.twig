@@ -169,3 +169,28 @@
         {% endif %}
     </div>
 {% endblock %}
+
+{% block additional_javascripts %}
+
+    <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "MusicGroup",
+          "url": "{{ url('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}",
+          {% if artist.allPhotos is not empty %}
+          "image": [
+            {% for photo in artist.allPhotos %}
+                "{{ absolute_url(asset(artist.webPath(photo))) }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+           ],
+           {% endif %}
+          "name": "{{ artist.artistname }}",
+          {% if artist.website is not empty %}
+            "sameAs": "{{ artist.website }}",
+          {% endif %}
+          "description": "{{ artist.shortDescription }}"
+        }
+    </script>
+
+
+{% endblock %}
