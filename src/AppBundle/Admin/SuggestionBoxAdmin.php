@@ -15,6 +15,7 @@ class SuggestionBoxAdmin extends BaseAdmin
         $collection
             ->remove('create')
             ->remove('edit')
+            ->add('handle', $this->getRouterIdParameter().'/handle')
         ;
     }
 
@@ -36,9 +37,19 @@ class SuggestionBoxAdmin extends BaseAdmin
             ->add('email', null, array(
                 'label' => 'E-mail',
             ))
+            ->add('handler', null, array(
+                'label' => 'Admin en charge',
+            ))
+            ->add('done', null, array(
+                'DONE',
+                'editable' => true,
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
+                    'handle' => array(
+                        'template' => 'AppBundle:Admin/SuggestionBox:icon_handle.html.twig'
+                    ),
                 )
             ))
         ;
@@ -74,6 +85,12 @@ class SuggestionBoxAdmin extends BaseAdmin
             ))
             ->add('message', null, array(
                 'label' => 'Message',
+            ))
+            ->add('handler', null, array(
+                'label' => 'Admin en charge',
+            ))
+            ->add('done', null, array(
+                'DONE',
             ))
         ;
     }

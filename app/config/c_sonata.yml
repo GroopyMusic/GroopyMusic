@@ -148,7 +148,7 @@ services:
         public: true
 
     AppBundle\Admin\SuggestionBoxAdmin:
-        arguments: [~, AppBundle\Entity\SuggestionBox, ~]
+        arguments: [~, AppBundle\Entity\SuggestionBox, AppBundle:SuggestionBoxAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.suggestionBox }
         public: true
