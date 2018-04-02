@@ -103,3 +103,13 @@
     </div>
 {% endblock %}
 
+{% block additional_javascripts %}
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "{{ url('homepage') }}",
+      "logo": "{{ absolute_url(asset('images/logo/logo.png')) }}"
+    }
+    </script>
+{% endblock %}
