@@ -200,7 +200,7 @@ class ArtistController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('confirm', SubmitType::class, [
-                'label' => 'Quitter ' . $artist->getArtistname(),
+                'label' => $translator->trans('labels.artist.leave.submit', ['%artist%' => $artist->getArtistname()]),
                 'attr' => ['class' => 'btn btn-danger'],
             ])
             ->getForm()
