@@ -10,9 +10,29 @@
         {{ form_row(form.videos) }}
         {{ form_row(form.submit) }}
     {{ form_rest(form) }}
+
+    <div id="videos-stock">
+        {% for video in artist.videos %}
+            <div class="video-stock-{{ loop.index0 }}">
+                {{ video.embedVideo|raw }}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock  %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">um_collection({add:'<a class="btn btn-outline-secondary" href="#">{{ "artist_profile.medias.add_video"|trans|raw }}</a>', remove:'<a class="danger-color" href="#">{{ "artist_profile.medias.remove_video"|trans|raw }}</a>'});</script>
+    <script type="text/javascript">
+        um_collection({
+            add:'<a class="btn btn-outline-secondary" href="#">{{ "artist_profile.medias.add_video"|trans|raw }}</a>',
+            remove:'<a class="danger-color" href="#">{{ "artist_profile.medias.remove_video"|trans|raw }}</a>',
+        });
+
+        $('#videos-stock').hide();
+
+        {% for video in artist.videos %}
+            $('#app_artist_medias_videos_{{ loop.index0 }}').append($('.video-stock-{{ loop.index0 }}'));
+        {% endfor %}
+    </script>
+
 {% endblock %}
