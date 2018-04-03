@@ -40,8 +40,8 @@ class RewardAttributionService
         $this->em = $em;
         $this->logger = $logger;
         $this->querries = array(
-            'Concert confirmé le plus récent' => 1,
-            'Un seul concert' => 2
+            'Concert confirmé le plus récent',
+            'Un seul concert sélectionné'
         );
     }
 
@@ -68,12 +68,12 @@ class RewardAttributionService
     public function defineRestriction(RewardRestriction $restriction, User_Reward $user_Reward)
     {
         $restrictionRepository = $this->em->getRepository("AppBundle:RewardRestriction");
-        switch ($restriction->getQuerryName()) {
-            case 1;
+        switch ($restriction->getQuerry()) {
+            case 'Concert confirmé le plus récent';
                 $baseContractArtist = $restrictionRepository->getMostRecentConfirmedConcert();
                 $user_Reward->addBaseContractArtist($baseContractArtist);
                 break;
-            case 2;
+            case 'Un seul concert sélectionné';
                 $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($restriction->getQuerryParameter());
                 $user_Reward->addBaseContractArtist($baseContractArtist);
                 break;

@@ -65,6 +65,7 @@ class LevelAdmin extends BaseAdmin
     }
     public function configureFormFields(FormMapper $form)
     {
+        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
         $form
             ->with('Données du palier')
             ->add('step', TextType::class, array(
@@ -87,6 +88,7 @@ class LevelAdmin extends BaseAdmin
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
                 'class' => Reward::class,
+                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards(),
                 'multiple' => true,
                 'required' => false
             ])

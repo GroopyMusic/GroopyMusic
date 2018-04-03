@@ -19,10 +19,12 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Choice;
 
 class RewardAdmin extends BaseAdmin
 {
@@ -35,6 +37,9 @@ class RewardAdmin extends BaseAdmin
             ))
             ->add('type', null, array(
                 'label' => 'Type',
+            ))
+            ->add('getDispayDeleted', null, array(
+                'label' => 'Supprimé',
             ))
             ->add('_action', 'actions', array(
                     'actions' => array(
@@ -147,8 +152,12 @@ class RewardAdmin extends BaseAdmin
                 ->add('quantity', IntegerType::class, array(
                     'label' => 'Nombre de tickets',
                 ))
-                ->add('type_consomable', IntegerType::class, array(
+                ->add('type_consomable', ChoiceType::class, array(
                     'label' => 'Type de consommation',
+                    'choices' => array(
+                        "Boisson" => "Boisson",
+                        "Nourriture" => "Nourriture"
+                    )
                 ))
                 ->add('value', IntegerType::class, array(
                     'label' => 'Valeur d\'un ticket',

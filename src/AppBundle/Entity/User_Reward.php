@@ -50,13 +50,6 @@ class User_Reward
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="reduction", type="integer",nullable=true)
-     */
-    private $reduction;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime")
@@ -120,31 +113,6 @@ class User_Reward
     public function getId()
     {
         return $this->id;
-    }
-
-
-    /**
-     * Set reduction
-     *
-     * @param integer $reduction
-     *
-     * @return User_Reward
-     */
-    public function setReduction($reduction)
-    {
-        $this->reduction = $reduction;
-
-        return $this;
-    }
-
-    /**
-     * Get reduction
-     *
-     * @return integer
-     */
-    public function getReduction()
-    {
-        return $this->reduction;
     }
 
     /**

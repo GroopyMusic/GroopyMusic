@@ -160,4 +160,17 @@ class ContractArtistRepository extends EntityRepository implements ContainerAwar
             ->getResult()
         ;
     }
+
+    public function getContactArtistsForSelect()
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT c,s,a
+                  FROM AppBundle:ContractArtist c
+                  LEFT JOIN c.step s
+                  LEFT JOIN s.translations st
+                  LEFT JOIN c.artist a
+                  WHERE c.successful = TRUE 
+                  ')
+            ->getResult();
+    }
 }

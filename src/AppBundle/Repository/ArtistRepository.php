@@ -71,4 +71,14 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('q', $q['artistname'] . '%')
             ->getResult();
     }
+
+    public function getArtistsForSelect()
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT a
+                  FROM AppBundle:Artist a
+                  WHERE a.deleted = FALSE
+                  ')
+            ->getResult();
+    }
 }

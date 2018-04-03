@@ -16,13 +16,28 @@ namespace AppBundle\Repository;
  */
 class RewardRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findAllReward()
+    public function findNotDeletedRewards()
     {
         return $this->getEntityManager()->createQuery(
-            'SELECT r, rt
+            'SELECT r, rt, rw
                   FROM AppBundle:Reward r
+                  LEFT JOIN r.restrictions rw
                   LEFT JOIN r.translations rt
+                  WHERE r.deletedAt IS NULL 
                   ')
             ->getResult();
+    }
+
+    public function getReward($id)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT r, rt, rw
+                  FROM AppBundle:Reward r
+                  LEFT JOIN r.restrictions rw
+                  LEFT JOIN r.translations rt
+                  WHERE r.id = ?1
+                  ')
+            ->setParameter(1, $id)
+            ->getSingleResult();
     }
 }

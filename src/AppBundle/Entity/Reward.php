@@ -24,7 +24,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  */
 abstract class Reward implements TranslatableInterface
 {
-    use ORMBehaviors\Translatable\Translatable;
+    use ORMBehaviors\Translatable\Translatable, ORMBehaviors\SoftDeletable\SoftDeletable;
 
     /**
      * Constructor
@@ -82,6 +82,15 @@ abstract class Reward implements TranslatableInterface
         return $type;
     }
 
+    public function getDispayDeleted(){
+        if($this->deletedAt == null){
+            return "false";
+        }else{
+            return $this->deletedAt->format('d-m-Y H:i:s');
+        }
+
+    }
+
     abstract public function getVariables();
 
     /**
@@ -104,14 +113,16 @@ abstract class Reward implements TranslatableInterface
     protected $validity_period;
 
     /**
-     * @ORM\OneToMany(targetEntity="User_Reward", mappedBy="reward", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="User_Reward", mappedBy="reward", cascade={"persist"})
      */
     protected $user_rewards;
 
     /**
-     * @ORM\ManyToMany(targetEntity="RewardRestriction", mappedBy="rewards", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="RewardRestriction", mappedBy="rewards", cascade={"persist"})
      */
     protected $restrictions;
+
+
 
 
     /**

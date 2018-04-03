@@ -137,7 +137,7 @@ class RankingAdminController extends Controller
         }
         $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
         $stats = $this->getSelectedStats($checkedStatistics, $allStatistics);
-        $rewards = $em->getRepository('AppBundle:Reward')->findAllReward();
+        $rewards = $em->getRepository('AppBundle:Reward')->findNotDeletedRewards();
         return $this->render($template, array('recipients' => $stats, 'level_id' => $request->get('level'), 'rewards' => $rewards));
     }
 
@@ -170,7 +170,7 @@ class RankingAdminController extends Controller
         try {
             $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
             $stats = $this->getSelectedStats($checkedStatistics, $allStatistics);
-            $reward = $em->getRepository('AppBundle:Reward')->find(intval($request->get('reward')));
+            $reward = $em->getRepository('AppBundle:Reward')->getReward(intval($request->get('reward')));
             $rewardAttributionService->giveReward($stats, $reward, $request->get('notification'), $request->get('email'), $request->get('emailContent'));
         } catch (\Exception $ex) {
             return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'error', 'exception' => $ex->getMessage()));

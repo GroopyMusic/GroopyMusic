@@ -25,13 +25,14 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class RewardRestrictionAdmin extends BaseAdmin
 {
+
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->add('name', null, array(
                 'label' => 'Nom'
             ))
-            ->add('displayQuerryName', null, array(
+            ->add('querry', null, array(
                 'label' => 'Nom du querry'
             ))
             ->add('_action', 'actions', array(
@@ -54,7 +55,7 @@ class RewardRestrictionAdmin extends BaseAdmin
             ->add('description', null, array(
                 'label' => 'Description'
             ))
-            ->add('displayQuerryName', null, array(
+            ->add('querry', null, array(
                 'label' => 'Nom du querry'
             ))
             ->add('rewards', null, array(
@@ -66,7 +67,7 @@ class RewardRestrictionAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $entitiesArray = $this->getSelectEntities();
-        $querry_names = $this->getConfigurationPool()->getContainer()->get('AppBundle\Services\RewardAttributionService')->getQuerryNames();
+        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
         $form
             ->with('Champs traductibles')
             ->add('translations', TranslationsType::class, array(
@@ -84,7 +85,7 @@ class RewardRestrictionAdmin extends BaseAdmin
             ->with('Données de la réstrictions')
             ->add('querry', ChoiceType::class, array(
                 'label' => 'Nom du querry',
-                'choices' => $querry_names
+                'choices' => $this->constructQuerrySelect()
             ))
             ->add('querry_parameter', ChoiceType::class, array(
                 'label' => 'Paramètre du querry',
@@ -100,6 +101,7 @@ class RewardRestrictionAdmin extends BaseAdmin
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
                 'class' => Reward::class,
+                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards(),
                 'multiple' => true,
                 'required' => false
             ])
@@ -109,10 +111,10 @@ class RewardRestrictionAdmin extends BaseAdmin
     private function getSelectEntities()
     {
         $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
-        $artists = $em->getRepository('AppBundle:RewardRestriction')->getArtistsForSelect();
-        $contractArtists = $em->getRepository('AppBundle:RewardRestriction')->getContactArtistsForSelect();
-        $steps = $em->getRepository('AppBundle:RewardRestriction')->getStepsForSelect();
-        $counterParts = $em->getRepository('AppBundle:RewardRestriction')->getCounterPartsForSelect();
+        $artists = $em->getRepository('AppBundle:Artist')->getArtistsForSelect();
+        $contractArtists = $em->getRepository('AppBundle:ContractArtist')->getContactArtistsForSelect();
+        $steps = $em->getRepository('AppBundle:Step')->getStepsForSelect();
+        $counterParts = $em->getRepository('AppBundle:CounterPart')->getCounterPartsForSelect();
         return $this->constructSelect($artists, $contractArtists, $steps, $counterParts);
     }
 
@@ -132,5 +134,15 @@ class RewardRestrictionAdmin extends BaseAdmin
             $selectArray['contractArtists'][$contractArtist->getDisplayName()] = $contractArtist->getId();
         }
         return $selectArray;
+    }
+
+    private function constructQuerrySelect()
+    {
+        $arraySelect = [];
+        $querry_names = $this->getConfigurationPool()->getContainer()->get('AppBundle\Services\RewardAttributionService')->getQuerryNames();
+        foreach ($querry_names as $querry) {
+            $arraySelect[$querry] = $querry;
+        }
+        return $arraySelect;
     }
 }

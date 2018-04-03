@@ -27,7 +27,7 @@ class RewardRestriction implements TranslatableInterface
     /**
      * Constructor
      */
-    public function __construct(RewardAttributionService $rewardAttributionService)
+    public function __construct()
     {
         $this->rewards = new ArrayCollection();
     }
@@ -62,7 +62,7 @@ class RewardRestriction implements TranslatableInterface
     {
         return $this->getCurrentLocale();
     }
-    
+
     /**
      * @var int
      *
@@ -75,7 +75,7 @@ class RewardRestriction implements TranslatableInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="querry", type="integer")
+     * @ORM\Column(name="querry", type="string",length = 255)
      */
     private $querry;
 
@@ -159,10 +159,11 @@ class RewardRestriction implements TranslatableInterface
         return $this->querry_parameter;
     }
 
+
     /**
      * Set querry
      *
-     * @param integer $querry
+     * @param string $querry
      *
      * @return RewardRestriction
      */
@@ -176,7 +177,7 @@ class RewardRestriction implements TranslatableInterface
     /**
      * Get querry
      *
-     * @return integer
+     * @return string
      */
     public function getQuerry()
     {

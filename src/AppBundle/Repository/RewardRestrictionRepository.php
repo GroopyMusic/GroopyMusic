@@ -10,49 +10,6 @@ namespace AppBundle\Repository;
  */
 class RewardRestrictionRepository extends \Doctrine\ORM\EntityRepository
 {
-
-    public function getContactArtistsForSelect()
-    {
-        return $this->getEntityManager()->createQuery(
-            'SELECT c,s,a
-                  FROM AppBundle:ContractArtist c
-                  LEFT JOIN c.step s
-                  LEFT JOIN s.translations st
-                  LEFT JOIN c.artist a
-                  WHERE c.successful = TRUE 
-                  ')
-            ->getResult();
-    }
-
-    public function getArtistsForSelect()
-    {
-        return $this->getEntityManager()->createQuery(
-            'SELECT a
-                  FROM AppBundle:Artist a
-                  ')
-            ->getResult();
-    }
-
-    public function getCounterPartsForSelect()
-    {
-        return $this->getEntityManager()->createQuery(
-            'SELECT c, ct
-                  FROM AppBundle:CounterPart c
-                  LEFT JOIN c.translations ct
-                  ')
-            ->getResult();
-    }
-
-    public function getStepsForSelect()
-    {
-        return $this->getEntityManager()->createQuery(
-            'SELECT s,st
-                  FROM AppBundle:BaseStep s
-                  LEFT JOIN s.translations st
-                  ')
-            ->getResult();
-    }
-
     public function getMostRecentConfirmedConcert()
     {
         return $this->getEntityManager()->createQuery(

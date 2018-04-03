@@ -8,6 +8,9 @@
             </div>
         {% endfor %}
     </div>
+    <div id="ajaxErrorMesage" class="alert alert-danger" hidden>
+
+    </div>
     <ul class="nav nav-tabs nav-justified">
         {% for category in categories %}
             <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="ranking-title-tab"
@@ -240,7 +243,9 @@
                         $(".modalAction").remove();
                     }).modal();
                 }
-            )
+            ).fail(function (err) {
+                $("#ajaxErrorMesage").append(err.statusText).show();
+            })
         }
 
         function manageTextarea() {
@@ -263,40 +268,30 @@
             })
         }
 
-        function sendEmail(level_id) {
+        function performAction(level_id, route) {
             $('#modalLoader').find('.loader').show();
             $('#modalContent').hide();
-            var url = "{{ admin.generateObjectUrl('sendEmail',null) }}";
-            $.post(url, {
+            var url, params;
+            if (route === "email") {
+                url = "{{ admin.generateObjectUrl('sendEmail',null) }}";
+                params = {
                     level: level_id,
                     stats: checkedUsers,
                     mailObject: $("#mailObject").val(),
                     mailContent: $("#mailContent").val()
-                }, function (html) {
-                    $('#modalLoader').find('.loader').hide();
-                    $("#modalAction").on("hidden.bs.modal", function () {
-                        $(".modalAction").remove();
-                        Admin.shared_setup($(html).insertAfter($('.tab-content')));
-                        $("#modalAction").on("hidden.bs.modal", function () {
-                            $(".modalAction").remove();
-                        }).modal();
-                    }).modal('hide');
                 }
-            )
-        }
-
-        function giveReward(level_id) {
-            $('#modalLoader').find('.loader').show();
-            $('#modalContent').hide();
-            var url = "{{ admin.generateObjectUrl('giveReward',null) }}";
-            $.post(url, {
+            } else if (route === "reward") {
+                url = "{{ admin.generateObjectUrl('giveReward',null) }}";
+                params = {
                     level: level_id,
                     stats: checkedUsers,
                     reward: $('#selectReward').find(":selected").val(),
                     email: $('#checkboxSendEmail').parent().hasClass('checked'),
                     emailContent: $('#textareaEmailContent').val(),
                     notification: $('#checkboxSendNotification').parent().hasClass('checked')
-                }, function (html) {
+                }
+            }
+            $.post(url, params, function (html) {
                     $('#modalLoader').find('.loader').hide();
                     $("#modalAction").on("hidden.bs.modal", function () {
                         $(".modalAction").remove();
@@ -306,7 +301,13 @@
                         }).modal();
                     }).modal('hide');
                 }
-            )
+            ).fail(function (err) {
+                $("#modalAction").on("hidden.bs.modal", function () {
+                    $(".modalAction").remove();
+                    $("#ajaxErrorMesage").append(err.statusText).show();
+                    $(window).scrollTop(0);
+                }).modal('hide');
+            })
         }
     </script>
 {% endblock %}

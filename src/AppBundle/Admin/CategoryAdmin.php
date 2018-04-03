@@ -70,6 +70,7 @@ class CategoryAdmin extends BaseAdmin
 
     public function configureFormFields(FormMapper $form)
     {
+        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
         $form
             ->with('Champs traductibles')
             ->add('translations', TranslationsType::class, array(
@@ -104,6 +105,7 @@ class CategoryAdmin extends BaseAdmin
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
                 'class' => Reward::class,
+                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards(),
                 'multiple' => true,
                 'required' => false
             ])
