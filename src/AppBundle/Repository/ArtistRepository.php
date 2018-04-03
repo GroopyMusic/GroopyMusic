@@ -92,7 +92,7 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
     public function findNewArtists($limit) {
 
         return $this->baseQueryBuilder()
-            ->where('a.deleted = 0')
+            ->andWhere('a.deleted = 0')
             ->andWhere('a.visible = 1')
             ->orderBy('a.date_creation', 'DESC')
             ->setMaxResults($limit)
