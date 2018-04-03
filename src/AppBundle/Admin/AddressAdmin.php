@@ -15,7 +15,7 @@ class AddressAdmin extends BaseAdmin {
             ->add('number')
             ->add('zipcode')
             ->add('city')
-            ->add('country')
+            ->add('country', 'country')
         ;
     }
 }

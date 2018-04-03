@@ -9,6 +9,7 @@ use AppBundle\Form\Artist_UserType;
 use AppBundle\Form\ArtistMediasType;
 use AppBundle\Form\ArtistOwnershipsType;
 use AppBundle\Form\ArtistType;
+use AppBundle\Services\UserRolesManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -35,7 +36,9 @@ class ArtistController extends Controller
     }
 
     private function assertOwns(UserInterface $user, Artist $artist) {
-        if(!$user->owns($artist)) {
+        $userRolesManager = $this->get(UserRolesManager::class);
+
+        if(!$user->owns($artist) && !$userRolesManager->userHasRole($user, 'ROLE_ADMIN')) {
             throw $this->createAccessDeniedException("You don't own this artist!");
         }
     }

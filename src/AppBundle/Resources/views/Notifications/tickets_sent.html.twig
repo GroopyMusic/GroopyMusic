@@ -7,6 +7,6 @@
     {{ 'tickets_sent.content'|trans({
         '%date%': date,
         '%hall_name%': hall_name,
-        '%orders_url%': path('user_paid_carts'),
+        '%orders_url%': url('user_paid_carts'),
     })|raw|nl2br }}
 {%- endset -%}

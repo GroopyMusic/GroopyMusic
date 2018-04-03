@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ConcertPossibilityRepository")
+ * @ORM\Entity
  */
 class ConcertPossibility extends ContractArtistPossibility
 {

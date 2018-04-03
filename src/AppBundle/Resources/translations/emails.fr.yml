@@ -10,7 +10,10 @@ subjects:
     fan:
       known_outcome: "Concert de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
-      viptickets: Votre ticket Un-Mute pour %artist% #new
+      # TODO add pluralization
+      viptickets: Vos tickets Un-Mute pour %artist% #new
+  refunded_payment: Nous avons remboursé vos tickets #new
+  artist_validated: Votre artiste sur Un-Mute a été vérifié #new
   reward_attribution: Nouvelle récompense #new
 
 others:
@@ -99,7 +102,7 @@ concert:
     vip_tickets: |
       Bonjour,
 
-      Vous trouverez en pièces jointes votre ticket offert pour le Festival Un-Mute dans la salle "%hall%" dont la tête d'affiche est %host%.
+      Vous trouverez en pièces jointes vos tickets pour le Festival Un-Mute dans la salle "%hall%" dont la tête d'affiche est %host%.
 
       Toutes les informations pratiques s'y trouvent.
 
@@ -160,6 +163,10 @@ ownershiprequest:
     Pour confirmer ou non votre appartenance à cet artiste, inscrivez-vous sur www.Un-Mute.be puis cliquez sur le lien suivant : %confirmationUrl%
 
 admin :
+  new_artist: |
+    Un nouvel artiste s'est inscrit sur la plateforme. Son nom de scène : %artist%
+
+    Pour voir ses infos et le contacter/le rendre visible, rendez-vous sur l'espace d'admin !
   proposition :
     submit : |
      Une proposition a été soumise.
@@ -170,6 +177,13 @@ admin :
       -- Adresse email : %mailContact%
 
       Raison de l'événement : %reasonEvent%
+
+#new
+artist:
+  validated: |
+    Le profil artiste que vous avez créé sur Un-Mute (nom de scène : %artist%) a bien été vérifié par un administrateur.
+
+    Il est à présent visible publiquement sur la plateforme et éligible pour participer à des Festivals Un-Mute.
 
 #new
 vip_inscription:
@@ -183,6 +197,15 @@ vip_inscription:
     Nous vous attendons donc à 18h le %date% pour le %event%.
 
     Pour toute question, n'hésitez pas à nous contacter à ce lien : %contact_url%
+
+#new
+payment:
+  refunded: |
+    Cher Producteur,
+
+    Vos tickets achetés pour le %event% ont été entièrement remboursés (numéro de commande : %cf%).
+
+    Rendez-vous sur Un-Mute pour soutenir d'autres artistes et les faire monter sur scène !
 
 #new
 reward_attribution:

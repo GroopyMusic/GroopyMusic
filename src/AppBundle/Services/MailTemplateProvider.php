@@ -19,6 +19,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const REMINDER_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:reminder_contract_artist.txt.twig';
     const FAILED_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:failed_contract_artist.txt.twig';
     const SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE = 'AppBundle:Mail/Artist:successful_contract_artist.txt.twig';
+    const ARTIST_VALIDATED_TEMPLATE = 'AppBundle:Mail/Artist:artist_validated.txt.twig';
 
     const FAILED_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:failed_contract_fan.txt.twig';
     const SUCCESSFUL_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:successful_contract_fan.txt.twig';
@@ -26,6 +27,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const TICKET_TEMPLATE = 'AppBundle:Mail/Fan:ticket.txt.twig';
     const ORDER_RECAP_TEMPLATE = 'AppBundle:Mail/Fan:order.txt.twig';
     const TICKETS_TEMPLATE = 'AppBundle:Mail/Fan:tickets.txt.twig';
+    const REFUNDED_PAYMENT_TEMPLATE = 'AppBundle:Mail/Fan:refunded_payment.txt.twig';
     const VIP_TICKETS_TEMPLATE = 'AppBundle:Mail/VIPInscription:vip_tickets.txt.twig';
 
     const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/User:change_email_confirmation.txt.twig';
@@ -40,6 +42,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const REWARD_ATTRIBUTION_TEMPLATE = "AppBundle:Mail/User:reward_attribution.txt.twig";
 
     // Admin mails templates
+    // TODO uniform names
     const ADMIN_TEST_TEMPLATE = 'AppBundle:Mail/Admin:test.txt.twig';
     const ADMIN_REMINDER_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:reminder_contract.txt.twig';
     const ADMIN_PENDING_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:pending_contract.txt.twig';
@@ -50,6 +53,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ADMIN_CONTACT_FORM = 'AppBundle:Mail/SuggestionBox:admin.txt.twig';
     const ADMIN_PROPOSITION_SUBMIT = 'AppBundle:Mail/Admin:proposition_submit.txt.twig';
     const ADMIN_VIP_INSCRIPTION_FORM = 'AppBundle:Mail/VIPInscription:admin.txt.twig';
+    const ADMIN_NEW_ARTIST = 'AppBundle:Mail/Admin:new_artist.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
@@ -155,6 +159,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
             self::ORDER_RECAP_TEMPLATE,
             self::TICKETS_TEMPLATE,
             self::VIP_TICKETS_TEMPLATE,
+            self::REFUNDED_PAYMENT_TEMPLATE,
+            self::ARTIST_VALIDATED_TEMPLATE,
 
             self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,
 

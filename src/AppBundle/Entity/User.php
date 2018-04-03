@@ -24,7 +24,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         parent::__construct();
         $this->setNotificationMode(RecipientInterface::NOTIFICATION_MODE_IMMEDIATELY); // For Azine but not actually used
         $this->setNewsletter(false);
-        $this->credits = 0;
         $this->addRole("ROLE_FAN");
         $this->inscription_date = new \DateTime();
         $this->accept_conditions = false;
@@ -44,15 +43,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return false;
     }
 
-
-    public function removeCredits($n) {
-        $this->credits -= $n;
-    }
-
-    public function addCredits($n) {
-        $this->credits += $n;
-    }
-
     public function anonymize() {
         $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';
         $this->setUsername($code);
@@ -67,7 +57,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->setRoles([]);
         $this->setLastname('NO_ONE');
         $this->setFirstname('NO_ONE');
-        $this->setCredits(0);
         $this->setNewsletter(false);
         $this->setStripeCustomerId(null);
         $this->setInscriptionDate(null);
@@ -168,11 +157,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     protected $carts;
 
     /**
-     * @ORM\Column(name="credits", type="integer")
-     */
-    protected $credits;
-
-    /**
      * @var string
      */
     protected $preferredLocale;
@@ -261,7 +245,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="User_Conditions", mappedBy="user", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="User_Conditions", mappedBy="user")
      */
     protected $user_conditions;
 
@@ -486,30 +470,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getCarts()
     {
         return $this->carts;
-    }
-
-    /**
-     * Set credits
-     *
-     * @param integer $credits
-     *
-     * @return User
-     */
-    public function setCredits($credits)
-    {
-        $this->credits = $credits;
-
-        return $this;
-    }
-
-    /**
-     * Get credits
-     *
-     * @return integer
-     */
-    public function getCredits()
-    {
-        return $this->credits;
     }
 
     /**

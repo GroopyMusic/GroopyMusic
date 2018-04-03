@@ -4,7 +4,17 @@
 <div class="jumbotron jumbotron-fluid position-relative">
     <div class="opacity-layer"></div>
     <div class="container justify-content-center align-items-center text-center position-relative">
-        <a href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo.svg') }}" /></a>
+        <a id="logo-header-container" href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>
+
+        <div id="logo-video-container" class="text-center mx-auto">
+            <video class="text-center mx-auto" id="logo-video" loop autoplay>
+                <source src="{{ asset('images/logo/animated-logo.mp4') }}" type="video/mp4" />
+                <source src="{{ asset('images/logo/animated-logo.ogv') }}" type="video/ogg" />
+                <source src="{{ asset('images/logo/animated-logo.webm') }}" type="video/webm" />
+                <img id="logo-video-alternative" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" />
+            </video>
+        </div>
+        <h1 class="text-white text-bold">Un-Mute</h1>
 
         <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
 

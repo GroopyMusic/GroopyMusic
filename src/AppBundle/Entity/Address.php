@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Address
 {
+    public function getNaturalStreet() {
+        return $this->number . ' ' . $this->street;
+    }
+
     public function getNatural($parenthesis = null) {
         $string = $this->street . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city;
         if($parenthesis != null) {

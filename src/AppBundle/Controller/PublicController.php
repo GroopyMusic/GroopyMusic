@@ -78,13 +78,12 @@ class PublicController extends Controller
      */
     public function indexAction(Request $request, UserInterface $user = null)
     {
-
         $em = $this->getDoctrine()->getManager();
 
         $NB_MAX_NEWS = 4;
         $NB_MAX_CROWDS = 3;
 
-        $new_artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false], ['date_creation' => 'DESC'], $NB_MAX_NEWS);
+        $new_artists = $em->getRepository('AppBundle:Artist')->findNewArtists($NB_MAX_NEWS);
         $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findNewContracts($NB_MAX_CROWDS);
 
         $news = [];
@@ -220,7 +219,7 @@ class PublicController extends Controller
      */
     public function hallsAction() {
         $em = $this->getDoctrine()->getManager();
-        $halls = $em->getRepository('AppBundle:Hall')->findBy(array('visible' => true));
+        $halls = $em->getRepository('AppBundle:Hall')->findVisible();
         shuffle($halls);
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(
@@ -431,7 +430,7 @@ class PublicController extends Controller
     public function artistsAction(Request $request, UserInterface $user = null) {
         $em = $this->getDoctrine()->getManager();
 
-        $artists = $em->getRepository('AppBundle:Artist')->findBy(['deleted' => false], ['artistname' => 'ASC']);
+        $artists = $em->getRepository('AppBundle:Artist')->findVisible();
 
         if($user != null && count($user->getGenres()) > 0) {
             usort($artists, function(Artist $a, Artist $b) use ($user) {
@@ -452,9 +451,8 @@ class PublicController extends Controller
      * @Route("/artists/{id}-{slug}", name="artist_profile")
      */
     public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null) {
-
         if($slug !== null && $slug != $artist->getSlug()) {
-            return $this->redirectToRoute('artist_contract', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
+            return $this->redirectToRoute('artist_profile', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
         }
 
         return $this->render('@App/Public/artist_profile.html.twig', array(

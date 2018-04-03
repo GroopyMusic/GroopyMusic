@@ -52,7 +52,7 @@ header {
   #logo {
     z-index: 1000;
     padding-top: 40px;
-    max-width: 230px;
+    max-width: 150px;
 
     transition: opacity 1s ease;
     -webkit-transition: opacity 1s ease;
@@ -63,6 +63,17 @@ header {
     &.hiddenLogo {
       opacity: 0;
     }
+  }
+
+  #logo-video {
+    @extend .rounded-circle;
+    width: 150px;
+    height: 150px;
+  }
+
+  #logo-video-alternative {
+    width: 150px;
+    height: 150px;
   }
 
   .dropdown-menu {
@@ -241,9 +252,18 @@ header {
   }
 }
 
+@include media-breakpoint-down(sm) {
+  header #logo-video-container {
+    display: none !important;
+  }
+}
+
 @include media-breakpoint-up(md) {
   header {
     background-image: url('../images/jumbotron-bg.jpg');
+  }
+  header #logo-header-container {
+    display: none !important;
   }
 }
 
@@ -272,4 +292,12 @@ header {
       left: 20px;
     }
   }
+}
+
+#headline {
+  font-size: 2.2rem;
+  margin-bottom: 3rem;
+  margin-top: 3rem;
+  font-family: $headline-font, $font;
+  color: $headline-color;
 }

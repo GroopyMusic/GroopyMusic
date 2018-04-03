@@ -75,4 +75,8 @@ class UserRolesManager extends RoleHierarchy
 
         return $reachableRoles;
     }
+
+    public function userHasRole(User $user, $role) {
+        return in_array($role, $this->getAllRoles($user));
+    }
 }

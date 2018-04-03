@@ -53,6 +53,13 @@ class Ticket
     }
 
     /**
+     * @return bool
+     */
+    public function isRefunded() {
+        return $this->contractFan != null && $this->contractFan->getRefunded();
+    }
+
+    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -62,37 +69,51 @@ class Ticket
     private $id;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="barcode_text", type="string", length=255)
      */
     private $barcode_text;
 
     /**
+     * @var ContractFan
+     *
      * @ORM\ManyToOne(targetEntity="ContractFan", inversedBy="tickets")
      * @ORM\JoinColumn(nullable=true)
      */
     private $contractFan;
 
     /**
+     * @var CounterPart
+     *
      * @ORM\ManyToOne(targetEntity="CounterPart")
      */
     private $counterPart;
 
     /**
-     * @ORM\Column(name="price", type="smallint")
+     * @var float
+     *
+     * @ORM\Column(name="price", type="float")
      */
     private $price;
 
     /**
+     * @var bool
+     *
      * @ORM\Column(name="validated", type="boolean")
      */
     private $validated;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
+     * @var ContractArtist
+     *
      * @ORM\ManyToOne(targetEntity="ContractArtist")
      */
     private $contractArtist;

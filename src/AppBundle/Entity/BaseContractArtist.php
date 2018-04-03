@@ -104,6 +104,22 @@ class BaseContractArtist
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
+    // Facilitates admin list export
+    public function getPaymentsExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->payments as $key => $val) {
+            /** @var Payment $val */
+            if(!$val->getRefunded()) {
+                $exportList[] = $i .
+                    ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
+                $i++;
+            }
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+    }
+
+
     public function isRefundReady() {
         return count($this->asking_refund) >= self::VOTES_TO_REFUND;
     }
@@ -122,6 +138,13 @@ class BaseContractArtist
 
     public function addAmount($amount) {
         $this->collected_amount += $amount;
+    }
+
+    public function getFirstCounterPart() {
+        foreach($this->getStep()->getCounterParts() as $cp) {
+            return $cp;
+        }
+        return null;
     }
 
     public function isSoldOut() {
@@ -205,6 +228,13 @@ class BaseContractArtist
                 $fans[] = $cf->getUser();
         }
         return $fans;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentsArray() {
+        return $this->getPayments()->toArray();
     }
 
     /**
@@ -341,6 +371,12 @@ class BaseContractArtist
      * @ORM\Column(name="additional_info", type="text", nullable=true)
      */
     protected $additional_info;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="date_success", type="datetime", nullable=true)
+     */
+    protected $date_success;
 
     // Discriminator
     protected $type;
@@ -959,5 +995,29 @@ class BaseContractArtist
     public function getAdditionalInfo()
     {
         return $this->additional_info;
+    }
+
+    /**
+     * Set dateSuccess
+     *
+     * @param \DateTime $dateSuccess
+     *
+     * @return BaseContractArtist
+     */
+    public function setDateSuccess($dateSuccess)
+    {
+        $this->date_success = $dateSuccess;
+
+        return $this;
+    }
+
+    /**
+     * Get dateSuccess
+     *
+     * @return \DateTime
+     */
+    public function getDateSuccess()
+    {
+        return $this->date_success;
     }
 }

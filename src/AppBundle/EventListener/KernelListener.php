@@ -31,7 +31,11 @@ class KernelListener implements EventSubscriberInterface
 
     public function onController(FilterControllerEvent $event) {
 
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if($token == null) {
+            return;
+        }
+        $user = $token->getUser();
 
         $controller = $this->conditionsController;
         $callable = $event->getController();

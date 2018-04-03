@@ -73,8 +73,11 @@ class TicketingManager
     public function generateTicketsForPhysicalPerson(PhysicalPersonInterface $physicalPerson, ContractArtist $contractArtist, $counterPart, $nb) {
         $tickets = [];
 
+        /** @var CounterPart $counterPart */
+        $price = $counterPart == null ? 0 : $counterPart->getPrice();
+
         for($i = 1; $i <= $nb; $i++) {
-            $ticket = new Ticket($cf = null, $counterPart, $i, 0, $physicalPerson, $contractArtist);
+            $ticket = new Ticket($cf = null, $counterPart, $i, $price, $physicalPerson, $contractArtist);
             $this->em->persist($ticket);
             $tickets[] = $ticket;
         }
@@ -193,6 +196,7 @@ class TicketingManager
                 $this->em->persist($vipInscription);
             }
         }
+        $this->em->flush();
     }
 
     /**
@@ -233,7 +237,9 @@ class TicketingManager
             'Prix' => $ticket->getPrice(). ' €',
             'Event' => $ticket->getContractArtist()->__toString(),
             'validated' => $ticket->getValidated(),
+            'refunded' => $ticket->isRefunded(),
         ];
+
         if($ticket->getContractFan() != null) {
             $arr['CF associé'] = $ticket->getContractFan()->getBarcodeText();
         }
@@ -241,5 +247,17 @@ class TicketingManager
             $arr['VIP'] = 'Oui';
         }
         return $arr;
+    }
+
+    /**
+     * Marks ticket as validated
+     * @param Ticket $ticket
+     */
+    public function validateTicket(Ticket $ticket) {
+        if(!$ticket->isValidated()) {
+            $ticket->setValidated(true);
+            $this->em->persist($ticket);
+            $this->em->flush();
+        }
     }
 }

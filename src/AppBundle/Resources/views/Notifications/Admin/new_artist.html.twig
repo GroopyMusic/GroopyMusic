@@ -1,0 +1,8 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'Nouvel artiste' %}
+{%- set content -%}
+    Nom de l'artiste : {{ artist_name }}. Rdv dans l'admin pour le rendre visible !
+{%- endset -%}

@@ -3,32 +3,62 @@
 {% block body %}
 
     <div class="container text-center">
-        <form>
-            <div class="m-4">
-                <label>Evénement</label>
-                <select id="select-event">
-                    {% for event in events %}
-                        <option value="{{ event.id }}"{% if loop.first %} selected{% endif %}>{{ event }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="m-4">
-                <label>Code barre</label>
-                <input id="barcode" type="text" name="barcode" placeholder="Entrez le code barre..." />
-            </div>
-            <div class="m-4">
-                <input type="submit" class="btn btn-primary" value="Valider" />
-            </div>
-        </form>
-    </div>
 
-    <div class="container content-box">
-        <div class="content-box-content">
-            {{ hidden_loader() }}
-            <div id="validation-results">
+        {% if is_granted('ROLE_ADMIN') %}
+        <ul class="nav nav-tabs text-right">
+            <li class="nav-item">
+                <a class="nav-link active" id="tickets-scanning-tab-link" href="#tickets-scanning-tab" data-toggle="tab" role="tab" aria-selected="true">Un-Mute TicketScan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tickets-generation-tab-link" href="#tickets-generation-tab" data-toggle="tab" role="tab" aria-selected="false">Un-Mute TicketGen</a>
+            </li>
+        </ul>
+        {% endif %}
+        <div class="tab-content">
+            <div class="tab-pane fade show active" role="tabpanel" id="tickets-scanning-tab" aria-labelledby="#tickets-scanning-tab-link">
+                <h2 class="my-3">Un-Mute TicketScan</h2>
+                <form>
+                    <div class="m-4">
+                        <label>Evénement</label>
+                        <select id="select-event">
+                            {% for event in scan_events %}
+                                <option value="{{ event.id }}"{% if loop.first %} selected{% endif %}>{{ event }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="m-4">
+                        <label>Code barre</label>
+                        <input id="barcode" type="text" name="barcode" placeholder="Entrez le code barre..." />
+                    </div>
+                    <div class="m-4">
+                        <input type="submit" class="btn btn-primary" value="Valider" />
+                    </div>
+                </form>
+
+                <div class="content-box">
+                    <div class="content-box-content">
+                        {{ hidden_loader() }}
+                        <div id="validation-results">
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="tab-pane fade" role="tabpanel" id="tickets-generation-tab" aria-labelledby="#tickets-generation-tab-link">
+                    <h2 class="my-3">Un-Mute TicketGen</h2>
+                    <p>Sélectionnez l'événement :</p>
+                    <ul class="um-list">
+                        {% for event in generate_events %}
+                            <li><a href="{{ path('ticketing_generate', {'id': event.id}) }}">{{ event }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
+
 
 {% endblock %}
 
@@ -67,25 +97,23 @@
 
         function displayResults(data) {
             if(data.error != null) {
-                $results.html('<p class="alert alert-warning">' + data.error + '</p>');
+                $results.html('<p class="alert alert-danger">' + data.error + '</p>');
+            }
+            else if(data.validated) {
+                $results.html('<p class="alert alert-warning">Ce ticket a déjà été validé.</p>');
             }
             else {
-                var output = '<table class="table">';
-                for (var property in data) {
-                    output += '<tr><td class="contract-info-title text-left">' +  property + '</td><td> ' + data[property] +' </td></tr> ';
-                }
-                output += '</table>';
-
-                if(data.validated) {
-                    $results.html('<p class="alert alert-danger">Ce ticket a déjà été validé.</p>');
-                }
-                else {
-                    $results.html('<p class="alert alert-success">Ce ticket a bien été validé</p>');
-                }
-
-                $results.append(output);
-
+                $results.html('<p class="alert alert-success">Ce ticket a bien été validé</p>');
             }
+
+            var output = '<table class="table">';
+            for (var property in data) {
+                output += '<tr><td class="contract-info-title text-left">' +  property + '</td><td> ' + data[property] +' </td></tr> ';
+            }
+            output += '</table>';
+
+            $results.append(output);
+
         }
 
     </script>

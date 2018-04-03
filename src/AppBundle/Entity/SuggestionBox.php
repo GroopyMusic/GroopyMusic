@@ -15,6 +15,7 @@ class SuggestionBox
 {
     public function __construct(){
         $this->date = new \Datetime();
+        $this->done = false;
     }
 
     public function getDisplayName() {
@@ -89,6 +90,16 @@ class SuggestionBox
      * @ORM\ManyToOne(targetEntity="User")
      */
     private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     */
+    private $handler;
+
+    /**
+     * @ORM\Column(name="done", type="boolean")
+     */
+    private $done;
 
     /**
      * Get id
@@ -318,5 +329,53 @@ class SuggestionBox
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set done
+     *
+     * @param boolean $done
+     *
+     * @return SuggestionBox
+     */
+    public function setDone($done)
+    {
+        $this->done = $done;
+
+        return $this;
+    }
+
+    /**
+     * Get done
+     *
+     * @return boolean
+     */
+    public function getDone()
+    {
+        return $this->done;
+    }
+
+    /**
+     * Set handler
+     *
+     * @param \AppBundle\Entity\User $handler
+     *
+     * @return SuggestionBox
+     */
+    public function setHandler(\AppBundle\Entity\User $handler = null)
+    {
+        $this->handler = $handler;
+
+        return $this;
+    }
+
+    /**
+     * Get handler
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getHandler()
+    {
+        return $this->handler;
     }
 }
