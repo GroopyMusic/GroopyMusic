@@ -7,9 +7,9 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Services\UserRolesManager;
 
-class ArtistRepository extends \Doctrine\ORM\EntityRepository
+class ArtistRepository extends OptimizedRepository
 {
-    private function baseQueryBuilder() {
+    public function baseQueryBuilder() {
         return $this->createQueryBuilder('a')
             ->leftJoin('a.contracts', 'ca')
             ->leftJoin('a.genres', 'g')
@@ -21,19 +21,6 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('p')
             ->addSelect('pp')
             ->addSelect('province')
-        ;
-    }
-
-    public function find($id, $lockMode = null, $lockVersion = null)
-    {
-        if($lockMode != null) {
-            return parent::find($id, $lockMode, $lockVersion);
-        }
-        return $this->baseQueryBuilder()
-            ->andWhere('a.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getSingleResult()
         ;
     }
 
