@@ -450,7 +450,8 @@ class PublicController extends Controller
     /**
      * @Route("/artists/{id}-{slug}", name="artist_profile")
      */
-    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null) {
+    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null, EntityManagerInterface $em) {
+
         if($slug !== null && $slug != $artist->getSlug()) {
             return $this->redirectToRoute('artist_profile', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
         }

@@ -211,8 +211,7 @@ class ArtistController extends Controller
         if($form->isSubmitted()) {
             if($form->get('confirm')->isClicked()) {
 
-                if($lastOne && !$artist->isAvailable()) {
-                    // TODO test this error
+                if($lastOne && !$artist->canBeLeft()) {
                     $form->addError(new FormError('Vous ne pouvez pas quitter un artiste lorsqu\'un événement de récolte de tickets est en cours pour cet artiste.'));
                 }
 

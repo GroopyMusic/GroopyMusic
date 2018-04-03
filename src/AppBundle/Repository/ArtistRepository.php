@@ -24,6 +24,19 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        if($lockMode != null) {
+            return parent::find($id, $lockMode, $lockVersion);
+        }
+        return $this->baseQueryBuilder()
+            ->andWhere('a.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+    }
+
     public function findForUser(User $user) {
         return $this->baseQueryBuilder()
             ->innerJoin('a.artists_user', 'au')

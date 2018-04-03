@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block description %}{{ 'meta_description_hall'|trans({'%hall%': hall.name}) }} {{ hall.shortDescription }}{% endblock %}
+
 {% block open_graph %}
     <meta property="og:title" content="{{ hall }} | Un-Mute"  />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
+    <meta property="og:url" content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}" />
     {% set og_src = absolute_url(asset('images/hall-card-default.jpg')) %}
     {% set photos = hall.photos %}
 

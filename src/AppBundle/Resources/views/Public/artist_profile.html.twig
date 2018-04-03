@@ -2,6 +2,23 @@
 
 {% set owned = app.user is not null and (app.user.owns(artist) or is_granted('ROLE_ADMIN'))  %}
 
+{% set og_src = absolute_url(asset('images/artist-card-default.jpg')) %}
+
+{% set photos = artist.allPhotos %}
+
+{% if photos is not empty %}
+    {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
+{% endif %}
+
+{% block open_graph %}
+    <meta property="og:title" content="{{ artist.artistname }} | Un-Mute"  />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}" />
+    <meta property="og:image" content="{{ og_src }}" />
+{% endblock %}
+
+{% block description %}{{ 'meta_description_artist'|trans({'%artist%': artist.artistname}) }} {{ artist.shortDescription }}{% endblock %}
+
 {% if artist.visible %}
     {% block headtitle %}{{ artist.artistname }}{% endblock %}
 {% endif %}

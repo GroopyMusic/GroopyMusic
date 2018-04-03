@@ -87,6 +87,10 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
+    public function isInSuccessfulState() {
+        return in_array($this->getState(), self::getSuccessfulStates());
+    }
+
     public function isPassed() {
         return in_array($this->getState(), self::getPassedStates());
     }

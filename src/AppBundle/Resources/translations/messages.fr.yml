@@ -43,7 +43,12 @@ confirmed: Confirmé
 or: ou
 loading: Chargement....
 
-meta_description: La première plate-forme belge de financement participatif de concerts. Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !
+meta_description_1: La première plate-forme belge de financement participatif de concerts.
+meta_description_2: Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !
+#new
+meta_description_event: Découvrez %artist% en live le %date% !
+meta_description_artist: Découvrez %artist% sur Un-Mute.
+meta_description_hall: "Un-Mute présente son partenaire : %hall%".
 
 card:
   new_event: NOUVEAU

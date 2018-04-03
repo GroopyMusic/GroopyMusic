@@ -10,10 +10,12 @@
     {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
 {% endif %}
 
+{% block description_part_1 %}{{ 'meta_description_event'|trans({'%artist%': artist.artistname, '%date%': contract.dateConcert|date('j') ~ ' ' ~ ('months.' ~ contract.dateConcert|date('m'))|trans}) }}{% endblock %}
+
 {% block open_graph %}
     <meta property="og:title" content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - {{ 'event.og_title'|trans({'%artist%':contract.artist.artistname})|raw }}"  />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
+    <meta property="og:url" content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}" />
     <meta property="og:image" content="{{ og_src }}" />
 {% endblock %}
 
