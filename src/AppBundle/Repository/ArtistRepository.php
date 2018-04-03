@@ -6,9 +6,16 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Services\UserRolesManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 class ArtistRepository extends OptimizedRepository
 {
+    public function initShortName()
+    {
+        $this->short_name = 'a';
+    }
+
     public function baseQueryBuilder() {
         return $this->createQueryBuilder('a')
             ->leftJoin('a.contracts', 'ca')

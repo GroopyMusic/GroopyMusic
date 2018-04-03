@@ -28,6 +28,11 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         parent::__construct($em, $class);
     }
 
+    public function initShortName()
+    {
+        $this->short_name = 'c';
+    }
+
     public function baseQueryBuilder() {
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')

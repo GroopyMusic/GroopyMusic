@@ -25,6 +25,11 @@ class HallRepository extends OptimizedRepository
         ;
     }
 
+    public function initShortName()
+    {
+        $this->short_name = 'h';
+    }
+
     public function findVisible() {
         return $this
             ->baseQueryBuilder()
