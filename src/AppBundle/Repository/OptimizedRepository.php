@@ -28,6 +28,10 @@ abstract class OptimizedRepository extends \Doctrine\ORM\EntityRepository
 
     public function find($id, $lockMode = null, $lockVersion = null)
     {
+        if(is_array($id)) {
+            $id = array_pop($id);
+        }
+
         if($lockMode != null) {
             return parent::find($id, $lockMode, $lockVersion);
         }
