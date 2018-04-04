@@ -47,6 +47,8 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->addSelect('p')
             ->addSelect('cp')
             ->addSelect('g')
+            ->orderBy('r.date', 'ASC')
+            ->addOrderBy('p.date', 'ASC')
         ;
     }
 
@@ -64,6 +66,8 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->addSelect('p')
             ->addSelect('cp')
             ->addSelect('g')
+            ->orderBy('r.date', 'ASC')
+            ->addOrderBy('p.date', 'ASC')
             ->where('c.failed = 0')
             ->andWhere('c.test_period = :prevalidation')
             ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
