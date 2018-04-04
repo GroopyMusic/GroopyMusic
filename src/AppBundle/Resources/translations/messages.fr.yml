@@ -50,6 +50,19 @@ meta_description_event: Découvrez %artist% en live le %date% !
 meta_description_artist: Découvrez %artist% sur Un-Mute.
 meta_description_hall: "Un-Mute présente son partenaire : %hall%."
 
+#new
+error:
+  intro: Apparemment, nous ne sommes pas sur la même longueur d'ondes...
+  generic:
+    title: Erreur
+    content: Oups... Une erreur inconnue s'est produite durant votre visite. Si le problème persiste, merci de nous contacter !
+  e404:
+    title: 404
+    content: Aie, aie, cette page n'existe pas (ou plus). Peut-être que le plus simple pour vous est de retourner sur <a href="%homeUrl%">la page d'accueil</a> ?
+  e403:
+    title: Accès interdit
+    content: Vous n'avez pas le droit d'accéder à cette page. Êtes-vous sûr d'être au bon endroit ?
+
 card:
   new_event: NOUVEAU
   new_artist: NOUVEL ARTISTE
