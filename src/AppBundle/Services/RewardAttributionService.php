@@ -18,11 +18,6 @@ use Psr\Log\LoggerInterface;
 
 class RewardAttributionService
 {
-    //TODO tableau
-    const MOST_RECENT_CONFIRMED_CONTRACT_ARTIST = "most recent confirmed concert";
-    const GET_SINGLE_CONTRACT_ARTIST = "single concert";
-
-
     private $notificationDispatcher;
 
     private $mailDispatcher;
@@ -41,7 +36,8 @@ class RewardAttributionService
         $this->logger = $logger;
         $this->querries = array(
             'Concert confirmé le plus récent',
-            'Un seul concert sélectionné'
+            'Un seul concert sélectionné',
+            'Un seul artiste sélectionné'
         );
     }
 
@@ -76,6 +72,10 @@ class RewardAttributionService
             case 'Un seul concert sélectionné';
                 $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($restriction->getQuerryParameter());
                 $user_Reward->addBaseContractArtist($baseContractArtist);
+                break;
+            case 'Un seul artiste sélectionné';
+                $artist = $this->em->getRepository('AppBundle:Artist')->find($restriction->getQuerryParameter());
+                $user_Reward->addArtist($artist);
                 break;
         }
     }

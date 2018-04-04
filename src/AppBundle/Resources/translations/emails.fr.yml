@@ -213,5 +213,5 @@ reward_attribution:
     Vous avez reçu une nouvelle récompense !
     Nom de la récompense : %reward_name%
     %content%
-    Pour plus d'informations, consultez votre page personnel de récompenses.
+    Pour plus d'informations, consultez votre page <a href="%rewards_url%">Mes récompenses</a>
 

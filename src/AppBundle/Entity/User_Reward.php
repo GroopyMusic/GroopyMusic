@@ -26,6 +26,7 @@ class User_Reward
         $this->user = $user;
         $this->creation_date = new \DateTime();
         $this->limit_date = new \DateTime();
+        $this->remain_use = $reward->getMaxUse();
         date_add($this->limit_date, new DateInterval('P' . $reward->getValidityPeriod() . 'D'));
         $this->active = true;
         $this->reward_type_parameters = $reward->getVariables();
@@ -55,6 +56,13 @@ class User_Reward
      * @ORM\Column(name="creation_date", type="datetime")
      */
     private $creation_date;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="remain_use", type="integer")
+     */
+    private $remain_use;
 
     /**
      * @var \DateTime
@@ -394,5 +402,29 @@ class User_Reward
     public function getArtists()
     {
         return $this->artists;
+    }
+
+    /**
+     * Set remainUse
+     *
+     * @param integer $remainUse
+     *
+     * @return User_Reward
+     */
+    public function setRemainUse($remainUse)
+    {
+        $this->remain_use = $remainUse;
+
+        return $this;
+    }
+
+    /**
+     * Get remainUse
+     *
+     * @return integer
+     */
+    public function getRemainUse()
+    {
+        return $this->remain_use;
     }
 }

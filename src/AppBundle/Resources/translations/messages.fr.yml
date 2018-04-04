@@ -243,6 +243,7 @@ event:
   og_title: Festival Un-Mute avec %artist%
   title: Festival Un-Mute avec %artist%
   generic_name: Festival Un-Mute avec %artist%
+  reward: Profitez-en, des récompenses sont applicables à cet événements #new
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
@@ -415,6 +416,7 @@ notifs:
     title: Mes notifications
     empty: Vous n'avez pas encore reçu de notification.
     see_more: Voir plus
+    button: Voir # new
 
 new_artist:
   title: Nouvel artiste
@@ -621,6 +623,7 @@ header:
     my_artists: Mes artistes
     my_profile: Mon profil
     my_orders: Mes commandes
+    my_rewards: Mes récompenses #new
     log_out: Déconnexion
 
 notices:
@@ -828,3 +831,33 @@ proposition:
   place: Lieu de l'événement
   explication: Ne renseignez que la date de début si vous désirez renseigner une date unique et remplissez les deux dates si votre événement peut s'étaler sur une certaine durée.
   redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vons invitons à remplir <a href="%url%">ce formulaire</a>.
+
+#new
+rewards:
+  title : Mes récompenses
+  empty: Aucune récompense vous est attrbiuée pour le moment.
+
+#new
+reward:
+  feature : Caractéristique
+  creation_date : Date d'obtention
+  limit_date : Date limite de validité
+  remain_use : Nombre d'utilisation(s) restante(s)
+  on : sur
+  applicable_to: Applicable à
+  events: Evénement(s)
+  steps: Pallier(s) de salle
+  couterparts : Type(s) d'achat
+  artists : Artiste(s)
+  all_events : Tout événement confondu
+  invitation :
+    time : Horaire
+  consomable :
+    type : Type de consommation
+    quantity : Quantité
+    value: Valeur
+  reduction:
+    reduction: réduction
+
+
+

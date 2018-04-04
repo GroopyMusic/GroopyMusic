@@ -2,22 +2,26 @@
   z-index: 1020;
 }
 
-.modal-content{
+.modal-content {
   border-radius: 0 !important;
 }
 
-.modal-header{
+.modal-header {
   border-bottom: none !important;
   background-size: cover;
   background-position: 50% 50%;
   min-height: 300px;
 }
 
-.modal-footer{
+.modal-footer {
   border-top: none !important;
 }
 
-.modal-title{
+.modal-reward-label {
+  background-color: #ffb84d;
+}
+
+.modal-title {
   min-width: 50%;
   max-width: 80%;
   min-height: 70px;
@@ -28,18 +32,18 @@
   align-items: center;
   justify-content: center;
 
-  & h3{
+  & h3 {
     color: $main-color;
     text-transform: uppercase;
   }
 }
 
 // every section inside a modal. 1 title -> line around and the rest of the section, border black
-.modal-section{
-  &-header{
+.modal-section {
+  &-header {
     height: 100px;
     position: relative;
-    &-title{
+    &-title {
       color: black;
       text-transform: uppercase;
       background-color: white;
@@ -53,7 +57,7 @@
       justify-content: center;
       align-items: center;
     }
-    &-line{
+    &-line {
       margin: 0 auto;
       width: 80%;
       border-bottom: black solid 1px;
@@ -62,7 +66,7 @@
       height: 50px;
     }
   }
-  &-content{
+  &-content {
     margin: 0 auto;
     border: black 1px solid;
     max-width: 90%;

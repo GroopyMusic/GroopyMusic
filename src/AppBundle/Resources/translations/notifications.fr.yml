@@ -80,5 +80,5 @@ reward_attribution:
 
     Nom de la récompense : %reward_name%
 
-    Pour plus d'informations, consultez votre page personnel de récompenses.
+    Pour plus d'informations, consultez votre page <a href="%rewards_url%">Mes récompenses</a>
 

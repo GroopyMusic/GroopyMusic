@@ -5,6 +5,7 @@
 {% set title = 'reward_attribution.title'|trans|raw %}
 {%- set content -%}
     {{ 'reward_attribution.content'|trans({
-        '%reward_name%': reward_name,
+        '%reward_name%': reward.name,
+        '%rewards_url%': path('user_rewards')
     })|raw|nl2br }}
 {%- endset -%}

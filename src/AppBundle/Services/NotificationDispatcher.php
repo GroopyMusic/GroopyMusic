@@ -141,13 +141,14 @@ class NotificationDispatcher
         $users = array_map(function (User_Category $elem) {
             return $elem->getUser();
         }, $stats);
-        $this->addNotifications($users, self::REWARD_ATTRIBUTION_TYPE, ['reward_name' => $reward->getName()]);
+        $this->addNotifications($users, self::REWARD_ATTRIBUTION_TYPE, ['reward' => $reward]);
     }
 
     // --------------------
     // Admin notifs
     // --------------------
-    public function notifyAdminNewArtist(Artist $artist) {
+    public function notifyAdminNewArtist(Artist $artist)
+    {
         $this->addAdminNotification(self::ADMIN_NEW_ARTIST_TYPE, ['artist_name' => $artist->getArtistname()]);
     }
 
