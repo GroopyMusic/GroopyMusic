@@ -34,6 +34,7 @@ class User_Reward
         $this->base_contract_artists = new ArrayCollection();
         $this->base_steps = new ArrayCollection();
         $this->counter_parts = new ArrayCollection();
+        $this->contractFans = new ArrayCollection();
     }
 
     public function __toString()
@@ -112,6 +113,11 @@ class User_Reward
      * @ORM\JoinColumn(nullable=false)
      */
     private $reward;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="ContractFan", inversedBy="user_rewards")
+     */
+    private $contractFans;
 
     /**
      * Get id
@@ -426,5 +432,39 @@ class User_Reward
     public function getRemainUse()
     {
         return $this->remain_use;
+    }
+
+    /**
+     * Add contractFan
+     *
+     * @param \AppBundle\Entity\ContractFan $contractFan
+     *
+     * @return User_Reward
+     */
+    public function addContractFan(\AppBundle\Entity\ContractFan $contractFan)
+    {
+        $this->contractFans[] = $contractFan;
+
+        return $this;
+    }
+
+    /**
+     * Remove contractFan
+     *
+     * @param \AppBundle\Entity\ContractFan $contractFan
+     */
+    public function removeContractFan(\AppBundle\Entity\ContractFan $contractFan)
+    {
+        $this->contractFans->removeElement($contractFan);
+    }
+
+    /**
+     * Get contractFans
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContractFans()
+    {
+        return $this->contractFans;
     }
 }

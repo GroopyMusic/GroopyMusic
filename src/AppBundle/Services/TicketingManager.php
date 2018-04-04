@@ -238,6 +238,7 @@ class TicketingManager
             'Event' => $ticket->getContractArtist()->__toString(),
             'validated' => $ticket->getValidated(),
             'refunded' => $ticket->isRefunded(),
+            'user_rewards' => $ticket->getContractFan()->getUserRewards()
         ];
 
         if($ticket->getContractFan() != null) {

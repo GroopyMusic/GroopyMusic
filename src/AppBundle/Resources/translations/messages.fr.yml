@@ -596,6 +596,7 @@ tickets_pdf:
     is_entry: |
         Ce ticket est votre droit d'entrée.
         Merci de le présenter sur un support lisible.
+  rewards: - Avantages bonus # new
   conditions: |
     -	Le titre d’entrée est uniquement valable pour le lieu et la date précisée sur le billet et fera l’objet d’une vérification.
     -	Veuillez présenter le QR code du ticket de manière visible pour faciliter le scanning le soir de l’évènement. Un ticket n'est pas valable sans son code-barres.

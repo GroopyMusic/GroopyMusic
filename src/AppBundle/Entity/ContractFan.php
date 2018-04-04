@@ -34,6 +34,7 @@ class ContractFan
     {
         $this->contractArtist = $ca;
         $this->purchases = new ArrayCollection();
+        $this->user_rewards = new ArrayCollection();
 
         foreach($ca->getStep()->getCounterParts() as $cp) {
             $purchase = new Purchase();
@@ -190,6 +191,11 @@ class ContractFan
      * @ORM\OneToMany(targetEntity="Ticket", mappedBy="contractFan", cascade={"all"})
      */
     private $tickets;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="User_Reward", mappedBy="contractFans", cascade={"all"})
+     */
+    private $user_rewards;
 
     /**
      * Get id
@@ -436,5 +442,39 @@ class ContractFan
     public function getTickets()
     {
         return $this->tickets;
+    }
+
+    /**
+     * Add userReward
+     *
+     * @param \AppBundle\Entity\User_Reward $userReward
+     *
+     * @return ContractFan
+     */
+    public function addUserReward(\AppBundle\Entity\User_Reward $userReward)
+    {
+        $this->user_rewards[] = $userReward;
+
+        return $this;
+    }
+
+    /**
+     * Remove userReward
+     *
+     * @param \AppBundle\Entity\User_Reward $userReward
+     */
+    public function removeUserReward(\AppBundle\Entity\User_Reward $userReward)
+    {
+        $this->user_rewards->removeElement($userReward);
+    }
+
+    /**
+     * Get userRewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserRewards()
+    {
+        return $this->user_rewards;
     }
 }
