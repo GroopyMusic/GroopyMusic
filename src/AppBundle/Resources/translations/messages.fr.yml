@@ -87,7 +87,7 @@ header:
 home:
   concept:
     title: Le principe
-    content_1: Sur Un-Mute, vous achetez à l'avance des tickets pour des mini-festivals qui ne sont confirmés que si suffisamment de tickets sont vendus. Et si l'objectif n'est pas atteint, vous êtes entièrement remboursé !
+    content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus. Et si l'objectif n'est pas atteint, tout le monde est entièrement remboursé !
     content_2: Un-Mute sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur", vous êtes acteur dans la construction de la scène musicale belge de demain via <a href="#" data-toggle="popover" title="En savoir plus" data-content="Vous souhaitez en savoir plus sur notre fonctionnement ? <a href='%about_url%'>C'est par ici !</a>">un système de financement participatif qui ne vous fait prendre aucun risque</a>.
   concerts:
     title: Festivals

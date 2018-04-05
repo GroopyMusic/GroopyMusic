@@ -19,21 +19,47 @@
     <div class="container-fluid mb-3 mb-md-0">
         <div class="row">
 
-            <div class="col-12">
-                <h3 class="text-center alt-title">{{ 'home.concept.title'|trans|raw }}</h3>
+            <div class="col-12 col-md-6">
+                <img class="um-icon" src="{{ asset('images/icons/blue/concert.png') }}" />
+                <span class="big">Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus.</span>
             </div>
 
-            <div class="col-10 offset-1 text-center">
-                <p>
-                    {{ 'home.concept.content_1'|trans|raw }}
-                </p>
+            <div class="col-12 col-md-6">
+                <span class="big">Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus.</span>
+                <img class="um-icon" src="{{ asset('images/icons/blue/refund.png') }}" />
             </div>
         </div>
     </div>
     <div class="container-fluid mb-3 mb-md-0 bg-body-very-strong">
+
         <div class="row">
-            <div class="col-12 col-md-6 my-auto">
-                
+            <div class="col-12 col-md-6 my-auto text-white">
+                <h3 class="alt-title text-center text-white">Découvrez trois artistes par festival</h3>
+                <div class="row">
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {
+                        'contract': spotlight,
+                        'md':6,
+                        'xs': 12,
+                        'bgwhite': true,
+                        'news': false
+                    } %}
+
+                    <div class="col-12 col-md-6">
+                        {% if spotlight.coartists is not empty %}
+                            <h4>Line-up</h4>
+                            <div>
+                                <span class="um-label">Artiste hôte</span> <a href="{{ path('artist_profile', {'id': spotlight.artist.id, 'slug': spotlight.artist.slug}) }}">{{ spotlight.artist }}</a>
+                            </div>
+                            <div>
+                                <span class="um-label">Artistes invités</span>
+                                {% for coartist in spotlight.coartists %}
+                                    <br /><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist }}</a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
             </div>
             <div class="col-12 col-md-6 my-auto">
                 <div class="embed-responsive embed-responsive-16by9">

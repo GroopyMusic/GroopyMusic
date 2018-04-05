@@ -110,6 +110,8 @@ class PublicController extends Controller
         }
 
         $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+        // TODO change next line
+        $spotlight = $all_crowdfundings[0];
         $crowdfundings = [];
 
         if($user != null && count($user->getGenres()) > 0) {
@@ -144,6 +146,7 @@ class PublicController extends Controller
         return $this->render('AppBundle:Public:home.html.twig', array(
             'news' => $news,
             'crowdfundings' => $crowdfundings,
+            'spotlight' => $spotlight,
         ));
     }
 
