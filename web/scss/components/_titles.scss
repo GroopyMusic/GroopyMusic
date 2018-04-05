@@ -4,6 +4,10 @@ h1 {
   font-weight: bold;
 }
 
+.alt-title {
+  font-family: $secondary-font;
+}
+
 .rounded-title, .rounded-title-login-choice {
   font-family: $secondary-font;
   width: 110px;

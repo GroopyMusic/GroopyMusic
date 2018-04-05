@@ -18,16 +18,23 @@
 
     <div class="container-fluid mb-3 mb-md-0">
         <div class="row">
-            <div class="col-12 col-md-6">
-                <h3 class="text-center mb-4 mt-3">{{ 'home.concept.title'|trans|raw }}</h3>
-                <p class="mb-4">
-                    {{ 'home.concept.content_1'|trans|raw }}
-                </p>
-                <p class="mb-4">
-                    {{ 'home.concept.content_2'|trans({'%about_url%': path('about')})|raw }}
-                </p>
+
+            <div class="col-12">
+                <h3 class="text-center alt-title">{{ 'home.concept.title'|trans|raw }}</h3>
             </div>
 
+            <div class="col-10 offset-1 text-center">
+                <p>
+                    {{ 'home.concept.content_1'|trans|raw }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mb-3 mb-md-0 bg-body-very-strong">
+        <div class="row">
+            <div class="col-12 col-md-6 my-auto">
+                
+            </div>
             <div class="col-12 col-md-6 my-auto">
                 <div class="embed-responsive embed-responsive-16by9">
                     <div class="youtube embed-responsive-item" id="qvHUpid7sC4"></div>

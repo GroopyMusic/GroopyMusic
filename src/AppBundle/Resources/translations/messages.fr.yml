@@ -86,15 +86,15 @@ header:
 
 home:
   concept:
-    title: Concept
-    content_1: Vous souhaitez participer à l'émancipation de la scène musicale belge&nbsp;? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique&nbsp;?
+    title: Le principe
+    content_1: Sur Un-Mute, vous achetez à l'avance des tickets pour des mini-festivals qui ne sont confirmés que si suffisamment de tickets sont vendus. Et si l'objectif n'est pas atteint, vous êtes entièrement remboursé !
     content_2: Un-Mute sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur", vous êtes acteur dans la construction de la scène musicale belge de demain via <a href="#" data-toggle="popover" title="En savoir plus" data-content="Vous souhaitez en savoir plus sur notre fonctionnement ? <a href='%about_url%'>C'est par ici !</a>">un système de financement participatif qui ne vous fait prendre aucun risque</a>.
   concerts:
     title: Festivals
     content: Nos artistes tentent de remplir des salles aux quatre coins du Royaume. Découvrez leurs envies et soutenez-les.
     see_all: Voir la liste complète
   news:
-    title: News
+    title: Nouveautés
   join_us:
     title: Nous rejoindre
     content_1: <strong>Vous désirez devenir <a href="%about_url%">producteur</a> et soutenir un artiste ?</strong> Découvrez <a href="%catalog_url%">le catalogue des artistes</a>.
