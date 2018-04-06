@@ -242,16 +242,17 @@ class ContractArtistAdmin extends BaseAdmin
 
         $form
             ->with('Autres')
-                ->add( 'coartists_list', 'sonata_type_collection', array(
-                    'label' => false,
-                    'by_reference' => false,
-                ), array(
-                        'edit'            => 'inline',
-                        'inline'          => 'table',
-                        'sortable'        => 'position',
-                        'admin_code'      => ContractArtistArtistAdmin::class,
-                    )
-                )
+            // TODO
+//                ->add( 'coartists_list', 'sonata_type_collection', array(
+//                    'label' => false,
+//                    'by_reference' => false,
+//                ), array(
+//                        'edit'            => 'inline',
+//                        'inline'          => 'table',
+//                        'sortable'        => 'position',
+//                        'admin_code'      => ContractArtistArtistAdmin::class,
+//                    )
+//                )
                 ->add('additional_info', null, array(
                     'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
                 ))
