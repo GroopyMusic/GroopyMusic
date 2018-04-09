@@ -1,8 +1,5 @@
-{% extends "base.html.twig" %}
+{% extends "@Twig/Exception/error.html.twig" %}
 
-{% block body %}
-    <div class="container">
-        <h3 class="rounded-title">404</h3>
-        <p>Aie, aie, cette page n'existe pas (ou plus). Peut-être que le plus simple pour vous est de retourner sur <a href="{{ path('homepage') }}">la page d'accueil</a> ?</p>
-    </div>
-{% endblock %}
+{% block error_title %}{{ 'error.e404.title'|trans }}{% endblock %}
+{% block error_content %}{{ 'error.e404.content'|trans({'%homeUrl%': url('homepage')})|raw }}{% endblock %}
+

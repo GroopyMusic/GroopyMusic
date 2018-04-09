@@ -67,6 +67,7 @@ class PaymentManager
 
             $this->notifyUserRefundedPayment($payment);
         }
+        $this->em->flush();
     }
 
     public function notifyUserRefundedPayment(Payment $payment) {

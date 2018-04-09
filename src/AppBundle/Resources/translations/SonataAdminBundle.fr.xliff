@@ -144,7 +144,7 @@
 
             <trans-unit id="app.admin.level">
                 <source>app.admin.level</source>
-                <target>Palier</target>
+                <target>Palier Utilisateur</target>
             </trans-unit>
 
             <trans-unit id="app.admin.ranking">

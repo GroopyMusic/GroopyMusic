@@ -101,15 +101,14 @@ class Artist implements TranslatableInterface
         return $score;
     }
 
-    public function isAvailable() {
-        foreach($this->contracts as $contract) {
-            /** @var ContractArtist $contract */
-            if($contract->isCrowdable()) {
-                return false;
-            }
-        }
+    public function canBeLeft() {
+        $currentContract = $this->currentContract();
+        return $currentContract == null;
+    }
 
-        return true;
+    public function isAvailable() {
+        $currentContract = $this->currentContract(true);
+        return $currentContract == null || $currentContract->isInSuccessfulState();
     }
 
     public function hasOneLink() {
@@ -136,13 +135,13 @@ class Artist implements TranslatableInterface
         return $photos;
     }
 
-    public function currentContract() {
+    public function currentContract($allow_preval = false) {
         if(empty($this->contracts))
             return null;
         else {
             foreach($this->contracts as $contract) {
                 /** @var ContractArtist $contract */
-                if($contract->getDateConcert() >= (new \DateTime()) && !$contract->getFailed()) {
+                if($contract->getDateConcert() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
                     return $contract;
                 }
             }

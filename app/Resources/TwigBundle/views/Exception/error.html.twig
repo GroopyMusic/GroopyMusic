@@ -1,8 +1,23 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <div class="container">
-        <h3 class="rounded-title">Erreur</h3>
-        <p>Oups... Une erreur inconnue s'est produite durant votre visite. Si le problème persiste, merci de nous contacter !</p>
+    <div class="container text-center">
+        <h3>{% block error_title %}{{ 'error.generic.title'|trans }}{% endblock %}</h3>
+
+        <p class="text-center font-italic">{{ 'error.intro'|trans|raw }}</p>
+
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <img class="rounded-circle img-fluid" src="{{ asset('images/loader2.gif') }}" />
+            </div>
+
+            <div class="col-12 col-md-8 my-auto">
+                <p>{% block error_content %}{{ 'error.generic.content'|trans|raw }}{% endblock %}</p>
+            </div>
+
+            <div class="col-12 col-md-2">
+                <img class="rounded-circle img-fluid" src="{{ asset('images/loader2.gif') }}" />
+            </div>
+        </div>
     </div>
 {% endblock %}

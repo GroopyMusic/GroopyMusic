@@ -1,8 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "@Twig/Exception/error.html.twig" %}
 
-{% block body %}
-    <div class="container">
-        <h3 class="rounded-title">Accès interdit</h3>
-        <p>Apparemment, vous n'avez pas le droit d'accéder à cette page. Êtes-vous sûr d'être au bon endroit ?</p>
-    </div>
-{% endblock %}
+{% block error_title %}{{ 'error.e403.title'|trans }}{% endblock %}
+{% block error_content %}{{ 'error.e403.content'|trans|raw }}{% endblock %}

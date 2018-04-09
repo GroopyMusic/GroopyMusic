@@ -200,7 +200,7 @@ class ArtistController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('confirm', SubmitType::class, [
-                'label' => 'Quitter ' . $artist->getArtistname(),
+                'label' => $translator->trans('labels.artist.leave.submit', ['%artist%' => $artist->getArtistname()]),
                 'attr' => ['class' => 'btn btn-danger'],
             ])
             ->getForm()
@@ -211,8 +211,7 @@ class ArtistController extends Controller
         if($form->isSubmitted()) {
             if($form->get('confirm')->isClicked()) {
 
-                if($lastOne && !$artist->isAvailable()) {
-                    // TODO test this error
+                if($lastOne && !$artist->canBeLeft()) {
                     $form->addError(new FormError('Vous ne pouvez pas quitter un artiste lorsqu\'un événement de récolte de tickets est en cours pour cet artiste.'));
                 }
 

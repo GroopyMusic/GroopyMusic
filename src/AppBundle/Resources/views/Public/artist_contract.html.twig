@@ -10,13 +10,13 @@
     {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
 {% endif %}
 
+{% block description_part_1 %}{{ 'meta_description_event'|trans({'%artist%': artist.artistname, '%date%': contract.dateConcert|date('j') ~ ' ' ~ ('months.' ~ contract.dateConcert|date('m'))|trans}) }}{% endblock %}
+
 {% block open_graph %}
-    <meta property="og:title"
-          content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - {{ 'event.og_title'|trans({'%artist%':contract.artist.artistname})|raw }}"/>
-    <meta property="og:type" content="article"/>
-    <meta property="og:url"
-          content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}"/>
-    <meta property="og:image" content="{{ og_src }}"/>
+    <meta property="og:title" content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - {{ 'event.og_title'|trans({'%artist%':contract.artist.artistname})|raw }}"  />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}" />
+    <meta property="og:image" content="{{ og_src }}" />
 {% endblock %}
 
 {% set owns = app.user is not null ? app.user.owns(contract.artist) : false %}
@@ -36,13 +36,9 @@
         </div>
 
         {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
-            <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block"
-                                   src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.tickets'|trans|raw }}
-            </p>
+            <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.tickets'|trans|raw }}</p>
         {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-            <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
-                                   src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}
-            </p>
+            <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block" src="{{ asset('images/icons/artist.png') }}" />{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}</p>
         {% elseif contract.isInTestPeriod %}
             <p class="p-info mt-3">{{ 'event.prevalidation'|trans|raw }}</p>
         {% endif %}
@@ -128,8 +124,7 @@
                                 </span>
 
                                 <span class="contract-info-content pr-1">
-                                {{ contract.step }}<a href="#" data-toggle="popover" title="{{ contract.step }}"
-                                                      class="ml-2 px-1 py-0 btn btn-outline-primary"
+                                {{ contract.step }}<a href="#" data-toggle="popover" title="{{ contract.step }}" class="ml-2 px-1 py-0 btn btn-outline-primary"
                                                       data-content="{{ contract.step.getDescription }}<br />
                                                       <a href='{{ path('faq') }}'>{{ 'more_info'|trans|raw }}</a>">?</a>
                                 </span>
@@ -144,8 +139,7 @@
                                 {{ ('event.'~state)|trans|raw }}
                             </span>
                             {% if state not in contract.uncrowdableStates %}
-                                <span class="text-positive um-semi-bold"><img class="green-check"
-                                                                              src="{{ asset('images/green-check.png') }}"/>{{ 'event.stillselling'|trans|raw }}</span>
+                                <span class="text-positive um-semi-bold"><img class="green-check" src="{{ asset('images/green-check.png') }}" />{{ 'event.stillselling'|trans|raw }}</span>
                             {% endif %}
                         </div>
 
@@ -191,8 +185,7 @@
                             </span>
                             {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
                             <div class="progress">
-                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
-                                     style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
+                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                             </div>
                             <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} successful-progress-text{% else %} text-primary{% endif %}">
                                 {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
@@ -215,10 +208,7 @@
                             </div>
                         {% endif %}
 
-                        <p class="text-center"><a
-                                    href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}"
-                                    class="btn btn-outline-primary"> {{ 'event.about_host.see_profile'|trans|raw }}</a>
-                        </p>
+                        <p class="text-center"><a href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}" class="btn btn-outline-primary"> {{ 'event.about_host.see_profile'|trans|raw }}</a></p>
                     </div>
                 </div>
             </div>
@@ -230,33 +220,27 @@
                     <div class="content-box-content">
                         <table class="content-box-table">
                             <tbody>
-                            <tr>
-                                <td class="contract-info-title">{{ 'event.lineup.host'|trans|raw }}</td>
-                                <td>
-                                    <a href="{{ path('artist_profile', {'id': contract.artist.id, 'slug': contract.artist.slug}) }}">{{ contract.artist.artistname }}
-                                </td>
-                            </tr>
-                            {% set i = 1 %}
-                            {% for coartist_artist in contract.coartistsList %}
-                                {% set coartist = coartist_artist.artist %}
                                 <tr>
-                                    <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}
-                                        &nbsp;{{ i }}</td>
-                                    <td>
-                                        <a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist.artistname }}</a>
-                                    </td>
+                                    <td class="contract-info-title">{{ 'event.lineup.host'|trans|raw }}</td>
+                                    <td><a href="{{ path('artist_profile', {'id': contract.artist.id, 'slug': contract.artist.slug}) }}">{{ contract.artist.artistname }}</td>
                                 </tr>
-                                {% set i = i + 1 %}
-                            {% endfor %}
-                            {% if i <= 2 %}
-                                {% for j in i..2 %}
+                                {% set i = 1 %}
+                                {% for coartist_artist in contract.coartistsList %}
+                                    {% set coartist = coartist_artist.artist %}
                                     <tr>
-                                        <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}
-                                            &nbsp;{{ j }}</td>
-                                        <td><i> {{ 'event.lineup.tbc'|trans|raw }}</i></td>
+                                        <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}&nbsp;{{ i }}</td>
+                                        <td><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist.artistname }}</a></td>
                                     </tr>
+                                    {% set i = i + 1 %}
                                 {% endfor %}
-                            {% endif %}
+                                {% if i <= 2 %}
+                                    {% for j in i..2 %}
+                                        <tr>
+                                            <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}&nbsp;{{ j }}</td>
+                                            <td><i> {{ 'event.lineup.tbc'|trans|raw }}</i></td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -296,8 +280,7 @@
                                                 <div class="count-input space-bottom">
                                                     <a class="incr-btn" data-action="decrease" href="#">–</a>
                                                     {{ form_widget(purchase) }}
-                                                    <a class="incr-btn" data-action="increase"
-                                                       data-max="{{ tickets_left }}" href="#">&plus;</a>
+                                                    <a class="incr-btn" data-action="increase" data-max="{{ tickets_left }}" href="#">&plus;</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -307,12 +290,12 @@
                             {{ form_row(form.user_rewards) }}
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
-                            {#
-                            <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<br /><a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
-                            </div>
-                            #}
+                                {#
+                                <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<br /><a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
+                                <div class="text-center">
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
+                                </div>
+                                #}
                         {% else %}
                             <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
                         {% endif %}
@@ -344,16 +327,12 @@
                                     {% endif %}
                                 </div>
                                 {% if not hall_confirmed and potential_halls|length > 1 %}
-                                    <a class="carousel-control-prev" href="#carouselPotentialHalls" role="button"
-                                       data-slide="prev">
-                                        <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-1"
-                                              aria-hidden="true"></span>
+                                    <a class="carousel-control-prev" href="#carouselPotentialHalls" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-1" aria-hidden="true"></span>
                                         <span class="sr-only">Previous</span>
                                     </a>
-                                    <a class="carousel-control-next" href="#carouselPotentialHalls" role="button"
-                                       data-slide="next">
-                                        <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-1"
-                                              aria-hidden="true"></span>
+                                    <a class="carousel-control-next" href="#carouselPotentialHalls" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-1" aria-hidden="true"></span>
                                         <span class="sr-only">Next</span>
                                     </a>
                                 {% endif %}

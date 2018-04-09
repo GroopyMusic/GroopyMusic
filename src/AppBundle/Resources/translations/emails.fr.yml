@@ -6,9 +6,9 @@ subjects:
     artist:
       known_outcome: Votre événement Un-Mute - Résultat des courses
       reminder: "Rappel : votre événement sur Un-Mute.be"
-      details: Les détails de votre concert
+      details: Les détails de votre festival
     fan:
-      known_outcome: "Concert de %artist% : résultat des courses"
+      known_outcome: "Festival de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
       # TODO add pluralization
       viptickets: Vos tickets Un-Mute pour %artist% #new
@@ -41,9 +41,9 @@ concert:
     confirmation: |
       Félicitations !
 
-      Vous êtes soutenu(s) par suffisamment de producteurs : Un-Mute vous offre l'organisation de votre concert le %date% dans la salle "%hall%".
+      Vous êtes soutenu(s) par suffisamment de producteurs : Un-Mute vous offre l'organisation de votre festival le %date% dans la salle "%hall%".
 
-      Ce concert vous offrira peut-être la possibilité de participer à une tournée multi-locale organisée par Un-Mute. Nous vous recontacterons pour plus d'informations à ce sujet.
+      Ce festival vous offrira peut-être la possibilité de participer à une tournée multi-locale organisée par Un-Mute. Nous vous recontacterons pour plus d'informations à ce sujet.
     reminder: |
       Bonjour %artist%,
 
@@ -56,7 +56,7 @@ concert:
     details: |
       Cher artiste,
 
-       Voici les informations pratiques concernant votre concert du %date% dans la salle "%hall%".
+       Voici les informations pratiques concernant votre festival du %date% dans la salle "%hall%".
 
        Planning de la soirée :
 
@@ -71,8 +71,6 @@ concert:
 
        Enfin, pourriez-vous nous envoyer la fiche technique de votre groupe ainsi que le contrat (en pièce jointe) que vous devez nous renvoyer signé au plus tard fin de cette semaine ?
 
-       Pour rappel, nous appliquons le principe de solidarité pour la gestion de la caisse lors de concerts qui se déroulent dans une salle ne prévoyant pas de système de ticketing. C'est à dire que nous vous demanderons à un moment de la soirée de co-gérer la caisse (voir contrat pour plus d'informations).
-
        Si vous avez des questions, n'hésitez pas à nous joindre par mail à l'adresse pierre@un-mute.be
 
 
@@ -82,7 +80,7 @@ concert:
     confirmation: |
       Félicitations !
 
-      L'artiste %artist% vient d'obtenir l'organisation de son concert par Un-Mute Asbl grâce à vous ! Ce concert se tiendra le %date% dans la salle "%hall%". Vous recevrez très prochainement vos tickets ainsi que toutes les informations pratiques par e-mail.
+      L'artiste %artist% vient d'obtenir l'organisation de son festival par Un-Mute ASBL grâce à vous ! Ce festival se tiendra le %date% dans la salle "%hall%". Vous recevrez très prochainement vos tickets ainsi que toutes les informations pratiques par e-mail.
 
       Envie de soutenir/découvrir d'autres artistes ? Rendez-vous sur %events_link% !
     tickets: |
@@ -115,7 +113,7 @@ concert:
     failure: |
       Cher producteur,
 
-      L'artiste %artist% que vous aviez décidé de soutenir n'a pas pu récolter assez de fonds pour permettre l'organisation de son concert.
+      L'artiste %artist% que vous aviez décidé de soutenir n'a pas pu récolter assez de fonds pour permettre l'organisation de son festival.
 
       Vous serez remboursé(e) de l'entièreté du prix des places achetées dans les dix jours ouvrables.
 
@@ -134,7 +132,7 @@ concert:
 
       L'artiste %artist% a réussi à vendre assez de places pour son %step% qui est prévu pour le %date%.
 
-      Tu peux valider (ou invalider si nécessaire) le concert depuis l'espace d'administration, en précisant la salle et la date réelles du concert. Alors seulement un mail sera envoyé à tous les producteurs et à l'artiste.
+      Tu peux valider (ou invalider si nécessaire) le festival depuis l'espace d'administration, en précisant la salle et la date réelles du festival. Alors seulement un mail sera envoyé à tous les producteurs et à l'artiste.
 
 order: |
     Merci d'avoir passé commande chez Un-Mute. Vous allez peut-être permettre à un artiste de se produire sur une scène belge reconnue et devant un public en folie !

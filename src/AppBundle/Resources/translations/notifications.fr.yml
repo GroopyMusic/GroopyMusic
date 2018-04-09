@@ -1,5 +1,5 @@
 failed_contract_artist:
-  title: "Votre concert : résultat des courses"
+  title: "Votre festival Un-Mute : résultat des courses"
   content: |
     Vous n’avez pas réussi à obtenir le soutien de suffisamment de producteurs pour permettre l’organisation de <a href="%event_url%">votre %step%</a>.
 
@@ -10,13 +10,13 @@ failed_contract_artist:
     L’équipe Un-Mute
 
 failed_contract_fan:
-  title: Concert de %artist% - résultat des courses
+  title: Festival Un-Mute avec %artist% - résultat des courses
   content: |
     Cher producteur,
 
     L’artiste %artist% que vous aviez décidé de soutenir n’a pas pu récolter assez de fonds pour permettre l’organisation de son <a href="%event_url%">%step%</a>.
 
-    Il n’y aura donc pas de concert organisé et vous serez remboursé(e) de l’entièreté du prix des places achetées.
+    Il n’y aura donc pas de festival organisé et vous serez remboursé(e) de l’entièreté du prix des places achetées.
 
     Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d’un prochain évènement !
 
@@ -27,12 +27,12 @@ failed_contract_fan:
     L’équipe Un-Mute
 
 successful_contract_artist:
-  title: Votre concert va être organisé !
+  title: Votre festival va être organisé !
   content: |
     Félicitations, vous avez réussi à obtenir le soutien de suffisamment de producteurs pour permettre l’organisation de <a href="%event_url%">votre %step%</a>.
-    Votre concert prendra place le %date% dans la salle <a href="%hall_url%">%hall_name%</a>.
+    Votre festival prendra place le %date% dans la salle <a href="%hall_url%">%hall_name%</a>.
 
-    L'équipe Un-Mute se charge de trouver les premières parties de votre concert. De plus, vous aurez en principe la chance de jouer comme première partie d'autres artistes de la plateforme qui, comme vous, parviennent à remplir une salle.
+    L'équipe Un-Mute se charge de trouver les premières parties invitées à votre festival. De plus, vous aurez en principe la chance de jouer comme première partie d'autres artistes de la plateforme qui, comme vous, parviennent à remplir une salle.
     Vous recevrez des e-mails pour vous avertir de tout cela en temps voulu.
 
     Musicalement,
@@ -46,7 +46,7 @@ successful_contract_fan:
 
     Sachez qu'il aura lieu le %date% dans la salle <a href="%hall_url%">%hall_name%</a>.
 
-    Bientôt, vous recevrez vos tickets pour le concert, et vous serez averti des deux artistes invités qui viendront jouer avec %artist%.
+    Bientôt, vous recevrez vos tickets pour le festival, et vous serez averti des deux artistes invités qui viendront jouer avec %artist%.
 
     Musicalement,
 
@@ -57,7 +57,7 @@ ongoing_cart:
   content: Vous n'avez pas complété vos achats lors de votre dernière visite. Des éléments dans votre panier pourraient permettre d'aider l'un ou l'autre artiste, n'attendez plus !
 
 reminder_contract_artist:
-  title: "Rappel : votre concert à venir"
+  title: "Rappel : votre festival à venir"
   content: |
     Il ne reste plus que %places% places à vendre pour que votre %step% du %date% soit confirmé !
 

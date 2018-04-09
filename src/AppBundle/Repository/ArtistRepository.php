@@ -6,10 +6,17 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Services\UserRolesManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
-class ArtistRepository extends \Doctrine\ORM\EntityRepository
+class ArtistRepository extends OptimizedRepository
 {
-    private function baseQueryBuilder() {
+    public function initShortName()
+    {
+        $this->short_name = 'a';
+    }
+
+    public function baseQueryBuilder() {
         return $this->createQueryBuilder('a')
             ->leftJoin('a.contracts', 'ca')
             ->leftJoin('a.genres', 'g')
@@ -92,7 +99,7 @@ class ArtistRepository extends \Doctrine\ORM\EntityRepository
     public function findNewArtists($limit) {
 
         return $this->baseQueryBuilder()
-            ->where('a.deleted = 0')
+            ->andWhere('a.deleted = 0')
             ->andWhere('a.visible = 1')
             ->orderBy('a.date_creation', 'DESC')
             ->setMaxResults($limit)
