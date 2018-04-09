@@ -14,6 +14,8 @@ use AppBundle\Entity\User_Category;
 use AppBundle\Entity\User_Reward;
 use AppBundle\Entity\VIPInscription;
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 // TODO avoid passing entire objects as parameters to notifications, but rather their ID or values
 

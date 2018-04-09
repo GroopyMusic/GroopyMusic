@@ -56,7 +56,8 @@
                     <ul class="list">
                         {% for user_reward in potential_user_rewards %}
                             <li>
-                                <a href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }}</a>
+                                <a class="notification-trigger"
+                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -303,7 +304,7 @@
                                     </div>
                                 </div>
                             {% endfor %}
-
+                            {{ form_row(form.user_rewards) }}
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
                             {#
@@ -405,5 +406,11 @@
       }
     }
 
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.js-example-basic-multiple').select2();
+        });
     </script>
 {% endblock %}

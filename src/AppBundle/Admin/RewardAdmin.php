@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\Choice;
 
@@ -129,9 +130,11 @@ class RewardAdmin extends BaseAdmin
             ->with('Données récompenses communes')
             ->add('max_use', IntegerType::class, array(
                 'label' => 'Nombre d\'utilisation',
+                'attr' => array('min' => 0)
             ))
             ->add('validity_period', IntegerType::class, array(
                 'label' => 'Nombres de jours valides',
+                'attr' => array('min' => 0)
             ))
             ->end();
         if ($subject instanceof InvitationReward) {
@@ -151,6 +154,7 @@ class RewardAdmin extends BaseAdmin
                 ->with('Récompense consommation')
                 ->add('quantity', IntegerType::class, array(
                     'label' => 'Nombre de tickets',
+                    'attr' => array('min' => 0)
                 ))
                 ->add('type_consomable', ChoiceType::class, array(
                     'label' => 'Type de consommation',
@@ -159,8 +163,9 @@ class RewardAdmin extends BaseAdmin
                         "Nourriture" => "Nourriture"
                     )
                 ))
-                ->add('value', IntegerType::class, array(
+                ->add('value', NumberType::class, array(
                     'label' => 'Valeur d\'un ticket',
+                    'attr' => array('min' => 0)
                 ))
                 ->end();
         } elseif ($subject instanceof ReductionReward) {
@@ -168,6 +173,7 @@ class RewardAdmin extends BaseAdmin
                 ->with('Récompense réduction')
                 ->add('reduction', IntegerType::class, array(
                     'label' => 'Pourcentage de réduction',
+                    'attr' => array('min' => 0)
                 ))
                 ->end();
         }
@@ -176,9 +182,9 @@ class RewardAdmin extends BaseAdmin
             ->add('restrictions', EntityType::class, [
                 'class' => RewardRestriction::class,
                 'multiple' => true,
-                'required' => false
+                'required' => false,
+                'by_reference' => false
             ])
             ->end();
-
     }
 }

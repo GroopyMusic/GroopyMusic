@@ -7,7 +7,7 @@
                 <p>{{ email_content('reward_attribution.content',{
                         '%reward_name%': reward.name,
                         '%content%': content,
-                        '%rewards_url%' :  path('user_rewards')
+                        '%rewards_url%' :  url('user_rewards')
                     })|trans|raw|nl2br }}</p>
             </div>
         {% endblock %}

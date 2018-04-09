@@ -52,9 +52,11 @@ class User_RewardRepository extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN ur.user u 
                   WHERE u.id = ?1
                   AND ur.active = 1
+                  AND ur.limit_date > ?6
                   AND (bca.id = ?2 
                   OR a.id = ?3 
                   OR s.id = ?4
+                  OR cp.id IN ( ?5 )
                   OR ur.id IN(SELECT ur2.id
                               FROM AppBundle:User_Reward ur2
                               LEFT JOIN ur2.base_contract_artists bca2
@@ -72,6 +74,10 @@ class User_RewardRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter(2, $contractArtist->getId())
             ->setParameter(3, $contractArtist->getArtist()->getId())
             ->setParameter(4, $contractArtist->getStep()->getId())
+            ->setParameter(5, array_map(function ($elem) {
+                return $elem->getId();
+            }, $contractArtist->getStep()->getCounterParts()->toArray()))
+            ->setParameter(6, new \DateTime())
             ->getResult();
     }
 

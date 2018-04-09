@@ -7,10 +7,10 @@
             {% if promotional %}
                 <div class="um-label text-center"><strong>{{ 'pay_cart.recap.promo_title'|trans|raw }}</strong></div>
             {% endif %}
-                <tr>
-                    <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
-                    <td>{{ purchase.counterpart.name }}</td>
-                </tr>
+            <tr>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
+                <td>{{ purchase.counterpart.name }}</td>
+            </tr>
             <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.concert'|trans|raw }}</td>
                 <td>{{ 'event.generic_name'|trans({'%artist%': contract.contractArtist.artist.artistname}) }}</td>
@@ -27,156 +27,204 @@
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}</td>
                 <td>{% if not promotional %}{{ purchase.counterpart.price }} €{% else %}0 €{% endif %}</td>
             </tr>
+            {% if contract.userRewards is not empty %}
+                {% for userReward in contract.userRewards %}
+                    {% if userReward.reward.getType == "Réduction" %}
+                        {% if userReward.counterParts is empty or purchase.counterpart in userReward.counterParts %}
+                            <tr>
+                                <td class="contract-info-title">{{ userReward.reward.name }}</td>
+                                <td>{{ userReward.rewardTypeParameters.reduction }} %</td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <tr>
+                    <td class="contract-info-title">{{ 'pay_cart.recap.labels.price'|trans|raw }}</td>
+                    {% set total = purchase.getAmount() %}
+                    {% set reducedPrice = purchase.getReducedAmount %}
+                    {% set substraction = total - reducedPrice %}
+                    <td>{{ total }} - <span style="color:red">{{ substraction }}</span> = {{ reducedPrice }}</td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
     </div>
 {% endmacro %}
 
-{% import _self as macros %}
+    {% import _self as macros %}
 
-{% block body %}
+    {% block body %}
 
-    <div class="container">
+        <div class="container">
 
-        <h3 class="mt-3 mb-5 text-center">{{ 'pay_cart.title'|trans|raw }}</h3>
+            <h3 class="mt-3 mb-5 text-center">{{ 'pay_cart.title'|trans|raw }}</h3>
 
 
-        <div class="row">
-            <div class="col-12 col-md-8 order-2 order-md-1">
-                {% if app.user %}
-                    <div id="payment-intro">
-                        {{ 'pay_cart.intro'|trans({
-                            '%firstName%': app.user.firstname,
-                            '%conditionsUrl%': path('conditions') ~ '#cgv'
-                        })|raw }}
-                    </div>
-
-                    <div>
-                        <!-- Used to display Element errors -->
-                        <div class="stripe-error alert alert-danger" role="alert"></div>
-                        <div id="stripe-loader">
-                            {{ hidden_loader() }}
+            <div class="row">
+                <div class="col-12 col-md-8 order-2 order-md-1">
+                    {% if app.user %}
+                        <div id="payment-intro">
+                            {{ 'pay_cart.intro'|trans({
+                                '%firstName%': app.user.firstname,
+                                '%conditionsUrl%': path('conditions') ~ '#cgv'
+                            })|raw }}
                         </div>
-                    </div>
-
-                    <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
-                        <div class="form-row">
-                            {% if error_conditions %}
-                                <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
+                        {% for fan_contract in cart.contracts %}
+                            {% if fan_contract.userRewards is not empty %}
+                                <div class="">
+                                    <h6>{{ 'pay_cart.recap.reduction'|trans|raw }}</h6>
+                                    <ul class="um-list">
+                                        {% for user_reward in fan_contract.userRewards %}
+                                            <li>
+                                                <a class="notification-trigger"
+                                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             {% endif %}
-                            <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
-                                <input type="checkbox" id="accept_conditions" name="accept_conditions" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
-                            </label>
+                        {% endfor %}
+                        <div>
+                            <!-- Used to display Element errors -->
+                            <div class="stripe-error alert alert-danger" role="alert"></div>
+                            <div id="stripe-loader">
+                                {{ hidden_loader() }}
+                            </div>
                         </div>
 
-                        <div class="form-row" id="card-form-row">
-                            <div class="form-row form-group">
-                                <div class="col-12">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="payment-method" value="credit-card" class="custom-control-input" checked="checked">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">{{ 'pay_cart.methods.creditcard'|trans|raw }}</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="payment-method" value="debit-card" class="custom-control-input">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">{{ 'pay_cart.methods.bancontact'|trans|raw }}</span>
-                                    </label>
-                                </div>
+                        <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
+                            <div class="form-row">
+                                {% if error_conditions %}
+                                    <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
+                                {% endif %}
+                                <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
+                                    <input type="checkbox" id="accept_conditions" name="accept_conditions"
+                                           class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
+                                </label>
                             </div>
 
-                            <div class="content-box col-12">
-                                <div class="content-box-content content-box-content-zones">
+                            <div class="form-row" id="card-form-row">
+                                <div class="form-row form-group">
+                                    <div class="col-12">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="payment-method" value="credit-card"
+                                                   class="custom-control-input" checked="checked">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">{{ 'pay_cart.methods.creditcard'|trans|raw }}</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="payment-method" value="debit-card"
+                                                   class="custom-control-input">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">{{ 'pay_cart.methods.bancontact'|trans|raw }}</span>
+                                        </label>
+                                    </div>
+                                </div>
 
-                                    <div id="credit-card" class="payment-method w-100">
-                                        <div class="col-12 content-box-content-zone">
-                                            <h5>
-                                                {{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a href="#" data-toggle="popover" title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }}" data-content="{{ 'pay_cart.proceed.creditcard.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.creditcard.popover.apparent'|trans|raw }}</a>
-                                            </h5>
-                                        </div>
-                                        <div class="content-box-content-zone no-border">
-                                            <div class="col-12 row">
-                                                <div class="col-12">
-                                                    <label>
-                                                        <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.creditcard'|trans|raw }}</div>
-                                                        <div id="card-number-element" class="field"></div>
-                                                    </label>
+                                <div class="content-box col-12">
+                                    <div class="content-box-content content-box-content-zones">
+
+                                        <div id="credit-card" class="payment-method w-100">
+                                            <div class="col-12 content-box-content-zone">
+                                                <h5>
+                                                    {{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a href="#"
+                                                                                                           data-toggle="popover"
+                                                                                                           title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }}"
+                                                                                                           data-content="{{ 'pay_cart.proceed.creditcard.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.creditcard.popover.apparent'|trans|raw }}</a>
+                                                </h5>
+                                            </div>
+                                            <div class="content-box-content-zone no-border">
+                                                <div class="col-12 row">
+                                                    <div class="col-12">
+                                                        <label>
+                                                            <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.creditcard'|trans|raw }}</div>
+                                                            <div id="card-number-element" class="field"></div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-12 col-md-5 mt-3">
+                                                        <label>
+                                                            <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.exp'|trans|raw }}</div>
+                                                            <div id="card-expiry-element" class="field"></div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-12 col-md-5 mt-3">
+                                                        <label>
+                                                            <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.cvc'|trans|raw }}</div>
+                                                            <div id="card-cvc-element" class="field"></div>
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                                <div class="col-12 col-md-5 mt-3">
-                                                    <label>
-                                                        <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.exp'|trans|raw }}</div>
-                                                        <div id="card-expiry-element" class="field"></div>
-                                                    </label>
-                                                </div>
-                                                <div class="col-12 col-md-5 mt-3">
-                                                    <label>
-                                                        <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.cvc'|trans|raw }}</div>
-                                                        <div id="card-cvc-element" class="field"></div>
-                                                    </label>
+                                                <div class="col-12 text-center mt-5">
+                                                    <input type="submit" class="btn btn-primary"
+                                                           value="{{ 'pay_cart.proceed.creditcard.submit'|trans|raw }}"/>
                                                 </div>
                                             </div>
-                                            <div class="col-12 text-center mt-5">
-                                                <input type="submit" class="btn btn-primary" value="{{ 'pay_cart.proceed.creditcard.submit'|trans|raw }}" />
+                                        </div>
+
+                                        <div id="debit-card" class="form-row payment-method w-100"
+                                             style="display:none;">
+                                            <div class="col-12 content-box-content-zone">
+                                                <h5>
+                                                    {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#"
+                                                                                                           data-toggle="popover"
+                                                                                                           title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}"
+                                                                                                           data-content="{{ 'pay_cart.proceed.bancontact.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.bancontact.popover.apparent'|trans|raw }}</a>
+                                                </h5>
+                                                <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
+                                            </div>
+                                            <div class="content-box-content-zone no-border">
+                                                <div id="bc-card-element" class="text-center">
+                                                    <button type="button" class="btn btn-primary mt-3"
+                                                            id="choose-bancontact">
+                                                        {{ 'pay_cart.proceed.bancontact.submit'|trans|raw }}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </form>
 
-                                    <div id="debit-card" class="form-row payment-method w-100" style="display:none;">
-                                        <div class="col-12 content-box-content-zone">
-                                            <h5>
-                                               {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#" data-toggle="popover" title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}" data-content="{{ 'pay_cart.proceed.bancontact.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.bancontact.popover.apparent'|trans|raw }}</a>
-                                            </h5>
-                                            <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
-                                        </div>
-                                        <div class="content-box-content-zone no-border">
-                                            <div id="bc-card-element" class="text-center">
-                                                <button type="button" class="btn btn-primary mt-3" id="choose-bancontact">
-                                                    {{ 'pay_cart.proceed.bancontact.submit'|trans|raw }}
-                                                </button>
-                                            </div>
-                                        </div>
+
+                    {% elseif form is defined and form is not null %}
+
+                        <p>{{ 'pay_cart.not_authenticated.intro'|trans|raw }}</p>
+
+                        <div class="form-row form-group">
+                            <div class="col-12">
+                                <label class="custom-control custom-radio d-block">
+                                    <input type="radio" name="sign-in-choice" value="sign-in"
+                                           class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">{{ 'pay_cart.not_authenticated.signin_label'|trans|raw }}</span>
+                                </label>
+
+                                <div id="sign-in-block" class="mb-4">
+                                    <div class="text-center">
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal"
+                                                href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
                                     </div>
+                                </div>
+
+                                <label class="custom-control custom-radio d-block mb-2">
+                                    <input type="radio" name="sign-in-choice" value="sign-up"
+                                           class="custom-control-input"{% if form.vars.submitted %} checked{% endif %}>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">{{ 'pay_cart.not_authenticated.signup_label'|trans|raw }}</span>
+                                </label>
+
+                                <div id="sign-up-block">
+                                    {% include '@FOSUser/Registration/register_content.html.twig' %}
                                 </div>
                             </div>
                         </div>
-                    </form>
 
 
-            {% elseif form is defined and form is not null %}
-
-                <p>{{ 'pay_cart.not_authenticated.intro'|trans|raw }}</p>
-
-                <div class="form-row form-group">
-                    <div class="col-12">
-                        <label class="custom-control custom-radio d-block">
-                            <input type="radio" name="sign-in-choice" value="sign-in" class="custom-control-input">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">{{ 'pay_cart.not_authenticated.signin_label'|trans|raw }}</span>
-                        </label>
-
-                        <div id="sign-in-block" class="mb-4">
-                            <div class="text-center">
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
-                            </div>
-                        </div>
-
-                        <label class="custom-control custom-radio d-block mb-2">
-                            <input type="radio" name="sign-in-choice" value="sign-up" class="custom-control-input"{% if form.vars.submitted %} checked{% endif %}>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">{{ 'pay_cart.not_authenticated.signup_label'|trans|raw }}</span>
-                        </label>
-
-                        <div id="sign-up-block">
-                            {% include '@FOSUser/Registration/register_content.html.twig' %}
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
-
-
-            {% endif %}
-            </div>
 
                 <div class="col-12 col-md-4 order-1 order-md-2">
                     <div class="content-box">
@@ -184,19 +232,37 @@
                             <h3>{{ 'pay_cart.recap.title'|trans|raw }}</h3>
                         </div>
                         <div class="content-box-content-zones content-box-content">
-                        {% set sum_tickets = 0 %}
-                        {% for fan_contract in cart.contracts %}
-                            {% for purchase in fan_contract.purchases %}
-                                {{  macros.recap_zone(purchase, fan_contract, false) }}
-                                {% set freeTickets = purchase.quantityPromotional %}
-                                {% if freeTickets > 0 %}
-                                    {{ macros.recap_zone(purchase, fan_contract, true) }}
+                            {% set sum_tickets = 0 %}
+                            {% set amoutWithoutReduction = 0 %}
+                            {% set hasRestriction = false %}
+                            {% for fan_contract in cart.contracts %}
+                                {% for purchase in fan_contract.purchases %}
+                                    {{ macros.recap_zone(purchase, fan_contract, false) }}
+                                    {% set freeTickets = purchase.quantityPromotional %}
+                                    {% if freeTickets > 0 %}
+                                        {{ macros.recap_zone(purchase, fan_contract, true) }}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if fan_contract.userRewards is not empty %}
+                                    {% set hasRestriction = true %}
                                 {% endif %}
+                                {% set amoutWithoutReduction = amoutWithoutReduction + fan_contract.getAmountWithoutReduction %}
+                                {% set sum_tickets = sum_tickets + fan_contract.counterPartsQuantity %}
                             {% endfor %}
-                            {% set sum_tickets = sum_tickets + fan_contract.counterPartsQuantity %}
-                        {% endfor %}
                             <div class="content-box-content-zone no-border">
                                 <table class="content-box-table">
+                                    {% if hasRestriction == true %}
+                                        <tr class="no-border">
+                                            <td class="contract-info-title big">{{ 'pay_cart.recap.labels.total_without_reduction'|trans|raw }}</td>
+                                            <td class="big font-weight-bold">{{ amoutWithoutReduction }} €</td>
+                                        </tr>
+                                        <tr class="no-border">
+                                            <td class="contract-info-title big">{{ 'pay_cart.recap.labels.reduction'|trans|raw }}</td>
+                                            <td class="big font-weight-bold" style="color:red">
+                                                - {{ amoutWithoutReduction - cart.amount }} €
+                                            </td>
+                                        </tr>
+                                    {% endif %}
                                     <tr class="no-border">
                                         <td class="contract-info-title big">{{ 'pay_cart.recap.total'|transchoice(sum_tickets)|raw }}</td>
                                         <td class="big font-weight-bold">{{ cart.amount }} €</td>
@@ -207,291 +273,293 @@
                     </div>
                 </div>
             </div>
-  </div>
+        </div>
 
-{% endblock %}
+    {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        {% if app.user %}
-            hideError();
-
-            var $loader = $('#stripe-loader .loader');
-            var $loaderexplanation = $('#stripe-loader .loader-explanation');
-
-            var amount = {{ cart.amount * 100}};
-
-            $('#card-form-row').hide();
-            $('#accept_conditions').change(function(){
-                if(this.checked) {
-                    $('#card-form-row').show();
-                }
-                else {
-                    $('#card-form-row').hide();
-                }
-                $('.error-notice').alert('close');
-            });
-
-            $('input[type=radio]').change(function() {
+        {% block javascripts %}
+            {{ parent() }}
+            <script>
+                {% if app.user %}
                 hideError();
-                if ($(this).val() == 'debit-card') {
-                    $('.payment-method').hide();
-                    $('#debit-card').show();
-                }
-                else if ($(this).val() == 'credit-card') {
-                    $('.payment-method').hide();
-                    $('#credit-card').show();
-                }
-            });
 
-            var stripe = Stripe('{{ stripe_api_public }}');
-            var elements = stripe.elements();
+                var $loader = $('#stripe-loader .loader');
+                var $loaderexplanation = $('#stripe-loader .loader-explanation');
 
-            var style = {
-                base: {
-                    color: '#32325D',
-                    fontWeight: 500,
-                    fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
-                    fontSize: '16px',
-                    fontSmoothing: 'antialiased'
-                },
-                invalid: {
-                    color: '#E25950',
+                var amount = {{ cart.amount * 100 }};
 
-                    '::placeholder': {
-                        color: '#ffa65d'
+                $('#card-form-row').hide();
+                $('#accept_conditions').change(function () {
+                    if (this.checked) {
+                        $('#card-form-row').show();
                     }
-                }
-            };
-
-            var elementClasses = {
-                focus: 'focused',
-                empty: 'empty',
-                invalid: 'invalid'
-            };
-
-            // set publishable key for V2
-            Stripe.setPublishableKey('{{ stripe_api_public }}');
-
-
-            var cardNumberElement = elements.create('cardNumber', {
-                style: style,
-                classes: elementClasses,
-                placeholder: 'Numéro de carte'
-            });
-            cardNumberElement.mount('#card-number-element');
-
-            var cardExpiryElement = elements.create('cardExpiry', {
-                style: style,
-                classes: elementClasses,
-                placeholder: 'MM/AA'
-            });
-            cardExpiryElement.mount('#card-expiry-element');
-
-            var cardCvcElement = elements.create('cardCvc', {
-                style: style,
-                classes: elementClasses,
-                placeholder: 'CVC'
-            });
-            cardCvcElement.mount('#card-cvc-element');
-
-            $('#choose-bancontact').click(function(e) {
-                e.preventDefault();
-                displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
-                scrollToLoader();
-
-                stripe.createSource({
-                    type: 'bancontact',
-                    amount: amount,
-                    currency: 'eur',
-                    bancontact: {
-                        preferred_language: 'fr'
-                    },
-                    owner: {
-                        name: '{{ app.user.displayName }}',
-                        email: '{{ app.user.email }}'
-                    },
-                    redirect: {
-                        return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
-                    },
-                    statement_descriptor: 'Un-Mute - purchase {{ contract_fan.id }}'
-                }).then(function(result) {
-                    on3DSSource(result);
+                    else {
+                        $('#card-form-row').hide();
+                    }
+                    $('.error-notice').alert('close');
                 });
-            });
 
-            function onToken(result) {
-                if (result.token) {
-                    Stripe.source.create({
-                        type: 'card',
-                        token: result.token.id
-                    }, onCardSource);
-                } else if (result.error) {
-                    displayForm();
-                    displayError(result.error.message);
-                }
-            }
+                $('input[type=radio]').change(function () {
+                    hideError();
+                    if ($(this).val() == 'debit-card') {
+                        $('.payment-method').hide();
+                        $('#debit-card').show();
+                    }
+                    else if ($(this).val() == 'credit-card') {
+                        $('.payment-method').hide();
+                        $('#credit-card').show();
+                    }
+                });
 
-            function onCardSource(status, result) {
-                if(result.error) {
-                    displayForm();
-                    displayError(result.error.message);
-                }
+                var stripe = Stripe('{{ stripe_api_public }}');
+                var elements = stripe.elements();
 
-                if(result.card.three_d_secure == 'required') {
+                var style = {
+                    base: {
+                        color: '#32325D',
+                        fontWeight: 500,
+                        fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
+                        fontSize: '16px',
+                        fontSmoothing: 'antialiased'
+                    },
+                    invalid: {
+                        color: '#E25950',
+
+                        '::placeholder': {
+                            color: '#ffa65d'
+                        }
+                    }
+                };
+
+                var elementClasses = {
+                    focus: 'focused',
+                    empty: 'empty',
+                    invalid: 'invalid'
+                };
+
+                // set publishable key for V2
+                Stripe.setPublishableKey('{{ stripe_api_public }}');
+
+
+                var cardNumberElement = elements.create('cardNumber', {
+                    style: style,
+                    classes: elementClasses,
+                    placeholder: 'Numéro de carte'
+                });
+                cardNumberElement.mount('#card-number-element');
+
+                var cardExpiryElement = elements.create('cardExpiry', {
+                    style: style,
+                    classes: elementClasses,
+                    placeholder: 'MM/AA'
+                });
+                cardExpiryElement.mount('#card-expiry-element');
+
+                var cardCvcElement = elements.create('cardCvc', {
+                    style: style,
+                    classes: elementClasses,
+                    placeholder: 'CVC'
+                });
+                cardCvcElement.mount('#card-cvc-element');
+
+                $('#choose-bancontact').click(function (e) {
+                    e.preventDefault();
                     displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+                    scrollToLoader();
+
                     stripe.createSource({
-                        type: 'three_d_secure',
+                        type: 'bancontact',
                         amount: amount,
-                        currency: "eur",
-                        three_d_secure: {
-                            card: result.id
+                        currency: 'eur',
+                        bancontact: {
+                            preferred_language: 'fr'
+                        },
+                        owner: {
+                            name: '{{ app.user.displayName }}',
+                            email: '{{ app.user.email }}'
                         },
                         redirect: {
                             return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
-                        }
-                    }).then(function(result) {on3DSSource(result)});
-                }
-                else {
-                    stripeTokenHandler(result);
-                }
-            }
+                        },
+                        statement_descriptor: 'Un-Mute - purchase {{ contract_fan.id }}'
+                    }).then(function (result) {
+                        on3DSSource(result);
+                    });
+                });
 
-            function on3DSSource(result) {
-                if(result.error) {
-                    displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
+                function onToken(result) {
+                    if (result.token) {
+                        Stripe.source.create({
+                            type: 'card',
+                            token: result.token.id
+                        }, onCardSource);
+                    } else if (result.error) {
+                        displayForm();
+                        displayError(result.error.message);
+                    }
                 }
-                else {
+
+                function onCardSource(status, result) {
+                    if (result.error) {
+                        displayForm();
+                        displayError(result.error.message);
+                    }
+
+                    if (result.card.three_d_secure == 'required') {
+                        displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+                        stripe.createSource({
+                            type: 'three_d_secure',
+                            amount: amount,
+                            currency: "eur",
+                            three_d_secure: {
+                                card: result.id
+                            },
+                            redirect: {
+                                return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
+                            }
+                        }).then(function (result) {
+                            on3DSSource(result)
+                        });
+                    }
+                    else {
+                        stripeTokenHandler(result);
+                    }
+                }
+
+                function on3DSSource(result) {
+                    if (result.error) {
+                        displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
+                    }
+                    else {
+                        hideError();
+                        displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
+                        window.location.replace(result.source.redirect.url);
+
+                        $('#payment-intro').hide();
+                    }
+                }
+
+                function onChargeable3DS(status, source) {
+                    if (source.status == 'chargeable') {
+                        stripeTokenHandler(source);
+                    }
+                    else if (source.status == 'failed') {
+                        displayError("{{ 'threeds.error'|trans({'%backUrl%': absolute_url(path('artist_contract', {'id': contract_fan.contractArtist.id}))})|raw }}");
+                    }
+                    {#else if (source.status != 'pending') {
+                        displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+                    }#}
+                }
+
+                $('#payment-form').submit(function (e) {
+                    e.preventDefault();
+                    // Disable the submit button to prevent repeat
+                    $('input[type="submit"]').prop('disabled', true);
+
+                    displayLoader();
+                    scrollToLoader();
+                    var extraDetails = {
+                        name: '{{ app.user.displayName }}',
+                        email: '{{ app.user.username }}'
+                    };
+                    stripe.createToken(cardNumberElement, extraDetails).then(onToken);
+                });
+
+                function scrollToLoader() {
+                    $('html, body').animate({
+                        scrollTop: $("#stripe-loader").offset().top - 300
+                    }, 500);
+                }
+
+                function displayLoader(html) {
+                    $loader.show();
+                    $('form').hide();
                     hideError();
-                    displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
-                    window.location.replace(result.source.redirect.url);
-
-                    $('#payment-intro').hide();
+                    if (html) {
+                        $loaderexplanation.html(html);
+                        $loaderexplanation.show();
+                    }
+                    else {
+                        $loaderexplanation.hide();
+                    }
                 }
-            }
 
-            function onChargeable3DS(status, source) {
-                if (source.status == 'chargeable') {
-                    stripeTokenHandler(source);
-                }
-                else if (source.status == 'failed') {
-                    displayError("{{ 'threeds.error'|trans({'%backUrl%': absolute_url(path('artist_contract', {'id': contract_fan.contractArtist.id}))})|raw }}");
-                }
-                {#else if (source.status != 'pending') {
-                    displayError("{{ 'threeds.unknown_error'|trans|raw }}");
-                }#}
-            }
-
-            $('#payment-form').submit(function(e) {
-                e.preventDefault();
-                // Disable the submit button to prevent repeat
-                $('input[type="submit"]').prop('disabled', true);
-
-                displayLoader();
-                scrollToLoader();
-                var extraDetails = {
-                    name: '{{ app.user.displayName }}',
-                    email: '{{ app.user.username }}'
-                };
-                stripe.createToken(cardNumberElement, extraDetails).then(onToken);
-            });
-
-            function scrollToLoader() {
-                $('html, body').animate({
-                    scrollTop: $("#stripe-loader").offset().top - 300
-                }, 500);
-            }
-
-            function displayLoader(html) {
-                $loader.show();
-                $('form').hide();
-                hideError();
-                if(html) {
-                    $loaderexplanation.html(html);
-                    $loaderexplanation.show();
-                }
-                else {
+                function displayForm() {
+                    $('form').show();
+                    $loader.hide();
                     $loaderexplanation.hide();
                 }
-            }
 
-            function displayForm() {
-                $('form').show();
-                $loader.hide();
-                $loaderexplanation.hide();
-            }
+                function displayError(html) {
 
-            function displayError(html) {
-
-                $('input[type="submit"]').prop('disabled', false);
+                    $('input[type="submit"]').prop('disabled', false);
 
 
-                $('.stripe-error').html(html);
-                $('.stripe-error').show();
-                $loader.hide();
-                $loaderexplanation.hide();
-            }
-
-            function hideError() {
-                $('.stripe-error').hide();
-            }
-
-            function stripeTokenHandler(source) {
-
-                $('#payment-intro').hide();
-                displayLoader("{{ 'threeds.pending'|trans|raw }}");
-
-                // Insert the token ID into the form so it gets submitted to the server
-                var form = document.getElementById('payment-form');
-                var hiddenInput = document.createElement('input');
-                hiddenInput.setAttribute('type', 'hidden');
-                hiddenInput.setAttribute('name', 'stripeSource');
-                hiddenInput.setAttribute('value', source.id);
-
-                var hiddenInput2 = document.createElement('input');
-                hiddenInput2.setAttribute('type', 'hidden');
-                hiddenInput2.setAttribute('name', 'fancontract_id');
-                hiddenInput2.setAttribute('value', '{{ contract_fan.id }}');
-
-                var hiddenInput3 = document.createElement('input');
-                hiddenInput3.setAttribute('type', 'hidden');
-                hiddenInput3.setAttribute('name', 'amount');
-                hiddenInput3.setAttribute('value', '' + amount);
-
-                form.appendChild(hiddenInput);
-                form.appendChild(hiddenInput2);
-                form.appendChild(hiddenInput3);
-                // Submit the form
-                form.submit();
-            }
-        {% else %}
-
-            function displaySignIn() {
-                var val = $('input[type=radio]:checked').val();
-                if(val == 'sign-in') {
-                    $signup.hide();
-                    $signin.show();
+                    $('.stripe-error').html(html);
+                    $('.stripe-error').show();
+                    $loader.hide();
+                    $loaderexplanation.hide();
                 }
-                else if(val == 'sign-up') {
-                    $signin.hide();
-                    $signup.show();
+
+                function hideError() {
+                    $('.stripe-error').hide();
                 }
-            }
 
-            var $signin = $('#sign-in-block');
-            var $signup = $('#sign-up-block');
-            $signin.hide();
-            $signup.hide();
+                function stripeTokenHandler(source) {
 
-            var $radio = $('input[type=radio]');
-            $radio.change(function() {
+                    $('#payment-intro').hide();
+                    displayLoader("{{ 'threeds.pending'|trans|raw }}");
+
+                    // Insert the token ID into the form so it gets submitted to the server
+                    var form = document.getElementById('payment-form');
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.setAttribute('type', 'hidden');
+                    hiddenInput.setAttribute('name', 'stripeSource');
+                    hiddenInput.setAttribute('value', source.id);
+
+                    var hiddenInput2 = document.createElement('input');
+                    hiddenInput2.setAttribute('type', 'hidden');
+                    hiddenInput2.setAttribute('name', 'fancontract_id');
+                    hiddenInput2.setAttribute('value', '{{ contract_fan.id }}');
+
+                    var hiddenInput3 = document.createElement('input');
+                    hiddenInput3.setAttribute('type', 'hidden');
+                    hiddenInput3.setAttribute('name', 'amount');
+                    hiddenInput3.setAttribute('value', '' + amount);
+
+                    form.appendChild(hiddenInput);
+                    form.appendChild(hiddenInput2);
+                    form.appendChild(hiddenInput3);
+                    // Submit the form
+                    form.submit();
+                }
+                {% else %}
+
+                function displaySignIn() {
+                    var val = $('input[type=radio]:checked').val();
+                    if (val == 'sign-in') {
+                        $signup.hide();
+                        $signin.show();
+                    }
+                    else if (val == 'sign-up') {
+                        $signin.hide();
+                        $signup.show();
+                    }
+                }
+
+                var $signin = $('#sign-in-block');
+                var $signup = $('#sign-up-block');
+                $signin.hide();
+                $signup.hide();
+
+                var $radio = $('input[type=radio]');
+                $radio.change(function () {
+                    displaySignIn();
+                });
+
                 displaySignIn();
-            });
-
-            displaySignIn();
-        {% endif %}
-    </script>
+                {% endif %}
+            </script>
 
 
-{% endblock %}
+        {% endblock %}

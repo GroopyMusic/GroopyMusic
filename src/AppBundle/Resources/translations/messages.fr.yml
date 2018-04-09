@@ -392,6 +392,11 @@ pay_cart:
             quantity: Quantité
             unitprice: Prix unitaire
             total: Total
+            #new
+            total_without_reduction : Total sans réduction
+            reduction : Réduction
+            price : Prix
+        reduction : Récompense(s) appliquée(s)
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
     #new
     not_authenticated:
@@ -773,6 +778,7 @@ labels:
 
   contractfan:
     submit: Valider la commande
+    rewards : Récompenses # new
 
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"

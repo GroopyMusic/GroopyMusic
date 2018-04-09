@@ -115,7 +115,7 @@ class User_Reward
     private $reward;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ContractFan", inversedBy="user_rewards")
+     * @ORM\ManyToMany(targetEntity="ContractFan", mappedBy="user_rewards")
      */
     private $contractFans;
 

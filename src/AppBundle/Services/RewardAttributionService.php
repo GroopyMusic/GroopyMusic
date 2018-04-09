@@ -37,7 +37,9 @@ class RewardAttributionService
         $this->querries = array(
             'Concert confirmé le plus récent',
             'Un seul concert sélectionné',
-            'Un seul artiste sélectionné'
+            'Un seul artiste sélectionné',
+            'Une seule contrepartie sélectionnée',
+            'Un seul palier de salle sélectionné'
         );
     }
 
@@ -61,22 +63,31 @@ class RewardAttributionService
         }
     }
 
-    public function defineRestriction(RewardRestriction $restriction, User_Reward $user_Reward)
+    public function defineRestriction(RewardRestriction $restriction, User_Reward $user_reward)
     {
         $restrictionRepository = $this->em->getRepository("AppBundle:RewardRestriction");
         switch ($restriction->getQuerry()) {
             case 'Concert confirmé le plus récent';
                 $baseContractArtist = $restrictionRepository->getMostRecentConfirmedConcert();
-                $user_Reward->addBaseContractArtist($baseContractArtist);
+                $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
             case 'Un seul concert sélectionné';
                 $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($restriction->getQuerryParameter());
-                $user_Reward->addBaseContractArtist($baseContractArtist);
+                $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
             case 'Un seul artiste sélectionné';
                 $artist = $this->em->getRepository('AppBundle:Artist')->find($restriction->getQuerryParameter());
-                $user_Reward->addArtist($artist);
+                $user_reward->addArtist($artist);
                 break;
+            case 'Une seule contrepartie sélectionnée';
+                $counterPart = $this->em->getRepository('AppBundle:CounterPart')->find($restriction->getQuerryParameter());
+                $user_reward->addCounterPart($counterPart);
+                break;
+            case 'Un seul palier de salle sélectionné';
+                $baseStep = $this->em->getRepository('AppBundle:Step')->find($restriction->getQuerryParameter());
+                $user_reward->addBaseStep($baseStep);
+                break;
+
         }
     }
 

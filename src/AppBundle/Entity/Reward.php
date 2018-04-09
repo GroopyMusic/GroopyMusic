@@ -82,10 +82,11 @@ abstract class Reward implements TranslatableInterface
         return $type;
     }
 
-    public function getDispayDeleted(){
-        if($this->deletedAt == null){
+    public function getDispayDeleted()
+    {
+        if ($this->deletedAt == null) {
             return "false";
-        }else{
+        } else {
             return $this->deletedAt->format('d-m-Y H:i:s');
         }
 
@@ -121,8 +122,6 @@ abstract class Reward implements TranslatableInterface
      * @ORM\ManyToMany(targetEntity="RewardRestriction", mappedBy="rewards", cascade={"persist"})
      */
     protected $restrictions;
-
-
 
 
     /**
@@ -227,8 +226,11 @@ abstract class Reward implements TranslatableInterface
      */
     public function addRestriction(RewardRestriction $restriction)
     {
-        $this->restrictions[] = $restriction;
 
+        $this->restrictions[] = $restriction;
+        if (!$restriction->getRewards()->contains($this)) {
+            $restriction->addReward($this);
+        }
         return $this;
     }
 
@@ -240,6 +242,9 @@ abstract class Reward implements TranslatableInterface
     public function removeRestriction(RewardRestriction $restriction)
     {
         $this->restrictions->removeElement($restriction);
+        if ($restriction->getRewards()->contains($this)) {
+            $restriction->removeReward($this);
+        }
     }
 
     /**

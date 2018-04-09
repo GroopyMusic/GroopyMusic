@@ -111,7 +111,6 @@ class RewardRestriction implements TranslatableInterface
     public function addReward(\AppBundle\Entity\Reward $reward)
     {
         $this->rewards[] = $reward;
-
         return $this;
     }
 
