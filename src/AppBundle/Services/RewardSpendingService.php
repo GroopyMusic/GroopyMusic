@@ -154,4 +154,17 @@ class RewardSpendingService
             $purchase->setReducedPrice(null);
         }
     }
+
+    public function checkDeadlines()
+    {
+        $user_rewards = $this->em->getRepository('AppBundle:User_Reward')->findAll();
+        $now = new \DateTime();
+        foreach ($user_rewards as $user_reward) {
+            if ($user_reward->getLimitDate() < $now) {
+                $user_reward->setActive(false);
+                $this->em->persist($user_reward);
+            }
+        }
+        $this->em->flush();
+    }
 }

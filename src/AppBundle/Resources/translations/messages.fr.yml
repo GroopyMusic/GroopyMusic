@@ -617,6 +617,7 @@ order_pdf:
     total_amount: Montant total
     nb_tickets: Nombre de tickets achetés
     nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
+    rewards : Récompense(s) appliquée(s) #new
   details:
     title: Détails de la commande
     labels:
@@ -625,6 +626,8 @@ order_pdf:
       unit_price: Prix unitaire
       total_price: Prix
       promo: promotion
+      reduction : Réduction #new
+      total_reduction_price : Prix avec réduction #new
   process:
     title: Processus d'achat Un-Mute
     content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce festival. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>

@@ -10,13 +10,28 @@
     {% endfor %}
     <ul>
         <li>{{ 'order_pdf.labels.order_date'|trans|raw }} : {{ cf.date|date('d/m/Y') }}</li>
-        <li>{{ 'order_pdf.labels.event'|trans|raw }} : {{ 'event.generic_name'|trans({'%artist%':cf.contractArtist.artist.artistname})|raw }}</li>
+        <li>{{ 'order_pdf.labels.event'|trans|raw }}
+            : {{ 'event.generic_name'|trans({'%artist%':cf.contractArtist.artist.artistname})|raw }}</li>
         <li>{{ 'order_pdf.labels.event_date'|trans|raw }} : {{ cf.contractArtist.dateConcert|date('d/m/Y') }}</li>
         <li>{{ 'order_pdf.labels.total_amount'|trans|raw }} : {{ cf.amount }} €</li>
         <li>{{ 'order_pdf.labels.nb_tickets'|trans|raw }} : {{ cf.counterPartsQuantityOrganic }}</li>
         {% set freeTickets = cf.counterPartsQuantityPromotional %}
         {% if freeTickets > 0 %}
             <li>{{ 'order_pdf.labels.nb_tickets_promo'|trans|raw }} : {{ freeTickets }}</li>
+        {% endif %}
+        {% set hasReduction = false %}
+        {% if user_rewards is not empty %}
+            <li>
+                <div>{{ 'order_pdf.labels.rewards'|trans|raw }} :</div>
+                <ul>
+                    {% for user_reward in user_rewards %}
+                        <li>{{ user_reward.reward.name }}</li>
+                        {% if user_reward.reward.getType == "Réduction" %}
+                            {% set hasReduction = true %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
         {% endif %}
     </ul>
 
@@ -29,6 +44,10 @@
             <th>{{ 'order_pdf.details.labels.quantity'|trans|raw }}</th>
             <th>{{ 'order_pdf.details.labels.unit_price'|trans|raw }}</th>
             <th>{{ 'order_pdf.details.labels.total_price'|trans|raw }}</th>
+            {% if user_rewards is not empty and hasReduction == true %}
+                <th>{{ 'order_pdf.details.labels.reduction'|trans|raw }}</th>
+                <th>{{ 'order_pdf.details.labels.total_reduction_price'|trans|raw }}</th>
+            {% endif %}
         </tr>
         {% for purchase in cf.purchases %}
             <tr>
@@ -44,7 +63,12 @@
                 <td>
                     {{ purchase.amount }} €
                 </td>
+                {% if user_rewards is not empty and hasReduction == true %}
+                    <td>- {{ purchase.amount - purchase.getReducedAmount }} €</td>
+                    <td>{{ purchase.getReducedAmount }} €</td>
+                {% endif %}
             </tr>
+
             {% set freeTickets = purchase.quantityPromotional %}
             {% if freeTickets > 0 %}
                 <tr>
