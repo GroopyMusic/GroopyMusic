@@ -18,6 +18,11 @@
 
         <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
 
+        <div class="row">
+        {% for crowdfunding in crowdfundings %}
+            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':3, 'xs': 12, 'news': false, 'bgwhite': true} %}
+        {% endfor %}
+        </div>
     </div>
 </div>
 
