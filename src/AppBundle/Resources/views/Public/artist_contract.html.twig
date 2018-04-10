@@ -48,6 +48,7 @@
         {% endfor %}
         {% set max_tickets = contract.maxTickets %}
         {% set tickets_left = contract.totalNbAvailable %}
+        {{ state }}
         <div class="row mt-4">
             <div class="col-12 col-lg-8">
                 <div class="content-box">
