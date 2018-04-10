@@ -48,11 +48,12 @@ class TicketingManager
     public function generateTicketsForContractFan(ContractFan $contractFan) {
         $contractFan->generateBarCode();
 
+        // TODO enhance this process, tickets shouldn't be removed & re-built (or should they ?)
         foreach($contractFan->getTickets() as $ticket) {
             $contractFan->removeTicket($ticket);
         }
 
-        if(!empty($contractFan->getTickets())) {
+        //if(!empty($contractFan->getTickets())) {
             foreach ($contractFan->getPurchases() as $purchase) {
                 /** @var Purchase $purchase */
                 $counterPart = $purchase->getCounterpart();
@@ -67,7 +68,7 @@ class TicketingManager
                     $i++;
                 }
             }
-        }
+        //}
     }
 
     public function generateTicketsForPhysicalPerson(PhysicalPersonInterface $physicalPerson, ContractArtist $contractArtist, $counterPart, $nb) {
