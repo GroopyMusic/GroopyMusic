@@ -151,6 +151,10 @@ class ContractArtist extends BaseContractArtist
         return $min - $booked;
     }
 
+    public function isDDay() {
+        return $this->getDateConcert()->diff(new \DateTime())->d == 0;
+    }
+
     public function getState() {
 
         $today = new \DateTime();
