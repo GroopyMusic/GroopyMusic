@@ -89,7 +89,8 @@
         {% if loop.index % 2 == 0 or loop.last %}
             <div class="between-tickets"></div>
             <div style="font-size: 80%;">
-                {% if user_rewards is not empty %}
+                {% if ticket.contractFan != null and ticket.contractFan.userRewards is not empty %}
+                    {% set user_rewards = ticket.contractFan.userRewards %}
                     <div>{{ 'tickets_pdf.rewards'|trans()|raw}} :
                         {% for ur in user_rewards %}
                             {% if loop.last %}

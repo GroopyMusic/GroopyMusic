@@ -64,6 +64,6 @@ class PDFWriter
     }
 
     public function writeTicketPreview(ContractFan $cf) {
-        $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $cf->getTickets(),'user_rewards'=>$cf->getUserRewards()], 'D');
+        $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $cf->getTickets()], 'D');
     }
 }
