@@ -151,10 +151,15 @@ class ContractArtist extends BaseContractArtist
         return $min - $booked;
     }
 
+    public function isDDay() {
+        return $this->getDateConcert()->diff(new \DateTime())->d == 0;
+    }
+
     public function getState() {
 
         $today = new \DateTime();
         $today2 = new \DateTime();
+        $today3 = new \DateTime();
 
         $max_tickets = $this->getMaxTickets();
 
@@ -170,12 +175,14 @@ class ContractArtist extends BaseContractArtist
         if($this->successful)
         {
             // Concert in the future
-            if($this->getDateConcert() >= $today) {
+            if($this->getDateConcert() >= $today3->modify('-1 day')) {
                 // Sold out
                 if ($this->getTotalBookedTickets() >= $max_tickets)
                     return self::STATE_SUCCESS_SOLDOUT;
                 // No more selling
-                if ($today2->modify('+' . $this->nb_closing_days . ' days') >= $this->getDateConcert())
+                $dateConcert2 = clone $this->getDateConcert();
+                $dateConcert2->modify('+1 day');
+                if ($today2->modify('+' . ($this->nb_closing_days) . ' days') > $dateConcert2)
                     return self::STATE_SUCCESS_CLOSED;
                 // Successful, in the future, not sold out, not closed => ongoing
                 else

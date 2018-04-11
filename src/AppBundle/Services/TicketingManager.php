@@ -233,13 +233,16 @@ class TicketingManager
         $arr = [
             'Identifiant du ticket' => $ticket->getId(),
             'Acheteur' => $ticket->getName(),
-            'Type de ticket' => $ticket->getCounterPart()->__toString(),
             'Prix' => $ticket->getPrice(). ' €',
             'Event' => $ticket->getContractArtist()->__toString(),
             'validated' => $ticket->getValidated(),
             'refunded' => $ticket->isRefunded(),
             'user_rewards' => $ticket->getContractFan()->getUserRewards()
         ];
+
+        if($ticket->getCounterPart() != null) {
+            $arr['Type de ticket'] = $ticket->getCounterPart()->__toString();
+        }
 
         if($ticket->getContractFan() != null) {
             $arr['CF associé'] = $ticket->getContractFan()->getBarcodeText();

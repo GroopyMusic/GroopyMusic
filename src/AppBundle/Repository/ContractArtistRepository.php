@@ -70,9 +70,9 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->addOrderBy('p.date', 'ASC')
             ->where('c.failed = 0')
             ->andWhere('c.test_period = :prevalidation')
-            ->andWhere('(r.date is not null AND r.date > :now) OR (p.date > :now)')
+            ->andWhere('(r.date is not null AND r.date >= :yesterday) OR (p.date >= :yesterday)')
             ->setParameter('prevalidation', $prevalidation)
-            ->setParameter('now', new \DateTime('now'))
+            ->setParameter('yesterday', new \DateTime('yesterday'))
         ;
     }
 
