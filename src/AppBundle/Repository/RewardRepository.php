@@ -16,6 +16,11 @@ namespace AppBundle\Repository;
  */
 class RewardRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Recovers all unremoved rewards
+     *
+     * @return array
+     */
     public function findNotDeletedRewards()
     {
         return $this->getEntityManager()->createQuery(
@@ -28,6 +33,12 @@ class RewardRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * Retrieve the reward corresponding to the @param $id
+     *
+     * @param $id
+     * @return mixed
+     */
     public function getReward($id)
     {
         return $this->getEntityManager()->createQuery(

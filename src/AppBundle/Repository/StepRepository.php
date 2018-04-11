@@ -23,6 +23,11 @@ class StepRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * Recovers all step
+     *
+     * @return array
+     */
     public function getStepsForSelect()
     {
         return $this->getEntityManager()->createQuery(

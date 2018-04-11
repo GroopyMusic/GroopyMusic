@@ -33,6 +33,12 @@ class User_CategoryRepository  extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * Retrieves all categories of @param $level_id
+     *
+     * @param $level_id
+     * @return array
+     */
     public function findAllStatByLevel($level_id){
         return $this->getEntityManager()->createQuery(
             'SELECT stat, l, c, lt, ct

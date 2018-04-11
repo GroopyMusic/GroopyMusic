@@ -31,6 +31,12 @@ class RewardSpendingService
         $this->logger = $logger;
     }
 
+    /**
+     * check if rewards are valid
+     * if reward is a reduction, apply reduction to te correct purchase
+     *
+     * @param ContractFan $cf
+     */
     public function applyReward(ContractFan $cf)
     {
         $this->em->persist($cf);
@@ -60,6 +66,12 @@ class RewardSpendingService
         $this->em->flush();
     }
 
+    /**
+     * Consumes one use of all contract rewards
+     *
+     * @param ContractFan $cf
+     *
+     */
     public function consumeReward(ContractFan $cf)
     {
         $user_rewards = $cf->getUserRewards()->toArray();
@@ -73,6 +85,14 @@ class RewardSpendingService
         $this->em->flush();
     }
 
+
+    /**
+     * Checks if all contract rewards are valid
+     * If a reward is not, it is removed from the contract
+     *
+     * @param ContractFan $cf
+     * @return array
+     */
     public function getApplicableReward(ContractFan $cf)
     {
         $applicableReward = [];
@@ -118,11 +138,24 @@ class RewardSpendingService
         return $applicableReward;
     }
 
+    /**
+     * Calculating the total amount of a contract
+     *
+     * @param ContractFan $cf
+     *
+     */
     public function setBaseAmount(ContractFan $cf)
     {
         $cf->setAmount($cf->getAmountWithoutReduction());
     }
 
+    /**
+     * Applies reward reductions to contracts
+     *
+     * @param ContractFan $cf
+     * @param User_Reward $user_reward
+     * @param Purchase $purchase
+     */
     private function applyPurchaseReduction(ContractFan $cf, User_Reward $user_reward, Purchase $purchase)
     {
         $reduction = $user_reward->getRewardTypeParameters()['reduction'];
@@ -139,6 +172,12 @@ class RewardSpendingService
 
     }
 
+    /**
+     * calculation of a total amount of a contract
+     *
+     * @param ContractFan $cf
+     * @return int
+     */
     private function computeAmount(ContractFan $cf)
     {
         $amount = 0;
@@ -148,6 +187,12 @@ class RewardSpendingService
         return $amount;
     }
 
+
+    /**
+     * Reset all purchases prices to null
+     *
+     * @param ContractFan $cf
+     */
     private function clearPurchases(ContractFan $cf)
     {
         foreach ($cf->getPurchases() as $purchase) {
@@ -155,6 +200,11 @@ class RewardSpendingService
         }
     }
 
+    /**
+     * checks all reward deadlines
+     * If a reward deadline has passed, the active reward field changes to false
+     *
+     */
     public function checkDeadlines()
     {
         $user_rewards = $this->em->getRepository('AppBundle:User_Reward')->findAll();

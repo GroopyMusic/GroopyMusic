@@ -116,6 +116,11 @@ class ArtistRepository extends OptimizedRepository
             ->getResult();
     }
 
+    /**
+     * get all artist not deleted
+     *
+     * @return array
+     */
     public function getArtistsForSelect()
     {
         return $this->getEntityManager()->createQuery(

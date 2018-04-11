@@ -28,6 +28,15 @@ class RewardAttributionService
 
     private $querries;
 
+    /**
+     * constructor + array with querry names
+     *
+     * RewardAttributionService constructor.
+     * @param NotificationDispatcher $notificationDispatcher
+     * @param MailDispatcher $mailDispatcher
+     * @param EntityManagerInterface $em
+     * @param LoggerInterface $logger
+     */
     public function __construct(NotificationDispatcher $notificationDispatcher, MailDispatcher $mailDispatcher, EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->notificationDispatcher = $notificationDispatcher;
@@ -43,6 +52,17 @@ class RewardAttributionService
         );
     }
 
+    /**
+     * Retrieves all users of @param $stats
+     * Give reward reward to all users
+     * Sends an email and/or notification to rewarded users
+     *
+     * @param $stats
+     * @param Reward $reward
+     * @param $notification
+     * @param $email
+     * @param $emailContent
+     */
     public function giveReward($stats, Reward $reward, $notification, $email, $emailContent)
     {
         foreach ($stats as $stat) {
@@ -63,6 +83,12 @@ class RewardAttributionService
         }
     }
 
+    /**
+     * Attaches the right restrictions to user rewards
+     *
+     * @param RewardRestriction $restriction
+     * @param User_Reward $user_reward
+     */
     public function defineRestriction(RewardRestriction $restriction, User_Reward $user_reward)
     {
         $restrictionRepository = $this->em->getRepository("AppBundle:RewardRestriction");
@@ -91,6 +117,11 @@ class RewardAttributionService
         }
     }
 
+    /**
+     * Get the names of the querries
+     *
+     * @return array
+     */
     public function getQuerryNames()
     {
         return $this->querries;

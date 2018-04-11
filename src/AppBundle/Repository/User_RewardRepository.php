@@ -16,6 +16,13 @@ namespace AppBundle\Repository;
  */
 class User_RewardRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * Recovers all active rewards from @param $user
+     *
+     * @param $user
+     * @return array
+     */
     public function getActiveUserRewards($user)
     {
         return $this->getEntityManager()->createQuery(
@@ -31,12 +38,21 @@ class User_RewardRepository extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN ur.user u 
                   WHERE u.id = ?1
                   AND ur.active = 1
+                  AND ur.limit_date > ?2
                   ORDER BY ur.creation_date DESC
                   ')
             ->setParameter(1, $user->getId())
+            ->setParameter(2, new \DateTime())
             ->getResult();
     }
 
+    /**
+     * Recovers all possible rewards for an event
+     *
+     * @param $user
+     * @param $contractArtist
+     * @return array
+     */
     public function getPossibleActiveRewards($user, $contractArtist)
     {
         return $this->getEntityManager()->createQuery(

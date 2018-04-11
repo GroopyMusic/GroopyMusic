@@ -10,6 +10,12 @@ namespace AppBundle\Repository;
  */
 class RewardRestrictionRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * Recovers the most recent confirmed concert
+     *
+     * @return mixed
+     */
     public function getMostRecentConfirmedConcert()
     {
         return $this->getEntityManager()->createQuery(
