@@ -193,4 +193,23 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getResult()
         ;
     }
+
+
+    /**
+     * get all sucessful contract artists
+     *
+     * @return array
+     */
+    public function getContactArtistsForSelect()
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT c,s,a
+                  FROM AppBundle:ContractArtist c
+                  LEFT JOIN c.step s
+                  LEFT JOIN s.translations st
+                  LEFT JOIN c.artist a
+                  WHERE c.successful = TRUE 
+                  ')
+            ->getResult();
+    }
 }

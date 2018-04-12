@@ -6,30 +6,30 @@
 
 
     table.ticket {
-        position: relative;
-        background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
-        border-bottom: 1px solid rgba(67,66,71,1);
-        border-left: 1px solid;
-        border-right: 1px solid;
+    position: relative;
+    background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
+    border-bottom: 1px solid rgba(67,66,71,1);
+    border-left: 1px solid;
+    border-right: 1px solid;
     }
 
     .lineup-title {
-        font-size: 5mm;
-        padding: 3mm 0;
+    font-size: 5mm;
+    padding: 3mm 0;
     }
 
     .ticket-title {
-        font-size: 6mm;
-        padding: 3mm 0;
+    font-size: 6mm;
+    padding: 3mm 0;
     }
 
     .next-to-logo {
-        max-width: 100mm;
+    max-width: 100mm;
     }
 
     .td-timing {
-        padding-top: 7mm;
-        font-size: 4mm;
+    padding-top: 7mm;
+    font-size: 4mm;
     }
 
 {% endblock %}
@@ -43,12 +43,14 @@
         {% endif %}
 
         <table class="ticket" style="position:relative">
-            <qrcode value="{{ ticket.barCodeText }}" ec="H" style="position:absolute; left: -40px; top: 50px; width: 30mm; background-color: white; color: black;"></qrcode>
+            <qrcode value="{{ ticket.barCodeText }}" ec="H"
+                    style="position:absolute; left: -40px; top: 50px; width: 30mm; background-color: white; color: black;"></qrcode>
 
             <tr class="text-white">
                 <td style="width: 30mm; text-align: center;">{{ ticket.price }} €</td>
                 <td style="width: 50mm;">{{ ticket.name }}</td>
-                <td style="width: 70mm; font-size:3mm;" class="text-right">{{ 'tickets_pdf.ticket.is_entry'|trans|nl2br }}</td>
+                <td style="width: 70mm; font-size:3mm;"
+                    class="text-right">{{ 'tickets_pdf.ticket.is_entry'|trans|nl2br }}</td>
             </tr>
             <tr class="text-white">
                 <td>
@@ -56,10 +58,11 @@
                 </td>
                 <td colspan="2" style="width:130mm">
                     <div class="text-center ticket-title text-bold">{{ 'tickets_pdf.ticket.title'|trans({'%hall_name%': ticket.contractArtist.hallConcert.name})|upper }}
-                    <br />{{ (ticket.contractArtist.dateConcert|date('d') ~ ' ' ~ ('months.' ~ ticket.contractArtist.dateConcert|date('m'))|trans ~ ' ' ~ ticket.contractArtist.dateConcert|date('Y'))|upper }}</div>
+                        <br/>{{ (ticket.contractArtist.dateConcert|date('d') ~ ' ' ~ ('months.' ~ ticket.contractArtist.dateConcert|date('m'))|trans ~ ' ' ~ ticket.contractArtist.dateConcert|date('Y'))|upper }}
+                    </div>
                     <div class="lineup-title next-to-logo">{{ ticket.contractArtist.mainArtist }}
                         {% if ticket.contractArtist.coArtists is not empty %}
-                            {%- if ticket.contractArtist.coArtists[0] is defined %} - {{ ticket.contractArtist.coArtists[0] }}{%- endif  -%}
+                            {%- if ticket.contractArtist.coArtists[0] is defined %} - {{ ticket.contractArtist.coArtists[0] }}{%- endif -%}
                             {%- if ticket.contractArtist.coArtists[1] is defined %} - {{ ticket.contractArtist.coArtists[1] }}{%- endif -%}
                         {% endif %}
                     </div>
@@ -69,21 +72,37 @@
                 <td style="width: 30mm; font-size: 3mm;" valign="bottom">{{ ticket.barCodeText }}</td>
                 <td colspan="2" class="td-timing">
                     <p class="next-to-logo text-bold text-secondary">
-                        18:00 Doors<br />
+                        18:00 Doors<br/>
                         {% if ticket.contractArtist.coArtists is not empty %}
-                            {%- if ticket.contractArtist.coArtists[1] is defined -%}19:00 {{ ticket.contractArtist.coArtists[1] }}<br />{% endif %}
-                            {%- if ticket.contractArtist.coArtists[0] is defined -%}20:15 {{ ticket.contractArtist.coArtists[0] }}<br />{% endif %}
+                            {%- if ticket.contractArtist.coArtists[1] is defined -%}19:00 {{ ticket.contractArtist.coArtists[1] }}
+                                <br/>{% endif %}
+                            {%- if ticket.contractArtist.coArtists[0] is defined -%}20:15 {{ ticket.contractArtist.coArtists[0] }}
+                                <br/>{% endif %}
                         {% endif %}
                         21:30 {{ ticket.contractArtist.mainArtist }}
                     </p>
-                    <p class="text-right">{{ ticket.contractArtist.hallConcert.name }} - {{ ticket.contractArtist.hallConcert.address }}</p>
+                    <p class="text-right">{{ ticket.contractArtist.hallConcert.name }}
+                        - {{ ticket.contractArtist.hallConcert.address }}</p>
                 </td>
             </tr>
         </table>
         {% if loop.index % 2 == 0 or loop.last %}
             <div class="between-tickets"></div>
-            <p style="font-size: 80%;">{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
-
+            <div style="font-size: 80%;">
+                {% if ticket.contractFan != null and ticket.contractFan.userRewards is not empty %}
+                    {% set user_rewards = ticket.contractFan.userRewards %}
+                    <div>{{ 'tickets_pdf.rewards'|trans()|raw}} :
+                        {% for ur in user_rewards %}
+                            {% if loop.last %}
+                                {{ ur.reward.name }}
+                            {% else %}
+                                {{ ur.reward.name }},
+                            {%  endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
+            </div>
             {% if loop.index % 2 == 0 and not loop.last %}
                 </page>
                 <page>

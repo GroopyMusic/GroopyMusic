@@ -45,6 +45,24 @@
             <p class="p-info mt-3">{{ 'event.prevalidation'|trans|raw }}</p>
         {% endif %}
 
+        {% if potential_user_rewards is not empty %}
+            <div class="p-info">
+                <img width="70" class="um-icon float-left d-none d-sm-inline-block"
+                     src="{{ asset('images/icons/concert-ticket.png') }}"/>
+                <p>{{ 'event.reward'|trans()|raw }} :</p>
+                <div class="row">
+                    <ul class="list">
+                        {% for user_reward in potential_user_rewards %}
+                            <li>
+                                <a class="notification-trigger"
+                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
         {% for promo in contract.currentPromotions if not contract.inTestPeriod %}
             <p class="p-promo mt-3">{{ 'event.promo'|trans({'%end_date%': promo.endDate|date('d/m/Y'), '%nb_organic_needed%': promo.nbOrganicNeeded, '%nb_promotional%': promo.nbPromotional})|raw }}</p>
         {% endfor %}
@@ -80,7 +98,7 @@
                                 {% if state in contract.successfulStates %}
                                     {% if state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
                                         <div class="um-label">
-                                            SOLD <br /> OUT
+                                            SOLD <br/> OUT
                                         </div>
                                     {% else %}
                                         <div class="contract-info-title">
@@ -271,7 +289,7 @@
                                     </div>
                                 </div>
                             {% endfor %}
-
+                            {{ form_row(form.user_rewards) }}
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
                                 {#
@@ -368,5 +386,12 @@
         "name": "{{ artist }}"
       }
     }
-</script>
+
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.js-example-basic-multiple').select2();
+        });
+    </script>
 {% endblock %}

@@ -4,6 +4,10 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\ReductionReward;
+use AppBundle\Entity\User_Reward;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -26,6 +30,14 @@ class ContractFanType extends AbstractType
                 'entry_options' => [
                     'contract_artist' => $contractfan->getContractArtist(),
                 ],
+            ))
+            ->add('user_rewards', EntityType::class, array(
+                'class' => User_Reward::class,
+                'choices' => $options['user_rewards'],
+                'label' => 'labels.contractfan.rewards',
+                'multiple' => true,
+                'required' => false,
+                'attr' => ['class' => 'js-example-basic-multiple']
             ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.contractfan.submit',
@@ -50,6 +62,7 @@ class ContractFanType extends AbstractType
             'constraints' => array(
                 new Assert\Callback(array($this, 'validate'))
             ),
+            'user_rewards' => null
         ));
     }
 
@@ -57,4 +70,5 @@ class ContractFanType extends AbstractType
     {
         return 'app_bundle_contract_fan_type';
     }
+
 }

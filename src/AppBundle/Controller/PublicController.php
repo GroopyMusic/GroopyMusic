@@ -15,6 +15,8 @@ use AppBundle\Form\ContractFanType;
 use AppBundle\Form\PropositionContractArtistType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
+use AppBundle\Services\RewardSpendingService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
@@ -24,6 +26,7 @@ use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Mailgun\Mailgun;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -274,8 +277,15 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
         $potential_halls = $em->getRepository('AppBundle:Hall')->findPotential($contract->getStep(), $contract->getProvince());
 
+        if ($user != null) {
+            $potential_user_rewards = $em->getRepository('AppBundle:User_Reward')->getPossibleActiveRewards($user, $contract);
+            //$potential_user_rewards = $em->getRepository('AppBundle:User_Reward')->findAll();
+        } else {
+            $potential_user_rewards = [];
+        }
+
         $cf = new ContractFan($contract);
-        $form = $this->createForm(ContractFanType::class, $cf);
+        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -287,6 +297,7 @@ class PublicController extends Controller
             } elseif ($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
                 $this->addFlash('error', 'errors.order_max_promo');
             }
+
 
             // elseif($user == null) {
             //     throw $this->createAccessDeniedException();
@@ -321,17 +332,19 @@ class PublicController extends Controller
             'contract' => $contract,
             'form' => $form->createView(),
             'potential_halls' => $potential_halls,
+            'potential_user_rewards' => $potential_user_rewards
         ));
     }
 
     /**
      * @Route("/checkout", name="checkout")
      */
-    public function checkoutAction(Request $request, UserInterface $user = null) {
+    public function checkoutAction(Request $request, UserInterface $user = null, LoggerInterface $logger, RewardSpendingService $rewardSpendingService)
+    {
 
         $cart_id = $request->getSession()->get('cart_id', null);
         /** @var $cart Cart */
-        if($cart_id == null) {
+        if ($cart_id == null) {
             $this->addFlash('error', 'errors.order_changed');
             return $this->redirectToRoute('catalog_crowdfundings');
         }
@@ -347,6 +360,11 @@ class PublicController extends Controller
             if($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
                 $em->remove($other_potential_cart);
             }
+
+            ##reward consume
+            $rewardSpendingService->setBaseAmount($cart->getFirst());
+            $cart->getFirst()->setUserRewards(new arrayCollection($rewardSpendingService->getApplicableReward($cart->getFirst())));
+            $rewardSpendingService->applyReward($cart->getFirst());
 
             $cart->setUser($user);
             $em->persist($cart);
@@ -413,6 +431,7 @@ class PublicController extends Controller
 
             }
         }
+
 
         return $this->render('@App/User/pay_cart.html.twig', array(
             'cart' => $cart,

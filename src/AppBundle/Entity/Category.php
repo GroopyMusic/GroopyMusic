@@ -8,7 +8,6 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Services\FormulaParserService;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -30,6 +29,7 @@ class Category implements TranslatableInterface
     {
         $this->user_statistics = new \Doctrine\Common\Collections\ArrayCollection();
         $this->levels = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->rewards = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -88,6 +88,11 @@ class Category implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="Level", mappedBy="category", cascade={"all"}, orphanRemoval=true)
      */
     private $levels;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Reward", cascade={"all"})
+     */
+    private $rewards;
 
 
     /**
@@ -190,5 +195,39 @@ class Category implements TranslatableInterface
     public function getLevels()
     {
         return $this->levels;
+    }
+
+    /**
+     * Add reward
+     *
+     * @param \AppBundle\Entity\Reward $reward
+     *
+     * @return Category
+     */
+    public function addReward(\AppBundle\Entity\Reward $reward)
+    {
+        $this->rewards[] = $reward;
+
+        return $this;
+    }
+
+    /**
+     * Remove reward
+     *
+     * @param \AppBundle\Entity\Reward $reward
+     */
+    public function removeReward(\AppBundle\Entity\Reward $reward)
+    {
+        $this->rewards->removeElement($reward);
+    }
+
+    /**
+     * Get rewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRewards()
+    {
+        return $this->rewards;
     }
 }

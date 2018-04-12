@@ -24,6 +24,7 @@ class Purchase
     {
         $this->quantity = 0;
         $this->nb_free_counterparts = 0;
+        $this->reducedPrice = 0;
         $this->purchase_promotions = new ArrayCollection();
     }
 
@@ -92,6 +93,10 @@ class Purchase
         return $this->nb_free_counterparts;
     }
 
+    public function getReducedAmount(){
+        return $this->getReducedPrice() * $this->getQuantityOrganic();
+    }
+
     /**
      * @var int
      *
@@ -134,6 +139,11 @@ class Purchase
      * @ORM\OneToMany(targetEntity="Purchase_Promotion", mappedBy="purchase", cascade={"all"})
      */
     private $purchase_promotions;
+
+    /**
+     * @ORM\Column(name="reducedPrice", type="float", nullable=true)
+     */
+    private $reducedPrice;
 
     /**
      * Get id
@@ -266,5 +276,29 @@ class Purchase
     public function getPurchasePromotions()
     {
         return $this->purchase_promotions;
+    }
+
+    /**
+     * Set reducedPrice
+     *
+     * @param float $reducedPrice
+     *
+     * @return Purchase
+     */
+    public function setReducedPrice($reducedPrice)
+    {
+        $this->reducedPrice = $reducedPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get reducedPrice
+     *
+     * @return float
+     */
+    public function getReducedPrice()
+    {
+        return $this->reducedPrice;
     }
 }

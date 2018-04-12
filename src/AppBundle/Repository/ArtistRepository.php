@@ -115,4 +115,19 @@ class ArtistRepository extends OptimizedRepository
             ->setParameter('q', $q['artistname'] . '%')
             ->getResult();
     }
+
+    /**
+     * get all artist not deleted
+     *
+     * @return array
+     */
+    public function getArtistsForSelect()
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT a
+                  FROM AppBundle:Artist a
+                  WHERE a.deleted = FALSE
+                  ')
+            ->getResult();
+    }
 }

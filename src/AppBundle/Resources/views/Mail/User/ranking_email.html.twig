@@ -1,0 +1,13 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+        {% block content %}
+            <div>
+                <p>
+                    {{ content | nl2br }}
+                </p>
+            </div>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

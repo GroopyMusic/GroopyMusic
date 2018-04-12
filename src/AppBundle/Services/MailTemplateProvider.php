@@ -38,6 +38,9 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const SUGGESTIONBOXCOPY_TEMPLATE = 'AppBundle:Mail/SuggestionBox:copy.txt.twig';
     const VIPINSCRIPTIONCOPY_TEMPLATE = 'AppBundle:Mail/VIPInscription:copy.txt.twig';
 
+    const RANKING_EMAIL_USER_TEMPLATE = "AppBundle:Mail/User:ranking_email.txt.twig";
+    const REWARD_ATTRIBUTION_TEMPLATE = "AppBundle:Mail/User:reward_attribution.txt.twig";
+
     // Admin mails templates
     // TODO uniform names
     const ADMIN_TEST_TEMPLATE = 'AppBundle:Mail/Admin:test.txt.twig';
@@ -45,10 +48,10 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ADMIN_PENDING_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:pending_contract.txt.twig';
     const ADMIN_NEWLY_SUCCESSFUL_CONTRACT_TEMPLATE = 'AppBundle:Mail/Admin:newly_successful_contract.txt.twig';
     const ADMIN_ENORMOUS_PAYER_TEMPLATE = 'AppBundle:Mail/Admin:enormous_payer.txt.twig';
-    const ADMIN_STRIPE_ERROR_TEMPLATE  = 'AppBundle:Mail/Admin:stripe_error.txt.twig';
+    const ADMIN_STRIPE_ERROR_TEMPLATE = 'AppBundle:Mail/Admin:stripe_error.txt.twig';
     const ADMIN_TICKETS_SENT = 'AppBundle:Mail/Admin:tickets_sent.txt.twig';
     const ADMIN_CONTACT_FORM = 'AppBundle:Mail/SuggestionBox:admin.txt.twig';
-    const ADMIN_PROPOSITION_SUBMIT ='AppBundle:Mail/Admin:proposition_submit.txt.twig';
+    const ADMIN_PROPOSITION_SUBMIT = 'AppBundle:Mail/Admin:proposition_submit.txt.twig';
     const ADMIN_VIP_INSCRIPTION_FORM = 'AppBundle:Mail/VIPInscription:admin.txt.twig';
     const ADMIN_NEW_ARTIST = 'AppBundle:Mail/Admin:new_artist.txt.twig';
 
@@ -63,16 +66,16 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
         $newVars = parent::getParamArrayFor($template);
 
         // add template specific stuff
-       // if ($template == self::NOTIFICATIONS_TEMPLATE) {
-       //     $newVars['%someUrl%'] = "http://example.com"; 				//$this->router->generate("your_route", $routeParamArray, UrlGeneratorInterface::ABSOLUTE_URL);
+        // if ($template == self::NOTIFICATIONS_TEMPLATE) {
+        //     $newVars['%someUrl%'] = "http://example.com"; 				//$this->router->generate("your_route", $routeParamArray, UrlGeneratorInterface::ABSOLUTE_URL);
         //    $newVars['%someOtherUrl%'] = "http://example.com/other";	//$this->router->generate("your_route", $routeParamArray, UrlGeneratorInterface::ABSOLUTE_URL);
         //}
 
         // override some generic stuff needed for all templates
-        $newVars["h2Style"]	= "style='padding:0; margin:0; font:bold 24px Arial; color:red; text-decoration:none;'";
+        $newVars["h2Style"] = "style='padding:0; margin:0; font:bold 24px Arial; color:red; text-decoration:none;'";
 
         // add an image that should be embedded into the html-email.
-        $newVars['logo'] = $this->getTemplateImageDir()."logo.png";
+        $newVars['logo'] = $this->getTemplateImageDir() . "logo.png";
         // after the image has been added here, it will be base64-encoded so it can be embedded into a html-snippet
         // see self::getSnippetArrayFor()
 
@@ -92,8 +95,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
         // add a code snippet to reference the random image you added in the getParamArrayFor() method.
         // in the mean time it has been base64-encoded and attached as mime-part to your email.
         try {
-            $vars['sampleSnippetWithImage'] = "<img src='".$vars['logo']."'>";
-        } catch(\Exception $e) {
+            $vars['sampleSnippetWithImage'] = "<img src='" . $vars['logo'] . "'>";
+        } catch (\Exception $e) {
         }
 
         // with this html-snippet you can display the "someRandomImage.png" from your

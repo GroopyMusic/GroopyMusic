@@ -56,6 +56,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
                   LEFT JOIN c.contracts co
                   LEFT JOIN co.contractArtist ca
                   LEFT JOIN co.purchases p
+                  LEFT JOIN u.user_conditions uc
+                  LEFT JOIN uc.conditions cond
                   WHERE ca.successful = TRUE
                   AND u.deleted = FALSE
                   AND co.refunded = FALSE
