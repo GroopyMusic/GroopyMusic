@@ -35,6 +35,10 @@ class ContractArtist extends BaseContractArtist
         return in_array($this->getState(), $this->getUncrowdableStates());
     }
 
+    public function isSoldOut() {
+        return in_array($this->getState(), $this->getSoldOutStates());
+    }
+
     public function isCrowdable() {
         return !$this->isUncrowdable();
     }
@@ -84,6 +88,13 @@ class ContractArtist extends BaseContractArtist
             self::STATE_SUCCESS_PASSED,
             self::STATE_FAILED,
             self::STATE_REFUNDED,
+        ];
+    }
+
+    public static function getSoldOutStates() {
+        return [
+            self::STATE_SUCCESS_SOLDOUT,
+            self::STATE_SUCCESS_SOLDOUT_PENDING,
         ];
     }
 
@@ -152,6 +163,10 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getState() {
+
+        if(isset($this->state)) {
+            return $this->state;
+        }
 
         $today = new \DateTime();
         $today2 = new \DateTime();
@@ -344,6 +359,9 @@ class ContractArtist extends BaseContractArtist
                 ->addViolation();
         }
     }
+
+    // Unmapped
+    private $state;
 
     /**
      * @ORM\OneToMany(targetEntity="ContractArtist_Artist", mappedBy="contract", cascade={"all"}, orphanRemoval=true)

@@ -81,7 +81,7 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $NB_MAX_NEWS = 4;
-        $NB_MAX_CROWDS = 3;
+        $NB_MAX_CROWDS = 10000;
 
         $new_artists = $em->getRepository('AppBundle:Artist')->findNewArtists($NB_MAX_NEWS);
         $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findNewContracts($NB_MAX_CROWDS);
@@ -125,22 +125,27 @@ class PublicController extends Controller
 
 
         // Efficient shuffle
-        for($i = 0; $i < $NB_MAX_CROWDS && count($all_crowdfundings) > 0; $i++) {
+        if($genre != null) {
+            for($i = 0; $i < $NB_MAX_CROWDS && count($all_crowdfundings) > 0; $i++) {
 
-            $randomKey = array_rand($all_crowdfundings, 1);
+                $randomKey = array_rand($all_crowdfundings, 1);
 
-            if($i < 2 && $genre != null) {
-                $genre_candidates = array_filter($all_crowdfundings, function($elem, $key) use ($genre) {
-                    return $elem->getArtist()->getGenres()->contains($genre);
-                }, ARRAY_FILTER_USE_BOTH);
+                if($i < 2) {
+                    $genre_candidates = array_filter($all_crowdfundings, function($elem, $key) use ($genre) {
+                        return $elem->getArtist()->getGenres()->contains($genre);
+                    }, ARRAY_FILTER_USE_BOTH);
 
-                if(count($genre_candidates) > 0) {
-                    $randomKey = array_rand($genre_candidates, 1);
+                    if(count($genre_candidates) > 0) {
+                        $randomKey = array_rand($genre_candidates, 1);
+                    }
                 }
-            }
 
-            $crowdfundings[] = $all_crowdfundings[$randomKey];
-            unset($all_crowdfundings[$randomKey]);
+                $crowdfundings[] = $all_crowdfundings[$randomKey];
+                unset($all_crowdfundings[$randomKey]);
+            }
+        }
+        else {
+            $crowdfundings = $all_crowdfundings;
         }
 
         return $this->render('AppBundle:Public:home.html.twig', array(

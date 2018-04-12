@@ -2,26 +2,40 @@
 {% include ':patterns:perma-links.html.twig' with {'home_header': true} %}
 
 <div class="jumbotron jumbotron-fluid position-relative">
-    <div class="opacity-layer"></div>
     <div class="container justify-content-center align-items-center text-center position-relative">
         <a id="logo-header-container" href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>
 
-        <a id="logo-video-container" class="text-center mx-auto d-block" href="{{ path('homepage') }}">
+        <div id="logo-video-container">
             <video class="text-center mx-auto" id="logo-video" loop autoplay>
                 <source src="{{ asset('images/logo/animated-logo.mp4') }}" type="video/mp4" />
                 <source src="{{ asset('images/logo/animated-logo.ogv') }}" type="video/ogg" />
                 <source src="{{ asset('images/logo/animated-logo.webm') }}" type="video/webm" />
                 <img id="logo-video-alternative" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" />
             </video>
-        </a>
+        </div>
+
         <h1 class="text-white text-bold">Un-Mute</h1>
 
         <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
 
-        <div class="row">
-        {% for crowdfunding in crowdfundings %}
-            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':3, 'xs': 12, 'news': false, 'bgwhite': true} %}
-        {% endfor %}
+        <div class="container pb-3" id="home-carousel-row">
+            <div class="carousel slide" id="homeCarousel">
+                <div class="carousel-inner row w-100 mx-auto" role="listbox">
+                    {%  for crowdfunding in crowdfundings %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %} col-md-3 col-xs-12">
+                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': false} %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#homeCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next text-faded" href="#homeCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>

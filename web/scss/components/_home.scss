@@ -10,3 +10,16 @@
     @extend .mt-4;
   }
 }
+
+#home-spotlights {
+  background-image: url('../images/um-stage-bg.jpg');
+  background-size: cover;
+  background-position: center;
+
+  @extend .text-white;
+
+  p {
+    @extend .um-light;
+    @extend .mt-4;
+  }
+}
