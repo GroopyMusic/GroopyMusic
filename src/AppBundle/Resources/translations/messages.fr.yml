@@ -85,6 +85,8 @@ header:
     log_out: Déconnexion
 
 home:
+  #new
+  og_title: Un-Mute | Découvrez, soutenez, produisez
   concept:
     title: Le principe
     content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus. Et si l'objectif n'est pas atteint, tout le monde est entièrement remboursé !
@@ -94,9 +96,9 @@ home:
     content: Nos artistes tentent de remplir des salles aux quatre coins du Royaume. Découvrez leurs envies et soutenez-les.
     see_all: Voir la liste complète
   news:
-    title: Nouveautés
+    title: Derniers artistes inscrits
   join_us:
-    title: Nous rejoindre
+    title: Rejoignez-nous
     content_1: <strong>Vous désirez devenir <a href="%about_url%">producteur</a> et soutenir un artiste ?</strong> Découvrez <a href="%catalog_url%">le catalogue des artistes</a>.
     content_2: <strong>Vous êtes un <a href="%about_url%">artiste</a> intéressé par le concept ?</strong> Rejoignez gratuitement le <a href="%register_url%">réseau Un-Mute</a>.
     content_3: <strong>Vous désirez proposer une salle à nos artistes ?</strong> <a href="%contact_url%">Prenez contact avec l'équipe Un-Mute</a>.

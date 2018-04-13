@@ -84,12 +84,17 @@ class PublicController extends Controller
         $NB_MAX_CROWDS = 10000;
 
         $new_artists = $em->getRepository('AppBundle:Artist')->findNewArtists($NB_MAX_NEWS);
-        $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findNewContracts($NB_MAX_CROWDS);
+       // $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findNewContracts($NB_MAX_NEWS);
 
-        $news = [];
+
+        $news = array_map(function($artist) {
+            return ['type' => 'artist', 'object' => $artist];
+        }, $new_artists);
+
+        /* $news = [];
         $i = 0;
-        $j = 0;
-
+        $j = 0; */
+        /*
         while(count($news) < $NB_MAX_NEWS && ($i < count($new_artists) || $j < count($new_crowdfundings))) {
             if($i >= count($new_artists)) {
                 $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
@@ -107,7 +112,7 @@ class PublicController extends Controller
                 $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
                 $j++;
             }
-        }
+        }*/
 
         $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
         // TODO change next line

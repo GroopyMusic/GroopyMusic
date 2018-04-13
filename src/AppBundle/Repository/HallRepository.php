@@ -18,10 +18,12 @@ class HallRepository extends OptimizedRepository
             ->leftJoin('h.step', 's')
             ->leftJoin('h.address', 'a')
             ->leftJoin('h.photos', 'p')
+            ->leftJoin('h.translations', 't')
             ->addSelect('p')
             ->addSelect('a')
             ->addSelect('s')
             ->addSelect('pro')
+            ->addSelect('t')
         ;
     }
 

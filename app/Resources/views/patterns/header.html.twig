@@ -19,22 +19,14 @@
         <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
 
         <div class="container pb-3" id="home-carousel-row">
-            <div class="carousel slide" id="homeCarousel">
-                <div class="carousel-inner row w-100 mx-auto" role="listbox">
-                    {%  for crowdfunding in crowdfundings %}
-                        <div class="carousel-item {% if loop.first %}active{% endif %} col-md-3 col-xs-12">
+            <div class="jcarousel mx-auto">
+                <ul>
+                    {% for crowdfunding in crowdfundings %}
+                        <li>
                             {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': false} %}
-                        </div>
+                        </li>
                     {% endfor %}
-                </div>
-                <a class="carousel-control-prev" href="#homeCarousel" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next text-faded" href="#homeCarousel" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
+                </ul>
             </div>
         </div>
     </div>
