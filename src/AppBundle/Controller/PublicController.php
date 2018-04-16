@@ -84,39 +84,15 @@ class PublicController extends Controller
         $NB_MAX_CROWDS = 10000;
 
         $new_artists = $em->getRepository('AppBundle:Artist')->findNewArtists($NB_MAX_NEWS);
-       // $new_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findNewContracts($NB_MAX_NEWS);
-
 
         $news = array_map(function($artist) {
             return ['type' => 'artist', 'object' => $artist];
         }, $new_artists);
 
-        /* $news = [];
-        $i = 0;
-        $j = 0; */
-        /*
-        while(count($news) < $NB_MAX_NEWS && ($i < count($new_artists) || $j < count($new_crowdfundings))) {
-            if($i >= count($new_artists)) {
-                $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
-                $j++;
-            }
-            elseif($j >= count($new_crowdfundings)) {
-                $news[] = ['type' => 'artist', 'object' => $new_artists[$i]];
-                $i++;
-            }
-            elseif($new_artists[$i]->getDateCreation() > $new_crowdfundings[$j]->getDate()) {
-                $news[] = ['type' => 'artist', 'object' => $new_artists[$i]];
-                $i++;
-            }
-            else {
-                $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
-                $j++;
-            }
-        }*/
-
         $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
-        // TODO change next line
-        $spotlight = $all_crowdfundings[0];
+        $potential_spotlights = $all_crowdfundings;
+
+        // --------------- Order of crowdfundings determination : based on genres preferences
         $crowdfundings = [];
 
         if($user != null && count($user->getGenres()) > 0) {
@@ -152,6 +128,47 @@ class PublicController extends Controller
         else {
             $crowdfundings = $all_crowdfundings;
         }
+
+        // -------------------------------------------------
+
+        // --------------- Spotlight determination
+
+        /** @var ContractArtist $spotlight */
+        $spotlight = null;
+        shuffle($potential_spotlights);
+        foreach($potential_spotlights as $c) {
+            /** @var ContractArtist $c */
+            if($spotlight == null) {
+                $spotlight = $c;
+                continue;
+            }
+            if($c->isCrowdable()) {
+
+                if(!$spotlight->isCrowdable()) {
+                    $spotlight = $c;
+                    continue;
+                }
+
+                // Best candidate
+                if($c->isInSuccessfulState()) {
+                     if(!$spotlight->isInSuccessfulState()) {
+                         $spotlight = $c;
+                         continue;
+                     }
+                }
+
+                if($spotlight->isInSuccessfulState()) {
+                    continue;
+                }
+            }
+            else {
+                if($spotlight->isCrowdable()) {
+                    continue;
+                }
+            }
+            $spotlight = rand(0,1) == 0 ? $spotlight : $c;
+        }
+        // -------------------------------------------------
 
         return $this->render('AppBundle:Public:home.html.twig', array(
             'news' => $news,

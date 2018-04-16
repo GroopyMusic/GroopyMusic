@@ -7,11 +7,6 @@
     <meta property="og:image" content="{{ absolute_url(asset('images/logo.png')) }}" />
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link type="text/css" rel="stylesheet" href="{{ asset('rcarousel/css/rcarousel.css') }}" />
-{% endblock %}
-
 {% block header %}
     {% include ':patterns:header.html.twig' %}
 {% endblock %}
@@ -51,7 +46,7 @@
     <div class="container-fluid mb-3 mb-md-0 bg-body-very-strong" id="home-spotlights">
         <div class="row">
             <div class="col-12 col-md-6 my-auto text-white">
-                <h3 class="alt-title text-center text-white">{% if spotlight.coartists is not empty %}Découvrez trois artistes par festival{% else %}A découvrir{% endif %}</h3>
+                <h3 class="alt-title text-center text-white">{% if spotlight.coartists is not empty %}Découvrez trois artistes par festival{% else %}À découvrir{% endif %}</h3>
                 <div class="row">
                     {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {
                         'contract': spotlight,
@@ -86,7 +81,7 @@
                                 <h4 class="mt-3">Tickets</h4>
                                 {% set spotlight_url = path('artist_contract', {'id': spotlight.id}) %}
                                 {% if not spotlight.isSoldOut %}
-                                    <a href="{{ spotlight_url }}" class="btn btn-outline-primary">Tickets</a>
+                                    <span class="badge badge-success">En vente</span> <a href="{{ spotlight_url }}" class="btn btn-outline-primary p-2">Acheter</a>
                                 {% else %}
                                     <a href="{{ spotlight_url }}" class="btn btn-outline-secondary">Sold out</a>
                                 {% endif %}
@@ -105,7 +100,7 @@
         </div>
     </div>
 
-    <div class="container-fluid bg-body-strong">
+    <div class="container-fluid bg-body-strong py-4">
         <h3 class="alt-title text-center">{{ 'home.news.title'|trans|raw }}</h3>
         <div class="row">
         {% for new in news %}
@@ -118,7 +113,7 @@
         </div>
     </div>
 
-    <div id="join-us" class="container-fluid bg-grey text-center position-relative">
+    <div id="join-us" class="container-fluid bg-grey text-center position-relative py-4">
         <h3 class="alt-title">{{ 'home.join_us.title'|trans|raw }}</h3>
         <p class="text-center">
             {{ 'home.join_us.content_1'|trans({'%about_url%': path('about') ~ '#advantages-producers', '%catalog_url%':path('catalog_artists')})|raw }}
@@ -154,6 +149,20 @@
 {% endblock %}
 
 {% block additional_javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            $(".jcarousel").jCarouselLite({
+                speed: 1000,
+                btnNext: ".jcarousel-next",
+                btnPrev: ".jcarousel-prev"
+            });
+
+            AOS.init({
+                duration: 1000
+            });
+        });
+    </script>
+
     <script type="application/ld+json">
     {
       "@context": "http://schema.org",

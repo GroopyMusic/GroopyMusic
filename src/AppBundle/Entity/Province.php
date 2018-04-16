@@ -28,7 +28,7 @@ class Province implements TranslatableInterface
     }
 
     public function __toString() {
-        return ' ' . $this->getName();
+        return '' . $this->getName();
     }
 
     public function setLocale($locale)

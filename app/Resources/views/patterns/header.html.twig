@@ -19,14 +19,21 @@
         <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
 
         <div class="container pb-3" id="home-carousel-row">
-            <div class="jcarousel mx-auto">
+            <div class="jcarousel mx-auto my-auto">
                 <ul>
                     {% for crowdfunding in crowdfundings %}
                         <li>
-                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': false} %}
+                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': false, 'card_classes': ['pb-3']} %}
                         </li>
                     {% endfor %}
                 </ul>
+            </div>
+
+            <div class="mt-3">
+                {% if crowdfundings|length > 2 %}
+                    <div class="jcarousel-prev jcarousel-control btn btn-outline-secondary rounded-circle d-inline-block"><img class="img-fluid" src="{{ asset('images/icons/arrow-left.svg') }}" /></div>
+                    <div class="jcarousel-next jcarousel-control btn btn-outline-secondary rounded-circle d-inline-block"><img class="img-fluid" src="{{ asset('images/icons/arrow-right.svg') }}" /></div>
+                {% endif %}
             </div>
         </div>
     </div>

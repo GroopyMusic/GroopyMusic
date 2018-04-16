@@ -1,3 +1,13 @@
+.jcarousel {
+  position: relative;
+  visibility: hidden;
+  left: -5000px;
+
+  &-control {
+    width: 80px;
+  }
+}
+
 #join-us {
   background-image: url('../images/join-us-bg.jpg');
   background-size: cover;
