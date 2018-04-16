@@ -2,6 +2,19 @@ var $header = $('header');
 var $mainNav = $('#mainNav');
 var $main = $('main');
 var $footer = $('footer');
+
+$(function() {
+    $(".jcarousel").jCarouselLite({
+        speed: 1000,
+        btnNext: ".jcarousel-next",
+        btnPrev: ".jcarousel-prev"
+    });
+
+    AOS.init({
+        duration: 1000
+    });
+});
+
 var stickyoffset = $main.offset().top - $mainNav.outerHeight();
 $header.css('min-height', $header.outerHeight());
 
@@ -34,6 +47,7 @@ function resizeHeader() {
 }
 
 function onResize() {
+    stickyoffset = $main.offset().top - $mainNav.outerHeight();
     mainPadding();
     mainNavHeight();
     footerPosition();

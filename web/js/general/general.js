@@ -26,15 +26,6 @@ $(".scroll").click(function(e) {
 });
 
 $(function () {
-    $(".jcarousel").jCarouselLite({
-        speed: 1000,
-        btnNext: ".jcarousel-next",
-        btnPrev: ".jcarousel-prev"
-    });
-
-    AOS.init({
-        duration: 1000
-    });
 
     $('[data-toggle="popover"]').popover({'html':true});
     $('[data-toggle="popover"]').on('click', function(e) {e.preventDefault(); return true;});
@@ -90,7 +81,7 @@ $(function () {
 
     function attach_youtube_click($video, video_id, title) {
         // Based on the YouTube ID, we can easily find the thumbnail image
-        var $url = "url('http://i.ytimg.com/vi/" + video_id + "/hqdefault.jpg')";
+        var $url = "url('https://i.ytimg.com/vi/" + video_id + "/hqdefault.jpg')";
         $video.css('background-image', $url);
         var width = '100%';
 
