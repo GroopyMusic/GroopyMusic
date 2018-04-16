@@ -26,6 +26,16 @@ $(".scroll").click(function(e) {
 });
 
 $(function () {
+    $(".jcarousel").jCarouselLite({
+        speed: 1000,
+        btnNext: ".jcarousel-next",
+        btnPrev: ".jcarousel-prev"
+    });
+
+    AOS.init({
+        duration: 1000
+    });
+
     $('[data-toggle="popover"]').popover({'html':true});
     $('[data-toggle="popover"]').on('click', function(e) {e.preventDefault(); return true;});
 
