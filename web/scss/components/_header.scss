@@ -1,5 +1,5 @@
 header {
-  background-image: url('../images/jumbotron-bg-small.jpg');
+  background-image: url('../images/jumbotron-small.jpg');
   background-size: cover;
   background-position: center;
 
@@ -260,7 +260,7 @@ header {
 
 @include media-breakpoint-up(md) {
   header {
-    background-image: url('../images/jumbotron-bg.jpg');
+    background-image: url('../images/jumbotron.jpg');
   }
   header #logo-header-container {
     display: none !important;
