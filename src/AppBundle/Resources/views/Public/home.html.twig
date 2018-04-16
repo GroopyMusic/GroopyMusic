@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block open_graph %}
-    <meta property="og:title" content="Un-Mute | Découvrez, soutenez, produisez"  />
+    <meta property="og:title" content="{{ 'home.og_title'|trans }}"  />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
     <meta property="og:image" content="{{ absolute_url(asset('images/logo.png')) }}" />
@@ -16,19 +16,83 @@
 
 {% block body %}
 
-    <div class="container-fluid mb-3 mb-md-0">
+    <div id="home-explanations" class="container-fluid mb-3 mb-md-0">
         <div class="row">
             <div class="col-12 col-md-6">
-                <h3 class="text-center mb-4 mt-3">{{ 'home.concept.title'|trans|raw }}</h3>
-                <p class="mb-4">
-                    {{ 'home.concept.content_1'|trans|raw }}
-                </p>
-                <p class="mb-4">
-                    {{ 'home.concept.content_2'|trans({'%about_url%': path('about')})|raw }}
-                </p>
+                <div class="row">
+                    <div class="col-4 my-auto">
+                        <img class="img-fluid" src="{{ asset('images/icons/blue/concert.png') }}" />
+                    </div>
+                    <div class="col-8 my-auto">
+                       <span class="big">Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus.</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-12 col-md-6 my-auto">
+            <div class="col-12 col-md-6 mt-3 mt-md-0">
+                <div class="row">
+                    <div class="col-4 my-auto">
+                        <img  class="img-fluid" src="{{ asset('images/icons/blue/refund.png') }}" />
+                    </div>
+                    <div class="col-8 my-auto">
+                        <span class="big">Si l'objectif n'est pas atteint au bout d'un mois, tout le monde est remboursé.</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mb-3 mb-md-0 bg-body-very-strong" id="home-spotlights">
+        <div class="row">
+            <div class="col-12 col-md-6 my-auto text-white">
+                <h3 class="alt-title text-center text-white">{% if spotlight.coartists is not empty %}Découvrez trois artistes par festival{% else %}À découvrir{% endif %}</h3>
+                <div class="row">
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {
+                        'contract': spotlight,
+                        'md':6,
+                        'xs': 12,
+                        'bgwhite': true,
+                        'news': false
+                    } %}
+
+                    <div class="col-12 col-md-6 mt-4 my-md-auto">
+                            <div class="spotlight-explanation">
+                                Découvrez {{ spotlight.artist }} en live le {{ ('Days ' ~ spotlight.dateConcert|date('w'))|trans|lower }} {{ spotlight.dateConcert|date('d') }} {{ ('months.' ~ spotlight.dateConcert|date('m'))|trans|lower }}
+
+                                {% if spotlight.coartists is not empty %}
+                                    <h4 class="mt-3">Line-up</h4>
+                                    <div class="mt-2">
+                                        <span class="um-label text-white">Artiste hôte</span>
+                                        <br /><a href="{{ path('artist_profile', {'id': spotlight.artist.id, 'slug': spotlight.artist.slug}) }}">{{ spotlight.artist }}</a>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="um-label text-white">Artistes invités</span>
+                                        {% for coartist in spotlight.coartists %}
+                                            <br /><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist }}</a>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="mt-3">
+                                        @{{ spotlight.hallConcert }} ({{ spotlight.hallConcert.province }})
+                                    </div>
+
+                                {% endif %}
+                                <h4 class="mt-3">Tickets</h4>
+                                {% set spotlight_url = path('artist_contract', {'id': spotlight.id}) %}
+                                {% if not spotlight.isSoldOut %}
+                                    <span class="badge badge-success">En vente</span> <a href="{{ spotlight_url }}" class="btn btn-outline-primary p-2">Acheter</a>
+                                {% else %}
+                                    <a href="{{ spotlight_url }}" class="btn btn-outline-secondary">Sold out</a>
+                                {% endif %}
+                            </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 mt-4 my-md-auto">
+                <h3 class="alt-title text-center text-white">Notre dernière vidéo</h3>
                 <div class="embed-responsive embed-responsive-16by9">
                     <div class="youtube embed-responsive-item" id="qvHUpid7sC4"></div>
                 </div>
@@ -36,41 +100,21 @@
         </div>
     </div>
 
-    <div class="container-fluid bg-body-strong">
-        <div class="row">
-            <div class="col-12 col-md-3 mt-4 mt-md-3">
-                <h3>{{ 'home.concerts.title'|trans|raw }}<img width="90" class=" pl-3 img-fluid um-icon" src="{{ asset('images/icons/event.png') }}" /></h3>
-
-                <p class="mt-3">
-                    {{ 'home.concerts.content'|trans|raw }}
-                </p>
-
-                <div class="mt-3">
-                    <a class="small btn btn-primary font-weight-bold" href="{{ path('catalog_crowdfundings') }}">{{ 'home.concerts.see_all'|trans|raw }}</a>
-                </div>
-            </div>
-
-            {% for crowdfunding in crowdfundings %}
-                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':3, 'xs': 12, 'news': false} %}
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="container-fluid bg-white">
-        <h3 class="text-center">{{ 'home.news.title'|trans|raw }}</h3>
+    <div class="container-fluid bg-body-strong py-4">
+        <h3 class="alt-title text-center">{{ 'home.news.title'|trans|raw }}</h3>
         <div class="row">
         {% for new in news %}
             {% if new.type == 'artist' %}
-                {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object, 'md':3, 'xs': 12, 'news':true} %}
+                {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true} %}
             {% elseif new.type == 'contract' %}
-                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': new.object, 'md':3, 'xs': 12, 'news':true} %}
+                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': new.object, 'md':3, 'xs': 12, 'news':true, 'bgwhite': true} %}
             {% endif %}
         {% endfor %}
         </div>
     </div>
 
-    <div id="join-us" class="container-fluid bg-grey text-center">
-        <h3>{{ 'home.join_us.title'|trans|raw }}</h3>
+    <div id="join-us" class="container-fluid bg-grey text-center position-relative py-4">
+        <h3 class="alt-title">{{ 'home.join_us.title'|trans|raw }}</h3>
         <p class="text-center">
             {{ 'home.join_us.content_1'|trans({'%about_url%': path('about') ~ '#advantages-producers', '%catalog_url%':path('catalog_artists')})|raw }}
         </p>
@@ -89,13 +133,14 @@
 
     <div class="container-fluid bg-body-strong text-center py-4" id="friends">
 
-        <h3>{{ 'home.partners.title'|trans }}</h3>
+        <h3 class="alt-title">{{ 'home.partners.title'|trans }}</h3>
         <div id="friends-carousel" class="carousel slide py-4" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <div class="row">
-                        <div class="my-auto col-4 col-sm-2 offset-1 offset-sm-3"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.png') }}" alt="Tacite, l'Allié des Artistes"></a></div>
+                        <div class="my-auto col-4 col-sm-2 offset-1"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.png') }}" alt="Tacite, l'Allié des Artistes"></a></div>
                         <div class="my-auto col-7 col-sm-4"><a href="http://www.musicaction.be/" target="_blank"><img class="img-fluid" style="max-width: 90%;" src="{{ asset('images/friends/musicaction.png') }}" alt="Music Action"></a></div>
+                        <div class="mt-3 my-sm-auto col-7 offset-5 offset-sm-0 col-sm-4"><a href="https://www.maisonsclothes.be" target="_blank"><img class="img-fluid" style="max-width: 90%;" src="{{ asset('images/friends/maisonclothes.png') }}" alt="Maison Clothes"></a></div>
                     </div>
                 </div>
             </div>
@@ -104,6 +149,20 @@
 {% endblock %}
 
 {% block additional_javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            $(".jcarousel").jCarouselLite({
+                speed: 1000,
+                btnNext: ".jcarousel-next",
+                btnPrev: ".jcarousel-prev"
+            });
+
+            AOS.init({
+                duration: 1000
+            });
+        });
+    </script>
+
     <script type="application/ld+json">
     {
       "@context": "http://schema.org",

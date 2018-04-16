@@ -1,3 +1,13 @@
+.jcarousel {
+  position: relative;
+  visibility: hidden;
+  left: -5000px;
+
+  &-control {
+    width: 80px;
+  }
+}
+
 #join-us {
   background-image: url('../images/join-us-bg.jpg');
   background-size: cover;
@@ -9,4 +19,40 @@
     @extend .um-light;
     @extend .mt-4;
   }
+}
+
+#home-spotlights {
+  background-image: url('../images/um-stage-bg.jpg');
+  background-size: cover;
+  background-position: center;
+
+  @extend .text-white;
+
+  p {
+    @extend .um-light;
+    @extend .mt-4;
+  }
+}
+
+.spotlight-explanation {
+  text-align: center;
+  background-color: $transparent-orange-2;
+  @extend .p-4;
+  @extend .rounded;
+
+  h4 {
+    border-bottom: 1px solid white;
+  }
+}
+
+.jcarousel-wrapper {
+  margin: 20px auto;
+  position: relative;
+  border: 10px solid #fff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 2px #999;
+  -moz-box-shadow: 0 0 2px #999;
+  box-shadow: 0 0 2px #999;
 }

@@ -3,6 +3,10 @@ header {
   background-size: cover;
   background-position: center;
 
+  #home-carousel-row {
+    /*background-color: $transparent-orange;*/
+  }
+
   #not-auth-perma-links {
     position: fixed;
     right: 10px;

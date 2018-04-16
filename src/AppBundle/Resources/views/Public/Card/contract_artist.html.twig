@@ -8,6 +8,8 @@
     {% set artist = contract.artist %}
     {% set photos = artist.allPhotos %}
 
+    {% set url_event = path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) %}
+
     {% if photos is not empty %}
         {% set rotation = true %}
         {% set imgstring = '[' %}
@@ -24,7 +26,7 @@
         {% endfor %}
     {% endif %}
 
-    <div class="um-card{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
+    <div class="um-card {% for class in card_classes %}{{ class }}{% endfor %} position-relative{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
         <div class="um-card-header w-100" style="background-image: url({{ src }});">
             <span class="um-card-date btn-primary sharp p-2{% if contract.state in contract.successfulStates %} successful-progress-bg{% endif %}">
                 {{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
@@ -54,8 +56,21 @@
                     {% else %}{{ contract.province is not null ? contract.province : contract.artist.province }}
                     {% endif %}
                 </p>
+                {% if clickable is defined and not clickable %}
+                    {% if contract.soldOut %}
+                        <a class="btn small btn-secondary" href="{{ url_event }}">
+                            Sold out
+                        </a>
+                    {% else %}
+                        <a class="btn small btn-primary" href="{{ url_event }}">
+                            Tickets
+                        </a>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
-        <a class="um-card-link" href="{{ path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) }}"></a>
+        {% if clickable is not defined or clickable %}
+            <a class="um-card-link" href="{{ path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) }}"></a>
+        {% endif %}
     </div>
 {% endblock %}
