@@ -63,7 +63,7 @@
 
 
     <div class="container-fluid mb-3 mb-md-0 position-relative" id="home-spotlights">
-        <div id="parallax-spotlights-bg" class="d-none d-md-block"></div>
+        <div id="parallax-spotlights-bg" class="d-none d-md-block parallax"></div>
         <div class="row">
             <div class="col-12 col-md-6 my-auto text-white">
                 <h3 class="alt-title text-center text-white">{% if spotlight.coartists is not empty %}Découvrez trois artistes par festival{% else %}À découvrir{% endif %}</h3>
@@ -172,8 +172,17 @@
 
     <script type="text/javascript">
         $(function() {
+            var $header = $('header');
+            var $header_height = $('header').outerHeight();
             function parallax(){
+                var desktop = $('#logo-video-container').is(":visible");
                 var scrolled = $(window).scrollTop();
+                if(desktop) {
+                    $header.css({'background-position-y':  (( scrolled * 1.4 - $header_height / 2) + 'px')});
+                }
+                else {
+                    $header.css('background-position-y', 'center');
+                }
                 $('#parallax-spotlights-bg').css('top', -(scrolled * 0.5) + 'px');
             }
             $(window).scroll(function(e){
