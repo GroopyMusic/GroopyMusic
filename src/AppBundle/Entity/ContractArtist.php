@@ -129,7 +129,7 @@ class ContractArtist extends BaseContractArtist
 
     public function isDeadlineDate() {
         $today = new \DateTime();
-        return $today->diff($this->dateEnd)->days == 0 && $today < $this->dateEnd;
+        return $today->diff($this->dateEnd)->days == 1 && $today < $this->dateEnd;
     }
 
     public function getTicketsSoldMajored() {

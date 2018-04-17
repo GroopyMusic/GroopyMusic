@@ -2,6 +2,10 @@ h1 {
   color: $headline-color;
   font: $font;
   font-weight: bold;
+    @include media-breakpoint-down(md) {
+      font-size: 2rem;
+    }
+
 }
 
 .alt-title {

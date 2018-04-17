@@ -10,9 +10,9 @@ $(function() {
         btnPrev: ".jcarousel-prev"
     });
 
-    AOS.init({
-        duration: 1000
-    });
+    //AOS.init({
+    //    duration: 1000
+    //});
 });
 
 var stickyoffset = $main.offset().top - $mainNav.outerHeight();
