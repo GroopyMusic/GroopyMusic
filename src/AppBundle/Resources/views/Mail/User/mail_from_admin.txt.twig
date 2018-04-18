@@ -1,0 +1,10 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+{% autoescape false %}
+{% block title %}{{ subject }}{% endblock %}
+{% block content %}
+    {{ content }}
+{% endblock %}
+{% endautoescape %}
+{% block body_html %}
+    {% include 'AppBundle:Mail/User:mail_from_admin.html.twig' %}
+{% endblock %}

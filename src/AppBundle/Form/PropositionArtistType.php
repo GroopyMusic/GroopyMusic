@@ -36,7 +36,7 @@ class PropositionArtistType extends AbstractType
                 'remote_route' => 'select2_genres',
                 'class' => 'AppBundle\Entity\Genre',
                 'primary_key' => 'id',
-                'width' => '200'
+                'width' => '100%'
             ])
         ;
     }

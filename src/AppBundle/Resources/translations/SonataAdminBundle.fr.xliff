@@ -32,9 +32,9 @@
                 <target>Conditions générales</target>
             </trans-unit>
 
-            <trans-unit id="app.admin.group.ranking">
-                <source>app.admin.group.ranking</source>
-                <target>Classements</target>
+            <trans-unit id="app.admin.group.user_management">
+                <source>app.admin.group.user_management</source>
+                <target>Gestion utilisateurs</target>
             </trans-unit>
 
             <trans-unit id="app.admin.step">
@@ -144,7 +144,7 @@
 
             <trans-unit id="app.admin.level">
                 <source>app.admin.level</source>
-                <target>Palier Utilisateur</target>
+                <target>Palier des catégories</target>
             </trans-unit>
 
             <trans-unit id="app.admin.ranking">
@@ -176,6 +176,11 @@
                 <source>app.admin.userreward</source>
                 <target>Récompenses utilisateurs</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.mail">
+                <source>app.admin.mail</source>
+                <target>Système de mail</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>

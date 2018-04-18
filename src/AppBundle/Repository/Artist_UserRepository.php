@@ -10,4 +10,16 @@ namespace AppBundle\Repository;
  */
 class Artist_UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getMembers($artist_id)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT au,u,a
+                  FROM AppBundle:Artist_User au
+                  LEFT JOIN au.artist a
+                  LEFT JOIN au.user u
+                  WHERE a.id = ?1
+                  ')
+            ->setParameter(1,$artist_id)
+            ->getResult();
+    }
 }

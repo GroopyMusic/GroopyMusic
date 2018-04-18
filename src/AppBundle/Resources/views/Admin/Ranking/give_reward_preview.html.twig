@@ -76,7 +76,7 @@
                         <br>
                         <div>
                             <label for="checkboxSendEmail">Envoyer un email</label>
-                            <input type="checkbox" id="checkboxSendEmail">
+                            <input type="checkbox" id="checkboxSendEmail" checked="checked">
                         </div>
                         <br>
                         <div id="textareaEmail" hidden>
@@ -86,13 +86,14 @@
                         <br>
                         <div>
                             <label for="checkboxSendNotification">Envoyer une notification</label>
-                            <input type="checkbox" id="checkboxSendNotification">
+                            <input type="checkbox" id="checkboxSendNotification" checked="checked">
                         </div>
                         <br>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
                             </button>
-                            <button type="button" class="btn btn-primary" onclick="performAction({{ level_id }},'reward')">Attribuer
+                            <button type="button" class="btn btn-primary"
+                                    onclick="performAction({{ level_id }},'reward')">Attribuer
                             </button>
                         </div>
                     </div>

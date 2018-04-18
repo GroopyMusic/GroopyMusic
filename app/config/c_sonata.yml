@@ -18,7 +18,7 @@ sonata_admin:
              position: right
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.ranking, app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
+               groups: [app.admin.group.user_management, app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
 
        groups:
            app.admin.group.user:
@@ -49,11 +49,12 @@ sonata_admin:
                   - AppBundle\Admin\RewardAdmin
                   - AppBundle\Admin\RewardRestrictionAdmin
 
-           app.admin.group.ranking:
-              label: app.admin.group.ranking
+           app.admin.group.user_management:
+              label: app.admin.group.user_management
               label_catalogue: SonataAdminBundle
               items:
                 - AppBundle\Admin\RankingAdmin
+                - AppBundle\Admin\MailAdmin
 
            app.admin.group.conditions:
               label: app.admin.group.conditions
@@ -84,11 +85,19 @@ sonata_admin:
          - bundles/sonataformatter/markitup/sets/html/set.js
          - bundles/sonataformatter/markitup/sets/textile/set.js
 
+      remove_javascripts:
+        - bundles/sonatacore/vendor/select2/select2.min.js
+        - bundles/sonatacore/vendor/select2/select2_locale_fr.js
+
       extra_stylesheets:
-         - bundles/sonataformatter/markitup/skins/sonata/style.css
-         - bundles/sonataformatter/markitup/sets/markdown/style.css
-         - bundles/sonataformatter/markitup/sets/html/style.css
-         - bundles/sonataformatter/markitup/sets/textile/style.css
+        - bundles/sonataformatter/markitup/skins/sonata/style.css
+        - bundles/sonataformatter/markitup/sets/markdown/style.css
+        - bundles/sonataformatter/markitup/sets/html/style.css
+        - bundles/sonataformatter/markitup/sets/textile/style.css
+
+      remove_stylesheets:
+        - bundles/sonatacore/vendor/select2/select2.css
+        - bundles/sonatacore/vendor/select2-bootstrap-css/select2-bootstrap.min.css
 
 sonata_block:
      default_contexts: [cms]
@@ -337,4 +346,10 @@ services:
         arguments: [~, AppBundle\Entity\User_Reward, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.userreward }
+        public: true
+
+    AppBundle\Admin\MailAdmin:
+        arguments: [ ~, null , AppBundle:MailAdmin]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.mail }
         public: true

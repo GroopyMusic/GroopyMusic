@@ -1,0 +1,347 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+{% block sonata_admin_content %}
+    <div class="alert-div">
+        <div id="error-alert" class="alert alert-danger error-alert" role="alert" hidden>
+            Error
+        </div>
+        <div id="success-alert" class="alert alert-success success-alert" role="alert" hidden>
+            Success
+        </div>
+    </div>
+    <div class="myForm">
+        {{ form_start(form) }}
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Destinataires</h4></div>
+            <div class="panel-body">
+                <div>
+                    <div>
+                        {{ form_row(form.users) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.all_users) }}
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div>
+                        {{ form_row(form.newsletter_users) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.all_newsletter_users) }}
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div>
+                        {{ form_row(form.artists) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.artist_members) }}
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-success"
+                                onclick="fillSelect('.artists_select','.members_select','{{ admin.generateObjectUrl("getMembers",null) }}')">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            Afficher les membres
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div>
+                        {{ form_row(form.user_contractArtist) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.user_participants) }}
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-success"
+                                onclick="fillSelect('.user_contract_artist_select','.user_participants_select','{{ admin.generateObjectUrl("getUserParticipants",null) }}')">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            Afficher les participants
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div>
+                        {{ form_row(form.artist_contractArtist) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.artist_participants) }}
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-success"
+                                onclick="fillSelect('.artist_contract_artist_select','.artist_participants_select','{{ admin.generateObjectUrl("getArtistParticipants",null) }}')">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            Afficher les artistes participants
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div class="div_email_input">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-success add_input_button">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger remove_input_button">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Email</h4></div>
+            <div class="panel-body">
+                <div>
+                    {{ form_row(form.object) }}
+                </div>
+                <div>
+                    {{ form_row(form.content) }}
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary send-email-button">
+                <span class="glyphicon glyphicon-send"></span>
+                &nbsp;Envoyer
+            </button>
+            {{ form_end(form, {'render_rest': false}) }}
+        </div>
+    </div>
+{% endblock %}
+{% block sonata_javascript_pool %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $('document').ready(function () {
+
+            $('.all_users_checkbox').on('ifChanged', function () {
+                var select = $('.users_select');
+                if ($(select).is(':disabled')) {
+                    $(select).attr('disabled', false);
+                } else {
+                    $(select).attr('disabled', true);
+                    clearSelect(select);
+
+                }
+            });
+
+            $('.all_newsletter_users_checkbox').on('ifChanged', function () {
+                var select = $('.newsletter_users_select');
+                if ($(select).is(':disabled')) {
+                    $(select).attr('disabled', false);
+                } else {
+                    $(select).attr('disabled', true);
+                    clearSelect(select);
+
+                }
+            });
+
+            $('.artists_select').on('change', function () {
+                if (isEmpty('.artists_select')) {
+                    var members_select = $('.members_select');
+                    $(members_select).attr('disabled', true);
+                    $(members_select).val(null).trigger("change");
+                    clearSelect(members_select);
+                }
+            });
+
+            $('.user_contract_artist_select').on('change', function () {
+                if (isEmpty('.user_contract_artist_select')) {
+                    var participant_select = $('.user_participants_select');
+                    $(participant_select).attr('disabled', true);
+                    clearSelect(participant_select);
+                }
+            });
+
+            $('.artist_contract_artist_select').on('change', function () {
+                if (isEmpty('.artist_contract_artist_select')) {
+                    var artist_participant_select = $('.artist_participants_select');
+                    $(artist_participant_select).attr('disabled', true);
+                    clearSelect(artist_participant_select);
+                }
+            });
+
+            $('.add_input_button').click(function () {
+                var input = '<div class="form-group row added_input_email"><div class="col-sm-2"></div><div class="col-sm-10"><input type="email" class="emails_input form-control"></div></div>';
+                $('.div_email_input').append(input);
+            });
+
+            $('.remove_input_button').click(function () {
+                $('.added_input_email').last().remove();
+            });
+
+            $('.mail_content_textarea').keyup(function (key) {
+                if (key.which === 13) {
+                    var textarea = $(".mail_content_textarea");
+                    var lines = $(textarea).val().split("\n").length;
+                    var rows = $(textarea).attr('rows');
+                    if (lines + 2 >= rows) {
+                        $(textarea).attr('rows', parseInt(rows) + 1);
+                    }
+                }
+            });
+
+            jQuery("form").submit(function (evt) {
+                evt.preventDefault();
+                sendEmail();
+            });
+        });
+
+        function fillSelect(parent, child, url) {
+            var options = constructOptionsArray($(parent).find(':selected'));
+            var select = $(child);
+            if (options.length > 0) {
+                $.post(url, {options: options}, function (result) {
+                        clearSelect(select);
+                        result.forEach(function (elem) {
+                            $(select).attr('disabled', false);
+                            $(select).last().append("<option value='" + elem.id + "' selected>" + elem.email + "</option>");
+                        });
+                        $(select).trigger('change');
+                    }
+                ).fail(function (err) {
+                    console.log(err);
+                    dislayInputError(select, err.statusText);
+                })
+            }
+        }
+
+        function clearSelect(select) {
+            select.val(null).trigger("change");
+        }
+
+        function sendEmail() {
+            var recipients = constructRecipientsObject();
+            console.log(recipients);
+            var object = $('.object_mail_input').val();
+            var content = $('.mail_content_textarea').val();
+            console.log(objectIsEmpty(recipients));
+            if (!objectIsEmpty(recipients)) {
+                var url = '{{ admin.generateObjectUrl("sendEmail",null) }}';
+                $.post(url,
+                    {
+                        recipients: recipients,
+                        object: content,
+                        content: object
+                    },
+                    function () {
+                        displayAlertOnTop("Envoie réussis", "success");
+                    }
+                ).fail(function (err) {
+                    displayAlertOnTop(err.statusText, "error");
+                    console.log(err);
+                })
+
+            } else {
+                displayAlertOnTop("Il faut au moins un destinataire", "error");
+            }
+
+        }
+
+        function constructOptionsArray(options) {
+            var toReturn = [];
+            options.each(function (elem) {
+                toReturn.push(options[elem].value);
+            });
+            return toReturn;
+        }
+
+        function displayAlertOnTop(message, type) {
+            var div = $('.alert-div');
+            $('.alert-div .alert').each(function () {
+                $(this).hide();
+            });
+            var alert;
+            if (type === "success") {
+                alert = $('#success-alert');
+            } else {
+                alert = $('#error-alert');
+            }
+            alert.text(message).show();
+            $(window).scrollTop(0);
+        }
+
+        function dislayInputError(elem, message) {
+            var row = elem.parent();
+            console.log(row);
+            row.find('.input-error').each(function () {
+                $(this).remove();
+            });
+            var alert = '<div class="input-error"><span class="error text-danger">' + message + '</span></div>';
+            row.append(alert);
+        }
+
+        function constructRecipientsObject() {
+            var users = [];
+            var newsletter_users = [];
+            if ($('.all_users_checkbox').is(':checked') || $(this).parent().hasClass("checked")) {
+                users = "all";
+            } else {
+                users = (constructOptionsArray($('.users_select').find(':selected')));
+            }
+            if ($('.all_newsletter_users_checkbox').is(':checked') || $(this).parent().hasClass("checked")) {
+                newsletter_users = 'all';
+            } else {
+                newsletter_users = (constructOptionsArray($('.newsletter_users_select').find(':selected')));
+            }
+            return {
+                "users": users,
+                "newsletter_users": newsletter_users,
+                "members": (constructOptionsArray($('.members_select').find(':selected'))),
+                "user_participants": (constructOptionsArray($('.user_participants_select').find(':selected'))),
+                "artist_participants": (constructOptionsArray($('.artist_participants_select').find(':selected'))),
+                "emails_input": getInputEmail()
+            };
+        }
+
+        function getInputEmail() {
+            var emails = [];
+            $('.emails_input').each(function () {
+                var value = $(this).val();
+                if (value.trim().length > 0) {
+                    emails.push(value);
+                }
+            });
+            return emails;
+        }
+
+        function isEmpty(select) {
+            return (constructOptionsArray($(select).find(':selected')).length === 0);
+        }
+
+        function objectIsEmpty(obj) {
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                    if (obj[prop] !== null && (obj[prop] === 'all' || obj[prop].length > 0)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+    </script>
+{% endblock %}
+
+    {# Tetranz #}
+{% block sonata_select2 %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+{% endblock %}
+{% block select2_local %}{% endblock %}
+
+{% block select2_css %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet">
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #dfdfdf;
+            border: 1px solid black;
+            color: black;
+        }
+    </style>
+{% endblock %}

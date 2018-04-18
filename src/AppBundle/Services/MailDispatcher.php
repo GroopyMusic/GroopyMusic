@@ -438,6 +438,13 @@ class MailDispatcher
             $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);
     }
 
+    public function sendEmailFromAdmin($emails, $subject, $content)
+    {
+        $params = ['content' => $content];
+        $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
+            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
     /*
     public function sendDetailsKnownArtist(ContractArtist $contractArtist) {
         $users = $contractArtist->getArtistProfiles();
