@@ -144,6 +144,10 @@ class ContractArtist extends BaseContractArtist
         return $this->getMaxTickets() - $this->getTotalBookedTickets();
     }
 
+    public function isValidatedBelowObjective() {
+        return $this->isInSuccessfulState() && $this->getTicketsSold() < $this->getMinTickets();
+    }
+
     public function getMinTickets() {
         if($this->min_tickets <= 0) {
             return $this->getStep()->getMinTickets();
@@ -209,7 +213,7 @@ class ContractArtist extends BaseContractArtist
         }
 
         // Crowdfunding is not over yet
-        if($this->dateEnd >= $today) {
+        if($this->dateEnd->diff($today)->days > 0) {
             // But already sold out
             if ($this->getTotalBookedTickets() >= $max_tickets)
                 return self::STATE_SUCCESS_SOLDOUT_PENDING;
@@ -235,11 +239,33 @@ class ContractArtist extends BaseContractArtist
     {
         parent::__construct();
         $this->coartists_list = new ArrayCollection();
+        $this->coartists_list_plain = [];
         $this->tickets_sold = 0;
         $this->tickets_reserved = 0;
         $this->tickets_sent = false;
         $this->nb_closing_days = self::NB_DAYS_OF_CLOSING;
         $this->min_tickets = 0;
+    }
+
+    public function addCoArtist(Artist $artist) {
+
+        foreach($this->coartists_list as $col) {
+            if($col->getArtist()->getId() == $artist->getId()) {
+                return;
+            }
+        }
+
+        $ca_a = new ContractArtist_Artist();
+        $ca_a->setArtist($artist)->setContract($this);
+        $this->addCoartistsList($ca_a);
+    }
+
+    public function removeCoArtist(Artist $artist) {
+       foreach($this->coartists_list as $col) {
+           if($col->getArtist()->getId() == $artist->getId()) {
+               $this->coartists_list->removeElement($col);
+           }
+       }
     }
 
     public function __toString()
@@ -369,6 +395,9 @@ class ContractArtist extends BaseContractArtist
 
     // Unmapped
     private $state;
+
+    // Unmapped
+    private $coartists_list_plain = [];
 
     /**
      * @ORM\OneToMany(targetEntity="ContractArtist_Artist", mappedBy="contract", cascade={"all"}, orphanRemoval=true)
@@ -656,5 +685,27 @@ class ContractArtist extends BaseContractArtist
     public function getTicketsReserved()
     {
         return $this->tickets_reserved;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCoartistsListPlain(): array
+    {
+        if(empty($this->coartists_list_plain)) {
+            foreach($this->coartists_list as $col) {
+                $this->coartists_list_plain[] = $col->getArtist();
+            }
+        }
+
+        return $this->coartists_list_plain;
+    }
+
+
+    public function addCoartistsListPlain(Artist $artist) {
+        $this->addCoArtist($artist);
+    }
+    public function removeCoartistsListPlain(Artist $artist) {
+        $this->removeCoArtist($artist);
     }
 }

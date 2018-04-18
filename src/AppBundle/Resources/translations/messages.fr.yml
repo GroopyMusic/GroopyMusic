@@ -39,7 +39,7 @@ people: personnes
 success_limit: Seuil de réussite
 more_info: Plus d'infos
 step: Catégorie
-confirmed: Confirmé
+confirmed: Festival confirmé !
 or: ou
 loading: Chargement....
 
@@ -742,6 +742,8 @@ labels:
 
   suggestionbox:
     email: Adresse e-mail
+    #new
+    phone: Numéro de téléphone
     name: Nom
     firstname: Prénom
     mailcopy: Recevoir une copie du message par mail

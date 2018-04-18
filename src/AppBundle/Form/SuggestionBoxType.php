@@ -58,6 +58,10 @@ class SuggestionBoxType extends AbstractType
                     new Email(['message' => 'suggestionbox.email.email']),
                 ]
             ))
+            ->add('phone', TextType::class, array(
+                'label' => 'labels.suggestionbox.phone',
+                'required' => false,
+            ))
             ->add('object', TextType::class, array(
                 'label' => 'labels.suggestionbox.object',
                 'required' => true,

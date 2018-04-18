@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\Artist;
 use AppBundle\Entity\BaseStep;
 use AppBundle\Entity\ContractArtist_Artist;
 use AppBundle\Entity\StepType;
@@ -10,6 +11,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ContractArtistAdmin extends BaseAdmin
 {
@@ -242,17 +244,11 @@ class ContractArtistAdmin extends BaseAdmin
 
         $form
             ->with('Autres')
-            // TODO
-//                ->add( 'coartists_list', 'sonata_type_collection', array(
-//                    'label' => false,
-//                    'by_reference' => false,
-//                ), array(
-//                        'edit'            => 'inline',
-//                        'inline'          => 'table',
-//                        'sortable'        => 'position',
-//                        'admin_code'      => ContractArtistArtistAdmin::class,
-//                    )
-//                )
+                ->add( 'coartists_list_plain', EntityType::class, array(
+                    'label' => 'Artistes invités',
+                    'multiple' => true,
+                    'class' => Artist::class,
+                ))
                 ->add('additional_info', null, array(
                     'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
                 ))
