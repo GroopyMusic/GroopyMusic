@@ -29,8 +29,8 @@ class FormulaParserService
         $this->em = $em;
         $this->logger = $logger;
         $this->querry_descritpions = [
-            'p' => 'Nombre de tickets achetés au total par un utilisateur',
-            'm' => 'Nombre de concerts différents produits par un utilisateur',
+            'm' => 'Nombre de tickets achetés au total par un utilisateur',
+            'p' => 'Nombre de concerts différents produits par un utilisateur',
             'a' => 'Nombre de parrainés producteurs d\'un utilisateur'
         ];
     }
