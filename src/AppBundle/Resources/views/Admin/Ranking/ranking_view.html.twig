@@ -11,14 +11,14 @@
     <ul class="nav nav-tabs nav-justified">
         {% for category in categories %}
             <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="ranking-title-tab"
-                                                                      href="#{{ category.name }}">{{ category.name }}</a>
+                                                                      href="#{{ category|slug }}">{{ category }}</a>
             </li>
         {% endfor %}
     </ul>
     <br>
     <div class="tab-content">
         {% for category in categories %}
-            <div id="{{ category.name }}" {% if loop.index == 1 %} class="tab-pane fade in active" {% else %} class="tab-pane fade" {% endif %}>
+            <div id="{{ category|slug }}" {% if loop.index == 1 %} class="tab-pane fade in active" {% else %} class="tab-pane fade" {% endif %}>
                 <div>
                     <div class="formula-desc">
                         {{ formula_desc[category.id] }}
@@ -29,7 +29,7 @@
                             <div class="panel-body">
                                 <div class="form-inline clearfix">
                                     <div class="pull-left">
-                                        <strong><u>{{ level.name }} - {{ level.step }} points</u></strong>
+                                        <strong><u>{{ level }} - {{ level.step }} points</u></strong>
                                     </div>
                                     <div class="pull-right">
                                         <button class="btn btn-success toCheck" onclick="checkAll({{ level.id }})">

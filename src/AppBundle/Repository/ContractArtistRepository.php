@@ -39,7 +39,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->join('c.step', 's')
             ->join('c.preferences', 'p')
             ->leftJoin('c.reality', 'r')
-            ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
+           // ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
             // ->leftJoin('r.hall', 'h')
             ->leftJoin('s.counterParts', 'cp')
             ->leftJoin('a.genres', 'ag')
