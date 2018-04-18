@@ -195,8 +195,9 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
      */
     public function findPending() {
         return $this->queryVisible()
-            ->andWhere('c.dateEnd < :now')
+            ->andWhere('c.dateEnd <= :now')
             ->andWhere('c.successful = 0')
+            ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
         ;
