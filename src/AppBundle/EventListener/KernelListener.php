@@ -7,6 +7,7 @@ use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -26,9 +27,16 @@ class KernelListener implements EventSubscriberInterface
     public static function getSubscribedEvents() {
         return [
             KernelEvents::CONTROLLER => 'onController',
+            KernelEvents::RESPONSE => 'onResponse',
         ];
     }
 
+    /**
+     * @param FilterControllerEvent $event
+     *
+     * Actions on controller :
+     * - redirect to a page on which users need to accept new conditions if the terms of use of the website changed since their last session
+     */
     public function onController(FilterControllerEvent $event) {
 
         $token = $this->tokenStorage->getToken();
@@ -57,6 +65,18 @@ class KernelListener implements EventSubscriberInterface
         $session->set('requested_url', $request->getRequestUri());
 
         $event->setController(array($controller, 'acceptLastAction'));
+    }
+
+    /**
+     * @param FilterResponseEvent $event
+     *  Actions on response :
+     *  - flush manager to ensure that no persisted entities (by services e.g.) is forgotten
+     */
+
+    public function onResponse(FilterResponseEvent $event)
+    {
+        $this->em->flush();
+        $response = $event->getResponse();
     }
 
 }

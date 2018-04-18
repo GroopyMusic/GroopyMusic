@@ -80,9 +80,9 @@ class ContractFanAdmin extends BaseAdmin
             ->end()
             ->with('État')
                 ->add('paid', 'boolean', array(
-                    'label' => 'Payé'
+                    'label' => 'Payé',
                 ))
-                ->add('ticket_sent', 'boolean', array(
+                ->add('counterparts_sent', 'boolean', array(
                     'label' => 'Tickets envoyés',
                 ))
             ->end()
