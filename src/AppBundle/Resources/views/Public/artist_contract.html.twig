@@ -161,12 +161,14 @@
                         </div>
 
                         <div class="col-12 content-box-col">
+                            {% if not contract.isValidatedBelowObjective %}
                             <span class="contract-info-title pr-2">
                                  {{ 'event.infos.tickets_objective'|trans|raw }}
                             </span>
                             <span class="contract-info-content">
                                 {{ contract.step.minTickets }}
                             </span>
+                            {% endif %}
                             {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
                             <div class="progress">
                                 <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}" style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
@@ -274,12 +276,6 @@
 
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
-                                {#
-                                <p class="text-italic">{{ 'login.necessary_for_tickets'|trans|raw }}<br /><a href="{{ path('fos_user_registration_register') }}">{{ 'login.not_subscribed_yet'|trans|raw }}</a></p>
-                                <div class="text-center">
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'login.login'|trans|raw }}</button>
-                                </div>
-                                #}
                         {% else %}
                             <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
                         {% endif %}

@@ -67,6 +67,9 @@ class SuggestionBoxAdmin extends BaseAdmin
             ->add('email', null, array(
                 'label' => 'Adresse e-mail',
             ))
+            ->add('phone', null, array(
+                'label' => 'Téléphone',
+            ))
             ->add('date', null, array(
                 'label' => "Date d'envoi",
             ))

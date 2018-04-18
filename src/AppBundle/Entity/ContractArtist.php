@@ -144,6 +144,10 @@ class ContractArtist extends BaseContractArtist
         return $this->getMaxTickets() - $this->getTotalBookedTickets();
     }
 
+    public function isValidatedBelowObjective() {
+        return $this->isInSuccessfulState() && $this->getTicketsSold() < $this->getMinTickets();
+    }
+
     public function getMinTickets() {
         if($this->min_tickets <= 0) {
             return $this->getStep()->getMinTickets();

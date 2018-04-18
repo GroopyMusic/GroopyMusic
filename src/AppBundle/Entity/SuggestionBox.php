@@ -102,6 +102,11 @@ class SuggestionBox
     private $done;
 
     /**
+     * @ORM\Column(name="phone", type="string", length=25, nullable=true)
+     */
+    private $phone;
+
+    /**
      * Get id
      *
      * @return int
@@ -377,5 +382,29 @@ class SuggestionBox
     public function getHandler()
     {
         return $this->handler;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     *
+     * @return SuggestionBox
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
     }
 }
