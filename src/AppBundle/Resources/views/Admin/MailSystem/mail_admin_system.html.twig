@@ -8,8 +8,8 @@
             Success
         </div>
     </div>
-    <div class="myForm">
-        {{ form_start(form) }}
+    <div id="myContent">
+        {{ form_start(form, {attr: {id: 'mail-form'} }) }}
         <div class="panel panel-default">
             <div class="panel-heading"><h4>Destinataires</h4></div>
             <div class="panel-body">
@@ -39,10 +39,9 @@
                         {{ form_row(form.artist_members) }}
                     </div>
                     <div class="text-center">
-                        <button type="button" class="btn btn-success"
-                                onclick="fillSelect('.artists_select','.members_select','{{ admin.generateObjectUrl("getMembers",null) }}')">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                            Afficher les membres
+                        <button id="members-button" type="button" class="btn btn-success">
+                            <span class="glyphicon glyphicon-ok-circle"></span>
+                            Valider les membres
                         </button>
                     </div>
                 </div>
@@ -55,10 +54,9 @@
                         {{ form_row(form.user_participants) }}
                     </div>
                     <div class="text-center">
-                        <button type="button" class="btn btn-success"
-                                onclick="fillSelect('.user_contract_artist_select','.user_participants_select','{{ admin.generateObjectUrl("getUserParticipants",null) }}')">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                            Afficher les participants
+                        <button id="participants-button" type="button" class="btn btn-success">
+                            <span class="glyphicon glyphicon-ok-circle"></span>
+                            Valider les participants
                         </button>
                     </div>
                 </div>
@@ -71,10 +69,9 @@
                         {{ form_row(form.artist_participants) }}
                     </div>
                     <div class="text-center">
-                        <button type="button" class="btn btn-success"
-                                onclick="fillSelect('.artist_contract_artist_select','.artist_participants_select','{{ admin.generateObjectUrl("getArtistParticipants",null) }}')">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                            Afficher les artistes participants
+                        <button id="artists-participant-button" type="button" class="btn btn-success">
+                            <span class="glyphicon glyphicon-ok-circle"></span>
+                            Valider les artistes participants
                         </button>
                     </div>
                 </div>
@@ -84,11 +81,11 @@
                         {{ form_row(form.email) }}
                     </div>
                     <div class="text-center">
-                        <button type="button" class="btn btn-success add_input_button">
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </button>
                         <button type="button" class="btn btn-danger remove_input_button">
                             <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                        <button type="button" class="btn btn-success add_input_button">
+                            <span class="glyphicon glyphicon-plus"></span>
                         </button>
                     </div>
                 </div>
@@ -106,7 +103,7 @@
             </div>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary send-email-button">
+            <button id="get-summary-button" type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-send"></span>
                 &nbsp;Envoyer
             </button>
@@ -186,16 +183,31 @@
                 }
             });
 
-            jQuery("form").submit(function (evt) {
+            $('#artists-participant-button').click(function () {
+                console.log("hre");
+                fillSelect($(this), '.artist_contract_artist_select', '.artist_participants_select', '{{ admin.generateObjectUrl("getArtistParticipants",null) }}');
+            });
+
+            $('#participants-button').click(function () {
+                fillSelect($(this), '.user_contract_artist_select', '.user_participants_select', '{{ admin.generateObjectUrl("getUserParticipants",null) }}');
+            });
+
+            $('#members-button').click(function () {
+                fillSelect($(this), '.artists_select', '.members_select', '{{ admin.generateObjectUrl("getMembers",null) }}');
+            });
+
+            $('#mail-form').submit(function (evt) {
                 evt.preventDefault();
-                sendEmail();
+                getSummary();
             });
         });
 
-        function fillSelect(parent, child, url) {
+        function fillSelect(button, parent, child, url) {
+            console.log(button);
             var options = constructOptionsArray($(parent).find(':selected'));
             var select = $(child);
             if (options.length > 0) {
+                disableAndLoad(button);
                 $.post(url, {options: options}, function (result) {
                         clearSelect(select);
                         result.forEach(function (elem) {
@@ -203,10 +215,12 @@
                             $(select).last().append("<option value='" + elem.id + "' selected>" + elem.email + "</option>");
                         });
                         $(select).trigger('change');
+                        enableAndDeload(button)
                     }
                 ).fail(function (err) {
                     console.log(err);
-                    dislayInputError(select, err.statusText);
+                    dislayInputError(select, err.responseText);
+                    enableAndDeload(button)
                 })
             }
         }
@@ -217,30 +231,69 @@
 
         function sendEmail() {
             var recipients = constructRecipientsObject();
-            console.log(recipients);
-            var object = $('.object_mail_input').val();
-            var content = $('.mail_content_textarea').val();
-            console.log(objectIsEmpty(recipients));
+            var button = $('#get-summary-button');
+            disableAndLoad($('#send-email-button'));
+            disableAndLoad(button);
+            $('#summaryModal').modal('hide');
+            var url = '{{ admin.generateObjectUrl("sendEmail",null) }}';
+            $.post(url,
+                {
+                    recipients: recipients,
+                    object: $('.mail_content_textarea').val(),
+                    content: $('.object_mail_input').val()
+                },
+                function () {
+                    displayAlertOnTop("Envoie réussis", "success");
+                    enableAndDeload(button);
+                    clearForm();
+                    //TODO a faire bien
+                }
+            ).fail(function (err) {
+                displayAlertOnTop(err.responseText, "error");
+                console.log(err);
+                enableAndDeload(button);
+
+            });
+        }
+
+        function getSummary() {
+            var recipients = constructRecipientsObject();
             if (!objectIsEmpty(recipients)) {
-                var url = '{{ admin.generateObjectUrl("sendEmail",null) }}';
+                var button = $('#get-summary-button');
+                disableAndLoad(button);
+                var url = '{{ admin.generateObjectUrl("getSummary",null) }}';
                 $.post(url,
                     {
                         recipients: recipients,
-                        object: content,
-                        content: object
+                        content: $('.mail_content_textarea').val(),
+                        object: $('.object_mail_input').val()
                     },
-                    function () {
-                        displayAlertOnTop("Envoie réussis", "success");
+                    function (html) {
+                        enableAndDeload(button);
+                        Admin.shared_setup($(html).insertAfter($('#myContent')));
+                        checkSelect();
+                        $("#summaryModal").on("hidden.bs.modal", function () {
+                            $("#summaryModal").remove();
+                        }).modal();
                     }
                 ).fail(function (err) {
-                    displayAlertOnTop(err.statusText, "error");
+                    displayAlertOnTop(err.responseText, "error");
                     console.log(err);
-                })
-
+                    enableAndDeload(button);
+                });
             } else {
                 displayAlertOnTop("Il faut au moins un destinataire", "error");
             }
+        }
 
+        function disableAndLoad(button) {
+            button.attr("disabled", true);
+            $(document.body).css({'cursor': 'wait'});
+        }
+
+        function enableAndDeload(button) {
+            $(document.body).css({'cursor': 'default'});
+            button.attr("disabled", false);
         }
 
         function constructOptionsArray(options) {
@@ -252,7 +305,6 @@
         }
 
         function displayAlertOnTop(message, type) {
-            var div = $('.alert-div');
             $('.alert-div .alert').each(function () {
                 $(this).hide();
             });
@@ -314,6 +366,53 @@
             return (constructOptionsArray($(select).find(':selected')).length === 0);
         }
 
+        function checkSelect() {
+            if (!isEmpty($('.artists_select')) && isEmpty($('.members_select'))) {
+                $('#div-alert').append(
+                    '<div ' +
+                    'class="alert alert-warning" ' +
+                    'role="alert">' +
+                    'Vous n\'avez pas sélectionné de destinataires parmi les membres des groupes sélectionnés' +
+                    '</div>'
+                );
+            }
+            if (!isEmpty($('.user_contract_artist_select')) && isEmpty($('.user_participants_select'))) {
+                $('#div-alert').append(
+                    '<div ' +
+                    'class="alert alert-warning" ' +
+                    'role="alert">' +
+                    'Vous n\'avez pas sélectionné de destinataires parmi les participants des événements sélectionnés' +
+                    '</div>'
+                );
+            }
+            if (!isEmpty($('.artist_contract_artist_select')) && isEmpty($('.artist_participants_select'))) {
+                $('#div-alert').append(
+                    '<div ' +
+                    'class="alert alert-warning" ' +
+                    'role="alert">' +
+                    'Vous n\'avez pas sélectionné de destinataires parmi les membres des groupes des événements sélectionnés' +
+                    '</div>'
+                );
+            }
+        }
+
+        function clearForm() {
+            $('#mail-form')[0].reset();
+            $('.select-to-clear').each(function () {
+                console.log($(this));
+                clearSelect($(this));
+            });
+            $('.checkbox-to-clear').each(function () {
+                console.log($(this));
+                $(this).attr('checked', false);
+                $(this).parent().removeClass('checked');
+            });
+            $('.added_input_email').each(function () {
+                console.log($(this));
+                $(this).remove();
+            });
+        }
+
         function objectIsEmpty(obj) {
             for (var prop in obj) {
                 if (obj.hasOwnProperty(prop)) {
@@ -328,7 +427,7 @@
     </script>
 {% endblock %}
 
-    {# Tetranz #}
+{# Tetranz #}
 {% block sonata_select2 %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>

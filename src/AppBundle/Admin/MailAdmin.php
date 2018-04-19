@@ -19,6 +19,7 @@ class MailAdmin extends BaseAdmin
             ->add('getMembers', 'getMembers')
             ->add('getUserParticipants', 'getUserParticipants')
             ->add('getArtistParticipants', 'getArtistParticipants')
+            ->add('getSummary', 'getSummary')
             ->add('sendEmail', 'sendEmail');
     }
 }

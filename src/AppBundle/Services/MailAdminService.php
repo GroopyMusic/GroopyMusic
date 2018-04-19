@@ -9,6 +9,7 @@
 namespace AppBundle\Services;
 
 
+use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -72,26 +73,47 @@ class MailAdminService
 
     public function sendEmail($recipients, $object, $content)
     {
-        $emails = $this->constructArrayEmails($recipients);
-        $emails = array_unique($emails);
-        $this->logger->warning("pute", [$emails, $object, $content]);
+        $arrayRecipients = $this->addAdminToRecipients($this->constructArrayRecipients($recipients));
+        $emails = array_map(function (User $user) {
+            return $user->getEmail();
+        }, $arrayRecipients);
+        $emails = array_unique(array_merge($emails, $this->getSimpleEmails($recipients)));
         $this->mailDispatcher->sendEmailFromAdmin($emails, $object, $content);
     }
 
-    private function constructArrayEmails($recipients)
+    public function getSimpleEmails($recipients)
     {
-        $emails = [];
+        $simpleEmails = [];
+        if (array_key_exists('emails_input', $recipients)) {
+            foreach ($recipients['emails_input'] as $email) {
+                if (!in_array($email, $simpleEmails)) {
+                    array_push($simpleEmails, $email);
+                }
+            }
+        }
+        return $simpleEmails;
+    }
+
+    public function getUsersSummary($recipients)
+    {
+        $userSummary = $this->addAdminToRecipients($this->constructArrayRecipients($recipients));
+        return array_unique($userSummary, SORT_REGULAR);
+    }
+
+    public function constructArrayRecipients($recipients)
+    {
+        $arrayRecipients = [];
         foreach ($recipients as $key => $recipient) {
             switch ($key) {
                 case "users":
                     if ($recipient == 'all') {
                         $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeletedForSelect([]);
                         foreach ($users as $user) {
-                            array_push($emails, $user->getEmail());
+                            array_push($arrayRecipients, $user);
                         }
                     } else {
                         foreach ($recipient as $id) {
-                            array_push($emails, $this->em->getRepository('AppBundle:User')->find($id)->getEmail());
+                            array_push($arrayRecipients, $this->em->getRepository('AppBundle:User')->find($id));
                         }
                     }
                     break;
@@ -99,26 +121,32 @@ class MailAdminService
                     if ($recipient == 'all') {
                         $users = $this->em->getRepository('AppBundle:User')->findNewsletterUsersNotDeletedForSelect([]);
                         foreach ($users as $user) {
-                            array_push($emails, $user->getEmail());
+                            array_push($arrayRecipients, $user);
                         }
                     } else {
                         foreach ($recipient as $id) {
-                            array_push($emails, $this->em->getRepository('AppBundle:User')->find($id)->getEmail());
+                            array_push($arrayRecipients, $this->em->getRepository('AppBundle:User')->find($id));
                         }
                     }
                     break;
-                case "emails_input":
-                    foreach ($recipient as $email) {
-                        array_push($emails, $email);
-                    }
+                case "emails_input";
                     break;
                 default:
                     foreach ($recipient as $id) {
-                        array_push($emails, $this->em->getRepository('AppBundle:User')->find($id)->getEmail());
+                        array_push($arrayRecipients, $this->em->getRepository('AppBundle:User')->find($id));
                     }
                     break;
             }
         }
-        return $emails;
+        return $arrayRecipients;
+    }
+
+    public function addAdminToRecipients($recipients)
+    {
+        $users = $this->em->getRepository('AppBundle:User')->findUsersWithRoles(['ROLE_SUPER_ADMIN']);
+        foreach ($users as $user) {
+            array_push($recipients, $user);
+        }
+        return $recipients;
     }
 }

@@ -41,14 +41,14 @@ class MailFormType extends AbstractType
                 'primary_key' => 'id',
                 'width' => '100%',
                 'attr' => [
-                    'class' => 'users_select'
+                    'class' => 'users_select select-to-clear'
                 ]
             ])
             ->add('all_users', CheckboxType::class, array(
                 'label' => 'Envoyer à tous les utilisateurs',
                 'required' => false,
                 'attr' => [
-                    'class' => 'all_users_checkbox'
+                    'class' => 'all_users_checkbox checkbox-to-clear'
                 ]
             ))
             ->add('newsletter_users', Select2EntityType::class, [
@@ -60,14 +60,14 @@ class MailFormType extends AbstractType
                 'primary_key' => 'id',
                 'width' => '100%',
                 'attr' => [
-                    'class' => 'newsletter_users_select'
+                    'class' => 'newsletter_users_select select-to-clear'
                 ]
             ])
             ->add('all_newsletter_users', CheckboxType::class, array(
                 'label' => 'Envoyer à tous les utilisateurs inscrits à la newsletter',
                 'required' => false,
                 'attr' => [
-                    'class' => 'all_newsletter_users_checkbox'
+                    'class' => 'all_newsletter_users_checkbox checkbox-to-clear'
                 ]
             ))
             ->add('artists', Select2EntityType::class, [
@@ -79,7 +79,7 @@ class MailFormType extends AbstractType
                 'primary_key' => 'id',
                 'width' => '100%',
                 'attr' => [
-                    'class' => 'artists_select'
+                    'class' => 'artists_select select-to-clear'
                 ]
             ])
             ->add('artist_members', ChoiceType::class, [
@@ -88,7 +88,7 @@ class MailFormType extends AbstractType
                 'multiple' => true,
                 'attr' => [
                     'disabled' => 'false',
-                    'class' => 'members_select'
+                    'class' => 'members_select select-to-clear'
                 ]
 
             ])
@@ -101,7 +101,7 @@ class MailFormType extends AbstractType
                 'primary_key' => 'id',
                 'width' => '100%',
                 'attr' => [
-                    'class' => 'user_contract_artist_select'
+                    'class' => 'user_contract_artist_select select-to-clear'
                 ]
             ])
             ->add('user_participants', ChoiceType::class, [
@@ -110,7 +110,7 @@ class MailFormType extends AbstractType
                 'multiple' => true,
                 'attr' => [
                     'disabled' => 'false',
-                    'class' => 'user_participants_select'
+                    'class' => 'user_participants_select select-to-clear'
                 ]
             ])
             ->add('artist_contractArtist', Select2EntityType::class, [
@@ -122,7 +122,7 @@ class MailFormType extends AbstractType
                 'primary_key' => 'id',
                 'width' => '100%',
                 'attr' => [
-                    'class' => 'artist_contract_artist_select'
+                    'class' => 'artist_contract_artist_select select-to-clear'
                 ]
             ])
             ->add('artist_participants', ChoiceType::class, [
@@ -131,7 +131,7 @@ class MailFormType extends AbstractType
                 'multiple' => true,
                 'attr' => [
                     'disabled' => 'false',
-                    'class' => 'artist_participants_select'
+                    'class' => 'artist_participants_select select-to-clear'
                 ]
             ])
             ->add('email', EmailType::class, [
@@ -154,7 +154,7 @@ class MailFormType extends AbstractType
                 'label' => "Contenu",
                 'attr' => [
                     'rows' => 2,
-                    'class' => 'mail_content_textarea form-input'
+                    'class' => 'mail_content_textarea form-input textarea-to-clear'
                 ]
             ]);
 
