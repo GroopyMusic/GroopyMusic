@@ -235,7 +235,7 @@ contact:
   confirmation: Votre message a bien été reçu.
 
 catalog_halls:
-  title: Partenaires
+  title: Salles partenaires
   intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des festivals sont susceptibles d'être organisés. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement dans votre salle ?</a>
   empty: Il n'y a pas encore de salle partenaire sur la plateforme.
 

@@ -108,7 +108,7 @@ class RankingAdminController extends Controller
             $this->addFlash('notice', 'Exception :' . $ex->getMessage());
             $this->logger->warning("Exception displayMoreAction", [$ex->getMessage()]);
         }
-        return $this->render('@App/Admin/ranking/ranking_table_preview.html.twig', array(
+        return $this->render('@App/Admin/Ranking/ranking_table_preview.html.twig', array(
             'statistics' => $statistics
         ));
     }
