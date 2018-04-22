@@ -23,7 +23,7 @@
                         <img class="img-fluid" src="{{ asset('images/icons/blue/concert.png') }}" />
                     </div>
                     <div class="col-8 my-auto">
-                        <span class="big">Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus.</span>
+                        <span class="big">{{ 'home.concept.content_1'|trans|raw }}</span>
                     </div>
                 </div>
             </div>
@@ -34,16 +34,15 @@
                         <img  class="img-fluid" src="{{ asset('images/icons/blue/refund.png') }}" />
                     </div>
                     <div class="col-8 my-auto">
-                        <span class="big">Si l'objectif n'est pas atteint au bout d'un mois, tout le monde est remboursé.</span>
+                        <span class="big">{{ 'home.concept.content_2'|trans|raw }}</span>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
     <div class="container-fluid-med-pad bg-body-strong" id="home-carousel-row">
-        <h3 class="alt-title text-center">En cours de financement</h3>
+        <h3 class="alt-title text-center">{{ 'home.concerts.title'|trans|raw }}</h3>
         <div class="jcarousel mx-auto my-auto">
             <ul>
                 {% for crowdfunding in crowdfundings %}
@@ -60,13 +59,11 @@
         </div>
     </div>
 
-
-
     <div class="container-fluid mb-3 mb-md-0 position-relative" id="home-spotlights">
         <div id="parallax-spotlights-bg" class="d-none d-md-block parallax"></div>
         <div class="row">
             <div class="col-12 col-md-6 my-auto text-white">
-                <h3 class="alt-title text-center text-white">{% if spotlight.coartists is not empty %}Découvrez trois artistes par festival{% else %}À découvrir{% endif %}</h3>
+                <h3 class="alt-title text-center text-white">{% if spotlight.coartists is not empty %}{{ 'home.spotlights.title_1'|trans }}{% else %}{{ 'home.spotlights.title_2'|trans }}{% endif %}</h3>
                 <div class="row">
                     {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {
                         'contract': spotlight,
@@ -78,16 +75,18 @@
 
                     <div class="col-12 col-md-6 mt-4 my-md-auto">
                             <div class="spotlight-explanation">
-                                Découvrez {{ spotlight.artist }} en live le {{ ('Days ' ~ spotlight.dateConcert|date('w'))|trans|lower }} {{ spotlight.dateConcert|date('d') }} {{ ('months.' ~ spotlight.dateConcert|date('m'))|trans|lower }}
-
+                                {{ 'home.spotlights.headline'|trans({
+                                    '%artist%': spotlight.artist,
+                                    '%date%': ('Days ' ~ spotlight.dateConcert|date('w'))|trans|lower ~ ' ' ~ spotlight.dateConcert|date('d') ~ ' ' ~ ('months.' ~ spotlight.dateConcert|date('m'))|trans|lower,
+                                }) }}
                                 {% if spotlight.coartists is not empty %}
-                                    <h4 class="mt-3">Line-up</h4>
+                                    <h4 class="mt-3">{{ 'home.spotlights.lineup.title'|trans }}</h4>
                                     <div class="mt-2">
-                                        <span class="um-label text-white">Artiste hôte</span>
+                                        <span class="um-label text-white">{{ 'home.spotlights.lineup.host'|trans }}</span>
                                         <br /><a href="{{ path('artist_profile', {'id': spotlight.artist.id, 'slug': spotlight.artist.slug}) }}">{{ spotlight.artist }}</a>
                                     </div>
                                     <div class="mt-3">
-                                        <span class="um-label text-white">Artistes invités</span>
+                                        <span class="um-label text-white">{{ 'home.spotlights.lineup.invited'|trans }}</span>
                                         {% for coartist in spotlight.coartists %}
                                             <br /><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist }}</a>
                                         {% endfor %}
@@ -98,19 +97,19 @@
                                     </div>
 
                                 {% endif %}
-                                <h4 class="mt-3">Tickets</h4>
+                                <h4 class="mt-3">{{ 'home.spotlights.tickets.title'|trans }}</h4>
                                 {% set spotlight_url = path('artist_contract', {'id': spotlight.id}) %}
                                 {% if not spotlight.isSoldOut %}
-                                    <span class="badge badge-success">En vente</span> <a href="{{ spotlight_url }}" class="btn small btn-outline-primary p-2">Acheter</a>
+                                    <span class="badge badge-success">{{ 'home.spotlights.tickets.selling'|trans }}</span> <a href="{{ spotlight_url }}" class="btn small btn-outline-primary p-2">Acheter</a>
                                 {% else %}
-                                    <a href="{{ spotlight_url }}" class="btn btn-outline-secondary">Sold out</a>
+                                    <a href="{{ spotlight_url }}" class="btn btn-outline-secondary">{{ 'home.spotlights.tickets.soldout'|trans }}</a>
                                 {% endif %}
                             </div>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6 mt-4 my-md-auto">
-                <h3 class="alt-title text-center text-white">Notre dernière vidéo</h3>
+                <h3 class="alt-title text-center text-white">{{ 'home.spotlights.video.title'|trans }}</h3>
                 <div class="embed-responsive embed-responsive-16by9">
                     <div class="youtube embed-responsive-item" id="qvHUpid7sC4"></div>
                 </div>

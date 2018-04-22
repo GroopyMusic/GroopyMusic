@@ -89,12 +89,25 @@ home:
   og_title: Un-Mute | Découvrez, soutenez, produisez
   concept:
     title: Le principe
-    content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus. Et si l'objectif n'est pas atteint, tout le monde est entièrement remboursé !
-    content_2: Un-Mute sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur", vous êtes acteur dans la construction de la scène musicale belge de demain via <a href="#" data-toggle="popover" title="En savoir plus" data-content="Vous souhaitez en savoir plus sur notre fonctionnement ? <a href='%about_url%'>C'est par ici !</a>">un système de financement participatif qui ne vous fait prendre aucun risque</a>.
+    content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus.
+    content_2: Si l'objectif n'est pas atteint au bout d'un mois, tout le monde est remboursé.
   concerts:
-    title: Festivals
-    content: Nos artistes tentent de remplir des salles aux quatre coins du Royaume. Découvrez leurs envies et soutenez-les.
-    see_all: Voir la liste complète
+    title: En cours de financement
+  #new
+  spotlights:
+    title_1: Découvrez trois artistes par festival
+    title_2: À découvrir
+    headline: Découvrez %artist% en live le %date%
+    lineup:
+      title: Line-up
+      host: Artiste hôte
+      invited: Artistes invités
+    tickets:
+      title: Tickets
+      selling: En vente
+      soldout: Sold out
+    video:
+      title: Notre dernière vidéo
   news:
     title: Derniers artistes inscrits
   join_us:

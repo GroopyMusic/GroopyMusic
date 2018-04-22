@@ -167,7 +167,7 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function isDDay() {
-        return $this->getDateConcert()->diff(new \DateTime())->d == 0;
+        return $this->getDateConcert()->diff(new \DateTime())->days == 0;
     }
 
     public function getState() {

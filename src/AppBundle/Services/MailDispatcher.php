@@ -23,14 +23,15 @@ use Twig\Environment;
 
 class MailDispatcher
 {
+    const DEFAULT_LOCALE = 'fr';
     const MAX_BCC = 100;
 
-    const TO = ["no-reply@un-mute.be"];
+    const TO = ["no-reply@un-mute.be" => self::DEFAULT_LOCALE];
 
-    const REPLY_TO = "pierre@un-mute.be";
+    const REPLY_TO = ["pierre@un-mute.be"];
     const REPLY_TO_NAME = "Un-Mute ASBL";
 
-    const ADMIN_TO = ["pierre@un-mute.be", "gonzague@un-mute.be"];
+    const ADMIN_TO = ["pierre@un-mute.be" => self::DEFAULT_LOCALE, "gonzague@un-mute.be" => self::DEFAULT_LOCALE];
 
     private $mailer;
     private $from_address;
@@ -53,9 +54,19 @@ class MailDispatcher
         $this->twig = $twig;
     }
 
-    private function sendEmail($template, $subject, array $params, array $subject_params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
+    private function extract_locale($locale, $haystack) {
+        return array_filter($haystack, function($elem) use ($locale) {
+            return $elem == $locale;
+        });
+    }
 
-        // TODO translate for each recipient of course...
+    private function sendEmail($template, $subject, array $params, array $subject_params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
+        $bccs = array();
+
+        foreach($this->locales as $locale) {
+            $bccs[$locale] = $this->extract_locale($locale, $bcc_emails);
+        }
+
         $subject = $this->translator->trans($subject, $subject_params, 'emails');
 
         // CASE 1 : # of recipients is reasonable -> one mail
@@ -117,7 +128,7 @@ class MailDispatcher
         $params = ['user' => $user];
         $subject_params = [];
 
-        $this->sendEmail($template, "subjects.change_email_confirmation", $params, $subject_params, [], [], [$user->getAskedEmail()], [$user->getDisplayName()]);
+        $this->sendEmail($template, "subjects.change_email_confirmation", $params, $subject_params, [], [], [$user->getAskedEmail() => $user->getPreferredLocale()], [$user->getDisplayName()]);
     }
 
 
