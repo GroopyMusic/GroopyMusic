@@ -70,7 +70,7 @@ concert:
 
        Enfin, pourriez-vous nous envoyer la fiche technique de votre groupe ainsi que le contrat (en pièce jointe) que vous devez nous renvoyer signé au plus tard fin de cette semaine ?
 
-       Si vous avez des questions, n'hésitez pas à nous joindre par mail à l'adresse pierre@un-mute.be
+       Si vous avez des questions, n'hésitez pas à nous joindre par mail à l'adresse contact@un-mute.be
 
 
        Nous nous réjouissons de vous voir bientôt sur scène !
@@ -93,7 +93,7 @@ concert:
 
       %additional_info%
 
-      Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
 
     #new
     vip_tickets: |
@@ -107,7 +107,7 @@ concert:
 
       %additional_info%
 
-      Si vous avez des questions, n'hésitez pas à nous joindre par mail : pierre@un-mute.be
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
 
     failure: |
       Cher producteur,
