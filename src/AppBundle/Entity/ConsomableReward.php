@@ -28,16 +28,16 @@ class ConsomableReward extends Reward
      */
     private $quantity;
 
-    /**
-     * @ORM\Column(name="type_consomable", type="string", length=255)
-     */
-    private $type_consomable;
-
 
     /**
      * @ORM\Column(name="value", type="float")
      */
     private $value;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ConsomableType")
+     */
+    private $type_consomable;
 
     /**
      * Set quantity

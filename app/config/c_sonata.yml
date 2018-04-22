@@ -48,6 +48,7 @@ sonata_admin:
                   - AppBundle\Admin\LevelAdmin
                   - AppBundle\Admin\RewardAdmin
                   - AppBundle\Admin\RewardRestrictionAdmin
+                  - AppBundle\Admin\ConsomableTypeAdmin
 
            app.admin.group.user_management:
               label: app.admin.group.user_management
@@ -353,4 +354,10 @@ services:
         arguments: [ ~, null , AppBundle:MailAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.mail }
+        public: true
+
+    AppBundle\Admin\ConsomableTypeAdmin:
+        arguments: [~, AppBundle\Entity\ConsomableType, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.consomableType }
         public: true

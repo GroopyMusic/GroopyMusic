@@ -181,6 +181,11 @@
                 <source>app.admin.mail</source>
                 <target>Système de mail</target>
              </trans-unit>
+
+            <trans-unit id="app.admin.consomableType">
+                <source>app.admin.consomableType</source>
+                <target>Type de consommation</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>

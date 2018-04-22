@@ -8,26 +8,19 @@
 
 namespace AppBundle\Admin;
 
-
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\Artist;
-use AppBundle\Entity\Category;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\CounterPart;
-use AppBundle\Entity\InvitationReward;
 use AppBundle\Entity\Reward;
 use AppBundle\Entity\Step;
 use AppBundle\Services\RewardAttributionService;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class RewardRestrictionAdmin extends BaseAdmin
 {

@@ -11,6 +11,7 @@ namespace AppBundle\Admin;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\ConsomableReward;
+use AppBundle\Entity\ConsomableType;
 use AppBundle\Entity\InvitationReward;
 use AppBundle\Entity\ReductionReward;
 use AppBundle\Entity\RewardRestriction;
@@ -159,12 +160,9 @@ class RewardAdmin extends BaseAdmin
                     'label' => 'Nombre de tickets',
                     'attr' => array('min' => 0)
                 ))
-                ->add('type_consomable', ChoiceType::class, array(
+                ->add('type_consomable', EntityType::class, array(
                     'label' => 'Type de consommation',
-                    'choices' => array(
-                        "Boisson" => "Boisson",
-                        "Nourriture" => "Nourriture"
-                    )
+                    'class' => ConsomableType::class
                 ))
                 ->add('value', NumberType::class, array(
                     'label' => 'Valeur d\'un ticket',
