@@ -21,15 +21,18 @@ class RewardRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return array
      */
-    public function findNotDeletedRewards()
+    public function findNotDeletedRewards($locale)
     {
         return $this->getEntityManager()->createQuery(
             'SELECT r, rt, rw
                   FROM AppBundle:Reward r
                   LEFT JOIN r.restrictions rw
                   LEFT JOIN r.translations rt
-                  WHERE r.deletedAt IS NULL 
+                  WHERE r.deletedAt IS NULL
+                  AND rt.locale = :locale
+                  ORDER BY rt.name ASC
                   ')
+            ->setParameter('locale', $locale)
             ->getResult();
     }
 

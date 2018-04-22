@@ -10,6 +10,7 @@ namespace AppBundle\Admin;
 
 
 namespace AppBundle\Admin;
+
 use AppBundle\Entity\Reward;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\Type\ModelListType;
@@ -40,8 +41,7 @@ class LevelAdmin extends BaseAdmin
                         'delete' => array(),
                     )
                 )
-            )
-        ;
+            );
     }
 
     public function configureShowFields(ShowMapper $showMapper)
@@ -57,15 +57,16 @@ class LevelAdmin extends BaseAdmin
             ->add('category', null, array(
                 'label' => 'Catégorie',
             ))
-            ->add('rewards',null,array(
+            ->add('rewards', null, array(
                 'label' => 'Récompenses'
             ))
-            ->end()
-        ;
+            ->end();
     }
+
     public function configureFormFields(FormMapper $form)
     {
         $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
+        $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
         $form
             ->with('Données du palier')
             ->add('step', TextType::class, array(
@@ -88,7 +89,7 @@ class LevelAdmin extends BaseAdmin
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
                 'class' => Reward::class,
-                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards(),
+                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale()),
                 'multiple' => true,
                 'required' => false
             ])

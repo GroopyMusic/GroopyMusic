@@ -9,9 +9,12 @@
 namespace AppBundle\Services;
 
 
-use AppBundle\Entity\BaseContractArtist;
+use AppBundle\Entity\Artist;
+use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Reward;
 use AppBundle\Entity\RewardRestriction;
+use AppBundle\Entity\Step;
 use AppBundle\Entity\User_Reward;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -26,7 +29,7 @@ class RewardAttributionService
 
     private $logger;
 
-    private $querries;
+    private $querry_param_type;
 
     /**
      * constructor + array with querry names
@@ -43,12 +46,12 @@ class RewardAttributionService
         $this->mailDispatcher = $mailDispatcher;
         $this->em = $em;
         $this->logger = $logger;
-        $this->querries = array(
-            'Concert confirmé le plus récent',
-            'Un seul concert sélectionné',
-            'Un seul artiste sélectionné',
-            'Une seule contrepartie sélectionnée',
-            'Un seul palier de salle sélectionné'
+        $this->querry_param_type = array(
+            'Concert confirmé le plus récent' => null,
+            'Un seul concert sélectionné' => ContractArtist::class,
+            'Un seul artiste sélectionné' => Artist::class,
+            'Une seule contrepartie sélectionnée' => CounterPart::class,
+            'Un seul palier de salle sélectionné' => Step::class
         );
     }
 
@@ -92,25 +95,26 @@ class RewardAttributionService
     public function defineRestriction(RewardRestriction $restriction, User_Reward $user_reward)
     {
         $restrictionRepository = $this->em->getRepository("AppBundle:RewardRestriction");
-        switch ($restriction->getQuerry()) {
+        $id_parameter = intval(explode('|', $restriction->getQueryParameter())[0]);
+        switch ($restriction->getQuery()) {
             case 'Concert confirmé le plus récent';
                 $baseContractArtist = $restrictionRepository->getMostRecentConfirmedConcert();
                 $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
             case 'Un seul concert sélectionné';
-                $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($restriction->getQuerryParameter());
+                $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($id_parameter);
                 $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
             case 'Un seul artiste sélectionné';
-                $artist = $this->em->getRepository('AppBundle:Artist')->find($restriction->getQuerryParameter());
+                $artist = $this->em->getRepository('AppBundle:Artist')->find($id_parameter);
                 $user_reward->addArtist($artist);
                 break;
             case 'Une seule contrepartie sélectionnée';
-                $counterPart = $this->em->getRepository('AppBundle:CounterPart')->find($restriction->getQuerryParameter());
+                $counterPart = $this->em->getRepository('AppBundle:CounterPart')->find($id_parameter);
                 $user_reward->addCounterPart($counterPart);
                 break;
             case 'Un seul palier de salle sélectionné';
-                $baseStep = $this->em->getRepository('AppBundle:Step')->find($restriction->getQuerryParameter());
+                $baseStep = $this->em->getRepository('AppBundle:Step')->find($id_parameter);
                 $user_reward->addBaseStep($baseStep);
                 break;
 
@@ -118,12 +122,36 @@ class RewardAttributionService
     }
 
     /**
-     * Get the names of the querries
+     * Get the names of the querries and type of params
      *
      * @return array
      */
-    public function getQuerryNames()
+    public function getQuerryNamesParams()
     {
-        return $this->querries;
+        return $this->querry_param_type;
+    }
+
+    public function getSelectedStats($ids, $allStatistics)
+    {
+        $users = [];
+        foreach ($ids as $id) {
+            array_push($users, $allStatistics[$id]);
+        }
+        return $users;
+    }
+
+    /**
+     * get only the first 5 lines of each category level
+     *
+     * @param $categories
+     *
+     */
+    public function limitStatistics($categories)
+    {
+        foreach ($categories as $category) {
+            foreach ($category->getLevels()->toArray() as $level) {
+                $level->setStatistics(array_slice($level->getStatistics()->toArray(), 0, 5, true));
+            }
+        }
     }
 }

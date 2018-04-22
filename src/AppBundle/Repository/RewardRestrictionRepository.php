@@ -28,4 +28,19 @@ class RewardRestrictionRepository extends \Doctrine\ORM\EntityRepository
             ->setMaxResults(1)
             ->getSingleResult();
     }
+
+    public function getAllRestrictionOrderByAsc($locale)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT rr,r
+                  FROM AppBundle:RewardRestriction rr
+                  LEFT JOIN rr.rewards r
+                  LEFT JOIN r.translations rt
+                  LEFT JOIN rr.translations rrt
+                  WHERE rrt.locale = :locale
+                  ORDER BY rrt.name ASC
+                  ')
+            ->setParameter('locale', $locale)
+            ->getResult();
+    }
 }

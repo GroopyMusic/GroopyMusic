@@ -75,16 +75,16 @@ class RewardRestriction implements TranslatableInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="querry", type="string",length = 255)
+     * @ORM\Column(name="query", type="string",length = 255)
      */
-    private $querry;
+    private $query;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="querry_parameter", type="integer",nullable = true)
+     * @ORM\Column(name="query_parameter", type="string",length = 255, nullable=true)
      */
-    private $querry_parameter;
+    private $query_parameter;
 
     /**
      * @ORM\ManyToMany(targetEntity="Reward", inversedBy="restrictions")
@@ -137,13 +137,13 @@ class RewardRestriction implements TranslatableInterface
     /**
      * Set querryParameter
      *
-     * @param integer $querryParameter
+     * @param string $querryParameter
      *
      * @return RewardRestriction
      */
-    public function setQuerryParameter($querryParameter)
+    public function setQueryParameter($querryParameter)
     {
-        $this->querry_parameter = $querryParameter;
+        $this->query_parameter = $querryParameter;
 
         return $this;
     }
@@ -151,11 +151,11 @@ class RewardRestriction implements TranslatableInterface
     /**
      * Get querryParameter
      *
-     * @return integer
+     * @return string
      */
-    public function getQuerryParameter()
+    public function getQueryParameter()
     {
-        return $this->querry_parameter;
+        return $this->query_parameter;
     }
 
 
@@ -166,9 +166,9 @@ class RewardRestriction implements TranslatableInterface
      *
      * @return RewardRestriction
      */
-    public function setQuerry($querry)
+    public function setQuery($querry)
     {
-        $this->querry = $querry;
+        $this->query = $querry;
 
         return $this;
     }
@@ -178,8 +178,8 @@ class RewardRestriction implements TranslatableInterface
      *
      * @return string
      */
-    public function getQuerry()
+    public function getQuery()
     {
-        return $this->querry;
+        return $this->query;
     }
 }

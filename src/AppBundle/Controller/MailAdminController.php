@@ -8,15 +8,11 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Artist;
 use AppBundle\Form\MailFormType;
 use AppBundle\Services\MailAdminService;
 use Psr\Log\LoggerInterface;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
-use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

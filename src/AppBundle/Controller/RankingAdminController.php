@@ -55,12 +55,13 @@ class RankingAdminController extends Controller
     {
         $categories = [];
         $maximums = [];
+        $rewardAttributionService = $this->container->get('AppBundle\Services\RewardAttributionService');
         $formula_descriptions = [];
         try {
             $em = $this->getDoctrine()->getManager();
             $categories = $em->getRepository('AppBundle:Category')->findForRaking();
             $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
-            $this->limitStatistics($categories);
+            $rewardAttributionService->limitStatistics($categories);
             $formula_descriptions = $this->rankingervice->buildFormulaDescription($categories);
         } catch (\Exception $ex) {
             $this->addFlash('notice', 'Exception :' . $ex->getMessage());
@@ -80,7 +81,7 @@ class RankingAdminController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function computeAction(Request $request)
+    public function computeAction(Request $request, RewardAttributionService $rewardAttributionService)
     {
         try {
             $this->rankingervice->computeAllStatistic();
@@ -91,7 +92,7 @@ class RankingAdminController extends Controller
             $em = $this->getDoctrine()->getManager();
             $categories = $em->getRepository('AppBundle:Category')->findForRaking();
             $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
-            $this->limitStatistics($categories);
+            $rewardAttributionService->limitStatistics($categories);
             $formula_descriptions = $this->rankingervice->buildFormulaDescription($categories);
         }
         return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
@@ -110,96 +111,68 @@ class RankingAdminController extends Controller
      */
     public function displayMoreAction(Request $request)
     {
-        $statistics = [];
         try {
+            $statistics = [];
             $em = $this->getDoctrine()->getManager();
             $statistics = $em->getRepository('AppBundle:User_Category')->findStatLimit($request->get('level_id'), $request->get('limit'));
-        } catch (\Exception $ex) {
-            $this->addFlash('notice', 'Exception :' . $ex->getMessage());
-            $this->logger->warning("Exception displayMoreAction", [$ex->getMessage()]);
+        } catch (\Throwable $th) {
+            return new Response($th->getMessage(), 500, []);
         }
         return $this->render('@App/Admin/ranking/ranking_table_preview.html.twig', array(
             'statistics' => $statistics
         ));
     }
 
-    public function displayModalAction(Request $request)
+    public function displayModalAction(Request $request, RewardAttributionService $rewardAttributionService)
     {
-        $em = $this->getDoctrine()->getManager();
-        $checkedStatistics = $request->get('stats');
-        if ($request->get('route') == "displayEmailModal") {
-            $template = '@App/Admin/ranking/send_email_preview.html.twig';
-        } else {
-            $template = '@App/Admin/ranking/give_reward_preview.html.twig';
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $checkedStatistics = $request->get('stats');
+            if ($request->get('route') == "displayEmailModal") {
+                $template = '@App/Admin/ranking/send_email_preview.html.twig';
+            } else {
+                $template = '@App/Admin/ranking/give_reward_preview.html.twig';
+            }
+            $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
+            $stats = $rewardAttributionService->getSelectedStats($checkedStatistics, $allStatistics);
+            $rewards = $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale());
+            return $this->render($template, array('recipients' => $stats, 'level_id' => $request->get('level'), 'rewards' => $rewards));
+        } catch (\Throwable $th) {
+            return new Response($th->getMessage(), 500, []);
         }
-        if ($checkedStatistics == null) {
-            return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'warning'));
-        }
-        $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
-        $stats = $this->getSelectedStats($checkedStatistics, $allStatistics);
-        $rewards = $em->getRepository('AppBundle:Reward')->findNotDeletedRewards();
-        return $this->render($template, array('recipients' => $stats, 'level_id' => $request->get('level'), 'rewards' => $rewards));
     }
 
-    public function sendEmailAction(Request $request, MailDispatcher $mailDispatcher)
+    public function sendEmailAction(Request $request, MailDispatcher $mailDispatcher, RewardAttributionService $rewardAttributionService)
     {
-        $em = $this->getDoctrine()->getManager();
-        $checkedStatistics = $request->get('stats');
         $template = '@App/Admin/ranking/send_email_preview.html.twig';
-        if ($checkedStatistics == null) {
-            return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'warning'));
-        }
         try {
+            $em = $this->getDoctrine()->getManager();
+            $checkedStatistics = $request->get('stats');
             $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
-            $stats = $this->getSelectedStats($checkedStatistics, $allStatistics);
+            $stats = $rewardAttributionService->getSelectedStats($checkedStatistics, $allStatistics);
             $mailDispatcher->sendRankingEmail($stats, $request->get('mailObject'), $request->get('mailContent'));
-        } catch (\Exception $ex) {
-            return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'error', 'exception' => $ex->getMessage()));
+        } catch (\Throwable $th) {
+            return new Response($th->getMessage(), 500, []);
         }
-        return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'success'));
+        return new Response("Email(s) envoyés(s)", 200, []);
     }
 
     public function giveRewardAction(Request $request, RewardAttributionService $rewardAttributionService)
     {
-        $em = $this->getDoctrine()->getManager();
-        $checkedStatistics = $request->get('stats');
         $template = '@App/Admin/ranking/give_reward_preview.html.twig';
-        if ($checkedStatistics == null) {
-            return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'warning'));
-        }
         try {
+            $em = $this->getDoctrine()->getManager();
+            $checkedStatistics = $request->get('stats');
             $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
-            $stats = $this->getSelectedStats($checkedStatistics, $allStatistics);
+            $stats = $rewardAttributionService->getSelectedStats($checkedStatistics, $allStatistics);
             $reward = $em->getRepository('AppBundle:Reward')->getReward(intval($request->get('reward')));
             $rewardAttributionService->giveReward($stats, $reward, $request->get('notification'), $request->get('email'), $request->get('emailContent'));
-        } catch (\Exception $ex) {
-            return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'error', 'exception' => $ex->getMessage()));
+        } catch (\Throwable $th) {
+            return new Response($th->getMessage(), 500, []);
+
         }
-        return $this->render($template, array('recipients' => [], 'level_id' => $request->get('level'), 'message' => 'success'));
+        return new Response("Récompense(s) attribuée(s)", 200, []);
 
     }
 
-    private function getSelectedStats($ids, $allStatistics)
-    {
-        $users = [];
-        foreach ($ids as $id) {
-            array_push($users, $allStatistics[$id]);
-        }
-        return $users;
-    }
-
-    /**
-     * get only the first 5 lines of each category level
-     *
-     * @param $categories
-     *
-     */
-    private function limitStatistics($categories)
-    {
-        foreach ($categories as $category) {
-            foreach ($category->getLevels()->toArray() as $level) {
-                $level->setStatistics(array_slice($level->getStatistics()->toArray(), 0, 5, true));
-            }
-        }
-    }
 }
