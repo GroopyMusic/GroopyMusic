@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -12,11 +14,38 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "default" = "BaseContractArtist"})
  */
-class BaseContractArtist
+class BaseContractArtist implements TranslatableInterface
 {
+    use ORMBehaviors\Translatable\Translatable;
+
     const VOTES_TO_REFUND = 2;
     const NB_PROMO_DAYS = 7;
     const NB_TEST_PERIOD_DAYS = 20;
+
+    public function __call($method, $arguments)
+    {
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
 
     public function __toString()
     {
@@ -358,11 +387,6 @@ class BaseContractArtist
      * @ORM\OneToMany(targetEntity="VIPInscription", mappedBy="contract_artist")
      */
     protected $vip_inscriptions;
-
-    /**
-     * @ORM\Column(name="additional_info", type="text", nullable=true)
-     */
-    protected $additional_info;
 
     /**
      * @var \DateTime
@@ -963,30 +987,6 @@ class BaseContractArtist
     public function getVipInscriptions()
     {
         return $this->vip_inscriptions;
-    }
-
-    /**
-     * Set additionalInfo
-     *
-     * @param string $additionalInfo
-     *
-     * @return BaseContractArtist
-     */
-    public function setAdditionalInfo($additionalInfo)
-    {
-        $this->additional_info = $additionalInfo;
-
-        return $this;
-    }
-
-    /**
-     * Get additionalInfo
-     *
-     * @return string
-     */
-    public function getAdditionalInfo()
-    {
-        return $this->additional_info;
     }
 
     /**

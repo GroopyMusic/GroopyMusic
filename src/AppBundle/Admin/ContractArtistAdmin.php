@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\BaseStep;
 use AppBundle\Entity\ContractArtist_Artist;
@@ -168,10 +169,6 @@ class ContractArtistAdmin extends BaseAdmin
                 ))
             ->end()
             ->with('Autres')
-                ->add('cart_reminder_sent', null, array(
-                    'label' => 'Rappel envoyé pour les paniers non payés qui le référencent',
-                ))
-
                 ->add('asking_refund', null, array(
                     'label' => 'Demandes de remboursement',
                 ))
@@ -193,7 +190,7 @@ class ContractArtistAdmin extends BaseAdmin
                     'associated_property' => 'artist',
                     'label' => 'Premières parties',
                 ))
-                ->add('additional_info', null, array(
+                ->add('getAdditionalInfo', null, array(
                     'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
                 ))
             ->end()
@@ -229,6 +226,15 @@ class ContractArtistAdmin extends BaseAdmin
                     'required' => true,
                     'label' => 'Tickets réservés',
                 ))
+                ->add('translations', TranslationsType::class, array(
+                    'required' => false,
+                    'label' => 'Champs traductibles',
+                    'fields' => [
+                        'additional_info' => [
+                            'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
+                        ],
+                    ],
+                ))
             ->end()
         ;
 
@@ -248,9 +254,6 @@ class ContractArtistAdmin extends BaseAdmin
                     'label' => 'Artistes invités',
                     'multiple' => true,
                     'class' => Artist::class,
-                ))
-                ->add('additional_info', null, array(
-                    'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
                 ))
             ->end()
         ;

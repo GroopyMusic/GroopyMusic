@@ -54,13 +54,7 @@
                 {% include ":patterns:infos.html.twig" %}
             {% endblock %}
 
-            {# later
-            {% block breadcrumbs %}
-                {{ wo_render_breadcrumbs() }}
-            {% endblock %}
-            #}
-
-            {% block body %}{# Page body comes here #}{% endblock %}
+            {% block body %}{% endblock %}
             {% block js_vars %}{% endblock %}
         </main>
 
@@ -92,19 +86,6 @@
                     gtag('config', 'UA-109142671-1');
                 </script>
             {% endif %}
-
-        {# block jsValidatorInit %}
-            {{ include('FpJsFormValidatorBundle::javascripts.html.twig') }}
-
-            {{ js_validator_config() }}
-            {{ init_js_validation() }}
-
-            <script>
-                $('button[type="submit"]').click(function(event) {
-                        $(this).closest('form').jsFormValidator('submitForm', event);
-                });
-            </script>
-        {% endblock #}
             {% block additional_javascripts %}{% endblock %}
         {% endblock %}
 

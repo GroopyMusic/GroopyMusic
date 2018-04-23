@@ -64,6 +64,9 @@ class UserAdmin extends BaseAdmin
                 ->add('address', null, array(
                     'label' => 'Adresse',
                 ))
+                ->add('preferredLocale', null, array(
+                    'label' => 'Langue préférée',
+                ))
             ->end()
             ->with('Artistes')
                 ->add('getArtistsExport', 'sonata_collection', array(

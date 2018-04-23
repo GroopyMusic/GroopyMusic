@@ -78,7 +78,6 @@ class KernelListener implements EventSubscriberInterface
     public function onResponse(FilterResponseEvent $event)
     {
         $this->em->flush();
-        $response = $event->getResponse();
     }
 
 }

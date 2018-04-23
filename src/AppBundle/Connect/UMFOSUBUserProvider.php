@@ -128,6 +128,7 @@ class UMFOSUBUserProvider extends BaseClass
             $user->setFirstName($firstname);
             $user->setLastName($lastname);
             $user->setPassword('null');
+            $user->setPreferredLocale($this->request->getLocale());
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
 
