@@ -40,29 +40,28 @@ class RewardSpendingService
     public function applyReward(ContractFan $cf)
     {
         $this->em->persist($cf);
-        $user_rewards = $cf->getUserRewards()->toArray();
         $isReduction = false;
+        $user_rewards = $cf->getUserRewards()->toArray();
         $today = new \DateTime();
         $this->clearPurchases($cf);
         foreach ($user_rewards as $user_reward) {
             if ($user_reward->getActive() && $user_reward->getLimitDate() > $today && $user_reward->getRemainUse() > 0) {
                 $reward = $user_reward->getReward();
-                if ($reward instanceof ReductionReward) {
+                if ($reward instanceof ReductionReward && $isReduction == false) {
                     $isReduction = true;
-                    foreach ($cf->getPurchases() as $purchase) {
-                        if ($user_reward->getCounterParts()->count() == 0
-                            || $user_reward->getCounterParts()->contains($purchase->getCounterPart())) {
-                            $this->applyPurchaseReduction($cf, $user_reward, $purchase);
-                        }
+                    $purchases = $this->getOrderedApplicablePurhcases($cf, $user_reward);
+                    $remain_use = $user_reward->getRemainUse();
+                    foreach ($purchases as $purchase) {
+                        $remain_use = $this->computeReducedPrice($cf, $user_reward, $purchase, $remain_use);
                     }
+                } elseif ($reward instanceof ReductionReward  && $isReduction) {
+                    $cf->removeUserReward($user_reward);
                 }
             } else {
                 $cf->removeUserReward($user_reward);
             }
         }
-        if ($isReduction) {
-            $cf->setAmount($this->computeAmount($cf));
-        }
+        $this->logger->warning('lol', [$cf]);
         $this->em->flush();
     }
 
@@ -76,8 +75,9 @@ class RewardSpendingService
     {
         $user_rewards = $cf->getUserRewards()->toArray();
         foreach ($user_rewards as $user_reward) {
-            $user_reward->setRemainUse($user_reward->getRemainUse() - 1);
-            if ($user_reward->getRemainUse() == 0) {
+            $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getCounterPartsQuantityOrganic());
+            if ($user_reward->getRemainUse() <= 0) {
+                $user_reward->setRemainUse(0);
                 $user_reward->setActive(false);
             }
             $this->em->persist($user_reward);
@@ -155,38 +155,31 @@ class RewardSpendingService
      * @param ContractFan $cf
      * @param User_Reward $user_reward
      * @param Purchase $purchase
+     * @param integer $remain_use
+     * @return integer $remain_use
      */
-    private function applyPurchaseReduction(ContractFan $cf, User_Reward $user_reward, Purchase $purchase)
+    private function computeReducedPrice(ContractFan $cf, User_Reward $user_reward, Purchase $purchase, $remain_use)
     {
         $reduction = $user_reward->getRewardTypeParameters()['reduction'];
         $counter_part_price = $purchase->getCounterpart()->getPrice();
-        $reductionPrice = $counter_part_price / 100 * $reduction;
-        if ($purchase->getReducedPrice() == null) {
-            $purchase->setReducedPrice($counter_part_price - $reductionPrice);
-        } else {
-            $purchase->setReducedPrice($purchase->getReducedPrice() - $reductionPrice);
+        $quantityOrganic = $purchase->getQuantityOrganic();
+        if ($remain_use > 0) {
+            $reductionPrice = $counter_part_price / 100 * $reduction;
+            if ($purchase->getReducedPrice() == null) {
+                $purchase->setReducedPrice($counter_part_price - $reductionPrice);
+            }
+            if ($purchase->getReducedPrice() < 0) {
+                $purchase->setReducedPrice(0);
+            }
+            while ($remain_use > 0 && $quantityOrganic > 0) {
+                $cf->setAmount($cf->getAmount() - $reductionPrice);
+                $purchase->setNbReducedCounterparts($purchase->getNbReducedCounterparts() + 1);
+                $remain_use = $remain_use - 1;
+                $quantityOrganic = $quantityOrganic - 1;
+            }
         }
-        if ($purchase->getReducedPrice() < 0) {
-            $purchase->setReducedPrice(0);
-        }
-
+        return $remain_use;
     }
-
-    /**
-     * calculation of a total amount of a contract
-     *
-     * @param ContractFan $cf
-     * @return int
-     */
-    private function computeAmount(ContractFan $cf)
-    {
-        $amount = 0;
-        foreach ($cf->getPurchases() as $purchase) {
-            $amount += $purchase->getReducedAmount();
-        }
-        return $amount;
-    }
-
 
     /**
      * Reset all purchases prices to null
@@ -197,6 +190,7 @@ class RewardSpendingService
     {
         foreach ($cf->getPurchases() as $purchase) {
             $purchase->setReducedPrice(null);
+            $purchase->setNbReducedCounterparts(0);
         }
     }
 
@@ -217,4 +211,22 @@ class RewardSpendingService
         }
         $this->em->flush();
     }
+
+    public function getOrderedApplicablePurhcases(ContractFan $cf, User_Reward $user_reward)
+    {
+        $purchases = $cf->getPurchases();
+        $clearedPurchases = [];
+        foreach ($purchases as $purchase) {
+            if ($user_reward->getCounterParts()->count() == 0
+                || $user_reward->getCounterParts()->contains($purchase->getCounterPart())) {
+                array_push($clearedPurchases, $purchase);
+            }
+        }
+        usort($clearedPurchases, function (Purchase $a, Purchase $b) {
+            return $b->getCounterpart()->getPrice() - $a->getCounterpart()->getPrice();
+        });
+        return $clearedPurchases;
+    }
+
+
 }

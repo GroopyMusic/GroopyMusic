@@ -50,25 +50,27 @@ use Symfony\Component\Translation\TranslatorInterface;
 class PublicController extends Controller
 {
     protected $container;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
     // Duplicated from UserController
-    private function createCartForUser($user) {
+    private function createCartForUser($user)
+    {
         $cart = new Cart();
         $cart->setUser($user);
         $this->getDoctrine()->getManager()->persist($cart);
         return $cart;
     }
 
-    private function cleanCart(Cart $cart, $em) {
-        if($cart->getPaid() && $cart->getConfirmed()) {
+    private function cleanCart(Cart $cart, $em)
+    {
+        if ($cart->getPaid() && $cart->getConfirmed()) {
             return $this->createCartForUser($cart->getUser());
-        }
-        else {
-            foreach($cart->getContracts() as $contract) {
+        } else {
+            foreach ($cart->getContracts() as $contract) {
                 $cart->removeContract($contract);
                 $em->remove($contract);
             }
@@ -93,20 +95,17 @@ class PublicController extends Controller
         $i = 0;
         $j = 0;
 
-        while(count($news) < $NB_MAX_NEWS && ($i < count($new_artists) || $j < count($new_crowdfundings))) {
-            if($i >= count($new_artists)) {
+        while (count($news) < $NB_MAX_NEWS && ($i < count($new_artists) || $j < count($new_crowdfundings))) {
+            if ($i >= count($new_artists)) {
                 $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
                 $j++;
-            }
-            elseif($j >= count($new_crowdfundings)) {
+            } elseif ($j >= count($new_crowdfundings)) {
                 $news[] = ['type' => 'artist', 'object' => $new_artists[$i]];
                 $i++;
-            }
-            elseif($new_artists[$i]->getDateCreation() > $new_crowdfundings[$j]->getDate()) {
+            } elseif ($new_artists[$i]->getDateCreation() > $new_crowdfundings[$j]->getDate()) {
                 $news[] = ['type' => 'artist', 'object' => $new_artists[$i]];
                 $i++;
-            }
-            else {
+            } else {
                 $news[] = ['type' => 'contract', 'object' => $new_crowdfundings[$j]];
                 $j++;
             }
@@ -115,27 +114,25 @@ class PublicController extends Controller
         $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
         $crowdfundings = [];
 
-        if($user != null && count($user->getGenres()) > 0) {
+        if ($user != null && count($user->getGenres()) > 0) {
             $genres = $user->getGenres()->toArray();
             $genre = $genres[array_rand($genres, 1)];
-        }
-
-        else {
+        } else {
             $genre = null;
         }
 
 
         // Efficient shuffle
-        for($i = 0; $i < $NB_MAX_CROWDS && count($all_crowdfundings) > 0; $i++) {
+        for ($i = 0; $i < $NB_MAX_CROWDS && count($all_crowdfundings) > 0; $i++) {
 
             $randomKey = array_rand($all_crowdfundings, 1);
 
-            if($i < 2 && $genre != null) {
-                $genre_candidates = array_filter($all_crowdfundings, function($elem, $key) use ($genre) {
+            if ($i < 2 && $genre != null) {
+                $genre_candidates = array_filter($all_crowdfundings, function ($elem, $key) use ($genre) {
                     return $elem->getArtist()->getGenres()->contains($genre);
                 }, ARRAY_FILTER_USE_BOTH);
 
-                if(count($genre_candidates) > 0) {
+                if (count($genre_candidates) > 0) {
                     $randomKey = array_rand($genre_candidates, 1);
                 }
             }
@@ -153,14 +150,16 @@ class PublicController extends Controller
     /**
      * @Route("/about", name="about")
      */
-    public function aboutAction() {
+    public function aboutAction()
+    {
         return $this->render('AppBundle:Public:about.html.twig');
     }
 
     /**
      * @Route("/faq", name="faq")
      */
-    public function faqAction(EntityManagerInterface $em) {
+    public function faqAction(EntityManagerInterface $em)
+    {
         $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
         return $this->render('AppBundle:Public:faq.html.twig', array(
             'steps' => $steps,
@@ -170,39 +169,42 @@ class PublicController extends Controller
     /**
      * @Route("/team", name="team")
      */
-    public function teamAction() {
+    public function teamAction()
+    {
         return $this->render('AppBundle:Public:team.html.twig');
     }
 
     /**
      * @Route("/suggestions", name="suggestionBox")
      */
-    public function suggestionBoxAction(){
+    public function suggestionBoxAction()
+    {
         return $this->render('AppBundle:Public:suggestionBox.html.twig');
     }
 
     /**
      * @Route("/suggestions/post", name="suggestionBox_form")
      */
-    public function suggestionBoxFormAction(Request $request, UserInterface $user = null) {
+    public function suggestionBoxFormAction(Request $request, UserInterface $user = null)
+    {
         $suggestionBox = new SuggestionBox();
 
-        if($user != null){
+        if ($user != null) {
             $suggestionBox->setUser($user);
             $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox, ['attr' => ['class' => 'suggestionBoxForm'], 'action' => $this->generateUrl('suggestionBox_form')]);
-        }else{
+        } else {
             $form = $this->createForm(SuggestionBoxType::class, $suggestionBox, ['attr' => ['class' => 'suggestionBoxForm'], 'action' => $this->generateUrl('suggestionBox_form')]);
         }
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($suggestionBox);
             $em->flush();
 
             $mailDispatcher = $this->get(MailDispatcher::class);
-            if($suggestionBox->getMailCopy() && !empty($suggestionBox->getEmail())) {
+            if ($suggestionBox->getMailCopy() && !empty($suggestionBox->getEmail())) {
                 $mailDispatcher->sendSuggestionBoxCopy($suggestionBox);
             }
 
@@ -220,7 +222,8 @@ class PublicController extends Controller
     /**
      * @Route("/halls", name="catalog_halls")
      */
-    public function hallsAction() {
+    public function hallsAction()
+    {
         $em = $this->getDoctrine()->getManager();
         $halls = $em->getRepository('AppBundle:Hall')->findVisible();
         shuffle($halls);
@@ -233,13 +236,14 @@ class PublicController extends Controller
     /**
      * @Route("/halls/{id}-{slug}", name="hall")
      */
-    public function hallAction(Hall $hall, $slug = null) {
+    public function hallAction(Hall $hall, $slug = null)
+    {
 
-        if($slug !== null && $slug != $hall->getSlug()) {
+        if ($slug !== null && $slug != $hall->getSlug()) {
             return $this->redirectToRoute('hall', ['id' => $hall->getId(), 'slug' => $hall->getSlug()]);
         }
 
-        if(!$hall->getVisible()) {
+        if (!$hall->getVisible()) {
             throw $this->createNotFoundException('Hall not visible');
         }
 
@@ -251,7 +255,8 @@ class PublicController extends Controller
     /**
      * @Route("/crowdfundings", name="catalog_crowdfundings")
      */
-    public function artistContractsAction(UserInterface $user = null) {
+    public function artistContractsAction(UserInterface $user = null)
+    {
 
         $em = $this->getDoctrine()->getManager();
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
@@ -285,7 +290,7 @@ class PublicController extends Controller
         }
 
         $cf = new ContractFan($contract);
-        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards]);
+        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards, 'entity_manager' => $em,]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -354,10 +359,10 @@ class PublicController extends Controller
 
         // When user logs in at this point, we could find another cart already related to him
         // -> that potential cart must be removed from DB as we should only use the $cart instance
-        if($user != null) {
+        if ($user != null) {
             $other_potential_cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
-            if($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
+            if ($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
                 $em->remove($other_potential_cart);
             }
 
@@ -374,7 +379,7 @@ class PublicController extends Controller
         $form_view = null;
 
         // Registration form
-        if(!$user) {
+        if (!$user) {
             /** @var $formFactory FactoryInterface */
             $formFactory = $this->get('fos_user.registration.form.factory');
             /** @var $userManager UserManagerInterface */
@@ -423,8 +428,7 @@ class PublicController extends Controller
 
                     $this->addFlash('notice', 'notices.registration');
                     return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
-                }
-                else {
+                } else {
                     $event = new FormEvent($form, $request);
                     $dispatcher->dispatch(FOSUserEvents::REGISTRATION_FAILURE, $event);
                 }
@@ -442,20 +446,20 @@ class PublicController extends Controller
     }
 
 
-
     /**
      * @Route("/artists", name="catalog_artists")
      */
-    public function artistsAction(Request $request, UserInterface $user = null) {
+    public function artistsAction(Request $request, UserInterface $user = null)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $artists = $em->getRepository('AppBundle:Artist')->findVisible();
 
-        if($user != null && count($user->getGenres()) > 0) {
-            usort($artists, function(Artist $a, Artist $b) use ($user) {
-                if($a->getScore($user) == $b->getScore($user))
+        if ($user != null && count($user->getGenres()) > 0) {
+            usort($artists, function (Artist $a, Artist $b) use ($user) {
+                if ($a->getScore($user) == $b->getScore($user))
                     return 0;
-                if($a->getScore($user) > $b->getScore($user))
+                if ($a->getScore($user) > $b->getScore($user))
                     return 1;
                 return -1;
             });
@@ -469,9 +473,10 @@ class PublicController extends Controller
     /**
      * @Route("/artists/{id}-{slug}", name="artist_profile")
      */
-    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null, EntityManagerInterface $em) {
+    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null, EntityManagerInterface $em)
+    {
 
-        if($slug !== null && $slug != $artist->getSlug()) {
+        if ($slug !== null && $slug != $artist->getSlug()) {
             return $this->redirectToRoute('artist_profile', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
         }
 
@@ -484,24 +489,25 @@ class PublicController extends Controller
      * @Route("/validate-ownership-{id}/{code}", name="artist_validate_ownership")
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function validateOwnershipAction(Request $request, UserInterface $user = null, Artist $artist, $code, TranslatorInterface $translator) {
+    public function validateOwnershipAction(Request $request, UserInterface $user = null, Artist $artist, $code, TranslatorInterface $translator)
+    {
 
         $em = $this->getDoctrine()->getManager();
         $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
 
-        if($req == null) {
+        if ($req == null) {
             throw $this->createNotFoundException('There is no request with such code');
         }
 
-        if($req->getAccepted() || $req->getRefused()) {
+        if ($req->getAccepted() || $req->getRefused()) {
             throw $this->createAccessDeniedException('Request is already accepted or refused');
         }
 
         $mailUser = $em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
-        if($mailUser != null) {
+        if ($mailUser != null) {
             // Manually log out if another user is logged in, then redirect to here
             // see https://stackoverflow.com/questions/28827418/log-user-out-in-symfony-2-application-when-remember-me-is-enabled/28828377#28828377
-            if($mailUser->getId() != $user->getId()) {
+            if ($mailUser->getId() != $user->getId()) {
                 // Logging user out.
                 $this->get('security.token_storage')->setToken(null);
 
@@ -534,13 +540,12 @@ class PublicController extends Controller
                 'attr' => ['class' => 'btn btn-secondary'],
                 'label' => 'labels.ownershiprequest.refuse',
             ))
-            ->getForm()
-        ;
+            ->getForm();
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && !$req->getCancelled()) {
-            if($form->get('accept')->isClicked()) {
+        if ($form->isSubmitted() && !$req->getCancelled()) {
+            if ($form->get('accept')->isClicked()) {
                 $req->setAccepted(true);
 
                 $artist_user = new Artist_User();
@@ -550,8 +555,7 @@ class PublicController extends Controller
                 $em->persist($artist_user);
                 $em->flush();
                 $this->addFlash('notice', $translator->trans('notices.artist_ownership_request_accepted', ['%artist%' => $artist->getArtistname()]));
-            }
-            elseif($form->get('refuse')->isClicked()) {
+            } elseif ($form->get('refuse')->isClicked()) {
                 $req->setRefused(true);
                 $em->flush();
                 $this->addFlash('notice', 'notices.artist_ownership_request_refused');
@@ -568,12 +572,13 @@ class PublicController extends Controller
     /**
      * @Route("/change-email-token-{token}", name="user_change_email_check")
      */
-    public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token) {
+    public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token)
+    {
 
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
 
-        if(!$user) {
+        if (!$user) {
             $this->addFlash('error', 'errors.change_email_token_expired');
             return $this->redirectToRoute('homepage');
         }
@@ -581,7 +586,7 @@ class PublicController extends Controller
         $asked_email = $user->getAskedEmail();
 
         $error_detector = $em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
-        if($error_detector != null) {
+        if ($error_detector != null) {
             $this->addFlash('error', 'errors.change_email_used_since');
             return $this->redirectToRoute('homepage');
         }
@@ -594,7 +599,7 @@ class PublicController extends Controller
         $user->setAskedEmailToken(null);
 
         // Logout (in case another user was logged in)
-        if($current_user != null && $current_user->getId() != $user->getId()) {
+        if ($current_user != null && $current_user->getId() != $user->getId()) {
             $this->get('security.token_storage')->setToken(null);
 
             // Invalidating the session.
@@ -602,9 +607,7 @@ class PublicController extends Controller
             $session->invalidate();
 
             $this->addFlash('notice', 'notices.change_email_logged_out');
-        }
-
-        else {
+        } else {
             $this->addFlash('notice', 'notices.change_email');
         }
 
@@ -613,17 +616,18 @@ class PublicController extends Controller
 
         return $this->redirectToRoute('homepage');
     }
-  
+
     /**
      * @Route("/proposition", name="proposition")
      */
-    public function propositionAction(Request $request, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher){
+    public function propositionAction(Request $request, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher)
+    {
         $propositionContractArtist = new PropositionContractArtist();
         $form = $this->createForm(PropositionContractArtistType::class, $propositionContractArtist);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($propositionContractArtist);
             $em->flush();
@@ -631,7 +635,7 @@ class PublicController extends Controller
             try {
                 $mailDispatcher->sendAdminProposition($propositionContractArtist);
                 $notificationDispatcher->notifyAdminProposition($propositionContractArtist);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
 
             }
             $this->addFlash('notice', 'notices.proposition');

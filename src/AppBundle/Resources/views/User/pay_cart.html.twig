@@ -27,23 +27,27 @@
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}</td>
                 <td>{% if not promotional %}{{ purchase.counterpart.price }} €{% else %}0 €{% endif %}</td>
             </tr>
-            {% if contract.userRewards is not empty %}
+            {% if contract.userRewards is not empty and purchase.reducedPrice != null and purchase.nbReducedCounterparts > 0 %}
                 {% for userReward in contract.userRewards %}
                     {% if userReward.reward.getType == "Réduction" %}
                         {% if userReward.counterParts is empty or purchase.counterpart in userReward.counterParts %}
                             <tr>
                                 <td class="contract-info-title">{{ userReward.reward.name }}</td>
-                                <td>{{ userReward.rewardTypeParameters.reduction }} %</td>
+                                <td> - {{ userReward.rewardTypeParameters.reduction }} %</td>
                             </tr>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
                 <tr>
                     <td class="contract-info-title">{{ 'pay_cart.recap.labels.price'|trans|raw }}</td>
-                    {% set total = purchase.getAmount() %}
-                    {% set reducedPrice = purchase.getReducedAmount %}
-                    {% set substraction = total - reducedPrice %}
-                    <td>{{ total }} - <span style="color:red">{{ substraction }}</span> = {{ reducedPrice }}</td>
+                    {% set total = purchase.getAmount() | round(2) %}
+                    {% if purchase.nbReducedCounterparts > purchase.quantityOrganic %}
+                        {% set totalReduced = ( purchase.reducedPrice * purchase.nbReducedCounterparts ) + ((purchase.nbReducedCounterparts - purchase.quantityOrganic) * purchase.counterpart.price) | round(2) %}
+                    {% else %}
+                        {% set totalReduced = ( purchase.reducedPrice * purchase.nbReducedCounterparts ) + ((purchase.quantityOrganic - purchase.nbReducedCounterparts) * purchase.counterpart.price) | round(2) %}
+                    {% endif %}
+                    {% set substraction = total - totalReduced | round(2) %}
+                    <td>{{ total }} - <span style="color:red">{{ substraction }}</span> = {{ totalReduced }}</td>
                 </tr>
             {% endif %}
             </tbody>
@@ -77,8 +81,13 @@
                                         {% for user_reward in fan_contract.userRewards %}
                                             <li>
                                                 <a class="notification-trigger"
-                                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }}</a>
+                                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }} (X{{ fan_contract}})</a>
                                             </li>
+                                            <div class="alert alert-info">
+
+                                                Indicates a neutral informative change or action.
+                                            </div>
+                                            <br>
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -234,7 +243,8 @@
                         <div class="content-box-content-zones content-box-content">
                             {% set sum_tickets = 0 %}
                             {% set amoutWithoutReduction = 0 %}
-                            {% set hasRestriction = false %}
+                            {% set hasReduction = false %}
+                            {% set hasReward = false %}
                             {% for fan_contract in cart.contracts %}
                                 {% for purchase in fan_contract.purchases %}
                                     {{ macros.recap_zone(purchase, fan_contract, false) }}
@@ -244,14 +254,42 @@
                                     {% endif %}
                                 {% endfor %}
                                 {% if fan_contract.userRewards is not empty %}
-                                    {% set hasRestriction = true %}
+                                    {% for user_reward in fan_contract.userRewards %}
+                                        {% if user_reward.reward.getType == "Réduction" %}
+                                            {% set hasReduction = true %}
+                                        {% else %}
+                                            {% set hasReward = true %}
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endif %}
                                 {% set amoutWithoutReduction = amoutWithoutReduction + fan_contract.getAmountWithoutReduction %}
                                 {% set sum_tickets = sum_tickets + fan_contract.counterPartsQuantity %}
                             {% endfor %}
+                            {% if hasReward == true %}
+                                <div class="content-box-content-zone">
+                                    <table class="content-box-table">
+                                        <tr class="no-border">
+                                            <td class="contract-info-title big">Autres récompenses appliquées :</td>
+                                            <td></td>
+                                        </tr>
+                                        {% for fan_contract in cart.contracts %}
+                                            {% if fan_contract.userRewards is not empty %}
+                                                {% for user_reward in fan_contract.userRewards %}
+                                                    {% if user_reward.reward.getType != "Réduction" %}
+                                                        <tr>
+                                                            <td class="contract-info-title big">{{ user_reward.reward.name }}</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            {% endif %}
                             <div class="content-box-content-zone no-border">
                                 <table class="content-box-table">
-                                    {% if hasRestriction == true %}
+                                    {% if hasReduction == true %}
                                         <tr class="no-border">
                                             <td class="contract-info-title big">{{ 'pay_cart.recap.labels.total_without_reduction'|trans|raw }}</td>
                                             <td class="big font-weight-bold">{{ amoutWithoutReduction }} €</td>

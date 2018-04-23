@@ -17,61 +17,68 @@ class Purchase
 
     public function __toString()
     {
-        return $this->counterpart . ' (x'.$this->quantity.')' . $this->getActuallyAppliedPromotionsString() ;
+        return $this->counterpart . ' (x' . $this->quantity . ')' . $this->getActuallyAppliedPromotionsString();
     }
 
     public function __construct()
     {
         $this->quantity = 0;
         $this->nb_free_counterparts = 0;
+        $this->nb_reduced_counterparts = 0;
         $this->reducedPrice = 0;
         $this->purchase_promotions = new ArrayCollection();
     }
 
     public function getPromotions()
     {
-        return array_map(function(Purchase_Promotion $p_promotion) {
+        return array_map(function (Purchase_Promotion $p_promotion) {
             return $p_promotion->getPromotion();
         }, $this->purchase_promotions->toArray());
     }
 
-    public function getActuallyAppliedPromotions() {
-        return array_map(function(Purchase_Promotion $p_promotion) {
-                return $p_promotion->getPromotion();
-            }, array_filter($this->purchase_promotions->toArray(), function(Purchase_Promotion $p_promotion) {
-                return $p_promotion->getNbFreeCounterParts() > 0;
-            }));
+    public function getActuallyAppliedPromotions()
+    {
+        return array_map(function (Purchase_Promotion $p_promotion) {
+            return $p_promotion->getPromotion();
+        }, array_filter($this->purchase_promotions->toArray(), function (Purchase_Promotion $p_promotion) {
+            return $p_promotion->getNbFreeCounterParts() > 0;
+        }));
     }
 
-    public function getActuallyAppliedPromotionsString() {
+    public function getActuallyAppliedPromotionsString()
+    {
         $string = '';
-        foreach($this->getActuallyAppliedPromotions() as $promotion) {
+        foreach ($this->getActuallyAppliedPromotions() as $promotion) {
             $string .= ' - ' . $promotion;
         }
     }
 
-    public function addQuantity($q) {
+    public function addQuantity($q)
+    {
         $this->quantity = $this->quantity + $q;
-        if($this->quantity > self::MAX_QTY) {
+        if ($this->quantity > self::MAX_QTY) {
             $this->quantity = self::MAX_QTY;
         }
     }
 
-    public function getAmount() {
+    public function getAmount()
+    {
         return $this->getQuantityOrganic() * $this->counterpart->getPrice();
     }
 
     /**
      * @return ContractArtist
      */
-    public function getContractArtist() {
+    public function getContractArtist()
+    {
         return $this->contractFan->getContractArtist();
     }
 
-    public function calculatePromotions() {
-        foreach($this->getContractArtist()->getPromotions() as $promotion) {
+    public function calculatePromotions()
+    {
+        foreach ($this->getContractArtist()->getPromotions() as $promotion) {
             /** @var Promotion $promotion */
-            if($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getActuallyAppliedPromotions())) {
+            if ($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getActuallyAppliedPromotions())) {
                 $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($this->getQuantityOrganic() / $promotion->getNbOrganicNeeded()));
                 $this->nb_free_counterparts += $new_promotional_counterparts;
                 $this->addQuantity($new_promotional_counterparts);
@@ -81,19 +88,23 @@ class Purchase
         }
     }
 
-    public function getQuantityOrganic() {
+    public function getQuantityOrganic()
+    {
         return $this->quantity - $this->getQuantityPromotional();
     }
 
-    public function getQuantityPromotional() {
+    public function getQuantityPromotional()
+    {
         return $this->getNbFreeCounterparts();
     }
 
-    public function getNbFreeCounterparts() {
+    public function getNbFreeCounterparts()
+    {
         return $this->nb_free_counterparts;
     }
 
-    public function getReducedAmount(){
+    public function getReducedAmount()
+    {
         return $this->getReducedPrice() * $this->getQuantityOrganic();
     }
 
@@ -146,6 +157,11 @@ class Purchase
     private $reducedPrice;
 
     /**
+     * @ORM\Column(name="nb_reduced_counterparts", type="smallint")
+     */
+    private $nb_reduced_counterparts;
+
+    /**
      * Get id
      *
      * @return int
@@ -176,7 +192,7 @@ class Purchase
      */
     public function getQuantity()
     {
-        if($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
+        if ($this->quantity >= 3 && $this->nb_free_counterparts == 0) {
             $this->calculatePromotions();
         }
         return $this->quantity;
@@ -300,5 +316,29 @@ class Purchase
     public function getReducedPrice()
     {
         return $this->reducedPrice;
+    }
+
+    /**
+     * Set nbReducedCounterparts
+     *
+     * @param integer $nbReducedCounterparts
+     *
+     * @return Purchase
+     */
+    public function setNbReducedCounterparts($nbReducedCounterparts)
+    {
+        $this->nb_reduced_counterparts = $nbReducedCounterparts;
+
+        return $this;
+    }
+
+    /**
+     * Get nbReducedCounterparts
+     *
+     * @return integer
+     */
+    public function getNbReducedCounterparts()
+    {
+        return $this->nb_reduced_counterparts;
     }
 }
