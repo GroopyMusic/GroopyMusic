@@ -130,6 +130,12 @@ class ContractFan
         }, $this->purchases->toArray()));
     }
 
+    public function getNbReducedCounterPart(){
+        return array_sum(array_map(function (Purchase $purchase) {
+            return $purchase->getNbReducedCounterparts();
+        }, $this->purchases->toArray()));
+    }
+
     public function getUser()
     {
         return $this->getCart()->getUser();

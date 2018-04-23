@@ -54,7 +54,7 @@ class RewardSpendingService
                     foreach ($purchases as $purchase) {
                         $remain_use = $this->computeReducedPrice($cf, $user_reward, $purchase, $remain_use);
                     }
-                } elseif ($reward instanceof ReductionReward  && $isReduction) {
+                } elseif ($reward instanceof ReductionReward && $isReduction) {
                     $cf->removeUserReward($user_reward);
                 }
             } else {
@@ -75,7 +75,11 @@ class RewardSpendingService
     {
         $user_rewards = $cf->getUserRewards()->toArray();
         foreach ($user_rewards as $user_reward) {
-            $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getCounterPartsQuantityOrganic());
+            if($user_reward instanceof ReductionReward){
+                $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getNbReducedCounterPart());
+            }else{
+                $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getCounterPartsQuantity());
+            }
             if ($user_reward->getRemainUse() <= 0) {
                 $user_reward->setRemainUse(0);
                 $user_reward->setActive(false);

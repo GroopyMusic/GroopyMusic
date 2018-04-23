@@ -118,7 +118,12 @@ class ConsomableReward extends Reward
         foreach (get_object_vars($this) as $key => $value) {
             $property = $reflect->getProperty($key);
             if ($property != null && $property->class == __CLASS__) {
-                $vars[$key] = $value;
+                if ($value instanceof ConsomableType) {
+                    $vars[$key] = $value->getName();
+                } else {
+                    $vars[$key] = $value;
+                }
+
             }
         }
         return $vars;

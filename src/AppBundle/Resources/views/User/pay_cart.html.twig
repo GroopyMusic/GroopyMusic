@@ -75,19 +75,38 @@
                         </div>
                         {% for fan_contract in cart.contracts %}
                             {% if fan_contract.userRewards is not empty %}
-                                <div class="">
+                                <div>
                                     <h6>{{ 'pay_cart.recap.reduction'|trans|raw }}</h6>
-                                    <ul class="um-list">
+                                    <ul>
                                         {% for user_reward in fan_contract.userRewards %}
                                             <li>
                                                 <a class="notification-trigger"
-                                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }} (X{{ fan_contract}})</a>
+                                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }}</a>
                                             </li>
-                                            <div class="alert alert-info">
+                                            <div class="" style="font-size: 80%">
+                                                {% if user_reward.remainUse > fan_contract.getCounterPartsQuantity %}
+                                                    {% set nbUse = fan_contract.getCounterPartsQuantity %}
+                                                {% else %}
+                                                    {% set nbUse = user_reward.remainUse %}
+                                                {% endif %}
+                                                {% if  user_reward.reward.getType == "Réduction" %}
+                                                    {% for purchase in fan_contract.purchases %}
+                                                        <div>{{ user_reward.rewardTypeParameters.reduction }} % de
+                                                            réduction appliquée à {{ purchase.nbReducedCounterparts }}
+                                                            tickets "{{ purchase.counterPart }}"
+                                                        </div>
+                                                    {% endfor %}
+                                                {% elseif user_reward.reward.getType == "Invitation" %}
+                                                    <div>{{ nbUse }} invitation(s)</div>
+                                                {% elseif  user_reward.reward.getType == "Consommation" %}
+                                                    <div>{{ nbUse }} pack de consommations
+                                                        contenant {{ user_reward.rewardTypeParameters.quantity }}
+                                                        ticket(s) {{ user_reward.rewardTypeParameters.type_consomable }}
+                                                        d'une valeur de {{ user_reward.rewardTypeParameters.value }} €.
+                                                    </div>
+                                                {% endif %}
 
-                                                Indicates a neutral informative change or action.
                                             </div>
-                                            <br>
                                         {% endfor %}
                                     </ul>
                                 </div>
