@@ -130,7 +130,8 @@ class ContractFan
         }, $this->purchases->toArray()));
     }
 
-    public function getNbReducedCounterPart(){
+    public function getNbReducedCounterPart()
+    {
         return array_sum(array_map(function (Purchase $purchase) {
             return $purchase->getNbReducedCounterparts();
         }, $this->purchases->toArray()));
@@ -162,6 +163,33 @@ class ContractFan
     {
         $this->user_rewards = $user_rewards;
         return $this;
+    }
+
+    public function giveOutReward()
+    {
+        $givedReward = [];
+        $index = 0;
+        foreach ($this->user_rewards as $user_reward) {
+            $index = 0;
+            foreach ($this->purchases as $purchase) {
+                if ($user_reward instanceof ReductionReward) {
+                    for ($i = 0; $i < $this->$purchase->getNbReducedCounterparts(); $i++) {
+                        if ($givedReward[$index] == null) {
+                            $givedReward[$index] = [];
+                        }
+                        $givedReward[$index] = array_push($givedReward[$index], "Réduction x1");
+                        $index = $index + 1;
+                    }
+                } else if ($user_reward instanceof InvitationReward) {
+                    $j = 1;
+                    while($j <= $purchase->getQuantity() && $j <= $user_reward->getRemainUse()){
+
+                    }
+                } else if ($user_reward instanceof ConsomableReward) {
+
+                }
+            }
+        }
     }
 
     /**

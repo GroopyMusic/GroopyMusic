@@ -105,7 +105,11 @@ class Purchase
 
     public function getReducedAmount()
     {
-        return $this->getReducedPrice() * $this->getQuantityOrganic();
+        if ($this->nb_reduced_counterparts > $this->getQuantityOrganic()) {
+            return ($this->reducedPrice * $this->nb_reduced_counterparts) + (($this->nb_reduced_counterparts - $this->getQuantityOrganic()) * $this->counterpart->getPrice());
+        } else {
+            return ($this->reducedPrice * $this->nb_reduced_counterparts) + (($this->getQuantityOrganic() - $this->nb_reduced_counterparts) * $this->counterpart->getPrice());
+        }
     }
 
     /**
@@ -160,6 +164,11 @@ class Purchase
      * @ORM\Column(name="nb_reduced_counterparts", type="smallint")
      */
     private $nb_reduced_counterparts;
+
+    /**
+     * @ORM\Column(name="reward_type_parameters", type="array", nullable=true)
+     */
+    private $ticket_reward_text;
 
     /**
      * Get id
@@ -340,5 +349,29 @@ class Purchase
     public function getNbReducedCounterparts()
     {
         return $this->nb_reduced_counterparts;
+    }
+
+    /**
+     * Set ticketRewardText
+     *
+     * @param array $ticketRewardText
+     *
+     * @return Purchase
+     */
+    public function setTicketRewardText($ticketRewardText)
+    {
+        $this->ticket_reward_text = $ticketRewardText;
+
+        return $this;
+    }
+
+    /**
+     * Get ticketRewardText
+     *
+     * @return array
+     */
+    public function getTicketRewardText()
+    {
+        return $this->ticket_reward_text;
     }
 }

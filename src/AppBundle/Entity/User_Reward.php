@@ -42,6 +42,18 @@ class User_Reward
         return ' ' . $this->getReward()->getName();
     }
 
+    public function displayPracticalInformation()
+    {
+        if ($this->reward instanceof ReductionReward) {
+            return $this->getReward()->getName() . ': ' . $this->reward_type_parameters['reduction'] . '%';
+        } else if ($this->reward instanceof InvitationReward) {
+            return $this->getReward()->getName();
+        } else if ($this->reward instanceof ConsomableReward) {
+            return $this->getReward()->getName() . ': ' . $this->reward_type_parameters['quantity'] . ' x ' . $this->reward_type_parameters['type_consomable'] . '(' . $this->reward_type_parameters['value'] . ')';
+        }
+
+    }
+
     /**
      * @var int
      *

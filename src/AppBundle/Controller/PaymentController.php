@@ -128,7 +128,7 @@ class PaymentController extends Controller
                 $em->persist($payment);
 
                 $cart->setConfirmed(true)->setPaid(true);
-                $rewardSpendingService->consumeReward($contract);
+                //$rewardSpendingService->consumeReward($contract);
                 $em->persist($cart);
 
                 $em->flush();

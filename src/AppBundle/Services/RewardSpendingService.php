@@ -47,18 +47,22 @@ class RewardSpendingService
         foreach ($user_rewards as $user_reward) {
             if ($user_reward->getActive() && $user_reward->getLimitDate() > $today && $user_reward->getRemainUse() > 0) {
                 $reward = $user_reward->getReward();
+                $purchases = $this->getOrderedApplicablePurhcases($cf, $user_reward);
                 if ($reward instanceof ReductionReward && $isReduction == false) {
                     $isReduction = true;
-                    $purchases = $this->getOrderedApplicablePurhcases($cf, $user_reward);
                     $remain_use = $user_reward->getRemainUse();
                     foreach ($purchases as $purchase) {
                         $remain_use = $this->computeReducedPrice($cf, $user_reward, $purchase, $remain_use);
+
                     }
                 } elseif ($reward instanceof ReductionReward && $isReduction) {
                     $cf->removeUserReward($user_reward);
+                    continue;
                 }
+                $this->setTicketReward($user_reward, $purchases);
             } else {
                 $cf->removeUserReward($user_reward);
+                continue;
             }
         }
         $this->logger->warning('lol', [$cf]);
@@ -71,13 +75,14 @@ class RewardSpendingService
      * @param ContractFan $cf
      *
      */
-    public function consumeReward(ContractFan $cf)
+    public
+    function consumeReward(ContractFan $cf)
     {
         $user_rewards = $cf->getUserRewards()->toArray();
         foreach ($user_rewards as $user_reward) {
-            if($user_reward instanceof ReductionReward){
+            if ($user_reward instanceof ReductionReward) {
                 $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getNbReducedCounterPart());
-            }else{
+            } else {
                 $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getCounterPartsQuantity());
             }
             if ($user_reward->getRemainUse() <= 0) {
@@ -97,7 +102,8 @@ class RewardSpendingService
      * @param ContractFan $cf
      * @return array
      */
-    public function getApplicableReward(ContractFan $cf)
+    public
+    function getApplicableReward(ContractFan $cf)
     {
         $applicableReward = [];
         $isApplicable = null;
@@ -148,7 +154,8 @@ class RewardSpendingService
      * @param ContractFan $cf
      *
      */
-    public function setBaseAmount(ContractFan $cf)
+    public
+    function setBaseAmount(ContractFan $cf)
     {
         $cf->setAmount($cf->getAmountWithoutReduction());
     }
@@ -162,7 +169,8 @@ class RewardSpendingService
      * @param integer $remain_use
      * @return integer $remain_use
      */
-    private function computeReducedPrice(ContractFan $cf, User_Reward $user_reward, Purchase $purchase, $remain_use)
+    private
+    function computeReducedPrice(ContractFan $cf, User_Reward $user_reward, Purchase $purchase, $remain_use)
     {
         $reduction = $user_reward->getRewardTypeParameters()['reduction'];
         $counter_part_price = $purchase->getCounterpart()->getPrice();
@@ -190,7 +198,8 @@ class RewardSpendingService
      *
      * @param ContractFan $cf
      */
-    private function clearPurchases(ContractFan $cf)
+    private
+    function clearPurchases(ContractFan $cf)
     {
         foreach ($cf->getPurchases() as $purchase) {
             $purchase->setReducedPrice(null);
@@ -203,7 +212,8 @@ class RewardSpendingService
      * If a reward deadline has passed, the active reward field changes to false
      *
      */
-    public function checkDeadlines()
+    public
+    function checkDeadlines()
     {
         $user_rewards = $this->em->getRepository('AppBundle:User_Reward')->findAll();
         $now = new \DateTime();
@@ -216,7 +226,8 @@ class RewardSpendingService
         $this->em->flush();
     }
 
-    public function getOrderedApplicablePurhcases(ContractFan $cf, User_Reward $user_reward)
+    public
+    function getOrderedApplicablePurhcases(ContractFan $cf, User_Reward $user_reward)
     {
         $purchases = $cf->getPurchases();
         $clearedPurchases = [];
@@ -230,6 +241,39 @@ class RewardSpendingService
             return $b->getCounterpart()->getPrice() - $a->getCounterpart()->getPrice();
         });
         return $clearedPurchases;
+    }
+
+    public
+    function setTicketReward(User_Reward $user_reward, $purchases)
+    {
+        $nbTimeGiveOut = 0;
+        foreach ($purchases as $purchase) {
+            if ($purchase->getTicketRewardText() == null) {
+                $purchase->setTicketRewardText([]);
+            }
+            $purchase_array_reward_ticket = $purchase->getTicketRewardText();
+            $i = 1;
+            if ($user_reward instanceof ReductionReward) {
+                while ($i <= $purchase->getNbReducedCounterparts() && $nbTimeGiveOut < $purchase->getNbReducedCounterparts()) {
+                    if (!array_key_exists($i, $purchase_array_reward_ticket)) {
+                        $purchase_array_reward_ticket[$i] = [];
+                    }
+                    array_push($purchase_array_reward_ticket[$i], $user_reward->displayPracticalInformation());
+                    $i++;
+                    $nbTimeGiveOut = $nbTimeGiveOut + 1;
+                }
+            } else {
+                while ($i <= $purchase->getQuantity() && $i <= $user_reward->getRemainUse() && $nbTimeGiveOut < $purchase->getQuantity() && $nbTimeGiveOut < $user_reward->getRemainUse()) {
+                    if (!array_key_exists($i, $purchase_array_reward_ticket)) {
+                        $purchase_array_reward_ticket[$i] = [];
+                    }
+                    array_push($purchase_array_reward_ticket[$i], $user_reward->displayPracticalInformation());
+                    $i++;
+                    $nbTimeGiveOut = $nbTimeGiveOut + 1;
+                }
+            }
+            $purchase->setTicketRewardText($purchase_array_reward_ticket);
+        }
     }
 
 

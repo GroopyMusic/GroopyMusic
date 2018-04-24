@@ -23,14 +23,35 @@
         {% if user_rewards is not empty %}
             <li>
                 <div>{{ 'order_pdf.labels.rewards'|trans|raw }} :</div>
-                <ul>
-                    {% for user_reward in user_rewards %}
-                        <li>{{ user_reward.reward.name }}</li>
-                        {% if user_reward.reward.getType == "Réduction" %}
-                            {% set hasReduction = true %}
+                {% for user_reward in user_rewards %}
+                    <div> >> {{ user_reward.reward.name }} :</div>
+                    {% if user_reward.remainUse > cf.getCounterPartsQuantity %}
+                        {% set nbUse = cf.getCounterPartsQuantity %}
+                    {% else %}
+                        {% set nbUse = user_reward.remainUse %}
+                    {% endif %}
+                    <div style="font-size: 80%">
+                        {% if  user_reward.reward.getType == "Réduction" %}
+                            {% for purchase in cf.purchases %}
+                                {% if purchase.nbReducedCounterparts > 0 %}
+                                    {{ user_reward.rewardTypeParameters.reduction }}% de
+                                    réduction appliquée
+                                    à {{ purchase.nbReducedCounterparts }}
+                                    tickets "{{ purchase.counterPart }}"
+                                {% endif %}
+                            {% endfor %}
+                        {% elseif user_reward.reward.getType == "Invitation" %}
+                            {{ nbUse }} invitation(s)
+                        {% elseif  user_reward.reward.getType == "Consommation" %}{{ nbUse }} pack de consommations
+                            contenant {{ user_reward.rewardTypeParameters.quantity }}
+                            ticket(s) {{ user_reward.rewardTypeParameters.type_consomable }}
+                            d'une valeur de {{ user_reward.rewardTypeParameters.value }} €.
                         {% endif %}
-                    {% endfor %}
-                </ul>
+                    </div>
+                    {% if user_reward.reward.getType == "Réduction" %}
+                        {% set hasReduction = true %}
+                    {% endif %}
+                {% endfor %}
             </li>
         {% endif %}
     </ul>
@@ -64,7 +85,7 @@
                     {{ purchase.amount }} €
                 </td>
                 {% if user_rewards is not empty and hasReduction == true %}
-                    <td>- {{ purchase.amount - purchase.getReducedAmount }} €</td>
+                    <td> - {{ purchase.amount - purchase.getReducedAmount }} €</td>
                     <td>{{ purchase.getReducedAmount }} €</td>
                 {% endif %}
             </tr>

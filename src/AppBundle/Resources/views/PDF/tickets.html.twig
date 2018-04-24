@@ -86,21 +86,18 @@
                 </td>
             </tr>
         </table>
+        <br>
+        <div>
+            {% if ticket.rewardText != null and ticket.rewardText is not empty %}
+                <div>{{ 'tickets_pdf.rewards'|trans()|raw }} :</div>
+                {% for reward in ticket.rewardText %}
+                <div>{{ reward }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
         {% if loop.index % 2 == 0 or loop.last %}
             <div class="between-tickets"></div>
             <div style="font-size: 80%;">
-                {% if ticket.contractFan != null and ticket.contractFan.userRewards is not empty %}
-                    {% set user_rewards = ticket.contractFan.userRewards %}
-                    <div>{{ 'tickets_pdf.rewards'|trans()|raw}} :
-                        {% for ur in user_rewards %}
-                            {% if loop.last %}
-                                {{ ur.reward.name }}
-                            {% else %}
-                                {{ ur.reward.name }},
-                            {%  endif %}
-                        {% endfor %}
-                    </div>
-                {% endif %}
                 <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
             </div>
             {% if loop.index % 2 == 0 and not loop.last %}
