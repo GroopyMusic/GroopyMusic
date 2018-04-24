@@ -88,23 +88,27 @@
                                                 {% if  user_reward.reward.getType == "Réduction" %}
                                                     {% for purchase in fan_contract.purchases %}
                                                         {% if purchase.nbReducedCounterparts > 0 %}
-                                                            <div>{{ user_reward.rewardTypeParameters.reduction }} % de
-                                                                réduction appliquée
-                                                                à {{ purchase.nbReducedCounterparts }}
-                                                                tickets "{{ purchase.counterPart }}"
+                                                            <div>{{ 'pay_cart.recap_reward.reduction'|trans({
+                                                                    "%use%":nbUse,
+                                                                    "%nbReducedCounterpart%":purchase.nbReducedCounterparts,
+                                                                    "%reduction%":user_reward.rewardTypeParameters.reduction,
+                                                                    "%counterpart%":purchase.counterPart
+                                                                })|raw }}
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% elseif user_reward.reward.getType == "Invitation" %}
-                                                    <div>{{ nbUse }} invitation(s)</div>
+                                                    <div>{{ 'pay_cart.recap_reward.invitation'|trans({"%use%":nbUse})|raw }}</div>
                                                 {% elseif  user_reward.reward.getType == "Consommation" %}
-                                                    <div>{{ nbUse }} pack de consommations
-                                                        contenant {{ user_reward.rewardTypeParameters.quantity }}
-                                                        ticket(s) {{ user_reward.rewardTypeParameters.type_consomable }}
-                                                        d'une valeur de {{ user_reward.rewardTypeParameters.value }} €.
+                                                    <div>
+                                                        {{ 'pay_cart.recap_reward.consommable'|trans({
+                                                            "%use%":nbUse,
+                                                            "%quantity%":user_reward.rewardTypeParameters.quantity,
+                                                            "%type%": user_reward.rewardTypeParameters.type_consomable,
+                                                            "%value%":user_reward.rewardTypeParameters.value
+                                                        })|raw }}
                                                     </div>
                                                 {% endif %}
-
                                             </div>
                                         {% endfor %}
                                     </ul>
@@ -214,12 +218,8 @@
                                 </div>
                             </div>
                         </form>
-
-
                     {% elseif form is defined and form is not null %}
-
                         <p>{{ 'pay_cart.not_authenticated.intro'|trans|raw }}</p>
-
                         <div class="form-row form-group">
                             <div class="col-12">
                                 <label class="custom-control custom-radio d-block">
@@ -248,8 +248,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     {% endif %}
                 </div>
 
@@ -286,7 +284,7 @@
                                 <div class="content-box-content-zone">
                                     <table class="content-box-table">
                                         <tr class="no-border">
-                                            <td class="contract-info-title big">Récompense(s) appliquée(s) :</td>
+                                            <td class="contract-info-title big">{{ 'pay_cart.recap.labels.applied_rewards'|trans|raw }}</td>
                                         </tr>
                                         {% for fan_contract in cart.contracts %}
                                             {% if fan_contract.userRewards is not empty %}

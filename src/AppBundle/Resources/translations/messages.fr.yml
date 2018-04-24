@@ -327,6 +327,8 @@ event:
     tickets_left: %tickets% tickets disponibles
     title:  Achetez vos tickets
     over: Il n'est pas possible d'acheter des tickets pour cet événement.
+    #new
+    to_much_reduction : Vous ne pouvez pas sélectionner plusieurs réduction
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
@@ -433,8 +435,15 @@ pay_cart:
             total_without_reduction : Total sans réduction
             reduction : Réduction
             price : Prix
+            applied_rewards : Récompense(s) appliquée(s) :
         reduction : Récompense(s) appliquée(s)
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
+        #new
+    recap_reward :
+        invitation : %use% invitations
+        consommable : %use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €.
+        reduction : %reduction% % de réduction appliquée à %nbReducedCounterpart% tickets "%counterpart%"
+
     #new
     not_authenticated:
       intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute.

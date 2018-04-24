@@ -34,18 +34,23 @@
                         {% if  user_reward.reward.getType == "Réduction" %}
                             {% for purchase in cf.purchases %}
                                 {% if purchase.nbReducedCounterparts > 0 %}
-                                    {{ user_reward.rewardTypeParameters.reduction }}% de
-                                    réduction appliquée
-                                    à {{ purchase.nbReducedCounterparts }}
-                                    tickets "{{ purchase.counterPart }}"
+                                    <div>{{ 'pay_cart.recap_reward.reduction'|trans({
+                                            "%use%":nbUse,
+                                            "%nbReducedCounterpart%":purchase.nbReducedCounterparts,
+                                            "%reduction%":user_reward.rewardTypeParameters.reduction,
+                                            "%counterpart%":purchase.counterPart
+                                        })|raw }}</div>
                                 {% endif %}
                             {% endfor %}
                         {% elseif user_reward.reward.getType == "Invitation" %}
-                            {{ nbUse }} invitation(s)
-                        {% elseif  user_reward.reward.getType == "Consommation" %}{{ nbUse }} pack de consommations
-                            contenant {{ user_reward.rewardTypeParameters.quantity }}
-                            ticket(s) {{ user_reward.rewardTypeParameters.type_consomable }}
-                            d'une valeur de {{ user_reward.rewardTypeParameters.value }} €.
+                            <div>{{ 'pay_cart.recap_reward.invitation'|trans({"%use%":nbUse})|raw }}</div>
+                        {% elseif  user_reward.reward.getType == "Consommation" %}
+                            <div>{{ 'pay_cart.recap_reward.consommable'|trans({
+                                    "%use%":nbUse,
+                                    "%quantity%":user_reward.rewardTypeParameters.quantity,
+                                    "%type%": user_reward.rewardTypeParameters.type_consomable,
+                                    "%value%":user_reward.rewardTypeParameters.value
+                                })|raw }}</div>
                         {% endif %}
                     </div>
                     {% if user_reward.reward.getType == "Réduction" %}

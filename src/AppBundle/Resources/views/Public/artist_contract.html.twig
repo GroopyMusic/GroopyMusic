@@ -312,7 +312,7 @@
                                 </div>
                             {% endfor %}
                             {{ form_row(form.user_rewards) }}
-                            <div id="user_reward-error"></div>
+                            <div id="user_reward-error" hidden><span class="danger danger-color">{{ 'event.buy_tickets.to_much_reduction'|trans|raw }}</span></div>
                             <br>
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
@@ -423,18 +423,15 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('.js-example-basic-multiple').select2();
-
             $('.user-rewards-select').on('select2:select select2:unselect', function () {
                 var errorDiv = $('#user_reward-error');
-                errorDiv.children().remove();
+                errorDiv.hide();
                 var haveReduction = false;
                 var select = $('.user-rewards-select');
                 select.find(':selected').each(function () {
                     if ($(this).hasClass('reduction')) {
                         if (haveReduction === true) {
-                            errorDiv.append('<div class="alert alert-danger">\n' +
-                                '  Vous ne pouvez pas sélectionner plusieurs réduction' +
-                                '</div>');
+                            errorDiv.show();
                             console.log(select.find(':selected').last());
                             select.find(':selected').last().attr('selected', false).trigger('change');
                         } else {
