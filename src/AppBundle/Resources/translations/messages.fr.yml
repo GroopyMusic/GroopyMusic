@@ -841,9 +841,9 @@ labels:
     submit: Envoyer
     artists: Artiste
     payable: L'entrée doit être payante
-    ask_if_concert : S'agit-il bien d'une proposition d'événement ?
-    ask_if_artist : L'artiste existe-t-il déjà sur la plateforme ?
-    ask_if_hall : Connaissez-vous déjà la salle où aura lieu l'événement ?
+    ask_if_concert: S'agit-il bien d'une proposition d'événement ?
+    ask_if_artist: L'artiste existe-t-il déjà sur la plateforme ?
+    ask_if_hall: Connaissez-vous déjà la salle où aura lieu l'événement ?
 
 placeholders:
   proposition_contract_artist:
@@ -864,4 +864,4 @@ proposition:
   event: Informations pratiques de l'événement
   place: Lieu de l'événement
   explication: Ne renseignez que la date de début si vous désirez renseigner une date unique et remplissez les deux dates si votre événement peut s'étaler sur une certaine durée.
-  redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vons invitons à remplir <a href="%url%">ce formulaire</a>.
+  redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vous invitons à remplir <a href="%url%">ce formulaire</a>.
