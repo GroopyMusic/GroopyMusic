@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\SponsorshipInvitation;
 use Azine\EmailBundle\Entity\RecipientInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -31,19 +32,22 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->rewards = new \Doctrine\Common\Collections\ArrayCollection();
         $this->category_statistics = new ArrayCollection();
         $this->user_conditions = new ArrayCollection();
+        $this->sponsorships = new ArrayCollection();
     }
 
-    public function owns(Artist $artist) {
-        foreach($this->artists_user as $au) {
+    public function owns(Artist $artist)
+    {
+        foreach ($this->artists_user as $au) {
             /** @var Artist_User $au */
-            if($au->getArtist() == $artist) {
+            if ($au->getArtist() == $artist) {
                 return true;
             }
         }
         return false;
     }
 
-    public function anonymize() {
+    public function anonymize()
+    {
         $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';
         $this->setUsername($code);
         $this->setUsernameCanonical($code);
@@ -67,7 +71,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->setFacebookId(null);
         $this->setDeleted(true);
 
-        foreach($this->artists_user as $au) {
+        foreach ($this->artists_user as $au) {
             $this->removeArtistsUser($au);
         }
     }
@@ -97,15 +101,17 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return ucwords($displayName);
     }
 
-    public function getArtists() {
-        return array_filter(array_map(function(Artist_User $elem) {
+    public function getArtists()
+    {
+        return array_filter(array_map(function (Artist_User $elem) {
             return $elem->getArtist();
-        }, $this->artists_user->toArray()), function(Artist $artist) {
+        }, $this->artists_user->toArray()), function (Artist $artist) {
             return $artist->isActive();
         });
     }
 
-    public function getArtistsExport() {
+    public function getArtistsExport()
+    {
         $exportList = array();
         $i = 1;
         foreach ($this->getArtists() as $key => $val) {
@@ -117,17 +123,20 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
-    public function getAcceptedConditions() {
-        return array_map(function(User_Conditions $uc) {
+    public function getAcceptedConditions()
+    {
+        return array_map(function (User_Conditions $uc) {
             return $uc->getConditions();
         }, $this->user_conditions->toArray());
     }
 
-    public function hasAccepted(Conditions $conditions) {
+    public function hasAccepted(Conditions $conditions)
+    {
         return in_array($conditions, $this->getAcceptedConditions());
     }
 
-    public function isFirstVisit() {
+    public function isFirstVisit()
+    {
         return $this->user_conditions->isEmpty();
     }
 
@@ -255,6 +264,16 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     private $rewards;
 
     /**
+     * @ORM\OneToMany(targetEntity="SponsorshipInvitation", mappedBy="host_invitation", cascade={"all"}, orphanRemoval=true)
+     */
+    private $sponsorships;
+
+    /**
+     * @ORM\OneToOne(targetEntity="SponsorshipInvitation", mappedBy="target_invitation")
+     */
+    private $sponsorship_invitation;
+
+    /**
      * @param mixed $salutation
      */
     public function setSalutation($salutation)
@@ -377,7 +396,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
 
-
     /**
      * Add payment
      *
@@ -411,7 +429,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     {
         return $this->payments;
     }
-
 
 
     /**
@@ -597,11 +614,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function setAddressForm($address = null)
     {
-        if(is_array($address))
-            if(empty($address)){
+        if (is_array($address))
+            if (empty($address)) {
                 $this->address = null;
-            }
-            else {
+            } else {
                 $this->address = array_pop($address);
             }
         else
@@ -899,5 +915,63 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getUserConditions()
     {
         return $this->user_conditions;
+    }
+
+    /**
+     * Add sponsorship
+     *
+     * @param SponsorshipInvitation $sponsorship
+     *
+     * @return User
+     */
+    public function addSponsorship(SponsorshipInvitation $sponsorship)
+    {
+        $this->sponsorships[] = $sponsorship;
+
+        return $this;
+    }
+
+    /**
+     * Remove sponsorship
+     *
+     * @param SponsorshipInvitation $sponsorship
+     */
+    public function removeSponsorship(SponsorshipInvitation $sponsorship)
+    {
+        $this->sponsorships->removeElement($sponsorship);
+    }
+
+    /**
+     * Get sponsorships
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSponsorships()
+    {
+        return $this->sponsorships;
+    }
+
+    /**
+     * Set sponsorshipInvitation
+     *
+     * @param SponsorshipInvitation $sponsorshipInvitation
+     *
+     * @return User
+     */
+    public function setSponsorshipInvitation(SponsorshipInvitation $sponsorshipInvitation = null)
+    {
+        $this->sponsorship_invitation = $sponsorshipInvitation;
+
+        return $this;
+    }
+
+    /**
+     * Get sponsorshipInvitation
+     *
+     * @return SponsorshipInvitation
+     */
+    public function getSponsorshipInvitation()
+    {
+        return $this->sponsorship_invitation;
     }
 }

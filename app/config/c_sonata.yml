@@ -28,6 +28,7 @@ sonata_admin:
                    - AppBundle\Admin\UserAdmin
                    - AppBundle\Admin\ArtistAdmin
                    - AppBundle\Admin\User_RewardAdmin
+                   - AppBundle\Admin\SponsorshipInvitationAdmin
            app.admin.group.contact:
                 label_catalogue: SonataAdminBundle
                 items:
@@ -360,4 +361,10 @@ services:
         arguments: [~, AppBundle\Entity\ConsomableType, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.consomableType }
+        public: true
+
+    AppBundle\Admin\SponsorshipInvitationAdmin:
+        arguments: [~, AppBundle\Entity\SponsorshipInvitation, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.sponsorshipInvitation }
         public: true

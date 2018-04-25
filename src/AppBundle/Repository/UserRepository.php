@@ -80,7 +80,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 $querry = $querry . " OR u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
             }
         }
-        if(count($q)>0){
+        if (count($q) > 0) {
             $querry = $querry . ")";
         }
         return $this->getEntityManager()
@@ -98,7 +98,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 $querry = $querry . " OR u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
             }
         }
-        if(count($q)>0){
+        if (count($q) > 0) {
             $querry = $querry . ")";
         }
         return $this->getEntityManager()
@@ -136,5 +136,21 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   ')
             ->setParameter(1, $contract_artist_id)
             ->getResult();
+    }
+
+    public function isParticipant($contract_artist_id, $user_id)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT u
+                  FROM AppBundle:User u
+                  LEFT JOIN u.carts c
+                  LEFT JOIN c.contracts cf
+                  LEFT JOIN cf.contractArtist ca
+                  WHERE ca.id = ?1
+                  AND u.id = ?2
+                  ')
+            ->setParameter(1, $contract_artist_id)
+            ->setParameter(2, $user_id)
+            ->getOneOrNullResult();
     }
 }

@@ -12,6 +12,7 @@ namespace AppBundle\Admin;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\ConsomableReward;
 use AppBundle\Entity\ConsomableType;
+use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\InvitationReward;
 use AppBundle\Entity\ReductionReward;
 use AppBundle\Entity\RewardRestriction;
@@ -74,6 +75,12 @@ class RewardAdmin extends BaseAdmin
             ->with('Restrictions')
             ->add('restrictions', null, array(
                 'label' => 'Restrictions',
+            ))
+            ->end()
+            ->with('Parrainage')
+            ->add('contract_artists_sponsorships', null, array(
+                'label' => 'Evénement lié au parrainage',
+                'route' => array('name' => 'show'),
             ))
             ->end();
         if ($subject instanceof InvitationReward) {
@@ -139,6 +146,13 @@ class RewardAdmin extends BaseAdmin
             ->add('validity_period', IntegerType::class, array(
                 'label' => 'Nombres de jours valides',
                 'attr' => array('min' => 0)
+            ))
+            ->end()
+            ->with('Parrainage')
+            ->add('contract_artists_sponsorships', EntityType::class, array(
+                'label' => 'Evénement lié au parrainage',
+                'class' => ContractArtist::class,
+                'required' => false
             ))
             ->end();
         if ($subject instanceof InvitationReward) {

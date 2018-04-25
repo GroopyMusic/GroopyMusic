@@ -545,11 +545,11 @@ class UserController extends Controller
         if ($user_reward->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
-        if($reward instanceof ReductionReward){
+        if ($reward instanceof ReductionReward) {
             $type = "Reduction";
-        }else if($reward instanceof ConsomableReward){
+        } else if ($reward instanceof ConsomableReward) {
             $type = "Consomable";
-        }else if($reward instanceof InvitationReward){
+        } else if ($reward instanceof InvitationReward) {
             $type = "Invitation";
         }
         $em = $this->getDoctrine()->getManager();
