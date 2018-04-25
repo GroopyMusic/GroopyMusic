@@ -1,7 +1,9 @@
 header {
-  background-image: url('../images/jumbotron-bg-small.jpg');
+  background-color: $secondary-background;
+  background-image: url('../images/live/live-1-small.jpg');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 
   #not-auth-perma-links {
     position: fixed;
@@ -23,6 +25,12 @@ header {
     background-color: transparent !important;
     margin-bottom: 0 !important;
     padding: 2rem 1rem !important;
+
+    @include media-breakpoint-down(sm) {
+      .container {
+        padding-top: 5rem;
+      }
+    }
   }
 
   #mainNav {
@@ -247,8 +255,15 @@ header {
 }
 
 @include media-breakpoint-down(md) {
-  header #menuLogo {
-    display: none !important;
+
+  header {
+    #logo {
+      max-width: 120px;
+    }
+
+    #menuLogo {
+      display: none !important;
+    }
   }
 }
 
@@ -260,7 +275,7 @@ header {
 
 @include media-breakpoint-up(md) {
   header {
-    background-image: url('../images/jumbotron-bg.jpg');
+    background-image: url('../images/live/live-1.jpg');
   }
   header #logo-header-container {
     display: none !important;
@@ -297,6 +312,12 @@ header {
 #headline {
   font-size: 2.2rem;
   margin-bottom: 3rem;
+
+  @include media-breakpoint-down(sm) {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
   margin-top: 3rem;
   font-family: $headline-font, $font;
   color: $headline-color;

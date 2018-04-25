@@ -8,16 +8,19 @@ use Twig\Environment;
 class UtilitiesExtension extends \Twig_Extension
 {
     private $twig;
+    private $stringHelper;
 
-    public function __construct(Environment $twig)
+    public function __construct(Environment $twig, StringHelper $stringHelper)
     {
         $this->twig = $twig;
+        $this->stringHelper = $stringHelper;
     }
 
     public function getFilters()
     {
         return array(
             new \Twig_SimpleFilter('decode_html', array($this, 'decode')),
+            new \Twig_SimpleFilter('slug', array($this, 'slugify')),
         );
     }
 
@@ -120,6 +123,10 @@ class UtilitiesExtension extends \Twig_Extension
         return $this->twig->render(':patterns/utils:lorem_ipsum.html.twig', array(
             'lorem_nb' => $lorem_nb,
         ));
+    }
+
+    public function slugify($str) {
+        return $this->stringHelper->slugify($str);
     }
 
 }

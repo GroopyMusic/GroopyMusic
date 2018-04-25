@@ -25,6 +25,9 @@
         </div>
     {% endif %}
     <div class="col-12">
+        {{ form_row(form.phone) }}
+    </div>
+    <div class="col-12">
         {{ form_row(form.object) }}
     </div>
 </div>
@@ -34,6 +37,6 @@
     <div class="col-12">{{ form_row(form.mailCopy) }}</div>
 </div>
 
-    {{ form_row(form.submit) }}
+{{ form_row(form.submit) }}
 
 {{ form_end(form) }}

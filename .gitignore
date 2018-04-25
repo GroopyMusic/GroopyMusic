@@ -16,10 +16,15 @@
 /vendor/
 /web/bundles/
 !/web/pdf
-!/web/pdf/orders
-!/web/pdf/tickets
 /web/pdf/orders/*
 /web/pdf/tickets/*
+/web/pdf/viptickets/*
+/web/pdf/phtickets/*
+!/web/pdf/orders
+!/web/pdf/tickets
+!/web/pdf/viptickets
+!/web/pdf/phtickets
+
 !web/uploads
 !web/uploads/artist_gallery
 !web/uploads/hall_gallery

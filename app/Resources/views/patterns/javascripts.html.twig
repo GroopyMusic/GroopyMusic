@@ -4,10 +4,6 @@
 <script>window.jQuery || document.write('<script type="text/javascript" src="{{ asset('js/backup/jquery-3.2.0.min.js') }}"><\/script>')</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script
-src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-crossorigin="anonymous"></script>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script src="https://js.stripe.com/v2/"></script>
@@ -76,3 +72,15 @@ crossorigin="anonymous"></script>
     <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 
+<script src="{{ asset('js/carousel/jcarousel.js') }}"></script>
+
+{#
+
+    <script src="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js"></script>
+
+    <script
+    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+
+#}

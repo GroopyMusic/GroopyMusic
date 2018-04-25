@@ -23,11 +23,17 @@ class ArtistRepository extends OptimizedRepository
             ->leftJoin('a.photos', 'p')
             ->leftJoin('a.profilepic', 'pp')
             ->leftJoin('a.province', 'province')
+            ->leftJoin('a.translations', 't')
+            ->leftJoin('g.translations', 'gt')
+            ->leftJoin('province.translations', 'pt')
             ->addSelect('ca')
             ->addSelect('g')
             ->addSelect('p')
             ->addSelect('pp')
             ->addSelect('province')
+            ->addSelect('t')
+            ->addSelect('gt')
+            ->addSelect('pt')
         ;
     }
 
@@ -98,14 +104,19 @@ class ArtistRepository extends OptimizedRepository
 
     public function findNewArtists($limit) {
 
-        return $this->baseQueryBuilder()
+        return array_slice($this->baseQueryBuilder()
             ->andWhere('a.deleted = 0')
             ->andWhere('a.visible = 1')
             ->orderBy('a.date_creation', 'DESC')
-            ->setMaxResults($limit)
+           // ->setMaxResults($limit) TODO make this work...
             ->getQuery()
-            ->getResult()
+            ->getResult(),
+            0,
+            $limit)
         ;
+
+
+
     }
 
     public function findNotDeleted($q)

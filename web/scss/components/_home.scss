@@ -1,5 +1,66 @@
+#home-carousel-row {
+  overflow-x: hidden !important;
+  /*background-image: url('../images/live/live-3.jpg');
+  background-size: cover;
+  background-position: center;*/
+
+  .jcarousel {
+    position: relative;
+    visibility: hidden;
+    left: -5000px;
+
+    &-control {
+      width: 80px;
+    }
+  }
+}
+
+.parallax {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  position: absolute;
+  width: 100%;
+  height: 300%;
+  left:0;
+  top:0;
+  z-index: -1;
+}
+
+#parallax-spotlights-bg {
+  background-image: url('../images/live/live-3-p.jpg');
+}
+
+#home-spotlights {
+  @extend .text-white;
+
+  @include media-breakpoint-down(sm) {
+    background-image: url('../images/live/live-3.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+
+  p {
+    @extend .um-light;
+    @extend .mt-4;
+  }
+
+  .spotlight-explanation {
+    text-align: center;
+    background-color: $transparent-orange-2;
+    @extend .p-4;
+    @extend .rounded;
+
+    h4 {
+      border-bottom: 1px solid white;
+    }
+  }
+}
+
+
+
 #join-us {
-  background-image: url('../images/join-us-bg.jpg');
+  background-image: url('../images/live/live-9-opacity.jpg');
   background-size: cover;
   background-position: center;
 

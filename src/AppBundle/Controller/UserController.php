@@ -495,6 +495,7 @@ class UserController extends Controller
 
         if (count($finder) == 0) {
 
+            // TODO is this line necessary ?
             $writer->writeOrder($contract);
 
             $ticketingManager->generateTicketsForContractFan($contract);

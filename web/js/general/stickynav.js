@@ -2,6 +2,19 @@ var $header = $('header');
 var $mainNav = $('#mainNav');
 var $main = $('main');
 var $footer = $('footer');
+
+$(function() {
+    $(".jcarousel").jCarouselLite({
+        speed: 1000,
+        btnNext: ".jcarousel-next",
+        btnPrev: ".jcarousel-prev"
+    });
+
+    //AOS.init({
+    //    duration: 1000
+    //});
+});
+
 var stickyoffset = $main.offset().top - $mainNav.outerHeight();
 $header.css('min-height', $header.outerHeight());
 
@@ -34,6 +47,9 @@ function resizeHeader() {
 }
 
 function onResize() {
+    if($mainNav.hasClass('sticky-animation')) {
+        stickyoffset = $main.offset().top - $mainNav.outerHeight();
+    }
     mainPadding();
     mainNavHeight();
     footerPosition();
@@ -51,22 +67,25 @@ $(function() {
         onResize();
     });
 
+
     $(window).scroll(function () {
         if ($(this).scrollTop() > stickyoffset) {
 
             if (!$mainNav.hasClass('stickytop')) {
                 $('#menuLogo img').addClass('opacity-1');
-                $mainNav.addClass('stickytop');
+
+                if($mainNav.hasClass('sticky-animation')) {
+                    $mainNav.addClass('stickytop');
 
 
-                $('header .nav-item').each(function () {
-                    $(this).addClass('stickytop')
-                });
+                    $('header .nav-item').each(function () {
+                        $(this).addClass('stickytop')
+                    });
 
+                    $('#logo').addClass('hiddenLogo');
 
-                $('#logo').addClass('hiddenLogo');
-                stickyoffset = $main.offset().top - $mainNav.outerHeight();
-
+                    stickyoffset = $main.offset().top - $mainNav.outerHeight();
+                }
                 // Bug fix for logo appearing once too quickly
                // if(appearances > 0 || $(this).scrollTop() > stickyoffset + 10)
             }
@@ -76,16 +95,19 @@ $(function() {
         else {
             if ($mainNav.hasClass('stickytop')) {
                 $('#menuLogo img').removeClass('opacity-1');
-                $mainNav.removeClass('stickytop');
 
-                $header.css('min-height', 'auto');
-                $header.css('min-height', $header.outerHeight());
+                if($mainNav.hasClass('sticky-animation')) {
+                    $mainNav.removeClass('stickytop');
 
-                $('#logo').removeClass('hiddenLogo');
+                    $header.css('min-height', 'auto');
+                    $header.css('min-height', $header.outerHeight());
 
-                $('header .nav-item').each(function () {
-                    $(this).removeClass('stickytop')
-                });
+                    $('#logo').removeClass('hiddenLogo');
+
+                    $('header .nav-item').each(function () {
+                        $(this).removeClass('stickytop')
+                    });
+                }
 
                 if ($('#toc-nav').hasClass('fixed-toc'))
                     $('#toc-nav').removeClass('fixed-toc');

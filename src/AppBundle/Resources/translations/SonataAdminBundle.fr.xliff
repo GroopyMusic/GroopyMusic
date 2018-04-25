@@ -59,7 +59,7 @@
 
             <trans-unit id="app.admin.suggestionBox">
                 <source>app.admin.suggestionBox</source>
-                <target>Suggestion</target>
+                <target>Contact</target>
             </trans-unit>
 
             <trans-unit id="app.admin.VIPInscription">
@@ -129,7 +129,7 @@
 
             <trans-unit id="app.admin.suggestiontypeenum">
                 <source>app.admin.suggestiontypeenum</source>
-                <target>Type de suggestion</target>
+                <target>Type de contact</target>
             </trans-unit>
 
             <trans-unit id="app.admin.address">

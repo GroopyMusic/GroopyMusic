@@ -39,7 +39,7 @@ people: personnes
 success_limit: Seuil de réussite
 more_info: Plus d'infos
 step: Catégorie
-confirmed: Confirmé
+confirmed: Festival confirmé !
 or: ou
 loading: Chargement....
 
@@ -87,18 +87,20 @@ header:
 
 
 home:
+  #new
+  og_title: Un-Mute | Découvrez, soutenez, produisez
   concept:
-    title: Concept
-    content_1: Vous souhaitez participer à l'émancipation de la scène musicale belge&nbsp;? Produire l'artiste de votre choix en lui permettant de décrocher jusqu'à 3 concerts dans différentes salles en Belgique&nbsp;?
+    title: Le principe
+    content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus. Et si l'objectif n'est pas atteint, tout le monde est entièrement remboursé !
     content_2: Un-Mute sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur", vous êtes acteur dans la construction de la scène musicale belge de demain via <a href="#" data-toggle="popover" title="En savoir plus" data-content="Vous souhaitez en savoir plus sur notre fonctionnement ? <a href='%about_url%'>C'est par ici !</a>">un système de financement participatif qui ne vous fait prendre aucun risque</a>.
   concerts:
     title: Festivals
     content: Nos artistes tentent de remplir des salles aux quatre coins du Royaume. Découvrez leurs envies et soutenez-les.
     see_all: Voir la liste complète
   news:
-    title: News
+    title: Derniers artistes inscrits
   join_us:
-    title: Nous rejoindre
+    title: Rejoignez-nous
     content_1: <strong>Vous désirez devenir <a href="%about_url%">producteur</a> et soutenir un artiste ?</strong> Découvrez <a href="%catalog_url%">le catalogue des artistes</a>.
     content_2: <strong>Vous êtes un <a href="%about_url%">artiste</a> intéressé par le concept ?</strong> Rejoignez gratuitement le <a href="%register_url%">réseau Un-Mute</a>.
     content_3: <strong>Vous désirez proposer une salle à nos artistes ?</strong> <a href="%contact_url%">Prenez contact avec l'équipe Un-Mute</a>.
@@ -208,6 +210,8 @@ team:
     gonzague: Conquis par l'idée, <span class='um-label um-semi-bold'>Gonzague</span>, jeune webmaster diplômé en informatique, accepte directement de participer au projet. La coordination du développement d'une plateforme Web de cette envergure constitue un défi des plus motivants à ses yeux, en accord avec son envie de participer au lancement d'une start-up au sortir de ses études.
     louis: Sollicité pour assurer l'encadrement juridique du projet, <span class='um-label um-semi-bold'>Louis</span> n'a pas tardé à répondre positivement à cette invitation. La possibilité qui lui était ainsi offerte de mettre les connaissances théoriques acquises durant ses cinq années de formation juridique au service d'un projet sous-tendu par des valeurs qui lui étaient chères a fini de le convaincre de s'investir pleinement dans Un-Mute.
     alice: "Concernant la communication, <span class='um-label um-semi-bold'>Alice</span> alimente l'équipe avec ses 6 années d'expériences professionnelles en PME puis en institution non marchande. Diplômée de l'IHECS et de la KUL en culturele studies, Un-Mute était une belle opportunité de rajouter à son arc un secteur d'activité qui l'a toujours passionnée  : la communication événementielle et culturelle !"
+    #new
+    alexis: "Passionné de musique, <span class='um-label um-semi-bold'>Alexis</span> a été vite conquis par l’idée du projet. Doté d’expérience en événementiel et actif au sein d’une agence digitale depuis plus de 3 ans, Alexis entend mettre à disposition son expérience en communication digitale et en coordination de projets pour soutenir la croissance de l’ASBL. Le projet constitue en effet à ses yeux un véritable potentiel pour réunir deux ses aspirations : la musique et l’entreprenariat, au sein d’une équipe motivée et multidisciplinaire."
 
 pillars:
   title: Nos valeurs
@@ -617,7 +621,7 @@ leave_artist:
 
 order_pdf:
   title: Récapitulatif de votre commande
-  intro: Merci d'avoir passé une commande de tickets de festival avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à pierre@un-mute.be
+  intro: Merci d'avoir passé une commande de tickets de festival avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
   promo: "Note : pour toute commande passée lors de la première semaine de ventes de tickets pour cet événement (c'est-à-dire jusqu'au %end_date%), par %nb_organic_needed% tickets achetés, vous en recevez %nb_promotional%."
   labels:
     order_date: Date de la commande
@@ -710,7 +714,7 @@ errors:
     other: Une erreur inconnue est survenue ; veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
 
 infos:
-  new_event_temp: Cher artiste, merci d'avoir montré votre intérêt pour Un-Mute. Pour organiser votre premier festival par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, ou d'envoyer un e-mail à pierre@un-mute.be.
+  new_event_temp: Cher artiste, merci d'avoir montré votre intérêt pour Un-Mute. Pour organiser votre premier festival par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, ou d'envoyer un e-mail à contact@un-mute.be.
 
 html.email.head.link.to.web.view.text.%url%: Voir dans le navigateur
 txt.email.head.link.to.web.view.text.%url%: Voir dans le navigateur
@@ -760,6 +764,8 @@ labels:
 
   suggestionbox:
     email: Adresse e-mail
+    #new
+    phone: Numéro de téléphone
     name: Nom
     firstname: Prénom
     mailcopy: Recevoir une copie du message par mail

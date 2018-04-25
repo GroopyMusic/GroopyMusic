@@ -45,15 +45,15 @@ class TicketingManager
      * @param ContractFan $contractFan
      *
      */
-    public function generateTicketsForContractFan(ContractFan $contractFan)
-    {
+    public function generateTicketsForContractFan(ContractFan $contractFan) {
         $contractFan->generateBarCode();
 
-        foreach ($contractFan->getTickets() as $ticket) {
+        // TODO enhance this process, tickets shouldn't be removed & re-built (or should they ?)
+        foreach($contractFan->getTickets() as $ticket) {
             $contractFan->removeTicket($ticket);
         }
 
-        if (!empty($contractFan->getTickets())) {
+        //if(!empty($contractFan->getTickets())) {
             foreach ($contractFan->getPurchases() as $purchase) {
                 /** @var Purchase $purchase */
                 $counterPart = $purchase->getCounterpart();
@@ -70,11 +70,10 @@ class TicketingManager
                     $i++;
                 }
             }
-        }
+        //}
     }
 
-    public function generateTicketsForPhysicalPerson(PhysicalPersonInterface $physicalPerson, ContractArtist $contractArtist, $counterPart, $nb)
-    {
+    public function generateTicketsForPhysicalPerson(PhysicalPersonInterface $physicalPerson, ContractArtist $contractArtist, $counterPart, $nb) {
         $tickets = [];
 
         /** @var CounterPart $counterPart */
@@ -113,8 +112,7 @@ class TicketingManager
      * @param ContractArtist $contractArtist
      * @param User $user
      */
-    public function getTicketPreview(ContractArtist $contractArtist, User $user)
-    {
+    public function getTicketPreview(ContractArtist $contractArtist, User $user) {
 
         $cart = new Cart();
         $cart->setUser($user);
@@ -137,14 +135,13 @@ class TicketingManager
      * @param ContractFan $cf
      * @return \Exception|null
      */
-    public function sendUnSentTicketsForContractFan(ContractFan $cf)
-    {
-        if (!$cf->getcounterpartsSent()) {
+    public function sendUnSentTicketsForContractFan(ContractFan $cf) {
+        if(!$cf->getcounterpartsSent()) {
             try {
                 $this->sendTicketsForContractFan($cf);
                 $cf->setcounterpartsSent(true);
                 $this->sendNotificationTicketsSent([$cf->getUser()], $cf->getContractArtist());
-            } catch (\Exception $e) {
+            } catch(\Exception $e) {
                 $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
                 return $e;
             }
@@ -162,18 +159,17 @@ class TicketingManager
      * @param ContractArtist $contractArtist
      * @return \Exception|null
      */
-    public function sendUnSentTicketsForContractArtist(ContractArtist $contractArtist)
-    {
+    public function sendUnSentTicketsForContractArtist(ContractArtist $contractArtist) {
         $users = [];
 
-        foreach ($contractArtist->getContractsFanPaid() as $cf) {
+        foreach($contractArtist->getContractsFanPaid() as $cf) {
             /** @var ContractFan $cf */
-            if (!$cf->getcounterpartsSent()) {
+            if(!$cf->getcounterpartsSent()) {
                 try {
                     $this->sendTicketsForContractFan($cf);
                     $cf->setcounterpartsSent(true);
                     $users[] = $cf->getUser();
-                } catch (\Exception $e) {
+                } catch(\Exception $e) {
                     $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage() . ' \n ' . $e->getTraceAsString());
                     return $e;
                 }
@@ -185,7 +181,7 @@ class TicketingManager
 
         try {
             $this->sendNotificationTicketsSent($users, $contractArtist);
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             $this->logger->error("Erreur lors de l'envoi de notifications pour les tickets du contrat d'artiste " . $contractArtist->getId());
         }
 
@@ -194,9 +190,9 @@ class TicketingManager
 
     public function sendUnSentVIPTicketsForContractArtist(ContractArtist $contractArtist)
     {
-        foreach ($contractArtist->getVipInscriptions() as $vipInscription) {
+        foreach($contractArtist->getVipInscriptions() as $vipInscription) {
             /** @var $vipInscription VIPInscription */
-            if (!$vipInscription->getCounterpartsSent()) {
+            if(!$vipInscription->getCounterpartsSent()) {
                 $this->generateTicketsForPhysicalPerson($vipInscription, $contractArtist, null, 1);
                 $vipInscription->setCounterpartsSent(true);
                 $this->em->persist($vipInscription);
@@ -210,8 +206,7 @@ class TicketingManager
      *
      * @param ContractFan $cf
      */
-    protected function sendTicketsForContractFan(ContractFan $cf)
-    {
+    protected function sendTicketsForContractFan(ContractFan $cf) {
         $this->generateTicketsForContractFan($cf);
         $this->writer->writeTickets($cf->getTicketsPath(), $cf->getTickets());
         $this->mailDispatcher->sendTicketsForContractFan($cf, $cf->getContractArtist());
@@ -224,8 +219,7 @@ class TicketingManager
      * @param array $users
      * @param $contractArtist
      */
-    protected function sendNotificationTicketsSent(array $users, $contractArtist)
-    {
+    protected function sendNotificationTicketsSent(array $users, $contractArtist) {
         $this->notificationDispatcher->notifyTickets($users, $contractArtist);
     }
 
@@ -237,25 +231,25 @@ class TicketingManager
      * @param Ticket $ticket
      * @return array
      */
-    public function getTicketsInfoArray(Ticket $ticket)
-    {
+    public function getTicketsInfoArray(Ticket $ticket) {
         $arr = [
             'Identifiant du ticket' => $ticket->getId(),
             'Acheteur' => $ticket->getName(),
-            'Prix' => $ticket->getPrice() . ' €',
+            'Prix' => $ticket->getPrice(). ' €',
             'Event' => $ticket->getContractArtist()->__toString(),
             'validated' => $ticket->getValidated(),
             'refunded' => $ticket->isRefunded(),
             'user_rewards' => $ticket->getContractFan()->getUserRewards()
         ];
 
-        if ($ticket->getCounterPart() != null) {
+        if($ticket->getCounterPart() != null) {
             $arr['Type de ticket'] = $ticket->getCounterPart()->__toString();
         }
 
-        if ($ticket->getContractFan() != null) {
+        if($ticket->getContractFan() != null) {
             $arr['CF associé'] = $ticket->getContractFan()->getBarcodeText();
-        } else {
+        }
+        else {
             $arr['VIP'] = 'Oui';
         }
         return $arr;
@@ -265,9 +259,8 @@ class TicketingManager
      * Marks ticket as validated
      * @param Ticket $ticket
      */
-    public function validateTicket(Ticket $ticket)
-    {
-        if (!$ticket->isValidated()) {
+    public function validateTicket(Ticket $ticket) {
+        if(!$ticket->isValidated()) {
             $ticket->setValidated(true);
             $this->em->persist($ticket);
             $this->em->flush();

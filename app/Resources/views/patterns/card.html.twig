@@ -1,9 +1,9 @@
 {% set xs = xs|default(6) %}
 {% set md = md|default(4) %}
 {% set bgwhite = bgwhite|default(false) %}
+{% set card_classes = card_classes|default([]) %}
 
 <div class="col-xs-{{ xs }} col-md-{{ md }} mt-4 mt-md-3">
     {% block card_content %}
-        {#<span>⭐⭐⭐</span>#}
     {% endblock %}
 </div>

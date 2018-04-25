@@ -147,14 +147,6 @@ class BaseContractArtist
         return null;
     }
 
-    public function isSoldOut() {
-        foreach($this->getStep()->getCounterParts() as $cp) {
-            if($this->getNbAvailable($cp) > 0) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public function getNbAvailable(CounterPart $cp) {
         $nb = $cp->getMaximumAmount();

@@ -43,7 +43,7 @@ class Level implements TranslatableInterface
 
     public function __toString()
     {
-        return ' ' . $this->getName();
+        return '' . $this->getName();
     }
 
     public function getDefaultLocale()

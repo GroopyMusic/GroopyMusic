@@ -2,22 +2,21 @@
 {% include ':patterns:perma-links.html.twig' with {'home_header': true} %}
 
 <div class="jumbotron jumbotron-fluid position-relative">
-    <div class="opacity-layer"></div>
     <div class="container justify-content-center align-items-center text-center position-relative">
         <a id="logo-header-container" href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>
 
-        <a id="logo-video-container" class="text-center mx-auto d-block" href="{{ path('homepage') }}">
+        <div id="logo-video-container">
             <video class="text-center mx-auto" id="logo-video" loop autoplay>
                 <source src="{{ asset('images/logo/animated-logo.mp4') }}" type="video/mp4" />
                 <source src="{{ asset('images/logo/animated-logo.ogv') }}" type="video/ogg" />
                 <source src="{{ asset('images/logo/animated-logo.webm') }}" type="video/webm" />
                 <img id="logo-video-alternative" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" />
             </video>
-        </a>
+        </div>
+
         <h1 class="text-white text-bold">Un-Mute</h1>
 
         <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
-
     </div>
 </div>
 
