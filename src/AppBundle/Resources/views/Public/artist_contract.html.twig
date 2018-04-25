@@ -312,7 +312,9 @@
                                 </div>
                             {% endfor %}
                             {{ form_row(form.user_rewards) }}
-                            <div id="user_reward-error" hidden><span class="danger danger-color">{{ 'event.buy_tickets.to_much_reduction'|trans|raw }}</span></div>
+                            <div id="user_reward-error"><span
+                                        class="danger danger-color">{{ 'event.buy_tickets.to_much_reduction'|trans|raw }}</span>
+                            </div>
                             <br>
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
@@ -419,12 +421,14 @@
 
 
 
+
     </script>
     <script type="text/javascript">
         $(document).ready(function () {
+            var errorDiv = $('#user_reward-error');
+            errorDiv.hide();
             $('.js-example-basic-multiple').select2();
             $('.user-rewards-select').on('select2:select select2:unselect', function () {
-                var errorDiv = $('#user_reward-error');
                 errorDiv.hide();
                 var haveReduction = false;
                 var select = $('.user-rewards-select');
@@ -432,7 +436,6 @@
                     if ($(this).hasClass('reduction')) {
                         if (haveReduction === true) {
                             errorDiv.show();
-                            console.log(select.find(':selected').last());
                             select.find(':selected').last().attr('selected', false).trigger('change');
                         } else {
                             haveReduction = true;
