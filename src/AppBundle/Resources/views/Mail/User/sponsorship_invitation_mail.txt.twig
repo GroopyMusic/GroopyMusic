@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+{% autoescape false %}
+{% block title %}{{ subject }}{% endblock %}
+{% block content %}
+    {{ email_content('sponsorship_invitation.content',{
+                        '%content%': content,
+                    })|trans|raw|nl2br }}
+{% endblock %}
+{% endautoescape %}
+{% block body_html %}
+    {% include 'AppBundle:Mail/User:sponsorship_invitation_mail.html.twig' %}
+{% endblock %}

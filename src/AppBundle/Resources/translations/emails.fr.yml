@@ -15,6 +15,7 @@ subjects:
   refunded_payment: Nous avons remboursé vos tickets #new
   artist_validated: Votre artiste sur Un-Mute a été vérifié #new
   reward_attribution: Nouvelle récompense #new
+  sponsorship_invitation: Invitation à être parrainé #new
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -213,3 +214,12 @@ reward_attribution:
     %content%
     Pour plus d'informations, consultez votre page <a href="%rewards_url%">Mes récompenses</a>
 
+
+#new
+sponsorship_invitation:
+  content : |
+    XXX vous invite à rejoindre la Platefrome Un-Mute et à participer au concert XXX avec lui !
+    Voici son message d'invitation :
+    %content%
+    Voici le lien :
+    XXX

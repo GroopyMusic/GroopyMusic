@@ -153,4 +153,15 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter(2, $user_id)
             ->getOneOrNullResult();
     }
+
+    public function emailExists($email)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT u
+                  FROM AppBundle:User u
+                  WHERE u.email = ?1
+                  ')
+            ->setParameter(1, $email)
+            ->getOneOrNullResult();
+    }
 }

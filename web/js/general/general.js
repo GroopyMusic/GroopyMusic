@@ -43,7 +43,6 @@ $(function () {
         }
     });
 
-
     $.fn.extend({
         attach_notifications_behaviour: function () {
             this.off();
@@ -144,26 +143,84 @@ $(function () {
 });
 
 
-//sponsorship modal
+// **** START sponsorship modal **** //
 function addEmailInput() {
-    console.log('lol');
-    var div = $('#sponsorship-invitations-modal-email-inputs-div');
-    var input = '<div class="form-group"><input type="email" class="sponsorship-invitations-modal-email-inputs sponsorship-invitations-modal-added-inputs form-control" placeholder="Entrer une adresse email"></div>';
+    var div = $('#sponsorship-modal-email-inputs-div');
+    var input = '<div class="form-group"><input type="email" class="sponsorship-modal-email-inputs sponsorship-modal-added-inputs form-control" placeholder="Entrer une adresse email"></div>';
     div.append(input);
 }
 
 function removeEmailInput() {
-    $('.sponsorship-invitations-modal-added-inputs').last().remove();
+    $('.sponsorship-modal-added-inputs').last().remove();
 }
 
 function displaySponsorshipInvitationModal() {
     $("#sponsorship-invitations-modal").on("hidden.bs.modal", function () {
-        $('#sponsorship-invitations-modal-form').reset();
+        $('#sponsorship-modal-form')[0].reset();
+        $('.sponsorship-modal-added-inputs').each(function () {
+            $(this).remove();
+        });
+        hideSponsoringAlert();
     }).modal();
+    $('#sponsorship-modal-form').on('submit', function (evt) {
+        evt.preventDefault();
+        sendSponsorshipInvitation();
+    });
+}
+
+function showSponsorshipLoader() {
+    $('#sponsorship-modal-content').hide();
+    $('#sponsorship-modal-loader').find('.loader').first().show();
+}
+
+function hideSponsorshipLoader() {
+    $('#sponsorship-modal-content').show();
+    $('#sponsorship-modal-loader').find('.loader').first().hide();
+}
+
+function showSponsorshipSuccess(message) {
+    var div = $('#sponsorship-modal-alert-success');
+    div.append(message);
+    div.attr('hidden', false)
+}
+
+function showSponsorshipDanger(message) {
+    console.log("ici");
+    var div = $('#sponsorship-modal-alert-danger');
+    div.append(message);
+    div.attr('hidden', false)
+}
+
+function hideSponsoringAlert() {
+    $('#sponsorship-modal-alert-success').attr("hidden", true);
+    $('#sponsorship-modal-alert-danger').attr("hidden", true);
 }
 
 function sendSponsorshipInvitation() {
-    
+    showSponsorshipLoader();
+    var emails = [];
+    var textarea = $('#sponsorship-modal-textarea').text();
+    var url = $('#sponsorship-modal-form').attr('action');
+    $('.sponsorship-modal-email-inputs').each(function () {
+        emails.push($(this).val());
+    });
+    console.log(emails);
+    $.post(url,
+        {
+            emails: emails,
+            textarea: textarea
+        }, function (result) {
+            console.log(result);
+            showSponsorshipSuccess(result);
+            hideSponsorshipLoader();
+        }
+    ).fail(function (err) {
+        console.log(err);
+        showSponsorshipDanger(err.responseText);
+        hideSponsorshipLoader();
+    })
 }
+
+// **** END sponsorship modal **** //
 
 

@@ -292,7 +292,8 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
-    public function sendRefundedPayment(Payment $payment) {
+    public function sendRefundedPayment(Payment $payment)
+    {
         $params = [
             'payment' => $payment,
         ];
@@ -306,12 +307,13 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::REFUNDED_PAYMENT_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
-    public function sendArtistValidated(Artist $artist) {
+    public function sendArtistValidated(Artist $artist)
+    {
         $params = [
             'artist' => $artist,
         ];
 
-        $to = array_map(function(User $user) {
+        $to = array_map(function (User $user) {
             return $user->getEmail();
         }, $artist->getOwners());
 
@@ -327,7 +329,8 @@ class MailDispatcher
     // ADMIN EMAILS
     // ----------------------
 
-    public function sendAdminNewArtist(Artist $artist) {
+    public function sendAdminNewArtist(Artist $artist)
+    {
         $params = ['artist' => $artist];
         $subject = 'Nouvel artiste inscrit sur Un-Mute';
         $subject_params = [];
@@ -442,6 +445,14 @@ class MailDispatcher
     {
         $params = ['content' => $content];
         $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
+            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendSponsorshipInvitationEmail($emails, $content)
+    {
+        $subject = "subjects.reward_attribution";
+        $params = ['content' => $content];
+        $this->sendEmail(MailTemplateProvider::SPONSORSHIP_INVITATION_MAIL, $subject,
             $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
     }
 

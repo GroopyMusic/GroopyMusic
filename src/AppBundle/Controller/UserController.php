@@ -14,6 +14,7 @@ use AppBundle\Form\ProfileType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\PDFWriter;
+use AppBundle\Services\SponsorshipService;
 use AppBundle\Services\TicketingManager;
 use AppBundle\Services\UserRolesManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -580,5 +581,24 @@ class UserController extends Controller
         $em->flush();
 
         return new Response($motivations);
+    }
+
+    /**
+     * @Route("/api/send-sponsorship-invitation", name="user_ajax_send_sponsorship_invitation")
+     */
+    public function sendSponsorshipInvitation(Request $request, UserInterface $user, SponsorshipService $sponsorshipService)
+    {
+        if ($user == null) {
+            return new Response("You are not connected", 500);
+        }
+        try {
+            if ($sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('textarea'))) {
+                return new Response("Invitations envoyées", 200);
+            } else {
+                return new Response("Une erreur est survenue avec le système", 500);
+            }
+        } catch (\Throwable $th) {
+            return new Response("Une erreur est survenue avec le système", 500);
+        }
     }
 }
