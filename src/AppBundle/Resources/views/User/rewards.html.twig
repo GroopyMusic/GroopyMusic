@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="container rewards-page">
+        <h3 class="mb-3 text-center">{{ 'rewards.title'|trans|raw }}</h3>
+        <div class="content-box">
+            <div class="row content-box-content">
+                {% if rewards is empty %}
+                    <div class="col-12">
+                        <p>
+                            {{ 'rewards.empty'|trans|raw }}
+                        </p>
+                    </div>
+                {% else %}
+                    <table id="rewards-table" class="table table-hover um-table">
+                        {% for ur in rewards %}
+                            <tr>
+                                <td><b>{{ ur.reward.name }}</b></td>
+                                <td>{{ preview(ur.reward.feature, 100)|raw }}</td>
+                                <td>{{ ur.limitDate|date() }}</td>
+                                <td><a class="btn btn-primary notification-trigger" href="{{ path('user_reward', {'id': ur.id}) }}">{{ 'notifs.button'|trans|raw }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

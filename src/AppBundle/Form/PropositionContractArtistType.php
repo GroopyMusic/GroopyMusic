@@ -74,7 +74,7 @@ class PropositionContractArtistType extends AbstractType
                 'remote_route' => 'select2_artists',
                 'class' => 'AppBundle\Entity\Artist',
                 'primary_key' => 'id',
-                'width' => '200'
+                'width' => '100%'
             ])
             ->add('reason', TextareaType::class, array(
                 'label' => 'labels.proposition_contract_artist.reason',

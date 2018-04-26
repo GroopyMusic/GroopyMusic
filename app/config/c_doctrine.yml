@@ -29,3 +29,4 @@ doctrine_migrations:
 knp_doctrine_behaviors:
   translatable: true
   sluggable: true
+  soft_deletable: true

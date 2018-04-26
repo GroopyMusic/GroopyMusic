@@ -32,6 +32,11 @@
                 <target>Conditions générales</target>
             </trans-unit>
 
+            <trans-unit id="app.admin.group.user_management">
+                <source>app.admin.group.user_management</source>
+                <target>Gestion utilisateurs</target>
+            </trans-unit>
+
             <trans-unit id="app.admin.step">
                 <source>app.admin.step</source>
                 <target>Palier</target>
@@ -139,12 +144,12 @@
 
             <trans-unit id="app.admin.level">
                 <source>app.admin.level</source>
-                <target>Palier Utilisateur</target>
+                <target>Palier des catégories</target>
             </trans-unit>
 
             <trans-unit id="app.admin.ranking">
                 <source>app.admin.ranking</source>
-                <target>Classement</target>
+                <target>Classements</target>
              </trans-unit>
 
             <trans-unit id="app.admin.propositioncontractartist">
@@ -156,6 +161,31 @@
                 <source>app.admin.conditions</source>
                 <target>Conditions générales</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.rewardrestriction">
+                <source>app.admin.rewardrestriction</source>
+                <target>Réstriction de récompense</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.reward">
+                <source>app.admin.reward</source>
+                <target>Récompense</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.userreward">
+                <source>app.admin.userreward</source>
+                <target>Récompenses utilisateurs</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.mail">
+                <source>app.admin.mail</source>
+                <target>Système de mail</target>
+             </trans-unit>
+
+            <trans-unit id="app.admin.consomableType">
+                <source>app.admin.consomableType</source>
+                <target>Type de consommation</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>

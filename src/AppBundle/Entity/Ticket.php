@@ -18,19 +18,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null)
+    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $reward_text)
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;
         $this->price = $price;
         $this->validated = false;
+        $this->reward_text = $reward_text;
 
-        if($cf != null) {
+        if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
             $this->name = $cf->getUser()->getDisplayName();
-        }
-        else {
+        } else {
             $this->barcode_text = $this->generateBarCode($num);
             $this->contractArtist = $contractArtist;
             $this->name = $physicalPerson->getDisplayName();
@@ -41,21 +41,24 @@ class Ticket
      * @param $num
      * @return string
      */
-    private function generateBarCode($num) {
+    private function generateBarCode($num)
+    {
         return 'ph' . rand(1, $num) . substr(md5(uniqid()), 0, 15) . $num;
     }
 
     /**
      * @return bool
      */
-    public function isValidated() {
+    public function isValidated()
+    {
         return $this->getValidated();
     }
 
     /**
      * @return bool
      */
-    public function isRefunded() {
+    public function isRefunded()
+    {
         return $this->contractFan != null && $this->contractFan->getRefunded();
     }
 
@@ -117,6 +120,11 @@ class Ticket
      * @ORM\ManyToOne(targetEntity="ContractArtist")
      */
     private $contractArtist;
+
+    /**
+     * @ORM\Column(name="reward_type_parameters", type="array",nullable=true)
+     */
+    private $reward_text;
 
     /**
      * Get id
@@ -294,5 +302,29 @@ class Ticket
     public function getContractArtist()
     {
         return $this->contractArtist;
+    }
+
+    /**
+     * Set rewardText
+     *
+     * @param array $rewardText
+     *
+     * @return Ticket
+     */
+    public function setRewardText($rewardText)
+    {
+        $this->reward_text = $rewardText;
+
+        return $this;
+    }
+
+    /**
+     * Get rewardText
+     *
+     * @return array
+     */
+    public function getRewardText()
+    {
+        return $this->reward_text;
     }
 }

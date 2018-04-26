@@ -20,8 +20,8 @@ class ContractFan
     {
         $str = '';
 
-        for($i = 0; $i < $this->purchases->count(); $i++) {
-            if($i > 0) {
+        for ($i = 0; $i < $this->purchases->count(); $i++) {
+            if ($i > 0) {
                 $str .= ', ';
             }
             $str .= $this->purchases->get($i);
@@ -35,34 +35,40 @@ class ContractFan
         $this->contractArtist = $ca;
         $this->purchases = new ArrayCollection();
 
-        foreach($ca->getStep()->getCounterParts() as $cp) {
+        foreach ($ca->getStep()->getCounterParts() as $cp) {
             $purchase = new Purchase();
             $purchase->setCounterpart($cp);
             $this->addPurchase($purchase);
         }
 
+        $this->amount = 0;
         $this->counterparts_sent = false;
         $this->date = new \DateTime();
         $this->refunded = false;
         $this->tickets = new ArrayCollection();
+        $this->user_rewards = new ArrayCollection();
     }
 
-    public function isPaid() {
+    public function isPaid()
+    {
         return $this->getPaid();
     }
 
-    public function isRefunded() {
+    public function isRefunded()
+    {
         return $this->getRefunded();
     }
 
-    public function generateBarCode() {
-        if(empty($this->barcode_text))
-            $this->barcode_text = 'cf'.$this->id . uniqid();
+    public function generateBarCode()
+    {
+        if (empty($this->barcode_text))
+            $this->barcode_text = 'cf' . $this->id . uniqid();
     }
 
-    public function generateTickets() {
+    public function generateTickets()
+    {
         $this->generateBarCode();
-        if(empty($this->tickets)) {
+        if (empty($this->tickets)) {
             foreach ($this->purchases as $purchase) {
                 /** @var Purchase $purchase */
                 for ($j = 1; $j < $purchase->getQuantity(); $j++) {
@@ -73,64 +79,117 @@ class ContractFan
         }
     }
 
-    public function getOrderFileName() {
+    public function getOrderFileName()
+    {
         return $this->getBarcodeText() . '.pdf';
     }
 
-    public function getPdfPath() {
+    public function getPdfPath()
+    {
         return self::ORDERS_DIRECTORY . $this->getOrderFileName();
     }
 
-    public function getTicketsPath() {
+    public function getTicketsPath()
+    {
         return self::TICKETS_DIRECTORY . $this->getTicketsFileName();
     }
 
-    public function getTicketsFileName() {
+    public function getTicketsFileName()
+    {
         return $this->getBarcodeText() . '-tickets.pdf';
     }
 
-    public function getAmount() {
-        return array_sum(array_map(function(Purchase $purchase) {
+    public function getAmountWithoutReduction()
+    {
+        return array_sum(array_map(function (Purchase $purchase) {
             return $purchase->getAmount();
         }, $this->purchases->toArray()));
     }
 
-    public function getPaid() {
+    public function getPaid()
+    {
         return $this->cart->getPaid() && !$this->refunded;
     }
 
-    public function getCounterPartsQuantity() {
-        return array_sum(array_map(function(Purchase $purchase) {
+    public function getCounterPartsQuantity()
+    {
+        return array_sum(array_map(function (Purchase $purchase) {
             return $purchase->getQuantity();
         }, $this->purchases->toArray()));
     }
 
-    public function getCounterPartsQuantityOrganic() {
+    public function getCounterPartsQuantityOrganic()
+    {
         return $this->getCounterPartsQuantity() - $this->getCounterPartsQuantityPromotional();
     }
 
-    public function getCounterPartsQuantityPromotional() {
-        return array_sum(array_map(function(Purchase $purchase) {
+    public function getCounterPartsQuantityPromotional()
+    {
+        return array_sum(array_map(function (Purchase $purchase) {
             return $purchase->getNbFreeCounterparts();
         }, $this->purchases->toArray()));
     }
 
-    public function getUser() {
+    public function getNbReducedCounterPart()
+    {
+        return array_sum(array_map(function (Purchase $purchase) {
+            return $purchase->getNbReducedCounterparts();
+        }, $this->purchases->toArray()));
+    }
+
+    public function getUser()
+    {
         return $this->getCart()->getUser();
     }
 
-    public function getFan() {
+    public function getFan()
+    {
         return $this->getUser();
     }
 
-    public function calculatePromotions() {
-        foreach($this->purchases as $purchase) {
+    public function calculatePromotions()
+    {
+        foreach ($this->purchases as $purchase) {
             $purchase->calculatePromotions();
         }
     }
 
-    public function isEligibleForPromotion(Promotion $promotion) {
+    public function isEligibleForPromotion(Promotion $promotion)
+    {
         return $this->date >= $promotion->getStartDate() && $this->date <= $promotion->getEndDate();
+    }
+
+    public function setUserRewards($user_rewards)
+    {
+        $this->user_rewards = $user_rewards;
+        return $this;
+    }
+
+    public function giveOutReward()
+    {
+        $givedReward = [];
+        $index = 0;
+        foreach ($this->user_rewards as $user_reward) {
+            $index = 0;
+            foreach ($this->purchases as $purchase) {
+                if ($user_reward instanceof ReductionReward) {
+                    for ($i = 0; $i < $this->$purchase->getNbReducedCounterparts(); $i++) {
+                        if ($givedReward[$index] == null) {
+                            $givedReward[$index] = [];
+                        }
+                        $givedReward[$index] = array_push($givedReward[$index], "Réduction x1");
+                        $index = $index + 1;
+                    }
+                } else if ($user_reward instanceof InvitationReward) {
+                    $j = 1;
+                    while($j <= $purchase->getQuantity() && $j <= $user_reward->getRemainUse()){
+
+                    }
+                } else if ($user_reward instanceof ConsomableReward) {
+
+                }
+            }
+        }
     }
 
     /**
@@ -190,6 +249,16 @@ class ContractFan
      * @ORM\OneToMany(targetEntity="Ticket", mappedBy="contractFan", cascade={"all"})
      */
     private $tickets;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="User_Reward", inversedBy="contractFans", cascade={"persist"})
+     */
+    private $user_rewards;
+
+    /**
+     * @ORM\Column(name="amount", type="float")
+     */
+    private $amount;
 
     /**
      * Get id
@@ -436,5 +505,62 @@ class ContractFan
     public function getTickets()
     {
         return $this->tickets;
+    }
+
+    /**
+     * Add userReward
+     *
+     * @param \AppBundle\Entity\User_Reward $userReward
+     *
+     * @return ContractFan
+     */
+    public function addUserReward(\AppBundle\Entity\User_Reward $userReward)
+    {
+        $this->user_rewards[] = $userReward;
+        return $this;
+    }
+
+    /**
+     * Remove userReward
+     *
+     * @param \AppBundle\Entity\User_Reward $userReward
+     */
+    public function removeUserReward(\AppBundle\Entity\User_Reward $userReward)
+    {
+        $this->user_rewards->removeElement($userReward);
+    }
+
+    /**
+     * Get userRewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserRewards()
+    {
+        return $this->user_rewards;
+    }
+
+    /**
+     * Set amount
+     *
+     * @param float $amount
+     *
+     * @return ContractFan
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return float
+     */
+    public function getAmount()
+    {
+        return $this->amount;
     }
 }

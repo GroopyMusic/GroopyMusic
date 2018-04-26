@@ -14,6 +14,7 @@ subjects:
       viptickets: Vos tickets Un-Mute pour %artist% #new
   refunded_payment: Nous avons remboursé vos tickets #new
   artist_validated: Votre artiste sur Un-Mute a été vérifié #new
+  reward_attribution: Nouvelle récompense #new
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -203,3 +204,12 @@ payment:
     Vos tickets achetés pour le %event% ont été entièrement remboursés (numéro de commande : %cf%).
 
     Rendez-vous sur Un-Mute pour soutenir d'autres artistes et les faire monter sur scène !
+
+#new
+reward_attribution:
+  content : |
+    Vous avez reçu une nouvelle récompense !
+    Nom de la récompense : %reward_name%
+    %content%
+    Pour plus d'informations, consultez votre page <a href="%rewards_url%">Mes récompenses</a>
+

@@ -32,4 +32,26 @@ class User_CategoryRepository  extends \Doctrine\ORM\EntityRepository
             ->setMaxResults($limit)
             ->getResult();
     }
+
+    /**
+     * Retrieves all categories of @param $level_id
+     *
+     * @param $level_id
+     * @return array
+     */
+    public function findAllStatByLevel($level_id){
+        return $this->getEntityManager()->createQuery(
+            'SELECT stat, l, c, lt, ct
+                  FROM AppBundle:User_Category stat INDEX BY stat.id
+                  LEFT JOIN stat.user u
+                  LEFT JOIN stat.level l
+                  LEFT JOIN l.category c
+                  LEFT JOIN l.translations lt
+                  LEFT JOIN c.translations ct
+                  WHERE l.id = ?1
+                  GROUP BY stat.id
+                  ')
+            ->setParameter(1,$level_id)
+            ->getResult();
+    }
 }

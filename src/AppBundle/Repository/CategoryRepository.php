@@ -25,7 +25,9 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN c.levels l
                   LEFT JOIN l.translations lt
                   LEFT JOIN l.statistics s
-                  LEFT JOIN s.user u 
+                  LEFT JOIN s.user u
+                  LEFT JOIN u.user_conditions uc
+                  LEFT JOIN uc.conditions cond
                   ORDER BY c.id ASC, l.step DESC, s.statistic DESC 
                   ')
             ->getResult();

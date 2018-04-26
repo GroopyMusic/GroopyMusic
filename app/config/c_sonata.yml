@@ -18,7 +18,7 @@ sonata_admin:
              position: right
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
+               groups: [app.admin.group.user_management, app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
 
        groups:
            app.admin.group.user:
@@ -27,6 +27,7 @@ sonata_admin:
                items:
                    - AppBundle\Admin\UserAdmin
                    - AppBundle\Admin\ArtistAdmin
+                   - AppBundle\Admin\User_RewardAdmin
            app.admin.group.contact:
                 label_catalogue: SonataAdminBundle
                 items:
@@ -45,14 +46,22 @@ sonata_admin:
                   - AppBundle\Admin\HallAdmin
                   - AppBundle\Admin\CategoryAdmin
                   - AppBundle\Admin\LevelAdmin
-                  - AppBundle\Admin\RankingAdmin
+                  - AppBundle\Admin\RewardAdmin
+                  - AppBundle\Admin\RewardRestrictionAdmin
+                  - AppBundle\Admin\ConsomableTypeAdmin
+
+           app.admin.group.user_management:
+              label: app.admin.group.user_management
+              label_catalogue: SonataAdminBundle
+              items:
+                - AppBundle\Admin\RankingAdmin
+                - AppBundle\Admin\MailAdmin
 
            app.admin.group.conditions:
               label: app.admin.group.conditions
               label_catalogue: SonataAdminBundle
               items:
                 - AppBundle\Admin\ConditionsAdmin
-
            app.admin.group.events:
                label: app.admin.group.events
                label_catalogue: SonataAdminBundle
@@ -76,12 +85,21 @@ sonata_admin:
          - bundles/sonataformatter/markitup/sets/markdown/set.js
          - bundles/sonataformatter/markitup/sets/html/set.js
          - bundles/sonataformatter/markitup/sets/textile/set.js
+         - js/Admin/admin.js
+
+      remove_javascripts:
+        - bundles/sonatacore/vendor/select2/select2.min.js
+        - bundles/sonatacore/vendor/select2/select2_locale_fr.js
 
       extra_stylesheets:
-         - bundles/sonataformatter/markitup/skins/sonata/style.css
-         - bundles/sonataformatter/markitup/sets/markdown/style.css
-         - bundles/sonataformatter/markitup/sets/html/style.css
-         - bundles/sonataformatter/markitup/sets/textile/style.css
+        - bundles/sonataformatter/markitup/skins/sonata/style.css
+        - bundles/sonataformatter/markitup/sets/markdown/style.css
+        - bundles/sonataformatter/markitup/sets/html/style.css
+        - bundles/sonataformatter/markitup/sets/textile/style.css
+
+      remove_stylesheets:
+        - bundles/sonatacore/vendor/select2/select2.css
+        - bundles/sonatacore/vendor/select2-bootstrap-css/select2-bootstrap.min.css
 
 sonata_block:
      default_contexts: [cms]
@@ -310,4 +328,36 @@ services:
         arguments: [ ~, AppBundle\Entity\Conditions , ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.conditions }
+        public: true
+
+    AppBundle\Admin\RewardRestrictionAdmin:
+        arguments: [~, AppBundle\Entity\RewardRestriction, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.rewardrestriction }
+        public: true
+
+    AppBundle\Admin\RewardAdmin:
+        arguments: [~, AppBundle\Entity\Reward, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.reward }
+        calls:
+            - [ setSubClasses,[{Invitation: AppBundle\Entity\InvitationReward, Consommation: AppBundle\Entity\ConsomableReward,Réduction: AppBundle\Entity\ReductionReward}]]
+        public: true
+
+    AppBundle\Admin\User_RewardAdmin:
+        arguments: [~, AppBundle\Entity\User_Reward, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.userreward }
+        public: true
+
+    AppBundle\Admin\MailAdmin:
+        arguments: [ ~, null , AppBundle:MailAdmin]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.mail }
+        public: true
+
+    AppBundle\Admin\ConsomableTypeAdmin:
+        arguments: [~, AppBundle\Entity\ConsomableType, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.consomableType }
         public: true

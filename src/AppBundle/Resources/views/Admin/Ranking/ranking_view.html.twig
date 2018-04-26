@@ -8,6 +8,9 @@
             </div>
         {% endfor %}
     </div>
+    <div id="div-alert">
+
+    </div>
     <ul class="nav nav-tabs nav-justified">
         {% for category in categories %}
             <li {% if loop.index == 1 %} class="active"{% endif %}><a data-toggle="tab" class="ranking-title-tab"
@@ -79,16 +82,16 @@
                                 </div>
                                 <br>
                                 <div class="form-inline clearfix">
-                                    <strong>&nbsp; Eléments sélectionnés : </strong>
-                                    <select class="ranking-select-action">
-                                        <option>
+                                    <label for="select{{ level.id }}">&nbsp; Eléments sélectionnés : </label>
+                                    <select id="select{{ level.id }}" class="ranking-select-action">
+                                        <option value="reward">
                                             Attribuer récompense aux utilisateurs sélectionnés
                                         </option>
-                                        <option>
+                                        <option value="email">
                                             Envoyer un email aux utilisateurs sélectionnés
                                         </option>
                                     </select>
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary actionButton" onclick="defineAction({{ level.id }})">
                                         OK
                                     </button>
                                 </div>
@@ -116,6 +119,7 @@
     <script type="text/javascript">
 
         var maximums = [];
+        var checkedUsers = [];
 
         $('document').ready(function () {
 
@@ -127,12 +131,14 @@
             //foreach levels, check if button display more is displayed
             {% for category in categories %}
             {% for level in category.levels %}
-            checkIfDisplayed({{ level.id }})
+            checkIfDisplayed({{ level.id }});
             {% endfor %}
             {% endfor %}
 
+            var collapsable = $('.collapsable');
+
             //change icon collapse button
-            $('.collapsable').on("hidden.bs.collapse", function () {
+            $(collapsable).on("hidden.bs.collapse", function () {
                 var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
                 $(mySpan).removeClass();
                 $(mySpan).addClass('glyphicon glyphicon-menu-down');
@@ -140,11 +146,12 @@
             });
 
             //change icon collapse button
-            $('.collapsable').on("shown.bs.collapse", function () {
+            $(collapsable).on("shown.bs.collapse", function () {
                 var mySpan = $('#' + $(this).attr('id').replace('table', 'butCollapse')).children()[0];
                 $(mySpan).removeClass();
                 $(mySpan).addClass('glyphicon glyphicon-menu-up');
             });
+
         });
 
         //check all checkbox
@@ -193,15 +200,150 @@
         //ajax --> display more
         function displayMore(level_id) {
             showLoader(level_id);
+            var tableBody = $('#level' + level_id + ' tbody');
             var url = "{{ admin.generateObjectUrl('displayMore',null) }}";
             var limit = $('#level' + level_id + ' tbody tr').length + 5;
             $.post(url, {level_id: level_id, limit: limit}, function (html) {
-                    hideLoader(level_id);
-                    $('#level' + level_id + ' tbody').children().remove();
-                    Admin.shared_setup($('#level' + level_id + ' tbody').html(html));
-                    checkIfDisplayed(level_id);
+                hideLoader(level_id);
+                $(tableBody).children().remove(); //check
+                Admin.shared_setup($(tableBody).html(html));
+                checkIfDisplayed(level_id);
+            }).fail(function (err) {
+                displayAlertOnTop(err.responseText, "error");
+            });
+        }
+
+        function defineAction(level_id) {
+            var select = $('#select' + level_id);
+            if ($(select).find(":selected").val() === "reward") {
+                selectMultipleUser(level_id, "displayRewardModal");
+            } else if ($(select).find(":selected").val() === "email") {
+                selectMultipleUser(level_id, "displayEmailModal");
+            }
+        }
+
+        function selectSingleUser(stat_id, level_id, route) {
+            checkedUsers = [];
+            checkedUsers.push(stat_id);
+            displayModal(level_id, route);
+        }
+
+        function selectMultipleUser(level_id, route) {
+            getCheckedUsers(level_id);
+            displayModal(level_id, route);
+        }
+
+        function displayModal(level_id, route) {
+            if (checkedUsers.length > 0) {
+                url = "{{ admin.generateObjectUrl("displayModal",null) }}";
+                $(".actionButton").prop('disabled', true);
+                $.post(url, {stats: checkedUsers, level: level_id, route: route}, function (html) {
+                        Admin.shared_setup($(html).insertAfter($('.tab-content')));
+                        manageTextarea();
+                        $("#modalAction").on("hidden.bs.modal", function () {
+                            $(".actionButton").prop('disabled', false);
+                            $(".modalAction").remove();
+                        }).modal();
+                    }
+                ).fail(function (err) {
+                    displayAlertOnTop(err.responseText, "error");
+                    $(".actionButton").prop('disabled', false);
+                })
+            } else {
+                displayAlertOnTop("Veuillez sélectionner des utilisateurs", 'warning');
+            }
+        }
+
+        function manageTextarea() {
+            var checkbox = $("#checkboxSendEmail");
+
+            //IcheckHelper
+            $(checkbox).on("ifChecked", function () {
+                $('#textareaEmail').show();
+            });
+            $(checkbox).on("ifUnchecked", function () {
+                $('#textareaEmail').hide();
+            });
+        }
+
+        function getCheckedUsers(level_id) {
+            checkedUsers = [];
+            $('#level' + level_id + ' input[type="checkbox"]').each(function () {
+                // normal || sonata
+                if ($(this).is(':checked') || $(this).parent().hasClass("checked")) {
+                    checkedUsers.push($(this).attr('id').replace("checkbox", ""));
                 }
-            )
+            })
+        }
+
+        function performAction(level_id, route) {
+            $('#modalLoader').find('.loader').show();
+            $('#modalContent').hide();
+            var url, params;
+            if (checkedUsers.length > 0) {
+                if (route === "email") {
+                    url = "{{ admin.generateObjectUrl('sendEmail',null) }}";
+                    params = {
+                        level: level_id,
+                        stats: checkedUsers,
+                        mailObject: $("#mailObject").val(),
+                        mailContent: $("#mailContent").val()
+                    }
+                } else if (route === "reward") {
+                    url = "{{ admin.generateObjectUrl('giveReward',null) }}";
+                    params = {
+                        level: level_id,
+                        stats: checkedUsers,
+                        reward: $('#selectReward').find(":selected").val(),
+                        email: $('#checkboxSendEmail').parent().hasClass('checked'),
+                        emailContent: $('#textareaEmailContent').val(),
+                        notification: $('#checkboxSendNotification').parent().hasClass('checked')
+                    }
+                }
+                $.post(url, params, function (success) {
+                        $('#modalLoader').find('.loader').hide();
+                        $("#modalAction").on("hidden.bs.modal", function () {
+                            $(".modalAction").remove();
+                            displayAlertOnTop(success, "success");
+                        }).modal('hide');
+                    }
+                ).fail(function (err) {
+                    $("#modalAction").on("hidden.bs.modal", function () {
+                        $(".modalAction").remove();
+                        displayAlertOnTop(err.responseText, "error");
+                    }).modal('hide');
+                })
+            } else {
+                displayAlertOnTop('Veuillez sélectionner des utilisateurs', "warning");
+            }
+        }
+
+        function displayAlertOnTop(message, type) {
+            var div = $('#div-alert');
+            var alert;
+            console.log("hello");
+            div.children().each(function () {
+                $(this).remove();
+            });
+            if (type === "warning") {
+                alert = '<div class="alert alert-warning" ' +
+                    'role="alert">' +
+                    message +
+                    '</div>';
+            } else if (type === "success") {
+                alert = '<div class="alert alert-success" ' +
+                    'role="alert">' +
+                    message +
+                    '</div>';
+            } else if (type === "error") {
+                console.log("hello");
+                alert = '<div class="alert alert-danger" ' +
+                    'role="alert">' +
+                    message +
+                    '</div>';
+            }
+            div.append(alert);
+            $(window).scrollTop(0);
         }
     </script>
 {% endblock %}

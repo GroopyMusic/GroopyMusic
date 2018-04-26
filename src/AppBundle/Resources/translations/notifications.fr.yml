@@ -71,3 +71,14 @@ tickets_sent:
     Vos tickets pour le Festival Un-Mute du %date% dans la salle "%hall_name%" sont disponibles.
 
     N'oubliez pas que vous devez les avoir imprimés pour le jour du Festival. Direction <a href="%orders_url%">votre espace personnel</a> pour les télécharger !
+
+#New
+reward_attribution:
+  title: Nouvelle récompense
+  content: |
+    Vous avez reçu une nouvelle récompense !
+
+    Nom de la récompense : %reward_name%
+
+    Pour plus d'informations, consultez votre page <a href="%rewards_url%">Mes récompenses</a>
+
