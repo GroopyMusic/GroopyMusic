@@ -1,0 +1,202 @@
+#new
+months.01: January
+months.02: February
+months.03: March
+months.04: April
+months.05: May
+months.06: June
+months.07: July
+months.08: August
+months.09: September
+months.10: October
+months.11: November
+months.12: Décember
+
+#new
+meta_description_event: Discover %artist% on stage on %date%!
+meta_description_artist: Discover %artist% on Un-Mute.
+meta_description_hall: "Un-Mute partner: %hall%."
+
+#new
+error:
+  intro: Apparently, we're not on the same wavelength...
+  generic:
+    title: Error
+    content: Oups... An unknown error occurred during your visit. If the problem persists, please contact us!
+  e404:
+    title: 404
+    content: Aie, aie, this page doesn't exist (anymore ?). Maybe you should go back on <a href="%homeUrl%">our homepage</a>?
+  e403:
+    title: Forbidden
+    content: You do not have the right to reach this page. Are you sure to be at the right place?
+
+home:
+  #new
+  og_title: Un-Mute | Discover, support, produce
+  concept:
+    title: Our concept
+    content_1: Our mini-festivals are only confirmed if enough tickets are sold.
+    content_2: If the objective is not reached after one month, everybody is repaid.
+  concerts:
+    title: Currently being funded
+  #new
+  spotlights:
+    title_1: Discover three artists per festival
+    title_2: In the spotlights
+    headline: Discover %artist% on stage on %date%
+    lineup:
+      title: Line-up
+      host: Host artist
+      invited: Invited artists
+    tickets:
+      title: Tickets
+      selling: On sale
+      soldout: Sold out
+    video:
+      title: Our last video
+  #new
+  partners:
+    title: Partners
+
+team:
+  members:
+   #new
+    alexis: "Passionné de musique, <span class='um-label um-semi-bold'>Alexis</span> a été vite conquis par l’idée du projet. Doté d’expérience en événementiel et actif au sein d’une agence digitale depuis plus de 3 ans, Alexis entend mettre à disposition son expérience en communication digitale et en coordination de projets pour soutenir la croissance de l’ASBL. Le projet constitue en effet à ses yeux un véritable potentiel pour réunir deux ses aspirations : la musique et l’entreprenariat, au sein d’une équipe motivée et multidisciplinaire."
+
+catalog_events:
+  running:
+    title: Festivals currently being funded
+    #new
+    intro: The following events still need support to be able to be produced! Offer to these artists the possibility of occurring in a full house by buying tickets for their festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggest artists, halls and events to Un-Mute! <a href='%proposition_url%'>This way!</a>">Do you wish to propose an event?</a>
+
+event:
+  #new
+  description: "Discover three emergent artists during an Un-Mute Festival. Headliner: %host%"
+
+#new
+conditions:
+  last_update: "Last update on: %date%"
+  accept_last:
+    intro: Our terms of service evolved since your last visit. To pursue your browsing, it is necessary that you mark your agreement.
+    intro_social: To continue on Un-Mute, it is necessary that you mark your agreement with our terms of service.
+
+pay_cart:
+    #new
+    not_authenticated:
+      intro: To be able to finalize your order, you must be logged in.
+      signin_label: I already have an Un-Mute account
+      signup_label: I don't have an Un-Mute account yet
+
+new_artist:
+  #new
+  phone_explanation: If you fill in a phone number, it will only be used by the Un-Mute team to contact you. This number will not be made public.
+
+artist_profile:
+  see:
+    #new
+    deleted:
+      title: Deleted artist
+      content: Unfortunately, this artist has been deleted by his owners. His profile is no longer available.
+    invisible:
+      content: This artist profile is not public.
+    #new
+    owned:
+      to_be_examined: The profile of your artist must be verified by an administrator before it will be made public. You are probably going to be contacted by an administrator in the few next hours or days.
+      invisible: The profile of your artist hasn't been made public yet.
+      not_validated: Your artist hasn't been validated by an administrator but this profile has already been made public.
+
+#new
+tickets_pdf:
+  ticket:
+    title: Un-Mute Festival @%hall_name%
+    is_entry: |
+        This ticket is your entrance fee.
+        Please present it on a readable support.
+  conditions: |
+    -	This entrance ticket is only valid for the place and the date specified on the ticket and will be checked.
+    -	Please present the QR code of the ticket in a visible way to facilitate its scanning. A ticket is not valid without sound bar codes.
+    -	A ticket can be used only once and will grant a single access to the Festival. If the same QR codes is presented several times, only the first person to present the ticket will be admitted.
+    -	Any attempt of re-use or copy of a ticket will be considered as a fraud. Any abuse or forgery will be pursued. The mentions on tickets cannot be modified. The holders of modified tickets can be denied access to the Festival.
+    -	An official and currently valid ID card with photo can be asked to identify the holder of the ticket.
+    -	The tickets are for private use only and cannot be resold to third parties with a commercial purpose or with a different price than the official sale price.
+    -	This ticket is non-exchangeable, non-refundable and cannot be replaced in case of loss, theft or destruction.
+    -	All terms of service are available on <a href="%conditionsUrl%">%conditionsUrl%</a>.
+
+notices:
+    #new
+  artist_create: The artist %artist% has been created. For now, the profile is invisible on Un-Mute except for you; the Un-Mute team will contact you in the few next hours or days.
+  artist_role: This role has been saved.
+  #new
+  social:
+    connection_email_confirmed: You are now logged in.
+    connection_email_new_account: We linked your Facebook account to the existing Un-Mute account for the address %email%.
+    connection_oauth_confirmed: You are now logged in through your Facebook account.
+    registration_success: Your Un-Mute account has been created with your Facebook profile data. You can define a password at any time in your profile edit page if you wish to also be able to log in using Un-Mute credentials.
+  #new
+  registration: Your subscription is successful. You can now proceed to payment. Please note that you have received an activation link by email. You will need to click it if you want to log again into our system with Un-Mute credentials in the future.
+
+labels:
+  artist:
+    #new
+    phone: Phone number
+
+  suggestionbox:
+    #new
+    phone: Phone number
+
+  #new
+  conditions:
+    accept_new: I have read and I accept the last <a href="%conditionsUrl%" target="_blank">terms of service</a> of Un-Mute.be
+    submit: Accept & continue on the website
+    logout: I want to log out
+
+  #new
+  proposition_hall:
+    name: Place/hall name
+    contact_email: Email address
+    contact_phone: Phone number
+    province: Geographic area
+  contact_person:
+    firstname: First name
+    lastname: Last name
+    phone: Phone number
+    mail: Email address
+  proposition_artist:
+    artistname: Artist or band name
+    demo_link: Music sample (Youtube or other)
+    genres: Musical styles
+  proposition_contract_artist:
+    province: Geographic area
+    reason: Reason of the event
+    nb_expected: Number of expected people
+    period_start_date: Start date
+    period_end_date: End date
+    day_commentary: Preferences on the day of the festival
+    commentary: Commentary
+    submit: Send
+    artists: Artist
+    payable: The entrance must be paid
+    ask_if_concert: Is it an event proposal?
+    ask_if_artist: Is the artist already on Un-Mute?
+    ask_if_hall: Do you know the place where the event will take place?
+
+placeholders:
+  proposition_contract_artist:
+    year: Year
+    month: Month
+    day: Day
+
+choices:
+  proposition_contract_artist:
+    yes: Yes
+    no: No
+
+proposition:
+  title: Un-Mute event proposal
+  intro: Un-Mute is ceaselessly in search of new events and artists. You want to organize an event? Tell us about it. The Un-Mute team will check your request in the next few days.
+  contact_person: Contact person
+  artist: Artist
+  event: Practical infos of the event
+  place: Place/hall of the event
+  explication: Only fill in the start date if the event will take place at a unique date and fill in the two dates if your event can spread out on a certain duration.
+  redirection: If you do not wish to submit a proposition of event but wish to contact us or to propose us a new concert hall, we invite you to fill in <a href="%url%">this form</a> instead.

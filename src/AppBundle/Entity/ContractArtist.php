@@ -270,8 +270,15 @@ class ContractArtist extends BaseContractArtist
 
     public function __toString()
     {
-        return 'Festival Un-Mute avec '. $this->artist;
+        switch($this->currentLocale) {
+            case 'fr':
+                return 'Festival Un-Mute avec '. $this->artist;
+
+            case 'en':
+                return 'Un-Mute Festival with '. $this->artist;
+        }
     }
+
 
     // Also add as main artist for the concert
     // TODO simplify this process, for now this is needed to make the queries for finding available artists work properly

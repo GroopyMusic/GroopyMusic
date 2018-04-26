@@ -1,5 +1,7 @@
 {% block subject %}{{ subject }}{% endblock %}
 
+{% trans_default_domain 'emails' %}
+
 {% block body_text %}
     {% autoescape false %}
 
@@ -31,16 +33,14 @@
     {% endblock %}	{# end main content #}
 
     {% block signature %}
-        À très bientôt pour de nouvelles aventures musicales,
-
-        L'équipe Un-Mute
+           {{ 'default_signature'|trans|raw|nl2br }}
     {% endblock %}
 {{ txtHR }}
 {% block footerInfoText %}
 
 Un-Mute ASBL
 
-Ajoutez "{{ sendMailAccountAddress }}" à votre carnet d'adresse pour assurer la réception de nos e-mails.
+{{ 'add_to_contacts'|trans({'%address%': sendMailAccountAddress}) }}
 {% endblock %}
 
 {% block linkToWebView %}
@@ -53,9 +53,9 @@ Ajoutez "{{ sendMailAccountAddress }}" à votre carnet d'adresse pour assurer la
 {% endif %}
 {% endblock %}
 {% block footerLinks %}
-- Accueil : {{ absolute_url(path('homepage')) }}
-- A propos : {{ absolute_url(path('about')) }}
-- Contact : {{ absolute_url(path('suggestionBox')) }}
+- {{ 'footer_links.home'|trans }} : {{ url('homepage') }}
+- {{ 'footer_links.about'|trans }} : {{ url('about') }}
+- {{ 'footer_links.contact'|trans }} : {{ url('suggestionBox') }}
 {% endblock %}
 
 {% endautoescape %}

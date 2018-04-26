@@ -82,6 +82,7 @@ services:
       arguments:
         $from_address: "%mailer_from_address%"
         $from_name: "%mailer_from_name%"
+        $locales: "%locales%"
 
     AppBundle\Services\UserRolesManager:
       arguments:

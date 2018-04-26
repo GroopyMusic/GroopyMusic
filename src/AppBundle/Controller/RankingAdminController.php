@@ -118,7 +118,7 @@ class RankingAdminController extends Controller
         } catch (\Throwable $th) {
             return new Response($th->getMessage(), 500, []);
         }
-        return $this->render('@App/Admin/ranking/ranking_table_preview.html.twig', array(
+        return $this->render('@App/Admin/Ranking/ranking_table_preview.html.twig', array(
             'statistics' => $statistics
         ));
     }

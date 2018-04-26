@@ -91,12 +91,25 @@ home:
   og_title: Un-Mute | Découvrez, soutenez, produisez
   concept:
     title: Le principe
-    content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus. Et si l'objectif n'est pas atteint, tout le monde est entièrement remboursé !
-    content_2: Un-Mute sert d'intermédiaire dans l'organisation de concerts en Belgique. En tant que "producteur", vous êtes acteur dans la construction de la scène musicale belge de demain via <a href="#" data-toggle="popover" title="En savoir plus" data-content="Vous souhaitez en savoir plus sur notre fonctionnement ? <a href='%about_url%'>C'est par ici !</a>">un système de financement participatif qui ne vous fait prendre aucun risque</a>.
+    content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus.
+    content_2: Si l'objectif n'est pas atteint au bout d'un mois, tout le monde est remboursé.
   concerts:
-    title: Festivals
-    content: Nos artistes tentent de remplir des salles aux quatre coins du Royaume. Découvrez leurs envies et soutenez-les.
-    see_all: Voir la liste complète
+    title: En cours de financement
+  #new
+  spotlights:
+    title_1: Découvrez trois artistes par festival
+    title_2: À découvrir
+    headline: Découvrez %artist% en live le %date%
+    lineup:
+      title: Line-up
+      host: Artiste hôte
+      invited: Artistes invités
+    tickets:
+      title: Tickets
+      selling: En vente
+      soldout: Sold out
+    video:
+      title: Notre dernière vidéo
   news:
     title: Derniers artistes inscrits
   join_us:
@@ -237,7 +250,7 @@ contact:
   confirmation: Votre message a bien été reçu.
 
 catalog_halls:
-  title: Partenaires
+  title: Salles partenaires
   intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des festivals sont susceptibles d'être organisés. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement dans votre salle ?</a>
   empty: Il n'y a pas encore de salle partenaire sur la plateforme.
 
@@ -851,9 +864,9 @@ labels:
     submit: Envoyer
     artists: Artiste
     payable: L'entrée doit être payante
-    ask_if_concert : S'agit-il bien d'une proposition d'événement ?
-    ask_if_artist : L'artiste existe-t-il déjà sur la plateforme ?
-    ask_if_hall : Connaissez-vous déjà la salle où aura lieu l'événement ?
+    ask_if_concert: S'agit-il bien d'une proposition d'événement ?
+    ask_if_artist: L'artiste existe-t-il déjà sur la plateforme ?
+    ask_if_hall: Connaissez-vous déjà la salle où aura lieu l'événement ?
 
 placeholders:
   proposition_contract_artist:
@@ -874,7 +887,7 @@ proposition:
   event: Informations pratiques de l'événement
   place: Lieu de l'événement
   explication: Ne renseignez que la date de début si vous désirez renseigner une date unique et remplissez les deux dates si votre événement peut s'étaler sur une certaine durée.
-  redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vons invitons à remplir <a href="%url%">ce formulaire</a>.
+  redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vous invitons à remplir <a href="%url%">ce formulaire</a>.
 
 #new
 rewards:
@@ -902,6 +915,3 @@ reward:
     value: Valeur
   reduction:
     reduction: réduction
-
-
-

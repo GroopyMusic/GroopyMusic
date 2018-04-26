@@ -82,7 +82,7 @@ class TempShitController extends Controller
      * @Security("has_role('ROLE_SUPER_ADMIN')")
      */
     public function testMailAction(KernelInterface $kernel) {
-        $application = new Application($kernel);
+        /*$application = new Application($kernel);
         $application->setAutoExit(false);
 
         $input = new ArrayInput(array(
@@ -97,6 +97,9 @@ class TempShitController extends Controller
         $content = $output->fetch();
 
         // return new Response(""), if you used NullOutput()
-        return new Response($content);
+        return new Response($content);*/
+
+        $this->get('AppBundle\Services\MailDispatcher')->sendTestEmail();
+        return $this->render('@App/Public/team.html.twig');
     }
 }

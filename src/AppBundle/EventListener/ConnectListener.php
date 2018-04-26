@@ -5,6 +5,7 @@ namespace AppBundle\EventListener;
 use AppBundle\Entity\User_Conditions;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
+use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\FOSUserEvents;
 use HWI\Bundle\OAuthBundle\Event\GetResponseUserEvent;
 use HWI\Bundle\OAuthBundle\HWIOAuthEvents;
@@ -37,6 +38,7 @@ class ConnectListener implements EventSubscriberInterface {
             HWIOAuthEvents::CONNECT_COMPLETED => 'onSocialConnectCompleted',
             HWIOAuthEvents::REGISTRATION_SUCCESS => 'onSocialRegistrationSuccess',
             FOSUserEvents::REGISTRATION_COMPLETED => 'onRegistrationCompleted',
+            FOSUserEvents::REGISTRATION_SUCCESS => 'onRegistrationSuccess',
         ];
     }
 
@@ -68,10 +70,16 @@ class ConnectListener implements EventSubscriberInterface {
         $this->addSessionMessage('notices.social.registration_success');
     }
 
-    // Registration with FOSUserBundle
+    // Registration with FOSUserBundle -> completed
+    public function onRegistrationSuccess(FormEvent $event) {
+        $event->getForm()->getData()->setPreferredLocale($this->translator->getLocale());
+    }
+
+    // Registration with FOSUserBundle -> completed
     public function onRegistrationCompleted(FilterUserResponseEvent $event) {
         $last_terms = $this->em->getRepository('AppBundle:Conditions')->findLast();
         $user_conditions = new User_Conditions($event->getUser(), $last_terms);
+
         $this->em->persist($user_conditions);
         $this->em->flush();
     }

@@ -1,5 +1,20 @@
+#new
+default_signature: |
+    À très bientôt pour de nouvelles aventures musicales,
+
+    L'équipe Un-Mute
+
+#new
+footer_links:
+  home: Accueil
+  about: A propos
+  contact: Contact
+
+#new
+add_to_contacts: Ajoutez "%address%" à votre carnet d'adresse pour assurer la réception de nos e-mails.
+
 subjects:
-  change_email_confirmation: Changement d'e-mail
+  change_email_confirmation: Votre demande de changement d'adresse e-mail
   new_ownership_request: Quelqu'un a dit que vous possédiez un artiste sur Un-Mute
   order_recap: Votre commande sur Un-Mute.be
   concert:
@@ -194,7 +209,7 @@ vip_inscription:
 
     Nous vous attendons donc à 18h le %date% pour le %event%.
 
-    Pour toute question, n'hésitez pas à nous contacter à ce lien : %contact_url%
+    Pour toute question, n'hésitez pas à nous contacter par mail : contact@un-mute.be
 
 #new
 payment:

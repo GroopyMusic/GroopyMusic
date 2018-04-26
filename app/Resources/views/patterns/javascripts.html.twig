@@ -72,6 +72,21 @@
     <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 
+{% if app.request.locale != 'en' %}
+    <script type="text/javascript">
+        Dropzone.prototype.defaultOptions.dictDefaultMessage = "{{ 'dictDefaultMessage'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictFallbackMessage = "{{ 'dictFallbackMessage'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictFallbackText = "{{ 'dictFallbackText'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictFileTooBig = "{{ 'dictFileTooBig'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictInvalidFileType = "{{ 'dictInvalidFileType'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictResponseError = "{{ 'dictResponseError'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictCancelUpload = "{{ 'dictCancelUpload'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictCancelUploadConfirmation = "{{ 'dictCancelUploadConfirmation'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictRemoveFile = "{{ 'dictRemoveFile'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "{{ 'dictMaxFilesExceeded'|trans({}, 'dropzone') }}";
+    </script>
+{% endif %}
+
 <script src="{{ asset('js/carousel/jcarousel.js') }}"></script>
 
 {#

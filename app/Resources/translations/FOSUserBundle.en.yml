@@ -1,0 +1,21 @@
+profile:
+  show:
+    #new
+    facebook:
+      label: Facebook account
+      disconnect_link: Dissociate my Facebook account
+      disconnect_title: Dissociate my Facebook account
+      disconnect_submit: Dissociate
+      disconnect_cancel: Cancel
+
+registration:
+  already_logged:
+    #new
+    message: |
+      You are logged in your Un-Mute account. Have you already checked these pages out?
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action" href="%eventsUrl%">Upcoming events</a>
+        <a class="list-group-item list-group-item-action" href="%artistsUrl%">Un-Mute artists</a>
+        <a class="list-group-item list-group-item-action" href="%hallsUrl%">Un-Mute concert halls</a>
+        <a class="list-group-item list-group-item-action" href="%profileUrl%">Your account</a>
+      </div>
