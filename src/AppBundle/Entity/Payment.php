@@ -107,7 +107,7 @@ class Payment
     private $contractArtist;
 
     /**
-     * @ORM\Column(name="amount", type="decimal")
+     * @ORM\Column(name="amount", type="float")
      */
     private $amount;
 
@@ -247,29 +247,6 @@ class Payment
         return $this->contractFan;
     }
 
-    /**
-     * Set amount
-     *
-     * @param string $amount
-     *
-     * @return Payment
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    /**
-     * Get amount
-     *
-     * @return string
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
 
     /**
      * Set contractArtist
@@ -335,5 +312,29 @@ class Payment
     public function setAskingRefund($asking_refund)
     {
         $this->asking_refund = $asking_refund;
+    }
+
+    /**
+     * Set amount
+     *
+     * @param float $amount
+     *
+     * @return Payment
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return float
+     */
+    public function getAmount()
+    {
+        return $this->amount;
     }
 }

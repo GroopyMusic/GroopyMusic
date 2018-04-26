@@ -2,9 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ConsomableReward;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\InvitationReward;
 use AppBundle\Entity\Notification;
+use AppBundle\Entity\ReductionReward;
 use AppBundle\Entity\User;
+use AppBundle\Entity\User_Reward;
 use AppBundle\Form\ProfilePreferencesType;
 use AppBundle\Form\ProfileType;
 use AppBundle\Services\MailDispatcher;
@@ -44,12 +48,14 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class UserController extends Controller
 {
     protected $container;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
-    private function createCartForUser($user) {
+    private function createCartForUser($user)
+    {
         $cart = new Cart();
         $cart->setUser($user);
         $this->getDoctrine()->getManager()->persist($cart);
@@ -68,10 +74,9 @@ class UserController extends Controller
         $got_to_max = $firstResult + $nbPerPage >= count($notifs);
         $max = count($notifs);
 
-        if($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST') {
             $template = '@App/User/render_notifications_previews.html.twig';
-        }
-        else {
+        } else {
             $template = '@App/User/notifications.html.twig';
         }
 
@@ -85,8 +90,9 @@ class UserController extends Controller
     /**
      * @Route("/inbox/notifications/{id}", name="user_notification")
      */
-    public function notifAction(Notification $notif, Request $request, UserInterface $user) {
-        if($notif->getUser() != $user) {
+    public function notifAction(Notification $notif, Request $request, UserInterface $user)
+    {
+        if ($notif->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
 
@@ -104,12 +110,13 @@ class UserController extends Controller
     /**
      * @Route("/cart", name="user_cart")
      */
-    public function cartAction(UserInterface $user) {
+    public function cartAction(UserInterface $user)
+    {
 
         $em = $this->getDoctrine()->getManager();
-        $cart =  $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
-        if($cart == null) {
+        if ($cart == null) {
             $cart = $this->createCartForUser($user);
             $em->flush();
         }
@@ -122,7 +129,8 @@ class UserController extends Controller
     /**
      * @Route("/paid-carts", name="user_paid_carts")
      */
-    public function paidCartsAction(UserInterface $user) {
+    public function paidCartsAction(UserInterface $user)
+    {
         $em = $this->getDoctrine()->getManager();
         $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
 
@@ -135,14 +143,15 @@ class UserController extends Controller
     /**
      * @Route("/my-artists", name="user_my_artists")
      */
-    public function myArtistsAction(UserInterface $user, EntityManagerInterface $em) {
+    public function myArtistsAction(UserInterface $user, EntityManagerInterface $em)
+    {
 
         $artists = $em->getRepository('AppBundle:Artist')->findForUser($user);
 
         $available_artist = false;
 
-        foreach($artists as $artist) {
-            if($artist->isAvailable()) {
+        foreach ($artists as $artist) {
+            if ($artist->isAvailable()) {
                 $available_artist = true;
                 break;
             }
@@ -157,7 +166,8 @@ class UserController extends Controller
     /**
      * @Route("/new-artist", name="user_new_artist")
      */
-    public function newArtistAction(Request $request, UserInterface $user, TranslatorInterface $translator, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher) {
+    public function newArtistAction(Request $request, UserInterface $user, TranslatorInterface $translator, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -168,7 +178,7 @@ class UserController extends Controller
         $form = $this->createForm(ArtistType::class, $artist, ['edit' => false]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($artist);
 
             $au = new Artist_User();
@@ -193,7 +203,8 @@ class UserController extends Controller
     /**
      * @Route("/new-crowdfunding-contact-us", name="user_new_contract_artist_temp")
      */
-    public function newContractTempAction() {
+    public function newContractTempAction()
+    {
         $this->addFlash('info', 'infos.new_event_temp');
 
         return $this->redirectToRoute('suggestionBox');
@@ -202,13 +213,14 @@ class UserController extends Controller
     /**
      * @Route("/new-crowdfunding", name="user_new_contract_artist")
      */
-    public function newContractAction(UserInterface $user, Request $request) {
+    public function newContractAction(UserInterface $user, Request $request)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
         $av_artists = $em->getRepository('AppBundle:Artist')->findAvailableForNewContract($user, $this->get(UserRolesManager::class));
 
-        if(count($av_artists) == 0) {
+        if (count($av_artists) == 0) {
             return $this->render('@App/User/Artist/new_contract.html.twig', array(
                 'no_artist' => true,
             ));
@@ -222,7 +234,7 @@ class UserController extends Controller
 
         $form = $flow->createForm();
 
-        if($flow->isValid($form)) {
+        if ($flow->isValid($form)) {
             $flow->saveCurrentStepData($form);
 
             if ($flow->nextStep()) {
@@ -230,8 +242,10 @@ class UserController extends Controller
             } else {
                 // flow finished
 
-                if(!in_array($contract->getArtist()->getId(),
-                            array_map(function(Artist $artist) { return $artist->getId(); }, $av_artists))) {
+                if (!in_array($contract->getArtist()->getId(),
+                    array_map(function (Artist $artist) {
+                        return $artist->getId();
+                    }, $av_artists))) {
                     throw $this->createAccessDeniedException("Cet artiste ne vous appartient pas...");
                 }
 
@@ -266,7 +280,8 @@ class UserController extends Controller
     /**
      * @Route("/change-email", name="user_change_email")
      */
-    public function changeEmailAction(Request $request, UserInterface $user, TokenGeneratorInterface $token_gen) {
+    public function changeEmailAction(Request $request, UserInterface $user, TokenGeneratorInterface $token_gen)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -274,16 +289,14 @@ class UserController extends Controller
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $email = $user->getAskedEmail();
 
             $error_detect = $em->getRepository('AppBundle:User')->findOneBy(['email' => $email]);
-            if($error_detect != null) {
+            if ($error_detect != null) {
                 $this->addFlash('error', 'errors.change_email_already_used');
-            }
-
-            else {
+            } else {
                 $user->setAskedEmailToken($token_gen->generateToken());
                 $em->persist($user);
                 $this->get('AppBundle\Services\MailDispatcher')->sendEmailChangeConfirmation($user);
@@ -303,7 +316,8 @@ class UserController extends Controller
     /**
      * @Route("/advanced-options", name="user_advanced_options")
      */
-    public function advancedAction(Request $request, UserInterface $user) {
+    public function advancedAction(Request $request, UserInterface $user)
+    {
 
         /** @var User $user */
         $form = $this->createFormBuilder(['submit' => false])
@@ -314,19 +328,19 @@ class UserController extends Controller
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->get('submit')->isClicked()) {
+        if ($form->isSubmitted() && $form->get('submit')->isClicked()) {
             $em = $this->getDoctrine()->getManager();
 
-            if($user->getAddress() != null) {
+            if ($user->getAddress() != null) {
                 $em->remove($user->getAddress());
             }
             $user->anonymize();
 
-            foreach($em->getRepository('AppBundle:Artist_User')->findBy(['user' => $user]) as $a_u) {
+            foreach ($em->getRepository('AppBundle:Artist_User')->findBy(['user' => $user]) as $a_u) {
                 $artist = $a_u->getArtist();
 
                 // Duplicated in ArtistController->Leave
-                if($artist->isAvailable() && count($artist->getArtistsUser()) == 1) {
+                if ($artist->isAvailable() && count($artist->getArtistsUser()) == 1) {
                     $artist->setDeleted(true);
                     foreach ($em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist]) as $o_request) {
                         $em->remove($o_request);
@@ -369,7 +383,8 @@ class UserController extends Controller
     /**
      * @Route("/disconnect-fb", name="user_disconnect_fb")
      */
-    public function disconnectFBAction(Request $request, UserInterface $user) {
+    public function disconnectFBAction(Request $request, UserInterface $user)
+    {
         /** @var User $user */
         $form = $this->createFormBuilder(['submit' => false])
             ->setAction($this->generateUrl('user_disconnect_fb'))
@@ -381,7 +396,7 @@ class UserController extends Controller
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->get('submit')->isClicked()) {
+        if ($form->isSubmitted() && $form->get('submit')->isClicked()) {
             $user->setFacebookId(null)->setFacebookAccessToken(null);
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -399,13 +414,14 @@ class UserController extends Controller
     /**
      * @Route("/edit-profile", name="user_profile_edit")
      */
-    public function editProfileAction(Request $request, UserInterface $user) {
+    public function editProfileAction(Request $request, UserInterface $user)
+    {
 
         $form = $this->createForm(ProfileType::class, $user);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
@@ -421,33 +437,34 @@ class UserController extends Controller
     }
 
     /**
- * @Route("/user/orders/{id}", name="user_get_order")
- */
-    public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em) {
+     * @Route("/user/orders/{id}", name="user_get_order")
+     */
+    public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em)
+    {
 
         $contract = $cart->getFirst();
-        if($contract->isRefunded() || $contract->getUser() != $user) {
+        if ($contract->isRefunded() || $contract->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
 
-        if(empty($contract->getBarcodeText())) {
+        if (empty($contract->getBarcodeText())) {
             $contract->generateBarCode();
         }
 
         $finder = new Finder();
         $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
-        $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
+        $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::ORDERS_DIRECTORY);
 
-        if(count($finder) == 0) {
+        if (count($finder) == 0) {
             $writer->writeOrder($contract);
             $em->persist($contract);
             $em->flush();
             $finder = new Finder();
             $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
-            $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::ORDERS_DIRECTORY);
+            $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::ORDERS_DIRECTORY);
         }
 
-        foreach($finder as $file) {
+        foreach ($finder as $file) {
             $response = new BinaryFileResponse($filePath);
             // Set headers
             $response->headers->set('Cache-Control', 'private');
@@ -464,18 +481,19 @@ class UserController extends Controller
     /**
      * @Route("/user/tickets/{id}", name="user_get_tickets")
      */
-    public function getTicketsAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em) {
+    public function getTicketsAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em)
+    {
 
         $contract = $cart->getFirst();
-        if($contract->isRefunded() || $contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
+        if ($contract->isRefunded() || $contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
             throw $this->createAccessDeniedException();
         }
 
         $finder = new Finder();
         $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
-        $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::TICKETS_DIRECTORY);
+        $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
 
-        if(count($finder) == 0) {
+        if (count($finder) == 0) {
 
             // TODO is this line necessary ?
             $writer->writeOrder($contract);
@@ -488,10 +506,10 @@ class UserController extends Controller
             $em->flush();
             $finder = new Finder();
             $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
-            $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/'.$contract::TICKETS_DIRECTORY);
+            $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
         }
 
-        foreach($finder as $file) {
+        foreach ($finder as $file) {
             $response = new BinaryFileResponse($filePath);
             // Set headers
             $response->headers->set('Cache-Control', 'private');
@@ -504,14 +522,52 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @Route("/rewards", name="user_rewards")
+     */
+    public function rewardsAction(Request $request, UserInterface $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $rewards = $em->getRepository("AppBundle:User_Reward")->getActiveUserRewards($user);
+        $template = '@App/User/rewards.html.twig';
+        return $this->render($template, array(
+            'rewards' => $rewards
+        ));
+    }
+
+    /**
+     * @Route("/rewards/{id}", name="user_reward")
+     */
+    public function rewardAction(User_Reward $user_reward, Request $request, UserInterface $user)
+    {
+        $type = "";
+        $reward = $user_reward->getReward();
+        if ($user_reward->getUser() != $user) {
+            throw $this->createAccessDeniedException();
+        }
+        if($reward instanceof ReductionReward){
+            $type = "Reduction";
+        }else if($reward instanceof ConsomableReward){
+            $type = "Consomable";
+        }else if($reward instanceof InvitationReward){
+            $type = "Invitation";
+        }
+        $em = $this->getDoctrine()->getManager();
+        return new Response($this->renderView('@App/User/reward.html.twig', array(
+            'user_reward' => $user_reward,
+            'type' => $type
+        )));
+    }
+
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 
     /**
      * @Route("/api/update-motivations/{id}", name="user_ajax_update_motivations")
      */
-    public function updateMotivations(Request $request, UserInterface $user, ContractArtist $contract) {
+    public function updateMotivations(Request $request, UserInterface $user, ContractArtist $contract)
+    {
         $artist = $contract->getArtist();
-        if(!$user->owns($artist)) {
+        if (!$user->owns($artist)) {
             throw $this->createAccessDeniedException("You don't own this artist!");
         }
 

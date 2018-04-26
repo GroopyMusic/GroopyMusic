@@ -8,6 +8,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
+use AppBundle\Services\RewardSpendingService;
 use AppBundle\Services\TicketingManager;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -28,6 +29,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class PaymentController extends Controller
 {
     protected $container;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -36,7 +38,7 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
-    public function cartAction(Request $request,UserInterface $user)
+    public function cartAction(Request $request, UserInterface $user, RewardSpendingService $rewardSpendingService)
     {
         $kernel = $this->get('kernel');
 
@@ -59,7 +61,7 @@ class PaymentController extends Controller
             $fancontract_id = intval($_POST['fancontract_id']);
 
             // We set an explicit test for amount changes as it has legal impacts
-            if($amount != $contract->getAmount() * 100 || $fancontract_id != $contract->getId()) {
+            if ($amount != $contract->getAmount() * 100 || $fancontract_id != $contract->getId()) {
                 $this->addFlash('error', 'errors.order_changed');
                 return $this->render('@App/User/pay_cart.html.twig', array(
                     'cart' => $cart,
@@ -68,17 +70,13 @@ class PaymentController extends Controller
                 ));
             }
 
-            if($contract_artist->isUncrowdable()) {
+            if ($contract_artist->isUncrowdable()) {
                 $this->addFlash('error', 'errors.event_uncrowdable');
                 return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
-            }
-
-            elseif($contract->getCounterPartsQuantityOrganic() > $contract_artist->getTotalNbAvailable()) {
+            } elseif ($contract->getCounterPartsQuantityOrganic() > $contract_artist->getTotalNbAvailable()) {
                 $this->addFlash('error', 'errors.order_max');
                 return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
-            }
-
-            elseif($contract->getCounterPartsQuantity() > $contract_artist->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
+            } elseif ($contract->getCounterPartsQuantity() > $contract_artist->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
                 $this->addFlash('error', 'errors.order_max_promo');
                 return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
             }
@@ -114,7 +112,7 @@ class PaymentController extends Controller
                     ->setContractFan($contract)->setContractArtist($contract_artist)->setRefunded(false)->setAmount($contract->getAmount());
 
                 $contract_artist->addAmount($contract->getAmount());
-                
+
                 if ($contract_artist instanceof ContractArtist) {
                     $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
                 }
@@ -130,6 +128,7 @@ class PaymentController extends Controller
                 $em->persist($payment);
 
                 $cart->setConfirmed(true)->setPaid(true);
+                //$rewardSpendingService->consumeReward($contract);
                 $em->persist($cart);
 
                 $em->flush();
@@ -140,10 +139,10 @@ class PaymentController extends Controller
                 $this->addFlash('error', 'errors.stripe.card');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\RateLimit $e) {
-                $this->addFlash('error', 'errors.stripe.rate_limit' );
+                $this->addFlash('error', 'errors.stripe.rate_limit');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\InvalidRequest $e) {
-                $this->addFlash('error', 'errors.stripe.invalid_request' );
+                $this->addFlash('error', 'errors.stripe.invalid_request');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             } catch (\Stripe\Error\Authentication $e) {
                 $this->addFlash('error', 'errors.stripe.authentication');
@@ -154,8 +153,7 @@ class PaymentController extends Controller
             } catch (\Stripe\Error\Base $e) {
                 $this->addFlash('error', 'errors.stripe.generic');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            }
-            catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlash('error', 'errors.stripe.other');
                 $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
             }
@@ -188,10 +186,11 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/send-recap-{id}", name="user_cart_send_order_recap")
      */
-    public function sendOrderRecap(ContractFan $cf, MailDispatcher $dispatcher, TicketingManager $ticketingManager) {
+    public function sendOrderRecap(ContractFan $cf, MailDispatcher $dispatcher, TicketingManager $ticketingManager)
+    {
         $dispatcher->sendOrderRecap($cf);
 
-        if($cf->getContractArtist()->getCounterPartsSent()) {
+        if ($cf->getContractArtist()->getCounterPartsSent()) {
             $ticketingManager->sendUnSentTicketsForContractFan($cf);
         }
 
@@ -201,7 +200,8 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment/pending/{contract_id}", name="user_cart_payment_pending")
      */
-    public function cartPendingAction(Request $request, UserInterface $user, $contract_id) {
+    public function cartPendingAction(Request $request, UserInterface $user, $contract_id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
@@ -213,7 +213,7 @@ class PaymentController extends Controller
         $contract = $em->getRepository('AppBundle:ContractFan')->find($contract_id);
         /** @var ContractFan $contract */
         $contract_cart = $cart->getFirst();
-        if($contract == null || $contract_cart == null || $contract_cart->getId() != $contract->getId() || $contract_cart->getAmount() != $contract->getAmount()) {
+        if ($contract == null || $contract_cart == null || $contract_cart->getId() != $contract->getId() || $contract_cart->getAmount() != $contract->getAmount()) {
             $this->addFlash('error', 'errors.order_changed_counterparts');
             return $this->redirectToRoute('catalog_crowdfundings');
         }

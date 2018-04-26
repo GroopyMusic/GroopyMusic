@@ -1,0 +1,86 @@
+<div class="modal fade modalAction" id="modalAction" tabindex="-1" role="dialog"
+     aria-labelledby="modalActionLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" id="exampleModalLabel">Attribuer une récompense</h3>
+            </div>
+            <div class="modal-body">
+                <div id="modalLoader">
+                    {{ hidden_loader() }}
+                </div>
+                <div id="modalContent">
+                    <div class="form-inline clearfix">
+                        <div class="pull-left">
+                            <label>Bénéficiaire(s)</label>
+                        </div>
+                        <div class="pull-right">
+                            <a class="btn btn-link" data-toggle="collapse"
+                               data-target="#recipients">Afficher/Reduire</a>
+                        </div>
+                    </div>
+                    <div id="recipients" class="collapse collapsable">
+                        <table class="table table-bordered table-striped sonata-ba-list">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Nom complet</th>
+                                <th>Categorie</th>
+                                <th>Palier</th>
+                                <th>Points</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for rec in recipients %}
+                                <tr>
+                                    <td>{{ rec.user.id }}</td>
+                                    <td>{{ rec.user.displayName }}</td>
+                                    <td>{{ rec.level.category }}</td>
+                                    <td>{{ rec.level }}</td>
+                                    <td>{{ rec.statistic }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="selectReward">Récompense à attribuer</label>
+                        <select id="selectReward">
+                            {% for reward in rewards %}
+                                <option value="{{ reward.id }}">{{ reward.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="checkboxSendEmail">Envoyer un email</label>
+                        <input type="checkbox" id="checkboxSendEmail" checked="checked">
+                    </div>
+                    <br>
+                    <div id="textareaEmail" hidden>
+                        <label for="textareaEmailContent">Contenu à ajouter à l'email</label>
+                        <textarea id="textareaEmailContent" class="form-control"></textarea>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="checkboxSendNotification">Envoyer une notification</label>
+                        <input type="checkbox" id="checkboxSendNotification" checked="checked">
+                    </div>
+                    <br>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                onclick="performAction({{ level_id }},'reward')">Attribuer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

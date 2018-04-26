@@ -4,9 +4,11 @@ namespace AppBundle\Repository;
 
 use Doctrine\ORM\Query;
 
-class UserRepository extends \Doctrine\ORM\EntityRepository {
+class UserRepository extends \Doctrine\ORM\EntityRepository
+{
 
-    public function baseQueryBuilder() {
+    public function baseQueryBuilder()
+    {
         return $this->createQueryBuilder('u')
             ->leftJoin('u.artists_user', 'au')
             ->leftJoin('u.genres', 'g')
@@ -17,24 +19,24 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
             ->addSelect('g')
             ->addSelect('n')
             ->addSelect('uc')
-            ->addSelect('conditions')
-        ;
+            ->addSelect('conditions');
     }
 
-    public function findWithPaymentLastXDays($X) {
+    public function findWithPaymentLastXDays($X)
+    {
         return $this->baseQueryBuilder()
             ->innerJoin('u.payments', 'p')
             ->where('p.date > :date')
             ->setParameter('date', new \DateTime('today -' . $X . 'days'))
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
-    public function findUsersWithRoles(array $roles) {
+    public function findUsersWithRoles(array $roles)
+    {
         $qb = $this->baseQueryBuilder();
 
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $qb->orWhere('u.roles LIKE :role')
                 ->setParameter('role', '%' . $role . '%');
         }
@@ -48,7 +50,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
      *
      * @return array
      */
-    public function countUsersStatistic(){
+    public function countUsersStatistic()
+    {
         return $this->getEntityManager()->createQuery(
             'SELECT u.id, SUM(p.quantity) AS pr, COUNT( DISTINCT ca.id) AS me
                   FROM AppBundle:User u INDEX BY u.id
@@ -56,22 +59,61 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
                   LEFT JOIN c.contracts co
                   LEFT JOIN co.contractArtist ca
                   LEFT JOIN co.purchases p
+                  LEFT JOIN u.user_conditions uc
+                  LEFT JOIN uc.conditions cond
                   WHERE ca.successful = TRUE
                   AND u.deleted = FALSE
                   AND co.refunded = FALSE
                   AND c.paid = TRUE
                   GROUP BY u.id
                   ')
-                ->getResult(Query::HYDRATE_ARRAY);
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    public function findUsersNotDeletedForSelect($q)
+    {
+        $querry = 'SELECT u FROM AppBundle:User u WHERE u.deleted = 0';
+        foreach ($q as $index => $string) {
+            if ($index == 0) {
+                $querry = $querry . " AND (u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
+            } else {
+                $querry = $querry . " OR u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
+            }
+        }
+        if(count($q)>0){
+            $querry = $querry . ")";
+        }
+        return $this->getEntityManager()
+            ->createQuery($querry)
+            ->getResult();
+    }
+
+    public function findNewsletterUsersNotDeletedForSelect($q)
+    {
+        $querry = 'SELECT u FROM AppBundle:User u WHERE u.deleted = 0 AND u.newsletter = 1';
+        foreach ($q as $index => $string) {
+            if ($index == 0) {
+                $querry = $querry . " AND (u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
+            } else {
+                $querry = $querry . " OR u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
+            }
+        }
+        if(count($q)>0){
+            $querry = $querry . ")";
+        }
+        return $this->getEntityManager()
+            ->createQuery($querry)
+            ->getResult();
     }
 
     /**
-     * get all users not deleted
+     * get all users not deleted with stat
      *
      * @return array
      *
      */
-    public function findUsersNotDeleted(){
+    public function findUsersNotDeleted()
+    {
         return $this->getEntityManager()->createQuery(
             'SELECT u,s,c
                   FROM AppBundle:User u
@@ -79,6 +121,20 @@ class UserRepository extends \Doctrine\ORM\EntityRepository {
                   LEFT JOIN s.category c
                   WHERE u.deleted = 0
                   ')
+            ->getResult();
+    }
+
+    public function getParticipants($contract_artist_id)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT u
+                  FROM AppBundle:User u
+                  LEFT JOIN u.carts c
+                  LEFT JOIN c.contracts cf
+                  LEFT JOIN cf.contractArtist ca
+                  WHERE ca.id = ?1
+                  ')
+            ->setParameter(1, $contract_artist_id)
             ->getResult();
     }
 }

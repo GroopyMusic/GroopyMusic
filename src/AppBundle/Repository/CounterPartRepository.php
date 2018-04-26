@@ -10,4 +10,19 @@ namespace AppBundle\Repository;
  */
 class CounterPartRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * get all counter parts
+     *
+     * @return array
+     */
+    public function getCounterPartsForSelect()
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT c, ct
+                  FROM AppBundle:CounterPart c
+                  LEFT JOIN c.translations ct
+                  ')
+            ->getResult();
+    }
 }

@@ -9,6 +9,7 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Entity\Level;
+use AppBundle\Entity\Reward;
 use AppBundle\Services\FormulaParserService;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
@@ -16,6 +17,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\CoreBundle\Form\Type\CollectionType;
 use Sonata\CoreBundle\Validator\ErrorElement;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
@@ -59,11 +61,17 @@ class CategoryAdmin extends BaseAdmin
             ->add('levels', null, array(
                 'label' => 'Paliers',
             ))
+            ->add('rewards', null, array(
+                'label' => 'Récompenses'
+            ))
             ->end();
+
     }
 
     public function configureFormFields(FormMapper $form)
     {
+        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
+        $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
         $form
             ->with('Champs traductibles')
             ->add('translations', TranslationsType::class, array(
@@ -94,7 +102,16 @@ class CategoryAdmin extends BaseAdmin
                     'admin_code' => LevelAdmin::class,
                 )
             )
+            ->end()
+            ->with('Récompenses')
+            ->add('rewards', EntityType::class, [
+                'class' => Reward::class,
+                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale()),
+                'multiple' => true,
+                'required' => false
+            ])
             ->end();
+
     }
 
     /**

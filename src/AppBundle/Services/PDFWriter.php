@@ -6,6 +6,8 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\User;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Templating\Helper\AssetsHelper;
@@ -54,7 +56,7 @@ class PDFWriter
 
     public function writeOrder(ContractFan $cf) {
         $cf->generateBarCode();
-        $this->write(self::ORDER_TEMPLATE, $cf->getPdfPath(), ['cf' => $cf]);
+        $this->write(self::ORDER_TEMPLATE, $cf->getPdfPath(), ['cf' => $cf, 'user_rewards' => $cf->getUserRewards()]);
     }
 
     public function writeTickets($path, $tickets) {

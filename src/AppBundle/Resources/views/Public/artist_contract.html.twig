@@ -45,6 +45,24 @@
             <p class="p-info mt-3">{{ 'event.prevalidation'|trans|raw }}</p>
         {% endif %}
 
+        {% if potential_user_rewards is not empty %}
+            <div class="p-info">
+                <img width="70" class="um-icon float-left d-none d-sm-inline-block"
+                     src="{{ asset('images/icons/concert-ticket.png') }}"/>
+                <p>{{ 'event.reward'|trans()|raw }} :</p>
+                <div class="row">
+                    <ul class="list">
+                        {% for user_reward in potential_user_rewards %}
+                            <li>
+                                <a class="notification-trigger"
+                                   href="{{ path('user_reward',{'id':user_reward.id}) }}">{{ user_reward.reward.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
         {% for promo in contract.currentPromotions if not contract.inTestPeriod %}
             <p class="p-promo mt-3">{{ 'event.promo'|trans({'%end_date%': promo.endDate|date('d/m/Y'), '%nb_organic_needed%': promo.nbOrganicNeeded, '%nb_promotional%': promo.nbPromotional})|raw }}</p>
         {% endfor %}
@@ -273,7 +291,11 @@
                                     </div>
                                 </div>
                             {% endfor %}
-
+                            {{ form_row(form.user_rewards) }}
+                            <div id="user_reward-error"><span
+                                        class="danger danger-color">{{ 'event.buy_tickets.to_much_reduction'|trans|raw }}</span>
+                            </div>
+                            <br>
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
                         {% else %}
@@ -364,5 +386,33 @@
         "name": "{{ artist }}"
       }
     }
-</script>
+
+
+
+
+
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var errorDiv = $('#user_reward-error');
+            errorDiv.hide();
+            $('.js-example-basic-multiple').select2();
+            $('.user-rewards-select').on('select2:select select2:unselect', function () {
+                errorDiv.hide();
+                var haveReduction = false;
+                var select = $('.user-rewards-select');
+                select.find(':selected').each(function () {
+                    if ($(this).hasClass('reduction')) {
+                        if (haveReduction === true) {
+                            errorDiv.show();
+                            select.find(':selected').last().attr('selected', false).trigger('change');
+                        } else {
+                            haveReduction = true;
+                        }
+                    }
+                })
+            })
+        });
+    </script>
 {% endblock %}

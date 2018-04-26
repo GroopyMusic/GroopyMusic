@@ -26,7 +26,6 @@ class RankingService
         $this->formulaParserService = $formulaParserService;
         $this->em = $em;
         $this->logger = $logger;
-
     }
 
     /**

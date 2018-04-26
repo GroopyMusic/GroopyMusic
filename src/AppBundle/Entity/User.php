@@ -28,6 +28,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->inscription_date = new \DateTime();
         $this->accept_conditions = false;
         $this->deleted = false;
+        $this->rewards = new \Doctrine\Common\Collections\ArrayCollection();
         $this->category_statistics = new ArrayCollection();
         $this->user_conditions = new ArrayCollection();
     }
@@ -248,6 +249,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      * @ORM\OneToMany(targetEntity="User_Conditions", mappedBy="user")
      */
     protected $user_conditions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="User_Reward", mappedBy="user", cascade={"all"}, orphanRemoval=true)
+     */
+    private $rewards;
 
     /**
      * @param mixed $salutation
@@ -826,6 +832,40 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getCategoryStatistics()
     {
         return $this->category_statistics;
+    }
+
+    /**
+     * Add reward
+     *
+     * @param \AppBundle\Entity\User_Reward $reward
+     *
+     * @return User
+     */
+    public function addReward(\AppBundle\Entity\User_Reward $reward)
+    {
+        $this->rewards[] = $reward;
+
+        return $this;
+    }
+
+    /**
+     * Remove reward
+     *
+     * @param \AppBundle\Entity\User_Reward $reward
+     */
+    public function removeReward(\AppBundle\Entity\User_Reward $reward)
+    {
+        $this->rewards->removeElement($reward);
+    }
+
+    /**
+     * Get rewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRewards()
+    {
+        return $this->rewards;
     }
 
     /**

@@ -84,6 +84,12 @@ class UserAdmin extends BaseAdmin
                     'label' => 'Stripe customer ID',
                 ))
             ->end()
+            ->with('Récompenses')
+            ->add('rewards', null, array(
+                'label' => 'Récompenses reçues',
+                'route' => ['name' => 'show']
+            ))
+            ->end()
         ;
     }
 }

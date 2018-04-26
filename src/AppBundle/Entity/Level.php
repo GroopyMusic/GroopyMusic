@@ -28,6 +28,7 @@ class Level implements TranslatableInterface
     public function __construct()
     {
         $this->statistics = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->rewards = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -61,7 +62,8 @@ class Level implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
-    public function setStatistics($statistics){
+    public function setStatistics($statistics)
+    {
         $this->statistics = $statistics;
         return $this;
     }
@@ -92,6 +94,11 @@ class Level implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="User_Category", mappedBy="level", cascade={"all"}, orphanRemoval=true)
      */
     private $statistics;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Reward", cascade={"all"})
+     */
+    private $rewards;
 
     /**
      * Get id
@@ -134,7 +141,7 @@ class Level implements TranslatableInterface
      *
      * @return Level
      */
-    public function setCategory(\AppBundle\Entity\Category $category)
+    public function setCategory(Category $category)
     {
         $this->category = $category;
 
@@ -158,7 +165,7 @@ class Level implements TranslatableInterface
      *
      * @return Level
      */
-    public function addStatistic(\AppBundle\Entity\User_Category $statistic)
+    public function addStatistic(User_Category $statistic)
     {
         $this->statistics[] = $statistic;
 
@@ -170,7 +177,7 @@ class Level implements TranslatableInterface
      *
      * @param \AppBundle\Entity\User_Category $statistic
      */
-    public function removeStatistic(\AppBundle\Entity\User_Category $statistic)
+    public function removeStatistic(User_Category $statistic)
     {
         $this->statistics->removeElement($statistic);
     }
@@ -186,4 +193,37 @@ class Level implements TranslatableInterface
     }
 
 
+    /**
+     * Add reward
+     *
+     * @param \AppBundle\Entity\Reward $reward
+     *
+     * @return Level
+     */
+    public function addReward(Reward $reward)
+    {
+        $this->rewards[] = $reward;
+
+        return $this;
+    }
+
+    /**
+     * Remove reward
+     *
+     * @param \AppBundle\Entity\Reward $reward
+     */
+    public function removeReward(Reward $reward)
+    {
+        $this->rewards->removeElement($reward);
+    }
+
+    /**
+     * Get rewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRewards()
+    {
+        return $this->rewards;
+    }
 }

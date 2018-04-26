@@ -83,6 +83,8 @@ header:
     my_profile: Mon profil
     my_orders: Mes commandes
     log_out: Déconnexion
+    my_rewards: Mes récompenses #new
+
 
 home:
   #new
@@ -295,6 +297,7 @@ event:
   og_title: Festival Un-Mute avec %artist%
   title: Festival Un-Mute avec %artist%
   generic_name: Festival Un-Mute avec %artist%
+  reward: Profitez-en, des récompenses sont applicables à cet événements #new
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
@@ -341,6 +344,8 @@ event:
     tickets_left: %tickets% tickets disponibles
     title:  Achetez vos tickets
     over: Il n'est pas possible d'acheter des tickets pour cet événement.
+    #new
+    to_much_reduction : Vous ne pouvez pas sélectionner plusieurs réduction
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
@@ -443,7 +448,19 @@ pay_cart:
             quantity: Quantité
             unitprice: Prix unitaire
             total: Total
+            #new
+            total_without_reduction : Total sans réduction
+            reduction : Réduction
+            price : Prix
+            applied_rewards : Récompense(s) appliquée(s) :
+        reduction : Récompense(s) appliquée(s)
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
+        #new
+    recap_reward :
+        invitation : %use% invitations
+        consommable : %use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €.
+        reduction : %reduction% % de réduction appliquée à %nbReducedCounterpart% tickets "%counterpart%"
+
     #new
     not_authenticated:
       intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute.
@@ -467,6 +484,7 @@ notifs:
     title: Mes notifications
     empty: Vous n'avez pas encore reçu de notification.
     see_more: Voir plus
+    button: Voir # new
 
 new_artist:
   title: Nouvel artiste
@@ -625,6 +643,7 @@ order_pdf:
     total_amount: Montant total
     nb_tickets: Nombre de tickets achetés
     nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
+    rewards : Récompense(s) appliquée(s) #new
   details:
     title: Détails de la commande
     labels:
@@ -633,6 +652,8 @@ order_pdf:
       unit_price: Prix unitaire
       total_price: Prix
       promo: promotion
+      reduction : Réduction #new
+      total_reduction_price : Prix avec réduction #new
   process:
     title: Processus d'achat Un-Mute
     content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce festival. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>
@@ -646,6 +667,7 @@ tickets_pdf:
     is_entry: |
         Ce ticket est votre droit d'entrée.
         Merci de le présenter sur un support lisible.
+  rewards: - Avantages bonus # new
   conditions: |
     -	Le titre d’entrée est uniquement valable pour le lieu et la date précisée sur le billet et fera l’objet d’une vérification.
     -	Veuillez présenter le QR code du ticket de manière visible pour faciliter le scanning le soir de l’évènement. Un ticket n'est pas valable sans son code-barres.
@@ -806,6 +828,7 @@ labels:
 
   contractfan:
     submit: Valider la commande
+    rewards : Récompenses # new
 
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"
@@ -865,3 +888,30 @@ proposition:
   place: Lieu de l'événement
   explication: Ne renseignez que la date de début si vous désirez renseigner une date unique et remplissez les deux dates si votre événement peut s'étaler sur une certaine durée.
   redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vous invitons à remplir <a href="%url%">ce formulaire</a>.
+
+#new
+rewards:
+  title : Mes récompenses
+  empty: Aucune récompense vous est attrbiuée pour le moment.
+
+#new
+reward:
+  feature : Caractéristique
+  creation_date : Date d'obtention
+  limit_date : Date limite de validité
+  remain_use : Nombre d'utilisation(s) restante(s)
+  on : sur
+  applicable_to: Applicable à
+  events: Evénement(s)
+  steps: Pallier(s) de salle
+  couterparts : Type(s) d'achat
+  artists : Artiste(s)
+  all_events : Tout événement confondu
+  invitation :
+    time : Horaire
+  consomable :
+    type : Type de consommation
+    quantity : Quantité
+    value: Valeur
+  reduction:
+    reduction: réduction
