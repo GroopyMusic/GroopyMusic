@@ -1,3 +1,71 @@
 #new
 default_signature: |
-    mdr (test)
+    Musically,
+
+    The Un-Mute Team
+
+#new
+footer_links:
+  home: Home
+  about: About
+  contact: Contact
+
+#new
+add_to_contacts: Add "%address%" to your contacts to make sure to receive all of our e-mails.
+
+subjects:
+  concert:
+    fan:
+      viptickets: Your Un-Mute tickets for %artist% #new
+  refunded_payment: Your tickets are refunded #new
+  artist_validated: Your Un-Mute artist has been verified #new
+
+concert:
+  fan:
+    #new
+    vip_tickets: |
+      Hello,
+
+      Please find attached your ticket(s) for the Un-Mute Festival that will take place @"%hall%" with headliner %host%.
+
+      All practical information are on the tickets.
+
+      We ask you to present it at the Festival entrance because it will be your pass.
+
+      %additional_info%
+
+      If you have questions, please contact us at contact@un-mute.be
+
+    #new
+    details:
+      invited2: Invited artists at this Festival are %invited1% et %invited2%.
+      invited1: The invited artist at this Festival is %invited1%.
+
+#new
+artist:
+  validated: |
+    The artist profile that you created on Un-Mute (stage name: %artist%) has been verified by an administrator.
+
+    It is now publicly visible on the website and eligible to participate at Un-Mute Festivals.
+
+#new
+vip_inscription:
+  copy: |
+    Your Press subscription on Un-Mute.be has well been received. This is what you filled in:
+    --> Name: %name%
+    --> E-mail: %email%
+    --> Organization: %company%
+    --> Function: %function%
+
+    We will await you at 18h on %date% for the %event%.
+
+    For questions, please contact us at contact@un-mute.be
+
+#new
+payment:
+  refunded: |
+    Dear Producer,
+
+    Your tickets for %event% have entirely been refunded (order id: %cf%).
+
+    We hope to see you soon on Un-Mute.be to support other artists and bring them on stage!
