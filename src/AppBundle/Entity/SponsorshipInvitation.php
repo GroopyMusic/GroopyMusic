@@ -21,6 +21,28 @@ use Doctrine\ORM\Mapping as ORM;
 class SponsorshipInvitation
 {
 
+    /**
+     * SponsorshipInvitation constructor.
+     * @param \DateTime $date_invitation
+     * @param String $email_invitation
+     * @param $text_invitation
+     * @param $host_invitation
+     * @param $target_invitation
+     * @param $contract_artist
+     * @param bool $reward_sent
+     */
+    public function __construct(\DateTime $date_invitation, $email_invitation, $text_invitation, $host_invitation, $contract_artist, $token)
+    {
+        $this->date_invitation = $date_invitation;
+        $this->email_invitation = $email_invitation;
+        $this->text_invitation = $text_invitation;
+        $this->host_invitation = $host_invitation;
+        $this->target_invitation = null;
+        $this->contract_artist = $contract_artist;
+        $this->reward_sent = 0;
+        $this->token_sponsorship = $token;
+    }
+
     public function __toString()
     {
         return "Invitation de " . $this->host_invitation->getDisplayName() . " à " . $this->email_invitation;
@@ -79,6 +101,13 @@ class SponsorshipInvitation
      * @ORM\Column(name="reward_sent", type="boolean")
      */
     private $reward_sent;
+
+    /**
+     * @var String
+     *
+     * @ORM\Column(name="token_sponsorship", type="string")
+     */
+    private $token_sponsorship;
 
 
     /**
@@ -257,5 +286,29 @@ class SponsorshipInvitation
     public function getRewardSent()
     {
         return $this->reward_sent;
+    }
+
+    /**
+     * Set tokenSponsorship
+     *
+     * @param string $tokenSponsorship
+     *
+     * @return SponsorshipInvitation
+     */
+    public function setTokenSponsorship($tokenSponsorship)
+    {
+        $this->token_sponsorship = $tokenSponsorship;
+
+        return $this;
+    }
+
+    /**
+     * Get tokenSponsorship
+     *
+     * @return string
+     */
+    public function getTokenSponsorship()
+    {
+        return $this->token_sponsorship;
     }
 }

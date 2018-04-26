@@ -25,6 +25,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -584,21 +585,30 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/api/send-sponsorship-invitation", name="user_ajax_send_sponsorship_invitation")
+     * @Route("/api/send-sponsorship-invitation/{id}", name="user_ajax_send_sponsorship_invitation")
      */
-    public function sendSponsorshipInvitation(Request $request, UserInterface $user, SponsorshipService $sponsorshipService)
+    public function sendSponsorshipInvitation(Request $request, UserInterface $user, ContractArtist $contract, SponsorshipService $sponsorshipService)
     {
+        $alreadyKnownEmails = [];
+        $em = $em = $this->getDoctrine()->getManager();
         if ($user == null) {
             return new Response("You are not connected", 500);
         }
+        if ($contract->isSoldOut() && $contract->isCrowdable()
+            && $em->getRepository('AppBundle:ContractArtist')->isValidForSponsorship($contract->getId())) {
+            return new Response("Evénement non valide", 500);
+        }
         try {
-            if ($sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('textarea'))) {
-                return new Response("Invitations envoyées", 200);
-            } else {
-                return new Response("Une erreur est survenue avec le système", 500);
-            }
+            $response = $sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('textarea'), $contract, $user);
+            return new JsonResponse(array(
+                'success' => $response[0],
+                'emails' => $response[1],
+                'message' => "Envoies réussis",
+                'warning_message' => "Les emails suivant sont déja inscrit sur la plateforme, ils n'ont donc pas pu être invité"),
+                200);
         } catch (\Throwable $th) {
-            return new Response("Une erreur est survenue avec le système", 500);
+            //return new Response("Une erreur est survenue avec le système", 500);
+            return new Response($th->getMessage(), 500);
         }
     }
 }

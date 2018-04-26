@@ -1,12 +1,14 @@
 <div id="sponsorship-invitations-modal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form id="sponsorship-modal-form" action='{{ path('user_ajax_send_sponsorship_invitation',[]) }}'>
+            <form id="sponsorship-modal-form"
+                  action='{{ path('user_ajax_send_sponsorship_invitation',{'id' : contract.id}) }}'>
                 <div class="modal-body">
                     <div id="sponsorship-modal-alert-danger" class="alert alert-danger text-center" hidden>
                     </div>
                     <div id="sponsorship-modal-alert-success" class="alert alert-success text-center" hidden>
-                        <span></span>
+                    </div>
+                    <div id="sponsorship-modal-alert-warning" class="alert alert-warning" hidden>
                     </div>
                     <div id="sponsorship-modal-loader">
                         {{ hidden_loader() }}
@@ -14,14 +16,16 @@
                     <div id="sponsorship-modal-content">
                         <h2 class="text-center">Invitez des amis à participer à l'événements</h2>
                         <div id="info-sponsorship" class="text-center">
-                            <span class="text-primary">Invite tes amis à participer à l'événements et profitez de la récompense de parrainage</span>
+                            <span class="text-primary">Invite tes amis à participer à l' événements et profitez de la
+                  récompense de parrainage
+            </span>
                         </div>
                         <br>
                         <div id="sponsorship-modal-email-inputs-div">
                             <div class="form-group">
                                 <label for="email-inputs">Adresse emails</label>
                                 <input type="email" class="sponsorship-modal-email-inputs form-control"
-                                       placeholder="Entrer une adresse email">
+                                       placeholder="Entrer une adresse email" required>
                             </div>
                         </div>
                         <div class="text-center">
@@ -34,11 +38,14 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler
-                        </button>
-                        <button id="send-email-button" type="submit" class="btn btn-primary">
-                            Envoyer les invitations
-                        </button>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                Annuler
+                            </button>
+                            <button id="sponsorship-modal-send-button" type="submit" class="btn btn-primary">
+                                Envoyer les invitations
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>

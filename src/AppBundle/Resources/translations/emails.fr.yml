@@ -218,8 +218,7 @@ reward_attribution:
 #new
 sponsorship_invitation:
   content : |
-    XXX vous invite à rejoindre la Platefrome Un-Mute et à participer au concert XXX avec lui !
+    %user_name% vous invite à rejoindre la Platefrome Un-Mute et à participer au concert %contract_name% avec lui !
     Voici son message d'invitation :
     %content%
-    Voici le lien :
-    XXX
+    Voici le lien : <a href="%url%">%url%</a>

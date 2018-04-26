@@ -146,7 +146,7 @@ $(function () {
 // **** START sponsorship modal **** //
 function addEmailInput() {
     var div = $('#sponsorship-modal-email-inputs-div');
-    var input = '<div class="form-group"><input type="email" class="sponsorship-modal-email-inputs sponsorship-modal-added-inputs form-control" placeholder="Entrer une adresse email"></div>';
+    var input = '<div class="form-group"><input type="email" class="sponsorship-modal-email-inputs sponsorship-modal-added-inputs form-control" placeholder="Entrer une adresse email" required></div>';
     div.append(input);
 }
 
@@ -154,12 +154,16 @@ function removeEmailInput() {
     $('.sponsorship-modal-added-inputs').last().remove();
 }
 
+function clearForm() {
+    $('#sponsorship-modal-form')[0].reset();
+    $('.sponsorship-modal-added-inputs').each(function () {
+        $(this).remove();
+    });
+}
+
 function displaySponsorshipInvitationModal() {
     $("#sponsorship-invitations-modal").on("hidden.bs.modal", function () {
-        $('#sponsorship-modal-form')[0].reset();
-        $('.sponsorship-modal-added-inputs').each(function () {
-            $(this).remove();
-        });
+        clearForm();
         hideSponsoringAlert();
     }).modal();
     $('#sponsorship-modal-form').on('submit', function (evt) {
@@ -171,11 +175,13 @@ function displaySponsorshipInvitationModal() {
 function showSponsorshipLoader() {
     $('#sponsorship-modal-content').hide();
     $('#sponsorship-modal-loader').find('.loader').first().show();
+    $('#sponsorship-modal-send-button').attr('disabled', true);
 }
 
 function hideSponsorshipLoader() {
     $('#sponsorship-modal-content').show();
     $('#sponsorship-modal-loader').find('.loader').first().hide();
+    $('#sponsorship-modal-send-button').attr('disabled', false);
 }
 
 function showSponsorshipSuccess(message) {
@@ -185,39 +191,58 @@ function showSponsorshipSuccess(message) {
 }
 
 function showSponsorshipDanger(message) {
-    console.log("ici");
     var div = $('#sponsorship-modal-alert-danger');
     div.append(message);
     div.attr('hidden', false)
 }
 
+function showSponsorshipWarning(emails, message) {
+    var div = $('#sponsorship-modal-alert-warning');
+    var list = $('<ul/>');
+    emails.forEach(function (elem) {
+        list.append(('<li>' + elem + '</li>'));
+    });
+    div.append(message);
+    div.append(list);
+    div.attr('hidden', false)
+}
+
 function hideSponsoringAlert() {
-    $('#sponsorship-modal-alert-success').attr("hidden", true);
-    $('#sponsorship-modal-alert-danger').attr("hidden", true);
+    $('#sponsorship-modal-alert-success').attr("hidden", true).children().remove();
+    $('#sponsorship-modal-alert-danger').attr("hidden", true).children().remove();
+    $('#sponsorship-modal-alert-warning').attr("hidden", true).children().remove();
 }
 
 function sendSponsorshipInvitation() {
     showSponsorshipLoader();
+    hideSponsoringAlert();
     var emails = [];
     var textarea = $('#sponsorship-modal-textarea').text();
     var url = $('#sponsorship-modal-form').attr('action');
     $('.sponsorship-modal-email-inputs').each(function () {
         emails.push($(this).val());
     });
-    console.log(emails);
     $.post(url,
         {
             emails: emails,
             textarea: textarea
         }, function (result) {
             console.log(result);
-            showSponsorshipSuccess(result);
+            console.log(result.success);
+            if (result.success === true) {
+                showSponsorshipSuccess(result.message);
+            }
+            if (result.emails.length > 0) {
+                showSponsorshipWarning(result.emails, result.warning_message);
+            }
             hideSponsorshipLoader();
+            clearForm();
         }
     ).fail(function (err) {
         console.log(err);
         showSponsorshipDanger(err.responseText);
         hideSponsorshipLoader();
+        clearForm();
     })
 }
 

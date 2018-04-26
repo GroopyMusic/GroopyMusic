@@ -687,4 +687,12 @@ class PublicController extends Controller
             'form' => $form->createView(),
         ));
     }
+
+    /**
+     * @Route("/sponsorship-link-token-{token}", name="sponsorship_link")
+     */
+    public function sponsorshipLinkAction(Request $request)
+    {
+        return new Response("SALUT", 200);
+    }
 }

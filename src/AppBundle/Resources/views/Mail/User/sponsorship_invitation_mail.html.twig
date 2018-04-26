@@ -6,6 +6,9 @@
             <div>
                 <p>{{ email_content('sponsorship_invitation.content',{
                         '%content%': content,
+                        '%contract_name%': contractArtist,
+                        '%user_name%': user.displayName,
+                        '%url':url
                     })|trans|raw|nl2br }}</p>
             </div>
         {% endblock %}

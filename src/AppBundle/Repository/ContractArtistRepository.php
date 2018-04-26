@@ -44,7 +44,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->join('c.step', 's')
             ->join('c.preferences', 'p')
             ->leftJoin('c.reality', 'r')
-           // ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
+            // ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
             // ->leftJoin('r.hall', 'h')
             ->leftJoin('s.counterParts', 'cp')
             ->leftJoin('a.genres', 'ag')
@@ -268,5 +268,21 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         return $this->getEntityManager()
             ->createQuery($querry)
             ->getResult();
+    }
+
+    public function isValidForSponsorship($contract_id)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT ca
+                  FROM AppBundle:ContractArtist ca
+                  WHERE ca.id = ?1
+                  AND ca.date > ?2
+                  AND ca.refunded = 0
+                  AND ca.failed = 0
+                  AND 
+                  ')
+            ->setParameter(1, $contract_id)
+            ->setParameter(2, new \DateTime())
+            ->getSingleResult();
     }
 }

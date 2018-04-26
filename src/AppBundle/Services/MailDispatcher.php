@@ -10,6 +10,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\PhysicalPersonInterface;
 use AppBundle\Entity\PropositionContractArtist;
+use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Category;
@@ -448,12 +449,15 @@ class MailDispatcher
             $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
     }
 
-    public function sendSponsorshipInvitationEmail($emails, $content)
+    public function sendSponsorshipInvitationEmail(SponsorshipInvitation $sponsorshipInvitation, $content, $url)
     {
-        $subject = "subjects.reward_attribution";
-        $params = ['content' => $content];
+        $subject = "subjects.sponsorship_invitation";
+        $params = ['content' => $content,
+            'contractArtist' => $sponsorshipInvitation->getContractArtist(),
+            'user' => $sponsorshipInvitation->getHostInvitation(),
+            'url' => $url];
         $this->sendEmail(MailTemplateProvider::SPONSORSHIP_INVITATION_MAIL, $subject,
-            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
+            $params, [], [], [], [$sponsorshipInvitation->getEmailInvitation()], [], self::REPLY_TO, self::REPLY_TO_NAME);
     }
 
     /*
