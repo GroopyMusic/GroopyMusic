@@ -68,7 +68,7 @@
                 <a class="dropdown-item" href="{{ path('user_my_artists') }}">{{ 'header.nav.my_artists'|trans|raw }}</a>
                 <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">{{ 'header.nav.my_profile'|trans|raw }}</a>
                 <a class="dropdown-item" href="{{ path('user_paid_carts') }}">{{ 'header.nav.my_orders'|trans|raw }}</a>
-                <a class="dropdown-item" href="{{ path('user_rewards') }}">{{ 'header.nav.my_rewards'|trans|raw }}</a>
+                {#<a class="dropdown-item" href="{{ path('user_rewards') }}">{{ 'header.nav.my_rewards'|trans|raw }}</a>#}
                 {% if is_granted('ROLE_TICKETING') %}<a class="dropdown-item" href="{{ path('ticketing_index') }}">Ticketing</a>{% endif %}
                 {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
                 <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">{{ 'header.nav.log_out'|trans|raw }}</a>

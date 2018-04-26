@@ -56,7 +56,7 @@ class MailDispatcher
         $this->twig = $twig;
         $this->locales = $locales;
     }
--
+
     private function extract_locale($locale, $haystack) {
         return array_filter($haystack, function($elem) use ($locale) {
             return $elem == $locale;
