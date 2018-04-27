@@ -670,13 +670,18 @@ tickets_pdf:
   rewards: "- Avantages bonus" # new
   conditions: |
     -	Le titre d’entrée est uniquement valable pour le lieu et la date précisée sur le billet et fera l’objet d’une vérification.
-    -	Veuillez présenter le QR code du ticket de manière visible pour faciliter le scanning le soir de l’évènement. Un ticket n'est pas valable sans son code-barres.
+    -	Veuillez présenter le QR code du ticket de manière visible (imprimé ou sur smartphone) pour faciliter le scanning le soir de l’évènement. Un ticket n'est pas valable sans son code-barres.
     -	Chaque titre d’entrée ne pourra être utilisé qu’une seule fois et ne donnera lieu qu’à un seul accès au Festival. Si le même QR code est présenté plusieurs fois, seule la première personne à présenter le billet sera admise
     -	Toute tentative de réutilisation ou de copie d’un ticket sera considérée comme une fraude.  Tout abus ou contrefaçon sera poursuivi. Les mentions sur les billets ne peuvent pas être modifiées. Les titulaires de billets modifiés pourront se voir refuser l'accès.
     -	Une pièce d’identité officielle en cours de validité avec photo pourra être demandée pour identifier le détenteur du billet.
     -	Les titres d’entrée sont réservés à une utilisation privée et ne peuvent en aucun cas être revendus à des tiers à titre commercial ou à un prix différent du prix de vente officiel.
     -	Ce titre d’entrée est non-échangeable, non-remboursable et ne pourra être remplacé en cas de perte, vol ou destruction.
     -	Les conditions générales sont consultables à l'adresse <a href="%conditionsUrl%">%conditionsUrl%</a>.
+  agenda:
+    title: Événements Un-Mute à venir
+    confirmed: CONFIRMÉ
+    not_confirmed: à confirmer
+    sold_out: SOLD OUT
 
 notices:
   edition: Les modifications ont été enregistrées.

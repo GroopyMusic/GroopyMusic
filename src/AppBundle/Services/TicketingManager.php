@@ -22,6 +22,8 @@ class TicketingManager
     const VIP_PREFIX = 'vip';
     const PH_PREFIX = 'ph';
 
+    const MAXIMUM_UPCOMING_EVENTS_ON_TICKET = 10;
+
     private $writer;
     private $mailDispatcher;
     private $notificationDispatcher;

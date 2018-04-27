@@ -1,0 +1,160 @@
+# Desc: /about
+about: /a-propos
+
+# Desc: /artist/{id}/cancel-request/{request_id}
+artist_cancel_ownership_request: '/artiste/{id}/annuler-requete/{request_id}'
+
+# Desc: /events/{id}-{slug}
+artist_contract: '/evenements/{id}-concert-de-{slug}'
+
+# Desc: /artist/{id}/all-contracts
+artist_contracts: '/artiste/{id}/crowdfundings'
+
+# Desc: /artist/{id}/edit-medias
+artist_edit_medias: '/artiste/{id}/medias'
+
+# Desc: /artist/{id}/edit-photos
+artist_edit_photos: '/artiste/{id}/modifier-photos'
+
+# Desc: /artist/{id}/edit-profile-picture
+artist_edit_profilepic: '/artiste/{id}/photo-de-profil'
+
+# Desc: /artist/{id}/leave
+artist_leave: '/quitter-artiste-{id}'
+
+# Desc: /artist/{id}/owners
+artist_owners: '/artiste/{id}/proprietaires'
+
+# Desc: /artists/{id}-{slug}
+artist_profile: '/artistes/{id}-{slug}'
+
+# Desc: /artist/{id}/edit
+artist_profile_edit: '/artiste/{id}/editer'
+
+# Desc: /validate-ownership-{id}/{code}
+artist_validate_ownership: '/valider-propriete-{id}/{code}'
+
+# Desc: /artists
+catalog_artists: /artistes
+
+# Desc: /crowdfundings
+catalog_crowdfundings: /evenements
+
+# Desc: /halls
+catalog_halls: /salles
+
+# Desc: /conditons
+conditions: /conditons-generales
+
+# Desc: /faq
+faq: /foire-aux-questions
+
+# Desc: /profile/change-password
+fos_user_change_password: /profil/modifier-mot-de-passe
+
+# Desc: /profile/edit
+fos_user_profile_edit: /profile/edit
+
+# Desc: /profile/
+fos_user_profile_show: /profil/
+
+# Desc: /register/check-email
+fos_user_registration_check_email: /inscription/verification-email
+
+# Desc: /register/confirm/{token}
+fos_user_registration_confirm: '/inscription/confirmation/{token}'
+
+# Desc: /register/confirmed
+fos_user_registration_confirmed: /inscription-confirmee
+
+# Desc: /register/
+fos_user_registration_register: /inscription/
+
+# Desc: /resetting/check-email
+fos_user_resetting_check_email: /nouveau-mdp/check-email
+
+# Desc: /resetting/request
+fos_user_resetting_request: /nouveau-mdp/requete
+
+# Desc: /resetting/reset/{token}
+fos_user_resetting_reset: '/nouveau-mdp/reset/{token}'
+
+# Desc: /resetting/send-email
+fos_user_resetting_send_email: /nouveau-mdp/envoi-email
+
+# Desc: /login_check
+fos_user_security_check: /login_check
+
+# Desc: /login
+fos_user_security_login: /login
+
+# Desc: /logout
+fos_user_security_logout: /logout
+
+# Desc: /halls/{id}-{slug}
+hall: '/salles/{id}-{slug}'
+
+# Desc: /
+homepage: /
+
+# Desc: /suggestions
+suggestionBox: /contact
+
+# Desc: /suggestions/post
+suggestionBox_form: /contact/post
+
+# Desc: /team
+team: /equipe-et-valeurs
+
+# Desc: /advanced-options
+user_advanced_options: /options-avancees
+
+# Desc: /cart
+user_cart: /panier
+
+# Desc: /secure-zone/cart/payment/pending/{contract_id}
+user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{contract_id}'
+
+# Desc: /secure-zone/cart/payment
+user_cart_payment_stripe: /zone-securisee/panier/paiement
+
+# Desc: /secure-zone/cart/payment/success/{id}
+user_cart_payment_stripe_success: '/zone-securisee/panier/paiement-reussi/{id}'
+
+# Desc: /change-email
+user_change_email: /changer-email
+
+# Desc: /change-email-token-{token}
+user_change_email_check: '/changer-email-token-{token}'
+
+# Desc: /user/orders/{id}
+user_get_order: '/mes-fichiers/commandes/{id}'
+
+# Desc: /user/tickets/{id}
+user_get_tickets: 'mes-fichiers/tickets/{id}'
+
+# Desc: /my-artists
+user_my_artists: /mes-artistes
+
+# Desc: /new-artist
+user_new_artist: /creer-artiste
+
+# Desc: /new-crowdfunding
+user_new_contract_artist: /nouvel-evenement-beta
+
+# Desc: /new-crowdfunding-contact-us
+user_new_contract_artist_temp: /nouvel-evenement-contact
+
+# Desc: /inbox/notifications/{id}
+user_notification: '/notifications/{id}'
+
+# Desc: /inbox
+user_notifications: /notifications
+
+# Desc: /paid-carts
+user_paid_carts: /mes-commandes
+
+# Desc: /edit-profile
+user_profile_edit: /profil/edition
+
+
