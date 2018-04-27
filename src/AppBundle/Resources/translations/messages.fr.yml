@@ -828,7 +828,7 @@ labels:
 
   contractfan:
     submit: Valider la commande
-    rewards : Récompenses # new
+    rewards: Récompenses # new
 
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"
@@ -896,22 +896,22 @@ rewards:
 
 #new
 reward:
-  feature : Caractéristique
-  creation_date : Date d'obtention
-  limit_date : Date limite de validité
-  remain_use : Nombre d'utilisation(s) restante(s)
-  on : sur
+  feature: Caractéristique
+  creation_date: Date d'obtention
+  limit_date: Date limite de validité
+  remain_use: Nombre d'utilisation(s) restante(s)
+  on: sur
   applicable_to: Applicable à
   events: Evénement(s)
   steps: Catégorie(s) de Festival
-  couterparts : Type(s) de tickets
-  artists : Artiste(s)
-  all_events : Tout événement confondu
-  invitation :
-    time : Horaire
-  consomable :
-    type : Type de consommation
-    quantity : Quantité
+  couterparts: Type(s) de tickets
+  artists: Artiste(s)
+  all_events: Tout événement confondu
+  invitation:
+    time: Horaire
+  consomable:
+    type: Type de consommation
+    quantity: Quantité
     value: Valeur
   reduction:
     reduction: réduction

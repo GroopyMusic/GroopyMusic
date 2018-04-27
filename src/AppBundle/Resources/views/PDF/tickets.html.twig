@@ -1,16 +1,12 @@
 {% extends '@App/PDF/layout.html.twig' %}
 
-{% block header %}{# not necessary #}{% endblock %}
-
 {% block additional_styles %}
-
-
     table.ticket {
-    position: relative;
-    background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
-    border-bottom: 1px solid rgba(67,66,71,1);
-    border-left: 1px solid;
-    border-right: 1px solid;
+        position: relative;
+        background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
+        border-bottom: 1px solid rgba(67,66,71,1);
+        border-left: 1px solid;
+        border-right: 1px solid;
     }
 
     .lineup-title {
@@ -28,20 +24,15 @@
     }
 
     .td-timing {
-    padding-top: 7mm;
-    font-size: 4mm;
+        padding-top: 7mm;
+        font-size: 4mm;
     }
-
 {% endblock %}
 
 {% block page_margins %}backtop="7mm" backbottom="7mm" backleft="10mm" backright="10mm"{% endblock %}
 
 {% block content %}
     {% for ticket in tickets %}
-        {% if loop.index % 2 == 0 %}
-            <div class="between-tickets"></div>
-        {% endif %}
-
         <table class="ticket" style="position:relative">
             <qrcode value="{{ ticket.barCodeText }}" ec="H"
                     style="position:absolute; left: -40px; top: 50px; width: 30mm; background-color: white; color: black;"></qrcode>
@@ -54,7 +45,6 @@
             </tr>
             <tr class="text-white">
                 <td>
-                    {#{{ barcode({code: ticket.barCodeText, type: 'pdf417', format: 'html', color: 'black'}) }}#}
                 </td>
                 <td colspan="2" style="width:130mm">
                     <div class="text-center ticket-title text-bold">{{ 'tickets_pdf.ticket.title'|trans({'%hall_name%': ticket.contractArtist.hallConcert.name})|upper }}
@@ -95,16 +85,12 @@
                 {% endfor %}
             {% endif %}
         </div>
-        {% if loop.index % 2 == 0 or loop.last %}
             <div class="between-tickets"></div>
             <div style="font-size: 80%;">
                 <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
             </div>
-            {% if loop.index % 2 == 0 and not loop.last %}
-                </page>
-                <page>
-                {{ block('footer') }}
-            {% endif %}
-        {% endif %}
+        </page>
+        <page>
+        {{ block('footer') }}
     {% endfor %}
 {% endblock %}
