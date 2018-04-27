@@ -297,7 +297,7 @@ event:
   og_title: Festival Un-Mute avec %artist%
   title: Festival Un-Mute avec %artist%
   generic_name: Festival Un-Mute avec %artist%
-  reward: Profitez-en, des récompenses sont applicables à cet événements #new
+  reward: Profitez-en, des récompenses sont applicables à cet événement ! #new
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
@@ -345,7 +345,7 @@ event:
     title:  Achetez vos tickets
     over: Il n'est pas possible d'acheter des tickets pour cet événement.
     #new
-    to_much_reduction : Vous ne pouvez pas sélectionner plusieurs réduction
+    to_much_reduction: Vous ne pouvez pas sélectionner plusieurs réductions
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
@@ -449,17 +449,17 @@ pay_cart:
             unitprice: Prix unitaire
             total: Total
             #new
-            total_without_reduction : Total sans réduction
-            reduction : Réduction
-            price : Prix
-            applied_rewards : Récompense(s) appliquée(s) :
-        reduction : Récompense(s) appliquée(s)
+            total_without_reduction: Total sans réduction
+            reduction: Réduction
+            price: Prix
+            applied_rewards: "Récompense(s) appliquée(s):"
+        reduction: Récompense(s) appliquée(s)
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
-        #new
-    recap_reward :
-        invitation : %use% invitations
-        consommable : %use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €.
-        reduction : %reduction% % de réduction appliquée à %nbReducedCounterpart% tickets "%counterpart%"
+    #new
+    recap_reward:
+        invitation: "%use% invitations"
+        consommable: "%use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €."
+        reduction: '%reduction% % de réduction appliquée à %nbReducedCounterpart% tickets "%counterpart%"'
 
     #new
     not_authenticated:
@@ -643,7 +643,7 @@ order_pdf:
     total_amount: Montant total
     nb_tickets: Nombre de tickets achetés
     nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
-    rewards : Récompense(s) appliquée(s) #new
+    rewards: Récompense(s) appliquée(s) #new
   details:
     title: Détails de la commande
     labels:
@@ -652,8 +652,8 @@ order_pdf:
       unit_price: Prix unitaire
       total_price: Prix
       promo: promotion
-      reduction : Réduction #new
-      total_reduction_price : Prix avec réduction #new
+      reduction: Réduction #new
+      total_reduction_price: Prix avec réduction #new
   process:
     title: Processus d'achat Un-Mute
     content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce festival. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>
@@ -667,7 +667,7 @@ tickets_pdf:
     is_entry: |
         Ce ticket est votre droit d'entrée.
         Merci de le présenter sur un support lisible.
-  rewards: - Avantages bonus # new
+  rewards: "- Avantages bonus" # new
   conditions: |
     -	Le titre d’entrée est uniquement valable pour le lieu et la date précisée sur le billet et fera l’objet d’une vérification.
     -	Veuillez présenter le QR code du ticket de manière visible pour faciliter le scanning le soir de l’évènement. Un ticket n'est pas valable sans son code-barres.
@@ -684,7 +684,7 @@ notices:
   #new
   artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; vous allez être contacté(e) par l'équipe Un-Mute dans les jours qui viennent.
   artist_role: Votre rôle a bien été enregistré.
-  # Next line : invitation to become administrator of a specific artist on Un-Mute
+  # Next line: invitation to become administrator of a specific artist on Un-Mute
   artist_ownership_requests: Les invitations ont été envoyées.
   artist_ownership_request_cancel: Invitation annulée.
   artist_ownership_request_accepted: Félicitations, vous faites désormais partie des gestionnaires de l'artiste %artist%.
@@ -891,7 +891,7 @@ proposition:
 
 #new
 rewards:
-  title : Mes récompenses
+  title: Mes récompenses
   empty: Aucune récompense ne vous a été attrbiuée pour le moment.
 
 #new
