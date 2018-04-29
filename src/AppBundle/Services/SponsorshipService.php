@@ -27,15 +27,12 @@ class SponsorshipService
 
     private $token_gen;
 
-    private $url_generator;
-
-    public function __construct(MailDispatcher $mailDispatcher, EntityManagerInterface $em, LoggerInterface $logger, TokenGeneratorInterface $token_gen, UrlGeneratorInterface $urlGenerator)
+    public function __construct(MailDispatcher $mailDispatcher, EntityManagerInterface $em, LoggerInterface $logger, TokenGeneratorInterface $token_gen)
     {
         $this->em = $em;
         $this->logger = $logger;
         $this->mailDispatcher = $mailDispatcher;
         $this->token_gen = $token_gen;
-        $this->url_generator = $urlGenerator;
     }
 
     public function sendSponsorshipInvitation($emails, $content, ContractArtist $contractArtist, User $user)
@@ -52,8 +49,8 @@ class SponsorshipService
             $sponsorship_invitation = new SponsorshipInvitation(new \DateTime(), $email, $content, $user,
                 $contractArtist, $user->getId() . $this->token_gen->generateToken() . $contractArtist->getId());
             $this->em->persist($sponsorship_invitation);
-            $url = $this->url_generator->generate('sponsorship_link', array('token' => $sponsorship_invitation->getTokenSponsorship()), UrlGeneratorInterface::ABSOLUTE_URL);
-            $this->mailDispatcher->sendSponsorshipInvitationEmail($sponsorship_invitation, $content, $url);
+            $this->logger->warning("test", [$sponsorship_invitation]);
+            $this->mailDispatcher->sendSponsorshipInvitationEmail($sponsorship_invitation, $content);
         }
         $this->em->flush();
         return [true, $verifiedEmails[1]];
@@ -83,6 +80,16 @@ class SponsorshipService
             }
         }
         return [$clearedEmails, $knownEmail];
+    }
+
+    public function checkSponsorship(User $user)
+    {
+        var_dump($user);
+        $sponsorship = $this->em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipInvitationByMail($user->getEmail());
+        if ($sponsorship != null) {
+            $this->em->persist($sponsorship);
+            $sponsorship->setTargetInvitation($user);
+        }
     }
 
 }

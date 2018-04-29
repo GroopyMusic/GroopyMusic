@@ -151,8 +151,9 @@ class RewardAdmin extends BaseAdmin
             ->with('Parrainage')
             ->add('contract_artists_sponsorships', EntityType::class, array(
                 'label' => 'Evénement lié au parrainage',
-                'class' => ContractArtist::class,
-                'required' => false
+                'class' => 'AppBundle\Entity\ContractArtist',
+                'required' => false,
+                'multiple'=> true
             ))
             ->end();
         if ($subject instanceof InvitationReward) {

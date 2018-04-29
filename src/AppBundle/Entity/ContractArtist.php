@@ -733,7 +733,6 @@ class ContractArtist extends BaseContractArtist
     public function setSponsorshipReward(Reward $sponsorshipReward = null)
     {
         $this->sponsorship_reward = $sponsorshipReward;
-
         return $this;
     }
 

@@ -36,7 +36,7 @@ abstract class Reward implements TranslatableInterface
         $this->user_rewards = new ArrayCollection();
         $this->restrictions = new ArrayCollection();
         $this->categories = new ArrayCollection();
-        $this->contract_artists_sponsorships = new ArrayCollection();
+        $this->contract_artists_sponsorships = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -268,25 +268,27 @@ abstract class Reward implements TranslatableInterface
     /**
      * Add contractArtistsSponsorship
      *
-     * @param ContractArtist $contractArtistsSponsorship
+     * @param \AppBundle\Entity\ContractArtist $contractArtistsSponsorship
      *
      * @return Reward
      */
-    public function addContractArtistsSponsorship(ContractArtist $contractArtistsSponsorship)
+    public function addContractArtistsSponsorship(\AppBundle\Entity\ContractArtist $contractArtistsSponsorship)
     {
         $this->contract_artists_sponsorships[] = $contractArtistsSponsorship;
-
+        $contractArtistsSponsorship->setSponsorshipReward($this);
         return $this;
     }
 
     /**
      * Remove contractArtistsSponsorship
      *
-     * @param ContractArtist $contractArtistsSponsorship
+     * @param \AppBundle\Entity\ContractArtist $contractArtistsSponsorship
      */
-    public function removeContractArtistsSponsorship(ContractArtist $contractArtistsSponsorship)
+    public function removeContractArtistsSponsorship(\AppBundle\Entity\ContractArtist $contractArtistsSponsorship)
     {
         $this->contract_artists_sponsorships->removeElement($contractArtistsSponsorship);
+        $contractArtistsSponsorship->setSponsorshipReward(null);
+        var_dump('lol');
     }
 
     /**

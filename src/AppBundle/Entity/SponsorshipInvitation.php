@@ -41,6 +41,7 @@ class SponsorshipInvitation
         $this->contract_artist = $contract_artist;
         $this->reward_sent = 0;
         $this->token_sponsorship = $token;
+        $this->last_date_acceptation = null;
     }
 
     public function __toString()
@@ -108,6 +109,12 @@ class SponsorshipInvitation
      * @ORM\Column(name="token_sponsorship", type="string")
      */
     private $token_sponsorship;
+
+    /**
+     * @ORM\Column(name="last_date_acceptation", type="datetime",nullable=true)
+     */
+    private $last_date_acceptation;
+
 
 
     /**
@@ -310,5 +317,30 @@ class SponsorshipInvitation
     public function getTokenSponsorship()
     {
         return $this->token_sponsorship;
+    }
+
+
+    /**
+     * Set lastDateAcceptation
+     *
+     * @param \DateTime $lastDateAcceptation
+     *
+     * @return SponsorshipInvitation
+     */
+    public function setLastDateAcceptation($lastDateAcceptation)
+    {
+        $this->last_date_acceptation = $lastDateAcceptation;
+
+        return $this;
+    }
+
+    /**
+     * Get lastDateAcceptation
+     *
+     * @return \DateTime
+     */
+    public function getLastDateAcceptation()
+    {
+        return $this->last_date_acceptation;
     }
 }

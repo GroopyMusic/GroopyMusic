@@ -270,7 +270,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     private $sponsorships;
 
     /**
-     * @ORM\OneToOne(targetEntity="SponsorshipInvitation", mappedBy="target_invitation")
+     * @ORM\OneToOne(targetEntity="SponsorshipInvitation", mappedBy="target_invitation",cascade={"all"}, orphanRemoval=true)
      */
     private $sponsorship_invitation;
 

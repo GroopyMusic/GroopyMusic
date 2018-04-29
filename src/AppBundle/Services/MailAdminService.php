@@ -12,6 +12,7 @@ namespace AppBundle\Services;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 
 class MailAdminService
 {
@@ -22,11 +23,15 @@ class MailAdminService
 
     private $mailDispatcher;
 
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, MailDispatcher $mailDispatcher)
+    private $translator;
+
+
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, MailDispatcher $mailDispatcher, Translator $translator)
     {
         $this->em = $em;
         $this->logger = $logger;
         $this->mailDispatcher = $mailDispatcher;
+        $this->translator = $translator;
     }
 
     public function fillMembersArray($artists)
@@ -74,10 +79,15 @@ class MailAdminService
     public function sendEmail($recipients, $object, $content)
     {
         $arrayRecipients = $this->addAdminToRecipients($this->constructArrayRecipients($recipients));
-        $emails = array_map(function (User $user) {
-            return $user->getEmail();
-        }, $arrayRecipients);
-        $emails = array_unique(array_merge($emails, $this->getSimpleEmails($recipients)));
+        $simpleEmails = $this->getSimpleEmails($recipients);
+        $emails = [];
+        foreach ($recipients as $recipient) {
+            $arrayRecipients[$recipient->getEmail()] = $recipient->getPreferredLocale();
+        }
+        foreach ($simpleEmails as $email) {
+            $emails[$email] = $this->translator->getLocale();
+        }
+        $emails = array_unique(array_merge($emails, $simpleEmails));
         $this->mailDispatcher->sendEmailFromAdmin($emails, $object, $content);
     }
 

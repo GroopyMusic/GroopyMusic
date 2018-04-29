@@ -58,20 +58,22 @@ class MailDispatcher
         $this->locales = $locales;
     }
 
-    private function extract_locale($locale, $haystack) {
-        return array_filter($haystack, function($elem) use ($locale) {
+    private function extract_locale($locale, $haystack)
+    {
+        return array_filter($haystack, function ($elem) use ($locale) {
             return $elem == $locale;
         });
     }
 
-    private function sendEmail($template, $subject, array $params, array $subject_params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
+    private function sendEmail($template, $subject, array $params, array $subject_params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME)
+    {
         $failedRecipients = array();
         $bccs = array();
         $to_chunks = array();
         $bcc_chunks = array();
 
         // CASE 1 : Only "to"s chunked by locale
-        if(empty($bcc_emails) && !empty($to)) {
+        if (empty($bcc_emails) && !empty($to)) {
             $tos = array();
             foreach ($this->locales as $locale) {
                 $tos[$locale] = $this->extract_locale($locale, $to);
@@ -89,16 +91,16 @@ class MailDispatcher
         // CASE 2 : # of recipients is high and "to" field is for no-reply only
         // We need to chunk the bcc recipients
         else {
-            foreach($this->locales as $locale) {
+            foreach ($this->locales as $locale) {
                 $bccs[$locale] = $this->extract_locale($locale, $bcc_emails);
-                if(!empty($bccs[$locale])) {
+                if (!empty($bccs[$locale])) {
                     $trans_subject = $this->translator->trans($subject, $subject_params, 'emails', $locale);
                     $bcc_chunks[$locale] = array_chunk(array_keys($bccs[$locale]), self::MAX_BCC);
-                    foreach($bcc_chunks[$locale] as $chunk) {
+                    foreach ($bcc_chunks[$locale] as $chunk) {
                         $this->mailer->sendEmail($failedRecipients, $subject, $this->from_address, $this->from_name, array_keys($to), $to_name, [], '',
                             $chunk, '', $reply_to, $reply_to_name, array_merge(['subject' => $trans_subject], $params), $template, $attachments, $locale);
                     }
-               }
+                }
             }
         }
 
@@ -134,11 +136,12 @@ class MailDispatcher
         return $this->sendEmail($template, $subject, $params, $subject_params, [], $attachments, self::ADMIN_TO, '', $reply_to, $reply_to_name);
     }
 
-    public function sendTestEmail() {
+    public function sendTestEmail()
+    {
         $emails = [];
-        for($i = 0; $i <= 180; $i++) {
+        for ($i = 0; $i <= 180; $i++) {
             $locale = $i > 120 ? 'fr' : 'en';
-            $emails['gonzyer'.$i.'@hotmail.com'] = $locale;
+            $emails['gonzyer' . $i . '@hotmail.com'] = $locale;
         }
 
         return $this->sendEmail(MailTemplateProvider::ADMIN_TEST_TEMPLATE, 'test', [], [], $emails);
@@ -171,8 +174,7 @@ class MailDispatcher
             $params['user'] = $possible_user->getEmail();
             $toName = $possible_user->getDisplayName();
             $locale = $possible_user->getPreferredLocale();
-        }
-        else {
+        } else {
             $template = MailTemplateProvider::OWNERSHIPREQUEST_NONMEMBER_TEMPLATE;
         }
 
@@ -182,7 +184,8 @@ class MailDispatcher
         $this->sendEmail($template, "subjects.new_ownership_request", $params, $subject_params, [], [], $recipient, [$toName]);
     }
 
-    public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox) {
+    public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox)
+    {
         $recipient = [$suggestionBox->getEmail() => $this->translator->getLocale()];
         $recipientName = [$suggestionBox->getDisplayName()];
         $params = ['suggestionBox' => $suggestionBox];
@@ -190,7 +193,8 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), $params, $subject_params, [], [], $recipient, $recipientName);
     }
 
-    public function sendVIPInscriptionCopy(VIPInscription $inscription) {
+    public function sendVIPInscriptionCopy(VIPInscription $inscription)
+    {
         $recipient = [$inscription->getEmail() => $this->translator->getLocale()];
         $recipientName = [$inscription->getDisplayName()];
         $params = ['inscription' => $inscription];
@@ -217,7 +221,7 @@ class MailDispatcher
 
         // mail to artists
         $bcc = [];
-        foreach($artist_users as $au) {
+        foreach ($artist_users as $au) {
             /** @var User $au */
             $bcc[$au->getEmail()] = $au->getPreferredLocale();
         }
@@ -226,10 +230,10 @@ class MailDispatcher
         $this->sendEmail($template_artist, 'subjects.concert.artist.known_outcome', $params, $subject_params, $bcc);
 
         // mail to fans
-        if(!empty($fan_users)) {
+        if (!empty($fan_users)) {
 
             $bcc = [];
-            foreach($fan_users as $fu) {
+            foreach ($fan_users as $fu) {
                 /** @var User $fu */
                 $bcc[$fu->getEmail()] = $fu->getPreferredLocale();
             }
@@ -261,7 +265,7 @@ class MailDispatcher
         $places = $contract->getNbTicketsToSuccess();
 
         $recipients = [];
-        foreach($users as $user) {
+        foreach ($users as $user) {
             /** @var User $user */
             $recipients[$user->getEmail()] = $user->getPreferredLocale();
         }
@@ -334,7 +338,8 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
-    public function sendRefundedPayment(Payment $payment) {
+    public function sendRefundedPayment(Payment $payment)
+    {
         $params = [
             'payment' => $payment,
         ];
@@ -348,13 +353,14 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::REFUNDED_PAYMENT_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
-    public function sendArtistValidated(Artist $artist) {
+    public function sendArtistValidated(Artist $artist)
+    {
         $params = [
             'artist' => $artist,
         ];
 
         $to = [];
-        foreach($artist->getOwners() as $owner) {
+        foreach ($artist->getOwners() as $owner) {
             /** @var User $owner */
             $to[$owner->getEmail()] = $owner->getPreferredLocale();
         }
@@ -367,11 +373,57 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::ARTIST_VALIDATED_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
+    public function sendRankingEmail($stats, $object, $content)
+    {
+        $params = ['content' => $content];
+        $subject_params = [];
+        $to = [];
+        foreach ($stats as $stat) {
+            $user = $stat->getUser();
+            $to[$user->getEmail()] = $user->getPreferredLocale();
+        }
+        $this->sendEmail(MailTemplateProvider::RANKING_EMAIL_USER_TEMPLATE, $object,
+            $params, [], [], [], $to, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendEmailRewardAttribution($stats, $content, $reward)
+    {
+        $params = ['content' => $content, 'reward' => $reward];
+        $subject = "subjects.reward_attribution";
+        $to = [];
+        foreach ($stats as $stat) {
+            $user = $stat->getUser();
+            $to[$user->getEmail()] = $user->getPreferredLocale();
+        }
+        $this->sendEmail(MailTemplateProvider::REWARD_ATTRIBUTION_TEMPLATE, $subject,
+            $params, [], [], [], $to, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendEmailFromAdmin($emails, $subject, $content)
+    {
+        $params = ['content' => $content];
+        $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
+            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendSponsorshipInvitationEmail(SponsorshipInvitation $sponsorshipInvitation, $content)
+    {
+        $subject = "subjects.sponsorship_invitation";
+        $to = [$sponsorshipInvitation->getEmailInvitation() => $sponsorshipInvitation->getHostInvitation()->getPreferredLocale()];
+        $params = ['content' => $content,
+            'contractArtist' => $sponsorshipInvitation->getContractArtist(),
+            'user' => $sponsorshipInvitation->getHostInvitation(),
+            'token' => $sponsorshipInvitation->getTokenSponsorship()];
+        $this->sendEmail(MailTemplateProvider::SPONSORSHIP_INVITATION_MAIL, $subject,
+            $params, [], [], [], $to, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
     // ----------------------
     // ADMIN EMAILS
     // ----------------------
 
-    public function sendAdminNewArtist(Artist $artist) {
+    public function sendAdminNewArtist(Artist $artist)
+    {
         $params = ['artist' => $artist];
         $subject = 'Nouvel artiste inscrit sur Un-Mute';
         $subject_params = [];
@@ -454,51 +506,6 @@ class MailDispatcher
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_PROPOSITION_SUBMIT, $subject, $params, $subject_params);
     }
 
-    public function sendRankingEmail($stats, $object, $content)
-    {
-        $params = ['content' => $content];
-        $subject_params = [];
-        $to = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getEmail();
-        }, $stats);
-        $to_name = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getDisplayName();
-        }, $stats);
-        $this->sendEmail(MailTemplateProvider::RANKING_EMAIL_USER_TEMPLATE, $object,
-            $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);
-    }
-
-    public function sendEmailRewardAttribution($stats, $content, $reward)
-    {
-        $params = ['content' => $content, 'reward' => $reward];
-        $subject = "subjects.reward_attribution";
-        $to = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getEmail();
-        }, $stats);
-        $to_name = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getDisplayName();
-        }, $stats);
-        $this->sendEmail(MailTemplateProvider::REWARD_ATTRIBUTION_TEMPLATE, $subject,
-            $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);
-    }
-
-    public function sendEmailFromAdmin($emails, $subject, $content)
-    {
-        $params = ['content' => $content];
-        $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
-            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
-    }
-
-    public function sendSponsorshipInvitationEmail(SponsorshipInvitation $sponsorshipInvitation, $content, $url)
-    {
-        $subject = "subjects.sponsorship_invitation";
-        $params = ['content' => $content,
-            'contractArtist' => $sponsorshipInvitation->getContractArtist(),
-            'user' => $sponsorshipInvitation->getHostInvitation(),
-            'url' => $url];
-        $this->sendEmail(MailTemplateProvider::SPONSORSHIP_INVITATION_MAIL, $subject,
-            $params, [], [], [], [$sponsorshipInvitation->getEmailInvitation()], [], self::REPLY_TO, self::REPLY_TO_NAME);
-    }
 
     /*
     public function sendDetailsKnownArtist(ContractArtist $contractArtist) {

@@ -3,6 +3,7 @@
 namespace AppBundle\EventListener;
 
 use AppBundle\Entity\User_Conditions;
+use AppBundle\Services\SponsorshipService;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
@@ -24,12 +25,14 @@ class ConnectListener implements EventSubscriberInterface {
     private $session;
     private $translator;
     private $em;
+    private $sponsorshipService;
 
-    public function __construct(UrlGeneratorInterface $router, Session $session, TranslatorInterface $translator, EntityManagerInterface $em) {
+    public function __construct(UrlGeneratorInterface $router, Session $session, TranslatorInterface $translator, EntityManagerInterface $em, SponsorshipService $sponsorshipService) {
         $this->router = $router;
         $this->session = $session;
         $this->translator = $translator;
         $this->em = $em;
+        $this->sponsorshipService = $sponsorshipService;
     }
 
     public static function getSubscribedEvents() {
@@ -66,13 +69,15 @@ class ConnectListener implements EventSubscriberInterface {
     }
 
     // Registration with Facebook
-    public function onSocialRegistrationSuccess(Event $event) {
+    public function onSocialRegistrationSuccess(Event $event,\HWI\Bundle\OAuthBundle\Event\FormEvent $formEvent) {
         $this->addSessionMessage('notices.social.registration_success');
+        $this->sponsorshipService->checkSponsorship($formEvent->getForm()->getData());
     }
 
     // Registration with FOSUserBundle -> completed
     public function onRegistrationSuccess(FormEvent $event) {
         $event->getForm()->getData()->setPreferredLocale($this->translator->getLocale());
+        $this->sponsorshipService->checkSponsorship($event->getForm()->getData());
     }
 
     // Registration with FOSUserBundle -> completed

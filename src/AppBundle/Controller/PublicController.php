@@ -691,8 +691,24 @@ class PublicController extends Controller
     /**
      * @Route("/sponsorship-link-token-{token}", name="sponsorship_link")
      */
-    public function sponsorshipLinkAction(Request $request)
+    public function sponsorshipLinkAction(Request $request, LoggerInterface $logger)
     {
-        return new Response("SALUT", 200);
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $token = substr_replace($request->get('token'), "", -1);
+            $sponsorship = $em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipInvitationByToken($token);
+            if ($sponsorship == null) {
+                $this->addFlash('error', 'Notice de parrainage erreur');
+                return $this->redirectToRoute('homepage');
+            } else {
+                $em->persist($sponsorship);
+                $sponsorship->setLastDateAcceptation(new \DateTime());
+                $this->addFlash('notice', 'Notice de parrainage');
+                return $this->redirectToRoute('artist_contract', array("id" => $sponsorship->getContractArtist()->getId()));
+            }
+        } catch (\Throwable $th) {
+            $this->addFlash('error', 'Notice de parrainage erreur');
+            return $this->redirectToRoute('homepage');
+        }
     }
 }

@@ -19,6 +19,7 @@ use AppBundle\Services\TicketingManager;
 use AppBundle\Services\UserRolesManager;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
@@ -599,7 +600,7 @@ class UserController extends Controller
             return new Response("Evénement non valide", 500);
         }
         try {
-            $response = $sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('textarea'), $contract, $user);
+            $response = $sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('content'), $contract, $user);
             return new JsonResponse(array(
                 'success' => $response[0],
                 'emails' => $response[1],
