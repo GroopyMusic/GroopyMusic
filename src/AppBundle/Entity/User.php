@@ -167,6 +167,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
 
     /**
      * @var string
+     * @ORM\Column(name="preferred_locale", type="string", length=10)
      */
     protected $preferredLocale;
 

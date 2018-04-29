@@ -1,3 +1,4 @@
+{% trans_default_domain 'emails' %}
 {% autoescape false %}
 {% spaceless %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -9,7 +10,7 @@
 		<style>
 		{% block medieQueryCSS %}
 		@media only screen and (max-width: {{ mediaQueryWidth }}px) {
-            table.emailWidth, img.emailWidth{
+            table.emailWidth, img.emailWidth {
                 width: {{ mobileEmailWidth }}px !important;
             }
             td.contentWidth {
@@ -46,7 +47,7 @@
 					{% block logo %}
 						<a href="{{ absolute_url(path('homepage')) }}" target="_blank" style="color: #FFAE07; font-size: 72px; font-weight: bold; text-decoration: none; text-align:center;">
 							<img src="{{ absolute_url(asset('images/logo.png')) }}" alt="Un-Mute" height="100" />
-						</a>
+                        </a>
 			    	{% endblock %}{# end block logo #}
 			    </td>
 				<td width="{{ shadowWidth }}">&nbsp;</td>
@@ -85,10 +86,8 @@
 		{{ leftShadow}}
 	        	<td class="contentWidth" width="{{ contentWidth }}" bgcolor="white" style="padding-bottom: 30px;">
 	        		{% block signature %}
-						<p style="text-align:right;padding-right: 20px;">À très bientôt pour de nouvelles aventures musicales,
-							<br />
-							<br />
-							L'équipe Un-Mute
+						<p style="text-align:right;padding-right: 20px;">
+                            {{ 'default_signature'|trans|raw|nl2br }}
 						</p>
 					{% endblock %}
 	            </td>
@@ -97,7 +96,7 @@
             	<td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#4a4b4d" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
                 	{% block footerInfoText %}
             		<p style="color:white;">
-            			Ajoutez "<a href="mailto:{{ sendMailAccountName }}&lt;{{ sendMailAccountAddress }}&gt;" style="color:white;">{{ sendMailAccountAddress }}</a>" à votre carnet d'adresses pour vous assurer de recevoir tous nos e-mails.
+                        {{ 'add_to_contacts'|trans({'%address%': '<a href="mailto:'~sendMailAccountName~'&lt;'~sendMailAccountAddress~'&gt;" style="color:white;">'~sendMailAccountAddress~'</a>'})|raw }}
             		</p>
                 	{% endblock %}{# end block footerInfoText #}
             		{% block footerCopyrightText %}
@@ -107,9 +106,9 @@
 					{% endblock %}{# end block footerCopyrightText #}
                     <p style="color:#acacac;">
                     {% block footerLinks %}
-	               	    <a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('homepage')) }}"> Accueil </a> -
-						<a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('about')) }}"> A propos </a> -
-						<a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('suggestionBox')) }}"> Contact </a>
+	               	    <a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('homepage')) }}"> {{ 'footer_links.home'|trans }} </a> -
+						<a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('about')) }}"> {{ 'footer_links.about'|trans }} </a> -
+						<a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('suggestionBox')) }}"> {{ 'footer_links.contact'|trans }} </a>
 					{% endblock %}{# end block footerLinks #}
                     </p>
 				</td>

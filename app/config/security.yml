@@ -18,21 +18,22 @@ security:
     firewalls:
         main:
             remember_me:
-                secret:   '%secret%'
-                lifetime: 2419200 # 4 weeks in seconds
-                name: '%session.remember_me.name%'
+              secret:   '%secret%'
+              lifetime: 2419200 # 4 weeks in seconds
+              name: '%session.remember_me.name%'
             pattern: ^/
             form_login:
-                provider: fos_userbundle
-                failure_path: fos_user_security_login
-                always_use_default_target_path: false
-                default_target_path: homepage
-                use_referer: true
-                username_parameter: _um_username
-                password_parameter: _um_password
-                #csrf_parameter:       _csrf_token
-                #csrf_token_id:        authenticate
-                #csrf_token_generator: security.csrf.token_manager
+              check_path: fos_user_security_check
+              provider: fos_userbundle
+              failure_path: fos_user_security_login
+              always_use_default_target_path: false
+              default_target_path: homepage
+              use_referer: true
+              username_parameter: _um_username
+              password_parameter: _um_password
+              #csrf_parameter:       _csrf_token
+              #csrf_token_id:        authenticate
+              #csrf_token_generator: security.csrf.token_manager
             oauth:
               resource_owners:
                 facebook:           "/login/check-facebook"
@@ -47,7 +48,8 @@ security:
                   #automatic user registration on your site, with data from the provider (facebook. google, etc.)
                   service:  um_fosub_user_provider
             logout:
-              path: /logout
+              path: fos_user_security_logout
+              target: homepage
             anonymous:    true
 
     access_control:

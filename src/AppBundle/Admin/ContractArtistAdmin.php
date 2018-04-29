@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\BaseStep;
 use AppBundle\Entity\ContractArtist_Artist;
@@ -82,124 +83,122 @@ class ContractArtistAdmin extends BaseAdmin
                     'tickets' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_tickets.html.twig',
                     )
-                )));
+                )))
+        ;
     }
 
     public function configureShowFields(ShowMapper $show)
     {
         $show
             ->with('Infos générales')
-            ->add('id')
-            ->add('date', 'date', array(
-                'label' => 'Date de création',
-                'format' => 'd/m/Y',
-                'locale' => 'fr',
-                'timezone' => 'Europe/Paris',
-            ))
-            ->add('start_date', 'date', array(
-                'label' => 'Début des ventes',
-                'format' => 'd/m/Y',
-                'locale' => 'fr',
-                'timezone' => 'Europe/Paris',
-            ))
-            ->add('dateEnd', 'date', array(
-                'label' => 'Échéance',
-                'format' => 'd/m/Y',
-                'locale' => 'fr',
-                'timezone' => 'Europe/Paris',
-            ))
-            ->add('step', null, array(
-                'label' => 'Palier',
-                'route' => array('name' => 'show'),
-            ))
-            ->add('artist', null, array(
-                'label' => 'Artiste',
-                'route' => array('name' => 'show'),
-            ))
-            ->add('province', null, array(
-                'label' => 'Province',
-            ))
-            ->add('motivations', null, array(
-                'label' => 'Motivations',
-            ))
-            ->add('preferences.additional_info', null, array(
-                'label' => 'Infos pour les organisateurs',
-            ))
-            ->add('promotions', null, array(
-                'label' => 'Promotions appliquées',
-            ))
+                ->add('id')
+                ->add('date', 'date', array(
+                    'label' => 'Date de création',
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr',
+                    'timezone' => 'Europe/Paris',
+                ))
+                ->add('start_date', 'date', array(
+                    'label' => 'Début des ventes',
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr',
+                    'timezone' => 'Europe/Paris',
+                ))
+                ->add('dateEnd', 'date', array(
+                    'label' => 'Échéance',
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr',
+                    'timezone' => 'Europe/Paris',
+                ))
+                ->add('step', null, array(
+                    'label' => 'Palier',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('artist', null, array(
+                    'label' => 'Artiste',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('province', null, array(
+                    'label' => 'Province',
+                ))
+                ->add('motivations', null, array(
+                    'label' => 'Motivations',
+                ))
+                ->add('preferences.additional_info', null, array(
+                    'label' => 'Infos pour les organisateurs',
+                ))
+                ->add('promotions', null, array(
+                    'label' => 'Promotions appliquées',
+                ))
             ->end()
             ->with('Statistiques de vente')
-            ->add('totalBookedTickets', null, array(
-                'label' => 'Tickets bookés (total)',
-            ))
-            ->add('nbCounterPartsSoldOrganic', null, array(
-                'label' => 'Dont tickets payés',
-            ))
-            ->add('nbCounterPartsObtainedByPromotion', null, array(
-                'label' => 'Dont tickets obtenus par promotion',
-            ))
-            ->add('tickets_reserved', null, array(
-                'label' => 'Dont tickets réservés',
-            ))
-            ->add('collected_amount', null, array(
-                'label' => 'Montant collecté',
-            ))
+                ->add('totalBookedTickets', null, array(
+                    'label' => 'Tickets bookés (total)',
+                ))
+                ->add('nbCounterPartsSoldOrganic', null, array(
+                    'label' => 'Dont tickets payés',
+                ))
+                ->add('nbCounterPartsObtainedByPromotion', null, array(
+                    'label' => 'Dont tickets obtenus par promotion',
+                ))
+                ->add('tickets_reserved', null, array(
+                    'label' => 'Dont tickets réservés',
+                ))
+                ->add('collected_amount', null, array(
+                    'label' => 'Montant collecté',
+                ))
             ->end()
             ->with('État')
-            ->add('state', null, array(
-                'label' => 'Code'
-            ))
-            ->add('test_period', null, array(
-                'label' => 'Est en pré-validation',
-            ))
-            ->add('failed', null, array(
-                'label' => 'Échec',
-            ))
-            ->add('successful', null, array(
-                'label' => 'Réussi',
-            ))
-            ->add('date_success', null, array(
-                'label' => 'Date de réussite',
-            ))
-            ->add('refunded', null, array(
-                'label' => 'Remboursé',
-            ))
+                ->add('state', null, array(
+                    'label' => 'Code'
+                ))
+                ->add('test_period', null, array(
+                    'label' => 'Est en pré-validation',
+                ))
+                ->add('failed', null, array(
+                    'label' => 'Échec',
+                ))
+                ->add('successful', null, array(
+                    'label' => 'Réussi',
+                ))
+                ->add('date_success', null, array(
+                    'label' => 'Date de réussite',
+                ))
+                ->add('refunded', null, array(
+                    'label' => 'Remboursé',
+                ))
             ->end()
             ->with('Autres')
-            ->add('cart_reminder_sent', null, array(
-                'label' => 'Rappel envoyé pour les paniers non payés qui le référencent',
-            ))
-            ->add('asking_refund', null, array(
-                'label' => 'Demandes de remboursement',
-            ))
-            ->add('reminders_artist', null, array(
-                'label' => "Rappels envoyés à l'artiste",
-            ))
-            ->add('reminders_admin', null, array(
-                'label' => "Rappels envoyés aux admins",
-            ))
+                ->add('asking_refund', null, array(
+                    'label' => 'Demandes de remboursement',
+                ))
+                ->add('reminders_artist', null, array(
+                    'label' => "Rappels envoyés à l'artiste",
+                ))
+                ->add('reminders_admin', null, array(
+                    'label' => "Rappels envoyés aux admins",
+                ))
             ->end()
             ->with('Concrétisation')
-            ->add('preferences', null, array(
-                'label' => 'Préférences',
-            ))
-            ->add('reality', null, array(
-                'label' => 'Réalité associée'
-            ))
-            ->add('coartists_list', null, array(
-                'associated_property' => 'artist',
-                'label' => 'Premières parties',
-            ))
-            ->add('additional_info', null, array(
-                'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
-            ))
+                ->add('preferences', null, array(
+                    'label' => 'Préférences',
+                ))
+                ->add('reality', null, array(
+                    'label' => 'Réalité associée'
+                ))
+                ->add('coartists_list', null, array(
+                    'associated_property' => 'artist',
+                    'label' => 'Premières parties',
+                ))
+                ->add('getAdditionalInfo', null, array(
+                    'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
+                ))
             ->end()
             ->with('Soutien')
-            ->add('payments', null, array(
-                'label' => 'Paiements',
-                'route' => array('name' => 'show'),
-            ))
+                ->add('payments', null, array(
+                    'label' => 'Paiements',
+                    'route' => array('name' => 'show'),
+                ))
             ->end()
             ->with('Parrainage')
             ->add('sponsorship_reward', null, array(
@@ -215,48 +214,55 @@ class ContractArtistAdmin extends BaseAdmin
         $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
         $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
         $form
-            ->add('dateEnd', 'date', array(
-                'required' => true,
-                'label' => 'Échéance',
-                'html5' => false,
-                'widget' => 'single_text',
-                'format' => 'MM/dd/yyyy',
-                'attr' => ['class' => 'datePicker'],
-            ))
-            ->add('motivations', null, array(
-                'required' => false,
-                'label' => 'Motivations du groupe',
-            ))
-            ->add('province', null, array(
-                'required' => true,
-                'label' => 'Province',
-            ))
-            ->add('tickets_reserved', null, array(
-                'required' => true,
-                'label' => 'Tickets réservés',
-            ))
-            ->end();
+                ->add('dateEnd', 'date', array(
+                    'required' => true,
+                    'label' => 'Échéance',
+                    'html5' => false,
+                    'widget' => 'single_text',
+                    'format' => 'MM/dd/yyyy',
+                    'attr' => ['class' => 'datePicker'],
+                ))
+                ->add('motivations', null, array(
+                    'required' => false,
+                    'label' => 'Motivations du groupe',
+                ))
+                ->add('province', null, array(
+                    'required' => true,
+                    'label' => 'Province',
+                ))
+                ->add('tickets_reserved', null, array(
+                    'required' => true,
+                    'label' => 'Tickets réservés',
+                ))
+                ->add('translations', TranslationsType::class, array(
+                    'required' => false,
+                    'label' => 'Champs traductibles',
+                    'fields' => [
+                        'additional_info' => [
+                            'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
+                        ],
+                    ],
+                ))
+            ->end()
+        ;
 
         $form
             ->with('Détails connus')
-            ->add('reality', ConcertPossibilityType::class, array(
-                'label' => false,
-                'required' => false,
-                'required_reality' => false,
-                'is_reality' => true,
-            ))
+                ->add('reality', ConcertPossibilityType::class, array(
+                    'label' => false,
+                    'required' => false,
+                    'required_reality' => false,
+                    'is_reality' => true,
+                ))
             ->end();
 
         $form
             ->with('Autres')
-            ->add('coartists_list_plain', EntityType::class, array(
-                'label' => 'Artistes invités',
-                'multiple' => true,
-                'class' => Artist::class,
-            ))
-            ->add('additional_info', null, array(
-                'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
-            ))
+                ->add( 'coartists_list_plain', EntityType::class, array(
+                    'label' => 'Artistes invités',
+                    'multiple' => true,
+                    'class' => Artist::class,
+                ))
             ->end()
             ->with('Parrainage')
             ->add('sponsorship_reward', EntityType::class, array(

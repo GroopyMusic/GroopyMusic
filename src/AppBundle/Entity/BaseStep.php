@@ -36,13 +36,13 @@ class BaseStep implements TranslatableInterface
         $this->visible = true;
     }
 
-    public function getDefaultLocale() {
-        return 'fr';
-    }
-
     public function __toString()
     {
         return '' . $this->getName();
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
     }
 
     public function setLocale($locale)

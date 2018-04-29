@@ -54,13 +54,15 @@ class KernelListener implements EventSubscriberInterface
         if(!$user instanceof User)
             return;
 
+        $request = $event->getRequest();
+        $session = $request->getSession();
+
+        $user->setPreferredLocale($request->getLocale());
+
         $last_conditions = $this->em->getRepository('AppBundle:Conditions')->findLast();
 
         if(($last_conditions == null) || $user->hasAccepted($last_conditions))
             return;
-
-        $request = $event->getRequest();
-        $session = $request->getSession();
 
         $session->set('requested_url', $request->getRequestUri());
 
@@ -76,7 +78,6 @@ class KernelListener implements EventSubscriberInterface
     public function onResponse(FilterResponseEvent $event)
     {
         $this->em->flush();
-        $response = $event->getResponse();
     }
 
 }
