@@ -2,6 +2,9 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\User;
+
 /**
  * ContractFanRepository
  *
@@ -10,4 +13,21 @@ namespace AppBundle\Repository;
  */
 class ContractFanRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findSponsorshipContractFanToReward(User $user, ContractArtist $contractArtist)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT cf,ca,p,u
+                  FROM AppBundle:ContractFan cf
+                  LEFT JOIN cf.contractArtist ca
+                  LEFT JOIN cf.payment p
+                  LEFT JOIN p.user u
+                  WHERE u.id = ?1
+                  AND ca.id = ?2
+                  ORDER BY cf.date DESC
+                  ')
+            ->setParameter(1, $user->getId())
+            ->setParameter(2, $contractArtist->getId())
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
 }

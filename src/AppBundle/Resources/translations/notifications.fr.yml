@@ -82,3 +82,13 @@ reward_attribution:
 
     Pour plus d'informations, consultez votre page <a href="%rewards_url%">Mes récompenses</a>
 
+#new
+sponsorship_reward:
+  title: Récompense de parrainage
+  content: |
+    %target_name% a acheté un ticket pour %event%.
+    Par conséquent vous recevez une récompense : %reward_name%
+    Celle ci est directement appliquée au premier ticket de votre derniere liste d'achat
+
+
+

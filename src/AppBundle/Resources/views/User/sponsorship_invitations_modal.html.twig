@@ -1,8 +1,7 @@
 <div id="sponsorship-invitations-modal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form id="sponsorship-modal-form"
-                  action='{{ path('user_ajax_send_sponsorship_invitation',{'id' : contract.id}) }}'>
+            <form id="sponsorship-modal-form">
                 <div class="modal-body">
                     <div id="sponsorship-modal-alert-danger" class="alert alert-danger text-center" hidden>
                     </div>
@@ -14,18 +13,17 @@
                         {{ hidden_loader() }}
                     </div>
                     <div id="sponsorship-modal-content">
-                        <h2 class="text-center">Invitez des amis à participer à l'événements</h2>
+                        <h2 class="text-center">{{ "sponsorship_modal.title"|trans|raw }}</h2>
                         <div id="info-sponsorship" class="text-center">
-                            <span class="text-primary">Invite tes amis à participer à l' événements et profitez de la
-                  récompense de parrainage
+                            <span class="text-primary">{{ "sponsorship_modal.content"|trans|raw }}
             </span>
                         </div>
                         <br>
                         <div id="sponsorship-modal-email-inputs-div">
                             <div class="form-group">
-                                <label for="email-inputs">Adresse emails</label>
+                                <label for="email-inputs">{{ "sponsorship_modal.emails"|trans|raw }}</label>
                                 <input type="email" class="sponsorship-modal-email-inputs form-control"
-                                       placeholder="Entrer une adresse email" required>
+                                       placeholder="{{ "sponsorship_modal.email_placeholder"|trans|raw }}" required>
                             </div>
                         </div>
                         <div class="text-center">
@@ -33,17 +31,17 @@
                             <button type="button" class="btn" onclick="addEmailInput()"> +</button>
                         </div>
                         <div class="form-group">
-                            <label for="invitation-message">Message d'invitations</label>
+                            <label for="invitation-message">{{ "sponsorship_modal.message"|trans|raw }}</label>
                             <textarea class="form-control" id="sponsorship-modal-textarea" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="text-center">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                Annuler
+                                {{ "sponsorship_modal.cancel_button"|trans|raw }}
                             </button>
                             <button id="sponsorship-modal-send-button" type="submit" class="btn btn-primary">
-                                Envoyer les invitations
+                                {{ "sponsorship_modal.send_button"|trans|raw }}
                             </button>
                         </div>
                     </div>

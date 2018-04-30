@@ -1,10 +1,14 @@
+var send_url;
 $(document).ready(function () {
     console.log("ready!");
 });
 
 function addEmailInput() {
     var div = $('#sponsorship-modal-email-inputs-div');
-    var input = '<div class="form-group"><input type="email" class="sponsorship-modal-email-inputs sponsorship-modal-added-inputs form-control" placeholder="Entrer une adresse email" required></div>';
+    var placeholder = $('.sponsorship-modal-email-inputs').first().attr('placeholder');
+    console.log(placeholder);
+    var input = '<div class="form-group"><input type="email" class="sponsorship-modal-email-inputs sponsorship-modal-added-inputs form-control" placeholder="' + placeholder + '"required></div>';
+    console.log(input);
     div.append(input);
 }
 
@@ -19,7 +23,8 @@ function clearForm() {
     });
 }
 
-function displaySponsorshipInvitationModal() {
+function displaySponsorshipInvitationModal(url) {
+    send_url = url;
     $("#sponsorship-invitations-modal").on("hidden.bs.modal", function () {
         clearForm();
         hideSponsoringAlert();
@@ -77,11 +82,11 @@ function sendSponsorshipInvitation() {
     hideSponsoringAlert();
     var emails = [];
     var textarea = $('#sponsorship-modal-textarea').val();
-    var url = $('#sponsorship-modal-form').attr('action');
+    console.log(send_url);
     $('.sponsorship-modal-email-inputs').each(function () {
         emails.push($(this).val());
     });
-    $.post(url,
+    $.post(send_url,
         {
             emails: emails,
             content: textarea

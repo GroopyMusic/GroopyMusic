@@ -10,8 +10,10 @@ namespace AppBundle\Services;
 
 
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\User;
+use AppBundle\Entity\User_Reward;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Psr\Log\LoggerInterface;
@@ -19,6 +21,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SponsorshipService
 {
+    const MAX_DAY_ACCEPTATION = 3;
+
     private $em;
 
     private $logger;
@@ -27,12 +31,15 @@ class SponsorshipService
 
     private $token_gen;
 
-    public function __construct(MailDispatcher $mailDispatcher, EntityManagerInterface $em, LoggerInterface $logger, TokenGeneratorInterface $token_gen)
+    private $notificationDispatcher;
+
+    public function __construct(MailDispatcher $mailDispatcher, EntityManagerInterface $em, LoggerInterface $logger, TokenGeneratorInterface $token_gen, NotificationDispatcher $notificationDispatcher)
     {
         $this->em = $em;
         $this->logger = $logger;
         $this->mailDispatcher = $mailDispatcher;
         $this->token_gen = $token_gen;
+        $this->notificationDispatcher = $notificationDispatcher;
     }
 
     public function sendSponsorshipInvitation($emails, $content, ContractArtist $contractArtist, User $user)
@@ -54,6 +61,50 @@ class SponsorshipService
         }
         $this->em->flush();
         return [true, $verifiedEmails[1]];
+    }
+
+    public function checkForSponsorship(User $user)
+    {
+        $sponsorship = $this->em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipInvitationByMail($user->getEmail());
+        if ($sponsorship != null) {
+            if ($sponsorship->getDateInvitation()->add(new \DateInterval('P' . self::MAX_DAY_ACCEPTATION . 'D')) >= new \DateTime()) {
+                $this->em->persist($sponsorship);
+                $sponsorship->setTargetInvitation($user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function checkForRewardSponsorship($user, ContractArtist $contractArtist)
+    {
+        $sponsorship = $user->getSponsorshipInvitation();
+        if ($sponsorship != null) {
+            $host_user = $sponsorship->getHostInvitation();
+            if ($contractArtist->getSponsorshipReward() != null) {
+                $contractFan = $this->em->getRepository('AppBundle:ContractFan')->findSponsorshipContractFanToReward($host_user, $contractArtist);
+                if ($contractFan != null && !$sponsorship->getRewardSent()) {
+                    $user_reward = new User_Reward($contractArtist->getSponsorshipReward(), $host_user);
+                    $user_reward->setRemainUse(0);
+                    $user_reward->setActive(false);
+                    $contractFan->addUserReward($user_reward);
+                    $this->em->persist($sponsorship);
+                    $sponsorship->setRewardSent(true);
+                    $this->notificationDispatcher->notifySponsorshipReward($sponsorship, $user_reward);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function checkAllSponsorship(ContractArtist $contractArtist)
+    {
+        $payments = $contractArtist->getPayments()->toArray();
+        foreach ($payments as $payment) {
+            $this->checkForRewardSponsorship($payment->getUser(), $contractArtist);
+        }
+        //$this->em->flush();
     }
 
     private function verifyEmails($emails)
@@ -82,14 +133,5 @@ class SponsorshipService
         return [$clearedEmails, $knownEmail];
     }
 
-    public function checkSponsorship(User $user)
-    {
-        var_dump($user);
-        $sponsorship = $this->em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipInvitationByMail($user->getEmail());
-        if ($sponsorship != null) {
-            $this->em->persist($sponsorship);
-            $sponsorship->setTargetInvitation($user);
-        }
-    }
 
 }

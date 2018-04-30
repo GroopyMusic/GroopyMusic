@@ -288,7 +288,7 @@ abstract class Reward implements TranslatableInterface
     {
         $this->contract_artists_sponsorships->removeElement($contractArtistsSponsorship);
         $contractArtistsSponsorship->setSponsorshipReward(null);
-        var_dump('lol');
+
     }
 
     /**

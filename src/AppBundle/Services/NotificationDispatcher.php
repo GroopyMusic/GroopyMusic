@@ -8,6 +8,7 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\PropositionContractArtist;
+use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Category;
@@ -30,6 +31,7 @@ class NotificationDispatcher
     const TICKET_SENT_TYPE = 'tickets_sent';
     const ONGOING_CART_TYPE = 'ongoing_cart';
     const REWARD_ATTRIBUTION_TYPE = 'reward_attribution';
+    const SPONSORSHIP_REWARD = 'sponsorship_reward';
 
     const ADMIN_NEW_CONTACT_FORM_TYPE = 'Admin/new_contact_form';
     const ADMIN_NEW_VIP_INSCRIPTION_FORM_TYPE = 'Admin/new_vip_inscription';
@@ -144,6 +146,15 @@ class NotificationDispatcher
             return $elem->getUser();
         }, $stats);
         $this->addNotifications($users, self::REWARD_ATTRIBUTION_TYPE, ['reward' => $reward]);
+    }
+
+    public function notifySponsorshipReward(SponsorshipInvitation $sponsorshipInvitation, User_Reward $user_reward)
+    {
+        $this->addNotification($sponsorshipInvitation->getHostInvitation(), self::SPONSORSHIP_REWARD, [
+            'reward_name' => $user_reward->getReward()->getName(),
+            'target_name' => $sponsorshipInvitation->getTargetInvitation()->getDisplayName(),
+            'event' => $sponsorshipInvitation->getContractArtist()->__toString(),
+        ]);
     }
 
     // --------------------

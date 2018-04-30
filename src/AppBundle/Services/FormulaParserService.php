@@ -43,9 +43,9 @@ class FormulaParserService
     public function setUserStatisticsVariables($statistic)
     {
         $this->evaluator->setVariables([
-            "p" => intval($statistic['pr']),
-            "m" => intval($statistic['me']),
-            "a" => 10
+            "p" => array_key_exists('pr', $statistic) ? intval($statistic['pr']) : '0',
+            "m" => array_key_exists('me', $statistic) ? intval($statistic['me']) : '0',
+            "a" => array_key_exists('amb', $statistic) ? intval($statistic['amb']) : '0'
             //TODO Ambasadorat querry + Transform in 1 Querry
         ]);
     }
@@ -61,8 +61,6 @@ class FormulaParserService
         $AST = $this->parser->parse($formula);
         return $AST->accept($this->evaluator);
     }
-
-
 
 
 }

@@ -331,24 +331,24 @@
                 {% if is_participant %}
                     <div class="col-12 content-box mt-4">
                         <div class="content-box-header">
-                            <h3>Invitez des amis</h3>
+                            <h3>{{ 'event.sponsorship.title'|trans|raw }}</h3>
                         </div>
                         <div class="content-box-content">
                             <table class="content-box-table">
                                 <tbody>
                                 <tr>
-                                    <td class="contract-info-title">Nombre d'invitation envoyées :</td>
+                                    <td class="contract-info-title">{{ 'event.sponsorship.total'|trans|raw }} :</td>
                                     <td>{{ nb_sponsorships }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="contract-info-title">Nombre d'invitation validées :</td>
+                                    <td class="contract-info-title">{{ 'event.sponsorship.total_validated'|trans|raw }} :</td>
                                     <td>{{ nb_validated_sponsorships }}</td>
                                 </tr>
                                 </tbody>
                             </table>
                             <div class="text-center">
                                 <button id="sponsorship-invitation-button" class="btn btn-primary btn"
-                                        onclick="displaySponsorshipInvitationModal()">Inviter
+                                        onclick="displaySponsorshipInvitationModal('{{ path('user_ajax_send_sponsorship_invitation',{'id' : contract.id}) }}')">{{ 'event.sponsorship.button_invit'|trans|raw }}
                                 </button>
                             </div>
                         </div>

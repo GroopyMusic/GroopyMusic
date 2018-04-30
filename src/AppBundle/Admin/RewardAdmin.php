@@ -153,7 +153,8 @@ class RewardAdmin extends BaseAdmin
                 'label' => 'Evénement lié au parrainage',
                 'class' => 'AppBundle\Entity\ContractArtist',
                 'required' => false,
-                'multiple'=> true
+                'multiple'=> true,
+                'by_reference' => false
             ))
             ->end();
         if ($subject instanceof InvitationReward) {

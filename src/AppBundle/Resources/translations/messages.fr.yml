@@ -351,6 +351,13 @@ event:
     unknown: Salles potentielles
   #new
   description: "Découvrez trois artistes émergents lors d'un Festival Un-Mute. Tête d'affiche : %host%"
+  #new
+  sponsorship:
+    title: Invitez des amis
+    total: Nombre d'invitations envoyées
+    total_validated: Nombre d'invitations validées
+    button_invit: Invitez
+
 
 #new
 conditions:
@@ -479,6 +486,11 @@ my_orders:
         totalprice: Prix total
         order: Commande
         tickets: Tickets
+        #new
+        sponsorship: Parrainage
+    #new
+    button:
+      sponsorship: Parrainer des amis
 
 notifs:
     title: Mes notifications
@@ -915,3 +927,12 @@ reward:
     value: Valeur
   reduction:
     reduction: réduction
+#new
+sponsorship_modal:
+  title: Invitez des amis à participer à l'événements
+  content: Invite tes amis à participer à l' événements et profitez de la récompense de parrainage
+  emails: Adresse(s) email
+  message: Message d'invitation
+  send_button: Envoyer les invitations
+  cancel_button: Annuler
+  email_placeholder: Entrez une adresse email

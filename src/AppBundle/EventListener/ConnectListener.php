@@ -71,13 +71,17 @@ class ConnectListener implements EventSubscriberInterface {
     // Registration with Facebook
     public function onSocialRegistrationSuccess(Event $event,\HWI\Bundle\OAuthBundle\Event\FormEvent $formEvent) {
         $this->addSessionMessage('notices.social.registration_success');
-        $this->sponsorshipService->checkSponsorship($formEvent->getForm()->getData());
+        if($this->sponsorshipService->checkForSponsorship($formEvent->getForm()->getData())){
+            $this->addSessionMessage('t tou bon isncription parrainage'); //TODO trad
+        }
     }
 
     // Registration with FOSUserBundle -> completed
     public function onRegistrationSuccess(FormEvent $event) {
         $event->getForm()->getData()->setPreferredLocale($this->translator->getLocale());
-        $this->sponsorshipService->checkSponsorship($event->getForm()->getData());
+        if($this->sponsorshipService->checkForSponsorship($event->getForm()->getData())){
+            $this->addSessionMessage('t tou bon isncription parrainage'); //TODO trad
+        }
     }
 
     // Registration with FOSUserBundle -> completed

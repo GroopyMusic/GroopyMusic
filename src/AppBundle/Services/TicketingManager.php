@@ -61,6 +61,9 @@ class TicketingManager
 
             $j = 1;
             $array_reward = $purchase->getTicketRewardText();
+            if ($array_reward == null) {
+                $array_reward = [];
+            }
             while ($j <= $purchase->getQuantityOrganic()) {
                 $this->logger->warning("purchase", [$purchase]);
                 $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice(), null, null, array_shift($array_reward)));

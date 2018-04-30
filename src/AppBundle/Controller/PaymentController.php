@@ -9,7 +9,9 @@ use AppBundle\Entity\Payment;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\RewardSpendingService;
+use AppBundle\Services\SponsorshipService;
 use AppBundle\Services\TicketingManager;
+use Psr\Log\LoggerInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -38,7 +40,7 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
-    public function cartAction(Request $request, UserInterface $user, RewardSpendingService $rewardSpendingService)
+    public function cartAction(Request $request, UserInterface $user, RewardSpendingService $rewardSpendingService, SponsorshipService $sponsorshipService, LoggerInterface $logger)
     {
         $kernel = $this->get('kernel');
 
@@ -128,12 +130,15 @@ class PaymentController extends Controller
                 $em->persist($payment);
 
                 $cart->setConfirmed(true)->setPaid(true);
-                //$rewardSpendingService->consumeReward($contract);
+                //reward
+                $rewardSpendingService->consumeReward($contract);
+                //sponsorship
+                $sponsorship = $sponsorshipService->checkForRewardSponsorship($user, $contract_artist);
                 $em->persist($cart);
 
                 $em->flush();
 
-                return $this->redirectToRoute('user_cart_payment_stripe_success', array('id' => $contract->getId()));
+                return $this->redirectToRoute('user_cart_payment_stripe_success', array('id' => $contract->getId(), 'sponsorship' => $sponsorship));
 
             } catch (\Stripe\Error\Card $e) {
                 $this->addFlash('error', 'errors.stripe.card');
@@ -169,10 +174,12 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment/success/{id}", name="user_cart_payment_stripe_success")
      */
-    public function cartSuccessAction(ContractFan $cf, TranslatorInterface $translator, PDFWriter $writer)
+    public function cartSuccessAction(Request $request,ContractFan $cf, TranslatorInterface $translator, PDFWriter $writer)
     {
         $this->addFlash('notice', $translator->trans('notices.payment', ['%artist%' => $cf->getContractArtist()->getArtist()->getArtistname()]));
-
+        if($request->get('sponsorship')){
+            $this->addFlash('notice','Yo tu as une notif par rapport au parrainage t tout bon'); //TODO trad
+        }
         $writer->writeOrder($cf);
 
         $em = $this->getDoctrine()->getManager();

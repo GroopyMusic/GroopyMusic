@@ -47,6 +47,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Count all users' statistics results for the category
+     * Mecenat + Productorat
      *
      * @return array
      */
@@ -67,6 +68,26 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   AND c.paid = TRUE
                   GROUP BY u.id
                   ')
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    public function countUserAmbassadoratStatistic(){
+        return $this->getEntityManager()->createQuery(
+            'SELECT u.id, COUNT(s.id) as amb
+                  FROM AppBundle:User u INDEX BY u.id
+                  LEFT JOIN u.sponsorships s
+                  LEFT JOIN s.target_invitation st
+                  LEFT JOIN s.contract_artist sca
+                  LEFT JOIN st.carts stc
+                  LEFT JOIN stc.contracts stco
+                  WHERE sca.successful = TRUE
+                  AND u.deleted = FALSE
+                  AND st.deleted = FALSE
+                  AND stco.refunded = FALSE
+                  AND stc.paid = TRUE 
+                  GROUP BY u.id
+                  ')
+            ->setFirstResult(0)
             ->getResult(Query::HYDRATE_ARRAY);
     }
 
