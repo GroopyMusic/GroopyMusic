@@ -88,10 +88,10 @@
         </table>
         <br>
         <div>
-            {% if ticket.rewardText != null and ticket.rewardText is not empty %}
+            {% if ticket.rewards is not empty %}
                 <div>{{ 'tickets_pdf.rewards'|trans()|raw }} :</div>
-                {% for reward in ticket.rewardText %}
-                <div>{{ reward }}</div>
+                {% for reward in ticket.rewards %}
+                <div>{{ reward.userReward.displayPracticalInformation }}</div>
                 {% endfor %}
             {% endif %}
         </div>

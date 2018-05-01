@@ -35,6 +35,7 @@ class User_Reward
         $this->base_steps = new ArrayCollection();
         $this->counter_parts = new ArrayCollection();
         $this->contractFans = new ArrayCollection();
+        $this->tickets = new ArrayCollection();
     }
 
     public function __toString()
@@ -132,7 +133,7 @@ class User_Reward
     private $contractFans;
 
     /**
-     * @ORM\ManyToOne(targetEntity="RewardTicketConsumption", mappedBy="user_reward", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="user_reward", cascade={"all"}, orphanRemoval=true)
      */
     private $tickets;
 
@@ -483,5 +484,39 @@ class User_Reward
     public function getContractFans()
     {
         return $this->contractFans;
+    }
+
+    /**
+     * Add ticket
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticket
+     *
+     * @return User_Reward
+     */
+    public function addTicket(\AppBundle\Entity\RewardTicketConsumption $ticket)
+    {
+        $this->tickets[] = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * Remove ticket
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticket
+     */
+    public function removeTicket(\AppBundle\Entity\RewardTicketConsumption $ticket)
+    {
+        $this->tickets->removeElement($ticket);
+    }
+
+    /**
+     * Get tickets
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
     }
 }

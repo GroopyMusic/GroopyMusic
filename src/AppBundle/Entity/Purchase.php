@@ -27,6 +27,7 @@ class Purchase
         $this->nb_reduced_counterparts = 0;
         $this->reducedPrice = 0;
         $this->purchase_promotions = new ArrayCollection();
+        $this->ticket_rewards = new ArrayCollection();
     }
 
     public function getPromotions()
@@ -164,6 +165,11 @@ class Purchase
      * @ORM\Column(name="nb_reduced_counterparts", type="smallint")
      */
     private $nb_reduced_counterparts;
+
+    /**
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="purchase")
+     */
+    private $ticket_rewards;
 
     /**
      * Get id
@@ -344,5 +350,40 @@ class Purchase
     public function getNbReducedCounterparts()
     {
         return $this->nb_reduced_counterparts;
+    }
+
+    /**
+     * Add ticketReward
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticketReward
+     *
+     * @return Purchase
+     */
+    public function addTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
+    {
+        $this->ticket_rewards[] = $ticketReward;
+        $ticketReward->setPurchase($this);
+        return $this;
+    }
+
+    /**
+     * Remove ticketReward
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticketReward
+     */
+    public function removeTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
+    {
+        $this->ticket_rewards->removeElement($ticketReward);
+        $ticketReward->setPurchase(null);
+    }
+
+    /**
+     * Get ticketRewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTicketRewards()
+    {
+        return $this->ticket_rewards;
     }
 }

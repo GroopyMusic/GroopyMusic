@@ -27,14 +27,16 @@ class TicketingManager
     private $notificationDispatcher;
     private $logger;
     private $em;
+    private $rewardSpendingService;
 
-    public function __construct(PDFWriter $writer, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, LoggerInterface $logger, EntityManagerInterface $em)
+    public function __construct(PDFWriter $writer, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, LoggerInterface $logger, EntityManagerInterface $em, RewardSpendingService $rewardSpendingService)
     {
         $this->writer = $writer;
         $this->mailDispatcher = $mailDispatcher;
         $this->notificationDispatcher = $notificationDispatcher;
         $this->logger = $logger;
         $this->em = $em;
+        $this->rewardSpendingService = $rewardSpendingService;
     }
 
     /**
@@ -60,20 +62,16 @@ class TicketingManager
             $counterPart = $purchase->getCounterpart();
 
             $j = 1;
-            $array_reward = $purchase->getTicketRewardText();
-            if ($array_reward == null) {
-                $array_reward = [];
-            }
             while ($j <= $purchase->getQuantityOrganic()) {
-                $this->logger->warning("purchase", [$purchase]);
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice(), null, null, array_shift($array_reward)));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice(), null, null));
                 $j++;
             }
             for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0, null, null, array_shift($array_reward)));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0, null, null));
                 $i++;
             }
         }
+        $this->rewardSpendingService->giveRewardToTicket($contractFan);
         //}
     }
 

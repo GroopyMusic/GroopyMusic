@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,6 +25,7 @@ class Ticket
         $this->counterPart = $counterPart;
         $this->price = $price;
         $this->validated = false;
+        $this->rewards = new ArrayCollection();
 
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
@@ -121,7 +123,7 @@ class Ticket
     private $contractArtist;
 
     /**
-     * @ORM\ManyToOne(targetEntity="RewardTicketConsumption", mappedBy="ticket", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="ticket", cascade={"all"}, orphanRemoval=true)
      */
     private $rewards;
 
@@ -301,5 +303,40 @@ class Ticket
     public function getContractArtist()
     {
         return $this->contractArtist;
+    }
+
+    /**
+     * Add reward
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $reward
+     *
+     * @return Ticket
+     */
+    public function addReward(\AppBundle\Entity\RewardTicketConsumption $reward)
+    {
+        $this->rewards[] = $reward;
+        $reward->setTicket($this);
+        return $this;
+    }
+
+    /**
+     * Remove reward
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $reward
+     */
+    public function removeReward(\AppBundle\Entity\RewardTicketConsumption $reward)
+    {
+        $this->rewards->removeElement($reward);
+        $reward->setTicket(null);
+    }
+
+    /**
+     * Get rewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRewards()
+    {
+        return $this->rewards;
     }
 }
