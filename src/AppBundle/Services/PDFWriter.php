@@ -27,15 +27,13 @@ class PDFWriter
     private $router;
     private $packages;
     private $logger;
-    private $em;
 
-    public function __construct(Environment $twig, RouterInterface $router, Packages $packages, LoggerInterface $logger, EntityManagerInterface $em)
+    public function __construct(Environment $twig, RouterInterface $router, Packages $packages, LoggerInterface $logger)
     {
         $this->twig = $twig;
         $this->router = $router;
         $this->packages = $packages;
         $this->logger = $logger;
-        $this->em = $em;
     }
 
     public function write($template, $path, $params = [], $dest = 'F') {
@@ -61,19 +59,18 @@ class PDFWriter
         $this->write(self::ORDER_TEMPLATE, $cf->getPdfPath(), ['cf' => $cf, 'user_rewards' => $cf->getUserRewards()]);
     }
 
-    public function writeTickets($path, $tickets) {
-        // We know all tickets are for same event
+    public function writeTickets($path, $tickets, $agenda = []) {
         if(!empty($tickets)) {
-            $event = $tickets[0]->getContractArtist();
-            $agenda = $this->em->getRepository('AppBundle:ContractArtist')->findVisibleExcept($event, TicketingManager::MAXIMUM_UPCOMING_EVENTS_ON_TICKET);
+            // We know all tickets are for same event
             $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
         }
     }
 
-    public function writeTicketPreview(ContractFan $cf) {
+    public function writeTicketPreview(ContractFan $cf, $agenda = []) {
         $tickets = $cf->getTickets();
-        $event = $tickets[0]->getContractArtist();
-        $agenda = $this->em->getRepository('AppBundle:ContractArtist')->findVisibleExcept($event, TicketingManager::MAXIMUM_UPCOMING_EVENTS_ON_TICKET);
-        $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda], 'D');
+
+        if(!empty($tickets)) {
+            $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda], 'D');
+        }
     }
 }
