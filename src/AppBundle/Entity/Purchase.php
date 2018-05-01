@@ -166,11 +166,6 @@ class Purchase
     private $nb_reduced_counterparts;
 
     /**
-     * @ORM\Column(name="reward_type_parameters", type="array", nullable=true)
-     */
-    private $ticket_reward_text;
-
-    /**
      * Get id
      *
      * @return int
@@ -349,29 +344,5 @@ class Purchase
     public function getNbReducedCounterparts()
     {
         return $this->nb_reduced_counterparts;
-    }
-
-    /**
-     * Set ticketRewardText
-     *
-     * @param array $ticketRewardText
-     *
-     * @return Purchase
-     */
-    public function setTicketRewardText($ticketRewardText)
-    {
-        $this->ticket_reward_text = $ticketRewardText;
-
-        return $this;
-    }
-
-    /**
-     * Get ticketRewardText
-     *
-     * @return array
-     */
-    public function getTicketRewardText()
-    {
-        return $this->ticket_reward_text;
     }
 }

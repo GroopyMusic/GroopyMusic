@@ -261,6 +261,11 @@ class ContractFan
     private $amount;
 
     /**
+     * @ORM\ManyToOne(targetEntity="RewardTicketConsumption", inversedBy="contractFan")
+     */
+    private $ticket_rewards;
+
+    /**
      * Get id
      *
      * @return int

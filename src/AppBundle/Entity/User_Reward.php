@@ -132,6 +132,11 @@ class User_Reward
     private $contractFans;
 
     /**
+     * @ORM\ManyToOne(targetEntity="RewardTicketConsumption", mappedBy="user_reward", cascade={"all"}, orphanRemoval=true)
+     */
+    private $tickets;
+
+    /**
      * Get id
      *
      * @return integer
