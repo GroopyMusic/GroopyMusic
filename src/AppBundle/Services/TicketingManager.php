@@ -63,11 +63,11 @@ class TicketingManager
 
             $j = 1;
             while ($j <= $purchase->getQuantityOrganic()) {
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice(), null, null));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice()));
                 $j++;
             }
             for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0, null, null));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0));
                 $i++;
             }
         }
@@ -83,7 +83,7 @@ class TicketingManager
         $price = $counterPart == null ? 0 : $counterPart->getPrice();
 
         for ($i = 1; $i <= $nb; $i++) {
-            $ticket = new Ticket($cf = null, $counterPart, $i, $price, $physicalPerson, $contractArtist, []);
+            $ticket = new Ticket($cf = null, $counterPart, $i, $price, $physicalPerson, $contractArtist);
             $this->em->persist($ticket);
             $tickets[] = $ticket;
         }
@@ -125,8 +125,8 @@ class TicketingManager
         $cf->generateBarCode();
         $counterpart = new CounterPart();
         $counterpart->setPrice(12);
-        $cf->addTicket(new Ticket($cf, $counterpart, 1, 12, null, null, []));
-        $cf->addTicket(new Ticket($cf, $counterpart, 2, 0, null, null, []));
+        $cf->addTicket(new Ticket($cf, $counterpart, 1, 12));
+        $cf->addTicket(new Ticket($cf, $counterpart, 2, 0));
 
         $this->writer->writeTicketPreview($cf);
     }
@@ -248,7 +248,7 @@ class TicketingManager
             'Event' => $ticket->getContractArtist()->__toString(),
             'validated' => $ticket->getValidated(),
             'refunded' => $ticket->isRefunded(),
-            'user_rewards' => $ticket->getContractFan()->getUserRewards()
+            'rewards' => $ticket->getRewards()
         ];
 
         if ($ticket->getCounterPart() != null) {

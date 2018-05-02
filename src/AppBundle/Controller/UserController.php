@@ -608,8 +608,8 @@ class UserController extends Controller
                 'warning_message' => "Les emails suivant sont déja inscrit sur la plateforme, ils n'ont donc pas pu être invité"),
                 200);
         } catch (\Throwable $th) {
-            //return new Response("Une erreur est survenue avec le système", 500);
-            return new Response($th->getMessage(), 500);
+            return new Response("Une erreur est survenue avec le système", 500);
+            //return new Response($th->getMessage(), 500);
         }
     }
 }

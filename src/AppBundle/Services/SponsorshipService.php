@@ -11,6 +11,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\RewardTicketConsumption;
 use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Reward;
@@ -85,9 +86,14 @@ class SponsorshipService
                 $contractFan = $this->em->getRepository('AppBundle:ContractFan')->findSponsorshipContractFanToReward($host_user, $contractArtist);
                 if ($contractFan != null && !$sponsorship->getRewardSent()) {
                     $user_reward = new User_Reward($contractArtist->getSponsorshipReward(), $host_user);
+                    $ticket_reward = new RewardTicketConsumption($user_reward, null, false, false);
                     $user_reward->setRemainUse(0);
                     $user_reward->setActive(false);
                     $contractFan->addUserReward($user_reward);
+                    $contractFan->addTicketReward($ticket_reward);
+                    if ($contractFan->getContractArtist()->getTicketsSent() == true) {
+                        $contractFan->getTickets()->first()->addReward($ticket_reward);
+                    }
                     $this->em->persist($sponsorship);
                     $sponsorship->setRewardSent(true);
                     $this->notificationDispatcher->notifySponsorshipReward($sponsorship, $user_reward);

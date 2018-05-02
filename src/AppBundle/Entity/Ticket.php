@@ -314,8 +314,11 @@ class Ticket
      */
     public function addReward(\AppBundle\Entity\RewardTicketConsumption $reward)
     {
-        $this->rewards[] = $reward;
-        $reward->setTicket($this);
+        if (!$this->rewards->contains($reward)) {
+            $this->rewards[] = $reward;
+            $reward->setTicket($this);
+        }
+
         return $this;
     }
 
@@ -326,8 +329,10 @@ class Ticket
      */
     public function removeReward(\AppBundle\Entity\RewardTicketConsumption $reward)
     {
-        $this->rewards->removeElement($reward);
-        $reward->setTicket(null);
+        if ($this->rewards->contains($reward)) {
+            $this->rewards->removeElement($reward);
+            $reward->setTicket(null);
+        }
     }
 
     /**

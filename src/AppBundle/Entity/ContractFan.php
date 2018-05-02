@@ -262,7 +262,7 @@ class ContractFan
     private $amount;
 
     /**
-     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="contractFan")
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="contractFan",cascade={"all"})
      */
     private $ticket_rewards;
 
@@ -579,8 +579,10 @@ class ContractFan
      */
     public function addTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
     {
-        $this->ticket_rewards[] = $ticketReward;
-        $ticketReward->setContractFan($this);
+        if (!$this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards[] = $ticketReward;
+            $ticketReward->setContractFan($this);
+        }
         return $this;
     }
 
@@ -591,8 +593,10 @@ class ContractFan
      */
     public function removeTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
     {
-        $this->ticket_rewards->removeElement($ticketReward);
-        $ticketReward->setContractFan(null);
+        if ($this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards->removeElement($ticketReward);
+            $ticketReward->setContractFan(null);
+        }
     }
 
     /**

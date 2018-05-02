@@ -167,7 +167,7 @@ class Purchase
     private $nb_reduced_counterparts;
 
     /**
-     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="purchase")
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="purchase", cascade={"all"})
      */
     private $ticket_rewards;
 
@@ -361,8 +361,10 @@ class Purchase
      */
     public function addTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
     {
-        $this->ticket_rewards[] = $ticketReward;
-        $ticketReward->setPurchase($this);
+        if (!$this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards[] = $ticketReward;
+            $ticketReward->setPurchase($this);
+        }
         return $this;
     }
 
@@ -373,8 +375,10 @@ class Purchase
      */
     public function removeTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
     {
-        $this->ticket_rewards->removeElement($ticketReward);
-        $ticketReward->setPurchase(null);
+        if ($this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards->removeElement($ticketReward);
+            $ticketReward->setPurchase(null);
+        }
     }
 
     /**

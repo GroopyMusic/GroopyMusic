@@ -16,6 +16,7 @@ use AppBundle\Entity\Purchase;
 use AppBundle\Entity\ReductionReward;
 use AppBundle\Entity\RewardTicketConsumption;
 use AppBundle\Entity\User_Reward;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -249,7 +250,7 @@ class RewardSpendingService
         foreach ($purchases as $purchase) {
             $i = 1;
             if ($user_reward instanceof ReductionReward) {
-                while ($i <= $purchase->getNbReducedCounterparts() && $nbTimeGiveOut < $purchase->getNbReducedCounterparts()) {
+                while ($i <= $purchase->getNbReducedCounterparts()) {
                     $rewardTicketConsumption = new RewardTicketConsumption($user_reward, null, false, true);
                     $this->em->persist($rewardTicketConsumption);
                     $contractFan->addTicketReward($rewardTicketConsumption);
@@ -258,7 +259,7 @@ class RewardSpendingService
                     $nbTimeGiveOut = $nbTimeGiveOut + 1;
                 }
             } else {
-                while ($i <= $purchase->getQuantity() && $i <= $user_reward->getRemainUse() && $nbTimeGiveOut < $purchase->getQuantity() && $nbTimeGiveOut < $user_reward->getRemainUse()) {
+                while ($i <= $purchase->getQuantity() && $nbTimeGiveOut < $user_reward->getRemainUse()) {
                     $rewardTicketConsumption = new RewardTicketConsumption($user_reward, null, false, true);
                     $this->em->persist($rewardTicketConsumption);
                     $contractFan->addTicketReward($rewardTicketConsumption);
@@ -272,19 +273,51 @@ class RewardSpendingService
 
     public function giveRewardToTicket(ContractFan $cf)
     {
-        $ticketIterator = null;
-        foreach($cf->getUserRewards()->toArray() as $user_reward){
-            $ticketIterator = $cf->getTickets();
-            $ticketIterator->first();
-            foreach($cf->getTicketRewards()->toArray() as $ticketReward){
-                if($user_reward->getId() == $ticketReward->getUserReward()->getId()){
-                    $ticket = $ticketIterator->current();
-                    if($ticket->getCounterPart()->getId() == $ticketReward->getPurchase()->getCounterPart()->getId()){
-                        $ticket->addReward($ticketReward);
+        $this->em->persist($cf);
+        foreach ($cf->getUserRewards()->toArray() as $user_reward) {
+            $tickets = $cf->getTickets()->toArray();
+            $this->logger->warning("check", [$tickets]);
+            foreach ($cf->getTicketRewards()->toArray() as $ticketReward)
+                if ($user_reward->getId() == $ticketReward->getUserReward()->getId()) {
+                    $result = $this->findCorrespondingTicket($tickets, $ticketReward);
+                    $tickets = $result[0];
+                    if ($result[1] != null) {
+                        $this->em->persist($result[1]->addReward($ticketReward));
                     }
-                    $ticketIterator->next();
+                }
+        }
+    }
+
+    private function findCorrespondingTicket($tickets, $ticketReward)
+    {
+        $ticketToReturn = null;
+        $arrayToReturn = [];
+        $isGiven = false;
+        foreach ($tickets as $ticket) {
+            if ($isGiven == false && $ticket->getCounterPart()->getId() == $ticketReward->getPurchase()->getCounterPart()->getId()) {
+                $ticketToReturn = $ticket;
+                $isGiven = true;
+            } else {
+                array_push($arrayToReturn, $ticket);
+            }
+        }
+        return [$arrayToReturn, $ticketToReturn];
+    }
+
+    public function refundReward(ContractFan $contractFan)
+    {
+        $this->em->persist($contractFan);
+        foreach ($contractFan->getTicketRewards()->toArray() as $ticketReward) {
+            if ($ticketReward->getRefundable() == true) {
+                $ticketReward->setRefunded(true);
+                $user_reward = $ticketReward->getUserReward();
+                $user_reward->setRemainUse($user_reward->getRemainUse() + 1);
+                if ($user_reward->getActive() == false) {
+                    $user_reward->setActive(true);
                 }
             }
         }
     }
+
+
 }

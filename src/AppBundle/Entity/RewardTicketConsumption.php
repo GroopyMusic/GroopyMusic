@@ -30,8 +30,9 @@ class RewardTicketConsumption
      */
     public function __construct(User_Reward $user_reward, $ticket, $refunded, $refundable)
     {
-        $this->user_reward = $user_reward;
-        $this->ticket = $ticket;
+        if ($ticket != null) {
+            $ticket->addReward($this);
+        }
         $this->refunded = $refunded;
         $this->refundable = $refundable;
         $user_reward->addTicket($this);

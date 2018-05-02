@@ -50,7 +50,7 @@ class User_Reward
         } else if ($this->reward instanceof InvitationReward) {
             return $this->getReward()->getName();
         } else if ($this->reward instanceof ConsomableReward) {
-            return $this->getReward()->getName() . ': ' . $this->reward_type_parameters['quantity'] . ' x ' . $this->reward_type_parameters['type_consomable'] . '(' . $this->reward_type_parameters['value'] . ')';
+            return $this->getReward()->getName() . ': ' . $this->reward_type_parameters['quantity'] . ' x ' . $this->reward_type_parameters['type_consomable'] . '(' . $this->reward_type_parameters['value'] . '€)';
         }
 
     }
@@ -495,8 +495,10 @@ class User_Reward
      */
     public function addTicket(\AppBundle\Entity\RewardTicketConsumption $ticket)
     {
-        $this->tickets[] = $ticket;
-
+        if (!$this->tickets->contains($ticket)) {
+            $this->tickets[] = $ticket;
+            $ticket->setUserReward($this);
+        }
         return $this;
     }
 
@@ -507,7 +509,10 @@ class User_Reward
      */
     public function removeTicket(\AppBundle\Entity\RewardTicketConsumption $ticket)
     {
-        $this->tickets->removeElement($ticket);
+        if ($this->tickets->contains($ticket)) {
+            $ticket->setUserReward(null);
+            $this->tickets->removeElement($ticket);
+        }
     }
 
     /**
