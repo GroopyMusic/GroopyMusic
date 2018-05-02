@@ -691,23 +691,29 @@ class PublicController extends Controller
     /**
      * @Route("/sponsorship-link-token-{token}", name="sponsorship_link")
      */
-    public function sponsorshipLinkAction(Request $request, LoggerInterface $logger)
+    public function sponsorshipLinkAction(Request $request, UserInterface $current_user = null, LoggerInterface $logger, TranslatorInterface $translator)
     {
         try {
+            if ($current_user != null) {
+                $this->get('security.token_storage')->setToken(null);
+                $session = $request->getSession();
+                $session->invalidate();
+            }
             $em = $this->getDoctrine()->getManager();
             $token = substr_replace($request->get('token'), "", -1);
             $sponsorship = $em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipInvitationByToken($token);
             if ($sponsorship == null) {
-                $this->addFlash('error', 'Notice de parrainage erreur');
+                $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
                 return $this->redirectToRoute('homepage');
             } else {
                 $em->persist($sponsorship);
                 $sponsorship->setLastDateAcceptation(new \DateTime());
-                $this->addFlash('notice', 'Notice de parrainage');
+                $this->addFlash('notice', $translator->trans('notices.sponsorship.link.success', []));
                 return $this->redirectToRoute('artist_contract', array("id" => $sponsorship->getContractArtist()->getId()));
             }
         } catch (\Throwable $th) {
-            $this->addFlash('error', 'Notice de parrainage erreur');
+            $logger->warning('lol', [$th->getMessage()]);
+            $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
             return $this->redirectToRoute('homepage');
         }
     }

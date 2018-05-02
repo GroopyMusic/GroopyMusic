@@ -718,6 +718,22 @@ notices:
   proposition: Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.
   #new
   registration: Votre inscription a bien été enregistrée. Vous pouvez désormais passer au paiement. Notez que vous avez reçu un e-mail contenant un lien d'activation de votre compte. Il vous faudra cliquer sur ce lien pour pouvoir vous connecter ultérieurement à la plateforme.
+  #new
+  sponsorship:
+    cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
+    send_sponsorship:
+      not_connected: Vous n'êtes pas connecté !
+      event_not_valid: Evénement non valide !
+      success: Envoie réussi.
+      warning_message: Les adresses emails suivantes sont déjà isncrites sur la plateforme, elles n'ont donc pas pu être invitée.
+      error: Une erreur est survenue avec le système.
+    link:
+      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contacter un administrateur de la plateforme.
+      success: Félicitations ! Vous avez émis le souhait de vous faire parrainer en cliquant sur le lien de parrainage. Inscrivez-vous à la plateforme pour confirmer le parrainage.
+    inscription:
+      success: Félicitations, vous êtes sur le point de confirmer le parrainage, vous n'avez plus qu'à confirmer votre adresse email.
+
+
 
 errors:
   change_email_token_expired: Ce jeton est expiré.

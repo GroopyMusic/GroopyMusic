@@ -72,7 +72,7 @@ class ConnectListener implements EventSubscriberInterface {
     public function onSocialRegistrationSuccess(Event $event,\HWI\Bundle\OAuthBundle\Event\FormEvent $formEvent) {
         $this->addSessionMessage('notices.social.registration_success');
         if($this->sponsorshipService->checkForSponsorship($formEvent->getForm()->getData())){
-            $this->addSessionMessage('t tou bon isncription parrainage'); //TODO trad
+            $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.success',[]));
         }
     }
 
@@ -80,7 +80,7 @@ class ConnectListener implements EventSubscriberInterface {
     public function onRegistrationSuccess(FormEvent $event) {
         $event->getForm()->getData()->setPreferredLocale($this->translator->getLocale());
         if($this->sponsorshipService->checkForSponsorship($event->getForm()->getData())){
-            $this->addSessionMessage('t tou bon isncription parrainage'); //TODO trad
+            $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.success',[]));
         }
     }
 

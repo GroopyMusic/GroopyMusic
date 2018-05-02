@@ -174,11 +174,11 @@ class PaymentController extends Controller
     /**
      * @Route("/cart/payment/success/{id}", name="user_cart_payment_stripe_success")
      */
-    public function cartSuccessAction(Request $request,ContractFan $cf, TranslatorInterface $translator, PDFWriter $writer)
+    public function cartSuccessAction(Request $request, ContractFan $cf, TranslatorInterface $translator, PDFWriter $writer)
     {
         $this->addFlash('notice', $translator->trans('notices.payment', ['%artist%' => $cf->getContractArtist()->getArtist()->getArtistname()]));
-        if($request->get('sponsorship')){
-            $this->addFlash('notice','Yo tu as une notif par rapport au parrainage t tout bon'); //TODO trad
+        if ($request->get('sponsorship')) {
+            $this->addFlash('notice', $translator->trans('notices.sponsorship.cart_success', [])); //TODO trad
         }
         $writer->writeOrder($cf);
 

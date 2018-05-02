@@ -81,13 +81,17 @@ class MailAdminService
         $arrayRecipients = $this->addAdminToRecipients($this->constructArrayRecipients($recipients));
         $simpleEmails = $this->getSimpleEmails($recipients);
         $emails = [];
-        foreach ($recipients as $recipient) {
-            $arrayRecipients[$recipient->getEmail()] = $recipient->getPreferredLocale();
+        foreach ($arrayRecipients as $recipient) {
+            if (!array_key_exists($recipient->getEmail(), $emails)) {
+                $emails[$recipient->getEmail()] = $recipient->getPreferredLocale();
+            }
         }
         foreach ($simpleEmails as $email) {
-            $emails[$email] = $this->translator->getLocale();
+            if (!array_key_exists($email, $emails)) {
+                $emails[$email] = $this->translator->getLocale();
+            }
         }
-        $emails = array_unique(array_merge($emails, $simpleEmails));
+        $this->logger->warning('test', [$emails]);
         $this->mailDispatcher->sendEmailFromAdmin($emails, $object, $content);
     }
 
