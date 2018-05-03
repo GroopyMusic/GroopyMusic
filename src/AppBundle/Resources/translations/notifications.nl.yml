@@ -12,7 +12,7 @@ failed_contract_artist:
 failed_contract_fan:
   title: Un-Mute Festival met %artist% - Uitslag
   content: |
-   Beste producer,
+    Beste producer,
 
     De artiest %artist% die je hebt besloten te ondersteunen, kon niet genoeg geld ophalen om de organisatie van zijn <a href="%event_url%">%step%</a> mogelijk te maken.
     Er is geen georganiseerd festival en je krijgt de volledige prijs van de gekochte tickets terugbetaald.
@@ -29,14 +29,14 @@ successful_contract_artist:
   title: Je festival wordt georganiseerd!
   content: |
     Gefeliciteerd, je bent erin geslaagd om ondersteuning te krijgen van genoeg producenten om <a href="%event_url%">je %step%</a>-organisatie in te schakelen.
-     Je festival vindt plaats op %date% in de zaal <a href="%hall_url%">%hall_name%</a>.
+    Je festival vindt plaats op %date% in de zaal <a href="%hall_url%">%hall_name%</a>.
 
     L'équipe Un-Mute se charge de trouver les premières parties invitées à votre festival. De plus, vous aurez en principe la chance de jouer comme première partie d'autres artistes de la plateforme qui, comme vous, parviennent à remplir une salle.
     Vous recevrez des e-mails pour vous avertir de tout cela en temps voulu.
 
     Met vriendelijke groeten,
 
-   Un-Mute team
+    Un-Mute team
 
 successful_contract_fan:
   title: Uw steun heeft geholpen !
@@ -48,7 +48,7 @@ successful_contract_fan:
 
     Met vriendelijke groeten,
 
-   Un-Mute team
+    Un-Mute team
 
 ongoing_cart:
   title: Uw basket

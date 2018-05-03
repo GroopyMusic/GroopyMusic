@@ -34,9 +34,9 @@ registration:
       U bent verbonden met uw Un-Mute-account. Heb je de volgende pagina's gezien?
       <div class="list-group">
         <a class="list-group-item list-group-item-action" href="%eventsUrl%">Onze aankomende festivals</a>
-        <a class="list-group-item list-group-item-action" href=« %artistsUrl%">Onze artiesten</a>
-        <a class="list-group-item list-group-item-action" href=« %hallsUrl% »>Onze partnerzalen</a>
-        <a class="list-group-item list-group-item-action" href=« %profileUrl%">Je account</a>
+        <a class="list-group-item list-group-item-action" href="%artistsUrl%">Onze artiesten</a>
+        <a class="list-group-item list-group-item-action" href="%hallsUrl%">Onze partnerzalen</a>
+        <a class="list-group-item list-group-item-action" href="%profileUrl%">Je account</a>
       </div>
     back: Terug tot homepage
     logout: Ik wil me afmelden
@@ -56,9 +56,9 @@ resetting:
   check_email: |
     Er is een e-mail verzonden. Het bevat een link die u moet aanklikken om uw wachtwoord opnieuw in te stellen.
 
-    Remarque : U kunt alleen om de %tokenLifetime% uur een nieuw wachtwoord aanvragen.
+    U kunt alleen om de %tokenLifetime% uur een nieuw wachtwoord aanvragen.
 
-   Als u geen e-mail ontvangt, controleer dan uw spam-map of probeer het opnieuw.
+    Als u geen e-mail ontvangt, controleer dan uw spam-map of probeer het opnieuw.
   email:
     subject: Uw wachtwoord opnieuw instellen.
     message: |

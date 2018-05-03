@@ -47,7 +47,7 @@ concert:
       Weet dat er nog maar %places% plaatsen over zijn te verkopen zodat jouw %step% van de %date% kan geproduceerd worden!
       Vanaf vandaag heb je nog %days% dagen om je fans opnieuw motiveren via je communicatiekanalen.
 
-     Van onze kant zijn we van plan om jouw evenement de komende dagen met onze eigen middelen te promoten.
+      Van onze kant zijn we van plan om jouw evenement de komende dagen met onze eigen middelen te promoten.
     details: |
         Beste artiest,
 
@@ -69,8 +69,8 @@ concert:
         Als je vragen heeft, aarzel dan niet om ons te contacteren via het e-mail adres pierre@un-mute.be
 
         We kijken er naar uit je binnenkort op het podium te zien!
-
-fan:
+        
+  fan:
     confirmation: |
       Gefeliciteerd !
 

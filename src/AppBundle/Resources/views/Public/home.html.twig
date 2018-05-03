@@ -98,7 +98,7 @@
 
                                 {% endif %}
                                 <h4 class="mt-3">{{ 'home.spotlights.tickets.title'|trans }}</h4>
-                                {% set spotlight_url = path('artist_contract', {'id': spotlight.id}) %}
+                                {% set spotlight_url = path('artist_contract', {'id': spotlight.id, 'slug': spotlight.artist.slug}) %}
                                 {% if not spotlight.isSoldOut %}
                                     <span class="badge badge-success">{{ 'home.spotlights.tickets.selling'|trans }}</span> <a href="{{ spotlight_url }}" class="btn small btn-outline-primary p-2">Acheter</a>
                                 {% else %}

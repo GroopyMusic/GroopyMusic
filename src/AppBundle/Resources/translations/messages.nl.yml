@@ -113,7 +113,8 @@ home:
   join_us:
     title: Lid worden
     content_1: <strong>Wilt u <a href="%about_url%"> producent </a> worden en een artiest ondersteunen? </strong> Ontdek <a href="%catalog_url%"> de catalogus van de artiesten </a>.
-    content_2: <strong> Ben je een <a href="%about_url%">artiest</a> die geïnteresseerd is in het concept?</strong> Word gratis lid van het <a href="%register_url%"> un-mute netwerk</a>.    content_3: <strong>Wil je een zaal voorstellen aan onze artiesten?</strong> <a href="%contact_url%">Neem contact op met het Un-Mute-team</a>.
+    content_2: <strong> Ben je een <a href="%about_url%">artiest</a> die geïnteresseerd is in het concept?</strong> Word gratis lid van het <a href="%register_url%"> un-mute netwerk</a>.
+    content_3: <strong>Wil je een zaal voorstellen aan onze artiesten?</strong> <a href="%contact_url%">Neem contact op met het Un-Mute-team</a>.
     more_info: Meer infos
     login_link: Lid van Un-Mute worden
   #new
@@ -218,11 +219,11 @@ team:
   title: Het team
   members:
     pierre: <span class='um-label um-semi-bold'>Pierre</span>, Pierre, die het project startte, werkt al meer dan 10 jaar in muziek. Nadat hij deel uitmaakte van vele groepen, kreeg hij de gelegenheid om de verschillende fasen te ervaren die een groep moet passeren om op het Belgische scene te worden gezien. Met zijn frustraties stelt hij een innovatieve visie voor het boeken van belgische artiesten.
-gonzague: Overtuigd door het idee, <span class='um-label um-semi-bold'>Gonzague</span>, een jonge webmaster met een diploma in informatica, gaat rechtstreeks akkoord met deelname aan het project. De coördinatie van de ontwikkeling van een webplatform van deze omvang is een uitdaging zeer motiverend, in overeenstemming met zijn verlangen om deel te nemen aan de start van een start-up aan het einde van zijn studie.
+    gonzague: Overtuigd door het idee, <span class='um-label um-semi-bold'>Gonzague</span>, een jonge webmaster met een diploma in informatica, gaat rechtstreeks akkoord met deelname aan het project. De coördinatie van de ontwikkeling van een webplatform van deze omvang is een uitdaging zeer motiverend, in overeenstemming met zijn verlangen om deel te nemen aan de start van een start-up aan het einde van zijn studie.
     louis: Gevraagd om het wettelijke kader van het project te verzekeren, reageerde <span class='um-label um-semi-bold'>Louis</span> snel positief op deze uitnodiging. De mogelijkheid om de theoretische kennis die hij tijdens zijn vijfjarige juridische opleiding heeft opgedaan ten dienste van een project te leggen, ondersteund door waarden die hem dierbaar waren, overtuigde hem uiteindelijk volledig te investeren in Un-Mute.
-alice: "Wat communicatie betreft, vult <span class='um-label um-semi-bold'> Alice</span>  het team aan met haar 6 jaar professionele ervaring in het MKB en vervolgens in een niet-commerciële instelling. Afgestudeerd van IHECS en KUL in culturele studies, was Un-Mute een geweldige kans om aan haar boog een activiteitensector toe te voegen die haar altijd al heeft gefascineerd: evenementen en culturele communicatie!
+    alice: "Wat communicatie betreft, vult <span class='um-label um-semi-bold'> Alice</span>  het team aan met haar 6 jaar professionele ervaring in het MKB en vervolgens in een niet-commerciële instelling. Afgestudeerd van IHECS en KUL in culturele studies, was Un-Mute een geweldige kans om aan haar boog een activiteitensector toe te voegen die haar altijd al heeft gefascineerd: evenementen en culturele communicatie!"
     #new
-    alexis: " <span class='um-label um-semi-bold'>Alexis</span>, gepassioneerd over muziek, werd snel overwonnen door het idee van het project. Met ervaring in evenementen en actief in een digitaal bureau voor meer dan 3 jaar, is Alexis van plan om zijn ervaring in digitale communicatie en projectcoördinatie ter ondersteuning van de groei van de VZW beschikbaar te stellen. Het project biedt eigenlijk een reëel potentieel om twee ambities samen te brengen: muziek en ondernemerschap, binnen een gemotiveerd en multidisciplinair team.
+    alexis: "<span class='um-label um-semi-bold'>Alexis</span>, gepassioneerd over muziek, werd snel overwonnen door het idee van het project. Met ervaring in evenementen en actief in een digitaal bureau voor meer dan 3 jaar, is Alexis van plan om zijn ervaring in digitale communicatie en projectcoördinatie ter ondersteuning van de groei van de VZW beschikbaar te stellen. Het project biedt eigenlijk een reëel potentieel om twee ambities samen te brengen: muziek en ondernemerschap, binnen een gemotiveerd en multidisciplinair team."
 
 pillars:
   title: Onze waarden
@@ -230,11 +231,10 @@ pillars:
   accessibility:
     title: Toegankelijkheid
     content: Un-Mute is toegankelijk voor iedereen door geen selectie te maken bij de ingang en door crowdfunding in te stellen waarmee ieder artiest, die weet hoe hij het publiek kan overtuigen, kan zonder beperkingen evolueren. Het platform is dus gericht aan elke belgische muzikale artiest, en dit ongeacht het niveau van uitvoering, leeftijd of muziekstijl. Evenzo kan Un-Mute in de loop van de tijd overwegen om het territorium waarin het aanwezig is te vergroten.
- continuity:
+  continuity:
     title: Continuïteit
     content: Un-Mute wil zich niet beperken tot één festival voor de productie van haar artiesten en wil hen een multi-lokale tour aanbieden. Uiteindelijk wil Un-Mute een globaal ontwikkelingsraamwerk bieden aan zijn artiesten, dat alle aspecten in aanmerking zou nemen die inherent zijn aan de emancipatie van muzikale artiesten (beeld, geluid, uitzending, enz.).
-
- synergy:
+  synergy:
     title: Synergie
     content: Un-Mute wil het kruispunt zijn tussen kunstenaars, producenten en professionals uit de sector, maar ook om te spelen op de diversiteit van de kunstenaars om hun vermogen naar voren te brengen. Voor Un-Mute is één plus één gelijk aan drie. Het is vanuit deze wens dat het principe van multi-lokale rondleiding geboren werd.
 
@@ -298,7 +298,8 @@ event:
   generic_name: Festival Un-Mute met %artist%
   lastday:
     tickets: Dit is de laatste kaartverkoop dag voor dit evenement!
-    deadline: Dit is de laatste dag waarop je %artist% kunt helpen om zijn doel te bereiken door kaarten te kopen. Morgen zul je weten of dit festival is bevestigd of niet.  promo: "Tijdens de eerste week van de verkoop, dat wil zeggen tot %end_date% om middernacht, is dit evenement te koop: voor %nb_organic_needed% gekochte tickets ontvangt u %nb_promotional% !"
+    deadline: Dit is de laatste dag waarop je %artist% kunt helpen om zijn doel te bereiken door kaarten te kopen. Morgen zul je weten of dit festival is bevestigd of niet.
+    promo: "Tijdens de eerste week van de verkoop, dat wil zeggen tot %end_date% om middernacht, is dit evenement te koop: voor %nb_organic_needed% gekochte tickets ontvangt u %nb_promotional% !"
   prevalidation: "Dit evenement bevindt zich in pre-validatie. Zijn pagina zal alleen openbaar worden gemaakt als 10% van de kaarten verkocht is en dan zal er nog een maand zijn om de 100% te bereiken die nodig zijn voor de realisatie van het festival. Tijdens de pre-validatie staan de tickets op promotie 3 + 1."
   infos:
     title: Infos
@@ -397,7 +398,7 @@ pay_cart:
 
         <p>
             Bij het betalen van deze items, verzekert u dat u de <a target="_blank" href="%conditionsUrl%"> algemene verkoopvoorwaarden </a> hebt gelezen.
-Ter herinnering, uw tickets worden terugbetaald als er niet genoeg andere producenten zijn die deze artiest ondersteunen.
+            Ter herinnering, uw tickets worden terugbetaald als er niet genoeg andere producenten zijn die deze artiest ondersteunen.
             Anders, als dit evenement succesvol is, ontvangt u uw tickets een paar dagen voor het festival per e-mail en op Un-Mute.
         </p>
     conditions:
@@ -469,9 +470,9 @@ new_artist:
   title: Nieuw artiest
   intro: |
       Als u een artiest wilt maken op Un-Mute, vult u het volgende formulier in. We nemen contact met je op voordat je het profiel dat je hebt gemaakt openbaar maakt.
-       In de tussentijd kun je foto's en video's aan deze artiest toevoegen en zijn profiel uitbreiden.
-Warning : Door een artiest te maken, verklaar je dat je de vertegenwoordiger bent, of een van de leden als het een groep is.
- urls_explanation: Voer in de volgende velden uw mogelijke links in als geldige URL's<strong>die beginnen met<em>http://</em> of <em>https://</em></strong>
+      In de tussentijd kun je foto's en video's aan deze artiest toevoegen en zijn profiel uitbreiden.
+  warning: Door een artiest te maken, verklaar je dat je de vertegenwoordiger bent, of een van de leden als het een groep is.
+  urls_explanation: Voer in de volgende velden uw mogelijke links in als geldige URL's<strong>die beginnen met<em>http://</em> of <em>https://</em></strong>
   #new
   phone_explanation: Als u een telefoonnummer invult, wordt dit alleen door het Un-Mute-team gebruikt om contact met u op te nemen. Dit nummer wordt niet openbaar gemaakt.
 
@@ -479,10 +480,10 @@ my_artists:
   title: Mijn artiesten
   intro: |
       Je bent een muzikale artiest? Je bent lid van een groep?
-Maak je identiteit op Un-Mute en organiseer je concerten zonder risico te nemen.
+      Maak je identiteit op Un-Mute en organiseer je concerten zonder risico te nemen.
   new_event: Creëert een evenement
   new_artist: Creëert een artiest
-  no_available_artist: “Noot : je kunt geen nieuw evenement voor je artiest (en) creëeren omdat al je artiesten al op een ander evenement draaien."
+  no_available_artist: "Noot : je kunt geen nieuw evenement voor je artiest (en) creëeren omdat al je artiesten al op een ander evenement draaien."
 
 profile:
   title: Mijn profiel
@@ -503,7 +504,7 @@ profile:
       explanation: |
           Door uw account te sluiten, vraagt u om uw gegevens te verwijderen van het Un-Mute-platform.
           Deze zullen niet langer worden opgenomen in onze database, in overeenstemming met de geldende wetgeving.
-Je wordt niet teruggenomen in de eigenaren van de artiesten waarvan je momenteel deel uitmaakt van de managers en heeft dus geen toegang meer hebt tot hun management.
+          Je wordt niet teruggenomen in de eigenaren van de artiesten waarvan je momenteel deel uitmaakt van de managers en heeft dus geen toegang meer hebt tot hun management.
       checkbox: Ik wil mijn account verwijderen
       confirm: Mijn account verwijderen
 
@@ -551,9 +552,9 @@ artist_profile:
     passed_events: Afgelopen evenementen
   profile_pic:
     intro: |
-      Hier kunt u de profielfoto van %artist% uploaden.
-      Deze foto verschijnt als eerste op de verschillende afbeeldingen van deze artiest op Un-Mute.
-       Zorg ervoor dat het van goede kwaliteit is en dat het afmetingen heeft van type 4 (breedte) / 3 (lengte).
+        Hier kunt u de profielfoto van %artist% uploaden.
+        Deze foto verschijnt als eerste op de verschillende afbeeldingen van deze artiest op Un-Mute.
+        Zorg ervoor dat het van goede kwaliteit is en dat het afmetingen heeft van type 4 (breedte) / 3 (lengte).
     to_other_pics: Wil je meer foto's toevoegen aan je artiest? <a href="%url%">Voeg er maximaal 5 toe</a>
   other_pics:
     intro: Voeg hier maximaal 5 extra foto's toe aan je artiest. Kies afbeeldingen van goede kwaliteit en voorkeur die de verhouding 4 (breedte) / 3 (hoogte) volgen.
@@ -601,7 +602,8 @@ new_event:
     date_preview: "Gekozen datum : "
 
 leave_artist:
-  intro: Op deze pagina heb je de mogelijkheid om het management van deze artiest te verlaten. Als u de laatste eigenaar bent, wordt de artiest permanent verwijderd uit de Un-Mute-catalogus. Warning : Let op, deze actie is onomkeerbaar!
+  intro: Op deze pagina heb je de mogelijkheid om het management van deze artiest te verlaten. Als u de laatste eigenaar bent, wordt de artiest permanent verwijderd uit de Un-Mute-catalogus.
+  warning : Let op, deze actie is onomkeerbaar!
   checkbox: Ik wil het beheer van %artist% verlaten
   last:
     warning: Jij bent de laatste eigenaar van %artist%. Als je doorgaat, wordt de artiest verwijderd uit de catalogus van het platform.
@@ -622,17 +624,17 @@ order_pdf:
     nb_tickets_promo: Aantal extra tickets verkregen per promotie
   details:
     title: Details van de bestelling
-   labels:
+    labels:
       counterpart: Artiekel
       quantity: Aantal
       unit_price: Eenheidsprijs
       total_price: Prijs
       promo: promotie
   process:
-    title: Un-Mute aankoopproces
-    content: U krijgt de volledige betaling terug als de ondersteunde artiest ten minste geen %min_tickets% Un-Mute-tickets voor dit festival kan verkopen. Voor meer informatie over ons aankoopproces, verwijzen wij naar onze algemene voorwaarden op <a href="https://un-mute.be">https://un-mute.be</a>
+      title: Un-Mute aankoopproces
+      content: U krijgt de volledige betaling terug als de ondersteunde artiest ten minste geen %min_tickets% Un-Mute-tickets voor dit festival kan verkopen. Voor meer informatie over ons aankoopproces, verwijzen wij naar onze algemene voorwaarden op <a href="https://un-mute.be">https://un-mute.be</a>
   footer:
-    tracking: "Deze orderbevestiging is gegenereerd op %date%. Bestel-ID: %id%"
+      tracking: "Deze orderbevestiging is gegenereerd op %date%. Bestel-ID: %id%"
 
 #new
 tickets_pdf:

@@ -58,6 +58,8 @@ home:
       soldout: Sold out
     video:
       title: Our last video
+  news:
+    title: New artists
   #new
   partners:
     title: Partners
@@ -77,7 +79,7 @@ event:
   reward: "Order now and take advantage of the following Un-Mute rewards:" #new
   #new
   description: "Discover three emergent artists during an Un-Mute Festival. Headliner: %host%"
-   buy_tickets:
+  buy_tickets:
     #new
     to_much_reduction: You cannot apply multiple discounts on a single order
 
