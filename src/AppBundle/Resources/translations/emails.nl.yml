@@ -1,0 +1,136 @@
+subjects:
+  change_email_confirmation: E-mail veranderen
+  new_ownership_request: Iemand zei dat je een artiest hebt op Un-Mute
+  order_recap: Jouw bestelling op Un-Mute.be
+  concert:
+    artist:
+      known_outcome: Uw evenement Un-Mute - Gevolg
+      reminder: "Herrinering : jouw evenement op Un-Mute.be"
+      details: Details van jouw concert
+    fan:
+      known_outcome: "Concert van %artist% : gevolg"
+      tickets: Jouw tickets Un-Mute voor %artist%
+
+others:
+  message_from_artist: "Bericht van de artiest:"
+
+change_email:
+  confirmation: |
+    Hallo %username%,
+
+    Je hebt een aanvraag gemaakt om het e-mail adres die met uw Un-Mute account gekoppeld is te veranderen.
+
+    Zou je kunnen bevestigen dat deze adres correct is door op de volgende link te klikken: %confirmationUrl%
+
+concert:
+  artist:
+    failure: |
+      Beste artiest,
+
+      Jammer genoeg hebt je geen geld genoeg kunnen verzamelen om de organisatie van je %step% oorspronkelijk gepland op %date% mogelijk te maken.
+
+      De fans die je hebben gesteund, krijgen de volledige prijs van de gekochte tickets terug.
+
+      Wilt je een herkansing nemen in een andere zaalcategorie? Aarzel niet! Onze platform %url% staat voor je open en zal het altijd blijven.
+
+
+    confirmation: |
+      Félicitations !
+
+      Je wordt gesteund door voldoende producers: Un-Mute biedt je de organisatie van je concert op %date% in de zaal "%hall%".
+
+      Dit concert kan je de mogelijkheid bieden om deel te nemen aan een multi-lokale tour georganiseerd door Un-Mute. We zullen contact met jij opnemen voor meer informatie hierover.
+
+    reminder: |
+      Hallo %artist%,
+
+      Weet dat er nog maar %places% plaatsen over zijn te verkopen zodat jouw %step% van de %date% kan geproduceerd worden!
+      Vanaf vandaag heb je nog %days% dagen om je fans opnieuw motiveren via je communicatiekanalen.
+
+     Van onze kant zijn we van plan om jouw evenement de komende dagen met onze eigen middelen te promoten.
+    details: |
+        Beste artiest,
+
+        Hier zijn de praktische informaties over je concert in de zaal "%hall%"
+
+        Planning van de avond :
+
+           -- Soundcheck (%host% - host) : 14u30
+           -- Soundcheck (%invited1%) : 16u
+           -- Soundcheck (%invited2%) : 17u
+           -- Tijd van het concert (%invited1%) :  19u (45 minuten)
+           -- Tijd van het concert (%invited2%) :  20u15 (45 minuten)
+           -- Tijd van het concert (%host%) :  21u30 (1u)
+
+        Belangrijk: we vragen elke groep om 30 minuten voor de soundchecktijd aan te komen!
+
+        Tot slot, kunt je ons het gegevensblad van jouw groep sturen evenals het contract (bijgevoegd) dat je tegen het einde van deze week ondertekend moet terugsturen?
+
+        Als je vragen heeft, aarzel dan niet om ons te contacteren via het e-mail adres pierre@un-mute.be
+
+        We kijken er naar uit je binnenkort op het podium te zien!
+
+fan:
+    confirmation: |
+      Gefeliciteerd !
+
+      De artiest %artist% heeft de organisatie van zijn concert kunnen bevestigen via Un-Mute dankzij jullie ! Deze concert zal zich op %date% in de zaal « %hall%" houden. Je ontvangt jouw tickets en alle praktische informatie per e-mail.
+
+      Wil je andere artiesten ondersteunen/ontdekken? Dat kan via onze site %events_link% !
+    tickets: |
+      Hallo %username%,
+
+      Hier is de praktische informatie over het concert van %host% op %date% in de zaal "%hall%".
+
+      De uitgenodigde artiesten zijn %invited1% en %invited2%.
+
+      Je vindt jouw concertticket(s) als bijlage (PDF-formaat).
+
+      We vragen je om deze kaartjes te printen en deze op de avond van het concert te presenteren, aangezien dit jouw pas is.
+
+      Als je vragen heeft, aarzel dan niet om ons te contacteren via e-mail: pierre@un-mute.be
+    failure: |
+      Beste producer,
+
+      De artiest %artist% dat je besloot te steunen kon niet genoeg geld binnenhalen om de organisatie van zijn concert mogelijk te maken.
+
+      Je krijgt binnen tien werkdagen de volledige prijs van de gekochte plaatsen terug.
+
+      Wil je %artist% ondanks alles zien optreden? Steun hem opnieuw bij een volgend evenement!
+
+      Wil je andere artiesten ondersteunen? Bezoek de pagina %artistCatalogUrl% !
+
+      Wil je andere artiesten ondersteunen? Bezoek de website
+
+  admin:
+    newly_successful: |
+      Beste administrator,
+
+      De artiest %artiest% is erin geslaagd om genoeg plaatsen te verkopen voor zijn %step% dat is gepland op %date%.
+
+      Bedankt voor het plaatsen van een bestelling bij Un-Mute. Je zal een artiest misschien laten optreden op een beroemde Belgisch podium en voor een gekke publiek!
+
+      U vindt de samenvatting van uw bestelling in bijlagen en in uw persoonlijke ruimte op %url%.
+
+contact:
+  copy: |
+     Uw bericht verzonden naar Un-Mute.be is ontvangen. Wij zullen u zo snel als mogelijk beantwoorden als het nodig is.
+
+     Hier is het:
+
+     - Type aanvraag: %type%
+     - Onderwerp: %object%
+     - bericht:
+
+ownershiprequest:
+  member: |
+
+    Je bent toegevoegd aan de artiest "%artist%" op het platform Un-Mute, de 100% Belgisch vereniging zonder winstoogmerk voor de promotie, productie en muzikale verspreiding.
+
+    Klik op de volgende link om te bevestigen of je of niet tot deze artiest behoort: %confirmationUrl%
+
+  nonmember: |
+    Je bent toegevoegd aan de artiest "%artist%" op het platform Un-Mute, de 100% Belgisch vereniging zonder winstoogmerk voor de promotie, productie en muzikale verspreiding.
+
+
+    Om te bevestigen of je of niet tot deze artiest behoort, registreer je op www.Un-Mute.be en klik  vervolgens op de volgende link: %confirmationUrl%

@@ -1,63 +1,71 @@
 failed_contract_artist:
-title: « Jouw Un-Mute festival: uitslag"
-content: |
-Het is je niet gelukt om voldoende producers te steunen om de organisatie <a
-href="%event_url%" van je %step%</a> mogelijk te maken.
-Wilt u nog eens proberen? Ga naar je persoonlijke ruimte en kies een ander evenement!
-Tot binnenkort,
-Un-Mute team
+  title: "Jouw Un-Mute festival: uitslag"
+  content: |
+    Het is je niet gelukt om voldoende producers te steunen om de organisatie <a href="%event_url%" van je %step%</a> mogelijk te maken.
+
+    Wilt u nog eens proberen? Ga naar je persoonlijke ruimte en kies een ander evenement!
+
+    Tot binnenkort,
+
+    Un-Mute team
+
 failed_contract_fan:
-title: Un-Mute Festival met %artist% - Uitslag
-content: |
-Beste producer,
-De artiest% artiest% die je hebt besloten te ondersteunen, kon niet genoeg geld ophalen om
-de organisatie van zijn <a href="%event_url%">%step%</a> mogelijk te maken.
-Er is geen georganiseerd festival en je krijgt de volledige prijs van de gekochte tickets
-terugbetaald.
-Wil je% artiest% ondanks alles zien optreden? Steun hem opnieuw bij een volgend evenement!
-Wil je andere artiesten ondersteunen? Ontdek <a href="%events_url%"> onze evenementen
-tijdens het verzamelen van tickets.</a>
-Tot binnenkort,
-Un-Mute team
+  title: Un-Mute Festival met %artist% - Uitslag
+  content: |
+   Beste producer,
+
+    De artiest %artist% die je hebt besloten te ondersteunen, kon niet genoeg geld ophalen om de organisatie van zijn <a href="%event_url%">%step%</a> mogelijk te maken.
+    Er is geen georganiseerd festival en je krijgt de volledige prijs van de gekochte tickets terugbetaald.
+
+    Wil je %artist% ondanks alles zien optreden? Steun hem opnieuw bij een volgend evenement!
+
+    Wil je andere artiesten ondersteunen? Ontdek <a href="%events_url%"> onze evenementen tijdens het verzamelen van tickets.</a>
+
+    Tot binnenkort,
+
+    Un-Mute team
+
 successful_contract_artist:
-title: Je festival wordt georganiseerd!
-content: |
-Gefeliciteerd, je bent erin geslaagd om ondersteuning te krijgen van genoeg producenten om
-<a href="%event_url%"> je% step% </a> -organisatie in te schakelen.
-Je festival vindt plaats op% date% in de zaal <a href="%hall_url%">% hall_name%</a>.
-L'équipe Un-Mute se charge de trouver les premières parties invitées à votre festival. De plus,
-vous aurez en principe la chance de jouer comme première partie d'autres artistes de la
-plateforme qui, comme vous, parviennent à remplir une salle.
-Vous recevrez des e-mails pour vous avertir de tout cela en temps voulu.
-Met vriendelijke groeten,
-Un-Mute team
+  title: Je festival wordt georganiseerd!
+  content: |
+    Gefeliciteerd, je bent erin geslaagd om ondersteuning te krijgen van genoeg producenten om <a href="%event_url%">je %step%</a>-organisatie in te schakelen.
+     Je festival vindt plaats op %date% in de zaal <a href="%hall_url%">%hall_name%</a>.
+
+    L'équipe Un-Mute se charge de trouver les premières parties invitées à votre festival. De plus, vous aurez en principe la chance de jouer comme première partie d'autres artistes de la plateforme qui, comme vous, parviennent à remplir une salle.
+    Vous recevrez des e-mails pour vous avertir de tout cela en temps voulu.
+
+    Met vriendelijke groeten,
+
+   Un-Mute team
+
 successful_contract_fan:
-title: Uw steun heeft geholpen !
-content: |
-Gefeliciteerd, de <a href="%event_url%">%step% de %artist%</a> heeft genoeg fans bereikt
-om geproduceerd te worden!
-Houd er rekening mee dat dit zal plaatsvinden op% date% in de <a href="%hall_url%">%
-hall_name% </a> -ruimte.
-Binnenkort ontvangt u uw tickets voor het festival en ontvangt u een melding van de twee
-uitgenodigde artiesten die zullen spelen met% artist%.
-Met vriendelijke groeten,
-Un-Mute team
+  title: Uw steun heeft geholpen !
+  content: |
+    Gefeliciteerd, de <a href="%event_url%">%step% de %artist%</a> heeft genoeg fans bereikt om geproduceerd te worden!
+    Houd er rekening mee dat dit zal plaatsvinden op %date% in de <a href="%hall_url%">%hall_name%</a> zaal.
+
+    Binnenkort ontvangt u uw tickets voor het festival en ontvangt u een melding van de twee uitgenodigde artiesten die zullen spelen met %artist%.
+
+    Met vriendelijke groeten,
+
+   Un-Mute team
+
 ongoing_cart:
-title: Uw basket
-content: U hebt uw aankopen tijdens uw laatste bezoek niet voltooid. Artikelen in je
-winkelmandje kunnen de ene of de andere artiest helpen, wacht niet!
+  title: Uw basket
+  content: U hebt uw aankopen tijdens uw laatste bezoek niet voltooid. Artikelen in je winkelmandje kunnen de ene of de andere artiest helpen, wacht niet!
+
 reminder_contract_artist:
-title: "Herinnering: je aanstaande festival"
-content: |
-Er zijn nog maar% places% te verkopen voor uw% step% van het% date% dat moet worden
-bevestigd!
-Vanaf vandaag heb je nog% nbDays% dagen om je fans opnieuw te starten via je
-communicatiekanalen.
-Van onze kant zijn we van plan om uw evenement de komende dagen alleen te promoten.
+  title: "Herinnering: je aanstaande festival"
+  content: |
+    Er zijn nog maar %places% te verkopen voor uw %step% van het %date% dat moet worden bevestigd!
+
+    Vanaf vandaag heb je nog %nbDays% dagen om je fans opnieuw te starten via je communicatiekanalen.
+
+    Van onze kant zijn we van plan om uw evenement de komende dagen alleen te promoten.
+
 tickets_sent:
-title: Je beschikbare tickets
-content: |
-Je tickets voor het Un-Mute Festival van de% date% in de zaal "% hall_name%" zijn
-beschikbaar.
-Vergeet niet dat je ze voor de festivaldag moet laten drukken. Richting <a
-href="%orders_url%"> uw persoonlijke ruimte </a> om ze te downloaden!
+  title: Je beschikbare tickets
+  content: |
+    Je tickets voor het Un-Mute Festival van de %date% in de zaal "%hall_name%" zijn beschikbaar.
+
+    Vergeet niet dat je ze voor de festivaldag moet laten drukken. Richting <a href="%orders_url%"> uw persoonlijke ruimte </a> om ze te downloaden!
