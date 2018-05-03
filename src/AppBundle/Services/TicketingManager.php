@@ -66,11 +66,11 @@ class TicketingManager
             $array_reward = $purchase->getTicketRewardText();
             while ($j <= $purchase->getQuantityOrganic()) {
                 $this->logger->warning("purchase", [$purchase]);
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice(), null, null, array_shift($array_reward)));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice()));
                 $j++;
             }
             for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0, null, null, array_shift($array_reward)));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0));
                 $i++;
             }
         }
@@ -226,7 +226,7 @@ class TicketingManager
     protected function sendTicketsForContractFan(ContractFan $cf)
     {
         $this->generateTicketsForContractFan($cf);
-        $tickets = $cf->getTickets();
+        $tickets = $cf->getTickets()->toArray();
         if(!empty($tickets)) {
             $agenda = $this->getAgenda($tickets[0]);
             $this->writer->writeTickets($cf->getTicketsPath(), $tickets, $agenda);

@@ -43,6 +43,7 @@ class MailDispatcher
     private $kernel;
     private $twig;
     private $locales;
+    private $logger;
 
     public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel, Environment $twig, $locales)
     {
@@ -66,12 +67,11 @@ class MailDispatcher
     private function sendEmail($template, $subject, array $params, array $subject_params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
         $failedRecipients = array();
         $bccs = array();
+        $tos = array();
         $to_chunks = array();
         $bcc_chunks = array();
-
         // CASE 1 : Only "to"s chunked by locale
         if(empty($bcc_emails) && !empty($to)) {
-            $tos = array();
             foreach ($this->locales as $locale) {
                 $tos[$locale] = $this->extract_locale($locale, $to);
                 if (!empty($tos[$locale])) {
@@ -94,7 +94,7 @@ class MailDispatcher
                     $trans_subject = $this->translator->trans($subject, $subject_params, 'emails', $locale);
                     $bcc_chunks[$locale] = array_chunk(array_keys($bccs[$locale]), self::MAX_BCC);
                     foreach($bcc_chunks[$locale] as $chunk) {
-                        $this->mailer->sendEmail($failedRecipients, $subject, $this->from_address, $this->from_name, array_keys($to), $to_name, [], '',
+                        $this->mailer->sendEmail($failedRecipients, $trans_subject, $this->from_address, $this->from_name, array_keys($to), $to_name, [], '',
                             $chunk, '', $reply_to, $reply_to_name, array_merge(['subject' => $trans_subject], $params), $template, $attachments, $locale);
                     }
                }
