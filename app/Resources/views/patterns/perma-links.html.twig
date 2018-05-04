@@ -8,7 +8,7 @@
 
 <div id="not-auth-perma-links">
     {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        {{ block('language_switcher_link') }}
+        {# block('language_switcher_link') #}
         {% if home_header %}{{ block('inscription_perma_link') }}{% endif %}
         {% block header_login_link %}<a class="btn btn-primary text-uppercase header-button" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'header.nav.sign_in'|trans|raw }}</a>{% endblock %}
 
