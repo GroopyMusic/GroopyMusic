@@ -80,3 +80,47 @@ contractfan:
 ownershiprequest:
   email:
     email: This is an invalid email address.
+
+contact_person:
+  firstname:
+    max: The first name cannot exceed {{ limit }} characters.
+  lastname:
+    max: The last name cannot exceed {{ limit }} characters.
+  phone:
+    max: The phone number cannot exceed {{ limit }} characters.
+  mail:
+    max: The email address cannot exceed {{ limit }} characters.
+
+proposition_artist:
+  artistname:
+    max: The artist name cannot exceed {{ limit }} characters.
+    empty: Please enter an artist name.
+  demo_link:
+    max: The link cannot exceed {{ limit }} characters.
+
+proposition_hall:
+  name:
+    max: The hall name cannot exceed {{ limit }} characters.
+    empty: Please enter a hall name.
+  contact_email:
+    max: The email address cannot exceed {{ limit }} characters.
+    empty: Please enter an email address.
+  contact_phone:
+    max: The phone number cannot exceed {{ limit }} characters.
+    empty: Please enter a phone number.
+
+proposition_contract_artist:
+  reason:
+    min: The reason of the concert is too short (min. {{ limit }} characters).
+  nb_expected:
+    min_range: The number of expected people cannot be negative.
+  day_commentary:
+    min: The commentary on the day of the concert is too short (min. {{ limit }} characters).
+  commentary:
+    min: The commentary is too short (min. {{ limit }} characters).
+  province:
+    null: Please enter a geographic area.
+  artist:
+    null: You need to choose an artist.
+  end_date:
+    not_valable: This end date is before the start date.
