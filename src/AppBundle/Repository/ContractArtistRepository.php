@@ -184,6 +184,26 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getResult();
     }
 
+    /**
+     * Returns 0-$limit upcoming events except $event in parameter
+     */
+    public function findVisibleExcept(ContractArtist $event, $limit = null)
+    {
+        $qb = $this->queryVisible()
+            ->andWhere($this->short_name . '.id <> :excluded_id')
+            ->setParameter('excluded_id', $event->getId())
+        ;
+
+        if ($limit != null) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb
+            ->orderBy('p.date', 'asc')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findCurrentForArtist(Artist $artist)
     {
         return $this->queryVisible()

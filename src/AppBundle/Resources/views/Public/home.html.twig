@@ -98,7 +98,7 @@
 
                                 {% endif %}
                                 <h4 class="mt-3">{{ 'home.spotlights.tickets.title'|trans }}</h4>
-                                {% set spotlight_url = path('artist_contract', {'id': spotlight.id}) %}
+                                {% set spotlight_url = path('artist_contract', {'id': spotlight.id, 'slug': spotlight.artist.slug}) %}
                                 {% if not spotlight.isSoldOut %}
                                     <span class="badge badge-success">{{ 'home.spotlights.tickets.selling'|trans }}</span> <a href="{{ spotlight_url }}" class="btn small btn-outline-primary p-2">Acheter</a>
                                 {% else %}
@@ -111,13 +111,11 @@
             <div class="col-12 col-md-6 mt-4 my-md-auto">
                 <h3 class="alt-title text-center text-white">{{ 'home.spotlights.video.title'|trans }}</h3>
                 <div class="embed-responsive embed-responsive-16by9">
-                    <div class="youtube embed-responsive-item" id="qvHUpid7sC4"></div>
+                    <div class="youtube embed-responsive-item" id="oO1j40ELxYA"></div>
                 </div>
             </div>
         </div>
-
     </div>
-
 
     <div class="container-fluid bg-body-light py-4">
         <h3 class="alt-title text-center">{{ 'home.news.title'|trans|raw }}</h3>
@@ -157,9 +155,11 @@
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <div class="row">
-                        <div class="my-auto col-4 col-sm-2 offset-1"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.png') }}" alt="Tacite, l'Allié des Artistes"></a></div>
-                        <div class="my-auto col-7 col-sm-4"><a href="http://www.musicaction.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/musicaction.png') }}" alt="Music Action"></a></div>
-                        <div class="mt-3 my-sm-auto col-7 offset-3 offset-sm-0 col-sm-4"><a href="https://www.maisonsclothes.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/maisonclothes.png') }}" alt="Maison Clothes"></a></div>
+                        <div class="my-auto col-6 col-sm-4 col-md-2 offset-md-1 py-3"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.png') }}" alt="Tacite, l'Allié des Artistes"></a></div>
+                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="http://www.musicaction.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/musicaction.png') }}" alt="Music Action"></a></div>
+                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="http://www.whatthefun.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/wtf.png') }}" alt="What the Fun"></a></div>
+                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="https://www.maisonsclothes.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/maisonclothes.png') }}" alt="Maison Clothes"></a></div>
+                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="http://www.whatiship.be/ " target="_blank"><img class="img-fluid" src="{{ asset('images/friends/whatiship.png') }}" alt="What is Hip ?!"></a></div>
                     </div>
                 </div>
             </div>

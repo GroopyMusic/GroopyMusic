@@ -1,0 +1,158 @@
+# Desc: /about
+about: /about
+
+# Desc: /artist/{id}/cancel-request/{request_id}
+artist_cancel_ownership_request: '/artiest/{id}/verzoek-annuleren/{request_id}'
+
+# Desc: /events/{id}-{slug}
+artist_contract: '/evenementen/{id}-concert-van-{slug}'
+
+# Desc: /artist/{id}/all-contracts
+artist_contracts: '/artiest/{id}/crowdfundings'
+
+# Desc: /artist/{id}/edit-medias
+artist_edit_medias: '/artiest/{id}/medias'
+
+# Desc: /artist/{id}/edit-photos
+artist_edit_photos: '/artiest/{id}/fotos-wijzigen'
+
+# Desc: /artist/{id}/edit-profile-picture
+artist_edit_profilepic: '/artiest/{id}/profielfoto'
+
+# Desc: /artist/{id}/leave
+artist_leave: '/artiest-verlaten-{id}'
+
+# Desc: /artist/{id}/owners
+artist_owners: '/artiest/{id}/eigenaars'
+
+# Desc: /artists/{id}-{slug}
+artist_profile: '/artiesten/{id}-{slug}'
+
+# Desc: /artist/{id}/edit
+artist_profile_edit: '/artiesten/{id}/bewerken'
+
+# Desc: /validate-ownership-{id}/{code}
+artist_validate_ownership: '/eigendom-valideren-{id}/{code}'
+
+# Desc: /artists
+catalog_artists: /artiesten
+
+# Desc: /crowdfundings
+catalog_crowdfundings: /evenementen
+
+# Desc: /halls
+catalog_halls: /zalen
+
+# Desc: /conditons
+conditions: /Algemene voorwaarden
+
+# Desc: /faq
+faq: /vaak-gestelde-vragen
+
+# Desc: /profile/change-password
+fos_user_change_password: /profiel/wachtwoord-wijzigen
+
+# Desc: /profile/edit
+fos_user_profile_edit: /profiel/bewerken
+
+# Desc: /profile/
+fos_user_profile_show: /profiel/
+
+# Desc: /register/check-email
+fos_user_registration_check_email: /inschrijving/email-verificatie
+
+# Desc: /register/confirm/{token}
+fos_user_registration_confirm: '/inscrijving/bevestiging/{token}'
+
+# Desc: /register/confirmed
+fos_user_registration_confirmed: /inschrijving-bevestigd
+
+# Desc: /register/
+fos_user_registration_register: /inscrijving/
+
+# Desc: /resetting/check-email
+fos_user_resetting_check_email: /nieuw-wachtwoord/check-email
+
+# Desc: /resetting/request
+fos_user_resetting_request: /nieuw-wachtwoord/verzoek
+
+# Desc: /resetting/reset/{token}
+fos_user_resetting_reset: '/nieuw-wachtwoord/reset/{token}'
+
+# Desc: /resetting/send-email
+fos_user_resetting_send_email: /nieuw-wachtwoord/e-mail verzenden
+
+# Desc: /login_check
+fos_user_security_check: /login_check
+
+# Desc: /login
+fos_user_security_login: /login
+
+# Desc: /logout
+fos_user_security_logout: /logout
+
+# Desc: /halls/{id}-{slug}
+hall: '/zalen/{id}-{slug}'
+
+# Desc: /
+homepage: /
+
+# Desc: /suggesties
+suggestionBox: /contact
+
+# Desc: /suggesties/post
+suggestionBox_form: /contact/post
+
+# Desc: /team
+team: /team-en-waarden
+
+# Desc: /advanced-options
+user_advanced_options: /geavanceerde-instellingen
+
+# Desc: /cart
+user_cart: /basket
+
+# Desc: /secure-zone/cart/payment/pending/{contract_id}
+user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{contract_id}'
+
+# Desc: /secure-zone/cart/payment
+user_cart_payment_stripe: /beveiligd-zone/basket/betaling
+
+# Desc: /secure-zone/cart/payment/success/{id}
+user_cart_payment_stripe_success: '/beveiligd-zone/basket/succesvolle-betaling/{id}'
+
+# Desc: /change-email
+user_change_email: /email-wijzigen
+
+# Desc: /change-email-token-{token}
+user_change_email_check: '/email-wijzigen-token-{token}'
+
+# Desc: /user/orders/{id}
+user_get_order: '/mijn-files/bestellingen/{id}'
+
+# Desc: /user/tickets/{id}
+user_get_tickets: 'mijn-files/tickets/{id}'
+
+# Desc: /my-artists
+user_my_artists: /mijn-artiesten
+
+# Desc: /new-artist
+user_new_artist: /artiest-creëren
+
+# Desc: /new-crowdfunding
+user_new_contract_artist: /nieuw-evenement-beta
+
+# Desc: /new-crowdfunding-contact-us
+user_new_contract_artist_temp: /nieuw-evenement-contact
+
+# Desc: /inbox/notifications/{id}
+user_notification: '/meldingen/{id}'
+
+# Desc: /inbox
+user_notifications: /meldingen
+
+# Desc: /paid-carts
+user_paid_carts: /mijn-bestellingen
+
+# Desc: /edit-profile
+user_profile_edit: /profiel/bewerken

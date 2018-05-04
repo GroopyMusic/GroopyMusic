@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $reward_text)
+    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $reward_text = [])
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;

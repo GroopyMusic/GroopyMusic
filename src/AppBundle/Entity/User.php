@@ -124,7 +124,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     public function hasAccepted(Conditions $conditions) {
-        return in_array($conditions, $this->getAcceptedConditions());
+        return in_array($conditions->getId(), array_map(function($elem) { return $elem->getId(); }, $this->getAcceptedConditions()));
     }
 
     public function isFirstVisit() {

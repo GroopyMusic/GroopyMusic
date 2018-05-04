@@ -1,0 +1,864 @@
+Days 0: Zondag
+Days 1: Maandag
+Days 2: Dinsdag
+Days 3: Woensdag
+Days 4: Donderdag
+Days 5: Vrijdag
+Days 6: Zaterdag
+
+#new
+months.01: Januari
+months.02: Februari
+months.03: Maart
+months.04: April
+months.05: Mei
+months.06: Juni
+months.07: Juli
+months.08: Augustus
+months.09: September
+months.10: Oktober
+months.11: November
+months.12: December
+
+Jan: Jan
+Feb: Feb
+Mar: Maart
+Apr: Apr
+May: Mei
+Jun: Jun
+Jul: Jul
+Aug: Aug
+Sep: Sept
+Oct: Okt
+Nov: Nov
+Dec: Dec
+labels.artist.translations: Omschrijvingen
+ticket: ticket
+tickets: tickets
+people: mensen
+success_limit: Succesdrempel
+more_info: Meer infos
+step: Categorie
+confirmed: Festival bevestigd !
+or: of
+loading: Lading…
+
+meta_description_1: Het eerste Belgische platform voor crowdfundingconcerten.
+meta_description_2: Met Un-Mute bepaalt u, het publiek, welke artiesten u in uw regio wilt zien spelen. U koopt concertkaarten op voorhand die alleen worden bevestigd als er een minimumaantal tickets wordt verkocht!
+#new
+meta_description_event: Ontdek %artist% live op %date% !
+meta_description_artist: Ontdek %artist% op Un-Mute.
+meta_description_hall: "Un-Mute presenteert zijn partner : %hall%."
+
+#new
+error:
+  intro: Blijkbaar zijn we niet op dezelfde golflengte...
+  generic:
+    title: Error
+    content: Oeps ... Er is een onbekende fout opgetreden tijdens uw bezoek. Als het probleem aanhoudt kan je contact met ons opnemen !
+  e404:
+    title: 404
+    content: Aie, aie, deze pagina bestaat niet (of niet meer). Misschien is het gemakkelijker om op <a href="%homeUrl%">la page d'accueil</a> terug te gaan ?
+  e403:
+    title: Toegang verboden
+    content: U hebt geen toegang tot deze pagina. Weet je zeker dat je op de juiste plek bent?
+
+card:
+  new_event: NIEUW
+  new_artist: NIEUW ARTIEST
+
+header:
+  slogan: Crowdfunding concertplatform
+  nav:
+    home: Homepage
+    about: Over
+    artists: Artiesten
+    partners: Zalen
+    events: Evenementen
+    sign_up: Inschrijving
+    sign_in: Connectie
+    all_notifications: Alle meldingen bekijken
+    my_account: Mijn account
+    my_artists: Mijn artiesten
+    my_profile: Mijn profiel
+    my_orders: Mijn bestellingen
+    log_out: Ontkoppeling
+
+home:
+  #new
+  og_title: Un-Mute | Ontdek, ondersteun, produceer
+  concept:
+    title: Het principe
+    content_1: Onze minifestivals worden alleen bevestigd als er voldoende kaartjes die verkocht zijn.
+    content_2: Als het doel na een maand niet bereikt wordt, wordt iedereen terugbetaald.
+  concerts:
+    title: Financering aan de gang
+  #new
+  spotlights:
+    title_1: Ontdek drie artiesten per festival
+    title_2: Te ontdekken
+    headline: Ontdek %artist% live op %date%
+    lineup:
+      title: Line-up
+      host: Gast Artiest
+      invited: Uitgenodigde Artiesten
+    tickets:
+      title: Tickets
+      selling: Te koop
+      soldout: Sold out
+    video:
+      title: Onze laatste video
+  news:
+    title: Laatste geregistreerde artiesten
+  join_us:
+    title: Lid worden
+    content_1: <strong>Wilt u <a href="%about_url%"> producent </a> worden en een artiest ondersteunen? </strong> Ontdek <a href="%catalog_url%"> de catalogus van de artiesten </a>.
+    content_2: <strong> Ben je een <a href="%about_url%">artiest</a> die geïnteresseerd is in het concept?</strong> Word gratis lid van het <a href="%register_url%"> un-mute netwerk</a>.
+    content_3: <strong>Wil je een zaal voorstellen aan onze artiesten?</strong> <a href="%contact_url%">Neem contact op met het Un-Mute-team</a>.
+    more_info: Meer infos
+    login_link: Lid van Un-Mute worden
+  #new
+  partners:
+    title: Onze partners
+
+navigation: Navigatie
+static_menu:
+  title: Linken
+  about: À propos
+  team: Het team
+  faq: FAQ
+  catalog_artists: Catalogus van de artiesten
+  catalog_halls: Catalogues van de zalen
+  catalog_events: Komende evenementen
+  conditions: Gebruiksvoorwaarden
+  contact: Contact
+
+generic_form_error: Er is een fout opgetreden bij het verzenden van het formulier. Controleer de informatie en probeer het opnieuw.
+
+footer:
+  about: à propos
+  contact: contact
+  conditions: algemene voorwaarden
+  press: Pers toegang
+
+about:
+  title: À propos
+  menu:
+    concept: Het Un-Mute concept
+    how_it_works: Hoe werkt het?
+    artists: Artiesten voordelen
+    producers: Voordelen producers
+    halls: Voordelen zalen
+    team: Onze team en onze waarden
+    more_info: Meer infos
+  concept:
+    title: Het Un-Mute concept
+    content: |
+      Un-Mute richt zich op de emancipatie van de Belgische muziekscene door, zonder onderscheid, de artiesten te produceren die door hun fans zijn gekozen..
+
+      Het biedt een <strong> interactief en toegankelijk platform </strong> dat  <strong> de organisatie van concerten in België vergemakkelijkt </strong> dankzij een <strong> crowdfunding-systeem </strong>.
+
+      Het is een echt ontmoetingspunt tussen Belgische artiesten, verschillende zaalcategorieën en producentenfans.
+  how_it_works:
+    title: Hoe werkt het ?
+    content: |
+      Eenmaal geregistreerd in de <a href="%catalog_url%"> catalogus van groepen</a>, kiest de artiest een datum en een zaalcategorie. Er wordt dan een evenement gecreëerd waardoor geïnteresseerde fans een concertticket kunnen kopen en zo kunnen deelnemen aan de productie van dit evenement. Deze fans, door het financiering van het evenement, worden de echte producenten van dit festival.
+      <strong>Om van dit evenement een bevestigd festival te maken,</strong> moet een bepaald aantal plaatsen binnen de toegestane tijd (30 dagen) verkocht zijn.
+
+      <strong>Als dit minimum aantal plaatsen is bereikt,</strong> vindt het festival plaats! Bovendien kan dit festival tot maximaal 2 extra festivals in België genereren dankzij het <a href="#" data-toggle="popover" title="Multi-local Touring systeem" data-content=”Un-Mute geeft elke Belgische artiest een kans om tot 3 concerten te winnen op verschillende locaties in België dankzij het crowdfunding-principe.  <a href=‘%faq_url%'>Meer infos</a>”>multi-local tour</a>.
+
+
+      Als dit minimum aantal plaatsen niet wordt bereikt, vindt het festival niet plaats en worden de fans volledig terugbetaald en kan de artiest zijn kans opnieuw proberen door een nieuw evenement te maken!
+
+  artists:
+    title: Uw voordelen als artiest
+    content: |
+      <ul class="um-list">
+          <li><strong>Inschrijving</strong> 100% <strong>Gratis en toegankelijk</strong> Voor elke artiest die van start wil gaan</li>
+          <li><strong>Geen financiële risico's</strong> Geen financiële risico's nemen voor groepen of hun fans</li>
+          <li>Mogelijkheid om<strong>tot nog 2 concerten te deblokkeren</strong> Zodra een festival gedeblokkeerd is.</li>
+          <li>Mogelijkheid om nieuwe fans te raken <strong>en te fideliseren</strong></li>
+          <li>Ontdekking van <strong>Nieuwe groepen en nieuwe Belgische culturele plekken</strong></li>
+          <li><strong>Netwerk integratie</strong> van nieuwe Un-Mute artiesten en van een gevarieerde artiestencatalogus </li>
+          <li><strong>Juiste beloning en onkosten</strong> als het festival plaatsvindt</li>
+          <li>Mogelijkheid <strong>van evolutie</strong> en <strong>verspreiding</strong> voor de<strong>kleine opkomende artiesten</strong></li>
+      </ul>
+  producers:
+    title: Uw voordelen als producers
+    content: |
+      <ul class="um-list">
+          <li><strong>Co-productie en deelnemen aan het concert van de artiest van uw keuze</strong></li>
+          <li><strong>Financieringssysteem zonder risico</strong> dankzij de volledige terugbetaling zolang het festival niet bevestigd is</li>
+          <li><strong>Toegang tot een catalogus van verschillende artiesten</strong> en van verschillende types van belgische muziek</li>
+          <li><strong>Actieve rol</strong> in de bouw van <strong> de belgische muzikale scene van morgen</strong></li>
+          <li>Bijdrage aan de <strong> promotie van de Belgische muziekcultuur </strong></li>
+          <li><strong>Springplank</strong> mogelijk voor de kleinere opkomende Belgische groepen</li>
+          <li><strong>Ontdekking</strong> van <strong>belgische culturele </strong> plekken</li>
+          <li><strong>Garanderen van een correcte vergoeding en uitgaven</strong> van de groepen en geproduceerde artiesten</li>
+      </ul>
+  halls:
+    title: Uw voordelen als partnerzaal
+    content: |
+        <ul class="um-list">
+            <li><strong>Geautomatiseerd en gefaciliteerd</strong> dankzij Un-Mute</li>
+            <li><strong>Financieringssysteem zonder risico</strong> (garanties op een minimum aantal tickets verkocht per festival)</li>
+            <li>Garanderen van een<strong> geslaagde avond </strong> in een volle zaal </li>
+            <li><strong>Vertonen van de zaal binnen onze netwerk</strong> van belgische artiesten en zalen</li>
+            <li><strong>Zaalpromotie via Un-Mute-uitzendkanalen</strong> (facebook, pagina enz.)</li>
+            <li><strong> Herwaarderen van de Belgische muzieksector via het systeem van duurzame en sociale financiering</strong> via het systeem van duurzame en sociale financiering</li>
+        </ul>
+  team:
+    title: Onze ploeg et onze waarden
+    content: Het Un-Mute-team bestaat uit vier <strong>jonge mensen j</strong>gemotiveerd door dezelfde<strong>waarden</strong>. <a href=”%team_url%">Ontdek onze team en onze waarden.</a>
+  more_info:
+    title: Meer infos
+    content: Heeft u vragen over onze werking? Bezoek onze <a href="%faq_url%">FAQ</a> of <a href=”%contact_url%">Contact opnemen</a>.</p>
+
+
+team:
+  title: Het team
+  members:
+    pierre: <span class='um-label um-semi-bold'>Pierre</span>, Pierre, die het project startte, werkt al meer dan 10 jaar in muziek. Nadat hij deel uitmaakte van vele groepen, kreeg hij de gelegenheid om de verschillende fasen te ervaren die een groep moet passeren om op het Belgische scene te worden gezien. Met zijn frustraties stelt hij een innovatieve visie voor het boeken van belgische artiesten.
+    gonzague: Overtuigd door het idee, <span class='um-label um-semi-bold'>Gonzague</span>, een jonge webmaster met een diploma in informatica, gaat rechtstreeks akkoord met deelname aan het project. De coördinatie van de ontwikkeling van een webplatform van deze omvang is een uitdaging zeer motiverend, in overeenstemming met zijn verlangen om deel te nemen aan de start van een start-up aan het einde van zijn studie.
+    louis: Gevraagd om het wettelijke kader van het project te verzekeren, reageerde <span class='um-label um-semi-bold'>Louis</span> snel positief op deze uitnodiging. De mogelijkheid om de theoretische kennis die hij tijdens zijn vijfjarige juridische opleiding heeft opgedaan ten dienste van een project te leggen, ondersteund door waarden die hem dierbaar waren, overtuigde hem uiteindelijk volledig te investeren in Un-Mute.
+    alice: "Wat communicatie betreft, vult <span class='um-label um-semi-bold'> Alice</span>  het team aan met haar 6 jaar professionele ervaring in het MKB en vervolgens in een niet-commerciële instelling. Afgestudeerd van IHECS en KUL in culturele studies, was Un-Mute een geweldige kans om aan haar boog een activiteitensector toe te voegen die haar altijd al heeft gefascineerd: evenementen en culturele communicatie!"
+    #new
+    alexis: "<span class='um-label um-semi-bold'>Alexis</span>, gepassioneerd over muziek, werd snel overwonnen door het idee van het project. Met ervaring in evenementen en actief in een digitaal bureau voor meer dan 3 jaar, is Alexis van plan om zijn ervaring in digitale communicatie en projectcoördinatie ter ondersteuning van de groei van de VZW beschikbaar te stellen. Het project biedt eigenlijk een reëel potentieel om twee ambities samen te brengen: muziek en ondernemerschap, binnen een gemotiveerd en multidisciplinair team."
+
+pillars:
+  title: Onze waarden
+  intro: Het Un-Mute team is gebaseerd rond 3 hoofdprincipes die de wil van de dragers van het project samenvatten.
+  accessibility:
+    title: Toegankelijkheid
+    content: Un-Mute is toegankelijk voor iedereen door geen selectie te maken bij de ingang en door crowdfunding in te stellen waarmee ieder artiest, die weet hoe hij het publiek kan overtuigen, kan zonder beperkingen evolueren. Het platform is dus gericht aan elke belgische muzikale artiest, en dit ongeacht het niveau van uitvoering, leeftijd of muziekstijl. Evenzo kan Un-Mute in de loop van de tijd overwegen om het territorium waarin het aanwezig is te vergroten.
+  continuity:
+    title: Continuïteit
+    content: Un-Mute wil zich niet beperken tot één festival voor de productie van haar artiesten en wil hen een multi-lokale tour aanbieden. Uiteindelijk wil Un-Mute een globaal ontwikkelingsraamwerk bieden aan zijn artiesten, dat alle aspecten in aanmerking zou nemen die inherent zijn aan de emancipatie van muzikale artiesten (beeld, geluid, uitzending, enz.).
+  synergy:
+    title: Synergie
+    content: Un-Mute wil het kruispunt zijn tussen kunstenaars, producenten en professionals uit de sector, maar ook om te spelen op de diversiteit van de kunstenaars om hun vermogen naar voren te brengen. Voor Un-Mute is één plus één gelijk aan drie. Het is vanuit deze wens dat het principe van multi-lokale rondleiding geboren werd.
+
+contact:
+  title: Contact
+  intro: Een idee ? Een vraag ? Een advies ?Een interesse in het project ? U bent op de juiste plaats. Vul het volgende formulier in om contact met ons op te nemen; we zullen je zo snel mogelijk antwoorden!
+  nomail:
+    title: Ben je zeker ?
+    explanation: Blijkbaar hebt u uw e-mailadres niet ingevuld. We zullen uw vraag niet kunnen beantwoorden.
+    confirm: Verzenden
+    cancel: Annuleren
+  confirmation: Uw bericht is ontvangen.
+
+catalog_halls:
+  title: Partnerzalen
+  intro: In heel België moedigen zalen de muzikale productie van onze artiesten aan. Bekijk de Un-Mute partnerzalen waarin festivals zullen georganiseerd worden. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen in Un-Mute! <a href=‘%proposition_url%’>Hier is het !</a>”>Wil je een evenement voorstellen in je zaal?</a>
+  empty: Er is nog geen partnerzaal op het platform.
+
+hall:
+  short_description_label: In een paar woorden
+  description_label: Beschrijving
+  ephemeral:
+    intro:  Deze zaal is <strong>vergangkelijk</strong>. Evenementen worden er waarschijnlijk georganiseerd.
+    known_dates: du %firstDate% au %lastDate%
+    unknown_dates: Gedurende een beperkte periode
+  infos:
+    title: Kenmerken
+    capacity: Capaciteit
+    province: Provincie
+    website: Website
+
+catalog_artists:
+  title: Onze artiesten
+  empty: Er zijn nog geen artiesten op Un-Mute. Kom snel terug!
+  intro: Welkom in de catalogus van de Belgische artiesten van Un-Mute! Ontdek zowel het profiel als de biografie van elke artiest en kies degene die je binnenkort in concert wilt zien! <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier is het !</a>”>Wil je een evenement voor een artiest voorstellen?</a>
+  join_us: Wilt u zich als artiest registreren? <a href="%url%">Maak een profiel aan</a>.Over een paar minuten, maakt je je Un-Mute-identiteit.
+
+catalog_events:
+  prevalidation:
+    title: Evenementen in pre-validatie
+    intro: De volgende evenementen zijn in pre-validatie; ze zijn alleen zichtbaar voor de artiesten die ze hosten en de beheerders Un-Mute.
+  empty:
+    title: Un-Mute evenementen
+    content: Er zijn op dit moment geen evenementen om te ondersteunen. Kom snel terug voor nieuws en blijf op de hoogte dankzij.<a href="%facebook_url%">onze Facebookpagina.</a>
+    contact-us: Als je een artiest bent en dat je een microfestival met Un-Mute wilt organiseren, <a href="%contact_url%"> neem dan contact met ons op</a>.
+  running:
+    title: Festivals die worden gefinancierd
+    #new
+    intro:  De volgende evenementen moeten nog ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
+  confirmed:
+    title: Bevestigde festivals
+
+login:
+  necessary_for_tickets: U moet aangemeld zijn om tickets te kopen!
+  not_subscribed_yet: Nog niet ingeschreven ?
+  login: Verbinding
+
+event:
+  og_title: Festival Un-Mute met %artist%
+  title: Festival Un-Mute met %artist%
+  generic_name: Festival Un-Mute met %artist%
+  lastday:
+    tickets: Dit is de laatste kaartverkoop dag voor dit evenement!
+    deadline: Dit is de laatste dag waarop je %artist% kunt helpen om zijn doel te bereiken door kaarten te kopen. Morgen zul je weten of dit festival is bevestigd of niet.
+    promo: "Tijdens de eerste week van de verkoop, dat wil zeggen tot %end_date% om middernacht, is dit evenement te koop: voor %nb_organic_needed% gekochte tickets ontvangt u %nb_promotional% !"
+  prevalidation: "Dit evenement bevindt zich in pre-validatie. Zijn pagina zal alleen openbaar worden gemaakt als 10% van de kaarten verkocht is en dan zal er nog een maand zijn om de 100% te bereiken die nodig zijn voor de realisatie van het festival. Tijdens de pre-validatie staan de tickets op promotie 3 + 1."
+  infos:
+    title: Infos
+    date: Datum van het festival
+    opening_date: Begin van de verkoop
+    closing_date: Einde van de verkoop
+    validation_date: Validatie datum
+    step: Zaalcategorie
+    state: Verkoopstatus
+    province: Festival regio
+    no_province: Zonder voorkeur
+    tickets_sold: Tickets gekocht door producenten
+    tickets_left: Tickets nog te koop
+    tickets_objective: Aantal kaartjes dat nodig is voor de concretisering van het festival
+  about_host:
+    title: Over de gastartiest
+    genres: Muzikale stijlen
+    see_profile: Profiel bekijken
+  state:
+    success:
+      pending: Doel behaald
+      passed: Doel behaald
+      ongoing: Doel behaald
+      closed:  Doel behaald
+      soldout:
+        soldout: Doel behaald (SOLD OUT)
+        pending: Doel behaald (SOLD OUT)
+    refunded: Geannuleerd
+    failed: Doel niet behaald
+    ongoing: Bezig
+    pending: Wordt onderzocht door het Un-Mute-team
+    test_period: In pre-validatie
+  stillselling: Plaatsen te koop
+  lineup:
+    title: Line-up
+    host: Gastartiest
+    invited: Uitgenodigd artiest
+    tbc: Binnenkort aangekondigd
+  buy_tickets:
+    tickets_left: %tickets% tickets beschikbaar
+    title:  Koop je tickets
+    over: Het is niet mogelijk om kaartjes voor dit evenement te kopen.
+  hall:
+    known: Locatie van het festival
+    unknown: Partnerzalen
+  #new
+  description: "Ontdek drie opkomende artiesten op een Un-Mute-festival. Headliner : %host%"
+
+#new
+conditions:
+  last_update: "Laatste update gemaakt op : %date%"
+  accept_last:
+    intro: Onze algemene voorwaarden zijn veranderd sinds uw laatste bezoek. Om door te gaan met navigeren, moet u uw overeenkomst markeren.Nos conditions générales ont évolué depuis votre dernière visite.
+
+
+faq:
+  title: FAQ
+  confirmed_show:
+    question: Wat bedoel je met bevestigd concert?&nbsp;?
+    answer: UUn-Mute onderscheidt "evenementen", die een poging van een artiest zijn om een concert op een bepaalde datum te deblokkeren van "bevestigde concerten", een evenement waarvoor genoeg producenten aan het einde van de tijdslimiet tickets hebben gekocht.
+  minimum_tickets:
+    question: Hoeveel tickets moet een artiest verkopen om een concert te deblokkeren?
+    answer: |
+      Onze concerten vinden plaats in zalen van verschillende groottes. We hebben ze gegroepeerd in categorieën.
+
+      Afhankelijk van de zaalcategorie die een artiest kiest wanneer hij een evenement maakt, moet hij een bepaald aantal tickets voor zijn concert verzamelen om te bevestigen.
+    metric_minimum: "#tickets minimum"
+    metric_maximum: "#tickets maximum"
+    hall_examples: Voorbeelden van zalen
+    depends: Hangt af van de zaal
+  multilocal:
+    question: Je zegt dat je maximaal tot twee extra concerten kunt organiseren eens één concert is gedeblokkeerd, hoe is dat mogelijk?
+    answer: |
+      Un-Mute biedt in zijn budgetten de vergoeding van de kosten voor de artiest die het evenement heeft gestart, maar ook voor de voorprogramma’s.
+
+      Door het rekening houden met de beloning van voorprogramma's, kan Un-Mute het principe van multi-local touring ontwikkelen.
+
+      Met andere woorden, aangezien elke artiest die een concert deblokkeert, deblokkeert eigenlijk ook het budget om twee voorpgramma's te betalen, dat hij vol is met zijn fanbase, stelt Un-Mute twee andere artiesten voor die lid zijn van het platform. Als tegenprestatie krijgt de artiest de gelegenheid om de eerste delen te spelen, in de zalen die worden gevuld door de fans van zijn twee uitgenodigde artiesten.
+  cancelling:
+    question: Helaas kan ik niet naar een concert gaan dat ik co-produceerde. Wat kan ik doen?&nbsp;?
+    answer: Als u na de bevestiging niet meer naar een concert kunt gaan, is de terugbetaling niet meer mogelijk. Maar Un-Mute geeft u de kans om een bevestigd ticket te vervangen door een ticket voor elk ander bevestigd concert.
+
+threeds:
+    title: Uw betaling
+    pending_stripe: <b>Verlaat UnMute.be niet tijdens de operatie.</b> Even geduld aub, uw aanvraag wordt verwerkt. Uw betaling wordt binnen enkele seconden gevalideerd...
+    pending: Betaling is bezig ... <b>Verlaat deze pagina niet tijdens het verwerken van uw betaling.</b>
+    # In the next line, it is important to keep the href attribute between simple quotes as this text is used in JS surrounded by double quotes.
+    error: De 3D Veilige authenticatie van uw creditcard is mislukt. Betaling en uw bestelling zijn geannuleerd. Click <a href='%backUrl%'>hier</a> om terug te komen.
+    unknown_error: Er is een onbekende fout opgetreden tijdens 3D Secure-verificatie.
+
+pay_cart:
+    title: Betaling van uw bestelling
+    intro: |
+        <p>
+            Welkom bij het beveiligde gedeelte van Un-Mute, %firstName%. Hier kunt u uw tickets betalen en de artiesten steunen die u tijdens uw bezoek hebben overtuigd.        </p>
+
+        <p>
+            Bij het betalen van deze items, verzekert u dat u de <a target="_blank" href="%conditionsUrl%"> algemene verkoopvoorwaarden </a> hebt gelezen.
+            Ter herinnering, uw tickets worden terugbetaald als er niet genoeg andere producenten zijn die deze artiest ondersteunen.
+            Anders, als dit evenement succesvol is, ontvangt u uw tickets een paar dagen voor het festival per e-mail en op Un-Mute.
+        </p>
+    conditions:
+        error: U moet de algemene voorwaarden accepteren om door te gaan.
+        label: Ik accepteer de algemene voorwaarden en ik wil graag betalen
+    methods:
+        creditcard: Creditcard
+        bancontact: Bancontact
+    proceed:
+        threeds:
+            error: Er is een fout opgetreden. Probeer het later opnieuw en waarschuw een Un-Mute-beheerder als het probleem aanhoudt.
+            pending: <b>Verlaat UnMute.be niet tijdens de operatie.</b> Even geduld aub, uw aanvraag wordt verwerkt.
+        creditcard:
+            title: Betaling met creditcard
+            popover:
+                title: Geautoriseerde kaarten
+                content: Onze betalingen worden beveiligd door de Stripe-interface. Wij accepteren alle creditcards.
+                apparent: Meer infos
+            labels:
+                creditcard: Creditcard
+                exp: Vervaldatum.
+                cvc: Visueel cryptogram
+            submit: Met mijn creditcard betalen
+        bancontact:
+            title: Met Bancontact betalen
+            popover:
+                title: Geautoriseerde kaarten
+                content: Onze betalingen worden beveiligd door de Stripe-interface. Wij accepteren alle belgische creditcards.
+                apparent: Meer infos
+            info: U wordt doorverwezen naar de pagina voor betalingsautorisatie van uw bankoperator.
+            submit: Verder met Bancontact gaan.
+            pending: U wordt doorgestuurd naar de autorisatiepagina van uw bank. Als er niets gebeurt, probeert u het opnieuw.
+    recap:
+        promo_title: Promotie
+        title: Uw tickets
+        labels:
+            counterpart: Type
+            concert: Festival
+            date: Datum
+            quantity: Aantal
+            unitprice: Eenheidsprijs
+            total: Totaal
+        total: "[0,1] Totaal voor %count% ticket| [2, Inf[ Totaal voor %count% tickets"
+    #new
+    not_authenticated:
+      intro: Om uw bestelling te voltooien, moet u aangemeld zijn bij Un-Mute.
+      signin_label: Ik heb een account op Un-Mute
+      signup_label: Ik heb nog geen Un-Mute-account
+
+my_orders:
+    title: Mijn bestellingen
+    empty: Je hebt nog geen bestelling geplaatst. Ontdek onze <a href="%catalog_url%">artiesten</a> en ondersteun <a href="{{ path('catalog_crowdfundings') }}">hun evenementen</a> !
+    labels:
+        details: Detail
+        state: Status
+        date: Datum
+        quantity: Aantal
+        unitprice: Prijs
+        totalprice: Totale prijs
+        order: Bestelling
+        tickets: Tickets
+
+notifs:
+    title: Mijn aanmeldingen
+    empty: U heeft nog geen afmelding gekregen.
+    see_more: Zie meer
+
+new_artist:
+  title: Nieuw artiest
+  intro: |
+      Als u een artiest wilt maken op Un-Mute, vult u het volgende formulier in. We nemen contact met je op voordat je het profiel dat je hebt gemaakt openbaar maakt.
+      In de tussentijd kun je foto's en video's aan deze artiest toevoegen en zijn profiel uitbreiden.
+  warning: Door een artiest te maken, verklaar je dat je de vertegenwoordiger bent, of een van de leden als het een groep is.
+  urls_explanation: Voer in de volgende velden uw mogelijke links in als geldige URL's<strong>die beginnen met<em>http://</em> of <em>https://</em></strong>
+  #new
+  phone_explanation: Als u een telefoonnummer invult, wordt dit alleen door het Un-Mute-team gebruikt om contact met u op te nemen. Dit nummer wordt niet openbaar gemaakt.
+
+my_artists:
+  title: Mijn artiesten
+  intro: |
+      Je bent een muzikale artiest? Je bent lid van een groep?
+      Maak je identiteit op Un-Mute en organiseer je concerten zonder risico te nemen.
+  new_event: Creëert een evenement
+  new_artist: Creëert een artiest
+  no_available_artist: "Noot : je kunt geen nieuw evenement voor je artiest (en) creëeren omdat al je artiesten al op een ander evenement draaien."
+
+profile:
+  title: Mijn profiel
+  see:
+    title: Mijn profiel kijken
+  edit:
+    title: Mijn profiel wijzigen
+  change_password:
+    title: Mijn wachtwoord veranderen
+  change_email:
+    title: Mijn E-mail veranderen
+  advanced:
+    title: Geavanceerde opties
+    deletion:
+      warning: Let op, deze actie is onomkeerbaar!
+      cancel: Annuleren
+      title: Account verwijderen
+      explanation: |
+          Door uw account te sluiten, vraagt u om uw gegevens te verwijderen van het Un-Mute-platform.
+          Deze zullen niet langer worden opgenomen in onze database, in overeenstemming met de geldende wetgeving.
+          Je wordt niet teruggenomen in de eigenaren van de artiesten waarvan je momenteel deel uitmaakt van de managers en heeft dus geen toegang meer hebt tot hun management.
+      checkbox: Ik wil mijn account verwijderen
+      confirm: Mijn account verwijderen
+
+artist_profile:
+  title: Het profiel van de artiest bewerken %artist%
+  menu:
+    edit: Algemene info
+    profile_pic: Profielfoto
+    other_pics: Andere photos
+    medias: Videos
+    owners: Eigenaars
+    see: Zie profiel
+    leave: Verlaat de artiest
+  see:
+    #new
+    deleted:
+      title: Artiest verwijderd
+      content: Deze artiest is verwijderd door de eigenaren. Zijn profiel is niet langer toegankelijk.
+    invisible:
+      content: Het profiel van deze artiest is niet openbaar.
+    #new
+    owned:
+      to_be_examined: Het profiel van uw artiest moet worden geverifieerd door een beheerder voordat deze openbaar wordt gemaakt. U wordt waarschijnlijk de komende dagen benaderd door een beheerder.
+      invisible: Het profiel van uw artiest is niet zichtbaar voor het grote publiek.
+      not_validated: Uw artiest is nog niet geverifieerd door een Un-Mute-beheerder, maar zijn pagina is al openbaar.
+    tabs:
+      profile: Profiel
+      biography: Biografie
+      edition: Editie
+    short_description: In enkele woorden
+    genres: Muzikale stijlen
+    videos:
+      title: Videos
+      empty: Deze artiest heeft nog geen video's om te laten zien.
+    links:
+      title: Links
+      website: Website kijken
+      spotify: Volgen op Spotify
+      twitter: Volgen op Twitter
+      facebook: Volgen op Facebook
+      instagram: Volgen op Instagram
+      soundcloud: SoundCloud profiel kijken
+      bandcamp: Bandcamp profiel kijken
+    current_event: Aankomende evenement
+    passed_events: Afgelopen evenementen
+  profile_pic:
+    intro: |
+        Hier kunt u de profielfoto van %artist% uploaden.
+        Deze foto verschijnt als eerste op de verschillende afbeeldingen van deze artiest op Un-Mute.
+        Zorg ervoor dat het van goede kwaliteit is en dat het afmetingen heeft van type 4 (breedte) / 3 (lengte).
+    to_other_pics: Wil je meer foto's toevoegen aan je artiest? <a href="%url%">Voeg er maximaal 5 toe</a>
+  other_pics:
+    intro: Voeg hier maximaal 5 extra foto's toe aan je artiest. Kies afbeeldingen van goede kwaliteit en voorkeur die de verhouding 4 (breedte) / 3 (hoogte) volgen.
+  medias:
+    add_video: Voeg een video toe
+    remove_video: Video verwijderen
+
+validate_ownership:
+  title: Lid worden
+  cancelled: Dit verzoek is geannuleerd door de uitgever.
+
+owners:
+  my_role:
+   title: Uw rol binnen de artiest
+   label: Uw rol voor de artiest "%artist%"
+  others:
+    title: Andere eigenaars
+    role_label: Rol
+    pending: wachten op bevestiging
+    added_by: toegevoegd door
+    cancel: annuleren
+  add:
+    title: Eigenaars toevoegen
+    intro: "Hier kunt u andere Un-Mute-gebruikers toevoegen aan het beheer van deze artiest. Twee gevallen zijn mogelijk :"
+    case_1: Als ze al een Un-Mute-account hebben, kunnen ze eenvoudig je verzoek accepteren en als eigenaar worden toegevoegd.
+    case_2: Anders geen probleem! Ze worden per e-mail uitgenodigd om zich te registreren op Un-Mute en vervolgens om uw aanvraag te accepteren.
+    button: Voeg een eigenaar toe
+  delete: Verwijderen
+
+new_event:
+  title: Lancering van een nieuw evenement
+  empty: Je hebt geen artiest beschikbaar om een nieuw evenement te starten. Wil je een <a href="%url%"> nieuwe artiest creëren</a>
+  step: Stap
+  step_1:
+    intro: |
+      Kies een artiest, een provincie en een festivalniveau. Data zullen aan u worden voorgesteld volgens de beschikbaarheid van de zalen. De ruimte waar het festival zal worden gehouden, wordt bekendgemaakt zodra het doelstelling van de crowdfunding bereikt is.
+  step_3:
+    recap:
+      artist: Artiest
+      province: Provincie
+      date: Gekozen datum
+      motivations: Motivaties
+      additional_info: Informaties voor Un-Mute
+  step_2:
+    date_preview: "Gekozen datum : "
+
+leave_artist:
+  intro: Op deze pagina heb je de mogelijkheid om het management van deze artiest te verlaten. Als u de laatste eigenaar bent, wordt de artiest permanent verwijderd uit de Un-Mute-catalogus.
+  warning : Let op, deze actie is onomkeerbaar!
+  checkbox: Ik wil het beheer van %artist% verlaten
+  last:
+    warning: Jij bent de laatste eigenaar van %artist%. Als je doorgaat, wordt de artiest verwijderd uit de catalogus van het platform.
+    busy: Je kunt deze artiest momenteel niet verlaten omdat je de laatste eigenaar bent en een evenement met deze artiest is momenteel tickets aan het verzamelen.
+  cancel: Annuleren
+  confirm: %artist% verlaten
+
+order_pdf:
+  title: Samenvatting van uw bestelling
+  intro: Bedankt voor het plaatsen van een bestelling voor festivaltickets met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar contact@un-mute.be
+  promo: "Opmerking: voor elke bestelling geplaatst tijdens de eerste week van kaartverkoop voor dit evenement (dwz tot  %end_date%), met %nb_organic_needed% gekochte tickets, ontvangt u er %nb_promotional%."
+  labels:
+    order_date: Bestelling datum
+    event: Evenement ondersteund
+    event_date: Datum van de evenement
+    total_amount: Totale bedrag
+    nb_tickets: Aantal tickets gekocht
+    nb_tickets_promo: Aantal extra tickets verkregen per promotie
+  details:
+    title: Details van de bestelling
+    labels:
+      counterpart: Artiekel
+      quantity: Aantal
+      unit_price: Eenheidsprijs
+      total_price: Prijs
+      promo: promotie
+  process:
+      title: Un-Mute aankoopproces
+      content: U krijgt de volledige betaling terug als de ondersteunde artiest ten minste geen %min_tickets% Un-Mute-tickets voor dit festival kan verkopen. Voor meer informatie over ons aankoopproces, verwijzen wij naar onze algemene voorwaarden op <a href="https://un-mute.be">https://un-mute.be</a>
+  footer:
+      tracking: "Deze orderbevestiging is gegenereerd op %date%. Bestel-ID: %id%"
+
+#new
+tickets_pdf:
+  ticket:
+    title: Festival Un-Mute @%hall_name%
+    is_entry: |
+        Dit ticket is uw toegangsprijs.
+        Bedankt om het op een leesbaar medium te presenteren.
+  conditions: |
+    - Het toegangsbewijs is alleen geldig voor de plaats en datum vermeld op het ticket en zal worden onderworpen aan verificatie.
+    - Presenteer de QR-code van het ticket op een zichtbare manier om het scannen op de avond van het evenement te vergemakkelijken. Een kaartje is niet geldig zonder zijn barcode.
+    - Elk toegangsbewijs kan maar één keer worden gebruikt en heeft maar één toegang tot het festival. Als dezelfde QR-code meerdere keren wordt ingediend, wordt alleen de eerste persoon die het ticket aanbiedt toegelaten
+    - Elke poging om een ticket te hergebruiken of te kopiëren, wordt beschouwd als fraude. Misbruik of namaak zal worden voortgezet. Opmerkingen over de tickets kunnen niet worden gewijzigd. Houders van aangepaste tickets kunnen toegang worden geweigerd.
+    - Er kan een geldig officieel identiteitsbewijs met pasfoto worden aangevraagd om de kaarthouder te identificeren.
+    - De toegangskaarten zijn gereserveerd voor privégebruik en mogen niet aan derden worden verkocht voor commerciële doeleinden of voor een andere prijs dan de officiële verkoopprijs.
+    - Dit toegangsbewijs kan niet worden geruild en kan niet worden gerestitueerd en kan niet worden vervangen in geval van verlies, diefstal of vernietiging.
+    - De algemene voorwaarden kunnen worden geraadpleegd op <a href="%conditionsUrl%">%termenUrl%</a>.
+
+notices:
+  edition: De wijzigingen zijn opgeslagen.
+  event_create: Je evenement is gecreëerd. Verzamel nu producenten die u in zijn organisatie kunnen ondersteunen!
+  #new
+  artist_create: De artiest %artist% is gecreërd. Het is momenteel niet zichtbaar op de plateform behalve door u; het Un-Mute-team neemt de komende dagen contact met u op.
+  artist_role: Je rol is opgeslagen.
+  # Next line : uitnodiging om beheerder te worden van een specifieke artiest op Un-Mute
+  artist_ownership_requests: De uitnodigingen zijn verzonden.
+  artist_ownership_request_cancel: Uitnodiging geannuleerd.
+  artist_ownership_request_accepted: Gefeliciteerd, je maakt nu deel uit van de artiesten beheerders van%artist%.
+  artist_ownership_request_refused: Uw keuze is opgeslagen.
+  artist_leave_last: Je hebt het beheer van %artist% verlaten. Jij was de laatste eigenaar van deze artiest; het is van het platform verwijderd.
+  artist_leave: Je hebt het beheer van %artist% verlaten.
+  payment: Uw betaling is ontvangen. U ontvangt per e-mail een samenvatting. Je tickets worden verzonden als de artiest %artist% dit festival kan deblokkeren.
+  change_email_request: Uw aanvraag is ontvangen Om de wijziging van het e-mailadres te valideren, moet u op een koppeling klikken die naar het nieuwe aangevraagde adres is verzonden.
+  change_email_logged_out: Uw email is gewijzigd; blijkbaar was je ingelogd met een ander account, dus hebben je uitgelogd.
+  change_email: Uw e-mailadres is gewijzigd.
+  account_deletion: Uw Un-Mute-account is verwijderd. Weet dat je altijd een nieuwe kunt creëren als je dat wilt. Veel succes!
+  change_password: Uw wachtwoord is gewijzigd
+  #new
+  social:
+    connection_email_confirmed: Je bent nu verbonden.
+    connection_email_new_account: We hebben uw Facebook-account gekoppeld aan het bestaande Un-Mute-account voor %email%.
+    connection_oauth_confirmed: U bent nu verbonden via uw Facebook-account.
+    registration_success: Uw Un-Mute-account is aangemaakt met uw Facebook-gegevens. Je kunt op elk gewenst moment een wachtwoord instellen op je profielpagina als je ook verbinding wilt kunnen maken met Un-Mute zonder via Facebook te gaan.
+  proposition: Uw voorstel is ontvangen en zal zo snel mogelijk worden verwerkt.
+  #new
+  registration: Uw registratie is opgeslagen. U kunt nu overschakelen naar betaling. Houd er rekening mee dat u een e-mail hebt ontvangen met een activatielink voor uw account. U moet op deze link klikken om later verbinding te maken met het platform.
+
+errors:
+  change_email_token_expired: Dit token is verlopen.
+  change_email_used_since: Het gevraagde e-mailadres wordt al door een ander lid gebruikt sinds uw verzoek.
+  change_email_already_used: Dit e-mailadres is al gekoppeld aan een Un-Mute-account.
+  order_changed: Je hebt je bestelling veranderd; bedankt dat je weer bent begonnen.
+  order_changed_counterparts: <strong>Betaling geannuleerd</strong> Je hebt in de tussentijd andere tickets proberen te bestellen. Probeer het opnieuw door het in één keer te betalen, zonder andere tickets tegelijkertijd te bestellen.
+  event_uncrowdable: Het is niet langer mogelijk om aan dit evenement bij te dragen.
+  order_max: Het is niet mogelijk om dit aantal kaartjes voor dit evenement te bestellen.
+  order_max_promo: Het is niet langer mogelijk om zoveel kaartjes te bestellen. Probeer het opnieuw door minder tickets te bestellen.
+  problematic_cart: Uw winkelwagen bevat verlopen artikelen; we zullen het updaten.
+  stripe:
+    card: Er is een fout opgetreden met uw kaart. Probeer het opnieuw (we hebben het team op de hoogte gebracht van deze fout).
+    rate_limit: Te veel gelijktijdige vragen, probeer het opnieuw (we hebben het team op de hoogte gesteld van deze fout).
+    invalid_request: Ongeldige instellingen, probeer het opnieuw (we hebben het team op de hoogte gebracht van deze fout).
+    authentication: Stripe-authenticatie mislukt, probeer het opnieuw (we hebben het team op de hoogte gebracht van deze fout).
+    api_connection: Er is een fout opgetreden met het betalingssysteem. Probeer het opnieuw (we hebben het team van deze fout op de hoogte gebracht).
+    generic: Er is een fout opgetreden met het betalingssysteem. Probeer het opnieuw (we hebben het team van deze fout op de hoogte gebracht).
+    other: Er is een onbekende fout opgetreden; probeer het opnieuw (we hebben het team op de hoogte gebracht van deze fout).
+
+infos:
+  new_event_temp: Beste artiest, bedankt voor het tonen van uw interesse in Un-Mute. Om je eerste festival bij ons te organiseren, nodigen we je uit om het volgende formulier in te vullen, dat we zo snel mogelijk zullen beantwoorden, of een e-mail sturen naar contact@un-mute.be.
+
+html.email.head.link.to.web.view.text.%url%: Zie in de browser
+txt.email.head.link.to.web.view.text.%url%: Zie in de browser
+
+ie:
+  warning: Blijkbaar gebruikt u een oude browser. Om volledig te profiteren van de functies van deze site, moet u deze bijwerken!
+
+noscript:
+  warning: Om volledig gebruik te maken van de functies van deze site, activeert u uw JavaScript.
+
+labels:
+  address:
+    city: Stad
+    country: Land
+    number: Nummer
+    street: Straat
+    zipcode: Postcode
+
+  artist:
+    accept_conditions: Ik heb de gebruiksvoorwaarden van het Un-Mute-platform gelezen en ga hiermee akkoord
+    artistname: Scenenaam
+    bandcamp: Bandcamp link
+    biography: Biografie
+    facebook: Facebook link
+    genres: Muziekstijlen
+    province: Provincie van afkomst
+    short_description: Korte beschrijving  (minder dan 255 tekens)
+    soundcloud: SoundCloud link
+    spotify: Spotify link
+    submit: Bevestigen
+    twitter:  Twitter link
+    website: Website
+    #new
+    phone: Telefoonnummer
+    leave:
+      submit: %artist%verlaten
+
+  artist_medias:
+    submit: Wijzingen opnemen
+
+  artist_ownerships:
+    submit: Eigenaars opnemen
+
+  ownershiprequest:
+    accept: Dit voorstel accepteren
+    refuse: Dit voorstel weigeren
+
+  suggestionbox:
+    email: E-mail adres
+    #new
+    phone: Telefoonnummer
+    name: Naam
+    firstname: Voornaam
+    mailcopy: Ontvang een kopie van het bericht per e-mail
+    message: Bericht
+    object: Onderwerp
+    submit: Verzenden
+    type: Bericht type
+
+  user:
+    firstname: Voornaam
+    lastname: Naam
+    newemail:
+      submit: Mijn e-mail adres veranderen
+    newsletter: Ik wil graag nieuwsbrieven en andere commerciële communicatie ontvangen van Un-Mute Asbl
+    preferences:
+      submit: Bewaren
+    profile:
+      firstname: Voornaam
+      lastname: Naam
+      submit: Bewaren
+    accept_conditions: Ik accepteer de gebruiksvoorwaarden
+    askedEmail:
+      first: Nieuw e-mailadres aangevraagd
+      second: Herhaal het nieuwe e-mailadres
+    advanced:
+      confirm: Mijn account verwijderen
+
+  artist_user:
+    submit: Bewaar rol
+
+  concertpossibility:
+    date: Festival datum
+    hall: Zaal waar het festival wordt gehouden
+
+  contractartist:
+    flow_1: Keuze van de zaal
+    flow_2: Keuze van de datum
+    flow_3: Bevestiging
+    accept_conditions: Ik heb de gebruiksvoorwaarden gelezen en ga hiermee akkoord
+    artist: Artiesten om te produceren
+    motivations: Uw motivaties (zij worden gecommuniceerd aan potentiële producenten)
+    province: Provincie waarin de artiest wordt geproduceerd
+    step: Type festival gezocht
+
+  contractartistpossibility:
+    additional_info: Aanvullende informatie die naar Un-Mute-organisatoren verzonden moet worden.
+
+  contractfan:
+    submit: Bestelling bevestigen.
+
+  video:
+    url: "URL van de video (geaccepteerde adressen: Youtube / Vimeo / Dailymotion))"
+
+  #new
+  conditions:
+    accept_new: Ik heb de laatste  <a href="%conditionsUrl%" target="_blank"> gebruiksvoorwaarden van het Un-Mute-platform </a>gelezen en ga hiermee akkoord.
+    submit: Accepteer en ga verder op de site
+    logout: Ik wens me ontkoppelen
+#new
+  proposition_hall:
+    name: Naam van de zaal
+    contact_email: email adres
+    contact_phone: Telefoonnummer
+    province: Regio van de zaal
+  contact_person:
+    firstname: Voornaam
+    lastname: Naam
+    phone: Telefoonnummer
+    mail: email adres
+  proposition_artist:
+    artistname: Naam van de artiest of de groep
+    demo_link: Muzikaal fragment (Youtube-link of andere)
+    genres: Muziekstijlen
+  proposition_contract_artist:
+    province: Regio
+    reason: Reden voor het evenement
+    nb_expected: Aantal verwachte mensen
+    period_start_date: Startdatum
+    period_end_date: Eindedatum
+    day_commentary: Voorkeur op de dag(en) van de week
+    commentary: Commentaar
+    submit: Verzenden
+    artists: Artiest
+    payable: Ingang moet betalend zijn
+    ask_if_concert : Is dit een voorstel voor een evenement?
+    ask_if_artist : Bestaat de artiest al op het platform?
+    ask_if_hall : Kent u de ruimte al waar het evenement plaats zal vinden?
+
+placeholders:
+  proposition_contract_artist:
+    year: Jaar
+    month: Mand
+    day: Dag
+
+choices:
+  proposition_contract_artist:
+    yes: Ja
+    no: Nee
+
+proposition:
+  title: Voorstel Un-Mute evenement
+  intro: Un-Mute is altijd op zoek naar nieuwe evenementen en artiesten om te benadrukken. Heb je een idee van een evenement? Laat het ons weten. Het Un-Mute-team zal uw verzoek zo snel mogelijk bestuderen.
+  contact_person: Contactpersoon
+  artist: Artiest
+  event: Praktische informatie van het evenement
+  place: Locatie van het evenement
+  explication: Vul alleen de startdatum in als u één datum wilt invullen en beide datums als uw evenement een bepaalde tijd kan duren.
+redirection: Als u geen voorstel voor een evenement wilt indienen, maar contact met ons wilt opnemen of een nieuwe zaal wilt voorstellen, nodigen we u uit om <a href="%url%"> dit formulier </a> in te vullen.

@@ -59,11 +59,18 @@ class PDFWriter
         $this->write(self::ORDER_TEMPLATE, $cf->getPdfPath(), ['cf' => $cf, 'user_rewards' => $cf->getUserRewards()]);
     }
 
-    public function writeTickets($path, $tickets) {
-        $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets]);
+    public function writeTickets($path, $tickets, $agenda = []) {
+        if(!empty($tickets)) {
+            // We know all tickets are for same event
+            $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
+        }
     }
 
-    public function writeTicketPreview(ContractFan $cf) {
-        $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $cf->getTickets()], 'D');
+    public function writeTicketPreview(ContractFan $cf, $agenda = []) {
+        $tickets = $cf->getTickets();
+
+        if(!empty($tickets)) {
+            $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda], 'D');
+        }
     }
 }

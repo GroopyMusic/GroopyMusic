@@ -37,7 +37,6 @@ class SuggestionTypeEnumAdmin extends BaseAdmin
         $formMapper
             ->with('Champs traductibles')
             ->add('translations', TranslationsType::class, array(
-                'locales' => array('fr', 'en'),
                 'fields' => [
                     'name' => [
                         'label' => 'Type',
