@@ -113,6 +113,23 @@ class SponsorshipService
         //$this->em->flush();
     }
 
+    public function getSponsorshipSummaryForUser($user)
+    {
+        $sponsorships = $this->em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipSummary($user);
+        $invited = [];
+        $confirmed = [];
+        foreach ($sponsorships as $sponsorship) {
+            if ($sponsorship->getTargetInvitation() == null) {
+                array_push($invited, $sponsorship->getEmailInvitation());
+            } else {
+                if ($sponsorship->getTargetInvitation()->getDeleted() == false) {
+                    array_push($confirmed, $sponsorship->getTargetInvitation()->getEmail());
+                }
+            }
+        }
+        return [$invited, $confirmed];
+    }
+
     private function verifyEmails($emails)
     {
         $userRepository = $this->em->getRepository('AppBundle:User');

@@ -132,13 +132,14 @@ class UserController extends Controller
     /**
      * @Route("/paid-carts", name="user_paid_carts")
      */
-    public function paidCartsAction(UserInterface $user)
+    public function paidCartsAction(Request $request, UserInterface $user)
     {
         $em = $this->getDoctrine()->getManager();
         $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
 
         return $this->render('@App/User/paid_carts.html.twig', array(
             'carts' => $carts,
+            'is_payment' => $request->get('is_payment')
         ));
     }
 
@@ -586,30 +587,59 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/api/send-sponsorship-invitation/{id}", name="user_ajax_send_sponsorship_invitation")
+     * @Route("/api/send-sponsorship-invitation", name="user_ajax_send_sponsorship_invitation")
      */
-    public function sendSponsorshipInvitation(Request $request, UserInterface $user, ContractArtist $contract, SponsorshipService $sponsorshipService, TranslatorInterface $translator)
+    public function sendSponsorshipInvitation(Request $request, LoggerInterface $logger, UserInterface $user, SponsorshipService $sponsorshipService, TranslatorInterface $translator)
     {
-        $alreadyKnownEmails = [];
         $em = $em = $this->getDoctrine()->getManager();
-        if ($user == null) {
-            return new Response($translator->trans('notices.sponsorship.send_sponsorship.not_connected',[]), 500);
-        }
-        if ($contract->isSoldOut() && $contract->isCrowdable()
-            && $em->getRepository('AppBundle:ContractArtist')->isValidForSponsorship($contract->getId())) {
-            return new Response($translator->trans('notices.sponsorship.send_sponsorship.event_not_valid',[]), 500);
-        }
         try {
+            if ($user == null) {
+                return new Response($translator->trans('notices.sponsorship.send_sponsorship.not_connected', []), 500);
+            }
+            $contract = $em->getRepository('AppBundle:ContractArtist')->find(intval($request->get('contractArtist')));
+            if ($contract == null
+                || $contract->isSoldOut()
+                || !$contract->isCrowdable()
+                || $em->getRepository('AppBundle:ContractArtist')->isValidForSponsorship($contract->getId()) == null) {
+                return new Response($translator->trans('notices.sponsorship.send_sponsorship.event_not_valid', []), 500);
+            }
             $response = $sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('content'), $contract, $user);
-            return new JsonResponse(array(
+            return $this->redirectToRoute('user_ajax_display_sponsorship_invitation_modal', array(
                 'success' => $response[0],
                 'emails' => $response[1],
-                'message' => $translator->trans('notices.sponsorship.send_sponsorship.success',[]),
-                'warning_message' =>  $translator->trans('notices.sponsorship.send_sponsorship.warning_message',[])),
-                200);
+                'success_message' => $translator->trans('notices.sponsorship.send_sponsorship.success', []),
+                'warning_message' => $translator->trans('notices.sponsorship.send_sponsorship.warning_message', []),
+                'defined' => $request->get('defined')
+            ));
         } catch (\Throwable $th) {
-            return new Response($translator->trans('notices.sponsorship.send_sponsorship.error',[]), 500);
-            //return new Response($th->getMessage(), 500);
+            $logger->warning('error', [$th->getMessage()]);
+            return new Response($translator->trans('notices.sponsorship.send_sponsorship.error', []), 500);
         }
+    }
+
+    /**
+     * @Route("/api/display-sponsorship-invitation-modal", name="user_ajax_display_sponsorship_invitation_modal")
+     */
+    public function displaySponsorshipModalAction(Request $request, UserInterface $user, SponsorshipService $sponsorshipService, LoggerInterface $logger)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $defined = $request->get('defined');
+        $contracts = [];
+        if ($defined == false || $defined == null || $defined == 'false') {
+            $defined = false;
+            $contracts = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
+        }
+        $result = $sponsorshipService->getSponsorshipSummaryForUser($user);
+        $logger->warning('tst', [$defined]);
+        return $this->render('@App/User/sponsorship_invitations_modal.html.twig', array(
+            'event_is_define' => $defined,
+            'contracts' => $contracts,
+            'invited' => $result[0],
+            'confirmed' => $result[1],
+            'success' => $request->get('success'),
+            'emails' => $request->get('emails'),
+            'success_message' => $request->get('success_message'),
+            'warning_message' => $request->get('warning_message')
+        ));
     }
 }

@@ -40,8 +40,14 @@ class RankingService
 
         $categories = $this->em->getRepository('AppBundle:Category')->findLevelsByCategories();
         $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeleted();
-        $statistics = $this->mergeStatistics($this->em->getRepository('AppBundle:User')->countUsersStatistic(), $this->em->getRepository('AppBundle:User')->countUserAmbassadoratStatistic());
-        $this->logger->warning('lol', $statistics);
+
+        $statistics = $this->mergeStatistics(
+            $this->em->getRepository('AppBundle:User')->countUsersStatistic(),
+            $this->em->getRepository('AppBundle:User')->countUserAmbassadoratStatistic(),
+            $this->em->getRepository('AppBundle:User')->countValidateSponsorshipInvitation(),
+            $this->em->getRepository('AppBundle:User')->countSponsorshipInvitation()
+        );
+
         foreach ($users as $user) {
             if ($exceptions > 5) {
                 $this->logger->warning("Number of exceptions > 5", []);
@@ -148,7 +154,7 @@ class RankingService
     {
         $formula_descriptions = [];
         foreach ($categories as $category) {
-            $formula_descriptions[$category->getId()] = strtr($category->getFormula(), $this->formulaParserService->querry_descritpions);
+            $formula_descriptions[$category->getId()] = strtr($category->getFormula(), $this->formulaParserService->getQuerryDescription());
         }
         return $formula_descriptions;
     }

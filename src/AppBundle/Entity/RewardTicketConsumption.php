@@ -40,7 +40,7 @@ class RewardTicketConsumption
 
     public function __toString()
     {
-        return '';
+        return "Une utilisation de " . $this->user_reward;
     }
 
     /**

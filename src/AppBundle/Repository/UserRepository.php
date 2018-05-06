@@ -87,7 +87,27 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   AND stc.paid = TRUE 
                   GROUP BY u.id
                   ')
-            ->setFirstResult(0)
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    public function countValidateSponsorshipInvitation(){
+        return $this->getEntityManager()->createQuery(
+            'SELECT u.id, COUNT(s.id) as v
+                  FROM AppBundle:User u INDEX BY u.id
+                  LEFT JOIN u.sponsorships s
+                  WHERE s.target_invitation IS NOT NULL
+                  GROUP BY u.id
+                  ')
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    public function countSponsorshipInvitation(){
+        return $this->getEntityManager()->createQuery(
+            'SELECT u.id, COUNT(si.id) as s
+                  FROM AppBundle:User u INDEX BY u.id
+                  LEFT JOIN u.sponsorships si
+                  GROUP BY u.id
+                  ')
             ->getResult(Query::HYDRATE_ARRAY);
     }
 

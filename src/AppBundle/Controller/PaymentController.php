@@ -178,7 +178,7 @@ class PaymentController extends Controller
     {
         $this->addFlash('notice', $translator->trans('notices.payment', ['%artist%' => $cf->getContractArtist()->getArtist()->getArtistname()]));
         if ($request->get('sponsorship')) {
-            $this->addFlash('notice', $translator->trans('notices.sponsorship.cart_success', [])); //TODO trad
+            $this->addFlash('notice', $translator->trans('notices.sponsorship.cart_success', []));
         }
         $writer->writeOrder($cf);
 
@@ -187,13 +187,13 @@ class PaymentController extends Controller
         $em->persist($cf);
         $em->flush();
 
-        return $this->redirectToRoute('user_cart_send_order_recap', ['id' => $cf->getId()]);
+        return $this->redirectToRoute('user_cart_send_order_recap', ['id' => $cf->getId(), 'is_payment' => true]);
     }
 
     /**
      * @Route("/cart/send-recap-{id}", name="user_cart_send_order_recap")
      */
-    public function sendOrderRecap(ContractFan $cf, MailDispatcher $dispatcher, TicketingManager $ticketingManager)
+    public function sendOrderRecap(Request $request, ContractFan $cf, MailDispatcher $dispatcher, TicketingManager $ticketingManager)
     {
         $dispatcher->sendOrderRecap($cf);
 
@@ -201,7 +201,7 @@ class PaymentController extends Controller
             $ticketingManager->sendUnSentTicketsForContractFan($cf);
         }
 
-        return $this->redirectToRoute('user_paid_carts');
+        return $this->redirectToRoute('user_paid_carts',['is_payment' => $request->get('is_payment')]);
     }
 
     /**

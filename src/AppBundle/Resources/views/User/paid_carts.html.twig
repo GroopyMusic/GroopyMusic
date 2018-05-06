@@ -2,7 +2,15 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="text-center">{{ 'my_orders.title'|trans|raw }}</h3>
+        <div class="text-center">
+            <h3 class="text-center">{{ 'my_orders.title'|trans|raw }}</h3>
+        </div>
+        <br>
+        <div class="text-right">
+            <button class="btn btn-primary btn-sm" onclick="displaySponsorshipInvitationModal(null,false)">Invitez des
+                amis(TOTRAD)
+            </button>
+        </div>
         <div class="content-box mt-4">
             <table class="table table-hover um-table content-box-content">
                 {% if carts is empty %}
@@ -35,9 +43,6 @@
                         </th>
                         <th>
                             {{ 'my_orders.labels.tickets'|trans|raw }}
-                        </th>
-                        <th>
-                            {{ 'my_orders.labels.sponsorship'|trans|raw }}
                         </th>
                     </tr>
                     </thead>
@@ -93,26 +98,20 @@
                                                 src="{{ asset('images/download.svg') }}" class="responsive-img"/></a>
                                 {% endif %}
                             </td>
-                            {% if cart.getFirst.contractArtist.date > "now"|date %}
-                                <td>
-                                    <button class="btn btn-primary btn-sm" style="font-size: 80%"
-                                            onclick="displaySponsorshipInvitationModal('{{ path('user_ajax_send_sponsorship_invitation',{'id' : cart.getFirst.contractArtist.id}) }}')">
-                                        {{ 'my_orders.button.sponsorship'|trans|raw }}
-                                    </button>
-                                </td>
-                            {% else %}
-                                <td>
-                                    <button class="btn btn-primary btn-sm disabled" style="font-size: 80%"
-                                            onclick="displaySponsorshipInvitationModal('{{ path('user_ajax_send_sponsorship_invitation',{'id' : cart.getFirst.contractArtist.id}) }}')">
-                                        {{ 'my_orders.button.sponsorship'|trans|raw }}
-                                    </button>
-                                </td>
-                            {% endif %}
                         </tr>
                     {% endfor %}
                 {% endif %}
             </table>
         </div>
-        {% include '@App/User/sponsorship_invitations_modal.html.twig' %}
+        {{ render(controller('AppBundle\\Controller\\UserController::displaySponsorshipModalAction',{
+            'defined' : false
+        } )) }}
     </div>
+{% endblock %}
+{% block additional_javascripts %}
+    <script type="text/javascript">
+        {% if is_payment %}
+        displaySponsorshipInvitationModal(null, true);
+        {% endif %}
+    </script>
 {% endblock %}

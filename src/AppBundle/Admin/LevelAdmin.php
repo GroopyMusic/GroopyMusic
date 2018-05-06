@@ -12,6 +12,7 @@ namespace AppBundle\Admin;
 namespace AppBundle\Admin;
 
 use AppBundle\Entity\Reward;
+use AppBundle\Services\RewardAttributionService;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
@@ -65,8 +66,8 @@ class LevelAdmin extends BaseAdmin
 
     public function configureFormFields(FormMapper $form)
     {
-        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
         $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
+        $rewardAttributionService = $this->getConfigurationPool()->getContainer()->get(RewardAttributionService::class);
         $form
             ->with('Données du palier')
             ->add('step', TextType::class, array(
@@ -89,7 +90,7 @@ class LevelAdmin extends BaseAdmin
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
                 'class' => Reward::class,
-                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale()),
+                'choices' => $rewardAttributionService->constructRewardSelectWithType($request->getLocale()),
                 'multiple' => true,
                 'required' => false
             ])

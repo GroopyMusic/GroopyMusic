@@ -275,14 +275,32 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         return $this->getEntityManager()->createQuery(
             'SELECT ca
                   FROM AppBundle:ContractArtist ca
+                  LEFT JOIN ca.reality r
                   WHERE ca.id = ?1
-                  AND ca.date > ?2
+                  AND r.date > ?2
                   AND ca.refunded = 0
                   AND ca.failed = 0
-                  AND 
                   ')
             ->setParameter(1, $contract_id)
             ->setParameter(2, new \DateTime())
-            ->getSingleResult();
+            ->getOneOrNullResult();
+    }
+
+    public function getUserContractArtists($user)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT ca,r,p,u
+                  FROM AppBundle:ContractArtist ca
+                  LEFT JOIN ca.reality r
+                  LEFT JOIN ca.payments p
+                  LEFT JOIN p.user u
+                  WHERE r.date > ?2
+                  AND ca.refunded = 0
+                  AND ca.failed = 0
+                  AND u.id = ?1
+                  ')
+            ->setParameter(1, $user->getId())
+            ->setParameter(2, new \DateTime())
+            ->getResult();
     }
 }

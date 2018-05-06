@@ -19,8 +19,15 @@ class FormulaParserService
     private $parser;
     private $evaluator;
     private $em;
-    public $querry_descritpions;
     private $logger;
+
+    const QUERRY_DESCRIPTION = [
+        'm' => 'Nombre de tickets achetés au total par un utilisateur',
+        'p' => 'Nombre de concerts différents produits par un utilisateur',
+        'a' => 'Nombre de parrainés producteurs d\'un utilisateur',
+        'v' => 'Nombre de parrainés d\'un utilisateur',
+        's' => 'Nombre d\'invitations de parrainage envoyées',
+    ];
 
     public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
@@ -28,11 +35,6 @@ class FormulaParserService
         $this->evaluator = new Evaluator();
         $this->em = $em;
         $this->logger = $logger;
-        $this->querry_descritpions = [
-            'm' => 'Nombre de tickets achetés au total par un utilisateur',
-            'p' => 'Nombre de concerts différents produits par un utilisateur',
-            'a' => 'Nombre de parrainés producteurs d\'un utilisateur'
-        ];
     }
 
     /**
@@ -45,8 +47,9 @@ class FormulaParserService
         $this->evaluator->setVariables([
             "p" => array_key_exists('pr', $statistic) ? intval($statistic['pr']) : '0',
             "m" => array_key_exists('me', $statistic) ? intval($statistic['me']) : '0',
-            "a" => array_key_exists('amb', $statistic) ? intval($statistic['amb']) : '0'
-            //TODO Ambasadorat querry + Transform in 1 Querry
+            "a" => array_key_exists('amb', $statistic) ? intval($statistic['amb']) : '0',
+            "v" => array_key_exists('v', $statistic) ? intval($statistic['v']) : '0',
+            "s" => array_key_exists('s', $statistic) ? intval($statistic['s']) : '0'
         ]);
     }
 
@@ -62,5 +65,8 @@ class FormulaParserService
         return $AST->accept($this->evaluator);
     }
 
-
+    public function getQuerryDescription()
+    {
+        return self::QUERRY_DESCRIPTION;
+    }
 }

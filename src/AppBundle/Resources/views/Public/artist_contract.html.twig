@@ -341,14 +341,16 @@
                                     <td>{{ nb_sponsorships }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="contract-info-title">{{ 'event.sponsorship.total_validated'|trans|raw }} :</td>
+                                    <td class="contract-info-title">{{ 'event.sponsorship.total_validated'|trans|raw }}
+                                        :
+                                    </td>
                                     <td>{{ nb_validated_sponsorships }}</td>
                                 </tr>
                                 </tbody>
                             </table>
                             <div class="text-center">
                                 <button id="sponsorship-invitation-button" class="btn btn-primary btn"
-                                        onclick="displaySponsorshipInvitationModal('{{ path('user_ajax_send_sponsorship_invitation',{'id' : contract.id}) }}')">{{ 'event.sponsorship.button_invit'|trans|raw }}
+                                        onclick="displaySponsorshipInvitationModal({{ contract.id }},false)">{{ 'event.sponsorship.button_invit'|trans|raw }}
                                 </button>
                             </div>
                         </div>
@@ -399,7 +401,9 @@
             </div>
         </div>
         {% if is_participant %}
-            {% include '@App/User/sponsorship_invitations_modal.html.twig' %}
+            {{ render(controller('AppBundle\\Controller\\UserController::displaySponsorshipModalAction',{
+                'defined' : true
+            } )) }}
         {% endif %}
     </div>
 
@@ -444,6 +448,8 @@
       }
     }
 
+
+
         </script>
         <script type="text/javascript">
             $(document).ready(function () {
@@ -466,7 +472,6 @@
                     })
                 })
             });
-
 
         </script>
     {% endblock %}

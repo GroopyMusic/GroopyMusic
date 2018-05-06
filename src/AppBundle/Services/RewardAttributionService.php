@@ -10,8 +10,11 @@ namespace AppBundle\Services;
 
 
 use AppBundle\Entity\Artist;
+use AppBundle\Entity\ConsomableReward;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\InvitationReward;
+use AppBundle\Entity\ReductionReward;
 use AppBundle\Entity\Reward;
 use AppBundle\Entity\RewardRestriction;
 use AppBundle\Entity\Step;
@@ -153,5 +156,27 @@ class RewardAttributionService
                 $level->setStatistics(array_slice($level->getStatistics()->toArray(), 0, 5, true));
             }
         }
+    }
+
+    public function constructRewardSelectWithType($local)
+    {
+        $rewards = $this->em->getRepository('AppBundle:Reward')->findNotDeletedRewards($local);
+        $arrayToReturn = [];
+        foreach ($rewards as $reward) {
+            if ($reward instanceof ConsomableReward) {
+                $key = "Consommation";
+            } else if ($reward instanceof InvitationReward) {
+                $key = "Invitation";
+            } else if ($reward instanceof ReductionReward) {
+                $key = "Reduction";
+            } else {
+                $key = "Autres";
+            }
+            if (!array_key_exists($key, $arrayToReturn)) {
+                $arrayToReturn[$key] = [];
+            }
+            array_push($arrayToReturn[$key], $reward);
+        }
+        return $arrayToReturn;
     }
 }

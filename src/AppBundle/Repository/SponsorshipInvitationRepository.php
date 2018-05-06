@@ -58,4 +58,14 @@ class SponsorshipInvitationRepository extends EntityRepository
             ->setMaxResults(1)
             ->getOneOrNullResult();
     }
+
+    public function getSponsorshipSummary($user){
+        return $this->getEntityManager()->createQuery(
+            'SELECT s
+                  FROM AppBundle:SponsorshipInvitation s
+                  WHERE s.host_invitation = ?1
+                  ')
+            ->setParameter(1, $user->getId())
+            ->getResult();
+    }
 }

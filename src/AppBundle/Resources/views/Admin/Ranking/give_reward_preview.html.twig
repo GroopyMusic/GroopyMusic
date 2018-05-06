@@ -51,8 +51,12 @@
                     <div>
                         <label for="selectReward">Récompense à attribuer</label>
                         <select id="selectReward">
-                            {% for reward in rewards %}
-                                <option value="{{ reward.id }}">{{ reward.name }}</option>
+                            {% for key, arrayRewards in rewards %}
+                                <optgroup label="{{ key }}">
+                                    {% for reward in arrayRewards %}
+                                        <option value="{{ reward.id }}">{{ reward.name }}</option>
+                                    {% endfor %}
+                                </optgroup>
                             {% endfor %}
                         </select>
                     </div>
