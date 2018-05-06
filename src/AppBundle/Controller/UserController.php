@@ -544,22 +544,11 @@ class UserController extends Controller
      */
     public function rewardAction(User_Reward $user_reward, Request $request, UserInterface $user)
     {
-        $type = "";
-        $reward = $user_reward->getReward();
-        if ($user_reward->getUser() != $user) {
+        if ($user_reward->getUser() !== $user) {
             throw $this->createAccessDeniedException();
         }
-        if ($reward instanceof ReductionReward) {
-            $type = "Reduction";
-        } else if ($reward instanceof ConsomableReward) {
-            $type = "Consomable";
-        } else if ($reward instanceof InvitationReward) {
-            $type = "Invitation";
-        }
-        $em = $this->getDoctrine()->getManager();
         return new Response($this->renderView('@App/User/reward.html.twig', array(
-            'user_reward' => $user_reward,
-            'type' => $type
+            'user_reward' => $user_reward
         )));
     }
 
@@ -625,12 +614,11 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
         $defined = $request->get('defined');
         $contracts = [];
-        if ($defined == false || $defined == null || $defined == 'false') {
+        if ($defined === false || $defined === null || $defined === 'false') {
             $defined = false;
             $contracts = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
         }
         $result = $sponsorshipService->getSponsorshipSummaryForUser($user);
-        $logger->warning('tst', [$defined]);
         return $this->render('@App/User/sponsorship_invitations_modal.html.twig', array(
             'event_is_define' => $defined,
             'contracts' => $contracts,

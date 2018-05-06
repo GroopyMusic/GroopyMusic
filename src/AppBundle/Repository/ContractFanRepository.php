@@ -13,6 +13,15 @@ use AppBundle\Entity\User;
  */
 class ContractFanRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * find the last contract fan of contract_artist event.
+     * This contract fan will be rewarded of sponsorship invitation
+     *
+     * @param User $user
+     * @param ContractArtist $contractArtist
+     * @return mixed null or contract fan
+     */
     public function findSponsorshipContractFanToReward(User $user, ContractArtist $contractArtist)
     {
         return $this->getEntityManager()->createQuery(

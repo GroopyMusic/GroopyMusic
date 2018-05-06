@@ -63,7 +63,6 @@ class MailAdminService
         $artist_participants = [];
         foreach ($contract_artists_id as $contract_artist_id) {
             $contractArtist = $this->em->getRepository('AppBundle:ContractArtist')->getArtistParticipants($contract_artist_id);
-            $this->logger->warning('ro', [$contractArtist]);
             foreach ($contractArtist->getArtist()->getArtistsUser()->toArray() as $artist_user) {
                 array_push($artist_participants, ['email' => $artist_user->getUser()->getEmail(), 'id' => $artist_user->getUser()->getId()]);
             }
@@ -91,7 +90,6 @@ class MailAdminService
                 $emails[$email] = $this->translator->getLocale();
             }
         }
-        $this->logger->warning('test', [$emails]);
         $this->mailDispatcher->sendEmailFromAdmin($emails, $object, $content);
     }
 

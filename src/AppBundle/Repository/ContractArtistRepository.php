@@ -222,7 +222,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     /**
      * get all sucessful contract artists
      *
-     * @return array
+     * @return array contract artist array
      */
     public function getContactArtistsForSelect()
     {
@@ -237,6 +237,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getResult();
     }
 
+    /**
+     * get all artist particpant of contract artist
+     *
+     * @param $contract_artist_id
+     * @return mixed contract artist
+     */
     public function getArtistParticipants($contract_artist_id)
     {
         return $this->getEntityManager()->createQuery(
@@ -255,6 +261,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getSingleResult();
     }
 
+    /**
+     * find all contract artist for select with search
+     *
+     * @param $q
+     * @return array contract artist array
+     */
     public function findContractArtistsForSelect($q)
     {
         $querry = 'SELECT ca,a FROM AppBundle:ContractArtist ca LEFT JOIN ca.artist a ';
@@ -270,6 +282,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getResult();
     }
 
+    /**
+     * check if contract artist is valid for sponsorship
+     *
+     * @param $contract_id
+     * @return mixed contract artist or null
+     */
     public function isValidForSponsorship($contract_id)
     {
         return $this->getEntityManager()->createQuery(
@@ -286,6 +304,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getOneOrNullResult();
     }
 
+    /**
+     * retrieves all upcoming contract artist in which a user will participate
+     *
+     * @param $user
+     * @return array contract artist array
+     */
     public function getUserContractArtists($user)
     {
         return $this->getEntityManager()->createQuery(

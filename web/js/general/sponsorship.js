@@ -24,6 +24,7 @@ function clearForm() {
 }
 
 function displaySponsorshipInvitationModal(id, payment) {
+    console.log(id);
     contract_id = id;
     $("#sponsorship-invitations-modal").on("hidden.bs.modal", function () {
         clearForm();

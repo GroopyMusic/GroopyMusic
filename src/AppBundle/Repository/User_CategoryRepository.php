@@ -18,7 +18,7 @@ class User_CategoryRepository  extends \Doctrine\ORM\EntityRepository
      *
      * @param $level_id
      * @param $limit
-     * @return array
+     * @return array user_category array
      */
     public function findStatLimit($level_id,$limit){
         return $this->getEntityManager()->createQuery(
@@ -37,7 +37,7 @@ class User_CategoryRepository  extends \Doctrine\ORM\EntityRepository
      * Retrieves all categories of @param $level_id
      *
      * @param $level_id
-     * @return array
+     * @return array user_category array
      */
     public function findAllStatByLevel($level_id){
         return $this->getEntityManager()->createQuery(

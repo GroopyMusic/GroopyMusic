@@ -14,7 +14,7 @@ class RewardRestrictionRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Recovers the most recent confirmed concert
      *
-     * @return mixed
+     * @return mixed contract_artist
      */
     public function getMostRecentConfirmedConcert()
     {
@@ -29,6 +29,12 @@ class RewardRestrictionRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleResult();
     }
 
+    /**
+     * get all restrictions order by name ASC
+     *
+     * @param $locale
+     * @return array restriction_reward array
+     */
     public function getAllRestrictionOrderByAsc($locale)
     {
         return $this->getEntityManager()->createQuery(

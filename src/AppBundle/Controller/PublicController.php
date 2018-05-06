@@ -712,7 +712,6 @@ class PublicController extends Controller
                 return $this->redirectToRoute('artist_contract', array("id" => $sponsorship->getContractArtist()->getId()));
             }
         } catch (\Throwable $th) {
-            $logger->warning('lol', [$th->getMessage()]);
             $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
             return $this->redirectToRoute('homepage');
         }

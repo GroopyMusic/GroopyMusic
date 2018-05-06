@@ -19,7 +19,7 @@ class RewardRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Recovers all unremoved rewards
      *
-     * @return array
+     * @return array reward array
      */
     public function findNotDeletedRewards($locale)
     {
@@ -40,7 +40,7 @@ class RewardRepository extends \Doctrine\ORM\EntityRepository
      * Retrieve the reward corresponding to the @param $id
      *
      * @param $id
-     * @return mixed
+     * @return mixed reward
      */
     public function getReward($id)
     {

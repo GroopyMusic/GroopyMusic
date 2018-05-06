@@ -276,7 +276,6 @@ class RewardSpendingService
         $this->em->persist($cf);
         foreach ($cf->getUserRewards()->toArray() as $user_reward) {
             $tickets = $cf->getTickets()->toArray();
-            $this->logger->warning("check", [$tickets]);
             foreach ($cf->getTicketRewards()->toArray() as $ticketReward)
                 if ($user_reward->getId() == $ticketReward->getUserReward()->getId()) {
                     $result = $this->findCorrespondingTicket($tickets, $ticketReward);
@@ -308,11 +307,11 @@ class RewardSpendingService
     {
         $this->em->persist($contractFan);
         foreach ($contractFan->getTicketRewards()->toArray() as $ticketReward) {
-            if ($ticketReward->getRefundable() == true) {
+            if ($ticketReward->getRefundable() === true) {
                 $ticketReward->setRefunded(true);
                 $user_reward = $ticketReward->getUserReward();
                 $user_reward->setRemainUse($user_reward->getRemainUse() + 1);
-                if ($user_reward->getActive() == false) {
+                if ($user_reward->getActive() === false) {
                     $user_reward->setActive(true);
                 }
             }

@@ -486,11 +486,9 @@ my_orders:
         totalprice: Prix total
         order: Commande
         tickets: Tickets
-        #new
-        sponsorship: Parrainage
     #new
     button:
-      sponsorship: Parrainer des amis
+      sponsorship: Invitez des amis
 
 notifs:
     title: Mes notifications
@@ -952,3 +950,15 @@ sponsorship_modal:
   send_button: Envoyer les invitations
   cancel_button: Annuler
   email_placeholder: Entrez une adresse email
+  confirmed_payment: Payment effectué
+  display_recap: Afficher/Réduire le récapitulatif des invitations
+  waiting: En attente
+  confirmed: Confirmé
+  total: Total
+  event: Evénement
+  remove_field: Retirer un champ
+  add_field: Ajouter un champ
+
+
+
+

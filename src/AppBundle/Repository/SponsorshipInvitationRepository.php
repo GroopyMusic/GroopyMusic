@@ -13,6 +13,13 @@ use Doctrine\ORM\EntityRepository;
 
 class SponsorshipInvitationRepository extends EntityRepository
 {
+
+    /**
+     * get number of validated sponsorship invitation of specific user
+     *
+     * @param $user_id
+     * @return mixed number of validated sponsorship invitation
+     */
     public function getNumberOfValidatedInvitation($user_id)
     {
         return $this->getEntityManager()->createQuery(
@@ -27,6 +34,12 @@ class SponsorshipInvitationRepository extends EntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * get sponsorship invitation by token
+     *
+     * @param $token
+     * @return mixed null or matched sponsorship
+     */
     public function getSponsorshipInvitationByToken($token)
     {
         return $this->getEntityManager()->createQuery(
@@ -43,6 +56,12 @@ class SponsorshipInvitationRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * get sponsorship invitation by mail
+     *
+     * @param $email
+     * @return mixed null or matched sponsorship
+     */
     public function getSponsorshipInvitationByMail($email){
         return $this->getEntityManager()->createQuery(
             'SELECT si,hi,ti,ca
@@ -59,6 +78,12 @@ class SponsorshipInvitationRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * get sponsorships of user
+     *
+     * @param $user
+     * @return array sponsorship array
+     */
     public function getSponsorshipSummary($user){
         return $this->getEntityManager()->createQuery(
             'SELECT s

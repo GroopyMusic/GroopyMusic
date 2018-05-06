@@ -10,7 +10,6 @@ namespace AppBundle\Services;
 
 
 use AppBundle\Entity\ContractArtist;
-use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\RewardTicketConsumption;
 use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\User;
@@ -18,7 +17,6 @@ use AppBundle\Entity\User_Reward;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SponsorshipService
 {
@@ -57,7 +55,6 @@ class SponsorshipService
             $sponsorship_invitation = new SponsorshipInvitation(new \DateTime(), $email, $content, $user,
                 $contractArtist, $user->getId() . $this->token_gen->generateToken() . $contractArtist->getId());
             $this->em->persist($sponsorship_invitation);
-            $this->logger->warning("test", [$sponsorship_invitation]);
             $this->mailDispatcher->sendSponsorshipInvitationEmail($sponsorship_invitation, $content);
         }
         $this->em->flush();
@@ -91,7 +88,7 @@ class SponsorshipService
                     $user_reward->setActive(false);
                     $contractFan->addUserReward($user_reward);
                     $contractFan->addTicketReward($ticket_reward);
-                    if ($contractFan->getContractArtist()->getTicketsSent() == true) {
+                    if ($contractFan->getContractArtist()->getTicketsSent() === true) {
                         $contractFan->getTickets()->first()->addReward($ticket_reward);
                     }
                     $this->em->persist($sponsorship);
@@ -122,7 +119,7 @@ class SponsorshipService
             if ($sponsorship->getTargetInvitation() == null) {
                 array_push($invited, $sponsorship->getEmailInvitation());
             } else {
-                if ($sponsorship->getTargetInvitation()->getDeleted() == false) {
+                if ($sponsorship->getTargetInvitation()->getDeleted() === false) {
                     array_push($confirmed, $sponsorship->getTargetInvitation()->getEmail());
                 }
             }
@@ -133,17 +130,13 @@ class SponsorshipService
     private function verifyEmails($emails)
     {
         $userRepository = $this->em->getRepository('AppBundle:User');
-        $sponsorshipInvitationRepository = $this->em->getRepository('AppBundle:SponsorshipInvitation');
         $clearedEmails = [];
         $knownEmail = [];
-        $this->logger->warning('emails', $emails);
         foreach ($emails as $email) {
             if (strlen(trim($email)) == 0) {
                 continue;
             }
             if ($userRepository->emailExists($email) == null) {
-                $this->logger->warning('emails', [$email]);
-                $this->logger->warning('emails', [$userRepository->emailExists($email)]);
                 if (!in_array($email, $clearedEmails)) {
                     array_push($clearedEmails, $email);
                 }
