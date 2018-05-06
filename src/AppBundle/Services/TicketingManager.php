@@ -22,11 +22,14 @@ class TicketingManager
     const VIP_PREFIX = 'vip';
     const PH_PREFIX = 'ph';
 
+    const MAXIMUM_UPCOMING_EVENTS_ON_TICKET = 10;
+
     private $writer;
     private $mailDispatcher;
     private $notificationDispatcher;
     private $logger;
     private $em;
+    private $agenda = [];
     private $rewardSpendingService;
 
     public function __construct(PDFWriter $writer, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, LoggerInterface $logger, EntityManagerInterface $em, RewardSpendingService $rewardSpendingService)
@@ -100,10 +103,14 @@ class TicketingManager
 
         $path = $directory . $prefix . $slug . '.pdf';
 
-        // Write PDF file
-        $this->writer->writeTickets($path, $tickets);
-        // And send it
-        $this->mailDispatcher->sendTicketsForPhysicalPerson($physicalPerson, $contractArtist, $path);
+
+        if(!empty($tickets)) {
+            $agenda = $this->getAgenda($tickets[0]);
+            // Write PDF file
+            $this->writer->writeTickets($path, $tickets, $agenda);
+            // And send it
+            $this->mailDispatcher->sendTicketsForPhysicalPerson($physicalPerson, $contractArtist, $path);
+        }
 
         // could be one final flush
         $this->em->flush();
@@ -117,7 +124,6 @@ class TicketingManager
      */
     public function getTicketPreview(ContractArtist $contractArtist, User $user)
     {
-
         $cart = new Cart();
         $cart->setUser($user);
         $cf = new ContractFan($contractArtist);
@@ -125,10 +131,16 @@ class TicketingManager
         $cf->generateBarCode();
         $counterpart = new CounterPart();
         $counterpart->setPrice(12);
-        $cf->addTicket(new Ticket($cf, $counterpart, 1, 12));
-        $cf->addTicket(new Ticket($cf, $counterpart, 2, 0));
 
-        $this->writer->writeTicketPreview($cf);
+        $ticket1 = new Ticket($cf, $counterpart, 1, 12);
+        $ticket2 = new Ticket($cf, $counterpart, 2, 0);
+
+        $cf->addTicket($ticket1);
+        $cf->addTicket($ticket2);
+
+        $agenda = $this->getAgenda($ticket1);
+
+        $this->writer->writeTicketPreview($cf, $agenda);
     }
 
     /**
@@ -215,9 +227,13 @@ class TicketingManager
     protected function sendTicketsForContractFan(ContractFan $cf)
     {
         $this->generateTicketsForContractFan($cf);
-        $this->writer->writeTickets($cf->getTicketsPath(), $cf->getTickets());
-        $this->mailDispatcher->sendTicketsForContractFan($cf, $cf->getContractArtist());
-        $this->em->persist($cf);
+        $tickets = $cf->getTickets()->toArray();
+        if(!empty($tickets)) {
+            $agenda = $this->getAgenda($tickets[0]);
+            $this->writer->writeTickets($cf->getTicketsPath(), $tickets, $agenda);
+            $this->mailDispatcher->sendTicketsForContractFan($cf, $cf->getContractArtist());
+            $this->em->persist($cf);
+        }
     }
 
     /**
@@ -273,6 +289,21 @@ class TicketingManager
             $ticket->setValidated(true);
             $this->em->persist($ticket);
             $this->em->flush();
+        }
+    }
+
+    /**
+     * Fetches upcoming events that will be displayd on the ticket
+     */
+    public function getAgenda(Ticket $ticket) {
+        $event = $ticket->getContractArtist();
+        if(isset($this->agenda[$event->getId()])) {
+            return $this->agenda[$event->getId()];
+        }
+        else {
+            $agenda = $this->em->getRepository('AppBundle:ContractArtist')->findVisibleExcept($event, self::MAXIMUM_UPCOMING_EVENTS_ON_TICKET);
+            $this->agenda[$event->getId()] = $agenda;
+            return $agenda;
         }
     }
 }

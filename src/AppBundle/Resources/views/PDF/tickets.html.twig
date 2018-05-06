@@ -1,10 +1,6 @@
 {% extends '@App/PDF/layout.html.twig' %}
 
-{% block header %}{# not necessary #}{% endblock %}
-
 {% block additional_styles %}
-
-
     table.ticket {
     position: relative;
     background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
@@ -31,80 +27,91 @@
     padding-top: 7mm;
     font-size: 4mm;
     }
-
 {% endblock %}
 
-{% block page_margins %}backtop="7mm" backbottom="7mm" backleft="10mm" backright="10mm"{% endblock %}
-
-{% block content %}
+{% block page %}
     {% for ticket in tickets %}
-        {% if loop.index % 2 == 0 %}
-            <div class="between-tickets"></div>
-        {% endif %}
+        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            {{ block('header') }}
+            {{ block('footer') }}
 
-        <table class="ticket" style="position:relative">
-            <qrcode value="{{ ticket.barCodeText }}" ec="H"
-                    style="position:absolute; left: -40px; top: 50px; width: 30mm; background-color: white; color: black;"></qrcode>
+            <table class="ticket" style="position:relative">
+                <qrcode value="{{ ticket.barCodeText }}" ec="H"
+                        style="position:absolute; left: -40px; top: 50px; width: 30mm; background-color: white; color: black;"></qrcode>
 
-            <tr class="text-white">
-                <td style="width: 30mm; text-align: center;">{{ ticket.price }} €</td>
-                <td style="width: 50mm;">{{ ticket.name }}</td>
-                <td style="width: 70mm; font-size:3mm;"
-                    class="text-right">{{ 'tickets_pdf.ticket.is_entry'|trans|nl2br }}</td>
-            </tr>
-            <tr class="text-white">
-                <td>
-                    {#{{ barcode({code: ticket.barCodeText, type: 'pdf417', format: 'html', color: 'black'}) }}#}
-                </td>
-                <td colspan="2" style="width:130mm">
-                    <div class="text-center ticket-title text-bold">{{ 'tickets_pdf.ticket.title'|trans({'%hall_name%': ticket.contractArtist.hallConcert.name})|upper }}
-                        <br/>{{ (ticket.contractArtist.dateConcert|date('d') ~ ' ' ~ ('months.' ~ ticket.contractArtist.dateConcert|date('m'))|trans ~ ' ' ~ ticket.contractArtist.dateConcert|date('Y'))|upper }}
-                    </div>
-                    <div class="lineup-title next-to-logo">{{ ticket.contractArtist.mainArtist }}
-                        {% if ticket.contractArtist.coArtists is not empty %}
-                            {%- if ticket.contractArtist.coArtists[0] is defined %} - {{ ticket.contractArtist.coArtists[0] }}{%- endif -%}
-                            {%- if ticket.contractArtist.coArtists[1] is defined %} - {{ ticket.contractArtist.coArtists[1] }}{%- endif -%}
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 30mm; font-size: 3mm;" valign="bottom">{{ ticket.barCodeText }}</td>
-                <td colspan="2" class="td-timing">
-                    <p class="next-to-logo text-bold text-secondary">
-                        18:00 Doors<br/>
-                        {% if ticket.contractArtist.coArtists is not empty %}
-                            {%- if ticket.contractArtist.coArtists[1] is defined -%}19:00 {{ ticket.contractArtist.coArtists[1] }}
-                                <br/>{% endif %}
-                            {%- if ticket.contractArtist.coArtists[0] is defined -%}20:15 {{ ticket.contractArtist.coArtists[0] }}
-                                <br/>{% endif %}
-                        {% endif %}
-                        21:30 {{ ticket.contractArtist.mainArtist }}
-                    </p>
-                    <p class="text-right">{{ ticket.contractArtist.hallConcert.name }}
-                        - {{ ticket.contractArtist.hallConcert.address }}</p>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <div>
-            {% if ticket.rewards is not empty %}
-                <div>{{ 'tickets_pdf.rewards'|trans()|raw }} :</div>
-                {% for reward in ticket.rewards %}
-                <div>{{ reward.userReward.displayPracticalInformation }}</div>
-                {% endfor %}
-            {% endif %}
-        </div>
-        {% if loop.index % 2 == 0 or loop.last %}
+                <tr class="text-white">
+                    <td style="width: 30mm; text-align: center;">{{ ticket.price }} €</td>
+                    <td style="width: 50mm;">{{ ticket.name }}</td>
+                    <td style="width: 70mm; font-size:3mm;"
+                        class="text-right">{{ 'tickets_pdf.ticket.is_entry'|trans|nl2br }}</td>
+                </tr>
+                <tr class="text-white">
+                    <td>
+                    </td>
+                    <td colspan="2" style="width:130mm">
+                        <div class="text-center ticket-title text-bold">{{ 'tickets_pdf.ticket.title'|trans({'%hall_name%': ticket.contractArtist.hallConcert.name})|upper }}
+                            <br/>{{ (ticket.contractArtist.dateConcert|date('d') ~ ' ' ~ ('months.' ~ ticket.contractArtist.dateConcert|date('m'))|trans ~ ' ' ~ ticket.contractArtist.dateConcert|date('Y'))|upper }}
+                        </div>
+                        <div class="lineup-title next-to-logo">{{ ticket.contractArtist.mainArtist }}
+                            {% if ticket.contractArtist.coArtists is not empty %}
+                                {%- if ticket.contractArtist.coArtists[0] is defined %} - {{ ticket.contractArtist.coArtists[0] }}{%- endif -%}
+                                {%- if ticket.contractArtist.coArtists[1] is defined %} - {{ ticket.contractArtist.coArtists[1] }}{%- endif -%}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 30mm; font-size: 3mm;" valign="bottom">{{ ticket.barCodeText }}</td>
+                    <td colspan="2" class="td-timing">
+                        <p class="next-to-logo text-bold text-secondary">
+                            18:00 Doors<br/>
+                            {% if ticket.contractArtist.coArtists is not empty %}
+                                {%- if ticket.contractArtist.coArtists[1] is defined -%}19:00 {{ ticket.contractArtist.coArtists[1] }}
+                                    <br/>{% endif %}
+                                {%- if ticket.contractArtist.coArtists[0] is defined -%}20:15 {{ ticket.contractArtist.coArtists[0] }}
+                                    <br/>{% endif %}
+                            {% endif %}
+                            21:30 {{ ticket.contractArtist.mainArtist }}
+                        </p>
+                        <p class="text-right">{{ ticket.contractArtist.hallConcert.name }}
+                            - {{ ticket.contractArtist.hallConcert.address }}</p>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <div>
+                {% if ticket.rewards is not empty %}
+                    <div>{{ 'tickets_pdf.rewards'|trans()|raw }} :</div>
+                    {% for reward in ticket.rewards %}
+                        <div>{{ reward.userReward.displayPracticalInformation }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
             <div class="between-tickets"></div>
             <div style="font-size: 80%;">
                 <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
             </div>
-            {% if loop.index % 2 == 0 and not loop.last %}
-                </page>
-                <page>
-                {{ block('footer') }}
+
+            <div class="between-tickets"></div>
+
+            {% if agenda is defined and agenda is not empty %}
+                <hr/>
+                <div class="agenda">
+                    <h4>{{ 'tickets_pdf.agenda.title'|trans }}</h4>
+                    {% for event in agenda %}
+                        <p style="margin-top: 2px">
+                            <a href="{{ url('artist_contract', {'id': event.id, 'slug': event.artist.slug}) }}"
+                               style="text-decoration: none;">
+                                {{ event.artist }} @{{ event.hallConcert }}
+                                >>> {{ ('Days ' ~ event.dateConcert|date('w'))|trans ~ ' ' ~ event.dateConcert|date('d') ~ ' ' ~ ('months.' ~ event.dateConcert|date('m'))|trans }}
+                                ({% if event.isSoldOut %}{{ 'tickets_pdf.agenda.sold_out'|trans }}{% elseif event.isInSuccessfulState %}{{ 'tickets_pdf.agenda.confirmed'|trans }}{% else %}{{ 'tickets_pdf.agenda.not_confirmed'|trans }}{% endif %}
+                                )
+                            </a>
+                        </p>
+                    {% endfor %}
+                </div>
             {% endif %}
-        {% endif %}
+        </page>
     {% endfor %}
 {% endblock %}

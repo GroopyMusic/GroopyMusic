@@ -1,0 +1,81 @@
+change_password:
+  submit: Mijn wachtwoord veranderen
+
+profile:
+  show:
+    address: Adres
+    artists: Mijn artiesten
+    birthday: Geboortedatum
+    email: E-mail
+    firstname: Voornam
+    genres: Mijn muziekstijlen
+    inscription_date: Datum van inschrijving
+    lastname: Naam
+    newsletter: Commerciële communicaties
+    #new
+    facebook:
+      label: Facebook-account
+      disconnect_link: Ontkoppel mijn Facebook-account van Un-Mute
+      disconnect_title: Ontkoppel mijn Facebook-account van Un-Mute
+      disconnect_submit: Ontkoppelen
+      disconnect_cancel: Annuleren
+
+registration:
+  title: Inschrijving
+  intro: Maak binnen enkele seconden uw profiel om uw favoriete artiesten te steunen.&nbsp;!
+  tab-um-title: Maak een Un-Mute account
+  tab-fb-title: Zich met Facebook inschrijven
+  tab-fb:
+    intro: |
+      U kunt ook een profiel maken door u aan te melden met uw Facebook-account. Hiermee wordt een Un-Mute-account automatisch gemaakt dat is gekoppeld aan het e-mailadres van uw Facebook-account.
+  already_logged:
+    #new
+    message: |
+      U bent verbonden met uw Un-Mute-account. Heb je de volgende pagina's gezien?
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action" href="%eventsUrl%">Onze aankomende festivals</a>
+        <a class="list-group-item list-group-item-action" href="%artistsUrl%">Onze artiesten</a>
+        <a class="list-group-item list-group-item-action" href="%hallsUrl%">Onze partnerzalen</a>
+        <a class="list-group-item list-group-item-action" href="%profileUrl%">Je account</a>
+      </div>
+    back: Terug tot homepage
+    logout: Ik wil me afmelden
+  back: Terug op de site
+  check_email: Bedankt voor uw registratie. Er is een bevestigingsmail naar u verzonden. Het bevat een activeringslink. Dit is de laatste stap voordat je definitief toegang naar je Un-Mute-ruimte krijgt !
+  confirmed: Uw account is geverifieerd. Ontdek vanaf nu je favoriete artiesten en ondersteun ze in hun muzikale projecten!
+  email:
+    message: |
+      Hallo %username%,
+
+      Bedankt voor uw inschrijving ! Uw Un-Mute-account is aangemaakt.
+
+      Kunt u bevestigen dat uw e-mailadres correct is door op de volgende link te klikken: : %confirmationUrl% ?
+  submit: Maak mijn Un-Mute-account aan
+
+resetting:
+  check_email: |
+    Er is een e-mail verzonden. Het bevat een link die u moet aanklikken om uw wachtwoord opnieuw in te stellen.
+
+    U kunt alleen om de %tokenLifetime% uur een nieuw wachtwoord aanvragen.
+
+    Als u geen e-mail ontvangt, controleer dan uw spam-map of probeer het opnieuw.
+  email:
+    subject: Uw wachtwoord opnieuw instellen.
+    message: |
+      Hallo %username%,
+
+      U bent uw wachtwoord vergeten waarmee u naar UnMute.be kunt gaan?
+
+      Maak je geen zorgen, je kunt een nieuw wachtwoord maken door op de volgende link te klikken: %confirmationUrl%
+  request:
+    submit: Stuur de reset-link
+    username: E-mail adres
+  reset:
+    submit: Wachtwoord wijzigen
+
+security:
+  login:
+    password: Wachtwoord
+    remember_me: Ingelogd blijven
+    submit: Connectie met Un-Mute
+    username: E-mail adres

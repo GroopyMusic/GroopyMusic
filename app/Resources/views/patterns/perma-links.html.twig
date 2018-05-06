@@ -8,7 +8,7 @@
 
 <div id="not-auth-perma-links">
     {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        {{ block('language_switcher_link') }}
+        {# block('language_switcher_link') #}
         {% if home_header %}{{ block('inscription_perma_link') }}{% endif %}
         {% block header_login_link %}<a class="btn btn-primary text-uppercase header-button" data-toggle="modal" data-target="#loginModal" href="{{ path('fos_user_security_login') }}">{{ 'header.nav.sign_in'|trans|raw }}</a>{% endblock %}
 
@@ -17,6 +17,7 @@
         {% set unseen_nb = unseen_notifs_nb() %}
         {% set last_notifs = last_notifs(5) %}
 
+        {#
         {% block language_switcher_link %}
             <div class="dropdown d-inline-block">
                 {% if enabled_locales|length > 1 %}
@@ -30,6 +31,7 @@
                 {% endif %}
             </div>
         {% endblock %}
+        #}
         <div class="dropdown d-inline-block">
             <a id="notifs-toggler" href="{{ path('user_notifications') }}" {% if last_notifs is not empty %}role="button" data-toggle="dropdown" data-target="#"{% endif %} class="btn btn-primary py-0 px-1 px-md-2 px-lg-3 mr-1">
                 <img src="{{ asset('images/note.svg') }}" class="responsive-img py-2"/>

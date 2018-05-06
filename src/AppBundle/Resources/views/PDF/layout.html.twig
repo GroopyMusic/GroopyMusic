@@ -1,6 +1,6 @@
 {% block style %}
     <style type="text/css">
-        #header {
+        .header {
             text-align: center;
             color: #f39326;
             font-weight: bold;
@@ -17,16 +17,29 @@
         td, th {
             padding: 5px 10px;
         }
-        #footer {
-            margin-top: 40px;
+        .footer {
             background-color: #4a4b4d;
             width: 100%;
-            padding: 10px 20px;
+            padding: 20px 20px;
             color: white;
         }
-        #footer p {
+        .footer p {
+            margin: 0 auto;
             text-align:center;
             color: white;
+        }
+
+        .agenda {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .agenda h4 {
+            color: #4a4b4d;
+        }
+
+        a, a:visited {
+            color: inherit;
         }
 
         .text-center {
@@ -58,7 +71,7 @@
     <page {% block page_margins %}backtop="25mm" backbottom="30mm" backleft="10mm" backright="10mm"{% endblock %}>
         {% block header %}
             <page_header>
-                <div id="header">
+                <div class="header">
                     {% block header_content %}
                         <img src="{{ absolute_url(asset('images/logo.png')) }}" height="100" alt="Un-Mute ASBL" />
                     {% endblock %}
@@ -67,10 +80,10 @@
         {% endblock %}
         {% block footer %}
             <page_footer>
-                <div id="footer">
+                <div class="footer">
                     {% block footer_content %}
                         <p>
-                            Un-Mute ASBL - IBAN BE46 0689 3185 0836 - contact@un-mute.be - Place Saint-Antoine 3, 1040 Bruxelles - https://un-mute.be
+                            Un-Mute ASBL - IBAN BE46 0689 3185 0836 - contact@un-mute.be<br />Place Saint-Antoine 3, 1040 Bruxelles - https://un-mute.be
                         </p>
                     {% endblock %}
                 </div>

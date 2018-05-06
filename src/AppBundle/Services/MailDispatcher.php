@@ -44,6 +44,7 @@ class MailDispatcher
     private $kernel;
     private $twig;
     private $locales;
+    private $logger;
 
     public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel, Environment $twig, $locales)
     {
@@ -58,23 +59,20 @@ class MailDispatcher
         $this->locales = $locales;
     }
 
-    private function extract_locale($locale, $haystack)
-    {
-        return array_filter($haystack, function ($elem) use ($locale) {
+    private function extract_locale($locale, $haystack) {
+        return array_filter($haystack, function($elem) use ($locale) {
             return $elem == $locale;
         });
     }
 
-    private function sendEmail($template, $subject, array $params, array $subject_params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME)
-    {
+    private function sendEmail($template, $subject, array $params, array $subject_params, array $bcc_emails, array $attachments = [], array $to = self::TO, $to_name = '', $reply_to = self::REPLY_TO, $reply_to_name = self::REPLY_TO_NAME) {
         $failedRecipients = array();
         $bccs = array();
+        $tos = array();
         $to_chunks = array();
         $bcc_chunks = array();
-
         // CASE 1 : Only "to"s chunked by locale
-        if (empty($bcc_emails) && !empty($to)) {
-            $tos = array();
+        if(empty($bcc_emails) && !empty($to)) {
             foreach ($this->locales as $locale) {
                 $tos[$locale] = $this->extract_locale($locale, $to);
                 if (!empty($tos[$locale])) {
@@ -91,16 +89,16 @@ class MailDispatcher
         // CASE 2 : # of recipients is high and "to" field is for no-reply only
         // We need to chunk the bcc recipients
         else {
-            foreach ($this->locales as $locale) {
+            foreach($this->locales as $locale) {
                 $bccs[$locale] = $this->extract_locale($locale, $bcc_emails);
-                if (!empty($bccs[$locale])) {
+                if(!empty($bccs[$locale])) {
                     $trans_subject = $this->translator->trans($subject, $subject_params, 'emails', $locale);
                     $bcc_chunks[$locale] = array_chunk(array_keys($bccs[$locale]), self::MAX_BCC);
-                    foreach ($bcc_chunks[$locale] as $chunk) {
-                        $this->mailer->sendEmail($failedRecipients, $subject, $this->from_address, $this->from_name, array_keys($to), $to_name, [], '',
+                    foreach($bcc_chunks[$locale] as $chunk) {
+                        $this->mailer->sendEmail($failedRecipients, $trans_subject, $this->from_address, $this->from_name, array_keys($to), $to_name, [], '',
                             $chunk, '', $reply_to, $reply_to_name, array_merge(['subject' => $trans_subject], $params), $template, $attachments, $locale);
                     }
-                }
+               }
             }
         }
 
@@ -136,12 +134,11 @@ class MailDispatcher
         return $this->sendEmail($template, $subject, $params, $subject_params, [], $attachments, self::ADMIN_TO, '', $reply_to, $reply_to_name);
     }
 
-    public function sendTestEmail()
-    {
+    public function sendTestEmail() {
         $emails = [];
-        for ($i = 0; $i <= 180; $i++) {
+        for($i = 0; $i <= 180; $i++) {
             $locale = $i > 120 ? 'fr' : 'en';
-            $emails['gonzyer' . $i . '@hotmail.com'] = $locale;
+            $emails['gonzyer'.$i.'@hotmail.com'] = $locale;
         }
 
         return $this->sendEmail(MailTemplateProvider::ADMIN_TEST_TEMPLATE, 'test', [], [], $emails);
@@ -174,7 +171,8 @@ class MailDispatcher
             $params['user'] = $possible_user->getEmail();
             $toName = $possible_user->getDisplayName();
             $locale = $possible_user->getPreferredLocale();
-        } else {
+        }
+        else {
             $template = MailTemplateProvider::OWNERSHIPREQUEST_NONMEMBER_TEMPLATE;
         }
 
@@ -184,8 +182,7 @@ class MailDispatcher
         $this->sendEmail($template, "subjects.new_ownership_request", $params, $subject_params, [], [], $recipient, [$toName]);
     }
 
-    public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox)
-    {
+    public function sendSuggestionBoxCopy(SuggestionBox $suggestionBox) {
         $recipient = [$suggestionBox->getEmail() => $this->translator->getLocale()];
         $recipientName = [$suggestionBox->getDisplayName()];
         $params = ['suggestionBox' => $suggestionBox];
@@ -193,8 +190,7 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::SUGGESTIONBOXCOPY_TEMPLATE, 'Un-Mute / ' . $suggestionBox->getObject(), $params, $subject_params, [], [], $recipient, $recipientName);
     }
 
-    public function sendVIPInscriptionCopy(VIPInscription $inscription)
-    {
+    public function sendVIPInscriptionCopy(VIPInscription $inscription) {
         $recipient = [$inscription->getEmail() => $this->translator->getLocale()];
         $recipientName = [$inscription->getDisplayName()];
         $params = ['inscription' => $inscription];
@@ -221,7 +217,7 @@ class MailDispatcher
 
         // mail to artists
         $bcc = [];
-        foreach ($artist_users as $au) {
+        foreach($artist_users as $au) {
             /** @var User $au */
             $bcc[$au->getEmail()] = $au->getPreferredLocale();
         }
@@ -230,10 +226,10 @@ class MailDispatcher
         $this->sendEmail($template_artist, 'subjects.concert.artist.known_outcome', $params, $subject_params, $bcc);
 
         // mail to fans
-        if (!empty($fan_users)) {
+        if(!empty($fan_users)) {
 
             $bcc = [];
-            foreach ($fan_users as $fu) {
+            foreach($fan_users as $fu) {
                 /** @var User $fu */
                 $bcc[$fu->getEmail()] = $fu->getPreferredLocale();
             }
@@ -265,7 +261,7 @@ class MailDispatcher
         $places = $contract->getNbTicketsToSuccess();
 
         $recipients = [];
-        foreach ($users as $user) {
+        foreach($users as $user) {
             /** @var User $user */
             $recipients[$user->getEmail()] = $user->getPreferredLocale();
         }
@@ -338,8 +334,7 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
-    public function sendRefundedPayment(Payment $payment)
-    {
+    public function sendRefundedPayment(Payment $payment) {
         $params = [
             'payment' => $payment,
         ];
@@ -353,14 +348,13 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::REFUNDED_PAYMENT_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
-    public function sendArtistValidated(Artist $artist)
-    {
+    public function sendArtistValidated(Artist $artist) {
         $params = [
             'artist' => $artist,
         ];
 
         $to = [];
-        foreach ($artist->getOwners() as $owner) {
+        foreach($artist->getOwners() as $owner) {
             /** @var User $owner */
             $to[$owner->getEmail()] = $owner->getPreferredLocale();
         }

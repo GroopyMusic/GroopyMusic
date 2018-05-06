@@ -30,6 +30,10 @@ error:
     title: Forbidden
     content: You do not have the right to reach this page. Are you sure to be at the right place?
 
+header:
+  nav:
+    my_rewards: My rewards #new
+
 home:
   #new
   og_title: Un-Mute | Discover, support, produce
@@ -54,6 +58,8 @@ home:
       soldout: Sold out
     video:
       title: Our last video
+  news:
+    title: New artists
   #new
   partners:
     title: Partners
@@ -70,8 +76,12 @@ catalog_events:
     intro: The following events still need support to be able to be produced! Offer to these artists the possibility of occurring in a full house by buying tickets for their festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggest artists, halls and events to Un-Mute! <a href='%proposition_url%'>This way!</a>">Do you wish to propose an event?</a>
 
 event:
+  reward: "Order now and take advantage of the following Un-Mute rewards:" #new
   #new
   description: "Discover three emergent artists during an Un-Mute Festival. Headliner: %host%"
+  buy_tickets:
+    #new
+    to_much_reduction: You cannot apply multiple discounts on a single order
 
 #new
 conditions:
@@ -81,11 +91,27 @@ conditions:
     intro_social: To continue on Un-Mute, it is necessary that you mark your agreement with our terms of service.
 
 pay_cart:
+    recap:
+      labels:
+          #new
+          total_without_reduction: Total without discount
+          reduction: Discount
+          price: Price
+          applied_rewards: "Applied Un-Mute reward(s):"
+      reduction: Applied Un-Mute reward(s)
+    #new
+    recap_reward:
+      invitation: "%use% invitations"
+      consommable: "%use% consumable packs for %quantity% %type% ticket(s) with a total value of %value% €."
+      reduction: '%reduction% % discount applied to %nbReducedCounterpart% tickets "%counterpart%"'
     #new
     not_authenticated:
       intro: To be able to finalize your order, you must be logged in.
       signin_label: I already have an Un-Mute account
       signup_label: I don't have an Un-Mute account yet
+
+notifs:
+    button: View # new
 
 new_artist:
   #new
@@ -105,8 +131,16 @@ artist_profile:
       invisible: The profile of your artist hasn't been made public yet.
       not_validated: Your artist hasn't been validated by an administrator but this profile has already been made public.
 
+order_pdf:
+  labels: Applied Un-Mute reward(s)
+  rewards: Récompense(s) appliquée(s) #new
+  details:
+    labels:
+      reduction: Discount #new
+      total_reduction_price: Price incl. discounts #new
 #new
 tickets_pdf:
+  rewards: "- Un-Mute rewards" # new
   ticket:
     title: Un-Mute Festival @%hall_name%
     is_entry: |
@@ -114,7 +148,7 @@ tickets_pdf:
         Please present it on a readable support.
   conditions: |
     -	This entrance ticket is only valid for the place and the date specified on the ticket and will be checked.
-    -	Please present the QR code of the ticket in a visible way to facilitate its scanning. A ticket is not valid without sound bar codes.
+    -	Please present the QR code of the ticket in a visible way (e.g. on paper or on a smartphone screen) to facilitate its scanning. A ticket is not valid without sound bar codes.
     -	A ticket can be used only once and will grant a single access to the Festival. If the same QR codes is presented several times, only the first person to present the ticket will be admitted.
     -	Any attempt of re-use or copy of a ticket will be considered as a fraud. Any abuse or forgery will be pursued. The mentions on tickets cannot be modified. The holders of modified tickets can be denied access to the Festival.
     -	An official and currently valid ID card with photo can be asked to identify the holder of the ticket.
@@ -123,7 +157,7 @@ tickets_pdf:
     -	All terms of service are available on <a href="%conditionsUrl%">%conditionsUrl%</a>.
 
 notices:
-    #new
+  #new
   artist_create: The artist %artist% has been created. For now, the profile is invisible on Un-Mute except for you; the Un-Mute team will contact you in the few next hours or days.
   artist_role: This role has been saved.
   #new

@@ -277,6 +277,9 @@ class ContractArtist extends BaseContractArtist
 
             case 'en':
                 return 'Un-Mute Festival with '. $this->artist;
+
+            case 'nl':
+                return 'Un-Mute Festival met ' . $this->artist;
         }
     }
 

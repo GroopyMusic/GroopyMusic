@@ -1,0 +1,126 @@
+fos_user:
+  email:
+    already_used: This email address is already being used.
+    blank: Please enter your email address.
+    invalid: This email address is invalid.
+    long: This email address is too long.
+    short: This email address is too short.
+  password:
+    blank: Please choose a password.
+    short: This password is too short. It must have minimum {{ limit }} characters.
+  username:
+    already_used: This email address is already being used.
+    blank: Please enter your email address.
+    long: This email address is too long.
+    short: This email address is too short.
+
+user:
+  lastname:
+    blank: Please enter your lastname.
+    long: The last name cannot exceed {{ limit }} characters.
+  firstname:
+    blank: Please enter your firstname.
+    long: The first name cannot exceed {{ limit }} characters.
+  birthday:
+    date: Please enter a valid birthdate, ou leave these fields blank.
+  accept_conditions:
+    blank: You must accept the terms and conditions to continue.
+
+suggestionbox:
+  name:
+    long: The name cannot exceed {{ limit }} caractères.
+  firstname:
+    long: The first name cannot exceed {{ limit }} characters.
+  email:
+    email: This is an invalid email address.
+  object:
+    long: The object cannot exceed {{ limit }} characters.
+  message:
+    blank: Please write us a message.
+    short: The message must contain at least {{ limit }} characters.
+
+address:
+  street:
+    long: The street name cannot exceed {{ limit }} characters.
+  number:
+    long: The street number cannot exceed {{ limit }} characters.
+  zipcode:
+    long: The postal code cannot exceed {{ limit }} characters.
+  city:
+    long: The city name cannot exceed {{ limit }} characters.
+
+artist:
+  artistname:
+    long: The artist name cannot exceed {{ limit }} characters.
+  links:
+    url: Please enter a valid URL.
+  accept_conditions:
+    blank: You must accept the terms and conditions to continue.
+
+artist_user:
+  role:
+    long: The role cannot exceed {{ limit }} characters.
+
+concertpossibility:
+  date:
+    blank: Please enter a concert date.
+
+contractartist:
+  artist:
+    blank: Please enter an artist name.
+  step:
+    blank: Please enter a concert type.
+  accept_conditions:
+    blank: You must accept the terms and conditions to continue.
+
+contractfan:
+  quantity_min: You must order at least one concert ticket to continue!
+  quantity_max: There are not enough tickets available!
+
+ownershiprequest:
+  email:
+    email: This is an invalid email address.
+
+contact_person:
+  firstname:
+    max: The first name cannot exceed {{ limit }} characters.
+  lastname:
+    max: The last name cannot exceed {{ limit }} characters.
+  phone:
+    max: The phone number cannot exceed {{ limit }} characters.
+  mail:
+    max: The email address cannot exceed {{ limit }} characters.
+
+proposition_artist:
+  artistname:
+    max: The artist name cannot exceed {{ limit }} characters.
+    empty: Please enter an artist name.
+  demo_link:
+    max: The link cannot exceed {{ limit }} characters.
+
+proposition_hall:
+  name:
+    max: The hall name cannot exceed {{ limit }} characters.
+    empty: Please enter a hall name.
+  contact_email:
+    max: The email address cannot exceed {{ limit }} characters.
+    empty: Please enter an email address.
+  contact_phone:
+    max: The phone number cannot exceed {{ limit }} characters.
+    empty: Please enter a phone number.
+
+proposition_contract_artist:
+  reason:
+    min: The reason of the concert is too short (min. {{ limit }} characters).
+  nb_expected:
+    min_range: The number of expected people cannot be negative.
+  day_commentary:
+    min: The commentary on the day of the concert is too short (min. {{ limit }} characters).
+  commentary:
+    min: The commentary is too short (min. {{ limit }} characters).
+  province:
+    null: Please enter a geographic area.
+  artist:
+    null: You need to choose an artist.
+  end_date:
+    not_valable: This end date is before the start date.

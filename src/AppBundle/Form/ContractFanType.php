@@ -33,7 +33,7 @@ class ContractFanType extends AbstractType
                     'contract_artist' => $contractfan->getContractArtist(),
                 ],
             ))
-            ->add('user_rewards', EntityType::class, array(
+            /*->add('user_rewards', EntityType::class, array(
                 'class' => User_Reward::class,
                 'choices' => $options['user_rewards'],
                 'label' => 'labels.contractfan.rewards',
@@ -50,7 +50,7 @@ class ContractFanType extends AbstractType
                     }
                     return null;
                 }
-            ))
+            ))*/
             ->add('submit', SubmitType::class, array(
                 'label' => 'labels.contractfan.submit',
                 'attr' => ['class' => 'btn btn-primary'],
