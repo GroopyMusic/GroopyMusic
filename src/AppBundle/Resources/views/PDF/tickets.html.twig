@@ -2,11 +2,11 @@
 
 {% block additional_styles %}
     table.ticket {
-        position: relative;
-        background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
-        border-bottom: 1px solid rgba(67,66,71,1);
-        border-left: 1px solid;
-        border-right: 1px solid;
+    position: relative;
+    background: url({{ absolute_url(asset('images/tickets/ticket-bg.jpg')) }}) no-repeat top left;
+    border-bottom: 1px solid rgba(67,66,71,1);
+    border-left: 1px solid;
+    border-right: 1px solid;
     }
 
     .lineup-title {
@@ -24,8 +24,8 @@
     }
 
     .td-timing {
-        padding-top: 7mm;
-        font-size: 4mm;
+    padding-top: 7mm;
+    font-size: 4mm;
     }
 {% endblock %}
 
@@ -80,10 +80,10 @@
             </table>
             <br>
             <div>
-                {% if ticket.rewardText != null and ticket.rewardText is not empty %}
+                {% if ticket.rewards is not empty %}
                     <div>{{ 'tickets_pdf.rewards'|trans()|raw }} :</div>
-                    {% for reward in ticket.rewardText %}
-                    <div>{{ reward }}</div>
+                    {% for reward in ticket.rewards %}
+                        <div>{{ reward.userReward.displayPracticalInformation }}</div>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -96,14 +96,17 @@
             <div class="between-tickets"></div>
 
             {% if agenda is defined and agenda is not empty %}
-                <hr />
+                <hr/>
                 <div class="agenda">
                     <h4>{{ 'tickets_pdf.agenda.title'|trans }}</h4>
                     {% for event in agenda %}
                         <p style="margin-top: 2px">
-                            <a href="{{ url('artist_contract', {'id': event.id, 'slug': event.artist.slug}) }}" style="text-decoration: none;">
-                                {{ event.artist }} @{{ event.hallConcert }} >>> {{ ('Days ' ~ event.dateConcert|date('w'))|trans ~ ' ' ~ event.dateConcert|date('d') ~ ' ' ~ ('months.' ~ event.dateConcert|date('m'))|trans }}
-                                ({% if event.isSoldOut %}{{ 'tickets_pdf.agenda.sold_out'|trans }}{% elseif event.isInSuccessfulState %}{{ 'tickets_pdf.agenda.confirmed'|trans }}{% else %}{{ 'tickets_pdf.agenda.not_confirmed'|trans }}{% endif %})
+                            <a href="{{ url('artist_contract', {'id': event.id, 'slug': event.artist.slug}) }}"
+                               style="text-decoration: none;">
+                                {{ event.artist }} @{{ event.hallConcert }}
+                                >>> {{ ('Days ' ~ event.dateConcert|date('w'))|trans ~ ' ' ~ event.dateConcert|date('d') ~ ' ' ~ ('months.' ~ event.dateConcert|date('m'))|trans }}
+                                ({% if event.isSoldOut %}{{ 'tickets_pdf.agenda.sold_out'|trans }}{% elseif event.isInSuccessfulState %}{{ 'tickets_pdf.agenda.confirmed'|trans }}{% else %}{{ 'tickets_pdf.agenda.not_confirmed'|trans }}{% endif %}
+                                )
                             </a>
                         </p>
                     {% endfor %}

@@ -44,7 +44,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->join('c.step', 's')
             ->join('c.preferences', 'p')
             ->leftJoin('c.reality', 'r')
-           // ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
+            // ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
             // ->leftJoin('r.hall', 'h')
             ->leftJoin('s.counterParts', 'cp')
             ->leftJoin('a.genres', 'ag')
@@ -242,7 +242,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     /**
      * get all sucessful contract artists
      *
-     * @return array
+     * @return array contract artist array
      */
     public function getContactArtistsForSelect()
     {
@@ -257,6 +257,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getResult();
     }
 
+    /**
+     * get all artist particpant of contract artist
+     *
+     * @param $contract_artist_id
+     * @return mixed contract artist
+     */
     public function getArtistParticipants($contract_artist_id)
     {
         return $this->getEntityManager()->createQuery(
@@ -275,6 +281,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getSingleResult();
     }
 
+    /**
+     * find all contract artist for select with search
+     *
+     * @param $q
+     * @return array contract artist array
+     */
     public function findContractArtistsForSelect($q)
     {
         $querry = 'SELECT ca,a FROM AppBundle:ContractArtist ca LEFT JOIN ca.artist a ';
@@ -287,6 +299,52 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         }
         return $this->getEntityManager()
             ->createQuery($querry)
+            ->getResult();
+    }
+
+    /**
+     * check if contract artist is valid for sponsorship
+     *
+     * @param $contract_id
+     * @return mixed contract artist or null
+     */
+    public function isValidForSponsorship($contract_id)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT ca
+                  FROM AppBundle:ContractArtist ca
+                  LEFT JOIN ca.reality r
+                  WHERE ca.id = ?1
+                  AND r.date > ?2
+                  AND ca.refunded = 0
+                  AND ca.failed = 0
+                  ')
+            ->setParameter(1, $contract_id)
+            ->setParameter(2, new \DateTime())
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * retrieves all upcoming contract artist in which a user will participate
+     *
+     * @param $user
+     * @return array contract artist array
+     */
+    public function getUserContractArtists($user)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT ca,r,p,u
+                  FROM AppBundle:ContractArtist ca
+                  LEFT JOIN ca.reality r
+                  LEFT JOIN ca.payments p
+                  LEFT JOIN p.user u
+                  WHERE r.date > ?2
+                  AND ca.refunded = 0
+                  AND ca.failed = 0
+                  AND u.id = ?1
+                  ')
+            ->setParameter(1, $user->getId())
+            ->setParameter(2, new \DateTime())
             ->getResult();
     }
 }

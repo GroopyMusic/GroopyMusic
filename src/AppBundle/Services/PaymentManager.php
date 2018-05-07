@@ -12,37 +12,45 @@ class PaymentManager
     private $stripe_api_secret;
     private $notifier;
     private $mailer;
+    private $rewardSpendingService;
 
-    public function __construct(EntityManagerInterface $em, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, $stripe_api_secret)
+    public function __construct(EntityManagerInterface $em, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, $stripe_api_secret, RewardSpendingService $rewardSpendingService)
     {
         $this->em = $em;
         $this->stripe_api_secret = $stripe_api_secret;
         $this->mailer = $mailDispatcher;
         $this->notifier = $notificationDispatcher;
+        $this->rewardSpendingService = $rewardSpendingService;
     }
 
-    private function initStripe() {
+    private function initStripe()
+    {
         \Stripe\Stripe::setApiKey($this->stripe_api_secret);
     }
 
-    public function refundStripeAndUMPayments(array $payments) {
+    public function refundStripeAndUMPayments(array $payments)
+    {
         $this->initStripe();
-        foreach($payments as $payment) {
+        foreach ($payments as $payment) {
             $this->refundStripePayment($payment);
             $this->refundUMPayment($payment);
+            $this->rewardSpendingService->refundReward($payment->getContractFan());
         }
         $this->em->flush();
     }
 
-    public function refundStripeAndUMPayment(Payment $payment) {
+    public function refundStripeAndUMPayment(Payment $payment)
+    {
         $this->initStripe();
         $this->refundStripePayment($payment);
         $this->refundUMPayment($payment);
+        $this->rewardSpendingService->refundReward($payment->getContractFan());
         $this->em->flush();
     }
 
-    public function refundStripePayment(Payment $payment) {
-        if(!$payment->getRefunded()) {
+    public function refundStripePayment(Payment $payment)
+    {
+        if (!$payment->getRefunded()) {
             \Stripe\Refund::create(array(
                 "charge" => $payment->getChargeId(),
             ));
@@ -70,7 +78,8 @@ class PaymentManager
         $this->em->flush();
     }
 
-    public function notifyUserRefundedPayment(Payment $payment) {
+    public function notifyUserRefundedPayment(Payment $payment)
+    {
         $this->mailer->sendRefundedPayment($payment);
     }
 }

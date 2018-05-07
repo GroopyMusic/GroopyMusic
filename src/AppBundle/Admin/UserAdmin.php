@@ -90,6 +90,16 @@ class UserAdmin extends BaseAdmin
                 'route' => ['name' => 'show']
             ))
             ->end()
+            ->with('Parrainage')
+            ->add('sponsorships', null, array(
+                'label' => 'Invitation de parrainage envoyées',
+                'route' => ['name' => 'show']
+            ))
+            ->add('sponsorship_invitation', null, array(
+                'label' => 'Invitation pour être parrainé',
+                'route' => ['name' => 'show']
+            ))
+            ->end()
         ;
     }
 }

@@ -14,16 +14,19 @@ use AppBundle\Form\ProfileType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\PDFWriter;
+use AppBundle\Services\SponsorshipService;
 use AppBundle\Services\TicketingManager;
 use AppBundle\Services\UserRolesManager;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -129,13 +132,14 @@ class UserController extends Controller
     /**
      * @Route("/paid-carts", name="user_paid_carts")
      */
-    public function paidCartsAction(UserInterface $user)
+    public function paidCartsAction(Request $request, UserInterface $user)
     {
         $em = $this->getDoctrine()->getManager();
         $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
 
         return $this->render('@App/User/paid_carts.html.twig', array(
             'carts' => $carts,
+            'is_payment' => $request->get('is_payment')
         ));
     }
 
@@ -540,22 +544,11 @@ class UserController extends Controller
      */
     public function rewardAction(User_Reward $user_reward, Request $request, UserInterface $user)
     {
-        $type = "";
-        $reward = $user_reward->getReward();
-        if ($user_reward->getUser() != $user) {
+        if ($user_reward->getUser() !== $user) {
             throw $this->createAccessDeniedException();
         }
-        if($reward instanceof ReductionReward){
-            $type = "Reduction";
-        }else if($reward instanceof ConsomableReward){
-            $type = "Consomable";
-        }else if($reward instanceof InvitationReward){
-            $type = "Invitation";
-        }
-        $em = $this->getDoctrine()->getManager();
         return new Response($this->renderView('@App/User/reward.html.twig', array(
-            'user_reward' => $user_reward,
-            'type' => $type
+            'user_reward' => $user_reward
         )));
     }
 
@@ -580,5 +573,61 @@ class UserController extends Controller
         $em->flush();
 
         return new Response($motivations);
+    }
+
+    /**
+     * @Route("/api/send-sponsorship-invitation", name="user_ajax_send_sponsorship_invitation")
+     */
+    public function sendSponsorshipInvitation(Request $request, LoggerInterface $logger, UserInterface $user, SponsorshipService $sponsorshipService, TranslatorInterface $translator)
+    {
+        $em = $em = $this->getDoctrine()->getManager();
+        try {
+            if ($user == null) {
+                return new Response($translator->trans('notices.sponsorship.send_sponsorship.not_connected', []), 500);
+            }
+            $contract = $em->getRepository('AppBundle:ContractArtist')->find(intval($request->get('contractArtist')));
+            if ($contract == null
+                || $contract->isSoldOut()
+                || !$contract->isCrowdable()
+                || $em->getRepository('AppBundle:ContractArtist')->isValidForSponsorship($contract->getId()) == null) {
+                return new Response($translator->trans('notices.sponsorship.send_sponsorship.event_not_valid', []), 500);
+            }
+            $response = $sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('content'), $contract, $user);
+            return $this->redirectToRoute('user_ajax_display_sponsorship_invitation_modal', array(
+                'success' => $response[0],
+                'emails' => $response[1],
+                'success_message' => $translator->trans('notices.sponsorship.send_sponsorship.success', []),
+                'warning_message' => $translator->trans('notices.sponsorship.send_sponsorship.warning_message', []),
+                'defined' => $request->get('defined')
+            ));
+        } catch (\Throwable $th) {
+            $logger->warning('error', [$th->getMessage()]);
+            return new Response($translator->trans('notices.sponsorship.send_sponsorship.error', []), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/display-sponsorship-invitation-modal", name="user_ajax_display_sponsorship_invitation_modal")
+     */
+    public function displaySponsorshipModalAction(Request $request, UserInterface $user, SponsorshipService $sponsorshipService, LoggerInterface $logger)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $defined = $request->get('defined');
+        $contracts = [];
+        if ($defined === false || $defined === null || $defined === 'false') {
+            $defined = false;
+            $contracts = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
+        }
+        $result = $sponsorshipService->getSponsorshipSummaryForUser($user);
+        return $this->render('@App/User/sponsorship_invitations_modal.html.twig', array(
+            'event_is_define' => $defined,
+            'contracts' => $contracts,
+            'invited' => $result[0],
+            'confirmed' => $result[1],
+            'success' => $request->get('success'),
+            'emails' => $request->get('emails'),
+            'success_message' => $request->get('success_message'),
+            'warning_message' => $request->get('warning_message')
+        ));
     }
 }

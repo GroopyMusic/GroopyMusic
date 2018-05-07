@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,13 +19,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $reward_text = [])
+    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null)
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;
         $this->price = $price;
         $this->validated = false;
-        $this->reward_text = $reward_text;
+        $this->rewards = new ArrayCollection();
 
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
@@ -122,9 +123,9 @@ class Ticket
     private $contractArtist;
 
     /**
-     * @ORM\Column(name="reward_type_parameters", type="array",nullable=true)
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="ticket", cascade={"all"}, orphanRemoval=true)
      */
-    private $reward_text;
+    private $rewards;
 
     /**
      * Get id
@@ -305,26 +306,42 @@ class Ticket
     }
 
     /**
-     * Set rewardText
+     * Add reward
      *
-     * @param array $rewardText
+     * @param \AppBundle\Entity\RewardTicketConsumption $reward
      *
      * @return Ticket
      */
-    public function setRewardText($rewardText)
+    public function addReward(\AppBundle\Entity\RewardTicketConsumption $reward)
     {
-        $this->reward_text = $rewardText;
+        if (!$this->rewards->contains($reward)) {
+            $this->rewards[] = $reward;
+            $reward->setTicket($this);
+        }
 
         return $this;
     }
 
     /**
-     * Get rewardText
+     * Remove reward
      *
-     * @return array
+     * @param \AppBundle\Entity\RewardTicketConsumption $reward
      */
-    public function getRewardText()
+    public function removeReward(\AppBundle\Entity\RewardTicketConsumption $reward)
     {
-        return $this->reward_text;
+        if ($this->rewards->contains($reward)) {
+            $this->rewards->removeElement($reward);
+            $reward->setTicket(null);
+        }
+    }
+
+    /**
+     * Get rewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRewards()
+    {
+        return $this->rewards;
     }
 }

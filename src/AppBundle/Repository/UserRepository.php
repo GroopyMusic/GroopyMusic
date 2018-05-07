@@ -47,8 +47,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Count all users' statistics results for the category
+     * Mecenat + Productorat
      *
-     * @return array
+     * @return array statistics array
      */
     public function countUsersStatistic()
     {
@@ -70,6 +71,68 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getResult(Query::HYDRATE_ARRAY);
     }
 
+    /**
+     * count ambassadorat users statistic
+     *
+     * @return array ambassadorat statistic array
+     */
+    public function countUserAmbassadoratStatistic(){
+        return $this->getEntityManager()->createQuery(
+            'SELECT u.id, COUNT(s.id) as amb
+                  FROM AppBundle:User u INDEX BY u.id
+                  LEFT JOIN u.sponsorships s
+                  LEFT JOIN s.target_invitation st
+                  LEFT JOIN s.contract_artist sca
+                  LEFT JOIN st.carts stc
+                  LEFT JOIN stc.contracts stco
+                  WHERE sca.successful = TRUE
+                  AND u.deleted = FALSE
+                  AND st.deleted = FALSE
+                  AND stco.refunded = FALSE
+                  AND stc.paid = TRUE 
+                  GROUP BY u.id
+                  ')
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    /**
+     * count sponsorship validated user statistic
+     *
+     * @return array sponsorship validated users statistics array
+     */
+    public function countValidateSponsorshipInvitation(){
+        return $this->getEntityManager()->createQuery(
+            'SELECT u.id, COUNT(s.id) as v
+                  FROM AppBundle:User u INDEX BY u.id
+                  LEFT JOIN u.sponsorships s
+                  WHERE s.target_invitation IS NOT NULL
+                  GROUP BY u.id
+                  ')
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    /**
+     * count sponsorship user statistic
+     *
+     * @return array sponsorship users statistics array
+     */
+    public function countSponsorshipInvitation(){
+        return $this->getEntityManager()->createQuery(
+            'SELECT u.id, COUNT(si.id) as s
+                  FROM AppBundle:User u INDEX BY u.id
+                  LEFT JOIN u.sponsorships si
+                  GROUP BY u.id
+                  ')
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    /**
+     * find user for select with search
+     *
+     * @param $q
+     * @return array users array
+     *
+     */
     public function findUsersNotDeletedForSelect($q)
     {
         $querry = 'SELECT u FROM AppBundle:User u WHERE u.deleted = 0';
@@ -80,7 +143,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 $querry = $querry . " OR u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
             }
         }
-        if(count($q)>0){
+        if (count($q) > 0) {
             $querry = $querry . ")";
         }
         return $this->getEntityManager()
@@ -88,6 +151,12 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * find user subscribed to newsletter for select with search
+     *
+     * @param $q
+     * @return array users array
+     */
     public function findNewsletterUsersNotDeletedForSelect($q)
     {
         $querry = 'SELECT u FROM AppBundle:User u WHERE u.deleted = 0 AND u.newsletter = 1';
@@ -98,7 +167,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 $querry = $querry . " OR u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
             }
         }
-        if(count($q)>0){
+        if (count($q) > 0) {
             $querry = $querry . ")";
         }
         return $this->getEntityManager()
@@ -109,7 +178,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     /**
      * get all users not deleted with stat
      *
-     * @return array
+     * @return array users array
      *
      */
     public function findUsersNotDeleted()
@@ -124,6 +193,12 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * get all user participants of contract_artist
+     *
+     * @param $contract_artist_id
+     * @return array users array
+     */
     public function getParticipants($contract_artist_id)
     {
         return $this->getEntityManager()->createQuery(
@@ -136,5 +211,45 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   ')
             ->setParameter(1, $contract_artist_id)
             ->getResult();
+    }
+
+    /**
+     * check if user is participant of contract_artist
+     *
+     * @param $contract_artist_id
+     * @param $user_id
+     * @return mixed user_participant or null
+     */
+    public function isParticipant($contract_artist_id, $user_id)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT u
+                  FROM AppBundle:User u
+                  LEFT JOIN u.carts c
+                  LEFT JOIN c.contracts cf
+                  LEFT JOIN cf.contractArtist ca
+                  WHERE ca.id = ?1
+                  AND u.id = ?2
+                  ')
+            ->setParameter(1, $contract_artist_id)
+            ->setParameter(2, $user_id)
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * check if email is already subsribed to the plateforme
+     *
+     * @param $email
+     * @return mixed user's email or null
+     */
+    public function emailExists($email)
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT u
+                  FROM AppBundle:User u
+                  WHERE u.email = ?1
+                  ')
+            ->setParameter(1, $email)
+            ->getOneOrNullResult();
     }
 }

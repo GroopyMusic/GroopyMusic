@@ -37,7 +37,7 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
     /**
      * get categories and their levels
      *
-     * @return array
+     * @return array category array
      */
     public function findLevelsByCategories() {
         return $this->getEntityManager()->createQuery(

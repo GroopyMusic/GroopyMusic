@@ -1,0 +1,123 @@
+<div id="sponsorship-invitations-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="sponsorship-modal-form" action="{{ url('user_ajax_send_sponsorship_invitation',{}) }}">
+                <div class="modal-body">
+                    <div id="sponsorship-modal-alert-danger" class="alert alert-danger text-center" hidden>
+                    </div>
+                    <div id="sponsorship-modal-alert-success-payment" class="alert alert-success text-center" hidden>
+                        {{ "sponsorship_modal.confirmed_payment"|trans|raw }}
+                    </div>
+                    {% if success is defined and success == true %}
+                        <div id="sponsorship-modal-alert-success" class="alert alert-success text-center" hidden>
+                            {{ success_message }}
+                        </div>
+                    {% endif %}
+                    {% if emails is defined  and emails|length > 0 %}
+                        <div id="sponsorship-modal-alert-warning" class="alert alert-warning" hidden>
+                            {{ warning_message }}
+                            <ul>
+                                {% for email in emails %}
+                                    <li>{{ email }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <div id="sponsorship-modal-loader">
+                        {{ hidden_loader() }}
+                    </div>
+                    <div id="sponsorship-modal-content">
+                        <h2 class="text-center">{{ "sponsorship_modal.title"|trans|raw }}</h2>
+                        <div id="info-sponsorship" class="text-center">
+                            <span class="text-primary">{{ "sponsorship_modal.content"|trans|raw }}</span>
+                        </div>
+                        <hr>
+                        <div>
+                            <label><a data-toggle="collapse" href="#sponsorship-modal-summary-div" style="color: black">
+                                    {{ "sponsorship_modal.display_recap"|trans|raw }}
+                                </a></label>
+                        </div>
+                        <div id="sponsorship-modal-summary-div" class="collapse">
+                            <br>
+                            <table id="sponsorship-modal-summary-table" class="table text-center">
+                                <thead>
+                                <tr>
+                                    <th style="width: 50%" class="text-warning">{{ "sponsorship_modal.waiting"|trans|raw }}</th>
+                                    <th style="width: 50%" class="text-success">{{ "sponsorship_modal.confirmed"|trans|raw }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        {% for email in invited %}
+                                            <div class="text-warning">
+                                                {{ email }}
+                                            </div>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for email in confirmed %}
+                                            <div class="text-success">
+                                                {{ email }}
+                                            </div>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-warning"><strong>{{ "sponsorship_modal.total"|trans|raw }} : {{ invited|length }}</strong></td>
+                                    <td class="text-success"><strong>{{ "sponsorship_modal.total"|trans|raw }} : {{ confirmed|length }}</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <br>
+                        {% if event_is_define == false %}
+                            <div id="sponsorship-modal-select-div">
+                                <div class="form-group">
+                                    <label for="sponsorship-modal-select">{{ "sponsorship_modal.event"|trans|raw }}</label>
+                                    <select id="sponsorship-modal-select" class="form-control" required>
+                                        {% for contract in contracts %}
+                                            <option id="{{ contract.id }}">{{ contract }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                        {% endif %}
+                        <div id="sponsorship-modal-email-inputs-div">
+                            <div class="form-group">
+                                <label for="email-inputs">{{ "sponsorship_modal.emails"|trans|raw }}</label>
+                                <input type="email" class="sponsorship-modal-email-inputs form-control"
+                                       placeholder="{{ "sponsorship_modal.email_placeholder"|trans|raw }}" required>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn" onclick="removeEmailInput()" style="font-size: 70%">
+                                {{ "sponsorship_modal.remove_field"|trans|raw }}
+                            </button>
+                            <button type="button" class="btn" onclick="addEmailInput()" style="font-size: 70%">
+                                {{ "sponsorship_modal.add_field"|trans|raw }}
+                            </button>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="sponsorship-modal-textarea">{{ "sponsorship_modal.message"|trans|raw }}</label>
+                            <textarea class="form-control" id="sponsorship-modal-textarea" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                {{ "sponsorship_modal.cancel_button"|trans|raw }}
+                            </button>
+                            <button id="sponsorship-modal-send-button" type="submit" class="btn btn-primary">
+                                {{ "sponsorship_modal.send_button"|trans|raw }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -6,6 +6,7 @@ use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\BaseStep;
 use AppBundle\Entity\ContractArtist_Artist;
+use AppBundle\Entity\Reward;
 use AppBundle\Entity\StepType;
 use AppBundle\Form\ConcertPossibilityType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -21,11 +22,10 @@ class ContractArtistAdmin extends BaseAdmin
         $collection
             ->remove('delete')
             ->remove('create')
-            ->add('refund', $this->getRouterIdParameter().'/refund')
-            ->add('validate', $this->getRouterIdParameter().'/validate')
-            ->add('prevalidate', $this->getRouterIdParameter().'/prevalidate')
-            ->add('tickets', $this->getRouterIdParameter().'/tickets')
-        ;
+            ->add('refund', $this->getRouterIdParameter() . '/refund')
+            ->add('validate', $this->getRouterIdParameter() . '/validate')
+            ->add('prevalidate', $this->getRouterIdParameter() . '/prevalidate')
+            ->add('tickets', $this->getRouterIdParameter() . '/tickets');
     }
 
     public function configureListFields(ListMapper $list)
@@ -200,11 +200,19 @@ class ContractArtistAdmin extends BaseAdmin
                     'route' => array('name' => 'show'),
                 ))
             ->end()
-        ;
+            ->with('Parrainage')
+            ->add('sponsorship_reward', null, array(
+                'label' => 'Récompense de parrainage',
+                'route' => array('name' => 'show'),
+                'required' => false
+            ))
+            ->end();
     }
 
     public function configureFormFields(FormMapper $form)
     {
+        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
+        $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
         $form
                 ->add('dateEnd', 'date', array(
                     'required' => true,
@@ -256,11 +264,19 @@ class ContractArtistAdmin extends BaseAdmin
                     'class' => Artist::class,
                 ))
             ->end()
-        ;
+            ->with('Parrainage')
+            ->add('sponsorship_reward', EntityType::class, array(
+                'class' => Reward::class,
+                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale()),
+                'label' => 'Récompense de parrainage'
+            ))
+            ->end();
+
 
     }
 
-    public function getExportFields() {
+    public function getExportFields()
+    {
 
         return [
             '#' => 'id',

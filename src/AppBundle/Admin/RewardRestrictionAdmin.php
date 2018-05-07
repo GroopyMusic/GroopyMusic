@@ -66,7 +66,7 @@ class RewardRestrictionAdmin extends BaseAdmin
     public function configureFormFields(FormMapper $form)
     {
         $entitiesArray = $this->getSelectEntities();
-        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
+        $rewardAttributionService = $this->getConfigurationPool()->getContainer()->get(RewardAttributionService::class);
         $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
         $form
             ->with('Champs traductibles')
@@ -125,7 +125,7 @@ class RewardRestrictionAdmin extends BaseAdmin
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
                 'class' => Reward::class,
-                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale()),
+                'choices' => $rewardAttributionService->constructRewardSelectWithType($request->getLocale()),
                 'multiple' => true,
                 'required' => false
             ])

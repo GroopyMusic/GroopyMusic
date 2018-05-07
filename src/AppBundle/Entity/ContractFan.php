@@ -47,6 +47,7 @@ class ContractFan
         $this->refunded = false;
         $this->tickets = new ArrayCollection();
         $this->user_rewards = new ArrayCollection();
+        $this->ticket_rewards = new ArrayCollection();
     }
 
     public function isPaid()
@@ -182,7 +183,7 @@ class ContractFan
                     }
                 } else if ($user_reward instanceof InvitationReward) {
                     $j = 1;
-                    while($j <= $purchase->getQuantity() && $j <= $user_reward->getRemainUse()){
+                    while ($j <= $purchase->getQuantity() && $j <= $user_reward->getRemainUse()) {
 
                     }
                 } else if ($user_reward instanceof ConsomableReward) {
@@ -259,6 +260,11 @@ class ContractFan
      * @ORM\Column(name="amount", type="float")
      */
     private $amount;
+
+    /**
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="contractFan",cascade={"all"})
+     */
+    private $ticket_rewards;
 
     /**
      * Get id
@@ -562,5 +568,44 @@ class ContractFan
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    /**
+     * Add ticketReward
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticketReward
+     *
+     * @return ContractFan
+     */
+    public function addTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
+    {
+        if (!$this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards[] = $ticketReward;
+            $ticketReward->setContractFan($this);
+        }
+        return $this;
+    }
+
+    /**
+     * Remove ticketReward
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticketReward
+     */
+    public function removeTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
+    {
+        if ($this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards->removeElement($ticketReward);
+            $ticketReward->setContractFan(null);
+        }
+    }
+
+    /**
+     * Get ticketRewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTicketRewards()
+    {
+        return $this->ticket_rewards;
     }
 }

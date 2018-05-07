@@ -35,6 +35,7 @@ class User_Reward
         $this->base_steps = new ArrayCollection();
         $this->counter_parts = new ArrayCollection();
         $this->contractFans = new ArrayCollection();
+        $this->tickets = new ArrayCollection();
     }
 
     public function __toString()
@@ -49,7 +50,7 @@ class User_Reward
         } else if ($this->reward instanceof InvitationReward) {
             return $this->getReward()->getName();
         } else if ($this->reward instanceof ConsomableReward) {
-            return $this->getReward()->getName() . ': ' . $this->reward_type_parameters['quantity'] . ' x ' . $this->reward_type_parameters['type_consomable'] . '(' . $this->reward_type_parameters['value'] . ')';
+            return $this->getReward()->getName() . ': ' . $this->reward_type_parameters['quantity'] . ' x ' . $this->reward_type_parameters['type_consomable'] . '(' . $this->reward_type_parameters['value'] . '€)';
         }
 
     }
@@ -130,6 +131,11 @@ class User_Reward
      * @ORM\ManyToMany(targetEntity="ContractFan", mappedBy="user_rewards")
      */
     private $contractFans;
+
+    /**
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="user_reward", cascade={"all"}, orphanRemoval=true)
+     */
+    private $tickets;
 
     /**
      * Get id
@@ -478,5 +484,44 @@ class User_Reward
     public function getContractFans()
     {
         return $this->contractFans;
+    }
+
+    /**
+     * Add ticket
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticket
+     *
+     * @return User_Reward
+     */
+    public function addTicket(\AppBundle\Entity\RewardTicketConsumption $ticket)
+    {
+        if (!$this->tickets->contains($ticket)) {
+            $this->tickets[] = $ticket;
+            $ticket->setUserReward($this);
+        }
+        return $this;
+    }
+
+    /**
+     * Remove ticket
+     *
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticket
+     */
+    public function removeTicket(\AppBundle\Entity\RewardTicketConsumption $ticket)
+    {
+        if ($this->tickets->contains($ticket)) {
+            $ticket->setUserReward(null);
+            $this->tickets->removeElement($ticket);
+        }
+    }
+
+    /**
+     * Get tickets
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
     }
 }

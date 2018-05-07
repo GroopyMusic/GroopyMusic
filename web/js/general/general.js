@@ -1,6 +1,6 @@
 Dropzone.autoDiscover = false;
 
-$.fn.textWidth = function(){
+$.fn.textWidth = function () {
     var html_org = $(this).html();
     var html_calc = '<span>' + html_org + '</span>';
     $(this).html(html_calc);
@@ -9,16 +9,16 @@ $.fn.textWidth = function(){
     return width;
 };
 
-$('.rounded-title').each(function() {
+$('.rounded-title').each(function () {
     var tw = $(this).textWidth();
     $(this).width(tw + 4);
     $(this).height(tw);
-    $(this).css('margin-top', '-' + $(this).outerHeight()/2 + 'px');
+    $(this).css('margin-top', '-' + $(this).outerHeight() / 2 + 'px');
     var $class = $(this).hasClass('rounded-title-login-choice') ? 'h-line h-line-login-choice' : 'h-line';
-    $(this).before('<div class="'+$class+'" style="margin-top:'+ $(this).outerHeight()/2 +'px;"></div>');
+    $(this).before('<div class="' + $class + '" style="margin-top:' + $(this).outerHeight() / 2 + 'px;"></div>');
 });
 
-$(".scroll").click(function(e) {
+$(".scroll").click(function (e) {
     e.preventDefault();
     $('html, body').animate({
         scrollTop: $($(this).attr('href')).offset().top
@@ -27,8 +27,11 @@ $(".scroll").click(function(e) {
 
 $(function () {
 
-    $('[data-toggle="popover"]').popover({'html':true});
-    $('[data-toggle="popover"]').on('click', function(e) {e.preventDefault(); return true;});
+    $('[data-toggle="popover"]').popover({'html': true});
+    $('[data-toggle="popover"]').on('click', function (e) {
+        e.preventDefault();
+        return true;
+    });
 
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -41,15 +44,15 @@ $(function () {
     });
 
     $.fn.extend({
-        attach_notifications_behaviour: function() {
+        attach_notifications_behaviour: function () {
             this.off();
-            return this.each(function() {
-                $(this).click(function(e) {
+            return this.each(function () {
+                $(this).click(function (e) {
                     e.preventDefault();
                     $('#notifs-modal .loader').show();
                     $('#notifs-modal-content').html('');
                     $('#notifs-modal').modal('show');
-                    $.get($(this).attr('href'), function(html) {
+                    $.get($(this).attr('href'), function (html) {
                         $('.loader').hide();
                         $('#notifs-modal-content').html(html);
                         $(this).closest('tr.notification-preview').removeClass('table-warning');
@@ -61,7 +64,7 @@ $(function () {
 
     $('.notification-trigger').attach_notifications_behaviour();
 
-    var getBackgroundImageSize = function(el) {
+    var getBackgroundImageSize = function (el) {
         var imageUrl = el.match(/^url\(["']?(.+?)["']?\)$/);
         var dfd = new $.Deferred();
 
@@ -74,8 +77,8 @@ $(function () {
             dfd.reject();
         }
 
-        return dfd.then(function() {
-            return { width: this.width, height: this.height };
+        return dfd.then(function () {
+            return {width: this.width, height: this.height};
         });
     };
 
@@ -86,15 +89,15 @@ $(function () {
         var width = '100%';
 
         getBackgroundImageSize($url)
-            .then(function(size) {
+            .then(function (size) {
                 width = Math.min(size.width, $video.outerWidth());
             })
-            .always(function() {
-                if(title != '') {
+            .always(function () {
+                if (title != '') {
                     $video.append('<div class="youtube-caption">' + title + '</div>');
                 }
                 $video.append('<div class="play"></div>');
-                $video.find('.play').css('width', width).css('bottom', $video.find('.youtube-caption').outerHeight()/2);
+                $video.find('.play').css('width', width).css('bottom', $video.find('.youtube-caption').outerHeight() / 2);
                 $video.find('.youtube-caption').css('width', width);
             });
 
@@ -116,7 +119,7 @@ $(function () {
         });
     }
 
-    $(".youtube").each(function() {
+    $(".youtube").each(function () {
         var video_id = this.id;
         var $video = $(this);
 
@@ -124,7 +127,7 @@ $(function () {
             key: "AIzaSyBMt1U3tTxBt4AtRR4BAwo4knEQXJf4y-A",
             part: "snippet,statistics",
             id: video_id
-        }).done(function(data) {
+        }).done(function (data) {
             if (data.items.length === 0) {
                 attach_youtube_click($video, video_id, '');
             }
@@ -133,9 +136,13 @@ $(function () {
                 attach_youtube_click($video, video_id, data.items[0].snippet.title);
             }
         })
-        .fail(function() {
-            attach_youtube_click($video, video_id, '');
-        });
+            .fail(function () {
+                attach_youtube_click($video, video_id, '');
+            });
     });
 });
+
+
+
+
 

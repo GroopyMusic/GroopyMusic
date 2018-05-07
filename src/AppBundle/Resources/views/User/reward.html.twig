@@ -21,13 +21,13 @@
         <div>{{ user_reward.remainUse }} {{ 'reward.on'|trans|raw }} {{ user_reward.reward.maxUse }}</div>
     </div>
     <br>
-    {% if type == "Invitation" %}
+    {% if user_reward.reward.getType == "Invitation" %}
         <div>
             <div class="modal-reward-label"><p class="text-uppercase small">{{ 'reward.invitation.time'|trans|raw }}</p></div>
             <div>{{ user_reward.reward.endDate|date() }} - {{ user_reward.reward.startDate|date() }}</div>
         </div>
         <br>
-    {% elseif type == "Consomable" %}
+    {% elseif user_reward.reward.getType == "Consommation" %}
         <div>
             <div class="modal-reward-label"><p class="text-uppercase small">{{ 'reward.consomable.type'|trans|raw }}</p></div>
             <div>{{ user_reward.reward.typeConsomable }}</div>
@@ -42,7 +42,7 @@
             <div class="modal-reward-label"><p class="text-uppercase small">{{ 'reward.consomable.value'|trans|raw }}</p></div>
             <div>{{ user_reward.reward.value }}€</div>
         </div>
-    {% elseif type == "Reduction" %}
+    {% elseif user_reward.reward.getType == "Réduction" %}
         <div>
             <div class="modal-reward-label"><p class="text-uppercase small">{{ 'reward.reduction.reduction'|trans|raw }}</p></div>
             <div>{{ user_reward.reward.reduction }}%</div>

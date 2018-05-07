@@ -26,7 +26,7 @@ class StepRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Recovers all step
      *
-     * @return array
+     * @return array step array
      */
     public function getStepsForSelect()
     {

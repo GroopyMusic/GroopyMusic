@@ -14,7 +14,7 @@ class CounterPartRepository extends \Doctrine\ORM\EntityRepository
     /**
      * get all counter parts
      *
-     * @return array
+     * @return array counter_part array
      */
     public function getCounterPartsForSelect()
     {

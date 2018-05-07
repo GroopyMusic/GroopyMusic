@@ -27,6 +27,7 @@ class Purchase
         $this->nb_reduced_counterparts = 0;
         $this->reducedPrice = 0;
         $this->purchase_promotions = new ArrayCollection();
+        $this->ticket_rewards = new ArrayCollection();
     }
 
     public function getPromotions()
@@ -166,9 +167,9 @@ class Purchase
     private $nb_reduced_counterparts;
 
     /**
-     * @ORM\Column(name="reward_type_parameters", type="array", nullable=true)
+     * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="purchase", cascade={"all"})
      */
-    private $ticket_reward_text;
+    private $ticket_rewards;
 
     /**
      * Get id
@@ -352,26 +353,41 @@ class Purchase
     }
 
     /**
-     * Set ticketRewardText
+     * Add ticketReward
      *
-     * @param array $ticketRewardText
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticketReward
      *
      * @return Purchase
      */
-    public function setTicketRewardText($ticketRewardText)
+    public function addTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
     {
-        $this->ticket_reward_text = $ticketRewardText;
-
+        if (!$this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards[] = $ticketReward;
+            $ticketReward->setPurchase($this);
+        }
         return $this;
     }
 
     /**
-     * Get ticketRewardText
+     * Remove ticketReward
      *
-     * @return array
+     * @param \AppBundle\Entity\RewardTicketConsumption $ticketReward
      */
-    public function getTicketRewardText()
+    public function removeTicketReward(\AppBundle\Entity\RewardTicketConsumption $ticketReward)
     {
-        return $this->ticket_reward_text;
+        if ($this->ticket_rewards->contains($ticketReward)) {
+            $this->ticket_rewards->removeElement($ticketReward);
+            $ticketReward->setPurchase(null);
+        }
+    }
+
+    /**
+     * Get ticketRewards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTicketRewards()
+    {
+        return $this->ticket_rewards;
     }
 }

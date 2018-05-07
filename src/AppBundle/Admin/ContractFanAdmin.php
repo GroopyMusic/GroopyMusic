@@ -77,6 +77,9 @@ class ContractFanAdmin extends BaseAdmin
                     'label' => 'Panier correspondant',
                     'route' => array('name' => 'show'),
                 ))
+            ->add('amount', null, array(
+                'label' => 'Montant',
+            ))
             ->end()
             ->with('État')
                 ->add('paid', 'boolean', array(
@@ -85,6 +88,16 @@ class ContractFanAdmin extends BaseAdmin
                 ->add('counterparts_sent', 'boolean', array(
                     'label' => 'Tickets envoyés',
                 ))
+            ->end()
+            ->with('Récompenses')
+            ->add('user_rewards', null, array(
+                'label' => 'Récompenses utilisées',
+                'route' => array('name' => 'show'),
+            ))
+            ->add('ticket_rewards', null, array(
+                'label' => 'Récompenses attribuées',
+                'route' => array('name' => 'show'),
+            ))
             ->end()
         ;
     }

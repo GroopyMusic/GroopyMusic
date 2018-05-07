@@ -30,14 +30,16 @@ class TicketingManager
     private $logger;
     private $em;
     private $agenda = [];
+    private $rewardSpendingService;
 
-    public function __construct(PDFWriter $writer, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, LoggerInterface $logger, EntityManagerInterface $em)
+    public function __construct(PDFWriter $writer, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, LoggerInterface $logger, EntityManagerInterface $em, RewardSpendingService $rewardSpendingService)
     {
         $this->writer = $writer;
         $this->mailDispatcher = $mailDispatcher;
         $this->notificationDispatcher = $notificationDispatcher;
         $this->logger = $logger;
         $this->em = $em;
+        $this->rewardSpendingService = $rewardSpendingService;
     }
 
     /**
@@ -63,9 +65,7 @@ class TicketingManager
             $counterPart = $purchase->getCounterpart();
 
             $j = 1;
-            $array_reward = $purchase->getTicketRewardText();
             while ($j <= $purchase->getQuantityOrganic()) {
-                $this->logger->warning("purchase", [$purchase]);
                 $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice()));
                 $j++;
             }
@@ -74,6 +74,7 @@ class TicketingManager
                 $i++;
             }
         }
+        $this->rewardSpendingService->giveRewardToTicket($contractFan);
         //}
     }
 
@@ -85,7 +86,7 @@ class TicketingManager
         $price = $counterPart == null ? 0 : $counterPart->getPrice();
 
         for ($i = 1; $i <= $nb; $i++) {
-            $ticket = new Ticket($cf = null, $counterPart, $i, $price, $physicalPerson, $contractArtist, []);
+            $ticket = new Ticket($cf = null, $counterPart, $i, $price, $physicalPerson, $contractArtist);
             $this->em->persist($ticket);
             $tickets[] = $ticket;
         }
@@ -131,8 +132,8 @@ class TicketingManager
         $counterpart = new CounterPart();
         $counterpart->setPrice(12);
 
-        $ticket1 = new Ticket($cf, $counterpart, 1, 12, null, null, []);
-        $ticket2 = new Ticket($cf, $counterpart, 2, 0, null, null, []);
+        $ticket1 = new Ticket($cf, $counterpart, 1, 12);
+        $ticket2 = new Ticket($cf, $counterpart, 2, 0);
 
         $cf->addTicket($ticket1);
         $cf->addTicket($ticket2);
@@ -263,7 +264,7 @@ class TicketingManager
             'Event' => $ticket->getContractArtist()->__toString(),
             'validated' => $ticket->getValidated(),
             'refunded' => $ticket->isRefunded(),
-            'user_rewards' => $ticket->getContractFan()->getUserRewards()
+            'rewards' => $ticket->getRewards()
         ];
 
         if ($ticket->getCounterPart() != null) {

@@ -119,6 +119,12 @@ class ArtistRepository extends OptimizedRepository
 
     }
 
+    /**
+     * find all not deleted artist for select with search
+     *
+     * @param $q
+     * @return array
+     */
     public function findNotDeleted($q)
     {
         return $this->getEntityManager()
@@ -130,7 +136,7 @@ class ArtistRepository extends OptimizedRepository
     /**
      * get all artist not deleted
      *
-     * @return array
+     * @return array artist array
      */
     public function getArtistsForSelect()
     {

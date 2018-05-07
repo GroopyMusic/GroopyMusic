@@ -10,6 +10,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\PhysicalPersonInterface;
 use AppBundle\Entity\PropositionContractArtist;
+use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Category;
@@ -366,11 +367,57 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::ARTIST_VALIDATED_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
+    public function sendRankingEmail($stats, $object, $content)
+    {
+        $params = ['content' => $content];
+        $subject_params = [];
+        $to = [];
+        foreach ($stats as $stat) {
+            $user = $stat->getUser();
+            $to[$user->getEmail()] = $user->getPreferredLocale();
+        }
+        $this->sendEmail(MailTemplateProvider::RANKING_EMAIL_USER_TEMPLATE, $object,
+            $params, [], [], [], $to, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendEmailRewardAttribution($stats, $content, $reward)
+    {
+        $params = ['content' => $content, 'reward' => $reward];
+        $subject = "subjects.reward_attribution";
+        $to = [];
+        foreach ($stats as $stat) {
+            $user = $stat->getUser();
+            $to[$user->getEmail()] = $user->getPreferredLocale();
+        }
+        $this->sendEmail(MailTemplateProvider::REWARD_ATTRIBUTION_TEMPLATE, $subject,
+            $params, [], [], [], $to, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendEmailFromAdmin($emails, $subject, $content)
+    {
+        $params = ['content' => $content];
+        $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
+            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
+    public function sendSponsorshipInvitationEmail(SponsorshipInvitation $sponsorshipInvitation, $content)
+    {
+        $subject = "subjects.sponsorship_invitation";
+        $to = [$sponsorshipInvitation->getEmailInvitation() => $sponsorshipInvitation->getHostInvitation()->getPreferredLocale()];
+        $params = ['content' => $content,
+            'contractArtist' => $sponsorshipInvitation->getContractArtist(),
+            'user' => $sponsorshipInvitation->getHostInvitation(),
+            'token' => $sponsorshipInvitation->getTokenSponsorship()];
+        $this->sendEmail(MailTemplateProvider::SPONSORSHIP_INVITATION_MAIL, $subject,
+            $params, [], [], [], $to, [], self::REPLY_TO, self::REPLY_TO_NAME);
+    }
+
     // ----------------------
     // ADMIN EMAILS
     // ----------------------
 
-    public function sendAdminNewArtist(Artist $artist) {
+    public function sendAdminNewArtist(Artist $artist)
+    {
         $params = ['artist' => $artist];
         $subject = 'Nouvel artiste inscrit sur Un-Mute';
         $subject_params = [];
@@ -453,40 +500,6 @@ class MailDispatcher
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_PROPOSITION_SUBMIT, $subject, $params, $subject_params);
     }
 
-    public function sendRankingEmail($stats, $object, $content)
-    {
-        $params = ['content' => $content];
-        $subject_params = [];
-        $to = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getEmail();
-        }, $stats);
-        $to_name = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getDisplayName();
-        }, $stats);
-        $this->sendEmail(MailTemplateProvider::RANKING_EMAIL_USER_TEMPLATE, $object,
-            $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);
-    }
-
-    public function sendEmailRewardAttribution($stats, $content, $reward)
-    {
-        $params = ['content' => $content, 'reward' => $reward];
-        $subject = "subjects.reward_attribution";
-        $to = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getEmail();
-        }, $stats);
-        $to_name = array_map(function (User_Category $elem) {
-            return $elem->getUser()->getDisplayName();
-        }, $stats);
-        $this->sendEmail(MailTemplateProvider::REWARD_ATTRIBUTION_TEMPLATE, $subject,
-            $params, [], [], [], $to, $to_name, self::REPLY_TO, self::REPLY_TO_NAME);
-    }
-
-    public function sendEmailFromAdmin($emails, $subject, $content)
-    {
-        $params = ['content' => $content];
-        $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
-            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
-    }
 
     /*
     public function sendDetailsKnownArtist(ContractArtist $contractArtist) {

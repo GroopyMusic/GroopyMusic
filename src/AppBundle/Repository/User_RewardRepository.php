@@ -21,7 +21,7 @@ class User_RewardRepository extends \Doctrine\ORM\EntityRepository
      * Recovers all active rewards from @param $user
      *
      * @param $user
-     * @return array
+     * @return array user_reward array
      */
     public function getActiveUserRewards($user)
     {
@@ -51,7 +51,7 @@ class User_RewardRepository extends \Doctrine\ORM\EntityRepository
      *
      * @param $user
      * @param $contractArtist
-     * @return array
+     * @return array user_reward array
      */
     public function getPossibleActiveRewards($user, $contractArtist)
     {

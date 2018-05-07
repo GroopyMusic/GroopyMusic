@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Reward;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -461,6 +462,11 @@ class ContractArtist extends BaseContractArtist
     private $tickets_reserved;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Reward", inversedBy="contract_artists_sponsorships")
+     */
+    private $sponsorship_reward;
+
+    /**
      * Set coartistsList
      *
      * @param ArrayCollection $coartistsList
@@ -717,5 +723,29 @@ class ContractArtist extends BaseContractArtist
     }
     public function removeCoartistsListPlain(Artist $artist) {
         $this->removeCoArtist($artist);
+    }
+
+
+    /**
+     * Set sponsorshipReward
+     *
+     * @param Reward $sponsorshipReward
+     *
+     * @return ContractArtist
+     */
+    public function setSponsorshipReward(Reward $sponsorshipReward = null)
+    {
+        $this->sponsorship_reward = $sponsorshipReward;
+        return $this;
+    }
+
+    /**
+     * Get sponsorshipReward
+     *
+     * @return Reward
+     */
+    public function getSponsorshipReward()
+    {
+        return $this->sponsorship_reward;
     }
 }

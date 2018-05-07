@@ -40,7 +40,13 @@ class RankingService
 
         $categories = $this->em->getRepository('AppBundle:Category')->findLevelsByCategories();
         $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeleted();
-        $statistics = $this->em->getRepository('AppBundle:User')->countUsersStatistic();
+
+        $statistics = $this->mergeStatistics(
+            $this->em->getRepository('AppBundle:User')->countUsersStatistic(),
+            $this->em->getRepository('AppBundle:User')->countUserAmbassadoratStatistic(),
+            $this->em->getRepository('AppBundle:User')->countValidateSponsorshipInvitation(),
+            $this->em->getRepository('AppBundle:User')->countSponsorshipInvitation()
+        );
 
         foreach ($users as $user) {
             if ($exceptions > 5) {
@@ -148,8 +154,28 @@ class RankingService
     {
         $formula_descriptions = [];
         foreach ($categories as $category) {
-            $formula_descriptions[$category->getId()] = strtr($category->getFormula(), $this->formulaParserService->querry_descritpions);
+            $formula_descriptions[$category->getId()] = strtr($category->getFormula(), $this->formulaParserService->getQuerryDescription());
         }
         return $formula_descriptions;
+    }
+
+    private function mergeStatistics(...$statsArray)
+    {
+        $statistics = [];
+        foreach ($statsArray as $stats) {
+            foreach ($stats as $key => $value) {
+                $key = intval($key);
+                if (!array_key_exists($key, $statistics)) {
+                    $statistics[$key] = $value;
+                } else {
+                    foreach ($value as $k => $v) {
+                        if ($k != 'id') {
+                            $statistics[$key][$k] = $v;
+                        }
+                    }
+                }
+            }
+        }
+        return $statistics;
     }
 }

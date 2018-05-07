@@ -10,6 +10,13 @@ namespace AppBundle\Repository;
  */
 class Artist_UserRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * get all members of artist
+     *
+     * @param $artist_id
+     * @return array artust_user array
+     */
     public function getMembers($artist_id)
     {
         return $this->getEntityManager()->createQuery(

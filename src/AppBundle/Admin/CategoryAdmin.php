@@ -11,6 +11,8 @@ namespace AppBundle\Admin;
 use AppBundle\Entity\Level;
 use AppBundle\Entity\Reward;
 use AppBundle\Services\FormulaParserService;
+use AppBundle\Services\RewardAttributionService;
+use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -70,8 +72,8 @@ class CategoryAdmin extends BaseAdmin
 
     public function configureFormFields(FormMapper $form)
     {
-        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
         $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
+        $rewardAttributionService = $this->getConfigurationPool()->getContainer()->get(RewardAttributionService::class);
         $form
             ->with('Champs traductibles')
             ->add('translations', TranslationsType::class, array(
@@ -89,24 +91,14 @@ class CategoryAdmin extends BaseAdmin
             ->with('Données de la catégorie')
             ->add('formula', TextType::class, array(
                 'label' => 'Formule',
+                'help' => $this->constructHelpQuerryName(),
             ))
-            ->end()
-            ->with('Paliers  (La catégorie doit être créée avant d\'ajouter les paliers) ')
-            ->add('levels', 'sonata_type_collection', array(
-                'label' => 'Paliers',
-                'by_reference' => false,
-            ), array(
-                    'edit' => 'inline',
-                    'inline' => 'table',
-                    'sortable' => 'position',
-                    'admin_code' => LevelAdmin::class,
-                )
-            )
             ->end()
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
+                'label' => 'Récompenses',
                 'class' => Reward::class,
-                'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale()),
+                'choices' => $rewardAttributionService->constructRewardSelectWithType($request->getLocale()),
                 'multiple' => true,
                 'required' => false
             ])
@@ -126,5 +118,16 @@ class CategoryAdmin extends BaseAdmin
         } catch (\Exception $ex) {
             $errorElement->with('formula')->addViolation('Le format de la formule n\'est pa correct : ' . $ex->getMessage())->end();
         }
+    }
+
+    public function constructHelpQuerryName()
+    {
+        $formulaParserService = $this->getConfigurationPool()->getContainer()->get(FormulaParserService::class);
+        $querryNames = $formulaParserService->getQuerryDescription();
+        $helpMessage = "Variables : \n";
+        foreach ($querryNames as $key => $name) {
+            $helpMessage .= "&emsp;&emsp;" . $key . " = " . $name . "\n";
+        }
+        return nl2br($helpMessage);
     }
 }

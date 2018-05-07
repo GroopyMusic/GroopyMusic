@@ -41,6 +41,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const RANKING_EMAIL_USER_TEMPLATE = "AppBundle:Mail/User:ranking_email.txt.twig";
     const REWARD_ATTRIBUTION_TEMPLATE = "AppBundle:Mail/User:reward_attribution.txt.twig";
     const MAIL_FROM_ADMIN_TEMPLATE = "AppBundle:Mail/User:mail_from_admin.txt.twig";
+    const SPONSORSHIP_INVITATION_MAIL = "AppBundle:Mail/User:sponsorship_invitation_mail.txt.twig";
 
     // Admin mails templates
     // TODO uniform names

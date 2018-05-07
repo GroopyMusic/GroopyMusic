@@ -1,0 +1,20 @@
+{% extends "AppBundle:Notifications:base.html.twig" %}
+
+{% trans_default_domain 'notifications' %}
+
+{% set title = 'sponsorship_reward.title'|trans|raw %}
+{%- set content -%}
+    {% if ticket_sent == true %}
+        {{ 'sponsorship_reward.content_ticket_sent'|trans({
+            '%reward_name%': reward_name,
+            '%target_name%':target_name,
+            '%event%':event
+        })|raw|nl2br }}
+    {% else %}
+        {{ 'sponsorship_reward.content_ticket_not_sent'|trans({
+            '%reward_name%': reward_name,
+            '%target_name%':target_name,
+            '%event%':event
+        })|raw|nl2br }}
+    {% endif %}
+{%- endset -%}

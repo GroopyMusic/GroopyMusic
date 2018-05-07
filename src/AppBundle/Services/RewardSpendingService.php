@@ -14,7 +14,9 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\InvitationReward;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\ReductionReward;
+use AppBundle\Entity\RewardTicketConsumption;
 use AppBundle\Entity\User_Reward;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -59,13 +61,12 @@ class RewardSpendingService
                     $cf->removeUserReward($user_reward);
                     continue;
                 }
-                $this->setTicketReward($user_reward, $purchases);
+                $this->setTicketReward($user_reward, $purchases, $cf);
             } else {
                 $cf->removeUserReward($user_reward);
                 continue;
             }
         }
-        $this->logger->warning('lol', [$cf]);
         $this->em->flush();
     }
 
@@ -243,36 +244,77 @@ class RewardSpendingService
         return $clearedPurchases;
     }
 
-    public
-    function setTicketReward(User_Reward $user_reward, $purchases)
+    public function setTicketReward(User_Reward $user_reward, $purchases, ContractFan $contractFan)
     {
         $nbTimeGiveOut = 0;
         foreach ($purchases as $purchase) {
-            if ($purchase->getTicketRewardText() == null) {
-                $purchase->setTicketRewardText([]);
-            }
-            $purchase_array_reward_ticket = $purchase->getTicketRewardText();
             $i = 1;
             if ($user_reward instanceof ReductionReward) {
-                while ($i <= $purchase->getNbReducedCounterparts() && $nbTimeGiveOut < $purchase->getNbReducedCounterparts()) {
-                    if (!array_key_exists($i, $purchase_array_reward_ticket)) {
-                        $purchase_array_reward_ticket[$i] = [];
-                    }
-                    array_push($purchase_array_reward_ticket[$i], $user_reward->displayPracticalInformation());
+                while ($i <= $purchase->getNbReducedCounterparts()) {
+                    $rewardTicketConsumption = new RewardTicketConsumption($user_reward, null, false, true);
+                    $this->em->persist($rewardTicketConsumption);
+                    $contractFan->addTicketReward($rewardTicketConsumption);
+                    $purchase->addTicketReward($rewardTicketConsumption);
                     $i++;
                     $nbTimeGiveOut = $nbTimeGiveOut + 1;
                 }
             } else {
-                while ($i <= $purchase->getQuantity() && $i <= $user_reward->getRemainUse() && $nbTimeGiveOut < $purchase->getQuantity() && $nbTimeGiveOut < $user_reward->getRemainUse()) {
-                    if (!array_key_exists($i, $purchase_array_reward_ticket)) {
-                        $purchase_array_reward_ticket[$i] = [];
-                    }
-                    array_push($purchase_array_reward_ticket[$i], $user_reward->displayPracticalInformation());
+                while ($i <= $purchase->getQuantity() && $nbTimeGiveOut < $user_reward->getRemainUse()) {
+                    $rewardTicketConsumption = new RewardTicketConsumption($user_reward, null, false, true);
+                    $this->em->persist($rewardTicketConsumption);
+                    $contractFan->addTicketReward($rewardTicketConsumption);
+                    $purchase->addTicketReward($rewardTicketConsumption);
                     $i++;
                     $nbTimeGiveOut = $nbTimeGiveOut + 1;
                 }
             }
-            $purchase->setTicketRewardText($purchase_array_reward_ticket);
+        }
+    }
+
+    public function giveRewardToTicket(ContractFan $cf)
+    {
+        $this->em->persist($cf);
+        foreach ($cf->getUserRewards()->toArray() as $user_reward) {
+            $tickets = $cf->getTickets()->toArray();
+            foreach ($cf->getTicketRewards()->toArray() as $ticketReward)
+                if ($user_reward->getId() == $ticketReward->getUserReward()->getId()) {
+                    $result = $this->findCorrespondingTicket($tickets, $ticketReward);
+                    $tickets = $result[0];
+                    if ($result[1] != null) {
+                        $this->em->persist($result[1]->addReward($ticketReward));
+                    }
+                }
+        }
+    }
+
+    private function findCorrespondingTicket($tickets, $ticketReward)
+    {
+        $ticketToReturn = null;
+        $arrayToReturn = [];
+        $isGiven = false;
+        foreach ($tickets as $ticket) {
+            if ($isGiven == false && $ticket->getCounterPart()->getId() == $ticketReward->getPurchase()->getCounterPart()->getId()) {
+                $ticketToReturn = $ticket;
+                $isGiven = true;
+            } else {
+                array_push($arrayToReturn, $ticket);
+            }
+        }
+        return [$arrayToReturn, $ticketToReturn];
+    }
+
+    public function refundReward(ContractFan $contractFan)
+    {
+        $this->em->persist($contractFan);
+        foreach ($contractFan->getTicketRewards()->toArray() as $ticketReward) {
+            if ($ticketReward->getRefundable() === true) {
+                $ticketReward->setRefunded(true);
+                $user_reward = $ticketReward->getUserReward();
+                $user_reward->setRemainUse($user_reward->getRemainUse() + 1);
+                if ($user_reward->getActive() === false) {
+                    $user_reward->setActive(true);
+                }
+            }
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\SponsorshipInvitation;
 use Azine\EmailBundle\Entity\RecipientInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -31,6 +32,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->rewards = new \Doctrine\Common\Collections\ArrayCollection();
         $this->category_statistics = new ArrayCollection();
         $this->user_conditions = new ArrayCollection();
+        $this->sponsorships = new ArrayCollection();
     }
 
     public function owns(Artist $artist) {
@@ -256,6 +258,16 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     private $rewards;
 
     /**
+     * @ORM\OneToMany(targetEntity="SponsorshipInvitation", mappedBy="host_invitation", cascade={"all"}, orphanRemoval=true)
+     */
+    private $sponsorships;
+
+    /**
+     * @ORM\OneToOne(targetEntity="SponsorshipInvitation", mappedBy="target_invitation",cascade={"all"}, orphanRemoval=true)
+     */
+    private $sponsorship_invitation;
+
+    /**
      * @param mixed $salutation
      */
     public function setSalutation($salutation)
@@ -378,7 +390,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
 
-
     /**
      * Add payment
      *
@@ -412,7 +423,6 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     {
         return $this->payments;
     }
-
 
 
     /**
@@ -900,5 +910,63 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getUserConditions()
     {
         return $this->user_conditions;
+    }
+
+    /**
+     * Add sponsorship
+     *
+     * @param SponsorshipInvitation $sponsorship
+     *
+     * @return User
+     */
+    public function addSponsorship(SponsorshipInvitation $sponsorship)
+    {
+        $this->sponsorships[] = $sponsorship;
+
+        return $this;
+    }
+
+    /**
+     * Remove sponsorship
+     *
+     * @param SponsorshipInvitation $sponsorship
+     */
+    public function removeSponsorship(SponsorshipInvitation $sponsorship)
+    {
+        $this->sponsorships->removeElement($sponsorship);
+    }
+
+    /**
+     * Get sponsorships
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSponsorships()
+    {
+        return $this->sponsorships;
+    }
+
+    /**
+     * Set sponsorshipInvitation
+     *
+     * @param SponsorshipInvitation $sponsorshipInvitation
+     *
+     * @return User
+     */
+    public function setSponsorshipInvitation(SponsorshipInvitation $sponsorshipInvitation = null)
+    {
+        $this->sponsorship_invitation = $sponsorshipInvitation;
+
+        return $this;
+    }
+
+    /**
+     * Get sponsorshipInvitation
+     *
+     * @return SponsorshipInvitation
+     */
+    public function getSponsorshipInvitation()
+    {
+        return $this->sponsorship_invitation;
     }
 }

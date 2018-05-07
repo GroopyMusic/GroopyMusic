@@ -2,7 +2,14 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="text-center">{{ 'my_orders.title'|trans|raw }}</h3>
+        <div class="text-center">
+            <h3 class="text-center">{{ 'my_orders.title'|trans|raw }}</h3>
+        </div>
+        <br>
+        <div class="text-right">
+            <button class="btn btn-primary btn-sm" onclick="displaySponsorshipInvitationModal(null,false)">{{ 'my_orders.button.sponsorship'|trans|raw }}
+            </button>
+        </div>
         <div class="content-box mt-4">
             <table class="table table-hover um-table content-box-content">
                 {% if carts is empty %}
@@ -11,42 +18,43 @@
                     </tr>
                 {% else %}
                     <thead>
-                        <tr>
-                            <th>
-                                {{ 'my_orders.labels.details'|trans|raw }}
-                            </th>
-                            <th>
-                                {{ 'my_orders.labels.state'|trans|raw }}
-                            </th>
-                            <th>
-                                {{ 'my_orders.labels.date'|trans|raw }}
-                            </th>
-                            <th>
-                                {{ 'my_orders.labels.quantity'|trans|raw }}
-                            </th>
-                            <th>
-                                {{ 'my_orders.labels.unitprice'|trans|raw }}
-                            </th>
-                            <th>
-                                {{ 'my_orders.labels.totalprice'|trans|raw }}
-                            </th>
-                            <th>
-                                {{ 'my_orders.labels.order'|trans|raw }}
-                            </th>
-                            <th>
-                                {{ 'my_orders.labels.tickets'|trans|raw }}
-                            </th>
-                        </tr>
+                    <tr>
+                        <th>
+                            {{ 'my_orders.labels.details'|trans|raw }}
+                        </th>
+                        <th>
+                            {{ 'my_orders.labels.state'|trans|raw }}
+                        </th>
+                        <th>
+                            {{ 'my_orders.labels.date'|trans|raw }}
+                        </th>
+                        <th>
+                            {{ 'my_orders.labels.quantity'|trans|raw }}
+                        </th>
+                        <th>
+                            {{ 'my_orders.labels.unitprice'|trans|raw }}
+                        </th>
+                        <th>
+                            {{ 'my_orders.labels.totalprice'|trans|raw }}
+                        </th>
+                        <th>
+                            {{ 'my_orders.labels.order'|trans|raw }}
+                        </th>
+                        <th>
+                            {{ 'my_orders.labels.tickets'|trans|raw }}
+                        </th>
+                    </tr>
                     </thead>
                     {% for cart in carts %}
                         <tr class="paid_cart">
                             <td class="text-center">
                                 {% for contract in cart.contracts %}
-                                        {% for purchase in contract.purchases %}
-                                            {% if not loop.first %}<br /><br />{% endif %}
-                                            {{ purchase.counterpart.name }}
-                                            <br /> <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">{{ 'event.generic_name'|trans({'%artist%': contract.contractArtist.artist.artistname}) }}</a>
-                                        {% endfor %}
+                                    {% for purchase in contract.purchases %}
+                                        {% if not loop.first %}<br/><br/>{% endif %}
+                                        {{ purchase.counterpart.name }}
+                                        <br/> <a
+                                            href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">{{ 'event.generic_name'|trans({'%artist%': contract.contractArtist.artist.artistname}) }}</a>
+                                    {% endfor %}
                                 {% endfor %}
                             </td>
                             <td class="text-center">
@@ -58,14 +66,17 @@
                             <td class="text-center">
                                 {% for contract in cart.contracts %}
                                     {% for purchase in contract.purchases %}
-                                        {% if not loop.first %}<br /><br /><br />{% endif %}{{ purchase.quantity }}{% if purchase.quantityPromotional > 0 %} <br />(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
+                                        {% if not loop.first %}<br/><br/>
+                                            <br/>{% endif %}{{ purchase.quantity }}{% if purchase.quantityPromotional > 0 %}
+                                        <br/>(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
                                     {% endfor %}
                                 {% endfor %}
                             </td>
                             <td class="text-center">
                                 {% for contract in cart.contracts %}
                                     {% for purchase in contract.purchases %}
-                                        {% if not loop.first %}<br /><br /><br />{% endif %}{{ purchase.counterpart.price }} €
+                                        {% if not loop.first %}<br/><br/>
+                                            <br/>{% endif %}{{ purchase.counterpart.price }} €
                                     {% endfor %}
                                 {% endfor %}
                             </td>
@@ -75,13 +86,15 @@
                             <td class="text-center">
                                 {% if not cart.first.refunded %}
                                     <a href="{{ path('user_get_order', {'id': cart.id}) }}"
-                                    download="um_order_{{ cart.first.id }}.pdf"><img src="{{ asset('images/download.svg') }}" class="responsive-img" /></a>
+                                       download="um_order_{{ cart.first.id }}.pdf"><img
+                                                src="{{ asset('images/download.svg') }}" class="responsive-img"/></a>
                                 {% endif %}
                             </td>
                             <td class="text-center">
                                 {% if cart.first.contractArtist.ticketsSent and not cart.first.refunded %}
                                     <a href="{{ path('user_get_tickets', {'id': cart.id}) }}"
-                                       download="um_ticket_{{ cart.first.id }}.pdf"><img src="{{ asset('images/download.svg') }}" class="responsive-img" /></a>
+                                       download="um_ticket_{{ cart.first.id }}.pdf"><img
+                                                src="{{ asset('images/download.svg') }}" class="responsive-img"/></a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -89,5 +102,15 @@
                 {% endif %}
             </table>
         </div>
+        {{ render(controller('AppBundle\\Controller\\UserController::displaySponsorshipModalAction',{
+            'defined' : false
+        } )) }}
     </div>
+{% endblock %}
+{% block additional_javascripts %}
+    <script type="text/javascript">
+        {% if is_payment %}
+        displaySponsorshipInvitationModal(null, true);
+        {% endif %}
+    </script>
 {% endblock %}

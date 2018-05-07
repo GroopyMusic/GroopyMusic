@@ -186,6 +186,11 @@
                 <source>app.admin.consomableType</source>
                 <target>Type de consommation</target>
              </trans-unit>
+
+            <trans-unit id="app.admin.sponsorshipInvitation">
+                <source>app.admin.sponsorshipInvitation</source>
+                <target>Parrainage</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>

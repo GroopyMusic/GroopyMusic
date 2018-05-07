@@ -8,6 +8,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\ContractArtist;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -31,9 +33,10 @@ abstract class Reward implements TranslatableInterface
      */
     public function __construct()
     {
-        $this->user_rewards = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->restrictions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->user_rewards = new ArrayCollection();
+        $this->restrictions = new ArrayCollection();
+        $this->categories = new ArrayCollection();
+        $this->contract_artists_sponsorships = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -122,6 +125,11 @@ abstract class Reward implements TranslatableInterface
      * @ORM\ManyToMany(targetEntity="RewardRestriction", mappedBy="rewards", cascade={"persist"})
      */
     protected $restrictions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ContractArtist", mappedBy="sponsorship_reward", cascade={"persist"})
+     */
+    protected $contract_artists_sponsorships;
 
 
     /**
@@ -255,5 +263,41 @@ abstract class Reward implements TranslatableInterface
     public function getRestrictions()
     {
         return $this->restrictions;
+    }
+
+    /**
+     * Add contractArtistsSponsorship
+     *
+     * @param \AppBundle\Entity\ContractArtist $contractArtistsSponsorship
+     *
+     * @return Reward
+     */
+    public function addContractArtistsSponsorship(\AppBundle\Entity\ContractArtist $contractArtistsSponsorship)
+    {
+        $this->contract_artists_sponsorships[] = $contractArtistsSponsorship;
+        $contractArtistsSponsorship->setSponsorshipReward($this);
+        return $this;
+    }
+
+    /**
+     * Remove contractArtistsSponsorship
+     *
+     * @param \AppBundle\Entity\ContractArtist $contractArtistsSponsorship
+     */
+    public function removeContractArtistsSponsorship(\AppBundle\Entity\ContractArtist $contractArtistsSponsorship)
+    {
+        $this->contract_artists_sponsorships->removeElement($contractArtistsSponsorship);
+        $contractArtistsSponsorship->setSponsorshipReward(null);
+
+    }
+
+    /**
+     * Get contractArtistsSponsorships
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContractArtistsSponsorships()
+    {
+        return $this->contract_artists_sponsorships;
     }
 }

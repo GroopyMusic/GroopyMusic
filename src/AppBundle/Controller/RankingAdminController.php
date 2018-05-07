@@ -135,7 +135,7 @@ class RankingAdminController extends Controller
             }
             $allStatistics = $em->getRepository('AppBundle:User_Category')->findAllStatByLevel($request->get('level'));
             $stats = $rewardAttributionService->getSelectedStats($checkedStatistics, $allStatistics);
-            $rewards = $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale());
+            $rewards = $rewardAttributionService->constructRewardSelectWithType($request->getLocale());
             return $this->render($template, array('recipients' => $stats, 'level_id' => $request->get('level'), 'rewards' => $rewards));
         } catch (\Throwable $th) {
             return new Response($th->getMessage(), 500, []);
