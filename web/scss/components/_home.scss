@@ -27,11 +27,11 @@
   z-index: -1;
 }
 
-#parallax-spotlights-bg {
+#parallax-guitar-bg {
   background-image: url('../images/live/live-3-p.jpg');
 }
 
-#home-spotlights {
+#home-explanations {
   @extend .text-white;
 
   @include media-breakpoint-down(sm) {
@@ -44,7 +44,9 @@
     @extend .um-light;
     @extend .mt-4;
   }
+}
 
+#home-spotlights {
   .spotlight-explanation {
     text-align: center;
     background-color: $transparent-orange-2;
@@ -56,7 +58,6 @@
     }
   }
 }
-
 
 
 #join-us {

@@ -1,0 +1,126 @@
+fos_user:
+  email:
+    already_used: Dit e-mailadres is al in gebruik.
+    blank: Vul uw e-mailadres alstublieft in.
+    invalid: Dit e-mailadres is ongeldig.
+    long: Dit e-mailadres is te lang.
+    short: Dit e-mailadres is te kort.
+  password:
+    blank: Gelieve een wachtwoord te kiezen.
+    short: Dit wachtwoord is te kort. Het moet een minimum van {{limit}} bevatten.
+  username:
+    already_used: Dit e-mailadres is al in gebruik.
+    blank: Vul uw e-mailadres alstublieft in.
+    long: Dit e-mailadres is te lang.
+    short: Dit e-mailadres is te kort..
+
+user:
+  lastname:
+    blank: Gelieve een achternaam in te vullen.
+    long: De achternaam mag niet langer dan {{limit}} zijn.
+  firstname:
+    blank: Gelieve een voornaam in te vullen.
+    long: De voornaam mag niet langer dan {{limit}} zijn.
+  birthday:
+    date: Voer een geldige geboortedatum in of laat deze velden leeg.
+  accept_conditions:
+    blank: U moet akkoord gaan met de gebruiksvoorwaarden om door te gaan.
+
+suggestionbox:
+  name:
+    long: De achternaam mag niet langer dan {{limit}} zijn.
+  firstname:
+    long: De voornaam mag niet langer dan {{limit}} zijn.
+  email:
+    email: Dit e-mailadres is ongeldig.
+  object:
+    long: Het object mag niet langer dan {{limit}} zijn.
+  message:
+    blank: Vul alstublieft een bericht in.
+    short: Het bericht moet ten minste {{{limit}} bevatten.
+
+address:
+  street:
+    long: De straatnaam mag niet langer dan {{limit}} zijn.
+  number:
+    long: Het straatnummer mag niet groter dan {{limit}} zijn.
+  zipcode:
+    long: De postcode mag niet meer dan {{limit}} tekens bevatten.
+  city:
+    long: De naam van de stad mag niet groter dan {{limit}} zijn.
+
+artist:
+  artistname:
+    long: De artiestennaam mag niet meer dan {{limite}} tekens bevatten.
+  links:
+    url: Gelieve een geldige URL in te vullen.
+  accept_conditions:
+    blank: U moet akkoord gaan met de gebruiksvoorwaarden om door te gaan.
+
+artist_user:
+  role:
+    long: De rol mag niet meer dan {{limit}} tekens bevatten.
+
+concertpossibility:
+  date:
+    blank: Vul alstublieft een datum in voor het concert.
+
+contractartist:
+  artist:
+    blank: Gelieve een artiest in te vullen alstublieft.
+  step:
+    blank: Gelieve een concerttype in te vullen alstublieft.
+  accept_conditions:
+    blank: U moet akkoord gaan met de gebruiksvoorwaarden om door te gaan.
+
+contractfan:
+  quantity_min: Om door te gaan, moet u minstens één concertkaartje bestellen!
+  quantity_max: Er zijn niet genoeg plaatsen beschikbaar!
+
+ownershiprequest:
+  email:
+    email: Dit e-mailadres is ongeldig.
+
+contact_person:
+  firstname:
+    max: De voornaam mag niet langer dan {{limit}} zijn.
+  lastname:
+    max: De achternaam mag niet langer dan {{limit}} zijn.
+  phone:
+    max: Het telefoonnummer mag niet meer dan {{limit}} tekens bevatten.
+  mail:
+    max: De e-mail mag niet meer dan {{limit}} tekens bevatten.
+
+proposition_artist:
+  artistname:
+    max: De naam van de artiest mag niet meer dan {{limit}} tekens bevatten.
+    empty: De naam van de artiest mag niet leeg zijn.
+  demo_link:
+    max: De link mag niet meer dan {{limit}} tekens bevatten.
+
+proposition_hall:
+  name:
+    max: De naam van de zaal mag niet meer dan {{limit}} tekens bevatten.
+    empty: De naam van de zaal mag niet leeg zijn.
+  contact_email:
+    max: De e-mail mag niet meer dan {{limit}} tekens bevatten.
+    empty: De e-mail van de zaal mag niet leeg zijn.
+  contact_phone:
+    max: Het telefoonnummer mag niet meer dan {{limit}} tekens bevatten.
+    empty: Het zaalcontactnummer mag niet leeg zijn.
+
+proposition_contract_artist:
+  reason:
+    min: De reden moet ten minste {{limit}} tekens bevatten.
+  nb_expected:
+    min_range: Het verwachte aantal mensen kan niet negatief zijn.
+  day_commentary:
+    min: De melding op de dag moet ten minste {{limit}} tekens bevatten.
+  commentary:
+    min: De reactie moet ten minste {{limit}} tekens bevatten.
+  province:
+    null: De provincie moet ingevuld worden.
+  artist:
+    null: U moet een artiest kiezen.
+  end_date:
+    not_valable: De einddatum kan niet kleiner of gelijk zijn dan de startdatum.
