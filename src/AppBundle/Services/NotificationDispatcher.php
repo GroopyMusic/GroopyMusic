@@ -150,10 +150,12 @@ class NotificationDispatcher
 
     public function notifySponsorshipReward(SponsorshipInvitation $sponsorshipInvitation, User_Reward $user_reward)
     {
+        $ticket_sent = $sponsorshipInvitation->getContractArtist()->getTicketsSent();
         $this->addNotification($sponsorshipInvitation->getHostInvitation(), self::SPONSORSHIP_REWARD, [
             'reward_name' => $user_reward->getReward()->getName(),
             'target_name' => $sponsorshipInvitation->getTargetInvitation()->getDisplayName(),
             'event' => $sponsorshipInvitation->getContractArtist()->__toString(),
+            'ticket_sent' => $ticket_sent
         ]);
     }
 

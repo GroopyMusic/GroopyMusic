@@ -94,20 +94,9 @@ class CategoryAdmin extends BaseAdmin
                 'help' => $this->constructHelpQuerryName(),
             ))
             ->end()
-            ->with('Paliers  (La catégorie doit être créée avant d\'ajouter les paliers) ')
-            ->add('levels', CollectionType::class, array(
-                'label' => 'Paliers',
-                'by_reference' => false,
-            ), array(
-                    'edit' => 'inline',
-                    'inline' => 'table',
-                    'sortable' => 'position',
-                    'admin_code' => LevelAdmin::class,
-                )
-            )
-            ->end()
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
+                'label' => 'Récompenses',
                 'class' => Reward::class,
                 'choices' => $rewardAttributionService->constructRewardSelectWithType($request->getLocale()),
                 'multiple' => true,

@@ -19,6 +19,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class LevelAdmin extends BaseAdmin
@@ -70,7 +71,7 @@ class LevelAdmin extends BaseAdmin
         $rewardAttributionService = $this->getConfigurationPool()->getContainer()->get(RewardAttributionService::class);
         $form
             ->with('Données du palier')
-            ->add('step', TextType::class, array(
+            ->add('step', IntegerType::class, array(
                 'label' => 'Seuil',
             ))
             ->add('category', ModelListType::class, array(
@@ -89,6 +90,7 @@ class LevelAdmin extends BaseAdmin
             ->end()
             ->with('Récompenses')
             ->add('rewards', EntityType::class, [
+                'label' => 'Récompenses',
                 'class' => Reward::class,
                 'choices' => $rewardAttributionService->constructRewardSelectWithType($request->getLocale()),
                 'multiple' => true,

@@ -85,10 +85,15 @@ reward_attribution:
 #new
 sponsorship_reward:
   title: Récompense de parrainage
-  content: |
+  content_ticket_not_sent: |
     %target_name% a acheté un ticket pour %event%.
     Par conséquent vous recevez une récompense : %reward_name%
-    Celle ci est directement appliquée au premier ticket de votre derniere liste d'achat
+    Celle ci est directement appliquée au premier ticket de votre derniere liste d'achat.
+  content_ticket_sent: |
+    %target_name% a acheté un ticket pour %event%.
+    Par conséquent vous recevez une récompense : %reward_name%
+    Celle ci est directement appliquée au premier ticket de votre derniere liste d'achat.
+    La récompense n'est pas affichée sur le ticket ? N'ayez crainte, toutes les informations sont enregristrées dans le système.
 
 
 

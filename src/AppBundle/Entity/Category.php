@@ -90,7 +90,7 @@ class Category implements TranslatableInterface
     private $levels;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Reward", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="Reward", cascade={"persist"})
      */
     private $rewards;
 
@@ -172,8 +172,10 @@ class Category implements TranslatableInterface
      */
     public function addLevel(\AppBundle\Entity\Level $level)
     {
-        $this->levels[] = $level;
-
+        if(!$this->levels->contains($level)){
+            $this->levels[] = $level;
+            $level->setCategory($this);
+        }
         return $this;
     }
 
@@ -184,7 +186,9 @@ class Category implements TranslatableInterface
      */
     public function removeLevel(\AppBundle\Entity\Level $level)
     {
-        $this->levels->removeElement($level);
+        if($this->levels->contains($level)){
+            $this->levels->removeElement($level);
+        }
     }
 
     /**

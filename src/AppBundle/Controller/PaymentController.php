@@ -63,7 +63,7 @@ class PaymentController extends Controller
             $fancontract_id = intval($_POST['fancontract_id']);
 
             // We set an explicit test for amount changes as it has legal impacts
-            if ($amount !=  intval($contract->getAmount() * 100) || $fancontract_id != $contract->getId()) {
+            if (floatval($amount) !=  floatval($contract->getAmount() * 100) || $fancontract_id != $contract->getId()) {
                 $this->addFlash('error', 'errors.order_changed');
                 return $this->render('@App/User/pay_cart.html.twig', array(
                     'cart' => $cart,
