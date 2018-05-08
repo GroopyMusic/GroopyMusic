@@ -20,14 +20,16 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * Listener responsible to change the redirection at the end of the password resetting
  */
-class ConnectListener implements EventSubscriberInterface {
+class ConnectListener implements EventSubscriberInterface
+{
     private $router;
     private $session;
     private $translator;
     private $em;
     private $sponsorshipService;
 
-    public function __construct(UrlGeneratorInterface $router, Session $session, TranslatorInterface $translator, EntityManagerInterface $em, SponsorshipService $sponsorshipService) {
+    public function __construct(UrlGeneratorInterface $router, Session $session, TranslatorInterface $translator, EntityManagerInterface $em, SponsorshipService $sponsorshipService)
+    {
         $this->router = $router;
         $this->session = $session;
         $this->translator = $translator;
@@ -35,7 +37,8 @@ class ConnectListener implements EventSubscriberInterface {
         $this->sponsorshipService = $sponsorshipService;
     }
 
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents()
+    {
         return [
             HWIOAuthEvents::CONNECT_CONFIRMED => 'onSocialConnectConfirmed',
             HWIOAuthEvents::CONNECT_COMPLETED => 'onSocialConnectCompleted',
@@ -45,18 +48,20 @@ class ConnectListener implements EventSubscriberInterface {
         ];
     }
 
-    public function addSessionMessage($message) {
+    public function addSessionMessage($message)
+    {
         $this->session->getFlashBag()->add('notice', $message);
     }
 
     // Connection through email
-    public function onSocialConnectConfirmed(GetResponseUserEvent $event) {
+    public function onSocialConnectConfirmed(GetResponseUserEvent $event)
+    {
         $is_new_user = boolval($event->getRequest()->query->get('oauth_new_user'));
 
         $message = $this->translator->trans('notices.social.connection_email_confirmed');
 
         $params = ['%email%' => $event->getUser()->getUsername()];
-        if($is_new_user) {
+        if ($is_new_user) {
             $message .= ' ' . $this->translator->trans('notices.social.connection_email_new_account', $params);
         }
 
@@ -64,28 +69,42 @@ class ConnectListener implements EventSubscriberInterface {
     }
 
     // Connection through facebook_id
-    public function onSocialConnectCompleted(Event $event) {
+    public function onSocialConnectCompleted(Event $event)
+    {
         $this->addSessionMessage('notices.social.connection_oauth_confirmed');
     }
 
     // Registration with Facebook
-    public function onSocialRegistrationSuccess(Event $event,\HWI\Bundle\OAuthBundle\Event\FormEvent $formEvent) {
+    public function onSocialRegistrationSuccess(Event $event, \HWI\Bundle\OAuthBundle\Event\FormEvent $formEvent)
+    {
         $this->addSessionMessage('notices.social.registration_success');
-        if($this->sponsorshipService->checkForSponsorship($formEvent->getForm()->getData())){
-            $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.success',[]));
+        try {
+            if ($this->sponsorshipService->checkIfSponsorshipedAtInscription($formEvent->getForm()->getData())) {
+                $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.success', []));
+            }
+        } catch (\Throwable $th) {
+            $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.error', []));
         }
+
     }
 
     // Registration with FOSUserBundle -> completed
-    public function onRegistrationSuccess(FormEvent $event) {
+    public function onRegistrationSuccess(FormEvent $event)
+    {
         $event->getForm()->getData()->setPreferredLocale($this->translator->getLocale());
-        if($this->sponsorshipService->checkForSponsorship($event->getForm()->getData())){
-            $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.success',[]));
+        try {
+            if ($this->sponsorshipService->checkIfSponsorshipedAtInscription($event->getForm()->getData())) {
+                $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.success', []));
+            }
+        } catch (\Throwable $th) {
+            $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.error', []));
         }
+
     }
 
     // Registration with FOSUserBundle -> completed
-    public function onRegistrationCompleted(FilterUserResponseEvent $event) {
+    public function onRegistrationCompleted(FilterUserResponseEvent $event)
+    {
         $last_terms = $this->em->getRepository('AppBundle:Conditions')->findLast();
         $user_conditions = new User_Conditions($event->getUser(), $last_terms);
 

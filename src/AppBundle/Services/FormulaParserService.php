@@ -65,6 +65,12 @@ class FormulaParserService
         return $AST->accept($this->evaluator);
     }
 
+
+    /**
+     * get array with querry description
+     *
+     * @return array querry_description
+     */
     public function getQuerryDescription()
     {
         return self::QUERRY_DESCRIPTION;

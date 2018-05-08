@@ -61,7 +61,8 @@
         "mossadal/math-parser": "^1.3",
         "tecnickcom/tcpdf": "6.2.17",
         "sonata-project/formatter-bundle": "^3.4",
-        "azine/email-bundle": "dev-master"
+        "azine/email-bundle": "dev-master",
+        "symfony/phpunit-bridge": "^4.0"
     },
     "scripts": {
         "post-install-cmd": [
@@ -73,7 +74,6 @@
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
         "jms/di-extra-bundle": "^1.8",
         "deployer/deployer": "~3.0"

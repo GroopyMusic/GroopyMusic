@@ -735,6 +735,7 @@ notices:
       success: Félicitations ! Vous avez émis le souhait de vous faire parrainer en cliquant sur le lien de parrainage. Inscrivez-vous à la plateforme pour confirmer le parrainage.
     inscription:
       success: Félicitations, vous êtes sur le point de confirmer le parrainage, vous n'avez plus qu'à confirmer votre adresse email.
+      error: Une erreur est survenue avec le système, veuillez contacter un administrateur de la plateforme.
 
 
 
