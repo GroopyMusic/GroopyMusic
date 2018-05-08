@@ -51,6 +51,11 @@ class ContractArtistType extends AbstractType
                     ->add('step', EntityType::class, array(
                         'label' => 'labels.contractartist.step',
                         'class' => Step::class,
+                        'query_builder' => function(EntityRepository $er) {
+                            return $er->createQueryBuilder('step')
+                                ->orderBy('step.min_tickets', 'ASC');
+                        },
+                        'choice_label' => 'displayWithMinTickets',
                         'constraints' => [
                             new NotBlank(['message' => 'contractartist.artist.blank']),
                         ],

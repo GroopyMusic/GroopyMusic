@@ -629,6 +629,7 @@ new_event:
       date: Date choisie
       motivations: Motivations
       additional_info: Informations pour Un-Mute
+    see_conditions: Voir les conditions d'utilisation de la plateforme
   step_2:
     date_preview: "Date choisie : "
 
@@ -850,12 +851,13 @@ labels:
     flow_3: Confirmation
     accept_conditions: J'ai lu et j'accepte les conditions générales d'utilisation
     artist: Artiste à produire
-    motivations: Vos motivations (elles seront communiquées aux producteurs potentiels)
+    motivations: |
+      Infos additionnelles à communiquer dans le mail de confirmation de commande aux producteurs (par ex : "il y aura des CD à vendre sur place") (facultatif)
     province: Province dans laquelle produire l'artiste
     step: Type de festival recherché
 
   contractartistpossibility:
-    additional_info: Informations supplémentaires à transmettre aux organisateurs Un-Mute
+    additional_info: Infos supplémentaires à transmettre aux organisateurs Un-Mute (facultatif)
 
   contractfan:
     submit: Valider la commande

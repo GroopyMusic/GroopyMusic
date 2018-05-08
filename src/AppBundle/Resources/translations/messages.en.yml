@@ -131,6 +131,10 @@ artist_profile:
       invisible: The profile of your artist hasn't been made public yet.
       not_validated: Your artist hasn't been validated by an administrator but this profile has already been made public.
 
+new_event:
+  step_3:
+    see_conditions: Read our terms of use
+
 order_pdf:
   labels: Applied Un-Mute reward(s)
   rewards: Récompense(s) appliquée(s) #new

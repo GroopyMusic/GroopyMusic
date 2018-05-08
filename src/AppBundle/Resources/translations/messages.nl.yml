@@ -598,6 +598,7 @@ new_event:
       date: Gekozen datum
       motivations: Motivaties
       additional_info: Informaties voor Un-Mute
+    see_conditions: Lees onze algemene voorwaarden
   step_2:
     date_preview: "Gekozen datum : "
 

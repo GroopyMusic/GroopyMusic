@@ -66,8 +66,10 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->addOrderBy('p.date', 'ASC');
     }
 
-    public function queryVisible($prevalidation = false)
+    public function queryVisible($prevalidation = false, $strict = false)
     {
+        $prevalidation_operator = $strict ? '=' : '<=';
+
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
             ->join('c.step', 's')
@@ -94,7 +96,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->orderBy('r.date', 'ASC')
             ->addOrderBy('p.date', 'ASC')
             ->where('c.failed = 0')
-            ->andWhere('c.test_period = :prevalidation')
+            ->andWhere('c.test_period '. $prevalidation_operator . ' :prevalidation')
             ->andWhere('(r.date is not null AND r.date >= :yesterday) OR (p.date >= :yesterday)')
             ->setParameter('prevalidation', $prevalidation)
             ->setParameter('yesterday', new \DateTime('yesterday'));
@@ -117,7 +119,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         }
 
         return array_filter(
-            $this->queryVisible(true)->getQuery()->getResult(),
+            $this->queryVisible(true, true)->getQuery()->getResult(),
 
             function (ContractArtist $contractArtist) use ($user, $rolesManager) {
                 return $rolesManager->userHasRole($user, 'ROLE_ADMIN') ||
@@ -168,7 +170,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     }
 
     /**
-     * Returns 0-$limit contracts for which there are tickets to buy
+     * Returns 0-$limit contracts for which there are tickets to buy & that are visible (i.e. not in prevalidation)
      */
     public function findVisible($limit = null)
     {
@@ -177,6 +179,19 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         if ($limit != null) {
             $qb->setMaxResults($limit);
         }
+
+        return $qb
+            ->orderBy('p.date', 'asc')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Returns contracts for which there are tickets to buy
+     */
+    public function findVisibleIncludingPreValidation()
+    {
+        $qb = $this->queryVisible(true, false);
 
         return $qb
             ->orderBy('p.date', 'asc')
