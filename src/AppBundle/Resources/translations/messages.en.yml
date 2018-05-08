@@ -82,6 +82,11 @@ event:
   buy_tickets:
     #new
     to_much_reduction: You cannot apply multiple discounts on a single order
+  sponsorship:
+    title: Invite your friends
+    total: Sent
+    total_validated: Confirmed
+    button_invit: Send new invites
 
 #new
 conditions:
@@ -109,6 +114,11 @@ pay_cart:
       intro: To be able to finalize your order, you must be logged in.
       signin_label: I already have an Un-Mute account
       signup_label: I don't have an Un-Mute account yet
+
+my_orders:
+  #new
+  button:
+    sponsorship: Invite your friends
 
 notifs:
     button: View # new

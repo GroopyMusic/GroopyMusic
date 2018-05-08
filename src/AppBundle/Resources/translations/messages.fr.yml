@@ -354,9 +354,9 @@ event:
   #new
   sponsorship:
     title: Invitez des amis
-    total: Nombre d'invitations envoyées
-    total_validated: Nombre d'invitations validées
-    button_invit: Invitez
+    total: Invitations envoyées
+    total_validated: Invitations validées
+    button_invit: Envoyez des invitations
 
 
 #new

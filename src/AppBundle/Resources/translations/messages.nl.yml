@@ -347,6 +347,11 @@ event:
     unknown: Partnerzalen
   #new
   description: "Ontdek drie opkomende artiesten op een Un-Mute-festival. Headliner : %host%"
+  sponsorship:
+    title: Nodig je vrienden uit
+    total: Verzonden
+    total_validated: Bevestigd
+    button_invit: Uitnodigen verzenden
 
 #new
 conditions:
@@ -449,17 +454,19 @@ pay_cart:
       signup_label: Ik heb nog geen Un-Mute-account
 
 my_orders:
-    title: Mijn bestellingen
-    empty: Je hebt nog geen bestelling geplaatst. Ontdek onze <a href="%catalog_url%">artiesten</a> en ondersteun <a href="{{ path('catalog_crowdfundings') }}">hun evenementen</a> !
-    labels:
-        details: Detail
-        state: Status
-        date: Datum
-        quantity: Aantal
-        unitprice: Prijs
-        totalprice: Totale prijs
-        order: Bestelling
-        tickets: Tickets
+  title: Mijn bestellingen
+  empty: Je hebt nog geen bestelling geplaatst. Ontdek onze <a href="%catalog_url%">artiesten</a> en ondersteun <a href="{{ path('catalog_crowdfundings') }}">hun evenementen</a> !
+  labels:
+    details: Detail
+    state: Status
+    date: Datum
+    quantity: Aantal
+    unitprice: Prijs
+    totalprice: Totale prijs
+    order: Bestelling
+    tickets: Tickets
+    button:
+      sponsorship: Vrienden uitnodigen
 
 notifs:
     title: Mijn aanmeldingen
