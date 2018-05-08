@@ -682,6 +682,22 @@ notices:
   proposition: Uw voorstel is ontvangen en zal zo snel mogelijk worden verwerkt.
   #new
   registration: Uw registratie is opgeslagen. U kunt nu overschakelen naar betaling. Houd er rekening mee dat u een e-mail hebt ontvangen met een activatielink voor uw account. U moet op deze link klikken om later verbinding te maken met het platform.
+  #new
+  sponsorship:
+    cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
+    send_sponsorship:
+      not_connected: Vous n'êtes pas connecté !
+      event_not_valid: Evénement non valide !
+      success: Envoie réussi.
+      warning_message: Les adresses emails suivantes sont déjà isncrites sur la plateforme, elles n'ont donc pas pu être invitée.
+      error: Une erreur est survenue avec le système.
+    link:
+      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contacter un administrateur de la plateforme.
+      success: Félicitations ! Vous avez émis le souhait de vous faire parrainer en cliquant sur le lien de parrainage. Inscrivez-vous à la plateforme pour confirmer le parrainage.
+    inscription:
+      success: Félicitations, vous êtes sur le point de confirmer le parrainage, vous n'avez plus qu'à confirmer votre adresse email.
+
+
 
 errors:
   change_email_token_expired: Dit token is verlopen.
@@ -863,3 +879,21 @@ proposition:
   place: Locatie van het evenement
   explication: Vul alleen de startdatum in als u één datum wilt invullen en beide datums als uw evenement een bepaalde tijd kan duren.
 redirection: Als u geen voorstel voor een evenement wilt indienen, maar contact met ons wilt opnemen of een nieuwe zaal wilt voorstellen, nodigen we u uit om <a href="%url%"> dit formulier </a> in te vullen.
+
+#new
+sponsorship_modal:
+  title: Uitnodigingen verzenden naar jouw vrienden
+  content: Nodig je vrienden uit om lid van Un-Mute te worden en tickets te kopen voor een evenement waaraan u deelneemt & geniet van bonussen op D-Day.
+  emails: E-mails om uit te nodigen
+  message: Uitnodigingstekst (optioneel)
+  send_button: Uitnodigingen verzenden
+  cancel_button: Annuleren
+  email_placeholder: E-mailadres...
+  confirmed_payment: Uw betaling is ontvangen en uw bestelling is bevestigd. Nu je je plaats hebt geboekt, is het mogelijk vrienden uit te nodigen! Je zou enkele bonusbeloningen kunnen winnen als ze lid van Un-Mute worden!
+  display_recap: Overzicht zien/verbergen
+  waiting: Aanhangig
+  confirmed: Bevestigd
+  total: Total
+  event: Festival
+  remove_field: Laatste e-mailadres verwijderen
+  add_field: Een e-mailadres toevoegen

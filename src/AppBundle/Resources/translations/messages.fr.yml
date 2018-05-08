@@ -727,17 +727,15 @@ notices:
     cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
     send_sponsorship:
       not_connected: Vous n'êtes pas connecté !
-      event_not_valid: Evénement non valide !
-      success: Envoie réussi.
-      warning_message: Les adresses emails suivantes sont déjà isncrites sur la plateforme, elles n'ont donc pas pu être invitée.
+      event_not_valid: Cet événement est invalide.
+      success: Envoi des invitations effectué.
+      warning_message: "Les adresses emails suivantes sont déjà inscrites sur la plateforme, elles n'ont donc pas pu être invitées :"
       error: Une erreur est survenue avec le système.
     link:
-      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contacter un administrateur de la plateforme.
+      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contactez-nous.
       success: Félicitations ! Vous avez émis le souhait de vous faire parrainer en cliquant sur le lien de parrainage. Inscrivez-vous à la plateforme pour confirmer le parrainage.
     inscription:
       success: Félicitations, vous êtes sur le point de confirmer le parrainage, vous n'avez plus qu'à confirmer votre adresse email.
-
-
 
 errors:
   change_email_token_expired: Ce jeton est expiré.
@@ -948,23 +946,24 @@ reward:
     value: Valeur
   reduction:
     reduction: réduction
+
 #new
 sponsorship_modal:
-  title: Invitez des amis à participer à l'événements
-  content: Invite tes amis à participer à l' événements et profitez de la récompense de parrainage
-  emails: Adresse(s) email
-  message: Message d'invitation
+  title: Parrainez des amis
+  content: Invitez vos amis à s'inscrire et acheter des places pour un événement et profitez de bonus le jour J.
+  emails: Adresse(s) email à inviter
+  message: Message d'invitation (facultatif)
   send_button: Envoyer les invitations
   cancel_button: Annuler
   email_placeholder: Entrez une adresse email
-  confirmed_payment: Payment effectué
-  display_recap: Afficher/Réduire le récapitulatif des invitations
+  confirmed_payment: Votre paiement a été reçu et votre commande est validée. Maintenant que vous avez réservé votre place, pourquoi pas inviter quelques amis à vous rejoindre ? Il y a des bonus à la clé !
+  display_recap: Afficher/réduire le récapitulatif des invitations
   waiting: En attente
   confirmed: Confirmé
   total: Total
-  event: Evénement
-  remove_field: Retirer un champ
-  add_field: Ajouter un champ
+  event: Festival
+  remove_field: Retirer une adresse e-mail
+  add_field: Ajouter une adresse e-mail
 
 
 
