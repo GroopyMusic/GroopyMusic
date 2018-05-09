@@ -56,7 +56,7 @@
             <p class="p-info mt-3">{{ 'event.prevalidation'|trans|raw }}</p>
         {% endif %}
 
-        {% if potential_user_rewards is not empty %}
+        {% if contract.isPassed == false and potential_user_rewards is not empty %}
             <div class="p-info">
                 <img width="70" class="um-icon float-left d-none d-sm-inline-block"
                      src="{{ asset('images/icons/concert-ticket.png') }}"/>
@@ -328,7 +328,7 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if is_participant %}
+                {% if contract.isPassed == false and is_participant %}
                     <div class="col-12 content-box mt-4">
                         <div class="content-box-header">
                             <h3>{{ 'event.sponsorship.title'|trans|raw }}</h3>

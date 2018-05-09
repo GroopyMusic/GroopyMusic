@@ -6,10 +6,13 @@
             <h3 class="text-center">{{ 'my_orders.title'|trans|raw }}</h3>
         </div>
         <br>
-        <div class="text-right">
-            <button class="btn btn-primary btn-sm" onclick="displaySponsorshipInvitationModal(null,false)">{{ 'my_orders.button.sponsorship'|trans|raw }}
-            </button>
-        </div>
+        {% if carts is not empty and possible_sponsorship_event is not empty%}
+            <div class="text-right">
+                <button class="btn btn-primary btn-sm"
+                        onclick="displaySponsorshipInvitationModal(null,false)">{{ 'my_orders.button.sponsorship'|trans|raw }}
+                </button>
+            </div>
+        {% endif %}
         <div class="content-box mt-4">
             <table class="table table-hover um-table content-box-content">
                 {% if carts is empty %}
@@ -110,7 +113,7 @@
 {% block additional_javascripts %}
     <script type="text/javascript">
         {% if is_payment %}
-            displaySponsorshipInvitationModal(null, true);
+        displaySponsorshipInvitationModal(null, true);
         {% endif %}
     </script>
 {% endblock %}
