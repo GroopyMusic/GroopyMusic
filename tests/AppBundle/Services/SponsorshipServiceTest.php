@@ -10,6 +10,7 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Reward;
 use AppBundle\Entity\SponsorshipInvitation;
+use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Repository\ContractFanRepository;
 use AppBundle\Repository\SponsorshipInvitationRepository;
@@ -38,6 +39,8 @@ class SponsorshipServiceTest extends TestCase
     private $reward;
     private $contractFanRepository;
     private $contractFan;
+    private $ticket;
+    private $sponsorship_invitation_confirmed;
 
     protected function setUp()
     {
@@ -51,16 +54,21 @@ class SponsorshipServiceTest extends TestCase
         $this->user = $this->getMockBuilder(User::class)->disableOriginalConstructor()->getMock();
         $this->host_user = $user = $this->getMockBuilder(User::class)->disableOriginalConstructor()->getMock();
         $this->sponsorship_invitation = $this->getMockBuilder(SponsorshipInvitation::class)->disableOriginalConstructor()->getMock();
+        $this->sponsorship_invitation_confirmed = $this->getMockBuilder(SponsorshipInvitation::class)->disableOriginalConstructor()->getMock();
         $this->reward = $this->getMockBuilder(Reward::class)->disableOriginalConstructor()->getMock();
+        $this->reward->expects($this->any())->method('getValidityPeriod')->willReturn(5);
         $this->contractFan = $this->getMockBuilder(ContractFan::class)->disableOriginalConstructor()->getMock();
+        $this->ticket = $this->getMockBuilder(Ticket::class)->disableOriginalConstructor()->getMock();
 
         //service
         $this->manager = $this->getMockBuilder(EntityManager::class)->disableOriginalConstructor()->getMock();
         $this->manager->expects($this->any())->method('persist');
         $this->manager->expects($this->any())->method('flush');
-        $this->manager->expects($this->any())->method('getRepository')
-            ->withConsecutive(['AppBundle:SponsorshipInvitation'], ['AppBundle:ContractFan'])
-            ->willReturnOnConsecutiveCalls($this->sponsorshipRepository, $this->contractFanRepository);
+        $repositories = array(
+            array('AppBundle:SponsorshipInvitation', $this->sponsorshipRepository),
+            array('AppBundle:ContractFan', $this->contractFanRepository)
+        );
+        $this->manager->expects($this->any())->method('getRepository')->will($this->returnValueMap($repositories));
 
         $this->logger = $this->getMockBuilder(LoggerInterface::class)->disableOriginalConstructor()->getMock();
         $this->mailDispatcher = $this->getMockBuilder(MailDispatcher::class)->disableOriginalConstructor()->getMock();
@@ -92,6 +100,8 @@ class SponsorshipServiceTest extends TestCase
         unset($this->reward);
         unset($this->contractFanRepository);
         unset($this->contractFan);
+        unset($this->ticket);
+        unset($this->sponsorship_invitation_confirmed);
     }
 
     /**
@@ -220,15 +230,173 @@ class SponsorshipServiceTest extends TestCase
     }
 
 
+    /*
+     * test success : give reward for a correct sponsorshiper user and contract artist
+     */
     public function testGiveSponsorshipRewardOnPurchaseIfPossible1()
     {
         $this->sponsorship_invitation->expects($this->any())->method('getHostInvitation')->willReturn($this->host_user);
         $this->sponsorship_invitation->expects($this->any())->method('getRewardSent')->willReturn(false);
         $this->user->expects($this->any())->method('getSponsorshipInvitation')->willReturn($this->sponsorship_invitation);
         $this->contract_artist->expects($this->any())->method('getSponsorshipReward')->willReturn($this->reward);
+        $this->contract_artist->expects($this->any())->method('getTicketsSent')->willReturn(true);
+        $this->contractFan->expects($this->any())->method('getContractArtist')->willReturn($this->contract_artist);
+        $this->contractFan->expects($this->any())->method('getTickets')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$this->ticket]));
         $this->contractFanRepository->expects($this->any())->method('findSponsorshipContractFanToReward')->willReturn($this->contractFan);
-        $this->assertTrue(true);
+        $this->assertTrue($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, $this->contract_artist));
     }
 
+    /**
+     * test success : contract fan does not have ticket
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible2()
+    {
+        $this->sponsorship_invitation->expects($this->any())->method('getHostInvitation')->willReturn($this->host_user);
+        $this->sponsorship_invitation->expects($this->any())->method('getRewardSent')->willReturn(false);
+        $this->user->expects($this->any())->method('getSponsorshipInvitation')->willReturn($this->sponsorship_invitation);
+        $this->contract_artist->expects($this->any())->method('getSponsorshipReward')->willReturn($this->reward);
+        $this->contractFan->expects($this->any())->method('getContractArtist')->willReturn($this->contract_artist);
+        $this->contractFanRepository->expects($this->any())->method('findSponsorshipContractFanToReward')->willReturn($this->contractFan);
+        $this->contract_artist->expects($this->any())->method('getTicketsSent')->willReturn(false);
+        $this->assertTrue($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, $this->contract_artist));
+    }
 
+    /**
+     * test error : user is not sponsorshiped
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible3()
+    {
+        $this->sponsorship_invitation->expects($this->any())->method('getRewardSent')->willReturn(false);
+        $this->assertFalse($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, $this->contract_artist));
+    }
+
+    /**
+     * test error : contract artist is not sponsorshiped event
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible4()
+    {
+        $this->user->expects($this->any())->method('getSponsorshipInvitation')->willReturn($this->sponsorship_invitation);
+        $this->sponsorship_invitation->expects($this->any())->method('getHostInvitation')->willReturn($this->host_user);
+        $this->contract_artist->expects($this->any())->method('getSponsorshipReward')->willReturn(null);
+        $this->assertFalse($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, $this->contract_artist));
+
+    }
+
+    /**
+     * test error : host user doesn't have contract fan
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible5()
+    {
+        $this->user->expects($this->any())->method('getSponsorshipInvitation')->willReturn($this->sponsorship_invitation);
+        $this->sponsorship_invitation->expects($this->any())->method('getHostInvitation')->willReturn($this->host_user);
+        $this->contract_artist->expects($this->any())->method('getSponsorshipReward')->willReturn($this->reward);
+        $this->contractFanRepository->expects($this->any())->method('findSponsorshipContractFanToReward')->willReturn(null);
+        $this->assertFalse($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, $this->contract_artist));
+
+    }
+
+    /**
+     * test error : sponsorship reward already sent
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible6()
+    {
+        $this->user->expects($this->any())->method('getSponsorshipInvitation')->willReturn($this->sponsorship_invitation);
+        $this->sponsorship_invitation->expects($this->any())->method('getHostInvitation')->willReturn($this->host_user);
+        $this->contract_artist->expects($this->any())->method('getSponsorshipReward')->willReturn($this->reward);
+        $this->contractFanRepository->expects($this->any())->method('findSponsorshipContractFanToReward')->willReturn($this->contractFan);
+        $this->sponsorship_invitation->expects($this->any())->method('getRewardSent')->willReturn(true);
+        $this->assertFalse($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, $this->contract_artist));
+
+    }
+
+    /**
+     * test error : param user is null
+     * @expectedException Error null
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible7()
+    {
+        $this->assertFalse($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible(null, $this->contract_artist));
+    }
+
+    /**
+     * test error : param contract fan is null
+     * @expectedException Error null
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible8()
+    {
+        $this->user->expects($this->any())->method('getSponsorshipInvitation')->willReturn($this->sponsorship_invitation);
+        $this->sponsorship_invitation->expects($this->any())->method('getHostInvitation')->willReturn($this->host_user);
+        $this->assertFalse($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, null));
+    }
+
+    /**
+     * test success : contract fan does not have ticket
+     * @expectedException Error null
+     */
+    public function testGiveSponsorshipRewardOnPurchaseIfPossible9()
+    {
+        $this->user->expects($this->any())->method('getSponsorshipInvitation')->willReturn($this->sponsorship_invitation);
+        $this->sponsorship_invitation->expects($this->any())->method('getHostInvitation')->willReturn($this->host_user);
+        $this->assertFalse($this->sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($this->user, null));
+    }
+
+    /**
+     * Success : get summary for user ( 1 invited and 1 confirmed )
+     */
+    public function testGetSponsorshipSummaryForUser1()
+    {
+        $this->sponsorshipRepository->expects($this->any())->method('getSponsorshipSummary')->willReturn([$this->sponsorship_invitation, $this->sponsorship_invitation_confirmed]);
+        $this->sponsorship_invitation->expects($this->any())->method('getTargetInvitation')->willReturn(null);
+        $this->sponsorship_invitation->expects($this->any())->method('getEmailInvitation')->willReturn('invited@email.com');
+        $this->sponsorship_invitation_confirmed->expects($this->any())->method('getTargetInvitation')->willReturn($this->user);
+        $this->user->expects($this->any())->method('getDeleted')->willReturn(false);
+        $this->user->expects($this->any())->method('getEmail')->willReturn('confirmed@email.com');
+        $this->assertEquals([['invited@email.com'], ['confirmed@email.com']], $this->sponsorshipService->getSponsorshipSummaryForUser($this->user));
+    }
+
+    /**
+     * Success : get summary for user ( 2 invited and 0 confirmed )
+     */
+    public function testGetSponsorshipSummaryForUser2()
+    {
+        $this->sponsorshipRepository->expects($this->any())->method('getSponsorshipSummary')->willReturn([$this->sponsorship_invitation, $this->sponsorship_invitation_confirmed]);
+        $this->sponsorship_invitation->expects($this->any())->method('getTargetInvitation')->willReturn(null);
+        $this->sponsorship_invitation->expects($this->any())->method('getEmailInvitation')->willReturn('invited@email.com');
+        $this->sponsorship_invitation_confirmed->expects($this->any())->method('getEmailInvitation')->willReturn('confirmed@email.com');
+        $this->sponsorship_invitation_confirmed->expects($this->any())->method('getTargetInvitation')->willReturn(null);
+        $this->assertEquals([['invited@email.com', 'confirmed@email.com'], []], $this->sponsorshipService->getSponsorshipSummaryForUser($this->host_user));
+    }
+
+    /**
+     * Success : get summary for user ( 0 invited and 2 confirmed )
+     */
+    public function testGetSponsorshipSummaryForUser3()
+    {
+        $this->sponsorshipRepository->expects($this->any())->method('getSponsorshipSummary')->willReturn([$this->sponsorship_invitation, $this->sponsorship_invitation_confirmed]);
+        $this->sponsorship_invitation->expects($this->any())->method('getTargetInvitation')->willReturn($this->user);
+        $this->sponsorship_invitation_confirmed->expects($this->any())->method('getTargetInvitation')->willReturn($this->host_user);
+        $this->user->expects($this->any())->method('getDeleted')->willReturn(false);
+        $this->host_user->expects($this->any())->method('getDeleted')->willReturn(false);
+        $this->user->expects($this->any())->method('getEmail')->willReturn('invited@email.com');
+        $this->host_user->expects($this->any())->method('getEmail')->willReturn('confirmed@email.com');
+        $this->assertEquals([[], ['invited@email.com', 'confirmed@email.com']], $this->sponsorshipService->getSponsorshipSummaryForUser($this->host_user));
+    }
+
+    /**
+     * Success : get summary for user ( 0 invited and 0 confirmed )
+     */
+    public function testGetSponsorshipSummaryForUser4()
+    {
+        $this->sponsorshipRepository->expects($this->any())->method('getSponsorshipSummary')->willReturn([]);
+        $this->assertEquals([[], []], $this->sponsorshipService->getSponsorshipSummaryForUser($this->host_user));
+    }
+
+    /**
+     * Success : get summary for user ( 0 invited and 0 confirmed )
+     * @expectedException Exception
+     */
+    public function testGetSponsorshipSummaryForUser5()
+    {
+        $this->assertEquals([[], []], $this->sponsorshipService->getSponsorshipSummaryForUser(null));
+    }
 }

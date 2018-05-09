@@ -101,7 +101,7 @@ class SponsorshipService
      * @param ContractArtist $contractArtist
      * @return bool
      */
-    public function giveSponsorshipRewardOnPurchaseIfPossible($user, ContractArtist $contractArtist)
+    public function giveSponsorshipRewardOnPurchaseIfPossible($user, $contractArtist)
     {
         $sponsorship = $user->getSponsorshipInvitation();
         if ($sponsorship != null) {
@@ -137,8 +137,17 @@ class SponsorshipService
         //$this->em->flush();
     }
 
+    /**
+     * Retrieves a summary about a user's sponsorship
+     * @param $user
+     * @return array with invited et confirmed
+     * @throws \Exception if user == null
+     */
     public function getSponsorshipSummaryForUser($user)
     {
+        if ($user == null) {
+            throw new \Exception();
+        }
         $sponsorships = $this->em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipSummary($user);
         $invited = [];
         $confirmed = [];
