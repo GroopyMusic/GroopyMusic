@@ -763,7 +763,7 @@ labels:
     #new
     phone: Telefoonnummer
     leave:
-      submit: %artist%verlaten
+      submit: %artist% verlaten
 
   artist_medias:
     submit: Wijzingen opnemen
