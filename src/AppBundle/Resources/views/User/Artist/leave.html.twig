@@ -10,7 +10,7 @@
                 <div class="modal-body">
                     <p>{{ 'leave_artist.warning'|trans|raw }}</p>
                     {% if lastOne %}
-                        <p class="alert alert-warning">{{ 'leave_artist.last.warning'|trans({'%artist%':artist.getArtistname})|raw }}</p>
+                        <p class="alert alert-warning">{{ 'leave_artist.last.warning'|trans({'%artist%':artist})|raw }}</p>
                     {% endif %}
                 </div>
                 <div class="modal-footer">
@@ -30,7 +30,7 @@
     <label class="custom-control custom-checkbox pr-3" for="checkbox-leave-artist">
         <input type="checkbox" id="checkbox-leave-artist" data-toggle="collapse" data-target="#collapse-leave-artist" class="custom-control-input">
         <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">{{ 'leave_artist.checkbox'|trans({'%artist%':artist.getArtistname})|raw }}</span>
+        <span class="custom-control-description">{{ 'leave_artist.checkbox'|trans({'%artist%':artist})|raw }}</span>
     </label>
 
     <div class="collapse" id="collapse-leave-artist">
@@ -38,7 +38,7 @@
             <p>{{ 'leave_artist.last.busy'|trans|raw }}</p>
         {% else %}
             <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaveArtistModal">
-                {{ 'leave_artist.confirm'|trans({'%artist%':artist.getArtistname})|raw }}
+                {{ 'leave_artist.confirm'|trans({'%artist%':artist})|raw }}
             </button>
         {% endif %}
     </div>
