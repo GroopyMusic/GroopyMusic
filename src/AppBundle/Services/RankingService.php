@@ -21,6 +21,8 @@ class RankingService
 
     private $logger;
 
+    private const MAX_ERROR = 5;
+
     public function __construct(FormulaParserService $formulaParserService, EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->formulaParserService = $formulaParserService;
@@ -49,7 +51,7 @@ class RankingService
         );
 
         foreach ($users as $user) {
-            if ($exceptions > 5) {
+            if ($exceptions > self::MAX_ERROR) {
                 $this->logger->warning("Number of exceptions > 5", []);
                 throw new Exception($last_exception_message);
             }
@@ -61,6 +63,7 @@ class RankingService
                     $this->formulaParserService->setUserStatisticsVariables($statistics[$user->getId()]);
                 }
                 foreach ($categories as $category) {
+
                     $levels = $category->getLevels()->toArray();
                     $point = $this->formulaParserService->computeStatistic($category->getFormula());
                     if ($point == 0) {
@@ -85,7 +88,11 @@ class RankingService
                 $exceptions++;
                 $last_exception_message = $ex->getMessage();
                 $this->logger->warning("Exception compute stat user", [$last_exception_message]);
-                continue;
+                if ($categories == null || $statistics == null) {
+                    throw new Exception();
+                } else {
+                    continue;
+                }
             }
         }
         $this->em->flush();
@@ -98,7 +105,7 @@ class RankingService
      * @param $levels
      * @return $user_category with correct level
      */
-    private function checkLevel($user_category, $levels)
+    protected function checkLevel($user_category, $levels)
     {
         $statistic = $user_category->getStatistic();
         $correct_level = null;
@@ -121,7 +128,7 @@ class RankingService
      * @param $id
      * @return $user_category if exist , null if not
      */
-    private function getUserCategory($stats, $id)
+    protected function getUserCategory($stats, $id)
     {
         foreach ($stats as $stat) {
             if ($stat->getCategory()->getId() === $id) {
@@ -137,7 +144,7 @@ class RankingService
      * @param $user
      *
      */
-    private function deleteStatistic($user)
+    protected function deleteStatistic($user)
     {
         foreach ($user->getCategoryStatistics() as $stat) {
             $this->em->remove($stat);
@@ -159,7 +166,7 @@ class RankingService
         return $formula_descriptions;
     }
 
-    private function mergeStatistics(...$statsArray)
+    public function mergeStatistics(...$statsArray)
     {
         $statistics = [];
         foreach ($statsArray as $stats) {

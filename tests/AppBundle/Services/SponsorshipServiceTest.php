@@ -14,6 +14,7 @@ use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Repository\ContractFanRepository;
 use AppBundle\Repository\SponsorshipInvitationRepository;
+use AppBundle\Repository\UserRepository;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\SponsorshipService;
@@ -41,12 +42,14 @@ class SponsorshipServiceTest extends TestCase
     private $contractFan;
     private $ticket;
     private $sponsorship_invitation_confirmed;
+    private $userRepository;
 
     protected function setUp()
     {
         //repository
         $this->sponsorshipRepository = $this->getMockBuilder(SponsorshipInvitationRepository::class)->disableOriginalConstructor()->getMock();
         $this->contractFanRepository = $this->getMockBuilder(ContractFanRepository::class)->disableOriginalConstructor()->getMock();
+        $this->userRepository = $this->getMockBuilder(UserRepository::class)->disableOriginalConstructor()->getMock();
 
         //entity
         $this->contract_artist = $this->getMockBuilder(ContractArtist::class)->disableOriginalConstructor()->getMock();
@@ -66,7 +69,8 @@ class SponsorshipServiceTest extends TestCase
         $this->manager->expects($this->any())->method('flush');
         $repositories = array(
             array('AppBundle:SponsorshipInvitation', $this->sponsorshipRepository),
-            array('AppBundle:ContractFan', $this->contractFanRepository)
+            array('AppBundle:ContractFan', $this->contractFanRepository),
+            array('AppBundle:User', $this->userRepository)
         );
         $this->manager->expects($this->any())->method('getRepository')->will($this->returnValueMap($repositories));
 
@@ -102,6 +106,7 @@ class SponsorshipServiceTest extends TestCase
         unset($this->contractFan);
         unset($this->ticket);
         unset($this->sponsorship_invitation_confirmed);
+        unset($this->userRepository);
     }
 
     /**
@@ -392,11 +397,56 @@ class SponsorshipServiceTest extends TestCase
     }
 
     /**
-     * Success : get summary for user ( 0 invited and 0 confirmed )
+     * error : user null)
      * @expectedException Exception
      */
     public function testGetSponsorshipSummaryForUser5()
     {
         $this->assertEquals([[], []], $this->sponsorshipService->getSponsorshipSummaryForUser(null));
+    }
+
+    /**
+     * @dataProvider emailsProvider
+     * success with dataprovider
+     */
+    public function testVerifyEmails1($emails, $returns, $result)
+    {
+        //to mock verifyEmails
+        $this->sponsorshipService = $this->getMockBuilder(SponsorshipService::class)
+            ->setConstructorArgs(array($this->mailDispatcher, $this->manager, $this->logger, $this->token_gen, $this->notificationDispatcher))
+            ->setMethods(null)
+            ->getMock();
+        $this->userRepository->expects($this->any())->method('emailExists')->will($this->returnValueMap($returns));
+        $this->assertEquals($result, $this->sponsorshipService->callVerifyEmails($emails));
+    }
+
+    /**
+     * Error type error
+     * @expectedException TypeError null
+     */
+    public function testVerifyEmails2()
+    {
+        //to mock verifyEmails
+        $this->sponsorshipService = $this->getMockBuilder(SponsorshipService::class)
+            ->setConstructorArgs(array($this->mailDispatcher, $this->manager, $this->logger, $this->token_gen, $this->notificationDispatcher))
+            ->setMethods(null)
+            ->getMock();
+        $this->userRepository->expects($this->any())->method('emailExists')->will($this->returnValueMap(null));
+        $this->assertEquals(null, $this->sponsorshipService->callVerifyEmails(null));
+    }
+
+    public function emailsProvider()
+    {
+        $user_not_null = $this->getMockBuilder(User::class)->disableOriginalConstructor()->getMock();
+        // return [ emails de départ , les valeur de retour du querry "emailExists" poru chaque email, le resultat final
+        return [
+            [['email1', 'email2', 'email3'], [['email1', null], ['email2', null], ['email3', null]], [['email1', 'email2', 'email3'], []]], // Aucun email connu
+            [['email1', 'email2', 'email3'], [['email1', null], ['email2', $user_not_null], ['email3', null]], [['email1', 'email3'], ['email2']]], //email 2 connu
+            [['email1', 'email2', 'email3'], [['email1', $user_not_null], ['email2', $user_not_null], ['email3', $user_not_null]], [[], ['email1', 'email2', 'email3']]], // Tout les emails sont connu
+            [['', 'email2', 'email3'], [['email1', null], ['email2', null], ['email3', null]], [['email2', 'email3'], []]], // avec mails vide
+            [['       ', 'email2', 'email3'], [['email1', null], ['email2', null], ['email3', null]], [['email2', 'email3'], []]], // avec mail rempli d'espace
+            [['email2', 'email2', 'email3'], [['email1', null], ['email2', null], ['email3', null]], [['email2', 'email3'], []]], // avec doublons inconnu
+            [['email2', 'email2', 'email3'], [['email1', $user_not_null], ['email2', $user_not_null], ['email3', $user_not_null]], [[], ['email2', 'email3']]], // avec doublons connu
+        ];
     }
 }

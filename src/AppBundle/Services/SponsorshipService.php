@@ -163,6 +163,12 @@ class SponsorshipService
         return [$invited, $confirmed];
     }
 
+    /**
+     * for each email, verify if it's correct and verify if it exists already in db
+     *
+     * @param $emails
+     * @return array with new emails cleared and known email
+     */
     protected function verifyEmails($emails)
     {
         $userRepository = $this->em->getRepository('AppBundle:User');
@@ -185,5 +191,9 @@ class SponsorshipService
         return [$clearedEmails, $knownEmail];
     }
 
+    //-------------PUBLIC METHOD FOR TEST (CALL PROTECTED METHOD)-------------//
 
+    public function callVerifyEmails($emails){
+        return $this->verifyEmails($emails);
+    }
 }
