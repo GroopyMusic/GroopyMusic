@@ -728,7 +728,7 @@ notices:
     send_sponsorship:
       not_connected: Vous n'êtes pas connecté !
       event_not_valid: Cet événement est invalide.
-      success: Envoi des invitations effectué.
+      success: Les invitations ont été envoyées.
       warning_message: "Les adresses emails suivantes sont déjà inscrites sur la plateforme, elles n'ont donc pas pu être invitées :"
       error: Une erreur est survenue avec le système.
     link:
