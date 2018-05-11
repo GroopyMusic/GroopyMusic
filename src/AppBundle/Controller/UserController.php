@@ -604,7 +604,8 @@ class UserController extends Controller
             ));
         } catch (\Throwable $th) {
             $logger->warning('error', [$th->getMessage()]);
-            return new Response($translator->trans('notices.sponsorship.send_sponsorship.error', []), 500);
+            return new Response($th->getMessage(), 500);
+            //return new Response($translator->trans('notices.sponsorship.send_sponsorship.error', []), 500);
         }
     }
 
