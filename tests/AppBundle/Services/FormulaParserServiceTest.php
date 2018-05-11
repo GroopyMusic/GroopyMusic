@@ -11,12 +11,17 @@ use PHPUnit\Framework\TestCase;
 class FormulaParserServiceTest extends TestCase
 {
     private $formulaParserService;
+    private $manager;
+    private $logger;
 
     protected function setUp()
     {
-        $manager = $this->getMockBuilder('Doctrine\ORM\EntityManagerInterface')->disableOriginalConstructor()->getMock();
-        $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->disableOriginalConstructor()->getMock();
-        $this->formulaParserService = new \AppBundle\Services\FormulaParserService($manager, $logger);
+        $this->manager = $this->getMockBuilder('Doctrine\ORM\EntityManagerInterface')->disableOriginalConstructor()->getMock();
+        $this->logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->disableOriginalConstructor()->getMock();
+        $this->formulaParserService = $this->getMockBuilder(\AppBundle\Services\FormulaParserService::class)
+            ->setConstructorArgs(array($this->manager, $this->logger))
+            ->setMethods(null)
+            ->getMock();
     }
 
     /**

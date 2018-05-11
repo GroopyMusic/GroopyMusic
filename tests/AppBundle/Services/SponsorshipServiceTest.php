@@ -6,12 +6,9 @@
  * Time: 11:35
  */
 
-use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
-use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\InvitationReward;
-use AppBundle\Entity\Reward;
 use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\Step;
 use AppBundle\Entity\Ticket;
@@ -57,11 +54,11 @@ class SponsorshipServiceTest extends TestCase
         $this->userRepository = $this->getMockBuilder(UserRepository::class)->disableOriginalConstructor()->getMock();
 
         //entity
+        $this->user = new User();
+        $this->host_user = new User();
         $this->contract_artist = new ContractArtist();
         $this->setIdWithReflectionClass(ContractArtist::class, $this->contract_artist, 1);
         $this->contract_artist->setStep(new Step());
-        $this->user = new User();
-        $this->host_user = new User();
         $this->sponsorship_invitation = new SponsorshipInvitation();
         $this->sponsorship_invitation_confirmed = new SponsorshipInvitation();
         $this->reward = new InvitationReward();
@@ -116,7 +113,7 @@ class SponsorshipServiceTest extends TestCase
     }
 
     /**
-     * normal method call with correct recipients : success
+     * normal method call with correct and bad recipients : success
      */
     public function testSendSponsorshipInvitation1()
     {
@@ -134,10 +131,19 @@ class SponsorshipServiceTest extends TestCase
     }
 
     /**
+     * normal method call with only correct recipients : success
+     */
+    public function testSendSponsorshipInvitation3()
+    {
+        $this->sponsorshipService->expects($this->any())->method('verifyEmails')->willReturn([['goodEmails','goodEmails2'], []]);
+        $this->assertEquals([true, []], $this->sponsorshipService->sendSponsorshipInvitation(['emails'], 'content', $this->contract_artist, $this->user));
+    }
+
+    /**
      * test with empty emails array
      * @expectedException Exception
      */
-    public function testSendSponsorshipInvitation3()
+    public function testSendSponsorshipInvitation4()
     {
         $this->sponsorshipService->expects($this->any())
             ->method('verifyEmails')
@@ -150,7 +156,7 @@ class SponsorshipServiceTest extends TestCase
      * test with null emails array
      * @expectedException Exception
      */
-    public function testSendSponsorshipInvitation4()
+    public function testSendSponsorshipInvitation5()
     {
         $this->sponsorshipService->expects($this->any())
             ->method('verifyEmails')
@@ -163,7 +169,7 @@ class SponsorshipServiceTest extends TestCase
      * test with null contract artist
      * @expectedException TypeError
      */
-    public function testSendSponsorshipInvitation5()
+    public function testSendSponsorshipInvitation6()
     {
         $this->sponsorshipService->expects($this->any())
             ->method('verifyEmails')
@@ -176,7 +182,7 @@ class SponsorshipServiceTest extends TestCase
      * test with null user
      * @expectedException TypeError
      */
-    public function testSendSponsorshipInvitation6()
+    public function testSendSponsorshipInvitation7()
     {
         $this->sponsorshipService->expects($this->any())
             ->method('verifyEmails')
@@ -194,7 +200,8 @@ class SponsorshipServiceTest extends TestCase
         $this->sponsorship_invitation->setLastDateAcceptation(new \DateTime());
 
         $this->sponsorshipRepository->expects($this->any())->method('getSponsorshipInvitationByMail')->willReturn($this->sponsorship_invitation);
-        $this->assertTrue($this->sponsorshipService->checkIfSponsorshipedAtInscription($this->user));
+        $this->assertTrue($this->sponsorshipService->checkIfSponsorshipedAtInscription($this->user)
+            && $this->sponsorship_invitation->getTargetInvitation() == $this->user);
     }
 
     /**

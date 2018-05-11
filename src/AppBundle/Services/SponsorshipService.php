@@ -42,7 +42,7 @@ class SponsorshipService
     }
 
     /**
-     * create and send sponsorship invitation to correct email
+     * create and send sponsorship invitation to correct emails
      *
      * @param $emails
      * @param $content
@@ -72,7 +72,7 @@ class SponsorshipService
     }
 
     /**
-     * After registration, check if the user is sponsored
+     * After registration, check if the user is sponsorshiped
      *
      * @param User $user
      * @return bool
@@ -95,7 +95,7 @@ class SponsorshipService
     }
 
     /**
-     * When buying a ticket, attrbiue a reward to the sponsor
+     * When buying a ticket, attribue a reward to the sponsor
      *
      * @param $user
      * @param ContractArtist $contractArtist
@@ -128,7 +128,11 @@ class SponsorshipService
         return false;
     }
 
-    public function checkAllSponsorship(ContractArtist $contractArtist)
+    /**
+     * give all sponsorship rewards to the confirmation of a concert
+     * @param ContractArtist $contractArtist
+     */
+    public function giveAllSponsorshipRewardIfPossible(ContractArtist $contractArtist)
     {
         $payments = $contractArtist->getPayments()->toArray();
         foreach ($payments as $payment) {
@@ -139,6 +143,8 @@ class SponsorshipService
 
     /**
      * Retrieves a summary about a user's sponsorship
+     *
+     *
      * @param $user
      * @return array with invited et confirmed
      * @throws \Exception if user == null
