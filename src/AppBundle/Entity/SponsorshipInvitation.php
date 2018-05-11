@@ -31,7 +31,7 @@ class SponsorshipInvitation
      * @param $contract_artist
      * @param bool $reward_sent
      */
-    public function __construct(\DateTime $date_invitation, $email_invitation, $text_invitation, $host_invitation, $contract_artist, $token)
+    public function __construct(\DateTime $date_invitation = null, $email_invitation = null, $text_invitation = null, $host_invitation = null, $contract_artist = null, $token = null)
     {
         $this->date_invitation = $date_invitation;
         $this->email_invitation = $email_invitation;

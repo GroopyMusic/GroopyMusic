@@ -138,8 +138,10 @@ class Category implements TranslatableInterface
      */
     public function addUserStatistic(\AppBundle\Entity\User_Category $userStatistic)
     {
-        $this->user_statistics[] = $userStatistic;
-
+        if (!$this->user_statistics->contains($userStatistic)) {
+            $userStatistic->setCategory($this);
+            $this->user_statistics[] = $userStatistic;
+        }
         return $this;
     }
 
@@ -150,7 +152,10 @@ class Category implements TranslatableInterface
      */
     public function removeUserStatistic(\AppBundle\Entity\User_Category $userStatistic)
     {
-        $this->user_statistics->removeElement($userStatistic);
+        if ($this->user_statistics->contains($userStatistic)) {
+            $this->user_statistics->removeElement($userStatistic);
+            $userStatistic->setCategory(null);
+        }
     }
 
     /**
@@ -172,7 +177,7 @@ class Category implements TranslatableInterface
      */
     public function addLevel(\AppBundle\Entity\Level $level)
     {
-        if(!$this->levels->contains($level)){
+        if (!$this->levels->contains($level)) {
             $this->levels[] = $level;
             $level->setCategory($this);
         }
@@ -186,7 +191,7 @@ class Category implements TranslatableInterface
      */
     public function removeLevel(\AppBundle\Entity\Level $level)
     {
-        if($this->levels->contains($level)){
+        if ($this->levels->contains($level)) {
             $this->levels->removeElement($level);
         }
     }

@@ -35,17 +35,19 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->sponsorships = new ArrayCollection();
     }
 
-    public function owns(Artist $artist) {
-        foreach($this->artists_user as $au) {
+    public function owns(Artist $artist)
+    {
+        foreach ($this->artists_user as $au) {
             /** @var Artist_User $au */
-            if($au->getArtist() == $artist) {
+            if ($au->getArtist() == $artist) {
                 return true;
             }
         }
         return false;
     }
 
-    public function anonymize() {
+    public function anonymize()
+    {
         $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';
         $this->setUsername($code);
         $this->setUsernameCanonical($code);
@@ -69,7 +71,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->setFacebookId(null);
         $this->setDeleted(true);
 
-        foreach($this->artists_user as $au) {
+        foreach ($this->artists_user as $au) {
             $this->removeArtistsUser($au);
         }
     }
@@ -99,15 +101,17 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return ucwords($displayName);
     }
 
-    public function getArtists() {
-        return array_filter(array_map(function(Artist_User $elem) {
+    public function getArtists()
+    {
+        return array_filter(array_map(function (Artist_User $elem) {
             return $elem->getArtist();
-        }, $this->artists_user->toArray()), function(Artist $artist) {
+        }, $this->artists_user->toArray()), function (Artist $artist) {
             return $artist->isActive();
         });
     }
 
-    public function getArtistsExport() {
+    public function getArtistsExport()
+    {
         $exportList = array();
         $i = 1;
         foreach ($this->getArtists() as $key => $val) {
@@ -119,17 +123,22 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
-    public function getAcceptedConditions() {
-        return array_map(function(User_Conditions $uc) {
+    public function getAcceptedConditions()
+    {
+        return array_map(function (User_Conditions $uc) {
             return $uc->getConditions();
         }, $this->user_conditions->toArray());
     }
 
-    public function hasAccepted(Conditions $conditions) {
-        return in_array($conditions->getId(), array_map(function($elem) { return $elem->getId(); }, $this->getAcceptedConditions()));
+    public function hasAccepted(Conditions $conditions)
+    {
+        return in_array($conditions->getId(), array_map(function ($elem) {
+            return $elem->getId();
+        }, $this->getAcceptedConditions()));
     }
 
-    public function isFirstVisit() {
+    public function isFirstVisit()
+    {
         return $this->user_conditions->isEmpty();
     }
 
@@ -608,11 +617,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function setAddressForm($address = null)
     {
-        if(is_array($address))
-            if(empty($address)){
+        if (is_array($address))
+            if (empty($address)) {
                 $this->address = null;
-            }
-            else {
+            } else {
                 $this->address = array_pop($address);
             }
         else
@@ -819,8 +827,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function addCategoryStatistic(\AppBundle\Entity\User_Category $categoryStatistic)
     {
-        $this->category_statistics[] = $categoryStatistic;
-
+        if (!$this->category_statistics->contains($categoryStatistic)) {
+            $this->category_statistics[] = $categoryStatistic;
+            $categoryStatistic->setUser($this);
+        }
         return $this;
     }
 
@@ -831,7 +841,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function removeCategoryStatistic(\AppBundle\Entity\User_Category $categoryStatistic)
     {
-        $this->category_statistics->removeElement($categoryStatistic);
+        if ($this->category_statistics->contains($categoryStatistic)) {
+            $this->category_statistics->removeElement($categoryStatistic);
+            $categoryStatistic->setUser(null);
+        }
     }
 
     /**
