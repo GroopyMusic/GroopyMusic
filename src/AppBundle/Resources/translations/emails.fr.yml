@@ -223,17 +223,17 @@ payment:
 
 #new
 reward_attribution:
-  content : |
+  content: |
     Vous avez reçu une nouvelle récompense !
     Nom de la récompense : %reward_name%
     %content%
-    Pour plus d'informations, consultez votre page <a href="%rewards_url%">Mes récompenses</a>
-
+    Pour plus d'informations, consultez la page %rewards_url%.
+  my_rewards: Mes récompenses
 
 #new
 sponsorship_invitation:
-  content : |
-    %user_name% vous invite à rejoindre la Platefrome Un-Mute et à participer au concert %contract_name% avec lui !
+  content: |
+    %user_name% vous invite à rejoindre la plateforme Un-Mute et à participer à l'événement %contract_name% avec lui !
     %content%
-    Voici le lien : <a href="%url%">%url%</a>
-  invit_message_header: Voici son message d'invitation :
+    Suivez le lien suivant pour valider cette invitation : %url%
+  invit_message_header: "Voici son message d'invitation :"
