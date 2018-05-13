@@ -24,6 +24,20 @@ use Psr\Log\LoggerInterface;
 
 class RewardAttributionService
 {
+    public const MOST_CONFIRMED_CONCERT = 'Concert confirmé le plus récent';
+    public const ONE_CONCERT_SELECTED = 'Un seul concert sélectionné';
+    public const ONE_ARTIST_SELECTED = 'Un seul artiste sélectionné';
+    public const ONE_COUNTERPART_SELECTED = 'Une seule contrepartie sélectionnée';
+    public const ONE_STEP_SELECTED = 'Un seul palier de salle sélectionné';
+
+    public const QUERRY_PARAM_TYPE = array(
+        self::MOST_CONFIRMED_CONCERT => null,
+        self::ONE_CONCERT_SELECTED => ContractArtist::class,
+        self::ONE_ARTIST_SELECTED => Artist::class,
+        self::ONE_COUNTERPART_SELECTED => CounterPart::class,
+        self::ONE_STEP_SELECTED => Step::class
+    );
+
     private $notificationDispatcher;
 
     private $mailDispatcher;
@@ -31,8 +45,6 @@ class RewardAttributionService
     private $em;
 
     private $logger;
-
-    private $querry_param_type;
 
     /**
      * constructor + array with querry names
@@ -49,13 +61,6 @@ class RewardAttributionService
         $this->mailDispatcher = $mailDispatcher;
         $this->em = $em;
         $this->logger = $logger;
-        $this->querry_param_type = array(
-            'Concert confirmé le plus récent' => null,
-            'Un seul concert sélectionné' => ContractArtist::class,
-            'Un seul artiste sélectionné' => Artist::class,
-            'Une seule contrepartie sélectionnée' => CounterPart::class,
-            'Un seul palier de salle sélectionné' => Step::class
-        );
     }
 
     /**
@@ -74,7 +79,6 @@ class RewardAttributionService
         foreach ($stats as $stat) {
             $user = $stat->getUser();
             $user_reward = new User_Reward($reward, $user);
-            $user_reward->setUser($user);
             foreach ($reward->getRestrictions()->toArray() as $restriction) {
                 $this->defineRestriction($restriction, $user_reward);
             }
@@ -100,27 +104,26 @@ class RewardAttributionService
         $restrictionRepository = $this->em->getRepository("AppBundle:RewardRestriction");
         $id_parameter = intval(explode('|', $restriction->getQueryParameter())[0]);
         switch ($restriction->getQuery()) {
-            case 'Concert confirmé le plus récent';
+            case self::MOST_CONFIRMED_CONCERT;
                 $baseContractArtist = $restrictionRepository->getMostRecentConfirmedConcert();
                 $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
-            case 'Un seul concert sélectionné';
+            case self::ONE_CONCERT_SELECTED;
                 $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($id_parameter);
                 $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
-            case 'Un seul artiste sélectionné';
+            case self::ONE_ARTIST_SELECTED;
                 $artist = $this->em->getRepository('AppBundle:Artist')->find($id_parameter);
                 $user_reward->addArtist($artist);
                 break;
-            case 'Une seule contrepartie sélectionnée';
+            case self::ONE_COUNTERPART_SELECTED;
                 $counterPart = $this->em->getRepository('AppBundle:CounterPart')->find($id_parameter);
                 $user_reward->addCounterPart($counterPart);
                 break;
-            case 'Un seul palier de salle sélectionné';
+            case self::ONE_STEP_SELECTED;
                 $baseStep = $this->em->getRepository('AppBundle:Step')->find($id_parameter);
                 $user_reward->addBaseStep($baseStep);
                 break;
-
         }
     }
 
@@ -131,9 +134,16 @@ class RewardAttributionService
      */
     public function getQuerryNamesParams()
     {
-        return $this->querry_param_type;
+        return self::QUERRY_PARAM_TYPE;
     }
 
+    /**
+     * get the statistics of each id in @param ids
+     *
+     * @param $ids
+     * @param $allStatistics
+     * @return array
+     */
     public function getSelectedStats($ids, $allStatistics)
     {
         $users = [];
@@ -158,6 +168,12 @@ class RewardAttributionService
         }
     }
 
+    /**
+     * Returns all unremoved rewards classified by type
+     *
+     * @param $local
+     * @return array
+     */
     public function constructRewardSelectWithType($local)
     {
         $rewards = $this->em->getRepository('AppBundle:Reward')->findNotDeletedRewards($local);

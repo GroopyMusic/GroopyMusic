@@ -25,7 +25,7 @@ class RankingService
 
     public const MAX_ERROR = 5;
 
-    public function __construct(FormulaParserService $formulaParserService, EntityManagerInterface $em, LoggerInterface $logger,ArrayHelperService $arrayHelperService)
+    public function __construct(FormulaParserService $formulaParserService, EntityManagerInterface $em, LoggerInterface $logger, ArrayHelperService $arrayHelperService)
     {
         $this->formulaParserService = $formulaParserService;
         $this->em = $em;
@@ -68,10 +68,13 @@ class RankingService
                 foreach ($categories as $category) {
                     $levels = $category->getLevels()->toArray();
                     $point = $this->formulaParserService->computeStatistic($category->getFormula());
+                    $user_category = $this->getUserCategory($user->getCategoryStatistics()->toArray(), $category->getId());
                     if ($point == 0) {
+                        if ($user_category != null) {
+                            $this->em->remove($user_category);
+                        }
                         continue;
                     } else {
-                        $user_category = $this->getUserCategory($user->getCategoryStatistics()->toArray(), $category->getId());
                         if ($user_category == null) {
                             $user_category = new User_Category();
                             $user->addCategoryStatistic($user_category);
@@ -170,7 +173,8 @@ class RankingService
 
     //-------------PUBLIC METHOD FOR TEST (CALL PROTECTED METHOD)-------------//
 
-    public function callCheckLevel($user_category, $levels){
+    public function callCheckLevel($user_category, $levels)
+    {
         return $this->checkLevel($user_category, $levels);
     }
 }
