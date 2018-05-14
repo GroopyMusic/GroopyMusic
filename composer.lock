@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "91d0466c659efbdc13065a85136ad223",
@@ -4832,16 +4832,16 @@
         },
         {
             "name": "sonata-project/admin-bundle",
-            "version": "3.35.1",
+            "version": "3.35.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "7e3203d04f36a2a579b209d65cf7f2a485ce74fc"
+                "reference": "dfd5110350d9cd4424c2eb3ccffcfcc248e70062"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/7e3203d04f36a2a579b209d65cf7f2a485ce74fc",
-                "reference": "7e3203d04f36a2a579b209d65cf7f2a485ce74fc",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/dfd5110350d9cd4424c2eb3ccffcfcc248e70062",
+                "reference": "dfd5110350d9cd4424c2eb3ccffcfcc248e70062",
                 "shasum": ""
             },
             "require": {
@@ -4933,7 +4933,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2018-04-20T09:47:48+00:00"
+            "time": "2018-05-05T16:59:10+00:00"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -5353,39 +5353,40 @@
         },
         {
             "name": "sonata-project/exporter",
-            "version": "1.8.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/exporter.git",
-                "reference": "f8bc03c2da72deeafd5d27f7cb558faeef8620d9"
+                "reference": "c20cb476179d6b6e5902859c7be9512198e5a552"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/f8bc03c2da72deeafd5d27f7cb558faeef8620d9",
-                "reference": "f8bc03c2da72deeafd5d27f7cb558faeef8620d9",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/c20cb476179d6b6e5902859c7be9512198e5a552",
+                "reference": "c20cb476179d6b6e5902859c7be9512198e5a552",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.6 || ^7.0"
             },
             "require-dev": {
-                "doctrine/dbal": "^2.2",
+                "doctrine/dbal": "^2.5",
+                "doctrine/orm": "^2.4.5",
                 "matthiasnoback/symfony-config-test": "^2.0",
                 "matthiasnoback/symfony-dependency-injection-test": "^1.0",
                 "propel/propel1": "^1.6",
-                "sllh/php-cs-fixer-styleci-bridge": "^2.0",
+                "symfony/config": "^2.8 || ^3.2 || ^4.0",
                 "symfony/dependency-injection": "^2.8 || ^3.2 || ^4.0",
                 "symfony/http-foundation": "^2.8 || ^3.2 || ^4.0",
                 "symfony/http-kernel": "^2.8 || ^3.2 || ^4.0",
-                "symfony/phpunit-bridge": "^3.3 || ^4.0",
+                "symfony/phpunit-bridge": "^4.0",
                 "symfony/property-access": "^2.8 || ^3.2 || ^4.0",
                 "symfony/routing": "^2.8 || ^3.2 || ^4.0"
             },
             "suggest": {
                 "ext-curl": "*",
                 "propel/propel1": "^1.6",
-                "symfony/property-access": "^2.3 || ^3.0 || ^4.0",
-                "symfony/routing": "^2.3 || ^3.0 || ^4.0"
+                "symfony/property-access": "To be able to export from database entities",
+                "symfony/routing": "To be able to export the routes of a Symfony app"
             },
             "type": "library",
             "extra": {
@@ -5418,7 +5419,7 @@
                 "export",
                 "xls"
             ],
-            "time": "2017-11-30T13:30:20+00:00"
+            "time": "2018-05-10T11:12:53+00:00"
         },
         {
             "name": "sonata-project/formatter-bundle",
@@ -6394,12 +6395,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "95ceeab3d718a02317e190a780435822a0bfb03f"
+                "reference": "fb881194b674c47638f8fb2eeaf9585fa178f6ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/95ceeab3d718a02317e190a780435822a0bfb03f",
-                "reference": "95ceeab3d718a02317e190a780435822a0bfb03f",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/fb881194b674c47638f8fb2eeaf9585fa178f6ab",
+                "reference": "fb881194b674c47638f8fb2eeaf9585fa178f6ab",
                 "shasum": ""
             },
             "require": {
@@ -6541,7 +6542,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2018-05-01T23:10:18+00:00"
+            "time": "2018-05-14T06:38:31+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
