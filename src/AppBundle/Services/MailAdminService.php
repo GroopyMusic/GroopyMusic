@@ -34,11 +34,16 @@ class MailAdminService
         $this->translator = $translator;
     }
 
-    public function fillMembersArray($artists)
+    /**
+     * Retrieves all email adresses of artist
+     * @param $artists (ids)
+     * @return array members
+     */
+    public function fillArtistOwnersArray($artists)
     {
         $members = [];
         foreach ($artists as $artist_id) {
-            $artits_users = $this->em->getRepository('AppBundle:Artist_User')->getMembers($artist_id);
+            $artits_users = $this->em->getRepository('AppBundle:Artist_User')->getArtistOwners($artist_id);
             foreach ($artits_users as $artist_user) {
                 array_push($members, ['email' => $artist_user->getUser()->getEmail(), 'id' => $artist_user->getUser()->getId()]);
             }
@@ -46,6 +51,12 @@ class MailAdminService
         return $members;
     }
 
+    /**
+     * get all the email addresses of the participants of an event
+     *
+     * @param $contract_artists
+     * @return array
+     */
     public function fillParticipantsArray($contract_artists)
     {
         $user_participants = [];
@@ -58,6 +69,11 @@ class MailAdminService
         return $user_participants;
     }
 
+    /**
+     * Retrieves all email addresses of artists participating in an event
+     * @param $contract_artists_id
+     * @return array
+     */
     public function fillArtistParticipantsArray($contract_artists_id)
     {
         $artist_participants = [];
@@ -75,6 +91,13 @@ class MailAdminService
         return $artist_participants;
     }
 
+    /**
+     * Sends an email to all users, email addresses and admin (in copy) without duplicates
+     *
+     * @param $recipients
+     * @param $object
+     * @param $content
+     */
     public function sendEmail($recipients, $object, $content)
     {
         $arrayRecipients = $this->addAdminToRecipients($this->constructArrayRecipients($recipients));
@@ -93,12 +116,18 @@ class MailAdminService
         $this->mailDispatcher->sendEmailFromAdmin($emails, $object, $content);
     }
 
+    /**
+     * Retrieves all email addresses from the key 'input_email' ( email entered manually) in the table
+     *
+     * @param $recipients
+     * @return array
+     */
     public function getSimpleEmails($recipients)
     {
         $simpleEmails = [];
         if (array_key_exists('emails_input', $recipients)) {
             foreach ($recipients['emails_input'] as $email) {
-                if (!in_array($email, $simpleEmails)) {
+                if (!in_array($email, $simpleEmails) && strlen(trim($email)) != 0) {
                     array_push($simpleEmails, $email);
                 }
             }
@@ -106,12 +135,24 @@ class MailAdminService
         return $simpleEmails;
     }
 
+    /**
+     * Retrieves a summary of all email addresses to which an email will be sent
+     *
+     * @param $recipients
+     * @return array
+     */
     public function getUsersSummary($recipients)
     {
         $userSummary = $this->addAdminToRecipients($this->constructArrayRecipients($recipients));
         return array_unique($userSummary, SORT_REGULAR);
     }
 
+    /**
+     * Construct the recipient user table according to the @param $recipients array
+     *
+     * @param $recipients
+     * @return array
+     */
     public function constructArrayRecipients($recipients)
     {
         $arrayRecipients = [];
@@ -125,7 +166,9 @@ class MailAdminService
                         }
                     } else {
                         foreach ($recipient as $id) {
-                            array_push($arrayRecipients, $this->em->getRepository('AppBundle:User')->find($id));
+                            $u = $this->em->getRepository('AppBundle:User')->find($id);
+                            if($u != null)
+                            array_push($arrayRecipients,$u );
                         }
                     }
                     break;
@@ -137,7 +180,9 @@ class MailAdminService
                         }
                     } else {
                         foreach ($recipient as $id) {
-                            array_push($arrayRecipients, $this->em->getRepository('AppBundle:User')->find($id));
+                            $u = $this->em->getRepository('AppBundle:User')->find($id);
+                            if($u != null)
+                                array_push($arrayRecipients,$u );
                         }
                     }
                     break;
@@ -145,7 +190,9 @@ class MailAdminService
                     break;
                 default:
                     foreach ($recipient as $id) {
-                        array_push($arrayRecipients, $this->em->getRepository('AppBundle:User')->find($id));
+                        $u = $this->em->getRepository('AppBundle:User')->find($id);
+                        if($u != null)
+                            array_push($arrayRecipients,$u );
                     }
                     break;
             }
@@ -153,6 +200,11 @@ class MailAdminService
         return $arrayRecipients;
     }
 
+    /**
+     * Add admin users to the table passed as parameters
+     * @param $recipients
+     * @return mixed
+     */
     public function addAdminToRecipients($recipients)
     {
         $users = $this->em->getRepository('AppBundle:User')->findUsersWithRoles(['ROLE_SUPER_ADMIN']);

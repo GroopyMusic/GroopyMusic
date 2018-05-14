@@ -17,7 +17,7 @@ class Artist_UserRepository extends \Doctrine\ORM\EntityRepository
      * @param $artist_id
      * @return array artust_user array
      */
-    public function getMembers($artist_id)
+    public function getArtistOwners($artist_id)
     {
         return $this->getEntityManager()->createQuery(
             'SELECT au,u,a
