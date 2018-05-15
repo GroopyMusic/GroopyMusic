@@ -257,10 +257,13 @@ class PublicController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $halls = $em->getRepository('AppBundle:Hall')->findVisible();
-        shuffle($halls);
+        $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
+        $provinces = $em->getRepository('AppBundle:Province')->findAll();
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(
             'halls' => $halls,
+            'steps' => $steps,
+            'provinces' => $provinces
         ));
     }
 

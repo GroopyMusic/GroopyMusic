@@ -57,6 +57,11 @@ class Step extends BaseStep
         return array_slice($halls, 0, $nb);
     }
 
+    public function generateSlug()
+    {
+        $this->slug = parent::TYPE_CONCERT . '-' . $this->num;
+    }
+
     /**
      * @ORM\OneToMany(targetEntity="Hall", mappedBy="step")
      */
@@ -86,6 +91,7 @@ class Step extends BaseStep
      * @ORM\Column(name="max_tickets", type="smallint")
      */
     private $max_tickets;
+
 
 
     /**

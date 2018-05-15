@@ -16,6 +16,7 @@ use Sonata\TranslationBundle\Model\TranslatableInterface;
 class BaseStep implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
+    use ORMBehaviors\Sluggable\Sluggable;
 
     const TYPE_CONCERT = 'concert';
 
@@ -54,6 +55,10 @@ class BaseStep implements TranslatableInterface
     public function getLocale()
     {
         return $this->getCurrentLocale();
+    }
+
+    public function getSluggableFields() {
+        return ['type', 'num'];
     }
 
     /**
