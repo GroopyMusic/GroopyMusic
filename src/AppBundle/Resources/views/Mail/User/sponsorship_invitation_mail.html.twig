@@ -8,7 +8,7 @@
                         '%content%': content,
                         '%contract_name%': contractArtist,
                         '%user_name%': user.displayName,
-                        '%url':url('sponsorship_link',{'token':token})
+                        '%url%': email_link(url('sponsorship_link', {'token':token}))
                     })|trans|raw|nl2br }}</p>
             </div>
         {% endblock %}

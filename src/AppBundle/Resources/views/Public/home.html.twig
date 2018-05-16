@@ -33,38 +33,38 @@
         </div>
     </div>
 
-    <div id="home-explanations" class="container-fluid mb-3 mb-md-0 bg-white position-relative">
+    <div id="home-explanations" class="container-fluid position-relative">
         <div id="parallax-guitar-bg" class="d-none d-md-block parallax"></div>
-        <div class="row">
+        <div class="row p-md-5">
             <div class="col-12 col-md-6">
                 <div class="row">
-                    <div class="col-4 my-auto">
-                        <img class="img-fluid" src="{{ asset('images/icons/blue/concert.png') }}" />
+                    <div class="col-12 col-md-4 my-auto text-center">
+                        <img class="img-fluid home-explanations-icon" src="{{ asset('images/icons/concert.png') }}" />
                     </div>
-                    <div class="col-8 my-auto">
-                        <span class="big">{{ 'home.concept.content_1'|trans|raw }}</span>
+                    <div class="col-12 col-md-8 my-auto">
+                        {{ 'home.concept.content_1'|trans|raw }}
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-md-6 mt-3 mt-md-0">
+            <div class="col-12 col-md-6 mt-3 mt-md-0 t">
                 <div class="row">
-                    <div class="col-4 my-auto">
-                        <img  class="img-fluid" src="{{ asset('images/icons/blue/refund.png') }}" />
+                    <div class="col-12 col-md-4 my-auto text-center">
+                        <img  class="img-fluid home-explanations-icon" src="{{ asset('images/icons/refund.png') }}" />
                     </div>
-                    <div class="col-8 my-auto">
-                        <span class="big">{{ 'home.concept.content_2'|trans|raw }}</span>
+                    <div class="col-12 col-md-8 my-auto">
+                        {{ 'home.concept.content_2'|trans|raw }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid mb-3 mb-md-0 position-relative" id="home-spotlights">
+    <div class="container-fluid position-relative bg-body-light" id="home-spotlights">
 
         <div class="row">
-            <div class="col-12 col-md-6 my-auto text-white">
-                <h3 class="alt-title text-center text-white">{% if spotlight.coartists is not empty %}{{ 'home.spotlights.title_1'|trans }}{% else %}{{ 'home.spotlights.title_2'|trans }}{% endif %}</h3>
+            <div class="col-12 col-md-6 my-auto">
+                <h3 class="alt-title text-center">{% if spotlight.coartists is not empty %}{{ 'home.spotlights.title_1'|trans }}{% else %}{{ 'home.spotlights.title_2'|trans }}{% endif %}</h3>
                 <div class="row">
                     {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {
                         'contract': spotlight,
@@ -76,32 +76,47 @@
 
                     <div class="col-12 col-md-6 mt-4 my-md-auto">
                             <div class="spotlight-explanation">
-                                {{ 'home.spotlights.headline'|trans({
-                                    '%artist%': spotlight.artist,
-                                    '%date%': ('Days ' ~ spotlight.dateConcert|date('w'))|trans|lower ~ ' ' ~ spotlight.dateConcert|date('d') ~ ' ' ~ ('months.' ~ spotlight.dateConcert|date('m'))|trans|lower,
-                                }) }}
-                                {% if spotlight.coartists is not empty %}
-                                    <h4 class="mt-3">{{ 'home.spotlights.lineup.title'|trans }}</h4>
+                                {% if spotlight.coartists is empty %}
+                                    <h4 class="text-left">
+                                        <img class="img-fluid um-icon d-none d-lg-inline" style="max-width: 80px;" src="{{ asset('images/icons/artist.png') }}" />
+                                        LIVE
+                                    </h4>
+
+                                    {{ 'home.spotlights.headline'|trans({
+                                        '%artist%': spotlight.artist,
+                                        '%date%': ('Days ' ~ spotlight.dateConcert|date('w'))|trans|lower ~ ' ' ~ spotlight.dateConcert|date('d') ~ ' ' ~ ('months.' ~ spotlight.dateConcert|date('m'))|trans|lower,
+                                    }) }}
+
+                                    <div class="mt-1">
+                                        @{{ spotlight.hallConcert }}
+                                    </div>
+                                {% else %}
+                                    <h4 class="mt-3 text-left">
+                                        <img class="img-fluid um-icon d-none d-lg-inline" style="max-width: 80px;" src="{{ asset('images/icons/artist.png') }}" />
+                                        {{ 'home.spotlights.lineup.title'|trans }}
+                                    </h4>
                                     <div class="mt-2">
-                                        <span class="um-label text-white">{{ 'home.spotlights.lineup.host'|trans }}</span>
+                                        <span class="um-label">{{ 'home.spotlights.lineup.host'|trans }}</span>
                                         <br /><a href="{{ path('artist_profile', {'id': spotlight.artist.id, 'slug': spotlight.artist.slug}) }}">{{ spotlight.artist }}</a>
                                     </div>
                                     <div class="mt-3">
-                                        <span class="um-label text-white">{{ 'home.spotlights.lineup.invited'|trans }}</span>
+                                        <span class="um-label">{{ 'home.spotlights.lineup.invited'|trans }}</span>
                                         {% for coartist in spotlight.coartists %}
                                             <br /><a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist }}</a>
                                         {% endfor %}
                                     </div>
-                                {% else %}
-                                    <div class="mt-3">
-                                        @{{ spotlight.hallConcert }} ({{ spotlight.hallConcert.province }})
-                                    </div>
-
                                 {% endif %}
-                                <h4 class="mt-3">{{ 'home.spotlights.tickets.title'|trans }}</h4>
+
+                                <div class="mt-3">
+                                    <h4 class="text-left">
+                                        <img class="img-fluid um-icon d-none d-lg-inline" style="max-width: 80px;" src="{{ asset('images/icons/concert-ticket.png') }}" />
+                                        {{ 'home.spotlights.tickets.title'|trans|upper }}
+                                    </h4>
+                                </div>
                                 {% set spotlight_url = path('artist_contract', {'id': spotlight.id, 'slug': spotlight.artist.slug}) %}
                                 {% if not spotlight.isSoldOut %}
-                                    <span class="badge badge-success">{{ 'home.spotlights.tickets.selling'|trans }}</span> <a href="{{ spotlight_url }}" class="btn small btn-outline-primary p-2">Acheter</a>
+
+                                    <span class="badge badge-success">{{ 'home.spotlights.tickets.selling'|trans }}</span> <a href="{{ spotlight_url }}" class="btn small btn-primary p-2">Acheter</a>
                                 {% else %}
                                     <a href="{{ spotlight_url }}" class="btn btn-outline-secondary">{{ 'home.spotlights.tickets.soldout'|trans }}</a>
                                 {% endif %}
@@ -110,7 +125,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 mt-4 my-md-auto">
-                <h3 class="alt-title text-center text-white">{{ 'home.spotlights.video.title'|trans }}</h3>
+                <h3 class="alt-title text-center">{{ 'home.spotlights.video.title'|trans }}</h3>
                 <div class="embed-responsive embed-responsive-16by9">
                     <div class="youtube embed-responsive-item" id="oO1j40ELxYA"></div>
                 </div>
@@ -118,8 +133,8 @@
         </div>
     </div>
 
-    <div class="container-fluid bg-body-light py-4">
-        <h3 class="alt-title text-center">{{ 'home.news.title'|trans|raw }}</h3>
+    <div class="container-fluid bg-body-very-strong py-4">
+        <h3 class="alt-title text-center text-white">{{ 'home.news.title'|trans|raw }}</h3>
         <div class="row">
         {% for new in news %}
             {% if new.type == 'artist' %}
@@ -149,7 +164,7 @@
         </p>
     </div>
 
-    <div class="container-fluid bg-body-light text-center py-4" id="friends">
+    <div class="container-fluid bg-body-strong text-center py-4" id="friends">
 
         <h3 class="alt-title">{{ 'home.partners.title'|trans }}</h3>
         <div id="friends-carousel" class="carousel slide py-4" data-ride="carousel">
@@ -183,7 +198,7 @@
                 else {
                     $header.css('background-position-y', 'center');
                 }
-                $('#parallax-spotlights-bg').css('top', -(scrolled * 0.5) + 'px');
+                $('#parallax-guitar-bg').css('top', -(scrolled * 0.5) + 'px');
             }
             $(window).scroll(function(e){
                 parallax();

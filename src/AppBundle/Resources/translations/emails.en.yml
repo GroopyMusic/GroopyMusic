@@ -69,3 +69,20 @@ payment:
     Your tickets for %event% have entirely been refunded (order id: %cf%).
 
     We hope to see you soon on Un-Mute.be to support other artists and bring them on stage!
+
+#new
+reward_attribution:
+  content: |
+    You just received a new Un-Mute reward!
+    Reward type: %reward_name%
+    %content%
+    For more information, visit %rewards_url%.
+  my_rewards: My rewards
+
+#new
+sponsorship_invitation:
+  content: |
+    %user_name% invites you to join the Un-Mute collaborative musical platform and attend "%contract_name%" with him/her!
+    %content%
+    Follow this link to validate the invitation: %url%
+  invit_message_header: "This message was attached to the invitation by %user_name%:"

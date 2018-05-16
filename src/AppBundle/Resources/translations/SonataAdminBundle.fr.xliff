@@ -2,9 +2,24 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="fr" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="39ea4f0b5c776b7d6de2bae82726e5bb8838b8b7" resname="flash_edit_error">
+                <source>flash_edit_error</source>
+                <target>Une erreur est survenue lors de l'édition de l'objet.</target>
+                <jms:reference-file line="235">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Controller\ContractArtistAdminController.php\</jms:reference-file>
+              </trans-unit>
+              <trans-unit id="56a33e6716d3edf658818b9b407d9a8f3aff4a76" resname="flash_edit_success">
+                <source>flash_edit_success</source>
+                <target>Modifications enregistrées.</target>
+                <jms:reference-file line="208">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Controller\ContractArtistAdminController.php\</jms:reference-file>
+              </trans-unit>
+              <trans-unit id="e0954c853d9d65c7d49bffab7a8b814a2d52b5b2" resname="flash_lock_error">
+                <source>flash_lock_error</source>
+                <target>Une erreur est survenue...</target>
+                <jms:reference-file line="222">\..\..\..\..\..\C:/wamp/www/UnMuteBE/app/../src\AppBundle\Controller\ContractArtistAdminController.php\</jms:reference-file>
+              </trans-unit>
             <trans-unit id="app.admin.group.contact">
                 <source>app.admin.group.contact</source>
-                <target>Formulaires de contact</target>
+                <target>Contact</target>
             </trans-unit>
 
             <trans-unit id="app.admin.group.content">

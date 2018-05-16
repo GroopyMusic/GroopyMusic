@@ -69,3 +69,26 @@ tickets_sent:
     Je tickets voor het Un-Mute Festival van de %date% in de zaal "%hall_name%" zijn beschikbaar.
 
     Vergeet niet dat je ze voor de festivaldag moet laten drukken. Richting <a href="%orders_url%"> uw persoonlijke ruimte </a> om ze te downloaden!
+
+#New
+reward_attribution:
+  title: Nouvelle récompense
+  content: |
+      Je hebt een nieuwe beloning ontvangen!
+
+      Beloningsnaam: %reward_name%
+
+      Meer informatie <a href="%rewards_url%">hier</a>!
+
+#new
+sponsorship_reward:
+  title: Sponsoring Reward
+  content_ticket_not_sent: |
+    %target_name% heeft een ticket gekocht voor %event%.
+    Daarom ontvang je een beloning: %reward_name%
+    Deze wordt direct toegepast op het eerste ticket van je laatste boodschappenlijst.
+  content_ticket_sent: |
+    %target_name% heeft een ticket gekocht voor %event%.
+    Daarom ontvang je een beloning: %reward_name%
+    Deze wordt direct toegepast op het eerste ticket van je laatste boodschappenlijst.
+    De beloning wordt niet weergegeven op het ticket? Maak je geen zorgen, alle informatie is opgeslagen in het systeem.

@@ -32,6 +32,7 @@
                             <span class="text-primary">{{ "sponsorship_modal.content"|trans|raw }}</span>
                         </div>
                         <hr>
+                        {% if invited is not empty and confirmed is not empty %}
                         <div>
                             <label><a data-toggle="collapse" href="#sponsorship-modal-summary-div" style="color: black">
                                     {{ "sponsorship_modal.display_recap"|trans|raw }}
@@ -39,37 +40,25 @@
                         </div>
                         <div id="sponsorship-modal-summary-div" class="collapse">
                             <br>
-                            <table id="sponsorship-modal-summary-table" class="table text-center">
-                                <thead>
-                                <tr>
-                                    <th style="width: 50%" class="text-warning">{{ "sponsorship_modal.waiting"|trans|raw }}</th>
-                                    <th style="width: 50%" class="text-success">{{ "sponsorship_modal.confirmed"|trans|raw }}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        {% for email in invited %}
-                                            <div class="text-warning">
-                                                {{ email }}
-                                            </div>
-                                        {% endfor %}
-                                    </td>
-                                    <td>
-                                        {% for email in confirmed %}
-                                            <div class="text-success">
-                                                {{ email }}
-                                            </div>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-warning"><strong>{{ "sponsorship_modal.total"|trans|raw }} : {{ invited|length }}</strong></td>
-                                    <td class="text-success"><strong>{{ "sponsorship_modal.total"|trans|raw }} : {{ confirmed|length }}</strong></td>
-                                </tr>
-                                </tbody>
-                            </table>
-
+                            <div class="row">
+                                <ul class="list-group col-md-6 col-sm-12 col-xs-12 p-0 word-break-all">
+                                    {% for email in invited %}
+                                        <li class="list-group-item">
+                                            {{ email }}
+                                            <span class="badge badge-pill badge-secondary">{{ "sponsorship_modal.waiting"|trans|raw }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <ul class="list-group col-md-6 col-sm-12 col-xs-12 p-0 word-break-all">
+                                    {% for email in confirmed %}
+                                        <li class="list-group-item">
+                                            {{ email }}
+                                            <span class="badge badge-pill badge-success">{{ "sponsorship_modal.confirmed"|trans|raw }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
                         </div>
                         <br>
                         {% if event_is_define == false %}
@@ -93,10 +82,10 @@
                             </div>
                         </div>
                         <div class="text-center">
-                            <button type="button" class="btn" onclick="removeEmailInput()" style="font-size: 70%">
+                            <button type="button" class="btn mt-1" onclick="removeEmailInput()" style="font-size: 70%">
                                 {{ "sponsorship_modal.remove_field"|trans|raw }}
                             </button>
-                            <button type="button" class="btn" onclick="addEmailInput()" style="font-size: 70%">
+                            <button type="button" class="btn mt-1" onclick="addEmailInput()" style="font-size: 70%">
                                 {{ "sponsorship_modal.add_field"|trans|raw }}
                             </button>
                         </div>
@@ -108,10 +97,10 @@
                     </div>
                     <div class="modal-footer">
                         <div class="text-center">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                            <button type="button" class="btn btn-danger mt-1" data-dismiss="modal">
                                 {{ "sponsorship_modal.cancel_button"|trans|raw }}
                             </button>
-                            <button id="sponsorship-modal-send-button" type="submit" class="btn btn-primary">
+                            <button id="sponsorship-modal-send-button" type="submit" class="btn btn-primary mt-1">
                                 {{ "sponsorship_modal.send_button"|trans|raw }}
                             </button>
                         </div>

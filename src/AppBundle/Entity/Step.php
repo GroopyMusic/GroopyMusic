@@ -19,6 +19,10 @@ class Step extends BaseStep
         $this->deadline_duration = 30;
     }
 
+    public function displayWithMinTickets() {
+        return $this->__toString() . ' (seuil : ' . $this->min_tickets . ' tickets)';
+    }
+
     public function getAvailableDates(Province $province = null) {
         $dates = array();
 

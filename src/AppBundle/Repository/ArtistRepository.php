@@ -51,7 +51,7 @@ class ArtistRepository extends OptimizedRepository
     // Dual of ContractArtistRepository::queryVisible()
     public function queryNotCurrentlyBusy(User $user = null) {
         $contract_repository = $this->getEntityManager()->getRepository('AppBundle:ContractArtist');
-        $visible_contracts_ids = array_map(function(ContractArtist $ca) { return $ca->getId(); }, $contract_repository->findVisible());
+        $visible_contracts_ids = array_map(function(ContractArtist $ca) { return $ca->getId(); }, $contract_repository->findVisibleIncludingPreValidation());
 
         $nots = $this->createQueryBuilder('a1')
             ->innerJoin('a1.base_contracts', 'c', 'WITH','c.id in (:ids)' )

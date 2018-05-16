@@ -136,9 +136,11 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
+        $sponsorship_event = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
 
         return $this->render('@App/User/paid_carts.html.twig', array(
             'carts' => $carts,
+            'possible_sponsorship_event' => $sponsorship_event,
             'is_payment' => $request->get('is_payment')
         ));
     }
@@ -602,7 +604,8 @@ class UserController extends Controller
             ));
         } catch (\Throwable $th) {
             $logger->warning('error', [$th->getMessage()]);
-            return new Response($translator->trans('notices.sponsorship.send_sponsorship.error', []), 500);
+            return new Response($th->getMessage(), 500);
+            //return new Response($translator->trans('notices.sponsorship.send_sponsorship.error', []), 500);
         }
     }
 

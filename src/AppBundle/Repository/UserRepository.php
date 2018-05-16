@@ -225,10 +225,12 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         return $this->getEntityManager()->createQuery(
             'SELECT u
                   FROM AppBundle:User u
-                  LEFT JOIN u.carts c
-                  LEFT JOIN c.contracts cf
+                  JOIN u.carts c
+                  JOIN c.contracts cf
                   LEFT JOIN cf.contractArtist ca
                   WHERE ca.id = ?1
+                  AND cf.refunded = 0
+                  AND c.paid = 1
                   AND u.id = ?2
                   ')
             ->setParameter(1, $contract_artist_id)
