@@ -262,7 +262,7 @@ catalog_halls:
     name_desc: Nom Z -> A
     capacity_asc: Capacité -
     capacity_desc: Capacité +
-    search_name: Rechercher une salle...
+    search_name: Chercher...
 
 hall:
   short_description_label: En quelques mots
