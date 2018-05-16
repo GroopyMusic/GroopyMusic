@@ -134,3 +134,21 @@ ownershiprequest:
 
 
     Om te bevestigen of je of niet tot deze artiest behoort, registreer je op www.Un-Mute.be en klik  vervolgens op de volgende link: %confirmationUrl%
+
+
+#new
+reward_attribution:
+  content: |
+    Je hebt een nieuwe beloning ontvangen!
+    Beloningsnaam: %reward_name%
+    %content%
+    Ga naar Un-Mute voor meer informatie: %rewards_url%.
+  my_rewards: Mijn beloningen
+
+#new
+sponsorship_invitation:
+  content: |
+    %user_name% nodigt u uit om lid te worden van het Un-Mute netwerk en deel te nemen aan het evenement %contract_name%
+    %content%
+    Volg de volgende link om deze uitnodiging te valideren: %url%
+  invit_message_header: "Hier is zijn uitnodigingsbericht:"

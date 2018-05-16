@@ -1,0 +1,24 @@
+#New
+reward_attribution:
+  title: Nouvelle récompense
+  content: |
+    You just received a new Un-Mute reward!
+
+    Reward type: %reward_name%
+
+    For more information, visit <a href="%rewards_url%">your rewards page</a>.
+
+#new
+sponsorship_reward:
+  title: Sponsorship Reward
+  content_ticket_not_sent: |
+    %target_name% bought a ticket for %event%.
+    Therefore, you receive the following Un-Mute reward: %reward_name%
+    This reward will be applied directly to the first ticket of your last shopping list.
+  content_ticket_sent: |
+    %target_name% bought a ticket for %event%.
+    Therefore, you receive the following Un-Mute reward: %reward_name%
+    This reward is automatically applied to the first ticket of your last shopping list.
+    The reward isn't displayed on the ticket? Don't worry, all necessary information has correctly been stored in our system.
+
+

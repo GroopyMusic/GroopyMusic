@@ -82,6 +82,11 @@ event:
   buy_tickets:
     #new
     to_much_reduction: You cannot apply multiple discounts on a single order
+  sponsorship:
+    title: Invite your friends
+    total: Sent
+    total_validated: Confirmed
+    button_invit: Send new invites
 
 #new
 conditions:
@@ -110,6 +115,11 @@ pay_cart:
       signin_label: I already have an Un-Mute account
       signup_label: I don't have an Un-Mute account yet
 
+my_orders:
+  #new
+  button:
+    sponsorship: Invite your friends
+
 notifs:
     button: View # new
 
@@ -130,6 +140,10 @@ artist_profile:
       to_be_examined: The profile of your artist must be verified by an administrator before it will be made public. You are probably going to be contacted by an administrator in the few next hours or days.
       invisible: The profile of your artist hasn't been made public yet.
       not_validated: Your artist hasn't been validated by an administrator but this profile has already been made public.
+
+new_event:
+  step_3:
+    see_conditions: Read our terms of use
 
 order_pdf:
   labels: Applied Un-Mute reward(s)
@@ -168,11 +182,26 @@ notices:
     registration_success: Your Un-Mute account has been created with your Facebook profile data. You can define a password at any time in your profile edit page if you wish to also be able to log in using Un-Mute credentials.
   #new
   registration: Your subscription is successful. You can now proceed to payment. Please note that you have received an activation link by email. You will need to click it if you want to log again into our system with Un-Mute credentials in the future.
+  #new
+  sponsorship:
+    cart_success: Gefeliciteerd! Dankzij uw aankoop heeft uw sponsor een beloning ontvangen.
+    send_sponsorship:
+      not_connected: U bent niet ingelogd!
+      event_not_valid: Ongeldige Evenement!
+      success: Succesvol verzonden.
+      warning_message: De volgende e-mailadressen zijn al geregistreerd op het platform, ze konden dus niet worden uitgenodigd.
+      error: Er is een fout opgetreden in het systeem.
+    link:
+      error: Er is een fout opgetreden met het systeem. Probeer het opnieuw. Neem contact met ons op als het probleem aanhoudt.
+      success: Gefeliciteerd! Door op de verwijzingslink te klikken, heeft u laten zien dat u gesponsord wilde worden. Registreer op het platform om het sponsorschap te bevestigen.
+    inscription:
+      success: Gefeliciteerd! U hoeft alleen uw e-mailadres te bevestigen om het sponsorschap proces te voltooien.
 
 labels:
   artist:
     #new
     phone: Phone number
+    instagram: Instagram
 
   suggestionbox:
     #new
@@ -261,3 +290,21 @@ reward:
     value: Value
   reduction:
     reduction: reduction
+
+#new
+sponsorship_modal:
+  title: Send invites to your friends
+  content: Invite your friends to sign up and buy tickets for an event you are going to & enjoy bonuses on D-Day.
+  emails: Emails to invite
+  message: Invitation text (optional)
+  send_button: Send invites
+  cancel_button: Cancel
+  email_placeholder: Email address...
+  confirmed_payment: Your payment has been received and your order is confirmed. Now that you have booked your place, why not invite some friends to join you? You could win some bonus rewards!
+  display_recap: Toggle invitation summary
+  waiting: Pending
+  confirmed: Confirmed
+  total: Total
+  event: Festival
+  remove_field: Remove last email address
+  add_field: Add an email address

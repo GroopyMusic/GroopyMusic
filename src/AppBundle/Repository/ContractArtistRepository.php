@@ -66,8 +66,10 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->addOrderBy('p.date', 'ASC');
     }
 
-    public function queryVisible($prevalidation = false)
+    public function queryVisible($prevalidation = false, $strict = false)
     {
+        $prevalidation_operator = $strict ? '=' : '<=';
+
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
             ->join('c.step', 's')
@@ -94,7 +96,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->orderBy('r.date', 'ASC')
             ->addOrderBy('p.date', 'ASC')
             ->where('c.failed = 0')
-            ->andWhere('c.test_period = :prevalidation')
+            ->andWhere('c.test_period ' . $prevalidation_operator . ' :prevalidation')
             ->andWhere('(r.date is not null AND r.date >= :yesterday) OR (p.date >= :yesterday)')
             ->setParameter('prevalidation', $prevalidation)
             ->setParameter('yesterday', new \DateTime('yesterday'));
@@ -117,7 +119,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         }
 
         return array_filter(
-            $this->queryVisible(true)->getQuery()->getResult(),
+            $this->queryVisible(true, true)->getQuery()->getResult(),
 
             function (ContractArtist $contractArtist) use ($user, $rolesManager) {
                 return $rolesManager->userHasRole($user, 'ROLE_ADMIN') ||
@@ -168,7 +170,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     }
 
     /**
-     * Returns 0-$limit contracts for which there are tickets to buy
+     * Returns 0-$limit contracts for which there are tickets to buy & that are visible (i.e. not in prevalidation)
      */
     public function findVisible($limit = null)
     {
@@ -185,14 +187,26 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     }
 
     /**
+     * Returns contracts for which there are tickets to buy
+     */
+    public function findVisibleIncludingPreValidation()
+    {
+        $qb = $this->queryVisible(true, false);
+
+        return $qb
+            ->orderBy('p.date', 'asc')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Returns 0-$limit upcoming events except $event in parameter
      */
     public function findVisibleExcept(ContractArtist $event, $limit = null)
     {
         $qb = $this->queryVisible()
             ->andWhere($this->short_name . '.id <> :excluded_id')
-            ->setParameter('excluded_id', $event->getId())
-        ;
+            ->setParameter('excluded_id', $event->getId());
 
         if ($limit != null) {
             $qb->setMaxResults($limit);
@@ -334,11 +348,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     {
         return $this->getEntityManager()->createQuery(
             'SELECT ca,r,p,u
-                  FROM AppBundle:ContractArtist ca
+                  FROM AppBundle:BaseContractArtist ca
                   LEFT JOIN ca.reality r
+                  LEFT JOIN ca.preferences pr
                   LEFT JOIN ca.payments p
                   LEFT JOIN p.user u
-                  WHERE r.date > ?2
+                  WHERE ( (r.id IS NOT NULL AND r.date > ?2) OR (r.id IS NULL AND pr.date >?2) )
                   AND ca.refunded = 0
                   AND ca.failed = 0
                   AND u.id = ?1

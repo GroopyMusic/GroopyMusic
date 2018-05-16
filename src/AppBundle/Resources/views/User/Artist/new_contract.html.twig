@@ -65,6 +65,8 @@
 
                     {% elseif flow.currentStepNumber == flow.lastStepNumber %}
 
+                        <p><a href="{{ path('conditions') }}" target="_blank">{{ 'new_event.step_3.see_conditions'|trans }}</a></p>
+
                         {{ form_errors(form.accept_conditions) }}
                         {{ form_widget(form.accept_conditions) }}
 
@@ -116,8 +118,10 @@
     </div>
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
+{% block additional_javascripts %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
 
     <script>
         $('document').ready(function() {

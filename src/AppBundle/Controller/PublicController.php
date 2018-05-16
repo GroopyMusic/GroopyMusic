@@ -700,7 +700,7 @@ class PublicController extends Controller
                 $session->invalidate();
             }
             $em = $this->getDoctrine()->getManager();
-            $token = substr_replace($request->get('token'), "", -1);
+            $token = $request->get('token');
             $sponsorship = $em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipInvitationByToken($token);
             if ($sponsorship == null) {
                 $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));

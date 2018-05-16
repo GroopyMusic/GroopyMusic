@@ -354,9 +354,9 @@ event:
   #new
   sponsorship:
     title: Invitez des amis
-    total: Nombre d'invitations envoyées
-    total_validated: Nombre d'invitations validées
-    button_invit: Invitez
+    total: Invitations envoyées
+    total_validated: Invitations validées
+    button_invit: Envoyez des invitations
 
 
 #new
@@ -629,6 +629,7 @@ new_event:
       date: Date choisie
       motivations: Motivations
       additional_info: Informations pour Un-Mute
+    see_conditions: Voir les conditions d'utilisation de la plateforme
   step_2:
     date_preview: "Date choisie : "
 
@@ -726,18 +727,16 @@ notices:
     cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
     send_sponsorship:
       not_connected: Vous n'êtes pas connecté !
-      event_not_valid: Evénement non valide !
-      success: Envoie réussi.
-      warning_message: Les adresses emails suivantes sont déjà isncrites sur la plateforme, elles n'ont donc pas pu être invitée.
+      event_not_valid: Cet événement est invalide.
+      success: Les invitations ont été envoyées.
+      warning_message: "Les adresses emails suivantes sont déjà inscrites sur la plateforme, elles n'ont donc pas pu être invitées :"
       error: Une erreur est survenue avec le système.
     link:
-      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contacter un administrateur de la plateforme.
+      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contactez-nous.
       success: Félicitations ! Vous avez émis le souhait de vous faire parrainer en cliquant sur le lien de parrainage. Inscrivez-vous à la plateforme pour confirmer le parrainage.
     inscription:
       success: Félicitations, vous êtes sur le point de confirmer le parrainage, vous n'avez plus qu'à confirmer votre adresse email.
       error: Une erreur est survenue avec le système, veuillez contacter un administrateur de la plateforme.
-
-
 
 errors:
   change_email_token_expired: Ce jeton est expiré.
@@ -792,6 +791,7 @@ labels:
     submit: Valider
     twitter: Lien Twitter
     website: Site Web
+    instagram: Lien Instagram
     #new
     phone: Numéro de téléphone
     leave:
@@ -851,12 +851,13 @@ labels:
     flow_3: Confirmation
     accept_conditions: J'ai lu et j'accepte les conditions générales d'utilisation
     artist: Artiste à produire
-    motivations: Vos motivations (elles seront communiquées aux producteurs potentiels)
+    motivations: |
+      Infos additionnelles à communiquer dans le mail de confirmation de commande aux producteurs (par ex : "il y aura des CD à vendre sur place") (facultatif)
     province: Province dans laquelle produire l'artiste
     step: Type de festival recherché
 
   contractartistpossibility:
-    additional_info: Informations supplémentaires à transmettre aux organisateurs Un-Mute
+    additional_info: Infos supplémentaires à transmettre aux organisateurs Un-Mute (facultatif)
 
   contractfan:
     submit: Valider la commande
@@ -947,23 +948,24 @@ reward:
     value: Valeur
   reduction:
     reduction: réduction
+
 #new
 sponsorship_modal:
-  title: Invitez des amis à participer à l'événements
-  content: Invite tes amis à participer à l' événements et profitez de la récompense de parrainage
-  emails: Adresse(s) email
-  message: Message d'invitation
+  title: Parrainez des amis
+  content: Invitez vos amis à s'inscrire et acheter des places pour un événement et profitez de bonus le jour J.
+  emails: Adresse(s) email à inviter
+  message: Message d'invitation (facultatif)
   send_button: Envoyer les invitations
   cancel_button: Annuler
   email_placeholder: Entrez une adresse email
-  confirmed_payment: Payment effectué
-  display_recap: Afficher/Réduire le récapitulatif des invitations
+  confirmed_payment: Votre paiement a été reçu et votre commande est validée. Maintenant que vous avez réservé votre place, pourquoi pas inviter quelques amis à vous rejoindre ? Il y a des bonus à la clé !
+  display_recap: Afficher/réduire le récapitulatif des invitations
   waiting: En attente
   confirmed: Confirmé
   total: Total
-  event: Evénement
-  remove_field: Retirer un champ
-  add_field: Ajouter un champ
+  event: Festival
+  remove_field: Retirer une adresse e-mail
+  add_field: Ajouter une adresse e-mail
 
 
 

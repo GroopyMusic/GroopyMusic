@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class ContractArtist extends BaseContractArtist
 {
     const NB_DAYS_OF_CLOSING = 0;
+    const FESTIVAL_START_HOUR = 18;
+    const FESTIVAL_START_MINUTE = 0;
 
     const MAXIMUM_PROMO_OVERFLOW = 5;
 
@@ -201,7 +203,7 @@ class ContractArtist extends BaseContractArtist
                     return self::STATE_SUCCESS_SOLDOUT;
                 // No more selling
                 $dateConcert2 = clone $this->getDateConcert();
-                $dateConcert2->modify('+1 day');
+                $dateConcert2->setTime(self::FESTIVAL_START_HOUR, self::FESTIVAL_START_MINUTE);
                 if ($today2->modify('+' . ($this->nb_closing_days) . ' days') > $dateConcert2)
                     return self::STATE_SUCCESS_CLOSED;
                 // Successful, in the future, not sold out, not closed => ongoing
