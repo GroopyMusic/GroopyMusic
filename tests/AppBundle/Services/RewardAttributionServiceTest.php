@@ -119,6 +119,7 @@ class RewardAttributionServiceTest extends TestCase
         unset($this->counterpart);
         unset($this->step);
         unset($this->user_reward);
+        unset($this->rewardRepository);
     }
 
     /**

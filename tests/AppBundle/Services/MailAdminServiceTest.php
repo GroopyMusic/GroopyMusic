@@ -29,7 +29,6 @@ class MailAdminServiceTest extends TestCase
     private $co_artist_user;
     private $user_artist;
     private $artist;
-    private $coArtist;
     private $contract_artist;
 
     protected function setUp()
@@ -46,7 +45,6 @@ class MailAdminServiceTest extends TestCase
         $this->setIdWithReflectionClass(User::class, $this->co_artist_user, 2);
         $this->user_artist = new \AppBundle\Entity\Artist_User();
         $this->artist = new Artist(new \AppBundle\Entity\Phase());
-        $this->coArtist = new Artist(new \AppBundle\Entity\Phase());
         $this->contract_artist = new \AppBundle\Entity\ContractArtist();
 
         //service
@@ -82,6 +80,7 @@ class MailAdminServiceTest extends TestCase
         unset($this->user);
         unset($this->userRepository);
         unset($this->artist);
+        unset($this->contract_artist);
     }
 
     /**
