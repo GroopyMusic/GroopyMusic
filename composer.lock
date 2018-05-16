@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "91d0466c659efbdc13065a85136ad223",
+    "content-hash": "406aae2deb497647ab7638914e7409be",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -4832,16 +4832,16 @@
         },
         {
             "name": "sonata-project/admin-bundle",
-            "version": "3.35.1",
+            "version": "3.35.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "7e3203d04f36a2a579b209d65cf7f2a485ce74fc"
+                "reference": "dfd5110350d9cd4424c2eb3ccffcfcc248e70062"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/7e3203d04f36a2a579b209d65cf7f2a485ce74fc",
-                "reference": "7e3203d04f36a2a579b209d65cf7f2a485ce74fc",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/dfd5110350d9cd4424c2eb3ccffcfcc248e70062",
+                "reference": "dfd5110350d9cd4424c2eb3ccffcfcc248e70062",
                 "shasum": ""
             },
             "require": {
@@ -4933,7 +4933,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2018-04-20T09:47:48+00:00"
+            "time": "2018-05-05T16:59:10+00:00"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -6394,12 +6394,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "95ceeab3d718a02317e190a780435822a0bfb03f"
+                "reference": "40bcd7722bcd53b369b4bec8cb8e8110e15ba598"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/95ceeab3d718a02317e190a780435822a0bfb03f",
-                "reference": "95ceeab3d718a02317e190a780435822a0bfb03f",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/40bcd7722bcd53b369b4bec8cb8e8110e15ba598",
+                "reference": "40bcd7722bcd53b369b4bec8cb8e8110e15ba598",
                 "shasum": ""
             },
             "require": {
@@ -6541,7 +6541,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2018-05-01T23:10:18+00:00"
+            "time": "2018-05-07T07:00:50+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -8657,16 +8657,16 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v3.4.9",
+            "version": "v4.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "7470518370113785f67a7fd8e6e1667661e88805"
+                "reference": "03971d50f60e019d1640e137633bc596db2573f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/7470518370113785f67a7fd8e6e1667661e88805",
-                "reference": "7470518370113785f67a7fd8e6e1667661e88805",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/03971d50f60e019d1640e137633bc596db2573f4",
+                "reference": "03971d50f60e019d1640e137633bc596db2573f4",
                 "shasum": ""
             },
             "require": {
@@ -8685,7 +8685,7 @@
             "type": "symfony-bridge",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.4-dev"
+                    "dev-master": "4.0-dev"
                 },
                 "thanks": {
                     "name": "phpunit/phpunit",
@@ -8719,7 +8719,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2018-04-30T15:36:51+00:00"
+            "time": "2018-04-30T15:37:01+00:00"
         }
     ],
     "aliases": [

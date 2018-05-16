@@ -39,7 +39,7 @@ class MailAdminController extends Controller
     public function getMembersAction(Request $request, MailAdminService $mailAdminService)
     {
         try {
-            $members = $mailAdminService->fillMembersArray($request->get('options'));
+            $members = $mailAdminService->fillArtistOwnersArray($request->get('options'));
             return new JsonResponse($members);
         } catch (\Throwable $th) {
             return new Response($th->getMessage(), 500, []);

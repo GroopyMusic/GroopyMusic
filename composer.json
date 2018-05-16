@@ -73,10 +73,10 @@
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
         "jms/di-extra-bundle": "^1.8",
-        "deployer/deployer": "~3.0"
+        "deployer/deployer": "~3.0",
+        "symfony/phpunit-bridge": "^4.0"
     },
     "extra": {
         "symfony-app-dir": "app",

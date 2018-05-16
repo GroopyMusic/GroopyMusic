@@ -133,7 +133,7 @@ class PaymentController extends Controller
                 //reward
                 $rewardSpendingService->consumeReward($contract);
                 //sponsorship
-                $sponsorship = $sponsorshipService->checkForRewardSponsorship($user, $contract_artist);
+                $sponsorship = $sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($user, $contract_artist);
                 $em->persist($cart);
 
                 $em->flush();
