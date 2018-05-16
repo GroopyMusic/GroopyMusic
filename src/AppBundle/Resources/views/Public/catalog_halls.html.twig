@@ -18,13 +18,12 @@
             <!-- panel -->
             <div class="jplist-panel box panel-top">
                 <!-- sort dropdown -->
-                <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">Sort by</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
-
+                <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">{{ 'jplist.sort_by'|trans }}</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
                     <ul>
-                        <li class="active"><span data-path=".hall-name" data-order="asc" data-type="text">Model A-Z</span></li>
-                        <li><span data-path=".hall-name" data-order="desc" data-type="text">Model Z-A</span></li>
-                        <li><span data-path=".hall-capacity" data-order="asc" data-type="number">Capacité asc</span></li>
-                        <li><span data-path=".hall-capacity" data-order="desc" data-type="number">Capacité desc</span></li>
+                        <li class="active"><span data-path=".hall-name" data-order="asc" data-type="text">{{ 'catalog_halls.filtering.name_asc'|trans }}</span></li>
+                        <li><span data-path=".hall-name" data-order="desc" data-type="text">{{ 'catalog_halls.filtering.name_desc'|trans }}</span></li>
+                        <li><span data-path=".hall-capacity" data-order="asc" data-type="number">{{ 'catalog_halls.filtering.capacity_asc'|trans }}</span></li>
+                        <li><span data-path=".hall-capacity" data-order="desc" data-type="number">{{ 'catalog_halls.filtering.capacity_desc'|trans }}</span></li>
                     </ul>
                 </div>
 
@@ -34,17 +33,21 @@
                     <i class="fa fa-search  jplist-icon"></i>
 
                     <!--[if lt IE 10]>
-                    <div class="jplist-label">Filter by Model:</div>
+                    <div class="jplist-label">{{ 'catalog_halls.filtering.search_name'|trans }}</div>
                     <![endif]-->
 
-                    <input data-path=".hall-name" type="text" value="" placeholder="Filter by Model" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
+                    <input data-path=".hall-name" type="text" value="" placeholder="{{ 'catalog_halls.filtering.search_name'|trans }}" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
                 </div>
 
                 <!-- filter by title -->
                 <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="hall-step" data-path=".hall-step">
                     {% for step in steps %}
-                        <input value="{{ step }}" id="jplist-{{ step.slug }}" type="checkbox" checked>
-                        <label for="jplist-{{ step.slug }}">{{ step }}</label>
+                        {% set slug = "jplist-" ~ step.slug %}
+                        <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                            <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">{{ step }}</span>
+                        </label>
                     {% endfor %}
                 </div>
 
@@ -52,20 +55,13 @@
                 <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="hall-province" data-path=".hall-province">
                     {% for province in provinces %}
                         {% set slug = "jplist-" ~ province|slug %}
-                        <input data-path=".{{ slug }}" id="{{ slug }}" type="checkbox" checked>
-                        <label for="{{ slug }}">{{ province }}</label>
+                        <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                            <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">{{ province }}</span>
+                        </label>
                     {% endfor %}
                 </div>
-
-                <!-- jQuery UI range slider -->
-                <!-- lengthSlider and lengthValues are user function defined in jQuery.fn.jplist.settings
-                <div class="jplist-range-slider" data-control-type="range-slider" data-control-name="range-slider-length" data-control-action="filter" data-path=".length .val" data-slider-func="lengthSlider" data-setvalues-func="lengthValues">
-
-                    <div class="value" data-type="prev-value">Length: 0</div>
-                    <div class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-type="ui-slider" aria-disabled="false"><div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 0%; width: 100%;"></div><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 0%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 100%;"></a></div>
-                    <div class="value" data-type="next-value">10000</div>
-                </div>-->
-
             </div>
         </div>
 
@@ -80,7 +76,7 @@
         {% endif %}
 
         <div class="box jplist-no-results text-shadow align-center jplist-hidden">
-            <p>No results found</p>
+            <p>{{ 'jplist.no_results'|trans }}</p>
         </div>
     </div>
 {% endblock %}
@@ -88,88 +84,6 @@
 {% block additional_javascripts %}
     <script>
         $('document').ready(function () {
-
-            /**
-             * user defined functions
-             */
-            jQuery.fn.jplist.settings = {
-
-                /**
-                 * LENGTH: jquery ui range slider
-                 */
-                lengthSlider: function ($slider, $prev, $next) {
-
-                    $slider.slider({
-                        min: 0
-                        ,max: 10000
-                        ,range: true
-                        ,values: [0, 10000]
-                        ,slide: function (event, ui) {
-                            $prev.text('Length: ' + ui.values[0]);
-                            $next.text(ui.values[1]);
-                        }
-                    });
-                }
-
-                /**
-                 * LENGTH: jquery ui set values
-                 */
-                ,lengthValues: function ($slider, $prev, $next) {
-                    $prev.text('Length: ' + $slider.slider('values', 0));
-                    $next.text($slider.slider('values', 1));
-                }
-
-                /**
-                 * WIDTH: jquery ui range slider
-                 */
-                ,widthSlider: function ($slider, $prev, $next) {
-
-                    $slider.slider({
-                        min: 0
-                        ,max: 10000
-                        ,range: true
-                        ,values: [0, 10000]
-                        ,slide: function (event, ui) {
-                            $prev.text('Width: ' + ui.values[0]);
-                            $next.text(ui.values[1]);
-                        }
-                    });
-                }
-
-                /**
-                 * WIDTH: jquery ui set values
-                 */
-                ,widthValues: function ($slider, $prev, $next) {
-                    $prev.text('Width: ' + $slider.slider('values', 0));
-                    $next.text($slider.slider('values', 1));
-                }
-
-                /**
-                 * WEIGHT: jquery ui range slider
-                 */
-                ,weightSlider: function ($slider, $prev, $next) {
-
-                    $slider.slider({
-                        min: 0
-                        ,max: 10000
-                        ,range: true
-                        ,values: [0, 10000]
-                        ,slide: function (event, ui) {
-                            $prev.text('Weight: ' + ui.values[0]);
-                            $next.text(ui.values[1]);
-                        }
-                    });
-                }
-
-                /**
-                 * WEIGHT: jquery ui set values
-                 */
-                ,weightValues: function ($slider, $prev, $next) {
-                    $prev.text('Weight: ' + $slider.slider('values', 0));
-                    $next.text($slider.slider('values', 1));
-                }
-            };
-
             $('#halls-catalogue').jplist({
                 itemsBox: '.jp-list'
                 ,itemPath: '.jp-list-item'

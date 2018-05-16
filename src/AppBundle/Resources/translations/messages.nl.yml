@@ -248,10 +248,22 @@ contact:
     cancel: Annuleren
   confirmation: Uw bericht is ontvangen.
 
+#new
+jplist:
+  sort_by: Sorteren op
+  no_results: Geen resultaten gevonden
+
 catalog_halls:
   title: Partnerzalen
   intro: In heel België moedigen zalen de muzikale productie van onze artiesten aan. Bekijk de Un-Mute partnerzalen waarin festivals zullen georganiseerd worden. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen in Un-Mute! <a href=‘%proposition_url%’>Hier is het !</a>”>Wil je een evenement voorstellen in je zaal?</a>
   empty: Er is nog geen partnerzaal op het platform.
+  filtering:
+    name_asc: Naam A -> Z
+    name_desc: Naam Z -> A
+    capacity_asc: Capaciteit -
+    capacity_desc: Capaciteit +
+    search_name: Zoeken...
+
 
 hall:
   short_description_label: In een paar woorden

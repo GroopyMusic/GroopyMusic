@@ -69,6 +69,20 @@ team:
    #new
     alexis: "Passionné de musique, <span class='um-label um-semi-bold'>Alexis</span> a été vite conquis par l’idée du projet. Doté d’expérience en événementiel et actif au sein d’une agence digitale depuis plus de 3 ans, Alexis entend mettre à disposition son expérience en communication digitale et en coordination de projets pour soutenir la croissance de l’ASBL. Le projet constitue en effet à ses yeux un véritable potentiel pour réunir deux ses aspirations : la musique et l’entreprenariat, au sein d’une équipe motivée et multidisciplinaire."
 
+#new
+jplist:
+  sort_by: Sort by
+  no_results: No results found
+
+catalog_halls:
+  #new
+  filtering:
+    name_asc: Name A -> Z
+    name_desc: Name Z -> A
+    capacity_asc: Capacity -
+    capacity_desc: Capacity +
+    search_name: Search...
+
 catalog_events:
   running:
     title: Festivals currently being funded
