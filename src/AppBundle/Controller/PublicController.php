@@ -46,6 +46,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Translation\TranslatorInterface;
+use AppBundle\Services\ArrayHelper;
 
 class PublicController extends Controller
 {
@@ -291,16 +292,28 @@ class PublicController extends Controller
      */
     public function artistContractsAction(UserInterface $user = null)
     {
-
         $em = $this->getDoctrine()->getManager();
-        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
-        $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
+        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
         $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user, $this->get('user_roles_manager'));
+
+        $provinces = array_unique(array_map(function(ContractArtist $elem) {
+            return $elem->getProvince();
+        }, $current_contracts));
+
+        $genres = array_unique(ArrayHelper::flattenArray(array_map(function(ContractArtist $elem) {
+            return $elem->getGenres();
+        }, $current_contracts)));
+
+        $steps = array_unique(array_map(function(ContractArtist $elem) {
+            return $elem->getStep();
+        }, $current_contracts));
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
-            'successful_contracts' => $succesful_contracts,
             'prevalidation_contracts' => $prevalidation_contracts,
+            'provinces' => $provinces,
+            'genres' => $genres,
+            'steps' => $steps,
         ));
     }
 

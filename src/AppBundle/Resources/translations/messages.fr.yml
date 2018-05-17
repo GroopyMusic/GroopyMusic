@@ -302,6 +302,14 @@ catalog_events:
     intro:  Les événements suivants ont encore besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement ?</a>
   confirmed:
     title: Festivals confirmés
+  filtering:
+    date_asc: Date
+    gauge_asc: Taux de réussite -
+    gauge_desc: Taux de réussite +
+    by_confirmed: Filtrer...
+    not_confirmed: Non confirmé
+    confirmed: Confirmé
+    sold_out: Sold out
 
 login:
   necessary_for_tickets: Vous devez être connecté pour acheter des tickets !

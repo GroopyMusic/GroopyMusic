@@ -31,7 +31,6 @@
                         </ul>
                     </div>
 
-                    <!-- filter by title -->
                     <div class="text-filter-box">
 
                         <i class="fa fa-search  jplist-icon"></i>
@@ -43,7 +42,6 @@
                         <input data-path=".artist-name" type="text" value="" placeholder="{{ 'catalog_artists.filtering.search_name'|trans }}" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
                     </div>
 
-                    <!-- filter by title -->
                     <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-genres" data-path=".artist-genres">
                         {% for genre in genres %}
                             {% set slug = "jplist-" ~ genre|slug %}
@@ -55,7 +53,6 @@
                         {% endfor %}
                     </div>
 
-                    <!-- filter by title -->
                     <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-province" data-path=".artist-province">
                         {% for province in provinces %}
                             {% set slug = "jplist-" ~ province|slug %}

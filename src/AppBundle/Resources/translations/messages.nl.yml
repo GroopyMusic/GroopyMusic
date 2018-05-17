@@ -284,9 +284,9 @@ catalog_artists:
   intro: Welkom in de catalogus van de Belgische artiesten van Un-Mute! Ontdek zowel het profiel als de biografie van elke artiest en kies degene die je binnenkort in concert wilt zien! <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier is het !</a>”>Wil je een evenement voor een artiest voorstellen?</a>
   join_us: Wilt u zich als artiest registreren? <a href="%url%">Maak een profiel aan</a>.Over een paar minuten, maakt je je Un-Mute-identiteit.
   filtering:
-      name_asc: Naam A-Z
-      name_desc: Naam Z-A
-      search_name: Zoeken...
+    name_asc: Naam A-Z
+    name_desc: Naam Z-A
+    search_name: Zoeken...
 
 catalog_events:
   prevalidation:
@@ -302,6 +302,16 @@ catalog_events:
     intro:  De volgende evenementen moeten nog ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
   confirmed:
     title: Bevestigde festivals
+  filtering:
+    date_asc: Datum
+    gauge_asc: Succespercentage -
+    gauge_desc: Succespercentage +
+    by_confirmed: Filter...
+    not_confirmed: Niet bevestigd
+    confirmed: Bevestigd
+    sold_out: Sold out
+
+
 
 login:
   necessary_for_tickets: U moet aangemeld zijn om tickets te kopen!
