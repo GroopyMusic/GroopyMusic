@@ -499,6 +499,8 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $artists = $em->getRepository('AppBundle:Artist')->findVisible();
+        $genres = $em->getRepository('AppBundle:Genre')->findAll();
+        $provinces = $em->getRepository('AppBundle:Province')->findAll();
 
         if ($user != null && count($user->getGenres()) > 0) {
             usort($artists, function (Artist $a, Artist $b) use ($user) {
@@ -512,6 +514,8 @@ class PublicController extends Controller
 
         return $this->render('@App/Public/catalog_artists.html.twig', array(
             'artists' => $artists,
+            'genres' => $genres,
+            'provinces' => $provinces,
         ));
     }
 

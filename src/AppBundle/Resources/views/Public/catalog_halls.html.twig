@@ -8,64 +8,65 @@
             {{ 'catalog_halls.intro'|trans({'%proposition_url%': path('proposition')})|raw }}
         </p>
 
-        <div>
-            <!-- ios button: show/hide panel -->
-            <div class="jplist-ios-button">
-                <i class="fa fa-sort"></i>
-                jPList Actions
-            </div>
-
-            <!-- panel -->
-            <div class="jplist-panel box panel-top">
-                <!-- sort dropdown -->
-                <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">{{ 'jplist.sort_by'|trans }}</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
-                    <ul>
-                        <li class="active"><span data-path=".hall-name" data-order="asc" data-type="text">{{ 'catalog_halls.filtering.name_asc'|trans }}</span></li>
-                        <li><span data-path=".hall-name" data-order="desc" data-type="text">{{ 'catalog_halls.filtering.name_desc'|trans }}</span></li>
-                        <li><span data-path=".hall-capacity" data-order="asc" data-type="number">{{ 'catalog_halls.filtering.capacity_asc'|trans }}</span></li>
-                        <li><span data-path=".hall-capacity" data-order="desc" data-type="number">{{ 'catalog_halls.filtering.capacity_desc'|trans }}</span></li>
-                    </ul>
-                </div>
-
-                <!-- filter by title -->
-                <div class="text-filter-box">
-
-                    <i class="fa fa-search  jplist-icon"></i>
-
-                    <!--[if lt IE 10]>
-                    <div class="jplist-label">{{ 'catalog_halls.filtering.search_name'|trans }}</div>
-                    <![endif]-->
-
-                    <input data-path=".hall-name" type="text" value="" placeholder="{{ 'catalog_halls.filtering.search_name'|trans }}" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
-                </div>
-
-                <!-- filter by title -->
-                <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="hall-step" data-path=".hall-step">
-                    {% for step in steps %}
-                        {% set slug = "jplist-" ~ step.slug %}
-                        <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
-                            <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">{{ step }}</span>
-                        </label>
-                    {% endfor %}
-                </div>
-
-                <!-- filter by title -->
-                <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="hall-province" data-path=".hall-province">
-                    {% for province in provinces %}
-                        {% set slug = "jplist-" ~ province|slug %}
-                        <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
-                            <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">{{ province }}</span>
-                        </label>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
         {% if halls is not empty %}
+
+            <div>
+                <!-- ios button: show/hide panel -->
+                <div class="jplist-ios-button">
+                    <i class="fa fa-sort"></i>
+                    {{ 'jplist.action'|trans }}
+                </div>
+
+                <!-- panel -->
+                <div class="jplist-panel box panel-top">
+                    <!-- sort dropdown -->
+                    <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">{{ 'jplist.sort_by'|trans }}</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
+                        <ul>
+                            <li class="active"><span data-path=".hall-name" data-order="asc" data-type="text">{{ 'catalog_halls.filtering.name_asc'|trans }}</span></li>
+                            <li><span data-path=".hall-name" data-order="desc" data-type="text">{{ 'catalog_halls.filtering.name_desc'|trans }}</span></li>
+                            <li><span data-path=".hall-capacity" data-order="asc" data-type="number">{{ 'catalog_halls.filtering.capacity_asc'|trans }}</span></li>
+                            <li><span data-path=".hall-capacity" data-order="desc" data-type="number">{{ 'catalog_halls.filtering.capacity_desc'|trans }}</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- filter by title -->
+                    <div class="text-filter-box">
+
+                        <i class="fa fa-search  jplist-icon"></i>
+
+                        <!--[if lt IE 10]>
+                        <div class="jplist-label">{{ 'catalog_halls.filtering.search_name'|trans }}</div>
+                        <![endif]-->
+
+                        <input data-path=".hall-name" type="text" value="" placeholder="{{ 'catalog_halls.filtering.search_name'|trans }}" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
+                    </div>
+
+                    <!-- filter by title -->
+                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="hall-step" data-path=".hall-step">
+                        {% for step in steps %}
+                            {% set slug = "jplist-" ~ step.slug %}
+                            <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                                <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{ step }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+
+                    <!-- filter by title -->
+                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="hall-province" data-path=".hall-province">
+                        {% for province in provinces %}
+                            {% set slug = "jplist-" ~ province|slug %}
+                            <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                                <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{ province }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
             <div class="row jp-list">
                 {% for hall in halls %}
                     {% include 'AppBundle:Public/Card:hall.html.twig' with {'bgwhite': true, 'jplist': true} %}

@@ -73,14 +73,22 @@ team:
 jplist:
   sort_by: Sort by
   no_results: No results found
+  action: Filter...
 
 catalog_halls:
   #new
   filtering:
-    name_asc: Name A -> Z
-    name_desc: Name Z -> A
+    name_asc: Name A-Z
+    name_desc: Name Z-A
     capacity_asc: Capacity -
     capacity_desc: Capacity +
+    search_name: Search...
+
+catalog_artists:
+  #new
+  filtering:
+    name_asc: Name A-Z
+    name_desc: Name Z-A
     search_name: Search...
 
 catalog_events:
