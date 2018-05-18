@@ -1,5 +1,6 @@
 .footer{
   @extend .py-3;
+  clear: both;
 
   background-color: $footer-background-color;
   margin-top: 20px;
