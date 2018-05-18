@@ -23,7 +23,7 @@ class RankingService
 
     private $logger;
 
-    public const MAX_ERROR = 5;
+    const MAX_ERROR = 5;
 
     public function __construct(FormulaParserService $formulaParserService, EntityManagerInterface $em, LoggerInterface $logger, ArrayHelperService $arrayHelperService)
     {
