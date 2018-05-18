@@ -406,8 +406,30 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
+    public function getGenres() {
+        if($this->genres != null) {
+            return $this->genres;
+        }
+
+        $genres = [];
+        foreach($this->getArtist()->getGenres() as $genre) {
+            $genres[] = $genre;
+        }
+
+        foreach($this->getCoartists() as $coartist) {
+            foreach($coartist->getGenres() as $genre) {
+                $genres[] = $genre;
+            }
+        }
+        $this->genres = array_unique($genres);
+        return $this->genres;
+    }
+
     // Unmapped
     private $state;
+
+    // Unmapped
+    private $genres;
 
     // Unmapped
     private $coartists_list_plain = [];

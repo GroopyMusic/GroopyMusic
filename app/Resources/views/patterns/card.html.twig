@@ -3,7 +3,7 @@
 {% set bgwhite = bgwhite|default(false) %}
 {% set card_classes = card_classes|default([]) %}
 
-<div class="col-xs-{{ xs }} col-md-{{ md }} mt-4 mt-md-3">
+<div class="col-xs-{{ xs }} col-md-{{ md }} mt-4 mt-md-3{% if jplist is defined and jplist %} jp-list-item{% endif %}">
     {% block card_content %}
     {% endblock %}
 </div>

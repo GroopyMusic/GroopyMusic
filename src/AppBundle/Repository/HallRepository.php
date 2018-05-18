@@ -36,6 +36,7 @@ class HallRepository extends OptimizedRepository
         return $this
             ->baseQueryBuilder()
             ->andWhere('h.visible = 1')
+            ->orderBy('h.name', 'ASC')
             ->getQuery()
             ->getResult()
         ;

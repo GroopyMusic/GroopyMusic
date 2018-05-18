@@ -248,10 +248,22 @@ contact:
     cancel: Annuleren
   confirmation: Uw bericht is ontvangen.
 
+#new
+jplist:
+  sort_by: Sorteren op
+  no_results: Geen resultaten gevonden
+  action: Filter...
+
 catalog_halls:
   title: Partnerzalen
   intro: In heel België moedigen zalen de muzikale productie van onze artiesten aan. Bekijk de Un-Mute partnerzalen waarin festivals zullen georganiseerd worden. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen in Un-Mute! <a href=‘%proposition_url%’>Hier is het !</a>”>Wil je een evenement voorstellen in je zaal?</a>
   empty: Er is nog geen partnerzaal op het platform.
+  filtering:
+    name_asc: Naam A-Z
+    name_desc: Naam Z-1
+    capacity_asc: Capaciteit (toenemend)
+    capacity_desc: Capaciteit (afnemend)
+    search_name: Zoeken...
 
 hall:
   short_description_label: In een paar woorden
@@ -271,6 +283,10 @@ catalog_artists:
   empty: Er zijn nog geen artiesten op Un-Mute. Kom snel terug!
   intro: Welkom in de catalogus van de Belgische artiesten van Un-Mute! Ontdek zowel het profiel als de biografie van elke artiest en kies degene die je binnenkort in concert wilt zien! <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier is het !</a>”>Wil je een evenement voor een artiest voorstellen?</a>
   join_us: Wilt u zich als artiest registreren? <a href="%url%">Maak een profiel aan</a>.Over een paar minuten, maakt je je Un-Mute-identiteit.
+  filtering:
+    name_asc: Naam A-Z
+    name_desc: Naam Z-A
+    search_name: Zoeken...
 
 catalog_events:
   prevalidation:
@@ -283,9 +299,17 @@ catalog_events:
   running:
     title: Festivals die worden gefinancierd
     #new
-    intro:  De volgende evenementen moeten nog ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
+    intro:  De volgende evenementen moeten ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
   confirmed:
     title: Bevestigde festivals
+  filtering:
+    date_asc: Datum
+    gauge_asc: Succespercentage (toenemend)
+    gauge_desc: Succespercentage (afnemend)
+    by_confirmed: Filter...
+    not_confirmed: Niet bevestigd
+    confirmed: Bevestigd
+    sold_out: Sold out
 
 login:
   necessary_for_tickets: U moet aangemeld zijn om tickets te kopen!

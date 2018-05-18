@@ -249,10 +249,21 @@ contact:
     cancel: Annuler
   confirmation: Votre message a bien été reçu.
 
+jplist:
+  sort_by: Trier par
+  no_results: Aucun résultat trouvé
+  action: Filtrer...
+
 catalog_halls:
   title: Salles partenaires
   intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des festivals sont susceptibles d'être organisés. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement dans votre salle ?</a>
   empty: Il n'y a pas encore de salle partenaire sur la plateforme.
+  filtering:
+    name_asc: Nom A-Z
+    name_desc: Nom Z-A
+    capacity_asc: Capacité croissante
+    capacity_desc: Capacité décroissante
+    search_name: Chercher...
 
 hall:
   short_description_label: En quelques mots
@@ -272,6 +283,10 @@ catalog_artists:
   empty: Il n'y a pas encore d'artiste sur Un-Mute. Revenez bientôt !
   intro: Bienvenue sur le catalogue des artistes belges Un-Mute ! Découvrez le profil ainsi que la biographie de chaque artiste et choisissez celui que vous désirez voir prochainement en concert ! <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement pour un artiste ?</a>
   join_us: Vous souhaitez vous inscrire en tant qu'artiste ? <a href="%url%">Créez un profil</a>. En quelques minutes, vous aurez créé votre identité Un-Mute.
+  filtering:
+    name_asc: Nom A-Z
+    name_desc: Nom Z-A
+    search_name: Chercher...
 
 catalog_events:
   prevalidation:
@@ -284,9 +299,17 @@ catalog_events:
   running:
     title: Festivals en cours de financement
     #new
-    intro:  Les événements suivants ont encore besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement ?</a>
+    intro:  Les événements suivants ont besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement ?</a>
   confirmed:
     title: Festivals confirmés
+  filtering:
+    date_asc: Date
+    gauge_asc: Taux de réussite croissant
+    gauge_desc: Taux de réussite décr.
+    by_confirmed: Filtrer...
+    not_confirmed: Non confirmé
+    confirmed: Confirmé
+    sold_out: Sold out
 
 login:
   necessary_for_tickets: Vous devez être connecté pour acheter des tickets !

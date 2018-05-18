@@ -43,11 +43,22 @@
             {% endif %}
 
             {% set progress_100 = contract.percentObjective %}
-            <div class="progress um-card-progress{% if contract.state in contract.successfulStates %} invisible{% endif %}">
+            <div class="progress um-card-progress{% if contract.isInSuccessfulState %} invisible{% endif %}">
                 <div class="progress-bar" style="padding-left: 2rem;width:{{ progress_100 }}%">
                     <span class="progress-bar-percent">{{ progress_100 }}%</span>
                 </div>
             </div>
+
+            <span class="d-none event-gauge">{{ contract.isInSuccessfulState ? 100 : progress_100 }}</span>
+            <span class="d-none event-date">{{ contract.dateConcert|date('m/d/Y') }}</span>
+            <span class="d-none event-genres">{% for genre in contract.genres %}<span class="d-none jplist-{{ genre|slug }}">{% if not loop.first %} {% endif %}{{ genre }}</span>{% endfor %}</span>
+            {% set step_slug, province_slug
+                =   "jplist-" ~ contract.step.slug,
+                    "jplist-" ~ contract.province|slug
+            %}
+            <span class="d-none event-step {{ step_slug }}">{{ contract.step }}</span>
+            <span class="d-none event-province {{ province_slug }}">{{ contract.province }}</span>
+            <span class="d-none event-state {% if contract.isInSuccessfulState %}event-confirmed{% else %}event-not-confirmed{% endif %}{% if contract.soldOut %} event-sold-out{% endif %}">{{ contract.state }}</span>
 
             <div class="um-card-content w-100">
                 <h5>{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ contract.artist.artistname }}</h5>

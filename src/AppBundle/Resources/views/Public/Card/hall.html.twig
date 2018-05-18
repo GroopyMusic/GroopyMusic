@@ -32,8 +32,15 @@
 
         <!-- this is the content of the card with an optionnal span for ⭐ -->
         <div class="um-card-content">
-            <h5>{{ hall.name }}</h5>
+            <h5 class="hall-name">{{ hall.name }}</h5>
             <p>{{ preview(hall.getShortDescription(), 100)|raw }}</p>
+            {% set province_slug, step_slug
+                    =   "jplist-" ~ hall.province|slug,
+                        "jplist-" ~ hall.step.slug
+            %}
+            <span class="d-none hall-province {{ province_slug }}">{{ hall.province }}</span>
+            <span class="d-none hall-step {{ step_slug }}">{{ hall.step }}</span>
+            <span class="d-none hall-capacity">{{ hall.capacity }}</span>
         </div>
 
         <!-- this is the link that the card need to take to -->

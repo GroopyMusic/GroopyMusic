@@ -1,13 +1,12 @@
-{% extends "base.html.twig" %}
+{% extends "base_catalogue.html.twig" %}
 
 {% block body %}
-    <div class="container">
+    <div class="container" id="artists-catalogue">
         <h3 class="text-center mb-4">{{ 'catalog_artists.title'|trans|raw }}</h3>
 
         {% if artists is empty %}
             <p>{{ 'catalog_artists.empty'|trans|raw }}</p>
         {% else %}
-
             <p>
                 {{ 'catalog_artists.intro'|trans({'%proposition_url%': path('proposition')})|raw }}
             </p>
@@ -15,11 +14,76 @@
                 {{ 'catalog_artists.join_us'|trans({'%url%': path('fos_user_registration_register')})|raw }}
             </p>
 
-            <div class="row">
+            <div>
+                <!-- ios button: show/hide panel -->
+                <div class="jplist-ios-button">
+                    <i class="fa fa-sort"></i>
+                    {{ 'jplist.action'|trans }}
+                </div>
+
+                <!-- panel -->
+                <div class="jplist-panel box panel-top">
+                    <!-- sort dropdown -->
+                    <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">{{ 'jplist.sort_by'|trans }}</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
+                        <ul>
+                            <li class="active"><span data-path=".artist-name" data-order="asc" data-type="text">{{ 'catalog_artists.filtering.name_asc'|trans }}</span></li>
+                            <li><span data-path=".artist-name" data-order="desc" data-type="text">{{ 'catalog_artists.filtering.name_desc'|trans }}</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-filter-box">
+
+                        <i class="fa fa-search  jplist-icon"></i>
+
+                        <!--[if lt IE 10]>
+                        <div class="jplist-label">{{ 'catalog_artists.filtering.search_name'|trans }}</div>
+                        <![endif]-->
+
+                        <input data-path=".artist-name" type="text" value="" placeholder="{{ 'catalog_artists.filtering.search_name'|trans }}" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
+                    </div>
+
+                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-genres" data-path=".artist-genres">
+                        {% for genre in genres %}
+                            {% set slug = "jplist-" ~ genre|slug %}
+                            <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                                <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{ genre }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+
+                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-province" data-path=".artist-province">
+                        {% for province in provinces %}
+                            {% set slug = "jplist-" ~ province|slug %}
+                            <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                                <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{ province }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row jp-list">
                 {% for artist in artists %}
-                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'bgwhite': true} %}
+                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'bgwhite': true, 'jplist': true} %}
                 {% endfor %}
             </div>
         {% endif %}
     </div>
+{% endblock %}
+
+
+{% block additional_javascripts %}
+    <script>
+        $('document').ready(function () {
+            $('#artists-catalogue').jplist({
+                itemsBox: '.jp-list'
+                ,itemPath: '.jp-list-item'
+                ,panelPath: '.jplist-panel'
+            });
+        });
+    </script>
 {% endblock %}

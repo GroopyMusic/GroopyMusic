@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets filter='cssrewrite' output='css/compiled/catalogue.min.css'
+        'css/jplist/jplist.core.min.css'
+        'css/jplist/jplist.filter-toggle-bundle.min.css'
+        'css/jplist/jplist.history-bundle.min.css'
+        'css/jplist/jplist.textbox-filter.min.css'
+        'css/jplist/jplist.checkbox-dropdown.min.css'
+        'css/jplist/jplist.jquery-ui-bundle.min.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+    {% javascripts filter='jsqueeze' output='js/compiled/catalogue.js'
+        'js/jplist/jplist.core.min.js'
+        'js/jplist/jplist.filter-toggle-bundle.min.js'
+        'js/jplist/jplist.history-bundle.min.js'
+        'js/jplist/jplist.jquery-ui-bundle.min.js'
+        'js/jplist/jplist.pagination-bundle.min.js'
+        'js/jplist/jplist.sort-bundle.min.js'
+        'js/jplist/jplist.textbox-filter.min.js'
+        'js/jplist/jplist.filter-dropdown-bundle.min.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

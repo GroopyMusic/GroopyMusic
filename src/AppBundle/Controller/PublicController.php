@@ -46,6 +46,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Translation\TranslatorInterface;
+use AppBundle\Services\ArrayHelper;
 
 class PublicController extends Controller
 {
@@ -257,10 +258,13 @@ class PublicController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $halls = $em->getRepository('AppBundle:Hall')->findVisible();
-        shuffle($halls);
+        $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
+        $provinces = $em->getRepository('AppBundle:Province')->findAll();
 
         return $this->render('@App/Public/catalog_halls.html.twig', array(
             'halls' => $halls,
+            'steps' => $steps,
+            'provinces' => $provinces
         ));
     }
 
@@ -288,16 +292,28 @@ class PublicController extends Controller
      */
     public function artistContractsAction(UserInterface $user = null)
     {
-
         $em = $this->getDoctrine()->getManager();
-        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findNotSuccessfulYet();
-        $succesful_contracts = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
+        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
         $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user, $this->get('user_roles_manager'));
+
+        $provinces = array_unique(array_map(function(ContractArtist $elem) {
+            return $elem->getProvince();
+        }, $current_contracts));
+
+        $genres = array_unique(ArrayHelper::flattenArray(array_map(function(ContractArtist $elem) {
+            return $elem->getGenres();
+        }, $current_contracts)));
+
+        $steps = array_unique(array_map(function(ContractArtist $elem) {
+            return $elem->getStep();
+        }, $current_contracts));
 
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
-            'successful_contracts' => $succesful_contracts,
             'prevalidation_contracts' => $prevalidation_contracts,
+            'provinces' => $provinces,
+            'genres' => $genres,
+            'steps' => $steps,
         ));
     }
 
@@ -496,6 +512,8 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $artists = $em->getRepository('AppBundle:Artist')->findVisible();
+        $genres = $em->getRepository('AppBundle:Genre')->findAll();
+        $provinces = $em->getRepository('AppBundle:Province')->findAll();
 
         if ($user != null && count($user->getGenres()) > 0) {
             usort($artists, function (Artist $a, Artist $b) use ($user) {
@@ -509,6 +527,8 @@ class PublicController extends Controller
 
         return $this->render('@App/Public/catalog_artists.html.twig', array(
             'artists' => $artists,
+            'genres' => $genres,
+            'provinces' => $provinces,
         ));
     }
 
