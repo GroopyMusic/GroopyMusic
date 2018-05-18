@@ -17,15 +17,20 @@ class RankingService
 {
     private $formulaParserService;
 
+    private $arrayHelperService;
+
     private $em;
 
     private $logger;
 
-    public function __construct(FormulaParserService $formulaParserService, EntityManagerInterface $em, LoggerInterface $logger)
+    public const MAX_ERROR = 5;
+
+    public function __construct(FormulaParserService $formulaParserService, EntityManagerInterface $em, LoggerInterface $logger, ArrayHelperService $arrayHelperService)
     {
         $this->formulaParserService = $formulaParserService;
         $this->em = $em;
         $this->logger = $logger;
+        $this->arrayHelperService = $arrayHelperService;
     }
 
     /**
@@ -41,7 +46,7 @@ class RankingService
         $categories = $this->em->getRepository('AppBundle:Category')->findLevelsByCategories();
         $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeleted();
 
-        $statistics = $this->mergeStatistics(
+        $statistics = $this->arrayHelperService->mergeMapOfArray(
             $this->em->getRepository('AppBundle:User')->countUsersStatistic(),
             $this->em->getRepository('AppBundle:User')->countUserAmbassadoratStatistic(),
             $this->em->getRepository('AppBundle:User')->countValidateSponsorshipInvitation(),
@@ -49,13 +54,13 @@ class RankingService
         );
 
         foreach ($users as $user) {
-            if ($exceptions > 5) {
+            if ($exceptions > self::MAX_ERROR) {
                 $this->logger->warning("Number of exceptions > 5", []);
                 throw new Exception($last_exception_message);
             }
             try {
                 if (!array_key_exists($user->getId(), $statistics)) {
-                    $this->deleteStatistic($user);
+                    $this->deleteStatistics($user);
                     continue;
                 } else {
                     $this->formulaParserService->setUserStatisticsVariables($statistics[$user->getId()]);
@@ -63,14 +68,17 @@ class RankingService
                 foreach ($categories as $category) {
                     $levels = $category->getLevels()->toArray();
                     $point = $this->formulaParserService->computeStatistic($category->getFormula());
+                    $user_category = $this->getUserCategory($user->getCategoryStatistics()->toArray(), $category->getId());
                     if ($point == 0) {
+                        if ($user_category != null) {
+                            $this->em->remove($user_category);
+                        }
                         continue;
                     } else {
-                        $user_category = $this->getUserCategory($user->getCategoryStatistics()->toArray(), $category->getId());
                         if ($user_category == null) {
                             $user_category = new User_Category();
-                            $user_category->setUser($user);
-                            $user_category->setCategory($category);
+                            $user->addCategoryStatistic($user_category);
+                            $category->addUserStatistic($user_category);
                         } else if ($user_category->getStatistic() == $point) {
                             $user_category = $this->checkLevel($user_category, $levels);
                             $this->em->persist($user_category);
@@ -81,11 +89,15 @@ class RankingService
                         $this->em->persist($user_category);
                     }
                 }
-            } catch (\Exception $ex) {
+            } catch (\Throwable $ex) {
                 $exceptions++;
                 $last_exception_message = $ex->getMessage();
                 $this->logger->warning("Exception compute stat user", [$last_exception_message]);
-                continue;
+                if ($categories == null || $statistics == null) {
+                    throw new Exception($ex->getMessage());
+                } else {
+                    continue;
+                }
             }
         }
         $this->em->flush();
@@ -98,7 +110,7 @@ class RankingService
      * @param $levels
      * @return $user_category with correct level
      */
-    private function checkLevel($user_category, $levels)
+    protected function checkLevel($user_category, $levels)
     {
         $statistic = $user_category->getStatistic();
         $correct_level = null;
@@ -121,7 +133,7 @@ class RankingService
      * @param $id
      * @return $user_category if exist , null if not
      */
-    private function getUserCategory($stats, $id)
+    protected function getUserCategory($stats, $id)
     {
         foreach ($stats as $stat) {
             if ($stat->getCategory()->getId() === $id) {
@@ -137,7 +149,7 @@ class RankingService
      * @param $user
      *
      */
-    private function deleteStatistic($user)
+    protected function deleteStatistics($user)
     {
         foreach ($user->getCategoryStatistics() as $stat) {
             $this->em->remove($stat);
@@ -159,23 +171,10 @@ class RankingService
         return $formula_descriptions;
     }
 
-    private function mergeStatistics(...$statsArray)
+    //-------------PUBLIC METHOD FOR TEST (CALL PROTECTED METHOD)-------------//
+
+    public function callCheckLevel($user_category, $levels)
     {
-        $statistics = [];
-        foreach ($statsArray as $stats) {
-            foreach ($stats as $key => $value) {
-                $key = intval($key);
-                if (!array_key_exists($key, $statistics)) {
-                    $statistics[$key] = $value;
-                } else {
-                    foreach ($value as $k => $v) {
-                        if ($k != 'id') {
-                            $statistics[$key][$k] = $v;
-                        }
-                    }
-                }
-            }
-        }
-        return $statistics;
+        return $this->checkLevel($user_category, $levels);
     }
 }

@@ -35,8 +35,7 @@ abstract class Reward implements TranslatableInterface
     {
         $this->user_rewards = new ArrayCollection();
         $this->restrictions = new ArrayCollection();
-        $this->categories = new ArrayCollection();
-        $this->contract_artists_sponsorships = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contract_artists_sponsorships = new ArrayCollection();
     }
 
     public function __call($method, $arguments)

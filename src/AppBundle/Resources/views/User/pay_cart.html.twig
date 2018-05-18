@@ -27,7 +27,7 @@
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}</td>
                 <td>{% if not promotional %}{{ purchase.counterpart.price }} €{% else %}0 €{% endif %}</td>
             </tr>
-            {% if contract.userRewards is not empty and purchase.reducedPrice != null and purchase.nbReducedCounterparts > 0 %}
+            {% if contract.userRewards is not empty and (purchase.reducedPrice != null or purchase.reducedPrice == 0) and purchase.nbReducedCounterparts > 0 %}
                 {% for userReward in contract.userRewards %}
                     {% if userReward.reward.getType == "Réduction" %}
                         {% if userReward.counterParts is empty or purchase.counterpart in userReward.counterParts %}

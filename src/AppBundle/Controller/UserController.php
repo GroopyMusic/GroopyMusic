@@ -615,13 +615,16 @@ class UserController extends Controller
     public function displaySponsorshipModalAction(Request $request, UserInterface $user, SponsorshipService $sponsorshipService, LoggerInterface $logger)
     {
         $em = $this->getDoctrine()->getManager();
+        $result = [[], []];
         $defined = $request->get('defined');
         $contracts = [];
         if ($defined === false || $defined === null || $defined === 'false') {
             $defined = false;
             $contracts = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
         }
-        $result = $sponsorshipService->getSponsorshipSummaryForUser($user);
+        if ($user != null) {
+            $result = $sponsorshipService->getSponsorshipSummaryForUser($user);
+        }
         return $this->render('@App/User/sponsorship_invitations_modal.html.twig', array(
             'event_is_define' => $defined,
             'contracts' => $contracts,

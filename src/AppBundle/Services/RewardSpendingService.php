@@ -27,14 +27,14 @@ class RewardSpendingService
 
     private $logger;
 
-    public function __construct(NotificationDispatcher $notificationDispatcher, MailDispatcher $mailDispatcher, EntityManagerInterface $em, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->logger = $logger;
     }
 
     /**
-     * check if rewards are valid
+     * check if rewards are valid and apply it to contract fan, ticket, ...
      * if reward is a reduction, apply reduction to te correct purchase
      *
      * @param ContractFan $cf
@@ -81,7 +81,8 @@ class RewardSpendingService
     {
         $user_rewards = $cf->getUserRewards()->toArray();
         foreach ($user_rewards as $user_reward) {
-            if ($user_reward instanceof ReductionReward) {
+            $reward = $user_reward->getReward();
+            if ($reward instanceof ReductionReward) {
                 $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getNbReducedCounterPart());
             } else {
                 $user_reward->setRemainUse($user_reward->getRemainUse() - $cf->getCounterPartsQuantity());
@@ -128,11 +129,12 @@ class RewardSpendingService
                 if (!$user_reward->getArtists()->isEmpty() && !$user_reward->getArtists()->contains($cf->getContractArtist()->getArtist())) {
                     $isApplicable = false;
                 }
+                //if minimum 1 counter part match
                 if (!$user_reward->getCounterParts()->isEmpty()) {
                     foreach ($user_reward->getCounterParts()->toArray() as $counter_part) {
                         $counterPartCounter = 0;
                         foreach ($cf->getPurchases()->toArray() as $purchase) {
-                            if ($purchase->getCounterPart() == $counter_part) {
+                            if ($purchase->getCounterPart()->getId() == $counter_part->getId()) {
                                 $counterPartCounter++;
                             }
                         }
@@ -170,19 +172,20 @@ class RewardSpendingService
      * @param integer $remain_use
      * @return integer $remain_use
      */
-    private
+    protected
     function computeReducedPrice(ContractFan $cf, User_Reward $user_reward, Purchase $purchase, $remain_use)
     {
         $reduction = $user_reward->getRewardTypeParameters()['reduction'];
         $counter_part_price = $purchase->getCounterpart()->getPrice();
         $quantityOrganic = $purchase->getQuantityOrganic();
-        if ($remain_use > 0) {
-            $reductionPrice = $counter_part_price / 100 * $reduction;
-            if ($purchase->getReducedPrice() == null) {
-                $purchase->setReducedPrice($counter_part_price - $reductionPrice);
+        if ($remain_use > 0 && $quantityOrganic > 0) {
+            if ($reduction >= 100) {
+                $reductionPrice = $counter_part_price;
+            } else {
+                $reductionPrice = round($counter_part_price / 100 * $reduction, 2);
             }
-            if ($purchase->getReducedPrice() < 0) {
-                $purchase->setReducedPrice(0);
+            if ($purchase->getReducedPrice() == null) {
+                $purchase->setReducedPrice(round($counter_part_price - $reductionPrice, 2)); // reduced price = price of each ticket non promotional
             }
             while ($remain_use > 0 && $quantityOrganic > 0) {
                 $cf->setAmount($cf->getAmount() - $reductionPrice);
@@ -191,6 +194,7 @@ class RewardSpendingService
                 $quantityOrganic = $quantityOrganic - 1;
             }
         }
+        round($cf->getAmount(), 2);
         return $remain_use;
     }
 
@@ -199,7 +203,7 @@ class RewardSpendingService
      *
      * @param ContractFan $cf
      */
-    private
+    protected
     function clearPurchases(ContractFan $cf)
     {
         foreach ($cf->getPurchases() as $purchase) {
@@ -227,6 +231,12 @@ class RewardSpendingService
         $this->em->flush();
     }
 
+    /**
+     * for a reward, recovers all applicable purchases and ordering them by decreasing price
+     * @param ContractFan $cf
+     * @param User_Reward $user_reward
+     * @return array
+     */
     public
     function getOrderedApplicablePurhcases(ContractFan $cf, User_Reward $user_reward)
     {
@@ -244,19 +254,25 @@ class RewardSpendingService
         return $clearedPurchases;
     }
 
+    /**
+     * assigns a reward to the right number of futur tickets
+     *
+     * @param User_Reward $user_reward
+     * @param $purchases
+     * @param ContractFan $contractFan
+     */
     public function setTicketReward(User_Reward $user_reward, $purchases, ContractFan $contractFan)
     {
         $nbTimeGiveOut = 0;
         foreach ($purchases as $purchase) {
             $i = 1;
-            if ($user_reward instanceof ReductionReward) {
+            if ($user_reward->getReward() instanceof ReductionReward) {
                 while ($i <= $purchase->getNbReducedCounterparts()) {
                     $rewardTicketConsumption = new RewardTicketConsumption($user_reward, null, false, true);
                     $this->em->persist($rewardTicketConsumption);
                     $contractFan->addTicketReward($rewardTicketConsumption);
                     $purchase->addTicketReward($rewardTicketConsumption);
                     $i++;
-                    $nbTimeGiveOut = $nbTimeGiveOut + 1;
                 }
             } else {
                 while ($i <= $purchase->getQuantity() && $nbTimeGiveOut < $user_reward->getRemainUse()) {
@@ -271,6 +287,10 @@ class RewardSpendingService
         }
     }
 
+    /**
+     * Assigns rewards to the corret tickets generated
+     * @param ContractFan $cf
+     */
     public function giveRewardToTicket(ContractFan $cf)
     {
         $this->em->persist($cf);
@@ -287,7 +307,14 @@ class RewardSpendingService
         }
     }
 
-    private function findCorrespondingTicket($tickets, $ticketReward)
+    /**
+     *
+     * Get the first ticket matches the reward ticket
+     * @param $tickets
+     * @param $ticketReward
+     * @return array return [ array of remaining ticket , ticked finded ]
+     */
+    protected function findCorrespondingTicket($tickets, $ticketReward)
     {
         $ticketToReturn = null;
         $arrayToReturn = [];
@@ -303,11 +330,14 @@ class RewardSpendingService
         return [$arrayToReturn, $ticketToReturn];
     }
 
+    /*
+     * refunds rewards to users
+     */
     public function refundReward(ContractFan $contractFan)
     {
         $this->em->persist($contractFan);
         foreach ($contractFan->getTicketRewards()->toArray() as $ticketReward) {
-            if ($ticketReward->getRefundable() === true) {
+            if ($ticketReward->getRefundable() === true && $ticketReward->getRefunded() === false) {
                 $ticketReward->setRefunded(true);
                 $user_reward = $ticketReward->getUserReward();
                 $user_reward->setRemainUse($user_reward->getRemainUse() + 1);
@@ -316,6 +346,23 @@ class RewardSpendingService
                 }
             }
         }
+    }
+
+    //-------------PUBLIC METHOD FOR TEST (CALL PROTECTED METHOD)-------------//
+
+    public function callComputeReducedPrice(ContractFan $cf, User_Reward $user_reward, Purchase $purchase, $remain_use)
+    {
+        return $this->computeReducedPrice($cf, $user_reward, $purchase, $remain_use);
+    }
+
+    public function callClearPurchases(ContractFan $cf)
+    {
+        $this->clearPurchases($cf);
+    }
+
+    public function callFindCorrespondingTicket($tickets, $ticketReward)
+    {
+        return $this->findCorrespondingTicket($tickets, $ticketReward);
     }
 
 

@@ -21,6 +21,7 @@ use Sonata\CoreBundle\Form\Type\CollectionType;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 
 class CategoryAdmin extends BaseAdmin
@@ -116,7 +117,7 @@ class CategoryAdmin extends BaseAdmin
             $formulaParserService->setUserStatisticsVariables(['pr' => '10', 'me' => '5', 'am' => '4']);
             $formulaParserService->computeStatistic($object->getFormula());
         } catch (\Exception $ex) {
-            $errorElement->with('formula')->addViolation('Le format de la formule n\'est pa correct : ' . $ex->getMessage())->end();
+            return $errorElement->with('formula')->addViolation('Le format de la formule n\'est pas correct : ' . $ex->getMessage())->end();
         }
     }
 

@@ -24,6 +24,7 @@ class User_Reward
     {
         $this->reward = $reward;
         $this->user = $user;
+        $user->addReward($this);
         $this->creation_date = new \DateTime();
         $this->limit_date = new \DateTime();
         $this->remain_use = $reward->getMaxUse();
@@ -52,7 +53,7 @@ class User_Reward
         } else if ($this->reward instanceof ConsomableReward) {
             return $this->getReward()->getName() . ': ' . $this->reward_type_parameters['quantity'] . ' x ' . $this->reward_type_parameters['type_consomable'] . '(' . $this->reward_type_parameters['value'] . '€)';
         }
-
+        return "reward";
     }
 
     /**
