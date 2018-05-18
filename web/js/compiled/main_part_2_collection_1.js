@@ -1,1 +1,0 @@
-;function um_collection(e){$('.collection').collection($.extend({up:'',down:'',add_at_the_end:!0,add:'<a href="#">Ajouter</a>'},e))};
