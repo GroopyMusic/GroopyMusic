@@ -35,90 +35,91 @@
                 {{ 'catalog_events.running.intro'|trans({'%proposition_url%': path('proposition')})|raw }}
             </p>
 
-            <div>
-                <!-- ios button: show/hide panel -->
-                <div class="jplist-ios-button">
-                    <i class="fa fa-sort"></i>
-                    {{ 'jplist.action'|trans }}
+            {% if current_contracts|length > 6 %}
+                <div>
+                    <!-- ios button: show/hide panel -->
+                    <div class="jplist-ios-button">
+                        <i class="fa fa-sort"></i>
+                        {{ 'jplist.action'|trans }}
+                    </div>
+
+                    <!-- panel -->
+                    <div class="jplist-panel box panel-top">
+                        <!-- sort dropdown -->
+                        <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">{{ 'jplist.sort_by'|trans }}</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
+                            <ul>
+                                <li class="active"><span data-path="default">{{ 'jplist.sort_by'|trans }}</span></li>
+                                <li><span data-path=".event-date" data-order="asc" data-type="date">{{ 'catalog_events.filtering.date_asc'|trans }}</span></li>
+                                <li><span data-path=".event-gauge" data-order="asc" data-type="number">{{ 'catalog_events.filtering.gauge_asc'|trans }}</span></li>
+                                <li><span data-path=".event-gauge" data-order="desc" data-type="number">{{ 'catalog_events.filtering.gauge_desc'|trans }}</span></li>
+                            </ul>
+                        </div>
+
+                        <div id="filter-confirmed-events" class="jplist-drop-down" data-control-type="filter-drop-down" data-control-name="confirmed-filter" data-control-action="filter">
+                            <div class="jplist-dd-panel">{{ 'catalog_events.filtering.by_confirmed'|trans }}</div>
+                            <ul>
+                                <li class="active"><span data-path="default">{{ 'catalog_events.filtering.by_confirmed'|trans }}</span></li>
+                                <li><span data-path=".event-not-confirmed">{{ 'catalog_events.filtering.not_confirmed'|trans }}</span></li>
+                                <li><span data-path=".event-confirmed">{{ 'catalog_events.filtering.confirmed'|trans }}</span></li>
+                                <li><span data-path=".event-sold-out">{{ 'catalog_events.filtering.sold_out'|trans }}</span></li>
+                            </ul>
+                        </div>
+
+                        <div
+                                class="jplist-range-slider"
+                                data-control-type="range-slider"
+                                data-control-name="range-slider-likes"
+                                data-control-action="filter"
+                                data-path=".event-gauge"
+                                data-slider-func="gaugeSlider"
+                                data-setvalues-func="gaugeValues">
+
+                            <div class="value" data-type="prev-value"></div>
+                            <div class="ui-slider" data-type="ui-slider"></div>
+                            <div class="value" data-type="next-value"></div>
+                        </div>
+
+                        {% if genres|length > 1 %}
+                            <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="event-genres" data-path=".event-genres">
+                                {% for genre in genres %}
+                                    {% set slug = "jplist-" ~ genre|slug %}
+                                    <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                                        <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">{{ genre }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if steps|length > 1 %}
+                            <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="event-step" data-path=".event-step">
+                                {% for step in steps %}
+                                    {% set slug = "jplist-" ~ step.slug %}
+                                    <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                                        <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">{{ step }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if provinces|length > 1 %}
+                            <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="event-province" data-path=".event-province">
+                                {% for province in provinces %}
+                                    {% set slug = "jplist-" ~ province|slug %}
+                                    <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
+                                        <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">{{ province }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
-
-                <!-- panel -->
-                <div class="jplist-panel box panel-top">
-                    <!-- sort dropdown -->
-                    <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">{{ 'jplist.sort_by'|trans }}</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
-                        <ul>
-                            <li class="active"><span data-path="default">{{ 'jplist.sort_by'|trans }}</span></li>
-                            <li><span data-path=".event-date" data-order="asc" data-type="date">{{ 'catalog_events.filtering.date_asc'|trans }}</span></li>
-                            <li><span data-path=".event-gauge" data-order="asc" data-type="number">{{ 'catalog_events.filtering.gauge_asc'|trans }}</span></li>
-                            <li><span data-path=".event-gauge" data-order="desc" data-type="number">{{ 'catalog_events.filtering.gauge_desc'|trans }}</span></li>
-                        </ul>
-                    </div>
-
-                    <div id="filter-confirmed-events" class="jplist-drop-down" data-control-type="filter-drop-down" data-control-name="confirmed-filter" data-control-action="filter">
-                        <div class="jplist-dd-panel">{{ 'catalog_events.filtering.by_confirmed'|trans }}</div>
-                        <ul>
-                            <li class="active"><span data-path="default">{{ 'catalog_events.filtering.by_confirmed'|trans }}</span></li>
-                            <li><span data-path=".event-not-confirmed">{{ 'catalog_events.filtering.not_confirmed'|trans }}</span></li>
-                            <li><span data-path=".event-confirmed">{{ 'catalog_events.filtering.confirmed'|trans }}</span></li>
-                            <li><span data-path=".event-sold-out">{{ 'catalog_events.filtering.sold_out'|trans }}</span></li>
-                        </ul>
-                    </div>
-
-                    <div
-                            class="jplist-range-slider"
-                            data-control-type="range-slider"
-                            data-control-name="range-slider-likes"
-                            data-control-action="filter"
-                            data-path=".event-gauge"
-                            data-slider-func="gaugeSlider"
-                            data-setvalues-func="gaugeValues">
-
-                        <div class="value" data-type="prev-value"></div>
-                        <div class="ui-slider" data-type="ui-slider"></div>
-                        <div class="value" data-type="next-value"></div>
-                    </div>
-
-                    {% if genres|length > 1 %}
-                        <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="event-genres" data-path=".event-genres">
-                            {% for genre in genres %}
-                                {% set slug = "jplist-" ~ genre|slug %}
-                                <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
-                                    <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">{{ genre }}</span>
-                                </label>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if steps|length > 1 %}
-                        <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="event-step" data-path=".event-step">
-                            {% for step in steps %}
-                                {% set slug = "jplist-" ~ step.slug %}
-                                <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
-                                    <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">{{ step }}</span>
-                                </label>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if provinces|length > 1 %}
-                        <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="event-province" data-path=".event-province">
-                            {% for province in provinces %}
-                                {% set slug = "jplist-" ~ province|slug %}
-                                <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
-                                    <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">{{ province }}</span>
-                                </label>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
+            {% endif %}
             <div class="row jp-list">
                 {% for contract in current_contracts %}
                     {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'bgwhite': true, 'jplist': true} %}

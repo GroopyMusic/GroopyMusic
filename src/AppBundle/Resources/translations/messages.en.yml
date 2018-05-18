@@ -95,12 +95,12 @@ catalog_events:
   running:
     title: Festivals currently being funded
     #new
-    intro: The following events still need support to be able to be produced! Offer to these artists the possibility of occurring in a full house by buying tickets for their festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggest artists, halls and events to Un-Mute! <a href='%proposition_url%'>This way!</a>">Do you wish to propose an event?</a>
+    intro: The following events need support to be produced! Offer to these artists the possibility of occurring in a full house by buying tickets for their festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggest artists, halls and events to Un-Mute! <a href='%proposition_url%'>This way!</a>">Do you wish to propose an event?</a>
   #new
   filtering:
     date_asc: Date
-    gauge_asc: Success rate -
-    gauge_desc: Success rate +
+    gauge_asc: Success rate asc.
+    gauge_desc: Success rate desc.
     by_confirmed: Filter...
     not_confirmed: Not yet confirmed
     confirmed: Confirmed

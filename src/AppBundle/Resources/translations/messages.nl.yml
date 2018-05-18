@@ -261,8 +261,8 @@ catalog_halls:
   filtering:
     name_asc: Naam A-Z
     name_desc: Naam Z-1
-    capacity_asc: Capaciteit -
-    capacity_desc: Capaciteit +
+    capacity_asc: Capaciteit (toenemend)
+    capacity_desc: Capaciteit (afnemend)
     search_name: Zoeken...
 
 hall:
@@ -299,19 +299,17 @@ catalog_events:
   running:
     title: Festivals die worden gefinancierd
     #new
-    intro:  De volgende evenementen moeten nog ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
+    intro:  De volgende evenementen moeten ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
   confirmed:
     title: Bevestigde festivals
   filtering:
     date_asc: Datum
-    gauge_asc: Succespercentage -
-    gauge_desc: Succespercentage +
+    gauge_asc: Succespercentage (toenemend)
+    gauge_desc: Succespercentage (afnemend)
     by_confirmed: Filter...
     not_confirmed: Niet bevestigd
     confirmed: Bevestigd
     sold_out: Sold out
-
-
 
 login:
   necessary_for_tickets: U moet aangemeld zijn om tickets te kopen!
