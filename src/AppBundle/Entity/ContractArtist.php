@@ -127,7 +127,7 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function isLastSellingDate() {
-        return (new \DateTime())->diff($this->getLastSellingDate())->days == 0;
+        return (new \DateTime())->diff($this->getLastSellingDate())->days == 0 && (new \DateTime() >= $this->getLastSellingDate());
     }
 
     public function isDeadlineDate() {
