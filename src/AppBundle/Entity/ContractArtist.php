@@ -123,7 +123,7 @@ class ContractArtist extends BaseContractArtist
 
     public function getLastSellingDate() {
         $dateconcert_copy = clone $this->getDateConcert();
-        return $dateconcert_copy->modify('-' . ($this->nb_closing_days + 1) . ' days');
+        return $dateconcert_copy->modify('-' . ($this->nb_closing_days) . ' days');
     }
 
     public function isLastSellingDate() {
