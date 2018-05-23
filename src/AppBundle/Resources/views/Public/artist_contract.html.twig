@@ -37,7 +37,10 @@
             </div>
         </div>
 
-        {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
+        {% if contract.inSuccessfulState and contract.isDDay and state not in contract.uncrowdableStates %}
+        <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
+                               src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.dday'|trans|raw }}</p>
+        {% elseif state not in contract.uncrowdableStates and contract.isLastSellingDate %}
             <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block"
                                    src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.tickets'|trans|raw }}
             </p>
@@ -45,13 +48,6 @@
             <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
                                    src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}
             </p>
-        {% elseif contract.inSuccessfulState and contract.isDDay %}
-            <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
-                                   src="{{ asset('images/icons/artist.png') }}"/>C'est aujourd'hui le concert ! Vous
-                pouvez
-                encore acheter des tickets en ligne ou, dans la mesure des places disponibles, les acheter sur place
-                (cash
-                ou application Bancontact).</p>
         {% elseif contract.isInTestPeriod %}
             <p class="p-info mt-3">{{ 'event.prevalidation'|trans|raw }}</p>
         {% endif %}

@@ -110,6 +110,7 @@ event:
   reward: "Order now and take advantage of the following Un-Mute rewards:" #new
   #new
   description: "Discover three emergent artists during an Un-Mute Festival. Headliner: %host%"
+  dday: Today is the concert! You can still buy tickets online or, as far as places are available, buy them on the spot (cash or Bancontact app).
   buy_tickets:
     #new
     to_much_reduction: You cannot apply multiple discounts on a single order

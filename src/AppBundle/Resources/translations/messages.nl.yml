@@ -325,6 +325,7 @@ event:
     deadline: Dit is de laatste dag waarop je %artist% kunt helpen om zijn doel te bereiken door kaarten te kopen. Morgen zul je weten of dit festival is bevestigd of niet.
     promo: "Tijdens de eerste week van de verkoop, dat wil zeggen tot %end_date% om middernacht, is dit evenement te koop: voor %nb_organic_needed% gekochte tickets ontvangt u %nb_promotional% !"
   prevalidation: "Dit evenement bevindt zich in pre-validatie. Zijn pagina zal alleen openbaar worden gemaakt als 10% van de kaarten verkocht is en dan zal er nog een maand zijn om de 100% te bereiken die nodig zijn voor de realisatie van het festival. Tijdens de pre-validatie staan de tickets op promotie 3 + 1."
+  dday: Vandaag is het concert! U kunt nog steeds online tickets kopen of, voor zover beschikbaar, deze ter plaatse kopen (contant of Bancontact app).
   infos:
     title: Infos
     date: Datum van het festival
