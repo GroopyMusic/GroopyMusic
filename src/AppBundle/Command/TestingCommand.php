@@ -29,18 +29,24 @@ class TestingCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('-------------------------------');
-        $output->writeln('RUN UNIT TEST');
-        $output->writeln('-------------------------------');
         $output->writeln('___  _  _  ___  _  __     __ | _  _  ___    _     _        ___  _  __');
         $output->writeln(' |  |_ |_   |  |_ |__|   |    |_ |_   |    |  \\  / \\  |  |  |  |_ |__|');
         $output->writeln(' |  |_  _|  |  |_ |  \\   |__  |_  _|  |    |__/  \\_/  |__|  |  |_ |  \\');
-
-        exec('php vendor/symfony/phpunit-bridge/bin/simple-phpunit',$test_output);
-        $output->writeln($test_output);
-
+        /*$output->writeln('-------------------------------');
+        $output->writeln('RUN UNIT TEST SERVICE');
+        $output->writeln('-------------------------------');
+        exec('php vendor/symfony/phpunit-bridge/bin/simple-phpunit tests/AppBundle/Services', $unit_test_output);
+        $output->writeln($unit_test_output);
         $output->writeln('-------------------------------');
         $output->writeln('UNIT TEST DONE');
+        $output->writeln('-------------------------------');*/
+        $output->writeln('-------------------------------');
+        $output->writeln('RUN FUNCTIONAL TEST CONTROLLER');
+        $output->writeln('-------------------------------');
+        exec('php vendor/symfony/phpunit-bridge/bin/simple-phpunit tests/AppBundle/Controller/UserControllerTest', $functional_test_output);
+        $output->writeln($functional_test_output);
+        $output->writeln('-------------------------------');
+        $output->writeln('FUNCTIONAL TEST DONE');
         $output->writeln('-------------------------------');
     }
 }

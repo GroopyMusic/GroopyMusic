@@ -36,7 +36,7 @@ class SponsorshipInvitation
         $this->date_invitation = $date_invitation;
         $this->email_invitation = $email_invitation;
         $this->text_invitation = $text_invitation;
-        $this->host_invitation = $host_invitation;
+        $host_invitation->addSponsorship($this);
         $this->target_invitation = null;
         $this->contract_artist = $contract_artist;
         $this->reward_sent = 0;

@@ -18,7 +18,7 @@
                                 <td><b>{{ ur.reward.name }}</b></td>
                                 <td>{{ preview(ur.reward.feature, 100)|raw }}</td>
                                 <td>{{ ur.limitDate|date() }}</td>
-                                <td><a class="btn btn-primary notification-trigger" href="{{ path('user_reward', {'id': ur.id}) }}">{{ 'notifs.button'|trans|raw }}</a></td>
+                                <td><a class="btn btn-primary notification-trigger button-display-reward" href="{{ path('user_reward', {'id': ur.id}) }}">{{ 'notifs.button'|trans|raw }}</a></td>
                             </tr>
                         {% endfor %}
                     </table>

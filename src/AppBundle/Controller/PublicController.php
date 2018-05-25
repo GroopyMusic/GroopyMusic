@@ -306,10 +306,10 @@ class PublicController extends Controller
      */
     public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null)
     {
+
         if ($contract->getArtist()->getSlug() != $slug) {
             return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
         }
-
         $em = $this->getDoctrine()->getManager();
         $potential_halls = $em->getRepository('AppBundle:Hall')->findPotential($contract->getStep(), $contract->getProvince());
 

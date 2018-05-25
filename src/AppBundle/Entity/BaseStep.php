@@ -192,7 +192,7 @@ class BaseStep implements TranslatableInterface
     public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
     {
         $this->counterParts[] = $counterPart;
-        $counterPart->setBaseStep($this);
+        $counterPart->setStep($this);
 
         return $this;
     }

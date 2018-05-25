@@ -328,8 +328,9 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             'SELECT ca
                   FROM AppBundle:ContractArtist ca
                   LEFT JOIN ca.reality r
+                  LEFT JOIN ca.preferences pr
                   WHERE ca.id = ?1
-                  AND r.date > ?2
+                  AND ( (r.id IS NOT NULL AND r.date > ?2) OR (r.id IS NULL AND pr.date >?2) )
                   AND ca.refunded = 0
                   AND ca.failed = 0
                   ')
@@ -348,7 +349,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     {
         return $this->getEntityManager()->createQuery(
             'SELECT ca,r,p,u
-                  FROM AppBundle:BaseContractArtist ca
+                  FROM AppBundle:ContractArtist ca
                   LEFT JOIN ca.reality r
                   LEFT JOIN ca.preferences pr
                   LEFT JOIN ca.payments p
