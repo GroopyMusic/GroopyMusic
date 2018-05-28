@@ -257,7 +257,7 @@ class Select2ControllerTest extends WebTestCase
     public function testContractArtistsAction2()
     {
         $crawler = $this->client->request('GET', '/select2/contractArtists', array('q' => 'SeeUsoon'));
-        $this->assertEquals('[{"id":1,"text":null}]', $this->client->getResponse()->getContent());//error null
+        $this->assertEquals('[{"id":1,"text":"Festival Un-Mute avec SeeUsoon"}]', $this->client->getResponse()->getContent());//error null
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }

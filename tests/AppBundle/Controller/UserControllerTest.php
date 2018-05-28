@@ -222,9 +222,7 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
     }
 
-    /**
-     * Success : user diplay rewards
-     */
+    /*
     public function testRewardsAction1()
     {
         $crawler = $this->client->request('GET', '/rewards');
@@ -235,7 +233,7 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals(1,$crawler->filter('#reward-information')->count());
 
-    }
+    }*/
 
 
 }

@@ -549,7 +549,7 @@ class UserController extends Controller
         if ($user_reward->getUser() !== $user) {
             throw $this->createAccessDeniedException();
         }
-        return new Response($this->renderView('@App/User/reward.html.twig', array(
+        return new Response($this->renderView('@App/User/reward_modal.html.twig', array(
             'user_reward' => $user_reward
         )));
     }

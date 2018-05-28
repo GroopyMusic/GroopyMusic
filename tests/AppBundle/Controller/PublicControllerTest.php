@@ -107,7 +107,6 @@ class PublicControllerTest extends WebTestCase
         $this->assertTrue(key_exists('error', $this->session->getBag('flashes')->peekAll()));// test if flashbag
         $this->assertEquals(1, count($this->session->getBag('flashes')->peekAll()['error']));
         $this->client->followRedirect();
-        //dump($this->client->getResponse()->getContent());
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

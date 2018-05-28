@@ -28,7 +28,12 @@
                     {% if user_reward.remainUse > cf.getCounterPartsQuantity %}
                         {% set nbUse = cf.getCounterPartsQuantity %}
                     {% else %}
-                        {% set nbUse = user_reward.remainUse %}
+                        {% set nbUse = 0 %}
+                        {% for ticket in user_reward.tickets %}
+                            {% if ticket.contractFan.id == cf.id %}
+                                {% set nbUse = nbUse+1 %}
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
                     <div style="font-size: 80%">
                         {% if  user_reward.reward.getType == "Réduction" %}

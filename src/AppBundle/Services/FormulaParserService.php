@@ -22,8 +22,8 @@ class FormulaParserService
     private $logger;
 
     const QUERRY_DESCRIPTION = [
-        'm' => 'Nombre de tickets achetés au total par un utilisateur',
-        'p' => 'Nombre de concerts différents produits par un utilisateur',
+        'p' => 'Nombre de tickets achetés au total par un utilisateur',
+        'm' => 'Nombre de concerts différents produits par un utilisateur',
         'a' => 'Nombre de parrainés producteurs d\'un utilisateur',
         'v' => 'Nombre de parrainés d\'un utilisateur',
         's' => 'Nombre d\'invitations de parrainage envoyées',

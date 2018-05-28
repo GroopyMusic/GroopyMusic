@@ -21,7 +21,15 @@ class ConsomableTypeAdmin extends BaseAdmin
         $listMapper
             ->add('name', null, array(
                 'label' => 'Nom',
-            ));
+            ))
+            ->add('_action', 'actions', array(
+                    'actions' => array(
+                        'show' => array(),
+                        'edit' => array(),
+                        'delete' => array(),
+                    )
+                )
+            );
     }
 
     public function configureShowFields(ShowMapper $showMapper)

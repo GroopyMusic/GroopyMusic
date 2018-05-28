@@ -148,6 +148,7 @@ class EntitiesFixtures extends Fixture implements ContainerAwareInterface
         $preferences = new ConcertPossibility();
         $c1 = new ContractArtist();
         $c1->setDate(new \DateTime())->setArtist($artist)->setDateEnd($datetime)->setRefunded(false)->setReality(null)->setFailed(false)->setMotivations("")->setStep($step11);
+        $c1->setTestPeriod(false);
         $preferences->setDate($datetime);
         $c1->setPreferences($preferences);
 
@@ -155,6 +156,7 @@ class EntitiesFixtures extends Fixture implements ContainerAwareInterface
         $preferences2 = new ConcertPossibility();
         $c2 = new ContractArtist();
         $c2->setDate(new \DateTime())->setArtist($artistB)->setDateEnd($datetime)->setMotivations("")->setStep($step11);
+        $c2->setTestPeriod(false);
         $preferences2->setDate($datetime);
         $c2->setPreferences($preferences2);
 
