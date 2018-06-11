@@ -6,6 +6,7 @@ use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\ContractArtistSales;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Hall;
 use AppBundle\Entity\PropositionContractArtist;
@@ -296,6 +297,8 @@ class PublicController extends Controller
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
         $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user, $this->get('user_roles_manager'));
 
+        $sales_contracts = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
+
         $provinces = array_unique(array_map(function(ContractArtist $elem) {
             return $elem->getProvince();
         }, $current_contracts));
@@ -311,6 +314,7 @@ class PublicController extends Controller
         return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
             'current_contracts' => $current_contracts,
             'prevalidation_contracts' => $prevalidation_contracts,
+            'sales_contracts' => $sales_contracts,
             'provinces' => $provinces,
             'genres' => $genres,
             'steps' => $steps,
@@ -356,14 +360,7 @@ class PublicController extends Controller
                 $this->addFlash('error', 'errors.order_max');
             } elseif ($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
                 $this->addFlash('error', 'errors.order_max_promo');
-            }
-
-
-            // elseif($user == null) {
-            //     throw $this->createAccessDeniedException();
-            // }
-
-            else {
+            } else {
                 /** @var Cart $cart */
                 if ($user != null) {
                     $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
@@ -396,6 +393,60 @@ class PublicController extends Controller
             'is_participant' => $isParticipant,
             'nb_sponsorships' => $nb_sponsorships,
             'nb_validated_sponsorships' => $nb_validated_sponsorships
+        ));
+    }
+
+    /**
+     * @Route("/sales/{id}-{slug}", name="artist_contract_sales")
+     */
+    public function artistContractSalesAction(Request $request, UserInterface $user = null, ContractArtistSales $contract, $slug = null)
+    {
+        if ($contract->getArtist()->getSlug() != $slug) {
+            return $this->redirectToRoute('artist_contract_sales', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $cf = new ContractFan($contract);
+        $form = $this->createForm(ContractFanType::class, $cf, ['entity_manager' => $em]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($contract->isUncrowdable()) {
+                $this->addFlash('error', 'errors.sales.uncrowdable'); // TODO
+            } elseif ($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
+                $this->addFlash('error', 'errors.order_max');
+            } elseif ($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
+                $this->addFlash('error', 'errors.order_max_promo');
+            } else {
+                /** @var Cart $cart */
+                if ($user != null) {
+                    $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+                }
+
+                if (!isset($cart) || $cart == null) {
+                    $cart = $this->createCartForUser($user);
+                } else {
+                    $cart = $this->cleanCart($cart, $em);
+                }
+
+                foreach ($cf->getPurchases() as $purchase) {
+                    if ($purchase->getQuantity() == 0) {
+                        $cf->removePurchase($purchase);
+                    }
+                }
+                $cart->addContract($cf);
+
+                $em->flush();
+                $request->getSession()->set('cart_id', $cart->getId());
+                return $this->redirectToRoute('checkout');
+            }
+        }
+
+        return $this->render('@App/Public/artist_contract_sales.html.twig', array(
+            'contract' => $contract,
+            'form' => $form->createView(),
         ));
     }
 

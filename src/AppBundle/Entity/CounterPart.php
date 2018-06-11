@@ -64,7 +64,7 @@ class CounterPart implements TranslatableInterface
     private $price;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Step", inversedBy="counterParts")
+     * @ORM\ManyToOne(targetEntity="BaseStep", inversedBy="counterParts")
      * @ORM\JoinColumn(nullable=false)
      */
     private $step;
@@ -73,6 +73,16 @@ class CounterPart implements TranslatableInterface
      * @ORM\Column(name="maximum_amount", type="smallint")
      */
     private $maximum_amount;
+
+    /**
+     * @ORM\Column(name="free_price", type="boolean")
+     */
+    private $free_price;
+
+    /**
+     * @ORM\Column(name="minimum_price", type="smallint")
+     */
+    private $minimum_price;
 
     /**
      * Get id

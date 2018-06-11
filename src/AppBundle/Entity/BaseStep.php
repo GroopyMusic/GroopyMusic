@@ -11,7 +11,7 @@ use Sonata\TranslationBundle\Model\TranslatableInterface;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"concert" = "Step", "default" = "BaseStep"})
+ * @ORM\DiscriminatorMap({"concert" = "Step", "sales" = "StepSales", "default" = "BaseStep"})
  */
 class BaseStep implements TranslatableInterface
 {
@@ -19,6 +19,7 @@ class BaseStep implements TranslatableInterface
     use ORMBehaviors\Sluggable\Sluggable;
 
     const TYPE_CONCERT = 'concert';
+    const TYPE_SALES = 'sales';
 
     public function __call($method, $arguments)
     {
@@ -59,6 +60,11 @@ class BaseStep implements TranslatableInterface
 
     public function getSluggableFields() {
         return ['type', 'num'];
+    }
+
+    public function generateSlug()
+    {
+        $this->slug = $this->type . '-' . $this->num;
     }
 
     /**

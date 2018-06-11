@@ -2,7 +2,9 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\ContractArtistSales;
 use AppBundle\Entity\Purchase;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -16,18 +18,20 @@ class PurchaseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /**
-         * @var ContractArtist $contract_artist
+         * @var BaseContractArtist $contract_artist
          */
         $contract_artist = $options['contract_artist'];
 
-        $builder
-            ->add('quantity', NumberType::class, array(
-                'attr' => ['class' => 'quantity',
-                    'min' => 0,
-                    'max' => $contract_artist->getTotalNbAvailable(),
-                ],
-                'label' => false,
-            ))
+
+            if($contract_artist instanceof ContractArtist) {
+                $builder->add('quantity', NumberType::class, array(
+                    'attr' => ['class' => 'quantity',
+                        'min' => 0,
+                        'max' => $contract_artist->getTotalNbAvailable(),
+                    ],
+                    'label' => false,
+                ));
+            }
         ;
     }
 

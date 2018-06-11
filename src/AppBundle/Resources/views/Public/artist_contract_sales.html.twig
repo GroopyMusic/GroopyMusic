@@ -1,0 +1,196 @@
+{% extends "base.html.twig" %}
+
+{% set artist = contract.artist %}
+
+{% set og_src = absolute_url(asset('images/contract-card-default.jpg')) %}
+
+{% set photos = artist.allPhotos %}
+
+{% if photos is not empty %}
+    {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
+{% endif %}
+
+{#TODO#}
+{% block description_part_1 %}{{ 'meta_description_sales'|trans({'%artist%': artist.artistname}) }}{% endblock %}
+
+{% block open_graph %}
+    <meta property="og:title"
+          content="{{ 'sales.og_title'|trans({'%artist%': artist.artistname})|raw }}"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:url"
+          content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
+    <meta property="og:image" content="{{ og_src }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2">
+                <h2 class="text-center">{{ 'sales.title'|trans({'%artist%':contract.artist.artistname})|raw }}</h2>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12 col-lg-8">
+                <div class="content-box">
+                    <div class="content-box-content text-center">
+
+                        <h3 class="mb-3">{{ 'sales.infos.title'|trans|raw }}</h3>
+
+                        <div class="col-12 row equal content-box-row">
+                            <div class="col-12 col-md-4 content-box-col">
+                                <div class="contract-info-title">
+
+                                </div>
+                                <div class="contract-info-content">
+
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 content-box-col">
+                                <div class="contract-info-title">
+
+                                </div>
+                                <div class="contract-info-content">
+
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4 content-box-col">
+                                <div class="contract-info-title">
+                                    {{ 'event.infos.validation_date'|trans|raw }}
+                                </div>
+                                <div class="contract-info-content">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 row equal content-box-row no-border-top">
+                            <div class="col-12 content-box-col">
+                                <span class="contract-info-title pr-2">
+                                </span>
+                                <span class="contract-info-content pr-1">
+
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 content-box-col">
+                            <span class="contract-info-title pr-2">
+
+                            </span>
+                            <span class="contract-info-content pr-1">
+
+                            </span>
+                            {% if contract.isCrowdable %}
+                                <span class="text-positive um-semi-bold"><img class="green-check"
+                                                                              src="{{ asset('images/green-check.png') }}"/>{{ 'sales.stillselling'|trans|raw }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 row equal content-box-row">
+                            <div class="col-12 col-md-4 content-box-col">
+                                <div class="contract-info-title">
+                                </div>
+                                <div class="contract-info-content">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 content-box-col">
+                                <div class="contract-info-title">
+                                </div>
+                                <div class="contract-info-content">
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4 content-box-col">
+                                <div class="contract-info-title">
+
+                                </div>
+                                <div class="contract-info-content">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 content-box-col">
+                            <span class="contract-info-title pr-2"></span>
+                            <span class="contract-info-content"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-box">
+                    <div class="content-box-content">
+
+                        <h3 class="mb-3 text-center"> {{ 'sales.about_host.title'|trans|raw }}</h3>
+
+                        <div class="um-semi-bold">{{ artist.artistname }}</div>
+                        <p>{{ artist.getShortDescription }}</p>
+
+                        {% if artist.genres is not empty %}
+                            <div class="mb-3">
+                                <span class="contract-info-title small"> {{ 'event.about_host.genres'|trans|raw }}</span>
+                                {% for genre in artist.genres %} {{ genre }} {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <p class="text-center"><a
+                                    href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}"
+                                    class="btn btn-outline-primary"> {{ 'event.about_host.see_profile'|trans|raw }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="col-12 content-box mt-4">
+                    <div class="content-box-header">
+                        {% if contract.isCrowdable %}
+                            <p class="text-uppercase small font-weight-bold">blabla</p>
+                        {% endif %}
+
+                        <h3>{{ 'event.buy_tickets.title'|trans|raw }}</h3>
+                    </div>
+
+                    <div class="content-box-content">
+                        {% if contract.isCrowdable %}
+                            {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+
+                            {{ form_start(form) }}
+
+                            {% for purchase in form.purchases %}
+                                {% set counterpart = purchase.vars.value.counterpart %}
+                                <div class="counterpart-form">
+
+                                    <div class="form-group form-row">
+                                        {{ form_errors(purchase) }}
+
+                                        <div class="col-8">
+                                            <label class="counterpart-label">{{ counterpart.name }}</label>
+                                        </div>
+                                        <div class="col-4 counterpart-price">
+                                            {{ counterpart.price }} €
+                                        </div>
+                                        <div class="col-8">{{ counterpart.getDescription|raw }}</div>
+                                        <div class="col-4">
+                                            <div class="container px-0">
+                                                <div class="count-input space-bottom">
+                                                    <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                                    {{ form_widget(purchase) }}
+                                                    <a class="incr-btn" data-action="increase"
+                                                       data-max="{{ tickets_left }}"
+                                                       href="#">&plus;</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <br>
+                            {{ form_widget(form.submit) }}
+                            {{ form_end(form) }}
+                        {% else %}
+                            <p class="text-uppercase small font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

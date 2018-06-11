@@ -716,20 +716,19 @@ notices:
   registration: Uw registratie is opgeslagen. U kunt nu overschakelen naar betaling. Houd er rekening mee dat u een e-mail hebt ontvangen met een activatielink voor uw account. U moet op deze link klikken om later verbinding te maken met het platform.
   #new
   sponsorship:
-    cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
+    cart_success: Gefeliciteerd! U hebt uw sponsorschap gevalideerd; je sponsor kan dankzij jou bonussen winnen!
     send_sponsorship:
-      not_connected: Vous n'êtes pas connecté !
-      event_not_valid: Evénement non valide !
-      success: Envoie réussi.
-      warning_message: Les adresses emails suivantes sont déjà isncrites sur la plateforme, elles n'ont donc pas pu être invitée.
-      error: Une erreur est survenue avec le système.
+      not_connected: U bent niet ingelogd!
+      event_not_valid: Deze evenement is ongeldig.
+      success: Succesvol verzonden.
+      warning_message: "De volgende e-mailadressen zijn al geregistreerd op het platform, ze konden dus niet worden uitgenodigd:"
+      error: Er is een fout opgetreden met het systeem.
     link:
-      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contacter un administrateur de la plateforme.
-      success: Félicitations ! Vous avez émis le souhait de vous faire parrainer en cliquant sur le lien de parrainage. Inscrivez-vous à la plateforme pour confirmer le parrainage.
+      error: Er is een fout opgetreden met het systeem. Probeer het opnieuw. Neem contact met ons op als het probleem aanhoudt.
+      success: Gefeliciteerd! Door op de verwijzingslink te klikken, heeft u laten zien dat u gesponsord wilde worden. Registreer op het platform om het sponsorschap te bevestigen.
     inscription:
-      success: Félicitations, vous êtes sur le point de confirmer le parrainage, vous n'avez plus qu'à confirmer votre adresse email.
-
-
+      success: Gefeliciteerd! U hoeft alleen uw e-mailadres te bevestigen om het sponsorschap proces te voltooien.
+      error: Er is een fout opgetreden met het systeem, neem contact op met een beheerder van het platform.
 
 errors:
   change_email_token_expired: Dit token is verlopen.

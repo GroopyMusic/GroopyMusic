@@ -407,11 +407,11 @@ faq:
   multilocal:
     question: Vous dites pouvoir organiser jusqu’à deux concerts supplémentaires une fois un concert débloqué, comment cela est-il possible&nbsp;?
     answer: |
-      Un-Mute prévoit dans ses budgets la prise en compte de cachets pour l’Artiste ayant initié l’événement, mais également pour une ou deux premières parties.
+      Un-Mute prévoit dans ses budgets la prise en compte de cachets pour l’Artiste ayant initié l’événement, mais également pour un ou deux artiste(s) invité(s).
 
       Le fait de prendre en considération la rémunération de premières parties permet à Un-Mute de développer le principe de tournée multi-locale.
 
-      En d’autres mots, comme chaque Artiste qui débloque un concert, débloque en réalité le budget suffisant pour se payer deux premières parties lors de son concert qu’il a rempli avec sa fan-base, Un-Mute proposera deux autres artistes membres de la plate-forme au concert en question. En contrepartie, l’Artiste aura l’occasion de jouer les premières parties, dans les salles remplies par les fan-bases de ses deux Artistes invités.
+      En d’autres mots, comme chaque Artiste qui débloque un concert, débloque en réalité le budget suffisant pour se payer deux artistes invités lors de son concert qu’il a rempli avec sa fan-base, Un-Mute proposera deux autres artistes membres de la plate-forme au concert en question. En contrepartie, l’Artiste aura l’occasion de jouer les premières parties, dans les salles remplies par les fan-bases de ses deux Artistes invités.
   cancelling:
     question: Je ne sais malheureusement plus me rendre à un concert que j’ai co-produit, que puis-je faire&nbsp;?
     answer: Dans le cas où vous ne pouvez plus vous rendre à un concert après sa confirmation, le remboursement n’est plus possible. Un-Mute vous propose de remplacer un ticket confirmé par un ticket pour n’importe quel autre concert confirmé.
@@ -746,7 +746,7 @@ notices:
   registration: Votre inscription a bien été enregistrée. Vous pouvez désormais passer au paiement. Notez que vous avez reçu un e-mail contenant un lien d'activation de votre compte. Il vous faudra cliquer sur ce lien pour pouvoir vous connecter ultérieurement à la plateforme.
   #new
   sponsorship:
-    cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
+    cart_success: Félicitations ! Vous avez bien validé votre parrainage ; votre parrain va pouvoir remporter des bonus grâce à vous !
     send_sponsorship:
       not_connected: Vous n'êtes pas connecté !
       event_not_valid: Cet événement est invalide.

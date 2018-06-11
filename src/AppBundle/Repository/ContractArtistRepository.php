@@ -99,7 +99,8 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->andWhere('c.test_period ' . $prevalidation_operator . ' :prevalidation')
             ->andWhere('(r.date is not null AND r.date >= :yesterday) OR (p.date >= :yesterday)')
             ->setParameter('prevalidation', $prevalidation)
-            ->setParameter('yesterday', new \DateTime('yesterday'));
+            ->setParameter('yesterday', new \DateTime('yesterday'))
+        ;
     }
 
     public function findEligibleForTicketGeneration()

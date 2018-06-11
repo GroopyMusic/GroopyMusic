@@ -30,7 +30,7 @@ class ContractFan
         return $str;
     }
 
-    public function __construct(ContractArtist $ca)
+    public function __construct(BaseContractArtist $ca)
     {
         $this->contractArtist = $ca;
         $this->purchases = new ArrayCollection();

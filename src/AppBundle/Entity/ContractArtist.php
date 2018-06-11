@@ -426,9 +426,6 @@ class ContractArtist extends BaseContractArtist
     }
 
     // Unmapped
-    private $state;
-
-    // Unmapped
     private $genres;
 
     // Unmapped
