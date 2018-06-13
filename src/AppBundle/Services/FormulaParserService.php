@@ -21,6 +21,9 @@ class FormulaParserService
     private $em;
     private $logger;
 
+    /**
+     * here we add a new variable and its description
+     */
     const QUERRY_DESCRIPTION = [
         'p' => 'Nombre de tickets achetés au total par un utilisateur',
         'm' => 'Nombre de concerts différents produits par un utilisateur',
@@ -39,6 +42,8 @@ class FormulaParserService
 
     /**
      * set category statistics variables
+     *
+     * Here we add the variable that can be calculated ( attention format)
      *
      * @param $statistic
      */

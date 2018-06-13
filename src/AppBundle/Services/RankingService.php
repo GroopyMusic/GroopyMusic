@@ -46,6 +46,9 @@ class RankingService
         $categories = $this->em->getRepository('AppBundle:Category')->findLevelsByCategories();
         $users = $this->em->getRepository('AppBundle:User')->findUsersNotDeleted();
 
+        /**
+         * here we add the queries that calculate the data
+         */
         $statistics = $this->arrayHelperService->mergeMapOfArray(
             $this->em->getRepository('AppBundle:User')->countUsersStatistic(),
             $this->em->getRepository('AppBundle:User')->countUserAmbassadoratStatistic(),

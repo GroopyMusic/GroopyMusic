@@ -477,9 +477,6 @@ class MailAdminServiceTest extends TestCase
         $this->userRepository->expects($this->any())->method('findUsersNotDeletedForSelect')->willReturn([$user1,$user2,$user3]);
         $this->userRepository->expects($this->any())->method('findNewsletterUsersNotDeletedForSelect')->willReturn([$user1,$user2]);
         $this->userRepository->expects($this->any())->method('find')->willReturn($user1);
-        $recipients = [
-            "users" => [1]
-        ];
         $result = [];
         $this->assertEquals($result,$this->mailAdminService->constructArrayRecipients([]));
     }
@@ -496,9 +493,6 @@ class MailAdminServiceTest extends TestCase
         $this->userRepository->expects($this->any())->method('findUsersNotDeletedForSelect')->willReturn([$user1,$user2,$user3]);
         $this->userRepository->expects($this->any())->method('findNewsletterUsersNotDeletedForSelect')->willReturn([$user1,$user2]);
         $this->userRepository->expects($this->any())->method('find')->willReturn($user1);
-        $recipients = [
-            "users" => [1]
-        ];
         $result = [];
         $this->assertEquals($result,$this->mailAdminService->constructArrayRecipients(null));
     }

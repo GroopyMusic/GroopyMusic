@@ -24,12 +24,18 @@ use Psr\Log\LoggerInterface;
 
 class RewardAttributionService
 {
+    /*
+     * here we add the query names
+     */
     public const MOST_CONFIRMED_CONCERT = 'Concert confirmé le plus récent';
     public const ONE_CONCERT_SELECTED = 'Un seul concert sélectionné';
     public const ONE_ARTIST_SELECTED = 'Un seul artiste sélectionné';
     public const ONE_COUNTERPART_SELECTED = 'Une seule contrepartie sélectionnée';
     public const ONE_STEP_SELECTED = 'Un seul palier de salle sélectionné';
 
+    /*
+     * here we add the expected parameter type
+     */
     public const QUERRY_PARAM_TYPE = array(
         self::MOST_CONFIRMED_CONCERT => null,
         self::ONE_CONCERT_SELECTED => ContractArtist::class,
@@ -95,6 +101,8 @@ class RewardAttributionService
 
     /**
      * Attaches the right restrictions to user rewards
+     *
+     * here we add in the box the query name, the querry call and the behavior
      *
      * @param RewardRestriction $restriction
      * @param User_Reward $user_reward
