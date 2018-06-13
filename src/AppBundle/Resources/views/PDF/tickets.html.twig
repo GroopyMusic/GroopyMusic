@@ -105,8 +105,7 @@
                                style="text-decoration: none;">
                                 {{ event.artist }} @{{ event.hallConcert }}
                                 >>> {{ ('Days ' ~ event.dateConcert|date('w'))|trans ~ ' ' ~ event.dateConcert|date('d') ~ ' ' ~ ('months.' ~ event.dateConcert|date('m'))|trans }}
-                                ({% if event.isSoldOut %}{{ 'tickets_pdf.agenda.sold_out'|trans }}{% elseif event.isInSuccessfulState %}{{ 'tickets_pdf.agenda.confirmed'|trans }}{% else %}{{ 'tickets_pdf.agenda.not_confirmed'|trans }}{% endif %}
-                                )
+                                ({% if event.isSoldOut %}{{ 'tickets_pdf.agenda.sold_out'|trans }}{% elseif event.isInSuccessfulState %}{{ 'tickets_pdf.agenda.confirmed'|trans }}{% else %}{{ 'tickets_pdf.agenda.not_confirmed'|trans }}{% endif %})
                             </a>
                         </p>
                     {% endfor %}

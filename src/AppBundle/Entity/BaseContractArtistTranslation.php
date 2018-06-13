@@ -17,6 +17,33 @@ class BaseContractArtistTranslation
     protected $additional_info;
 
     /**
+     * @ORM\Column(name="title", type="string", length=255, nullable=true)
+     */
+    protected $title;
+
+    /**
+     * @var string
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
      * Set additionalInfo
      *
      * @param string $additionalInfo
@@ -38,5 +65,21 @@ class BaseContractArtistTranslation
     public function getAdditionalInfo()
     {
         return $this->additional_info;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
 }

@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "default" = "BaseContractArtist"})
+ * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "sales" = "ContractArtistSales", "default" = "BaseContractArtist"})
  */
 class BaseContractArtist implements TranslatableInterface
 {
@@ -201,6 +201,10 @@ class BaseContractArtist implements TranslatableInterface
         });
     }
 
+    public function getNbCounterPartsPaid() {
+        return array_sum(array_map(function(ContractFan $elem) {return $elem->getCounterPartsQuantity();}, $this->getContractsFanPaid()));
+    }
+
     public function getNbCounterPartsObtainedByPromotion() {
         return array_sum(array_map(function(ContractFan $contractFan) {
             return $contractFan->getCounterPartsQuantityPromotional();
@@ -258,6 +262,9 @@ class BaseContractArtist implements TranslatableInterface
         return $this->getPayments()->toArray();
     }
 
+    // Unmapped
+    protected $state;
+
     /**
      * @var int
      *
@@ -308,7 +315,7 @@ class BaseContractArtist implements TranslatableInterface
      * @var ContractArtistPossibility
      *
      * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     protected $preferences;
 
@@ -393,6 +400,12 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\Column(name="date_success", type="datetime", nullable=true)
      */
     protected $date_success;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="no_threshold", type="boolean")
+     */
+    protected $no_threshold;
 
     // Discriminator
     protected $type;
@@ -1011,5 +1024,22 @@ class BaseContractArtist implements TranslatableInterface
     public function getDateSuccess()
     {
         return $this->date_success;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoThreshold(): bool
+    {
+        return $this->no_threshold;
+    }
+    public function hasNoThreshold() { return $this->isNoThreshold(); }
+
+    /**
+     * @param bool $no_threshold
+     */
+    public function setNoThreshold(bool $no_threshold)
+    {
+        $this->no_threshold = $no_threshold;
     }
 }

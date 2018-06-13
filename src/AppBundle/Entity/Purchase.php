@@ -64,7 +64,16 @@ class Purchase
 
     public function getAmount()
     {
-        return $this->getQuantityOrganic() * $this->counterpart->getPrice();
+        return $this->getQuantityOrganic() * $this->getUnitaryPrice() ;
+    }
+
+    public function getUnitaryPrice() {
+        if($this->counterpart->getFreePrice()) {
+            return $this->free_price_value;
+        }
+        else {
+            return $this->counterpart->getPrice();
+        }
     }
 
     /**
@@ -170,6 +179,11 @@ class Purchase
      * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="purchase", cascade={"all"})
      */
     private $ticket_rewards;
+
+    /**
+     * @ORM\Column(name="free_price_value", type="float", nullable=true)
+     */
+    private $free_price_value;
 
     /**
      * Get id
@@ -389,5 +403,21 @@ class Purchase
     public function getTicketRewards()
     {
         return $this->ticket_rewards;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFreePriceValue()
+    {
+        return $this->free_price_value;
+    }
+
+    /**
+     * @param mixed $free_price_value
+     */
+    public function setFreePriceValue($free_price_value)
+    {
+        $this->free_price_value = $free_price_value;
     }
 }

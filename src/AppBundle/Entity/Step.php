@@ -88,6 +88,7 @@ class Step extends BaseStep
     private $max_tickets;
 
 
+
     /**
      * Set approximateCapacity
      *

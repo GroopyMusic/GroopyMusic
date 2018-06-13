@@ -1,5 +1,28 @@
 {% extends "base.html.twig" %}
 
+{% macro recap_zone_sales(purchase, contract) %}
+
+    <div class="content-box-content-zone">
+        <table class="content-box-table">
+            <tbody>
+            <tr>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
+                <td>{{ purchase.counterpart.name }}</td>
+            </tr>
+            <tr>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.quantity'|trans|raw }}</td>
+                <td>{{ purchase.quantityOrganic }}</td>
+            </tr>
+            <tr>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}{% if purchase.counterpart.freePrice %} (choisi librement){% endif %}</td>
+                <td>{{ purchase.unitaryPrice }} €</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endmacro%}
+
 {% macro recap_zone(purchase, contract, promotional = false) %}
     <div class="content-box-content-zone">
         <table class="content-box-table">
@@ -59,15 +82,22 @@
 
             <h3 class="mt-3 mb-5 text-center">{{ 'pay_cart.title'|trans|raw }}</h3>
 
-
             <div class="row">
                 <div class="col-12 col-md-8 order-2 order-md-1">
                     {% if app.user %}
                         <div id="payment-intro">
-                            {{ 'pay_cart.intro'|trans({
-                                '%firstName%': app.user.firstname,
-                                '%conditionsUrl%': path('conditions') ~ '#cgv'
-                            })|raw }}
+                            {% if contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
+                                {{ 'pay_cart.intro'|trans({
+                                    '%firstName%': app.user.firstname,
+                                    '%conditionsUrl%': path('conditions') ~ '#cgv'
+                                })|raw }}
+                            {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
+                                {{ 'pay_cart.sales.intro'|trans({
+                                    '%artist%': contract_fan.contractArtist.artist,
+                                    '%firstName%': app.user.firstname,
+                                    '%conditionsUrl%': path('conditions') ~ '#cgv'
+                                })|raw }}
+                            {% endif %}
                         </div>
                         {% for fan_contract in cart.contracts %}
                             {% if fan_contract.userRewards is not empty %}
@@ -251,78 +281,104 @@
                     {% endif %}
                 </div>
 
-                <div class="col-12 col-md-4 order-1 order-md-2">
-                    <div class="content-box">
-                        <div class="content-box-header">
-                            <h3>{{ 'pay_cart.recap.title'|trans|raw }}</h3>
-                        </div>
-                        <div class="content-box-content-zones content-box-content">
-                            {% set sum_tickets = 0 %}
-                            {% set amoutWithoutReduction = 0 %}
-                            {% set hasReduction = false %}
-                            {% set hasReward = false %}
-                            {% for fan_contract in cart.contracts %}
-                                {% for purchase in fan_contract.purchases %}
-                                    {{ macros.recap_zone(purchase, fan_contract, false) }}
-                                    {% set freeTickets = purchase.quantityPromotional %}
-                                    {% if freeTickets > 0 %}
-                                        {{ macros.recap_zone(purchase, fan_contract, true) }}
-                                    {% endif %}
-                                {% endfor %}
-                                {% if fan_contract.userRewards is not empty %}
-                                    {% set hasReward = true %}
-                                    {% for user_reward in fan_contract.userRewards %}
-                                        {% if user_reward.reward.getType == "Réduction" %}
-                                            {% set hasReduction = true %}
+                {% if contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
+                    <div class="col-12 col-md-4 order-1 order-md-2">
+                        <div class="content-box">
+                            <div class="content-box-header">
+                                <h3>{{ 'pay_cart.recap.title'|trans|raw }}</h3>
+                            </div>
+                            <div class="content-box-content-zones content-box-content">
+                                {% set sum_tickets = 0 %}
+                                {% set amoutWithoutReduction = 0 %}
+                                {% set hasReduction = false %}
+                                {% set hasReward = false %}
+                                {% for fan_contract in cart.contracts %}
+                                    {% for purchase in fan_contract.purchases %}
+                                        {{ macros.recap_zone(purchase, fan_contract, false) }}
+                                        {% set freeTickets = purchase.quantityPromotional %}
+                                        {% if freeTickets > 0 %}
+                                            {{ macros.recap_zone(purchase, fan_contract, true) }}
                                         {% endif %}
                                     {% endfor %}
-                                {% endif %}
-                                {% set amoutWithoutReduction = amoutWithoutReduction + fan_contract.getAmountWithoutReduction %}
-                                {% set sum_tickets = sum_tickets + fan_contract.counterPartsQuantity %}
-                            {% endfor %}
-                            {% if hasReward == true %}
-                                <div class="content-box-content-zone">
-                                    <table class="content-box-table">
-                                        <tr class="no-border">
-                                            <td class="contract-info-title big">{{ 'pay_cart.recap.labels.applied_rewards'|trans|raw }}</td>
-                                        </tr>
-                                        {% for fan_contract in cart.contracts %}
-                                            {% if fan_contract.userRewards is not empty %}
-                                                {% for user_reward in fan_contract.userRewards %}
-                                                    <tr>
-                                                        <td class="contract-info-title">
-                                                            >> {{ user_reward.reward.name }}</td>
-                                                    </tr>
-                                                {% endfor %}
+                                    {% if fan_contract.userRewards is not empty %}
+                                        {% set hasReward = true %}
+                                        {% for user_reward in fan_contract.userRewards %}
+                                            {% if user_reward.reward.getType == "Réduction" %}
+                                                {% set hasReduction = true %}
                                             {% endif %}
                                         {% endfor %}
+                                    {% endif %}
+                                    {% set amoutWithoutReduction = amoutWithoutReduction + fan_contract.getAmountWithoutReduction %}
+                                    {% set sum_tickets = sum_tickets + fan_contract.counterPartsQuantity %}
+                                {% endfor %}
+                                {% if hasReward == true %}
+                                    <div class="content-box-content-zone">
+                                        <table class="content-box-table">
+                                            <tr class="no-border">
+                                                <td class="contract-info-title big">{{ 'pay_cart.recap.labels.applied_rewards'|trans|raw }}</td>
+                                            </tr>
+                                            {% for fan_contract in cart.contracts %}
+                                                {% if fan_contract.userRewards is not empty %}
+                                                    {% for user_reward in fan_contract.userRewards %}
+                                                        <tr>
+                                                            <td class="contract-info-title">
+                                                                >> {{ user_reward.reward.name }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                {% endif %}
+                                <div class="content-box-content-zone no-border">
+                                    <table class="content-box-table">
+                                        {% if hasReduction == true %}
+                                            <tr class="no-border">
+                                                <td class="contract-info-title big">{{ 'pay_cart.recap.labels.total_without_reduction'|trans|raw }}</td>
+                                                <td class="big font-weight-bold">{{ amoutWithoutReduction }} €</td>
+                                            </tr>
+                                            <tr class="no-border">
+                                                <td class="contract-info-title big">{{ 'pay_cart.recap.labels.reduction'|trans|raw }}</td>
+                                                <td class="big font-weight-bold" style="color:red">
+                                                    - {{ amoutWithoutReduction - cart.amount }} €
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        <tr class="no-border">
+                                            <td class="contract-info-title big">{{ 'pay_cart.recap.total'|transchoice(sum_tickets)|raw }}</td>
+                                            <td class="big font-weight-bold">{{ cart.amount }} €</td>
+                                        </tr>
                                     </table>
                                 </div>
-                            {% endif %}
-                            <div class="content-box-content-zone no-border">
+                            </div>
+                        </div>
+                    </div>
+                {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
+                    <div class="col-12 col-md-4 order-1 order-md-2">
+                        <div class="content-box">
+                            <div class="content-box-header">
+                                <h3>{{ 'pay_cart.sales.recap.title'|trans|raw }}</h3>
+                            </div>
+                            <div class="content-box-content-zones content-box-content">
+                                {% set nb_articles = 0 %}
+                                {% for purchase in contract_fan.purchases %}
+                                    {{ macros.recap_zone_sales(purchase, contract_fan) }}
+                                    {% set nb_articles = nb_articles + purchase.quantity %}
+                                {% endfor %}
+
+                                <div class="content-box-content-zone no-border">
                                 <table class="content-box-table">
-                                    {% if hasReduction == true %}
-                                        <tr class="no-border">
-                                            <td class="contract-info-title big">{{ 'pay_cart.recap.labels.total_without_reduction'|trans|raw }}</td>
-                                            <td class="big font-weight-bold">{{ amoutWithoutReduction }} €</td>
-                                        </tr>
-                                        <tr class="no-border">
-                                            <td class="contract-info-title big">{{ 'pay_cart.recap.labels.reduction'|trans|raw }}</td>
-                                            <td class="big font-weight-bold" style="color:red">
-                                                - {{ amoutWithoutReduction - cart.amount }} €
-                                            </td>
-                                        </tr>
-                                    {% endif %}
                                     <tr class="no-border">
-                                        <td class="contract-info-title big">{{ 'pay_cart.recap.total'|transchoice(sum_tickets)|raw }}</td>
+                                        <td class="contract-info-title big">{{ 'pay_cart.sales.recap.total'|transchoice(nb_articles)|raw }}</td>
                                         <td class="big font-weight-bold">{{ cart.amount }} €</td>
                                     </tr>
                                 </table>
                             </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endif %}
+             </div>
         </div>
 
     {% endblock %}

@@ -4,8 +4,10 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\ConsomableReward;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\ContractArtistSales;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\InvitationReward;
+use AppBundle\Entity\Purchase;
 use AppBundle\Entity\ReductionReward;
 use AppBundle\Entity\User_Reward;
 use Doctrine\ORM\EntityRepository;
@@ -62,9 +64,21 @@ class ContractFanType extends AbstractType
         if ($contractFan->getCounterPartsQuantity() == 0) {
             $context->addViolation('contractfan.quantity_min');
         }
-        if ($contractFan->getCounterPartsQuantity() > $contractFan->getContractArtist()->getStep()->getMaxTickets() - $contractFan->getContractArtist()->getTicketsSold()) {
-            $context->addViolation('contractfan.quantity_max');
+
+        $contract_artist = $contractFan->getContractArtist();
+        if($contract_artist instanceof ContractArtist) {
+            if ($contractFan->getCounterPartsQuantity() > $contractFan->getContractArtist()->getStep()->getMaxTickets() - $contractFan->getContractArtist()->getTicketsSold()) {
+                $context->addViolation('contractfan.quantity_max');
+            }
         }
+
+        foreach($contractFan->getPurchases() as $purchase) {
+            /** @var Purchase $purchase */
+            if($purchase->getCounterPart()->getFreePrice() && $purchase->getFreePriceValue() < $purchase->getCounterpart()->getMinimumPrice()) {
+                $context->addViolation('contractfan.free_price_min');
+            }
+        }
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

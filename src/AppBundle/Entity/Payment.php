@@ -102,7 +102,7 @@ class Payment
 
     /**
      * @var ContractArtist
-     * @ORM\ManyToOne(targetEntity="ContractArtist", inversedBy="payments")
+     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="payments")
      */
     private $contractArtist;
 
@@ -247,15 +247,14 @@ class Payment
         return $this->contractFan;
     }
 
-
     /**
      * Set contractArtist
      *
-     * @param \AppBundle\Entity\ContractArtist $contractArtist
+     * @param \AppBundle\Entity\BaseContractArtist $contractArtist
      *
      * @return Payment
      */
-    public function setContractArtist(\AppBundle\Entity\ContractArtist $contractArtist = null)
+    public function setContractArtist(\AppBundle\Entity\BaseContractArtist $contractArtist = null)
     {
         $this->contractArtist = $contractArtist;
 
@@ -265,7 +264,7 @@ class Payment
     /**
      * Get contractArtist
      *
-     * @return \AppBundle\Entity\ContractArtist
+     * @return \AppBundle\Entity\BaseContractArtist
      */
     public function getContractArtist()
     {

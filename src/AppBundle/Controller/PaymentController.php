@@ -168,6 +168,8 @@ class PaymentController extends Controller
             'cart' => $cart,
             'error_conditions' => isset($_POST['accept_conditions']) && !$_POST['accept_conditions'],
             'contract_fan' => $contract,
+            'is_event_checkout' => $contract_artist instanceof ContractArtist,
+            'is_sales_checkout' => $contract_artist instanceof Contra
         ));
     }
 
@@ -197,7 +199,7 @@ class PaymentController extends Controller
     {
         $dispatcher->sendOrderRecap($cf);
 
-        if ($cf->getContractArtist()->getCounterPartsSent()) {
+        if ($cf->getContractArtist() instanceof ContractArtist && $cf->getContractArtist()->getCounterPartsSent()) {
             $ticketingManager->sendUnSentTicketsForContractFan($cf);
         }
 

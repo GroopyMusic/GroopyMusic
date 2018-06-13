@@ -27,7 +27,7 @@
             </ul>
         </div>
 
-        <div class="mt-3 w-100 text-center {% if crowdfundings|length > 1 and crowdfundings|length <= 3 %} d-block d-md-none{% endif %}">
+        <div class="mt-3 w-100 text-center{% if crowdfundings|length > 1 and crowdfundings|length <= 3 %} d-block d-md-none{% elseif crowdfundings|length == 1 %} d-none{% endif %}">
             <div class="jcarousel-prev jcarousel-control btn btn-secondary rounded-circle d-inline-block"><img class="img-fluid" src="{{ asset('images/icons/arrow-left.svg') }}" /></div>
             <div class="jcarousel-next jcarousel-control btn btn-secondary rounded-circle d-inline-block"><img class="img-fluid" src="{{ asset('images/icons/arrow-right.svg') }}" /></div>
         </div>
@@ -59,6 +59,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="container-fluid position-relative bg-body-light" id="home-spotlights">
 

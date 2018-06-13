@@ -248,10 +248,22 @@ contact:
     cancel: Annuleren
   confirmation: Uw bericht is ontvangen.
 
+#new
+jplist:
+  sort_by: Sorteren op
+  no_results: Geen resultaten gevonden
+  action: Filter...
+
 catalog_halls:
   title: Partnerzalen
   intro: In heel België moedigen zalen de muzikale productie van onze artiesten aan. Bekijk de Un-Mute partnerzalen waarin festivals zullen georganiseerd worden. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen in Un-Mute! <a href=‘%proposition_url%’>Hier is het !</a>”>Wil je een evenement voorstellen in je zaal?</a>
   empty: Er is nog geen partnerzaal op het platform.
+  filtering:
+    name_asc: Naam A-Z
+    name_desc: Naam Z-1
+    capacity_asc: Capaciteit (toenemend)
+    capacity_desc: Capaciteit (afnemend)
+    search_name: Zoeken...
 
 hall:
   short_description_label: In een paar woorden
@@ -271,6 +283,10 @@ catalog_artists:
   empty: Er zijn nog geen artiesten op Un-Mute. Kom snel terug!
   intro: Welkom in de catalogus van de Belgische artiesten van Un-Mute! Ontdek zowel het profiel als de biografie van elke artiest en kies degene die je binnenkort in concert wilt zien! <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier is het !</a>”>Wil je een evenement voor een artiest voorstellen?</a>
   join_us: Wilt u zich als artiest registreren? <a href="%url%">Maak een profiel aan</a>.Over een paar minuten, maakt je je Un-Mute-identiteit.
+  filtering:
+    name_asc: Naam A-Z
+    name_desc: Naam Z-A
+    search_name: Zoeken...
 
 catalog_events:
   prevalidation:
@@ -283,9 +299,17 @@ catalog_events:
   running:
     title: Festivals die worden gefinancierd
     #new
-    intro:  De volgende evenementen moeten nog ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
+    intro:  De volgende evenementen moeten ondersteund worden! Geef deze artiesten de kans om in een vol huis op te treden door kaarten te kopen voor hun festivals. <a href="#" data-toggle="popover" title="Stel een evenement voor" data-content="Suggereer artiesten, locaties en evenementen aan Un-Mute! <a href=‘%proposition_url%'>Hier gebeurt het !</a>">Wil je een evenement voorstellen?</a>
   confirmed:
     title: Bevestigde festivals
+  filtering:
+    date_asc: Datum
+    gauge_asc: Succespercentage (toenemend)
+    gauge_desc: Succespercentage (afnemend)
+    by_confirmed: Filter...
+    not_confirmed: Niet bevestigd
+    confirmed: Bevestigd
+    sold_out: Sold out
 
 login:
   necessary_for_tickets: U moet aangemeld zijn om tickets te kopen!
@@ -301,6 +325,7 @@ event:
     deadline: Dit is de laatste dag waarop je %artist% kunt helpen om zijn doel te bereiken door kaarten te kopen. Morgen zul je weten of dit festival is bevestigd of niet.
     promo: "Tijdens de eerste week van de verkoop, dat wil zeggen tot %end_date% om middernacht, is dit evenement te koop: voor %nb_organic_needed% gekochte tickets ontvangt u %nb_promotional% !"
   prevalidation: "Dit evenement bevindt zich in pre-validatie. Zijn pagina zal alleen openbaar worden gemaakt als 10% van de kaarten verkocht is en dan zal er nog een maand zijn om de 100% te bereiken die nodig zijn voor de realisatie van het festival. Tijdens de pre-validatie staan de tickets op promotie 3 + 1."
+  dday: Vandaag is het concert! U kunt nog steeds online tickets kopen of, voor zover beschikbaar, deze ter plaatse kopen (contant of Bancontact app).
   infos:
     title: Infos
     date: Datum van het festival
@@ -691,20 +716,19 @@ notices:
   registration: Uw registratie is opgeslagen. U kunt nu overschakelen naar betaling. Houd er rekening mee dat u een e-mail hebt ontvangen met een activatielink voor uw account. U moet op deze link klikken om later verbinding te maken met het platform.
   #new
   sponsorship:
-    cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
+    cart_success: Gefeliciteerd! U hebt uw sponsorschap gevalideerd; je sponsor kan dankzij jou bonussen winnen!
     send_sponsorship:
-      not_connected: Vous n'êtes pas connecté !
-      event_not_valid: Evénement non valide !
-      success: Envoie réussi.
-      warning_message: Les adresses emails suivantes sont déjà isncrites sur la plateforme, elles n'ont donc pas pu être invitée.
-      error: Une erreur est survenue avec le système.
+      not_connected: U bent niet ingelogd!
+      event_not_valid: Deze evenement is ongeldig.
+      success: Succesvol verzonden.
+      warning_message: "De volgende e-mailadressen zijn al geregistreerd op het platform, ze konden dus niet worden uitgenodigd:"
+      error: Er is een fout opgetreden met het systeem.
     link:
-      error: Une erreur est survenue avec le système, veuillez réessayer. Si le problème persiste, contacter un administrateur de la plateforme.
-      success: Félicitations ! Vous avez émis le souhait de vous faire parrainer en cliquant sur le lien de parrainage. Inscrivez-vous à la plateforme pour confirmer le parrainage.
+      error: Er is een fout opgetreden met het systeem. Probeer het opnieuw. Neem contact met ons op als het probleem aanhoudt.
+      success: Gefeliciteerd! Door op de verwijzingslink te klikken, heeft u laten zien dat u gesponsord wilde worden. Registreer op het platform om het sponsorschap te bevestigen.
     inscription:
-      success: Félicitations, vous êtes sur le point de confirmer le parrainage, vous n'avez plus qu'à confirmer votre adresse email.
-
-
+      success: Gefeliciteerd! U hoeft alleen uw e-mailadres te bevestigen om het sponsorschap proces te voltooien.
+      error: Er is een fout opgetreden met het systeem, neem contact op met een beheerder van het platform.
 
 errors:
   change_email_token_expired: Dit token is verlopen.

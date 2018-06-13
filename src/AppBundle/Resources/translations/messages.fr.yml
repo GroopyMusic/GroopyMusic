@@ -249,10 +249,21 @@ contact:
     cancel: Annuler
   confirmation: Votre message a bien été reçu.
 
+jplist:
+  sort_by: Trier par
+  no_results: Aucun résultat trouvé
+  action: Filtrer...
+
 catalog_halls:
   title: Salles partenaires
   intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des festivals sont susceptibles d'être organisés. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement dans votre salle ?</a>
   empty: Il n'y a pas encore de salle partenaire sur la plateforme.
+  filtering:
+    name_asc: Nom A-Z
+    name_desc: Nom Z-A
+    capacity_asc: Capacité croissante
+    capacity_desc: Capacité décroissante
+    search_name: Chercher...
 
 hall:
   short_description_label: En quelques mots
@@ -272,6 +283,10 @@ catalog_artists:
   empty: Il n'y a pas encore d'artiste sur Un-Mute. Revenez bientôt !
   intro: Bienvenue sur le catalogue des artistes belges Un-Mute ! Découvrez le profil ainsi que la biographie de chaque artiste et choisissez celui que vous désirez voir prochainement en concert ! <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement pour un artiste ?</a>
   join_us: Vous souhaitez vous inscrire en tant qu'artiste ? <a href="%url%">Créez un profil</a>. En quelques minutes, vous aurez créé votre identité Un-Mute.
+  filtering:
+    name_asc: Nom A-Z
+    name_desc: Nom Z-A
+    search_name: Chercher...
 
 catalog_events:
   prevalidation:
@@ -284,9 +299,17 @@ catalog_events:
   running:
     title: Festivals en cours de financement
     #new
-    intro:  Les événements suivants ont encore besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement ?</a>
+    intro:  Les événements suivants ont besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement ?</a>
   confirmed:
     title: Festivals confirmés
+  filtering:
+    date_asc: Date
+    gauge_asc: Taux de réussite croissant
+    gauge_desc: Taux de réussite décr.
+    by_confirmed: Filtrer...
+    not_confirmed: Non confirmé
+    confirmed: Confirmé
+    sold_out: Sold out
 
 login:
   necessary_for_tickets: Vous devez être connecté pour acheter des tickets !
@@ -303,6 +326,7 @@ event:
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
   promo: "Lors de la première semaine de ventes, c'est-à-dire jusqu'au %end_date% à minuit, cet événement est en promotion : pour %nb_organic_needed% tickets achetés, vous en recevrez %nb_promotional% !"
   prevalidation: "Cet événement est en pré-validation. Sa page ne sera rendue publique que lorsque 10% de tickets auront été vendus, et il y aura alors encore un mois pour obtenir les 100% requis à la concrétisation du Festival. Pendant la pré-validation, les tickets sont en promotion 3 + 1."
+  dday: C'est aujourd'hui le concert ! Vous pouvez encore acheter des tickets en ligne ou, dans la mesure des places disponibles, les acheter sur place (cash ou application Bancontact).
   infos:
     title: Infos
     date: Date du festival
@@ -358,14 +382,12 @@ event:
     total_validated: Invitations validées
     button_invit: Envoyez des invitations
 
-
 #new
 conditions:
   last_update: "Dernière mise-à-jour effectuée le : %date%"
   accept_last:
     intro: Nos conditions générales ont évolué depuis votre dernière visite. Pour poursuivre votre navigation, il vous faut marquer votre accord.
     intro_social: Pour poursuivre sur Un-Mute, il vous faut marquer votre accord avec nos conditions générales.
-
 
 faq:
   title: FAQ
@@ -385,11 +407,11 @@ faq:
   multilocal:
     question: Vous dites pouvoir organiser jusqu’à deux concerts supplémentaires une fois un concert débloqué, comment cela est-il possible&nbsp;?
     answer: |
-      Un-Mute prévoit dans ses budgets la prise en compte de cachets pour l’Artiste ayant initié l’événement, mais également pour une ou deux premières parties.
+      Un-Mute prévoit dans ses budgets la prise en compte de cachets pour l’Artiste ayant initié l’événement, mais également pour un ou deux artiste(s) invité(s).
 
       Le fait de prendre en considération la rémunération de premières parties permet à Un-Mute de développer le principe de tournée multi-locale.
 
-      En d’autres mots, comme chaque Artiste qui débloque un concert, débloque en réalité le budget suffisant pour se payer deux premières parties lors de son concert qu’il a rempli avec sa fan-base, Un-Mute proposera deux autres artistes membres de la plate-forme au concert en question. En contrepartie, l’Artiste aura l’occasion de jouer les premières parties, dans les salles remplies par les fan-bases de ses deux Artistes invités.
+      En d’autres mots, comme chaque Artiste qui débloque un concert, débloque en réalité le budget suffisant pour se payer deux artistes invités lors de son concert qu’il a rempli avec sa fan-base, Un-Mute proposera deux autres artistes membres de la plate-forme au concert en question. En contrepartie, l’Artiste aura l’occasion de jouer les premières parties, dans les salles remplies par les fan-bases de ses deux Artistes invités.
   cancelling:
     question: Je ne sais malheureusement plus me rendre à un concert que j’ai co-produit, que puis-je faire&nbsp;?
     answer: Dans le cas où vous ne pouvez plus vous rendre à un concert après sa confirmation, le remboursement n’est plus possible. Un-Mute vous propose de remplacer un ticket confirmé par un ticket pour n’importe quel autre concert confirmé.
@@ -467,6 +489,19 @@ pay_cart:
         invitation: "%use% invitations"
         consommable: "%use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €."
         reduction: '%reduction% % de réduction appliquée à %nbReducedCounterpart% tickets "%counterpart%"'
+
+    sales:
+      intro: |
+        <p>
+           Merci de soutenir %artist% dans sa campagne de vente de disques. C'est grâce à votre soutien que les artistes belges peuvent se produire et toucher leur public.
+        </p>
+
+        <p>
+          En procédant au paiement des articles que vous avez sélectionnés, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
+        </p>
+      recap:
+        title: Récapitulatif
+        total: "[0,1] Total pour %count% article| [2, Inf[ Total pour %count% articles"
 
     #new
     not_authenticated:
@@ -646,6 +681,8 @@ leave_artist:
 order_pdf:
   title: Récapitulatif de votre commande
   intro: Merci d'avoir passé une commande de tickets de festival avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
+  sales:
+    intro: Merci d'avoir passé commandé avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
   promo: "Note : pour toute commande passée lors de la première semaine de ventes de tickets pour cet événement (c'est-à-dire jusqu'au %end_date%), par %nb_organic_needed% tickets achetés, vous en recevez %nb_promotional%."
   labels:
     order_date: Date de la commande
@@ -655,6 +692,7 @@ order_pdf:
     nb_tickets: Nombre de tickets achetés
     nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
     rewards: Récompense(s) appliquée(s) #new
+    sales: Album concerné #NEEEW
   details:
     title: Détails de la commande
     labels:
@@ -668,6 +706,10 @@ order_pdf:
   process:
     title: Processus d'achat Un-Mute
     content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce festival. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>
+  #NEEEW
+  conditions:
+    title: Conditions d'achat
+    content: Visitez nos conditions générales d'utilisation et de vente à l'adresse %url%
   footer:
     tracking: "Cette confirmation de commande a été générée le %date%. Identifiant commande : %id%"
 
@@ -724,7 +766,7 @@ notices:
   registration: Votre inscription a bien été enregistrée. Vous pouvez désormais passer au paiement. Notez que vous avez reçu un e-mail contenant un lien d'activation de votre compte. Il vous faudra cliquer sur ce lien pour pouvoir vous connecter ultérieurement à la plateforme.
   #new
   sponsorship:
-    cart_success: Félicitations ! Grâce à votre achat votre parrain a reçu une récompense.
+    cart_success: Félicitations ! Vous avez bien validé votre parrainage ; votre parrain va pouvoir remporter des bonus grâce à vous !
     send_sponsorship:
       not_connected: Vous n'êtes pas connecté !
       event_not_valid: Cet événement est invalide.
@@ -967,6 +1009,12 @@ sponsorship_modal:
   remove_field: Retirer une adresse e-mail
   add_field: Ajouter une adresse e-mail
 
-
-
-
+#new
+sales:
+  stillselling: Ventes en cours
+  infos:
+    title: Infos
+  about_host:
+    title: A propos de l'artiste
+  buy:
+    title: Acheter l'album

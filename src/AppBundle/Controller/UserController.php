@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ConsomableReward;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\ContractArtistSales;
 use AppBundle\Entity\InvitationReward;
 use AppBundle\Entity\Notification;
 use AppBundle\Entity\ReductionReward;
@@ -138,10 +139,12 @@ class UserController extends Controller
         $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
         $sponsorship_event = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
 
+        $is_payment = (!empty($carts) && $carts[0]->getFirst()->getContractArtist() instanceof ContractArtist) ? $request->get('is_payment') : false;
+
         return $this->render('@App/User/paid_carts.html.twig', array(
             'carts' => $carts,
             'possible_sponsorship_event' => $sponsorship_event,
-            'is_payment' => $request->get('is_payment')
+            'is_payment' => $is_payment,
         ));
     }
 

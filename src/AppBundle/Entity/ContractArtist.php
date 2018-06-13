@@ -34,34 +34,28 @@ class ContractArtist extends BaseContractArtist
     const STATE_PENDING = 'state.pending';
     const STATE_TEST_PERIOD = 'state.test_period';
 
-    public function isUncrowdable()
-    {
+    public function isUncrowdable() {
         return in_array($this->getState(), $this->getUncrowdableStates());
     }
 
-    public function isSoldOut()
-    {
+    public function isSoldOut() {
         return in_array($this->getState(), $this->getSoldOutStates());
     }
 
-    public function isCrowdable()
-    {
+    public function isCrowdable() {
         return !$this->isUncrowdable();
     }
 
-    public function isPending()
-    {
+    public function isPending() {
         return in_array($this->getState(), $this->getPendingStates());
     }
 
     // TODO translate
-    public function getDisplayName()
-    {
+    public function getDisplayName() {
         return $this->step . ' de ' . $this->artist;
     }
 
-    public static function getUncrowdableStates()
-    {
+    public static function getUncrowdableStates() {
         return [
             self::STATE_REFUNDED,
             self::STATE_FAILED,
@@ -73,8 +67,7 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
-    public static function getPendingStates()
-    {
+    public static function getPendingStates() {
         return [
             self::STATE_PENDING,
             self::STATE_SUCCESS_PENDING,
@@ -82,8 +75,7 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
-    public static function getSuccessfulStates()
-    {
+    public static function getSuccessfulStates() {
         return [
             self::STATE_SUCCESS_PENDING,
             self::STATE_SUCCESS_SOLDOUT,
@@ -94,8 +86,7 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
-    public static function getPassedStates()
-    {
+    public static function getPassedStates() {
         return [
             self::STATE_SUCCESS_PASSED,
             self::STATE_FAILED,
@@ -103,104 +94,88 @@ class ContractArtist extends BaseContractArtist
         ];
     }
 
-    public static function getSoldOutStates()
-    {
+    public static function getSoldOutStates() {
         return [
             self::STATE_SUCCESS_SOLDOUT,
             self::STATE_SUCCESS_SOLDOUT_PENDING,
         ];
     }
 
-    public function isInSuccessfulState()
-    {
+    public function isInSuccessfulState() {
         return in_array($this->getState(), self::getSuccessfulStates());
     }
 
-    public function isPassed()
-    {
+    public function isPassed() {
         return in_array($this->getState(), self::getPassedStates());
     }
 
-    public function getPercentObjective()
-    {
-        return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
+    public function getPercentObjective() {
+       return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
     }
 
-    public function getTotalBookedTickets()
-    {
+    public function getTotalBookedTickets() {
         return $this->tickets_reserved + $this->tickets_sold;
     }
 
-    public function getTotalBookedTicketsMajored()
-    {
+    public function getTotalBookedTicketsMajored() {
         return min($this->getTotalBookedTickets(), $this->getMaxTickets());
     }
 
-    public function getLastSellingDate()
-    {
+    public function getLastSellingDate() {
         $dateconcert_copy = clone $this->getDateConcert();
-        return $dateconcert_copy->modify('-' . ($this->nb_closing_days + 1) . ' days');
+        return $dateconcert_copy->modify('-' . ($this->nb_closing_days) . ' days');
     }
 
-    public function isLastSellingDate()
-    {
-        return (new \DateTime())->diff($this->getLastSellingDate())->days == 0;
+    public function isLastSellingDate() {
+        return (new \DateTime())->diff($this->getLastSellingDate())->days == 0 && (new \DateTime() >= $this->getLastSellingDate());
     }
 
-    public function isDeadlineDate()
-    {
+    public function isDeadlineDate() {
         $today = new \DateTime();
         return $today->diff($this->dateEnd)->days == 1 && $today < $this->dateEnd;
     }
 
-    public function getTicketsSoldMajored()
-    {
+    public function getTicketsSoldMajored() {
         return min($this->getTicketsSold(), $this->getMaxTickets());
     }
 
-    public function getMaxTickets()
-    {
+    public function getMaxTickets() {
         return $this->getHallConcert() != null ? $this->getHallConcert()->getCapacity() : $this->step->getMaxTickets();
     }
 
-    public function getTotalNbAvailable()
-    {
+    public function getTotalNbAvailable() {
         return $this->getMaxTickets() - $this->getTotalBookedTickets();
     }
 
-    public function isValidatedBelowObjective()
-    {
+    public function isValidatedBelowObjective() {
         return $this->isInSuccessfulState() && $this->getTicketsSold() < $this->getMinTickets();
     }
 
-    public function getMinTickets()
-    {
-        if ($this->min_tickets <= 0) {
+    public function getMinTickets() {
+        if($this->min_tickets <= 0) {
             return $this->getStep()->getMinTickets();
-        } else {
+        }
+        else {
             return $this->min_tickets;
         }
     }
 
-    public function getNbTicketsToSuccess()
-    {
+    public function getNbTicketsToSuccess() {
         $min = $this->getMinTickets();
         $booked = $this->getTotalBookedTickets();
-        if ($booked >= $min)
+        if($booked >= $min)
             return 0;
 
         return $min - $booked;
     }
 
-    public function isDDay()
-    {
-        return $this->getDateConcert()->diff(new \DateTime())->days == 0;
+    public function isDDay() {
+        return $this->getDateConcert()->diff(new \DateTime())->days == 0 && (new \DateTime() >= $this->getDateConcert());
     }
 
-    public function getState()
-    {
+    public function getState() {
 
-        if (isset($this->state)) {
+        if(isset($this->state)) {
             return $this->state;
         }
 
@@ -211,17 +186,18 @@ class ContractArtist extends BaseContractArtist
         $max_tickets = $this->getMaxTickets();
 
         // Failure & refunded
-        if ($this->refunded)
+        if($this->refunded)
             return self::STATE_REFUNDED;
 
         // Marked as failure
-        if ($this->failed)
+        if($this->failed)
             return self::STATE_FAILED;
 
         // Marked as success
-        if ($this->successful) {
+        if($this->successful)
+        {
             // Concert in the future
-            if ($this->getDateConcert() >= $today3->modify('-1 day')) {
+            if($this->getDateConcert() >= $today3->modify('-1 day')) {
                 // Sold out
                 if ($this->getTotalBookedTickets() >= $max_tickets)
                     return self::STATE_SUCCESS_SOLDOUT;
@@ -233,13 +209,14 @@ class ContractArtist extends BaseContractArtist
                 // Successful, in the future, not sold out, not closed => ongoing
                 else
                     return self::STATE_SUCCESS_ONGOING;
-            } // Concert in the passed & successful
+            }
+            // Concert in the passed & successful
             else
                 return self::STATE_SUCCESS_PASSED;
         }
 
         // Crowdfunding is not over yet
-        if ($this->dateEnd->diff($today)->days > 0) {
+        if($this->dateEnd->diff($today)->days > 0) {
             // But already sold out
             if ($this->getTotalBookedTickets() >= $max_tickets)
                 return self::STATE_SUCCESS_SOLDOUT_PENDING;
@@ -249,7 +226,7 @@ class ContractArtist extends BaseContractArtist
                 return self::STATE_SUCCESS_PENDING;
 
             // Or in pre-validaton
-            if ($this->isInTestPeriod()) {
+            if($this->isInTestPeriod()) {
                 return self::STATE_TEST_PERIOD;
             }
 
@@ -273,11 +250,10 @@ class ContractArtist extends BaseContractArtist
         $this->min_tickets = 0;
     }
 
-    public function addCoArtist(Artist $artist)
-    {
+    public function addCoArtist(Artist $artist) {
 
-        foreach ($this->coartists_list as $col) {
-            if ($col->getArtist()->getId() == $artist->getId()) {
+        foreach($this->coartists_list as $col) {
+            if($col->getArtist()->getId() == $artist->getId()) {
                 return;
             }
         }
@@ -287,23 +263,22 @@ class ContractArtist extends BaseContractArtist
         $this->addCoartistsList($ca_a);
     }
 
-    public function removeCoArtist(Artist $artist)
-    {
-        foreach ($this->coartists_list as $col) {
-            if ($col->getArtist()->getId() == $artist->getId()) {
-                $this->coartists_list->removeElement($col);
-            }
-        }
+    public function removeCoArtist(Artist $artist) {
+       foreach($this->coartists_list as $col) {
+           if($col->getArtist()->getId() == $artist->getId()) {
+               $this->coartists_list->removeElement($col);
+           }
+       }
     }
 
     public function __toString()
     {
-        switch ($this->currentLocale) {
+        switch($this->currentLocale) {
             case 'fr':
-                return 'Festival Un-Mute avec ' . $this->artist;
+                return 'Festival Un-Mute avec '. $this->artist;
 
             case 'en':
-                return 'Un-Mute Festival with ' . $this->artist;
+                return 'Un-Mute Festival with '. $this->artist;
 
             case 'nl':
                 return 'Un-Mute Festival met ' . $this->artist;
@@ -324,63 +299,55 @@ class ContractArtist extends BaseContractArtist
         return $this;
     }
 
-    public function getCoartists()
-    {
-        return array_map(function ($elem) {
+    public function getCoartists() {
+        return array_map(function($elem) {
             return $elem->getArtist();
         }, $this->coartists_list->toArray());
     }
 
     // Facilitates admin list export
-    public function getCoartistsExport()
-    {
+    public function getCoartistsExport() {
         $exportList = array();
         $i = 1;
         foreach ($this->getCoartists() as $key => $val) {
             $exportList[] = $i .
-                ') id: ' . $val->getId() . ', nom: ' . $val->getArtistname();
+                ') id: '. $val->getId() . ', nom: ' . $val->getArtistname();
             $i++;
         }
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
-    public function addTicketsSold($quantity)
-    {
+    public function addTicketsSold($quantity) {
         $this->tickets_sold += $quantity;
     }
 
-    public function removeTicketsSold($quantity)
-    {
+    public function removeTicketsSold($quantity) {
         $this->tickets_sold -= $quantity;
     }
 
-    public function addTicketsReserved($quantity)
-    {
+    public function addTicketsReserved($quantity) {
         $this->tickets_reserved += $quantity;
     }
 
-    public function removeTicketsReserved($quantity)
-    {
+    public function removeTicketsReserved($quantity) {
         $this->tickets_reserved -= $quantity;
     }
 
-    public function getDateConcert()
-    {
-        if (isset($this->reality) && $this->reality->getDate() != null) {
+    public function getDateConcert() {
+        if(isset($this->reality) && $this->reality->getDate() != null) {
             return $this->reality->getDate();
-        } else {
+        }
+        else {
             return $this->preferences->getDate();
         }
     }
 
-    public function getCounterPartsSent()
-    {
+    public function getCounterPartsSent() {
         return $this->getTicketsSent();
     }
 
-    public function getNbPayments()
-    {
-        return count(array_filter($this->payments->toArray(), function ($elem) {
+    public function getNbPayments() {
+        return count(array_filter($this->payments->toArray(), function($elem) {
             return !$elem->getRefunded();
         }));
     }
@@ -388,9 +355,8 @@ class ContractArtist extends BaseContractArtist
     /**
      * @return Hall
      */
-    public function getHallConcert()
-    {
-        if (isset($this->reality) && $this->reality->getHall() != null) {
+    public function getHallConcert() {
+        if(isset($this->reality) && $this->reality->getHall() != null) {
             return $this->reality->getHall();
         }
         return null;
@@ -402,9 +368,9 @@ class ContractArtist extends BaseContractArtist
     public function validateStep(ExecutionContextInterface $context, $payload)
     {
         $available_dates = $this->step->getAvailableDates($this->province);
-        if (count($available_dates) == 0) {
+        if(count($available_dates) == 0) {
             $available_dates = $this->step->getAvailableDates();
-            if (count($available_dates) == 0) {
+            if(count($available_dates) == 0) {
                 $context->buildViolation("Il n'est pas possible de trouver une date pour cette catégorie de salle, merci d'essayer plus tard ou de changer de catégorie")
                     ->atPath('step')
                     ->addViolation();
@@ -418,7 +384,7 @@ class ContractArtist extends BaseContractArtist
     public function validateProvince(ExecutionContextInterface $context, $payload)
     {
         $available_dates = $this->step->getAvailableDates($this->province);
-        if (count($available_dates) == 0) {
+        if(count($available_dates) == 0) {
             $context->buildViolation('Aucune date trouvée dans cette province pour cette catégorie de salle')
                 ->atPath('province')
                 ->addViolation();
@@ -436,15 +402,34 @@ class ContractArtist extends BaseContractArtist
 
         $availableDates = $step->getAvailableDates($province);
 
-        if (!in_array($date, $availableDates)) {
+        if(!in_array($date, $availableDates)) {
             $context->buildViolation("Date non disponible")
                 ->atPath('preferences')
                 ->addViolation();
         }
     }
 
+    public function getGenres() {
+        if($this->genres != null) {
+            return $this->genres;
+        }
+
+        $genres = [];
+        foreach($this->getArtist()->getGenres() as $genre) {
+            $genres[] = $genre;
+        }
+
+        foreach($this->getCoartists() as $coartist) {
+            foreach($coartist->getGenres() as $genre) {
+                $genres[] = $genre;
+            }
+        }
+        $this->genres = array_unique($genres);
+        return $this->genres;
+    }
+
     // Unmapped
-    private $state;
+    private $genres;
 
     // Unmapped
     private $coartists_list_plain = [];
@@ -747,8 +732,8 @@ class ContractArtist extends BaseContractArtist
      */
     public function getCoartistsListPlain(): array
     {
-        if (empty($this->coartists_list_plain)) {
-            foreach ($this->coartists_list as $col) {
+        if(empty($this->coartists_list_plain)) {
+            foreach($this->coartists_list as $col) {
                 $this->coartists_list_plain[] = $col->getArtist();
             }
         }
@@ -757,13 +742,10 @@ class ContractArtist extends BaseContractArtist
     }
 
 
-    public function addCoartistsListPlain(Artist $artist)
-    {
+    public function addCoartistsListPlain(Artist $artist) {
         $this->addCoArtist($artist);
     }
-
-    public function removeCoartistsListPlain(Artist $artist)
-    {
+    public function removeCoartistsListPlain(Artist $artist) {
         $this->removeCoArtist($artist);
     }
 
