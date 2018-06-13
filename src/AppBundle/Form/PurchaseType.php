@@ -17,22 +17,24 @@ class PurchaseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /**
-         * @var BaseContractArtist $contract_artist
-         */
+        /** @var BaseContractArtist $contract_artist */
         $contract_artist = $options['contract_artist'];
 
+        $builder->add('quantity', NumberType::class, array(
+            'attr' => [
+                'class' => 'quantity',
+            ],
+            'label' => false,
+        ));
 
-            if($contract_artist instanceof ContractArtist) {
-                $builder->add('quantity', NumberType::class, array(
-                    'attr' => ['class' => 'quantity',
-                        'min' => 0,
-                        'max' => $contract_artist->getTotalNbAvailable(),
-                    ],
-                    'label' => false,
-                ));
-            }
-        ;
+        if($contract_artist instanceof ContractArtistSales) {
+            $builder->add('free_price_value', NumberType::class, array(
+                'attr' => [
+                    'class' => 'quantity',
+                ],
+                'label' => false,
+            ));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)

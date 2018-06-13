@@ -354,7 +354,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
                   LEFT JOIN ca.preferences pr
                   LEFT JOIN ca.payments p
                   LEFT JOIN p.user u
-                  WHERE ( (r.id IS NOT NULL AND r.date > ?2) OR (r.id IS NULL AND pr.date >?2) )
+                  WHERE p.refunded = 0 AND ((r.id IS NOT NULL AND r.date > ?2) OR (r.id IS NULL AND pr.date >?2) )
                   AND ca.refunded = 0
                   AND ca.failed = 0
                   AND u.id = ?1

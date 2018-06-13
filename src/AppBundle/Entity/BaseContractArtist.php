@@ -201,6 +201,10 @@ class BaseContractArtist implements TranslatableInterface
         });
     }
 
+    public function getNbCounterPartsPaid() {
+        return array_sum(array_map(function(ContractFan $elem) {return $elem->getCounterPartsQuantity();}, $this->getContractsFanPaid()));
+    }
+
     public function getNbCounterPartsObtainedByPromotion() {
         return array_sum(array_map(function(ContractFan $contractFan) {
             return $contractFan->getCounterPartsQuantityPromotional();

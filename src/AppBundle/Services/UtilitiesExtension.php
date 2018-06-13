@@ -16,6 +16,13 @@ class UtilitiesExtension extends \Twig_Extension
         $this->stringHelper = $stringHelper;
     }
 
+    public function getTests()
+    {
+        return array(
+            new \Twig_SimpleTest('instanceof', array($this, 'isInstanceOf')),
+        );
+    }
+
     public function getFilters()
     {
         return array(
@@ -39,6 +46,11 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('facebook_connect_widget', array($this, 'facebook_connect_widget', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('lorem_ipsum', array($this, 'lorem_ipsum', array('is_safe' => array('html')))),
         );
+    }
+
+    public function isInstanceOf($var, $instance) {
+        $reflexionClass = new \ReflectionClass($instance);
+        return $reflexionClass->isInstance($var);
     }
 
     public function decode($value)

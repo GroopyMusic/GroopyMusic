@@ -151,7 +151,7 @@ concert:
       Tu peux valider (ou invalider si nécessaire) le festival depuis l'espace d'administration, en précisant la salle et la date réelles du festival. Alors seulement un mail sera envoyé à tous les producteurs et à l'artiste.
 
 order: |
-    Merci d'avoir passé commande chez Un-Mute. Vous allez peut-être permettre à un artiste de se produire sur une scène belge reconnue et devant un public en folie !
+    Merci d'avoir passé commande chez Un-Mute ! C'est grâce à ces actions de soutien que des artistes belges parviennent à se produire et à partager leur musique. Merci pour eux !
 
     Vous trouverez le récapitulatif de votre commande en pièces jointes, et dans votre espace personnel sur %url%.
 

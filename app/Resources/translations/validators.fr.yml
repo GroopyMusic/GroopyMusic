@@ -76,6 +76,7 @@ contractartist:
 contractfan:
   quantity_min: Pour poursuivre, il faut commander au moins une place de concert !
   quantity_max: Il n'y a pas autant de places disponibles !
+  free_price_min: Le prix que vous avez proposé est plus petit que le prix minimum autorisé pour cet article.
 
 ownershiprequest:
   email:

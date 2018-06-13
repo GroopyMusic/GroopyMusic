@@ -73,6 +73,14 @@ class ContractArtistSales extends BaseContractArtist {
         return !in_array($this->getState(), self::UNCROWDABLE_STATES);
     }
 
+    public function isUnCrowdable() {
+        return !$this->isCrowdable();
+    }
+
+    public function getTotalNbAvailable() {
+        return PHP_INT_MAX;
+    }
+
     /**
      * @var StepSales
      *

@@ -490,6 +490,19 @@ pay_cart:
         consommable: "%use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €."
         reduction: '%reduction% % de réduction appliquée à %nbReducedCounterpart% tickets "%counterpart%"'
 
+    sales:
+      intro: |
+        <p>
+           Merci de soutenir %artist% dans sa campagne de vente de disques. C'est grâce à votre soutien que les artistes belges peuvent se produire et toucher leur public.
+        </p>
+
+        <p>
+          En procédant au paiement des articles que vous avez sélectionnés, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
+        </p>
+      recap:
+        title: Récapitulatif
+        total: "[0,1] Total pour %count% article| [2, Inf[ Total pour %count% articles"
+
     #new
     not_authenticated:
       intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute.
@@ -668,6 +681,8 @@ leave_artist:
 order_pdf:
   title: Récapitulatif de votre commande
   intro: Merci d'avoir passé une commande de tickets de festival avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
+  sales:
+    intro: Merci d'avoir passé commandé avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
   promo: "Note : pour toute commande passée lors de la première semaine de ventes de tickets pour cet événement (c'est-à-dire jusqu'au %end_date%), par %nb_organic_needed% tickets achetés, vous en recevez %nb_promotional%."
   labels:
     order_date: Date de la commande
@@ -677,6 +692,7 @@ order_pdf:
     nb_tickets: Nombre de tickets achetés
     nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
     rewards: Récompense(s) appliquée(s) #new
+    sales: Album concerné #NEEEW
   details:
     title: Détails de la commande
     labels:
@@ -690,6 +706,10 @@ order_pdf:
   process:
     title: Processus d'achat Un-Mute
     content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce festival. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>
+  #NEEEW
+  conditions:
+    title: Conditions d'achat
+    content: Visitez nos conditions générales d'utilisation et de vente à l'adresse %url%
   footer:
     tracking: "Cette confirmation de commande a été générée le %date%. Identifiant commande : %id%"
 
@@ -989,6 +1009,12 @@ sponsorship_modal:
   remove_field: Retirer une adresse e-mail
   add_field: Ajouter une adresse e-mail
 
-
-
-
+#new
+sales:
+  stillselling: Ventes en cours
+  infos:
+    title: Infos
+  about_host:
+    title: A propos de l'artiste
+  buy:
+    title: Acheter l'album

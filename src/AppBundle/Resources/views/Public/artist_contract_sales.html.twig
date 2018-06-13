@@ -25,8 +25,8 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-8 offset-md-2">
-                <h2 class="text-center">{{ 'sales.title'|trans({'%artist%':contract.artist.artistname})|raw }}</h2>
+            <div class="col-12">
+                <h2 class="text-center">{{ contract.title }}</h2>
             </div>
         </div>
 
@@ -38,81 +38,41 @@
                         <h3 class="mb-3">{{ 'sales.infos.title'|trans|raw }}</h3>
 
                         <div class="col-12 row equal content-box-row">
-                            <div class="col-12 col-md-4 content-box-col">
+                            <div class="col-12 col-md-6 content-box-col">
                                 <div class="contract-info-title">
-
+                                    {{ 'event.infos.opening_date'|trans|raw }}
                                 </div>
                                 <div class="contract-info-content">
-
+                                    {{ contract.startDate|date('d/m/Y') }}
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4 content-box-col">
+                            <div class="col-12 col-md-6 content-box-col">
                                 <div class="contract-info-title">
-
+                                    {{ 'event.infos.closing_date'|trans|raw }}
                                 </div>
                                 <div class="contract-info-content">
-
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
-                                    {{ 'event.infos.validation_date'|trans|raw }}
-                                </div>
-                                <div class="contract-info-content">
+                                    {{ contract.dateEnd|date('d/m/Y') }}
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 row equal content-box-row no-border-top">
+                        <div class="row equal content-box-row no-border-top">
                             <div class="col-12 content-box-col">
-                                <span class="contract-info-title pr-2">
-                                </span>
-                                <span class="contract-info-content pr-1">
-
-                                </span>
+                                <p>{{ contract.description|nl2br }}</p>
                             </div>
                         </div>
-
-                        <div class="col-12 content-box-col">
-                            <span class="contract-info-title pr-2">
-
-                            </span>
-                            <span class="contract-info-content pr-1">
-
-                            </span>
-                            {% if contract.isCrowdable %}
-                                <span class="text-positive um-semi-bold"><img class="green-check"
-                                                                              src="{{ asset('images/green-check.png') }}"/>{{ 'sales.stillselling'|trans|raw }}</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-12 row equal content-box-row">
-                            <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
-                                </div>
-                                <div class="contract-info-content">
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
-                                </div>
-                                <div class="contract-info-content">
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
-
-                                </div>
-                                <div class="contract-info-content">
-                                </div>
+                        <div class="row equal content-box-row no-border-top">
+                            <div class="col-12 content-box-col">
+                                {{ contract.nbCounterPartsPaid }} <span class="contract-info-title">contributeurs</span>
                             </div>
                         </div>
-
-                        <div class="col-12 content-box-col">
-                            <span class="contract-info-title pr-2"></span>
-                            <span class="contract-info-content"></span>
+                        <div class="row equal content-box-row no-border-bottom no-border-top">
+                            <div class="col-12 content-box-col">
+                                {% if contract.isCrowdable %}
+                                    <span class="text-positive um-semi-bold"><img class="green-check"
+                                                                                  src="{{ asset('images/green-check.png') }}"/>{{ 'sales.stillselling'|trans|raw }}</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,11 +101,7 @@
             <div class="col-12 col-lg-4">
                 <div class="col-12 content-box mt-4">
                     <div class="content-box-header">
-                        {% if contract.isCrowdable %}
-                            <p class="text-uppercase small font-weight-bold">blabla</p>
-                        {% endif %}
-
-                        <h3>{{ 'event.buy_tickets.title'|trans|raw }}</h3>
+                        <h3>{{ 'sales.buy.title'|trans|raw }}</h3>
                     </div>
 
                     <div class="content-box-content">
@@ -161,24 +117,57 @@
                                     <div class="form-group form-row">
                                         {{ form_errors(purchase) }}
 
-                                        <div class="col-8">
-                                            <label class="counterpart-label">{{ counterpart.name }}</label>
-                                        </div>
-                                        <div class="col-4 counterpart-price">
-                                            {{ counterpart.price }} €
-                                        </div>
-                                        <div class="col-8">{{ counterpart.getDescription|raw }}</div>
-                                        <div class="col-4">
-                                            <div class="container px-0">
-                                                <div class="count-input space-bottom">
-                                                    <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                                    {{ form_widget(purchase) }}
-                                                    <a class="incr-btn" data-action="increase"
-                                                       data-max="{{ tickets_left }}"
-                                                       href="#">&plus;</a>
+                                        {% if not counterpart.freePrice %}
+                                            <div class="col-8">
+                                                <label class="counterpart-label">{{ counterpart.name }}</label>
+                                            </div>
+                                            <div class="col-4 counterpart-price">
+                                                {{ counterpart.price }} €
+                                            </div>
+                                            <div class="col-8">{{ counterpart.getDescription|raw }}</div>
+                                            <div class="col-4">
+                                                <div class="container px-0">
+                                                    <div class="count-input space-bottom">
+                                                        <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                                        {{ form_widget(purchase) }}
+                                                        <a class="incr-btn" data-action="increase"
+                                                           data-max="{{ tickets_left }}"
+                                                           href="#">&plus;</a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        {% else %}
+                                            <div class="col-12 pb-2">
+                                                <label class="counterpart-label">{{ counterpart.name }}</label>
+                                            </div>
+                                            <div class="col-12 row">
+                                                <div class="col-6">
+                                                   Prix (libre, min. 7 €)
+                                                </div>
+                                                <div class="col-6 px-3">
+                                                    <div class="w-90 position-relative">
+                                                        {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice, 'max': contract.totalNbAvailable}}) }} <span class="free-price-euro-sign position-absolute">€</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 row pt-3">
+                                                <div class="col-6">
+                                                    Quantité
+                                                </div>
+
+                                                <div class="col-6 px-3">
+                                                    <div class="count-input space-bottom">
+                                                        <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                                        {{ form_widget(purchase.quantity, {'attr': {'min': counterpart.minimumPrice, 'max': contract.totalNbAvailable, 'value': 1}}) }}
+                                                        <a class="incr-btn" data-action="increase"
+                                                           data-min="1"
+                                                           data-max="{{ contract.totalNbAvailable }}"
+                                                           href="#">&plus;</a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             {% endfor %}
