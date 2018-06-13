@@ -613,6 +613,7 @@ artist_profile:
       instagram: Suivre sur Instagram
       soundcloud: Voir le profil SoundCloud
       bandcamp: Voir le profil Bandcamp
+    current_sales: Vente en cours
     current_event: Événement à venir
     passed_events: Événéments passés
   profile_pic:

@@ -115,6 +115,17 @@
                             </div>
                         </div>
 
+                        {% if current_sales is not empty %}
+                            <h4 class="mt-4">{{ 'artist_profile.see.current_sales'|trans|raw }}</h4>
+                            <div class="list-group">
+                             {% for sale in current_sales %}
+                                <a href="{{ path('artist_contract_sales', {'id': sale.id, 'slug': sale.artist.slug}) }}" class="list-group-item list-group-item-action">
+                                    {{ sale.title }}
+                                </a>
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+
                         <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
                         {% for video in artist.videos %}
                             {{ video.embedVideo|raw }}

@@ -588,6 +588,7 @@ class PublicController extends Controller
      */
     public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null, EntityManagerInterface $em)
     {
+        $current_sales = $em->getRepository('AppBundle:ContractArtistSales')->findCurrentsForArtist($artist);
 
         if ($slug !== null && $slug != $artist->getSlug()) {
             return $this->redirectToRoute('artist_profile', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
@@ -595,6 +596,7 @@ class PublicController extends Controller
 
         return $this->render('@App/Public/artist_profile.html.twig', array(
             'artist' => $artist,
+            'current_sales' => $current_sales,
         ));
     }
 

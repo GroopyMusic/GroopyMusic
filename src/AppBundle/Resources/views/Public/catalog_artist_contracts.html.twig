@@ -126,15 +126,6 @@
                 {% endfor %}
             </div>
         </div>
-
-        {% if sales_contracts is not empty %}
-            <div class="container">
-                <h3 class="text-center mb-3">Ventes de disques {#TODO translate#}</h3>
-                {% for contract in sales_contracts %}
-                    <a href="{{ path('artist_contract_sales', {'id': contract.id, 'slug': contract.artist.slug}) }}">{{ contract }}</a>
-                {% endfor %}
-            </div>
-        {% endif %}
     {% endif %}
 {% endblock %}
 

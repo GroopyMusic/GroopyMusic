@@ -3,13 +3,11 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\Artist;
+
 class ContractArtistSalesRepository extends \Doctrine\ORM\EntityRepository
 {
-    /**
-     * Returns 0-$limit contracts for which there are tickets to buy & that are visible
-     */
-    public function findVisible($limit = null)
-    {
+    private function queryVisible() {
         return $this->createQueryBuilder('c')
             ->join('c.artist', 'a')
             ->join('c.step', 's')
@@ -31,6 +29,24 @@ class ContractArtistSalesRepository extends \Doctrine\ORM\EntityRepository
             ->where('c.failed = 0')
             ->andWhere('c.dateEnd > :yesterday')
             ->setParameter('yesterday', new \DateTime('yesterday'))
+        ;
+    }
+
+    /**
+     * Returns 0-$limit contracts for which there are tickets to buy & that are visible
+     */
+    public function findVisible($limit = null)
+    {
+       return $this->queryVisible()
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findCurrentsForArtist(Artist $artist) {
+        return $this->queryVisible()
+            ->andWhere('c.artist = :artist')
+            ->setParameter('artist', $artist)
             ->getQuery()
             ->getResult()
         ;
