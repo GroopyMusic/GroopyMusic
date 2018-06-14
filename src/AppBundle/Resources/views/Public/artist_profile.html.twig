@@ -115,7 +115,7 @@
                             </div>
                         </div>
 
-                        {% if current_sales is not empty %}
+                        {# if current_sales is not empty %}
                             <h4 class="mt-4">{{ 'artist_profile.see.current_sales'|trans|raw }}</h4>
                             <div class="list-group">
                              {% for sale in current_sales %}
@@ -124,7 +124,7 @@
                                 </a>
                             {% endfor %}
                             </div>
-                        {% endif %}
+                        {% endif #}
 
                         <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
                         {% for video in artist.videos %}
