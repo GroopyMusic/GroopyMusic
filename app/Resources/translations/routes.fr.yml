@@ -13,6 +13,9 @@ artist_cancel_ownership_request: '/artiste/{id}/annuler-requete/{request_id}'
 # Desc: /events/{id}-{slug}
 artist_contract: '/evenements/{id}-concert-de-{slug}'
 
+# Desc: /sales/{id}-{slug}
+artist_contract_sales: '/albums/{id}-{slug}'
+
 # Desc: /artist/{id}/all-contracts
 artist_contracts: '/artiste/{id}/crowdfundings'
 

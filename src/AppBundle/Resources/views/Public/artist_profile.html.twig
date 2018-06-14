@@ -120,7 +120,7 @@
                             <div class="list-group">
                              {% for sale in current_sales %}
                                 <a href="{{ path('artist_contract_sales', {'id': sale.id, 'slug': sale.artist.slug}) }}" class="list-group-item list-group-item-action">
-                                    {{ sale.title }}
+                                    {{ sale.getTitle }}
                                 </a>
                             {% endfor %}
                             </div>

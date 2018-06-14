@@ -7,6 +7,9 @@ artist_cancel_ownership_request: '/artiest/{id}/verzoek-annuleren/{request_id}'
 # Desc: /events/{id}-{slug}
 artist_contract: '/evenementen/{id}-concert-van-{slug}'
 
+# Desc: /sales/{id}-{slug}
+artist_contract_sales: '/albums/{id}-{slug}'
+
 # Desc: /artist/{id}/all-contracts
 artist_contracts: '/artiest/{id}/crowdfundings'
 

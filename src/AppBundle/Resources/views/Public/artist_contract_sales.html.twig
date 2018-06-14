@@ -10,11 +10,11 @@
     {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
 {% endif %}
 
-{% block description_part_1 %}{{ contract.title }} - {{ 'meta_description_sales'|trans({'%artist%': artist.artistname}) }}{% endblock %}
+{% block description_part_1 %}{{ contract.getTitle }} - {{ 'meta_description_sales'|trans({'%artist%': artist.artistname}) }}{% endblock %}
 
 {% block open_graph %}
     <meta property="og:title"
-          content="{{ contract.title }}"/>
+          content="{{ contract.getTitle }}"/>
     <meta property="og:type" content="article"/>
     <meta property="og:url"
           content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
@@ -25,7 +25,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h2 class="text-center">{{ contract.title }}</h2>
+                <h2 class="text-center">{{ contract.getTitle }}</h2>
             </div>
         </div>
 
@@ -57,7 +57,7 @@
 
                         <div class="row equal content-box-row no-border-top">
                             <div class="col-12 content-box-col">
-                                <p>{{ contract.description|nl2br }}</p>
+                                <p>{{ contract.getDescription|nl2br }}</p>
                             </div>
                         </div>
                         <div class="row equal content-box-row no-border-top">
