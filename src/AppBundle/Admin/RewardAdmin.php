@@ -99,7 +99,7 @@ class RewardAdmin extends BaseAdmin
             $showMapper
                 ->with('Récompense consommation')
                 ->add('quantity', null, array(
-                    'label' => 'Nombre de tickets',
+                    'label' => 'Nombre de tickets (ex : Nombre de tickets boissons par utilisation de récompenses)',
                 ))
                 ->add('type_consomable', null, array(
                     'label' => 'Type de consommation',
@@ -173,7 +173,7 @@ class RewardAdmin extends BaseAdmin
             $form
                 ->with('Récompense consommation')
                 ->add('quantity', IntegerType::class, array(
-                    'label' => 'Nombre de tickets',
+                    'label' => 'Nombre de tickets (ex : Nombre de tickets boissons par utilisation de récompenses)',
                     'attr' => array('min' => 0)
                 ))
                 ->add('type_consomable', EntityType::class, array(

@@ -934,8 +934,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function addSponsorship(SponsorshipInvitation $sponsorship)
     {
-        $this->sponsorships[] = $sponsorship;
-
+        if (!$this->sponsorships->contains($sponsorship)) {
+            $this->sponsorships[] = $sponsorship;
+            $sponsorship->setHostInvitation($this);
+        }
         return $this;
     }
 
@@ -944,9 +946,13 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      *
      * @param SponsorshipInvitation $sponsorship
      */
-    public function removeSponsorship(SponsorshipInvitation $sponsorship)
+    public
+    function removeSponsorship(SponsorshipInvitation $sponsorship)
     {
-        $this->sponsorships->removeElement($sponsorship);
+        if ($this->sponsorships->contains($sponsorship)) {
+            $this->sponsorships->removeElement($sponsorship);
+            $sponsorship->setHostInvitation(null);
+        }
     }
 
     /**
@@ -954,7 +960,8 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getSponsorships()
+    public
+    function getSponsorships()
     {
         return $this->sponsorships;
     }
@@ -966,7 +973,8 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      *
      * @return User
      */
-    public function setSponsorshipInvitation(SponsorshipInvitation $sponsorshipInvitation = null)
+    public
+    function setSponsorshipInvitation(SponsorshipInvitation $sponsorshipInvitation = null)
     {
         $this->sponsorship_invitation = $sponsorshipInvitation;
 
@@ -978,7 +986,8 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      *
      * @return SponsorshipInvitation
      */
-    public function getSponsorshipInvitation()
+    public
+    function getSponsorshipInvitation()
     {
         return $this->sponsorship_invitation;
     }

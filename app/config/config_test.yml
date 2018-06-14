@@ -14,3 +14,31 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+doctrine:
+    dbal:
+       default_connection: default
+       connections:
+           default:
+               driver:   pdo_sqlite
+               #path : %kernel.cache_dir%/test.db
+               memory: true
+
+#doctrine:
+#   dbal:
+#       driver:   pdo_mysql
+#       host:     127.0.0.1
+#       port:     ~
+#       dbname:   db_test
+#       user:     root
+#       password: null
+#       server_version: 5.6
+#       charset:  UTF8
+
+services:
+    test.session.listener:
+        class: AppBundle\EventListener\TestSessionListener
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: kernel.event_subscriber }

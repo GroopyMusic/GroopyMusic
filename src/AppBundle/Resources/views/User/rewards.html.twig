@@ -3,7 +3,7 @@
 {% block body %}
     <div class="container rewards-page">
         <h3 class="mb-3 text-center">{{ 'rewards.title'|trans|raw }}</h3>
-        <div class="content-box">
+        <div id="content-reward-list" class="content-box">
             <div class="row content-box-content">
                 {% if rewards is empty %}
                     <div class="col-12">
@@ -17,8 +17,11 @@
                             <tr>
                                 <td><b>{{ ur.reward.name }}</b></td>
                                 <td>{{ preview(ur.reward.feature, 100)|raw }}</td>
-                                <td>{{ ur.limitDate|date() }}</td>
-                                <td><a class="btn btn-primary notification-trigger" href="{{ path('user_reward', {'id': ur.id}) }}">{{ 'notifs.button'|trans|raw }}</a></td>
+                                <td>{{ ur.limitDate| date("m/d/Y") }}</td>
+                                <td>
+                                    <button class="btn btn-primary button-display-reward"
+                                            onclick="displayRewardModal('{{ path('user_reward', {'id': ur.id}) }}')">{{ 'notifs.button'|trans|raw }}</button>
+                                </td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -26,4 +29,38 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function disableAllButton() {
+            $(".button-display-reward").each(function(){
+                $(this).attr("disabled", true);
+            });
+        }
+
+        function enableAllButton() {
+            $(".button-display-reward").each(function(){
+                $(this).attr("disabled", false);
+            });
+        }
+
+        function displayRewardModal(url) {
+            console.log("hello");
+            disableAllButton();
+            $.get(url,
+                function (html) {
+                    $(html).insertAfter($('#content-reward-list'));
+                    enableAllButton();
+                    $("#reward-display-modal").on("hidden.bs.modal", function () {
+                        $("#reward-display-modal").remove();
+                    }).modal();
+                }
+            ).fail(function (err) {
+                console.log(err);
+            });
+        }
+    </script>
+    }
+
 {% endblock %}

@@ -1,0 +1,128 @@
+<div id="reward-display-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="p-3">
+                <div id="reward-information">
+                    <div style="text-align: center"><h3>{{ user_reward.reward.name }}</h3></div>
+                    <br>
+                    <div>
+                        <div class="modal-reward-label"><p
+                                    class="text-uppercase small">{{ 'reward.feature'|trans|raw }}</p>
+                        </div>
+                        <div>{{ user_reward.reward.feature }}</div>
+                    </div>
+                    <br>
+                    <div>
+                        <div class="modal-reward-label"><p
+                                    class="text-uppercase small">{{ 'reward.creation_date'|trans|raw }}</p></div>
+                        <div>{{ user_reward.creationDate|date("m/d/Y") }}</div>
+                    </div>
+                    <br>
+                    <div>
+                        <div class="modal-reward-label"><p
+                                    class="text-uppercase small">{{ 'reward.limit_date'|trans|raw }}</p></div>
+                        <div>{{ user_reward.limitDate|date("m/d/Y") }}</div>
+                    </div>
+                    <br>
+                    <div>
+                        <div class="modal-reward-label"><p
+                                    class="text-uppercase small">{{ 'reward.remain_use'|trans|raw }}</p></div>
+                        <div>{{ user_reward.remainUse }} {{ 'reward.on'|trans|raw }} {{ user_reward.reward.maxUse }}</div>
+                    </div>
+                    <br>
+                    {% if user_reward.reward.getType == "Invitation" %}
+                        <div>
+                            <div class="modal-reward-label"><p
+                                        class="text-uppercase small">{{ 'reward.invitation.time'|trans|raw }}</p></div>
+                            <div>{{ user_reward.reward.endDate|date("m/d/Y") }}
+                                - {{ user_reward.reward.startDate|date("m/d/Y") }}</div>
+                        </div>
+                        <br>
+                    {% elseif user_reward.reward.getType == "Consommation" %}
+                        <div>
+                            <div class="modal-reward-label"><p
+                                        class="text-uppercase small">{{ 'reward.consomable.type'|trans|raw }}</p></div>
+                            <div>{{ user_reward.reward.typeConsomable }}</div>
+                        </div>
+                        <br>
+                        <div>
+                            <div class="modal-reward-label"><p
+                                        class="text-uppercase small">{{ 'reward.consomable.quantity'|trans|raw }}</p>
+                            </div>
+                            <div>{{ user_reward.reward.quantity }}</div>
+                        </div>
+                        <br>
+                        <div>
+                            <div class="modal-reward-label"><p
+                                        class="text-uppercase small">{{ 'reward.consomable.value'|trans|raw }}</p></div>
+                            <div>{{ user_reward.reward.value }}€</div>
+                        </div>
+                    {% elseif user_reward.reward.getType == "Réduction" %}
+                        <div>
+                            <div class="modal-reward-label"><p
+                                        class="text-uppercase small">{{ 'reward.reduction.reduction'|trans|raw }}</p>
+                            </div>
+                            <div>{{ user_reward.reward.reduction }}%</div>
+                        </div>
+                    {% endif %}
+                    <br>
+                    <div>
+                        {% set rest = false %}
+                        <div class="modal-reward-label"><p
+                                    class="text-uppercase small">{{ 'reward.applicable_to'|trans|raw }}</p></div>
+                        {% if user_reward.baseContractArtists is not empty %}
+                            {% set rest = true %}
+                            <div>
+                                <label>{{ 'reward.events'|trans|raw }} :</label>
+                                <ul>
+                                    {% for event in user_reward.baseContractArtists %}
+                                        <li><a href="{{ path('artist_contract', {'id': event.id}) }}">{{ event }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {% if user_reward.baseSteps is not empty %}
+                            {% set rest = true %}
+                            <div>
+                                <label>{{ 'reward.steps'|trans|raw }} :</label>
+                                <ul>
+                                    {% for step in user_reward.baseSteps %}
+                                        <li>{{ step }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {% if user_reward.counterParts is not empty %}
+                            {% set rest = true %}
+                            <div>
+                                <label>{{ 'reward.couterparts'|trans|raw }} :</label>
+                                <ul>
+                                    {% for counterPart in user_reward.counterParts %}
+                                        <li>{{ counterPart }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {% if user_reward.artists is not empty %}
+                            {% set rest = true %}
+                            <div>
+                                <label>{{ 'reward.artists'|trans|raw }} :</label>
+                                <ul>
+                                    {% for artist in user_reward.artists %}
+                                        <li>
+                                            <a href="{{ path('artist_profile', {'id': artist.id}) }}">{{ artist.artistName }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {% if rest == false %}
+                            <p>{{ 'reward.all_events'|trans|raw }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -113,10 +113,13 @@ class CategoryAdmin extends BaseAdmin
     public function validate(ErrorElement $errorElement, $object)
     {
         $formulaParserService = $this->getConfigurationPool()->getContainer()->get(FormulaParserService::class);
+        $em =  $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
         try {
             $formulaParserService->setUserStatisticsVariables(['pr' => '10', 'me' => '5', 'am' => '4']);
             $formulaParserService->computeStatistic($object->getFormula());
         } catch (\Exception $ex) {
+            unset($object);
+            $em->clear();
             return $errorElement->with('formula')->addViolation('Le format de la formule n\'est pas correct : ' . $ex->getMessage())->end();
         }
     }

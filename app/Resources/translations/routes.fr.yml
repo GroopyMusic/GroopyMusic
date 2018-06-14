@@ -110,6 +110,18 @@ homepage: /
 # Desc: /select2/genres
 select2_genres: /select2/genres
 
+# Desc: /select2/artists
+select2_artists: /select2/artists
+
+# Desc: /select2/users
+select2_users: /select2/users
+
+# Desc: /select2/newsletter_users
+select2_newsletter_users: /select2/newsletter_users
+
+# Desc: /select2/contractArtists
+select2_contractArtists: /select2/contractArtists
+
 # Desc: /suggestions
 suggestionBox: /contact
 

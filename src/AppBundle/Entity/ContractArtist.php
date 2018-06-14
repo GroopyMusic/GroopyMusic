@@ -282,6 +282,9 @@ class ContractArtist extends BaseContractArtist
 
             case 'nl':
                 return 'Un-Mute Festival met ' . $this->artist;
+                //FOR TEST
+            default :
+                return 'Festival Un-Mute avec ' . $this->artist;
         }
     }
 
