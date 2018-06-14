@@ -329,89 +329,89 @@ pay_cart:
     proceed:
         threeds:
             error: An error occurred. Please try again later and inform an Un-Mute administrator if the problem persists.
-            pending: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...
+            pending: <b>Your payment is being processed. Don't leave Un-Mute.be until it is completed.</b>
         creditcard:
-            title: Paiement par carte de crédit
+            title: Credit card checkout
             popover:
-                title: Cartes autorisées
-                content: Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.
-                apparent: + d'infos
+                title: Authorized cards
+                content: Our payments are secured by the Stripe system. We accept all kinds of credit cards.
+                apparent: More info
             labels:
-                creditcard: Carte de crédit
-                exp: Date d'exp.
-                cvc: Cryptogramme visuel
-            submit: Payer avec ma carte de crédit
+                creditcard: Credit card
+                exp: Expiration date
+                cvc: Visual crypto
+            submit: Pay with my credit card
         bancontact:
-            title: Payer par Bancontact
+            title: Bancontact checkout
             popover:
-                title: Cartes autorisées
-                content: Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.
-                apparent: + d'infos
-            info: Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.
-            submit: Poursuivre avec Bancontact
-            pending: Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.
+                title: Authorized cards
+                content: Our payments are secured by the Stripe system. We accept all kinds of Belgian debit cards.
+                apparent: More info
+            info: You will be redirected to the authentication page of your bank owner.
+            submit: Continue with Bancontact
+            pending: You are being redirected to the authentication page of your bank owner. If nothing happens, please try again.
     recap:
-        title: Vos tickets
+        title: Your tickets
         labels:
             counterpart: Type
-            concert: Concert
+            concert: Festival
             date: Date
-            quantity: Quantité
-            unitprice: Prix unitaire
+            quantity: Quantity
+            unitprice: Unit price
             total: Total
 
 my_orders:
-    title: Mes commandes
-    empty: Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="%catalog_url%">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !
+    title: My orders
+    empty: You haven't ordered anything on Un-Mute.be yet. Check out our <a href="%catalog_url%">artistes</a> and help them <a href="{{ path('catalog_crowdfundings') }}">reach their objectives</a>!
     labels:
-        details: Détail
-        state: État
+        details: Détails
+        state: State
         date: Date
-        quantity: Quantité
-        unitprice: Prix
-        totalprice: Prix total
-        order: Commande
+        quantity: Quantity
+        unitprice: Unit price
+        totalprice: Total price
+        order: Order
         tickets: Tickets
 
 notifs:
-    title: Mes notifications
-    empty: Vous n'avez pas encore reçu de notification.
-    see_more: Voir plus
+    title: My notifications
+    empty: You haven't received any notification yet.
+    see_more: See more
 
 new_artist:
-  title: Nouvel artiste
+  title: New artist profile
   intro: |
-      Pour créer un artiste sur Un-Mute, merci de remplir le formulaire suivant.
-      Une fois votre artiste créé, il apparaîtra dans le <a href="%catalog_url%">catalogue des artistes Un-Mute</a>
-      et vous pourrez ajouter des photos et vidéos de cet artiste.
-  warning: En créant un artiste, vous certifiez en être le représentant, ou l'un des membres s'il s'agit d'un groupe.
-  urls_explanation: Dans les champs suivants, veuillez introduire vos éventuels liens sous forme d'URL valides <strong>commençant par <em>http://</em> ou <em>https://</em></strong>
+      To create your artist profile, please fill in the form below.
+      Once your profile created, you will be contacted by the Un-Mute team and your artist profile will appear on our <a href="%catalog_url%">artists list</a>.
+      It will also be possible to add photos & videos to your artist profile.
+  warning: By creating an artist profile, you certify being its representative, or one of the members if it is a band.
+  urls_explanation: Please fill in your network links below, <strong>starting with <em>http://</em> or <em>https://</em></strong>
 
 my_artists:
-  title: Mes artistes
+  title: My artists
   intro: |
-      Vous êtes un artiste musical ? Vous faites partie d'un groupe ?
-      Créez votre identité sur Un-Mute et organisez vos concerts sans prendre aucun risque.
-  new_event: Créer un événement
-  new_artist: Créer un artiste
-  no_available_artist: "Note : vous ne pouvez pas créer de nouvel événement pour votre/vos artiste(s) parce que tous vos artistes sont déjà lancés sur un autre événement."
+      Are you a musician?
+      Create your identity on Un-Mute and organize your own festivals while taking no risk at all.
+  new_event: Create an event
+  new_artist: Create an artist profile
+  no_available_artist: "Note: you can't create events at the moment as all of your artists are already in a running campaign."
 
 profile:
-  title: Mon profil
+  title: My profile
   see:
-    title: Voir mon profil
+    title: See my profile
   edit:
-    title: Modifier mon profil
+    title: General infos
   change_password:
-    title: Changer mon mot de passe
+    title: Password
   change_email:
-    title: Changer mon e-mail
+    title: Email
   advanced:
-    title: Options avancées
+    title: Advanced
     deletion:
-      warning: Attention, cette action est irréversible !
-      cancel: Annuler
-      title: Suppression de compte
+      warning: Careful, this action is irreversible!
+      cancel: Cancel
+      title: Account deletion
       explanation: |
           En fermant votre compte, vous demandez la suppression de vos données de la plateforme Un-Mute.
           Celles-ci ne seront plus reprises dans notre base de données, conformément à la loi en vigueur.
