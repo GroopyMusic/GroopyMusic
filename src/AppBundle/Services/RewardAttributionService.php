@@ -27,16 +27,16 @@ class RewardAttributionService
     /*
      * here we add the query names
      */
-    public const MOST_CONFIRMED_CONCERT = 'Concert confirmé le plus récent';
-    public const ONE_CONCERT_SELECTED = 'Un seul concert sélectionné';
-    public const ONE_ARTIST_SELECTED = 'Un seul artiste sélectionné';
-    public const ONE_COUNTERPART_SELECTED = 'Une seule contrepartie sélectionnée';
-    public const ONE_STEP_SELECTED = 'Un seul palier de salle sélectionné';
+    const MOST_CONFIRMED_CONCERT = 'Concert confirmé le plus récent';
+    const ONE_CONCERT_SELECTED = 'Un seul concert sélectionné';
+    const ONE_ARTIST_SELECTED = 'Un seul artiste sélectionné';
+    const ONE_COUNTERPART_SELECTED = 'Une seule contrepartie sélectionnée';
+    const ONE_STEP_SELECTED = 'Un seul palier de salle sélectionné';
 
     /*
      * here we add the expected parameter type
      */
-    public const QUERRY_PARAM_TYPE = array(
+   const QUERRY_PARAM_TYPE = array(
         self::MOST_CONFIRMED_CONCERT => null,
         self::ONE_CONCERT_SELECTED => ContractArtist::class,
         self::ONE_ARTIST_SELECTED => Artist::class,
@@ -112,23 +112,23 @@ class RewardAttributionService
         $restrictionRepository = $this->em->getRepository("AppBundle:RewardRestriction");
         $id_parameter = intval(explode('|', $restriction->getQueryParameter())[0]);
         switch ($restriction->getQuery()) {
-            case self::MOST_CONFIRMED_CONCERT;
+            case self::MOST_CONFIRMED_CONCERT:
                 $baseContractArtist = $restrictionRepository->getMostRecentConfirmedConcert();
                 $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
-            case self::ONE_CONCERT_SELECTED;
+            case self::ONE_CONCERT_SELECTED:
                 $baseContractArtist = $this->em->getRepository('AppBundle:ContractArtist')->find($id_parameter);
                 $user_reward->addBaseContractArtist($baseContractArtist);
                 break;
-            case self::ONE_ARTIST_SELECTED;
+            case self::ONE_ARTIST_SELECTED:
                 $artist = $this->em->getRepository('AppBundle:Artist')->find($id_parameter);
                 $user_reward->addArtist($artist);
                 break;
-            case self::ONE_COUNTERPART_SELECTED;
+            case self::ONE_COUNTERPART_SELECTED:
                 $counterPart = $this->em->getRepository('AppBundle:CounterPart')->find($id_parameter);
                 $user_reward->addCounterPart($counterPart);
                 break;
-            case self::ONE_STEP_SELECTED;
+            case self::ONE_STEP_SELECTED:
                 $baseStep = $this->em->getRepository('AppBundle:Step')->find($id_parameter);
                 $user_reward->addBaseStep($baseStep);
                 break;
