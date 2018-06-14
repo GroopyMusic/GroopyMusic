@@ -32,7 +32,7 @@
                             <span class="text-primary">{{ "sponsorship_modal.content"|trans|raw }}</span>
                         </div>
                         <hr>
-                        {% if invited is not empty and confirmed is not empty %}
+                        {% if invited is not empty or confirmed is not empty %}
                         <div>
                             <label><a data-toggle="collapse" href="#sponsorship-modal-summary-div" style="color: black">
                                     {{ "sponsorship_modal.display_recap"|trans|raw }}
@@ -41,22 +41,26 @@
                         <div id="sponsorship-modal-summary-div" class="collapse">
                             <br>
                             <div class="row">
-                                <ul class="list-group col-md-6 col-sm-12 col-xs-12 p-0 word-break-all">
-                                    {% for email in invited %}
-                                        <li class="list-group-item">
-                                            {{ email }}
-                                            <span class="badge badge-pill badge-secondary">{{ "sponsorship_modal.waiting"|trans|raw }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                                <ul class="list-group col-md-6 col-sm-12 col-xs-12 p-0 word-break-all">
-                                    {% for email in confirmed %}
-                                        <li class="list-group-item">
-                                            {{ email }}
-                                            <span class="badge badge-pill badge-success">{{ "sponsorship_modal.confirmed"|trans|raw }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
+                                {% if invited is not empty %}
+                                    <ul class="list-group col-md-6 col-sm-12 col-xs-12 p-1 word-break-all">
+                                        {% for email in invited %}
+                                            <li class="list-group-item">
+                                                {{ email }}
+                                                <span class="badge badge-pill badge-secondary">{{ "sponsorship_modal.waiting"|trans|raw }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                {% if confirmed is not empty %}
+                                    <ul class="list-group col-md-6 col-sm-12 col-xs-12 p-1 word-break-all">
+                                        {% for email in confirmed %}
+                                            <li class="list-group-item">
+                                                {{ email }}
+                                                <span class="badge badge-pill badge-success">{{ "sponsorship_modal.confirmed"|trans|raw }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
                             </div>
                             {% endif %}
                         </div>

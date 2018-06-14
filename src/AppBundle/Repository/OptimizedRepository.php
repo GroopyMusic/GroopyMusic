@@ -47,7 +47,7 @@ abstract class OptimizedRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->baseQueryBuilder()
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 

@@ -51,9 +51,7 @@ class Select2Controller extends Controller
         $em = $this->getDoctrine()->getManager();
         $q = $request->get('q');
         $artists = $em->getRepository('AppBundle:Artist')->findNotDeleted($q);
-
         $artistsArray = [];
-
         foreach ($artists as $artist) {
             $artistsArray[] = array(
                 'id' => $artist->getId(),
@@ -110,7 +108,6 @@ class Select2Controller extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $q = $request->get('q');
-        $this->logger->warning('helo', explode(" ", $q));
         $contractArtists = $em->getRepository('AppBundle:ContractArtist')->findContractArtistsForSelect(explode(" ", $q));
 
         $contractArtistsArray = [];
