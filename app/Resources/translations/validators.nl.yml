@@ -74,8 +74,9 @@ contractartist:
     blank: U moet akkoord gaan met de gebruiksvoorwaarden om door te gaan.
 
 contractfan:
-  quantity_min: Om door te gaan, moet u minstens één concertkaartje bestellen!
-  quantity_max: Er zijn niet genoeg plaatsen beschikbaar!
+  quantity_min: Om door te gaan moet u minstens één artikel bestellen!
+  quantity_max: Er zijn niet genoeg artikelen beschikbaar!
+  free_price_min: De prijs die u heeft aangeboden is kleiner dan de minimumprijs die voor dit artikel is toegestaan.
 
 ownershiprequest:
   email:

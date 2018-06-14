@@ -74,8 +74,9 @@ contractartist:
     blank: You must accept the terms and conditions to continue.
 
 contractfan:
-  quantity_min: You must order at least one concert ticket to continue!
+  quantity_min: You must order at least one article to continue!
   quantity_max: There are not enough tickets available!
+  free_price_min: The proposed price is too low for this article.
 
 ownershiprequest:
   email:

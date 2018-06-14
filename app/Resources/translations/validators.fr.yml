@@ -74,8 +74,8 @@ contractartist:
     blank: Vous devez accepter les conditions d'utilisation pour poursuivre.
 
 contractfan:
-  quantity_min: Pour poursuivre, il faut commander au moins une place de concert !
-  quantity_max: Il n'y a pas autant de places disponibles !
+  quantity_min: Pour poursuivre, il faut commander au moins un article !
+  quantity_max: Il n'y a pas autant d'articles disponibles !
   free_price_min: Le prix que vous avez proposé est plus petit que le prix minimum autorisé pour cet article.
 
 ownershiprequest:
