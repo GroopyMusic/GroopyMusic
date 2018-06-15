@@ -413,104 +413,104 @@ profile:
       cancel: Cancel
       title: Account deletion
       explanation: |
-          En fermant votre compte, vous demandez la suppression de vos données de la plateforme Un-Mute.
-          Celles-ci ne seront plus reprises dans notre base de données, conformément à la loi en vigueur.
-          Vous ne serez plus repris dans les propriétaires des artistes dont vous faites actuellement partie des gestionnaires et n'aurez donc plus accès à leur gestion.
-      checkbox: Je souhaite supprimer mon compte
-      confirm: Supprimer mon compte
+          By deleting your account, you ask for the deletion of your data on the Un-Mute platform.
+          Your data won't be available in our database.
+          You won't be listed in the owners of the artist profiles that you currently own, and so won't have access to their administration anymore.
+      checkbox: I want to delete my account
+      confirm: Delete my account & data
 
 artist_profile:
-  title: Édition du profil de l'artiste %artist%
+  title: Artist profile edition - %artist%
   menu:
-    edit: Infos générales
-    profile_pic: Photo de profil
-    other_pics: Autres photos
-    medias: Vidéos
-    owners: Propriétaires
-    see: Voir le profil
-    leave: Quitter l'artiste
+    edit: General info
+    profile_pic: Profile picture
+    other_pics: Other pictures
+    medias: Videos
+    owners: Owners
+    see: See the public profile
+    leave: Leave this artist
   see:
     tabs:
-      profile: Profil
-      biography: Biographie
-      edition: Édition
-    short_description: En quelques mots
-    genres: Styles musicaux
+      profile: Profile
+      biography: Biography
+      edition: Edition
+    short_description: In short
+    genres: Musical styles
     videos:
-      title: Vidéos:
-      empty: Cet artiste n'a pas encore de vidéo à montrer.
+      title: Videos
+      empty: This artist doesn't have any video to show yet.
     links:
-      title: Liens
-      website: Voir le site Web
-      spotify: Suivre sur Spotify
-      twitter: Suivre sur Twitter
-      facebook: Suivre sur Facebook
-      instagram: Suivre sur Instagram
-      soundcloud: Voir le profil SoundCloud
-      bandcamp: Voir le profil Bandcamp
-    current_event: Evénement en cours de vente de tickets
-    passed_events: Concerts accomplis par le passé
+      title: Links
+      website: Website
+      spotify: Spotify
+      twitter: Twitter
+      facebook: Facebook
+      instagram: Instagram
+      soundcloud: SoundCloud
+      bandcamp: Bandcamp
+    current_event: Events currently being funded
+    passed_events: Shows performed in the past
   profile_pic:
     intro: |
-      Vous pouvez ici mettre en ligne la photo de profil de %artist%.
-      Cette photo sera la première à apparaître sur les différents visuels de cet artiste sur Un-Mute.
-      Veillez à ce qu'elle soit de bonne qualité et qu'elle ait des dimensions de type 4 (largeur) / 3 (longueur).
-    to_other_pics: Vous souhaitez ajouter d'autres photos à votre artiste ? <a href="%url%">Ajoutez-en jusqu'à 5</a>
+      You can here upload a profile picture for %artist%.
+      This picture will be the first one to appear on the artist presentation on Un_mute.
+      Please ensure it has a proper quality and respects dimensions of 4 (width) / 3 (length)
+    to_other_pics: Do you wish to add other pictures? <a href="%url%">Add up to 5 pictures</a>
   other_pics:
-    intro: Ajoutez ici jusqu'à 5 photos supplémentaires à votre artiste. Choisissez des photos de bonne qualité et de préférence qui suivent le ratio 4 (largeur) / 3 (hauteur).
+    intro: You can add up to 5 pictures for your artist. Please ensure they have a proper quality and respects dimensions of 4 (width) / 3 (length)
   medias:
-    add_video: Ajouter une vidéo
-    remove_video: Supprimer la vidéo
+    add_video: Add a video
+    remove_video: Remove video
 
 validate_ownership:
-  title: Rejoindre
-  cancelled: Cette requête a été annulée par son émetteur.
+  title: Rejoin
+  cancelled: This request has been cancelled by its sender.
 
 owners:
   my_role:
-   title: Votre rôle au sein de l'artiste
-   label: Votre rôle pour l'artiste "%artist%"
+   title: Your role in the band/artist
+   label: Your role for "%artist%"
   others:
-    title: Autres propriétaires
-    role_label: Rôle
-    pending: en attente de confirmation
-    added_by: ajouté par
-    cancel: annuler
+    title: Other owners
+    role_label: Role
+    pending: Pending
+    added_by: Added by
+    cancel: Cancel
   add:
-    title: Ajouter des propriétaires
-    intro: "Vous pouvez ici ajouter d'autres utilisateurs Un-Mute à la gestion de cet artiste. Deux cas sont possibles :"
-    case_1: S'ils ont déjà un compte Un-Mute, ils pourront simplement accepter votre demande et seront ajoutés comme propriétaires.
-    case_2: Sinon, pas de problème ! Ils seront invités par e-mail à s'inscrire sur Un-Mute, puis à accepter votre demande.
-    button: Ajouter un propriétaire
-  delete: Supprimer
+    title: Add owners
+    intro: "You can here add other Un-Mute users to the administration of this artist. Two possible cases:"
+    case_1: If they already are signed up on Un-Mute, they will be able to simply accept your request to be added as owners.
+    case_2: Otherwise, no problem! They will be invited by email to sign up and then will be able to accept your request.
+    button: Add an owner
+  delete: Delete
 
 new_event:
-  title: Lancement d'un nouvel événement
-  empty: Vous n'avez pas d'artiste disponible pour lancer un nouvel événement. Souhaitez-vous <a href="%url%">créer un nouvel artiste</a> ?
+  title: New event
+  empty: You have no available artist to create an event for. Do you want to <a href="%url%">create one</a>?
   step: Étape
   step_1:
     intro: |
-      Choisissez un artiste, une province et un niveau de concert. Des dates vous seront alors proposées en fonction des disponibilités des salles.
-      La salle où aura lieu le concert sera annoncée une fois l'objectif de crowdfunding atteint.
+      Pick an artist, a province and a festival type. Dates will be proposed based on the venues availabilities in that province.
+      The exact venue where the show will take place will be announced once the crowdfunding objective is reached.
   step_3:
     recap:
-      artist: Artiste
+      artist: Artist
       province: Province
-      date: Date choisie
+      date: Date
       motivations: Motivations
-      additional_info: Informations pour Un-Mute
+      additional_info: Informations for Un-Mute
   step_2:
-    date_preview: "Date choisie : "
+    date_preview: "Choosen date:"
 
 leave_artist:
-  intro: Sur cette page, vous avez la possibilité de quitter la gestion de cet artiste. Si vous en êtes le dernier propriétaire, l'artiste sera définitivement supprimé du catalogue Un-Mute.
-  warning: Attention, cette action est irréversible !
-  checkbox: Je souhaite quitter la gestion de %artist%
+  intro: On this page, you can leave the administration of this artist profile. If you are its last owner, the artist will be removed from our lists.
+  warning: Careful, this action is irreversible!
+  checkbox: I want to leave the administration of %artist%
   last:
-    warning: Vous êtes le dernier propriétaire de %artist%. Si vous poursuivez, l'artiste sera supprimé du catalogue de la plateforme.
-    busy: Vous ne pouvez pas quitter cet artiste à l'heure actuelle car vous en êtes le dernier propriétaire et un événement impliquant cet artiste est en cours de récolte de tickets.
-  cancel: Annuler
-  confirm: Quitter %artist%
+    warning: You are the last owner of %artist%. If you go further, the artist profile will be removed from our lists.
+    busy: You can't leave the administration of that artist profile for now as you are its last owner, and an event involving that artist is currently being funded.
+  cancel: Cancel
+  confirm: Leave %artist%
 
 
 #new
