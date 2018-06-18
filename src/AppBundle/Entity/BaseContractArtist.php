@@ -65,6 +65,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->asking_refund = new ArrayCollection();
         $this->test_period = true;
         $this->promotions = new ArrayCollection();
+        $this->no_threshold = false;
     }
 
     public function isInTestPeriod() {
