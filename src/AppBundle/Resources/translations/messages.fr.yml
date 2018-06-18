@@ -1013,6 +1013,9 @@ sponsorship_modal:
 
 #new
 sales:
+  card_headline: Album inédit
+  card_status: En vente
+  card_action: Acheter
   stillselling: Ventes en cours
   contributors: "[0,1]contributeur| [2, Inf[contributeurs"
   infos:
@@ -1021,3 +1024,6 @@ sales:
     title: A propos de l'artiste
   buy:
     title: Acheter l'album
+  labels:
+    quantity: Quantité
+    free_price: Prix (libre, min. %min% €)

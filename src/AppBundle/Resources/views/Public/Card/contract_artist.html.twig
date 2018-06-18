@@ -31,7 +31,7 @@
         <div class="um-card-header w-100" style="background-image: url({{ src }});">
             <span class="um-card-date btn-primary sharp p-2{% if contract.state in contract.successfulStates and is_event %} successful-progress-bg{% endif %}">
                 {% if is_event %}{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
-                {% else %}En vente {#Todo trans#}
+                {% else %}{{ 'sales.card_status'|trans }}
                 {% endif %}
             </span>
         </div>
@@ -42,7 +42,7 @@
             {% if not is_event %}
                 <div class="progress um-card-progress bg-secondary py-3">
                     <div class="progress-bar" style="width:100%">
-                        <span class="text-uppercase">Album inédit{#TODO#}</span>
+                        <span class="text-uppercase">{{ 'sales.card_headline'|trans }}</span>
                     </div>
                 </div>
             {# Event #}
@@ -97,7 +97,7 @@
                     {% endif %}
                 {% else %}
                     <a class="btn small btn-primary" href="{{ url_contract }}">
-                        Acheter {#TODO#}
+                        {{ 'sales.card_action'|trans }}
                     </a>
                 {% endif %}
 

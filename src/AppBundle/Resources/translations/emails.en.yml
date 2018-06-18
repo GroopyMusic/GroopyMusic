@@ -86,3 +86,8 @@ sponsorship_invitation:
     %content%
     Follow this link to validate the invitation: %url%
   invit_message_header: "This message was attached to the invitation by %user_name%:"
+
+order: |
+    Thank you for placing an order with Un-Mute! It is thanks to these support actions that Belgian artists succeed in performing and sharing their music. Thanks for them !
+
+    You will find the summary of your order in attachments, and in your personal space on %url%.

@@ -112,6 +112,11 @@ concert:
 
       U vindt de samenvatting van uw bestelling in bijlagen en in uw persoonlijke ruimte op %url%.
 
+order: |
+    Bedankt voor het plaatsen van een bestelling bij Un-Mute! Het is dankzij deze ondersteuningsacties dat Belgische artiesten erin slagen hun muziek te spelen en te delen. Bedankt voor hen!
+
+    U vindt de samenvatting van uw bestelling in bijlagen en in uw persoonlijke ruimte op %url%.
+
 contact:
   copy: |
      Uw bericht verzonden naar Un-Mute.be is ontvangen. Wij zullen u zo snel als mogelijk beantwoorden als het nodig is.
