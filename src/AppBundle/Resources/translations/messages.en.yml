@@ -674,8 +674,13 @@ new_event:
     see_conditions: Read our terms of use
 
 order_pdf:
-  labels: Applied Un-Mute reward(s)
-  rewards: Récompense(s) appliquée(s) #new
+  title: Order overview
+  intro: Thanks for ordering festival tickets with Un-Mute. You will find below all information about your order. If there is anything else that you would like to know, please contact us at contact@un-mute.be
+  sales:
+    intro: Thanks for ordering albums with Un-Mute. You will find below all information about your order.  If there is anything else that you would like to know, please contact us at contact@un-mute.be
+  labels:
+    rewards: Applied Un-Mute reward(s)
+    sales: Album
   details:
     labels:
       reduction: Discount #new
@@ -837,3 +842,20 @@ sponsorship_modal:
   event: Festival
   remove_field: Remove last email address
   add_field: Add an email address
+
+#new
+sales:
+  card_headline: New album
+  card_status: Selling
+  card_action: Buy yours
+  stillselling: Currently selling
+  contributors: "[0,1]contributor| [2, Inf[contributors"
+  infos:
+    title: Infos
+  about_host:
+    title: About the artist
+  buy:
+    title: Buy the album
+  labels:
+    quantity: Quantity
+    free_price: Price (your choice, min. %min% €)

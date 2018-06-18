@@ -19,7 +19,7 @@
     position:relative;
     border-radius: initial;
 
-    &.successful-progress {
+    &.successful-progress, &.sales-progress {
       width: 100%;
       background: $successful-progress-bg;
       position: absolute;

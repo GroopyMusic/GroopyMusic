@@ -40,7 +40,7 @@
 
             {# Sales #}
             {% if not is_event %}
-                <div class="progress um-card-progress bg-secondary py-3">
+                <div class="progress um-card-progress sales-progress bg-secondary py-3">
                     <div class="progress-bar" style="width:100%">
                         <span class="text-uppercase">{{ 'sales.card_headline'|trans }}</span>
                     </div>
@@ -75,7 +75,7 @@
             {% endif %}
 
             <div class="um-card-content w-100">
-                <h5>{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ is_event ? contract.artist.artistname : contract.getTitle }}</h5>
+                <h5 style="font-size:1.1rem;{% if not is_event %}padding-top:15px;{% endif %}">{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ is_event ? contract.artist.artistname : contract.getTitle }}</h5>
                 <p>
                     {% if is_event %}
                         {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}

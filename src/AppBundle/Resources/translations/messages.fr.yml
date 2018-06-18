@@ -693,8 +693,8 @@ order_pdf:
     total_amount: Montant total
     nb_tickets: Nombre de tickets achetés
     nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
-    rewards: Récompense(s) appliquée(s) #new
-    sales: Album concerné #NEEEW
+    rewards: Récompense(s) appliquée(s)
+    sales: Album concerné
   details:
     title: Détails de la commande
     labels:

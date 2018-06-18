@@ -647,7 +647,9 @@ leave_artist:
 order_pdf:
   title: Samenvatting van uw bestelling
   intro: Bedankt voor het plaatsen van een bestelling voor festivaltickets met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar contact@un-mute.be
-  promo: "Opmerking: voor elke bestelling geplaatst tijdens de eerste week van kaartverkoop voor dit evenement (dwz tot  %end_date%), met %nb_organic_needed% gekochte tickets, ontvangt u er %nb_promotional%."
+  sales:
+     intro:
+  promo: "Opmerking: voor elke bestelling geplaatst tijdens de eerste week van kaartverkoop voor dit evenement (dwz tot %end_date%), met %nb_organic_needed% gekochte tickets, ontvangt u er %nb_promotional%."
   labels:
     order_date: Bestelling datum
     event: Evenement ondersteund
@@ -655,6 +657,8 @@ order_pdf:
     total_amount: Totale bedrag
     nb_tickets: Aantal tickets gekocht
     nb_tickets_promo: Aantal extra tickets verkregen per promotie
+    rewards: Beloningen
+    sales: Album
   details:
     title: Details van de bestelling
     labels:
@@ -929,3 +933,20 @@ sponsorship_modal:
   event: Festival
   remove_field: Laatste e-mailadres verwijderen
   add_field: Een e-mailadres toevoegen
+
+#new
+sales:
+  card_headline: Nieuw album
+  card_status: Te koop
+  card_action: Kopen
+  stillselling: Verkoop bezig
+  contributors: "[0,1]bijdrage| [2, Inf[bijdragen"
+  infos:
+    title: Infos
+  about_host:
+    title: Over de artiest
+  buy:
+    title: Koop het album
+  labels:
+    quantity: Kwantiteit
+    free_price: Prijs (vrij, min. € %min%)
