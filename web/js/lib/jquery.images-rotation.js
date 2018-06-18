@@ -26,8 +26,13 @@ $.fn.imagesRotation = function (options) {
             return $.isArray(images) ? images : false;
         },
         preload = function (arr) {  // images preloader
+            var images = [];
+            var i = 0;
             $(arr).each(function () {
-                $('<img/>')[0].src = this;
+                images[i] = new Image();
+                images[i].src = this;
+               // $('<img/>')[0].src = this;
+                i++;
             });
         },
         init = function () {
@@ -64,7 +69,7 @@ $.fn.imagesRotation = function (options) {
                 if (settings.callback) {
                     settings.callback(images[index]);
                 }
-                preload([images[nextIndex]]); // preload next image
+                //preload([images[nextIndex]]); // preload next image
             };
         if (imagesLength) {
             clearRotationInterval($this); // in case of dummy intervals
