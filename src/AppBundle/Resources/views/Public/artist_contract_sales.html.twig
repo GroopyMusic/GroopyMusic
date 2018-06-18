@@ -62,7 +62,7 @@
                         </div>
                         <div class="row equal content-box-row no-border-top">
                             <div class="col-12 content-box-col">
-                                {{ contract.nbCounterPartsPaid }} <span class="contract-info-title">contributeurs</span>
+                                {{ contract.nbCounterPartsPaid }} <span class="contract-info-title">{{ 'sales.contributors'|transchoice(contract.nbCounterPartsPaid) }}</span>
                             </div>
                         </div>
                         <div class="row equal content-box-row no-border-bottom no-border-top">

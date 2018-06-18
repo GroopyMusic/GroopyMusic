@@ -1014,6 +1014,7 @@ sponsorship_modal:
 #new
 sales:
   stillselling: Ventes en cours
+  contributors: "[0,1]contributeur| [2, Inf[contributeurs"
   infos:
     title: Infos
   about_host:
