@@ -8,7 +8,8 @@
     {% set artist = contract.artist %}
     {% set photos = artist.allPhotos %}
 
-    {% set url_event = path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) %}
+    {% set is_event = contract is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
+    {% set url_contract = is_event ? path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) : path('artist_contract_sales', {'id': contract.id, 'slug': contract.artist.slug}) %}
 
     {% if photos is not empty %}
         {% set rotation = true %}
@@ -26,62 +27,84 @@
         {% endfor %}
     {% endif %}
 
-    <div class="um-card {% for class in card_classes %}{{ class }}{% endfor %} position-relative{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
+    <div class="um-card {% for class in card_classes %}{{ class }} {% endfor %} position-relative{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
         <div class="um-card-header w-100" style="background-image: url({{ src }});">
-            <span class="um-card-date btn-primary sharp p-2{% if contract.state in contract.successfulStates %} successful-progress-bg{% endif %}">
-                {{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
+            <span class="um-card-date btn-primary sharp p-2{% if contract.state in contract.successfulStates and is_event %} successful-progress-bg{% endif %}">
+                {% if is_event %}{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
+                {% else %}En vente {#Todo trans#}
+                {% endif %}
             </span>
         </div>
 
         <div class="w-100 position-relative">
-            {% if contract.state in contract.successfulStates %}
-                <div class="progress um-card-progress successful-progress py-3">
+
+            {# Sales #}
+            {% if not is_event %}
+                <div class="progress um-card-progress bg-secondary py-3">
                     <div class="progress-bar" style="width:100%">
-                        <span class="text-white text-uppercase">{{ 'confirmed'|trans|raw }}</span>
+                        <span class="text-uppercase">Album inédit{#TODO#}</span>
                     </div>
                 </div>
+            {# Event #}
+            {% else %}
+                {% if contract.state in contract.successfulStates %}
+                    <div class="progress um-card-progress successful-progress py-3">
+                        <div class="progress-bar" style="width:100%">
+                            <span class="text-white text-uppercase">{{ 'confirmed'|trans|raw }}</span>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% set progress_100 = contract.percentObjective %}
+                <div class="progress um-card-progress{% if contract.isInSuccessfulState %} invisible{% endif %}">
+                    <div class="progress-bar" style="padding-left: 2rem;width:{{ progress_100 }}%">
+                        <span class="progress-bar-percent">{{ progress_100 }}%</span>
+                    </div>
+                </div>
+
+                <span class="d-none event-gauge">{{ contract.isInSuccessfulState ? 100 : progress_100 }}</span>
+                <span class="d-none event-date">{{ contract.dateConcert|date('m/d/Y') }}</span>
+                <span class="d-none event-genres">{% for genre in contract.genres %}<span class="d-none jplist-{{ genre|slug }}">{% if not loop.first %} {% endif %}{{ genre }}</span>{% endfor %}</span>
+                {% set step_slug, province_slug
+                    =   "jplist-" ~ contract.step.slug,
+                        "jplist-" ~ contract.province|slug
+                %}
+                <span class="d-none event-step {{ step_slug }}">{{ contract.step }}</span>
+                <span class="d-none event-province {{ province_slug }}">{{ contract.province }}</span>
+                <span class="d-none event-state {% if contract.isInSuccessfulState %}event-confirmed{% else %}event-not-confirmed{% endif %}{% if contract.soldOut %} event-sold-out{% endif %}">{{ contract.state }}</span>
             {% endif %}
 
-            {% set progress_100 = contract.percentObjective %}
-            <div class="progress um-card-progress{% if contract.isInSuccessfulState %} invisible{% endif %}">
-                <div class="progress-bar" style="padding-left: 2rem;width:{{ progress_100 }}%">
-                    <span class="progress-bar-percent">{{ progress_100 }}%</span>
-                </div>
-            </div>
-
-            <span class="d-none event-gauge">{{ contract.isInSuccessfulState ? 100 : progress_100 }}</span>
-            <span class="d-none event-date">{{ contract.dateConcert|date('m/d/Y') }}</span>
-            <span class="d-none event-genres">{% for genre in contract.genres %}<span class="d-none jplist-{{ genre|slug }}">{% if not loop.first %} {% endif %}{{ genre }}</span>{% endfor %}</span>
-            {% set step_slug, province_slug
-                =   "jplist-" ~ contract.step.slug,
-                    "jplist-" ~ contract.province|slug
-            %}
-            <span class="d-none event-step {{ step_slug }}">{{ contract.step }}</span>
-            <span class="d-none event-province {{ province_slug }}">{{ contract.province }}</span>
-            <span class="d-none event-state {% if contract.isInSuccessfulState %}event-confirmed{% else %}event-not-confirmed{% endif %}{% if contract.soldOut %} event-sold-out{% endif %}">{{ contract.state }}</span>
-
             <div class="um-card-content w-100">
-                <h5>{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ contract.artist.artistname }}</h5>
+                <h5>{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ is_event ? contract.artist.artistname : contract.title }}</h5>
                 <p>
-                    {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}
-                    {% else %}{{ contract.province is not null ? contract.province : contract.artist.province }}
+                    {% if is_event %}
+                        {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}
+                        {% else %}{{ contract.province is not null ? contract.province : contract.artist.province }}
+                        {% endif %}
                     {% endif %}
                 </p>
-                {% if clickable is defined and not clickable %}
-                    {% if contract.soldOut %}
-                        <a class="btn small btn-secondary" href="{{ url_event }}">
-                            Sold out
-                        </a>
-                    {% else %}
-                        <a class="btn small btn-primary" href="{{ url_event }}">
-                            Tickets
-                        </a>
+                {% if is_event %}
+                    {% if clickable is defined and not clickable %}
+                        {% if contract.soldOut %}
+                            <a class="btn small btn-secondary" href="{{ url_contract }}">
+                                Sold out
+                            </a>
+                        {% else %}
+                            <a class="btn small btn-primary" href="{{ url_contract }}">
+                                Tickets
+                            </a>
+                        {% endif %}
                     {% endif %}
+                {% else %}
+                    <a class="btn small btn-primary" href="{{ url_contract }}">
+                        Acheter {#TODO#}
+                    </a>
                 {% endif %}
+
             </div>
         </div>
         {% if clickable is not defined or clickable %}
-            <a class="um-card-link" href="{{ path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) }}"></a>
+            <a class="um-card-link" href="{{ url_contract }}"></a>
         {% endif %}
     </div>
 {% endblock %}

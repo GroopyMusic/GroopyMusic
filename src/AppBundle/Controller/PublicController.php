@@ -133,6 +133,9 @@ class PublicController extends Controller
             $crowdfundings = $all_crowdfundings;
         }
 
+        $sales = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
+        $crowdfundings = array_merge($crowdfundings, $sales);
+
         // -------------------------------------------------
 
         // --------------- Spotlight determination

@@ -19,6 +19,7 @@ class ContractArtistSales extends BaseContractArtist {
     const STATE_PASSED = 'state.passed';
 
     const UNCROWDABLE_STATES = [self::STATE_REFUNDED, self::STATE_FAILED, self::STATE_PASSED];
+    const SUCCESSFUL_STATES = [self::STATE_ONGOING];
 
     public function __call($method, $arguments)
     {
@@ -77,8 +78,16 @@ class ContractArtistSales extends BaseContractArtist {
         return !$this->isCrowdable();
     }
 
+    public function getSuccessfulStates() {
+        return self::SUCCESSFUL_STATES;
+    }
+
     public function getTotalNbAvailable() {
         return PHP_INT_MAX;
+    }
+
+    public function isSoldOut() {
+        return false;
     }
 
     /**

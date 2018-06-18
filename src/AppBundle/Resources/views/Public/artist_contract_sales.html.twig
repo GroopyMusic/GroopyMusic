@@ -57,7 +57,7 @@
 
                         <div class="row equal content-box-row no-border-top">
                             <div class="col-12 content-box-col">
-                                <p>{{ contract.getDescription|nl2br }}</p>
+                                <p>{{ contract.getDescription|raw|nl2br}}</p>
                             </div>
                         </div>
                         <div class="row equal content-box-row no-border-top">
