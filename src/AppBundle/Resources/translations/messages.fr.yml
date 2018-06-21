@@ -82,6 +82,7 @@ header:
     my_account: Mon compte
     my_artists: Mes artistes
     my_profile: Mon profil
+    my_notifications: Mes notifications
     my_orders: Mes commandes
     log_out: Déconnexion
     my_rewards: Mes récompenses 

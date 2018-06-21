@@ -563,6 +563,7 @@ header:
     my_account: My account
     my_artists: My artists
     my_profile: My profile
+    my_notifications: Notifications
     my_orders: My orders
     log_out: Log out
     my_rewards: My rewards

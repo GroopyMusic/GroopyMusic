@@ -67,7 +67,7 @@ tickets_sent:
 
     Don't forget to bring them the day of the festival. They are available in <a href="%orders_url%">your personal space</a.
 
-#New
+
 reward_attribution:
   title: New reward
   content: |
@@ -77,7 +77,7 @@ reward_attribution:
 
     For more information, visit <a href="%rewards_url%">your rewards page</a>.
 
-#new
+
 sponsorship_reward:
   title: Sponsorship Reward
   content_ticket_not_sent: |
