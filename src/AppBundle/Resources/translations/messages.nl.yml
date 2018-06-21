@@ -86,7 +86,6 @@ header:
     log_out: Ontkoppeling
 
 home:
-  
   og_title: Un-Mute | Ontdek, ondersteun, produceer
   concept:
     title: Het principe
@@ -94,7 +93,6 @@ home:
     content_2: Als het doel na een maand niet bereikt wordt, wordt iedereen terugbetaald.
   concerts:
     title: Financering aan de gang
-  
   spotlights:
     title_1: Ontdek drie artiesten per festival
     title_2: Te ontdekken
@@ -170,7 +168,6 @@ about:
 
 
       Als dit minimum aantal plaatsen niet wordt bereikt, vindt het festival niet plaats en worden de fans volledig terugbetaald en kan de artiest zijn kans opnieuw proberen door een nieuw evenement te maken!
-
   artists:
     title: Uw voordelen als artiest
     content: |
@@ -215,7 +212,6 @@ about:
     title: Meer infos
     content: Heeft u vragen over onze werking? Bezoek onze <a href="%faq_url%">FAQ</a> of <a href=”%contact_url%">Contact opnemen</a>.</p>
 
-
 team:
   title: Het team
   members:
@@ -248,7 +244,6 @@ contact:
     confirm: Verzenden
     cancel: Annuleren
   confirmation: Uw bericht is ontvangen.
-
 
 jplist:
   sort_by: Sorteren op
@@ -379,12 +374,10 @@ event:
     total_validated: Bevestigd
     button_invit: Uitnodigen verzenden
 
-
 conditions:
   last_update: "Laatste update gemaakt op : %date%"
   accept_last:
     intro: Onze algemene voorwaarden zijn veranderd sinds uw laatste bezoek. Om door te gaan met navigeren, moet u uw overeenkomst markeren.Nos conditions générales ont évolué depuis votre dernière visite.
-
 
 faq:
   title: FAQ
@@ -473,7 +466,6 @@ pay_cart:
             unitprice: Eenheidsprijs
             total: Totaal
         total: "[0,1] Totaal voor %count% ticket| [2, Inf[ Totaal voor %count% tickets"
-    
     not_authenticated:
       intro: Om uw bestelling te voltooien, moet u aangemeld zijn bij Un-Mute.
       signin_label: Ik heb een account op Un-Mute
@@ -552,13 +544,11 @@ artist_profile:
     see: Zie profiel
     leave: Verlaat de artiest
   see:
-    
     deleted:
       title: Artiest verwijderd
       content: Deze artiest is verwijderd door de eigenaren. Zijn profiel is niet langer toegankelijk.
     invisible:
       content: Het profiel van deze artiest is niet openbaar.
-    
     owned:
       to_be_examined: Het profiel van uw artiest moet worden geverifieerd door een beheerder voordat deze openbaar wordt gemaakt. U wordt waarschijnlijk de komende dagen benaderd door een beheerder.
       invisible: Het profiel van uw artiest is niet zichtbaar voor het grote publiek.
@@ -579,8 +569,8 @@ artist_profile:
       twitter: Volgen op Twitter
       facebook: Volgen op Facebook
       instagram: Volgen op Instagram
-      soundcloud: SoundCloud profiel kijken
-      bandcamp: Bandcamp profiel kijken
+      soundcloud: SoundCloud profiel
+      bandcamp: Bandcamp profiel
     current_event: Aankomende evenement
     passed_events: Afgelopen evenementen
   profile_pic:
@@ -696,7 +686,6 @@ tickets_pdf:
 notices:
   edition: De wijzigingen zijn opgeslagen.
   event_create: Je evenement is gecreëerd. Verzamel nu producenten die u in zijn organisatie kunnen ondersteunen!
-  
   artist_create: De artiest %artist% is gecreërd. Het is momenteel niet zichtbaar op de plateform behalve door u; het Un-Mute-team neemt de komende dagen contact met u op.
   artist_role: Je rol is opgeslagen.
   # Next line : uitnodiging om beheerder te worden van een specifieke artiest op Un-Mute
@@ -712,16 +701,13 @@ notices:
   change_email: Uw e-mailadres is gewijzigd.
   account_deletion: Uw Un-Mute-account is verwijderd. Weet dat je altijd een nieuwe kunt creëren als je dat wilt. Veel succes!
   change_password: Uw wachtwoord is gewijzigd
-  
   social:
     connection_email_confirmed: Je bent nu verbonden.
     connection_email_new_account: We hebben uw Facebook-account gekoppeld aan het bestaande Un-Mute-account voor %email%.
     connection_oauth_confirmed: U bent nu verbonden via uw Facebook-account.
     registration_success: Uw Un-Mute-account is aangemaakt met uw Facebook-gegevens. Je kunt op elk gewenst moment een wachtwoord instellen op je profielpagina als je ook verbinding wilt kunnen maken met Un-Mute zonder via Facebook te gaan.
   proposition: Uw voorstel is ontvangen en zal zo snel mogelijk worden verwerkt.
-  
   registration: Uw registratie is opgeslagen. U kunt nu overschakelen naar betaling. Houd er rekening mee dat u een e-mail hebt ontvangen met een activatielink voor uw account. U moet op deze link klikken om later verbinding te maken met het platform.
-  
   sponsorship:
     cart_success: Gefeliciteerd! U hebt uw sponsorschap gevalideerd; je sponsor kan dankzij jou bonussen winnen!
     send_sponsorship:
@@ -807,7 +793,6 @@ labels:
 
   suggestionbox:
     email: E-mail adres
-    
     phone: Telefoonnummer
     name: Naam
     firstname: Voornaam
@@ -816,7 +801,6 @@ labels:
     object: Onderwerp
     submit: Verzenden
     type: Bericht type
-
   user:
     firstname: Voornaam
     lastname: Naam
@@ -835,14 +819,11 @@ labels:
       second: Herhaal het nieuwe e-mailadres
     advanced:
       confirm: Mijn account verwijderen
-
   artist_user:
     submit: Bewaar rol
-
   concertpossibility:
     date: Festival datum
     hall: Zaal waar het festival wordt gehouden
-
   contractartist:
     flow_1: Keuze van de zaal
     flow_2: Keuze van de datum
@@ -852,16 +833,12 @@ labels:
     motivations: Uw motivaties (zij worden gecommuniceerd aan potentiële producenten)
     province: Provincie waarin de artiest wordt geproduceerd
     step: Type festival gezocht
-
   contractartistpossibility:
     additional_info: Aanvullende informatie die naar Un-Mute-organisatoren verzonden moet worden.
-
   contractfan:
     submit: Bestelling bevestigen.
-
   video:
     url: "URL van de video (geaccepteerde adressen: Youtube / Vimeo / Dailymotion))"
-
   
   conditions:
     accept_new: Ik heb de laatste  <a href="%conditionsUrl%" target="_blank"> gebruiksvoorwaarden van het Un-Mute-platform </a>gelezen en ga hiermee akkoord.
@@ -918,7 +895,6 @@ proposition:
   explication: Vul alleen de startdatum in als u één datum wilt invullen en beide datums als uw evenement een bepaalde tijd kan duren.
 redirection: Als u geen voorstel voor een evenement wilt indienen, maar contact met ons wilt opnemen of een nieuwe zaal wilt voorstellen, nodigen we u uit om <a href="%url%"> dit formulier </a> in te vullen.
 
-
 sponsorship_modal:
   title: Uitnodigingen verzenden naar jouw vrienden
   content: Nodig je vrienden uit om lid van Un-Mute te worden en tickets te kopen voor een evenement waaraan u deelneemt & geniet van bonussen op D-Day.
@@ -935,7 +911,6 @@ sponsorship_modal:
   event: Festival
   remove_field: Laatste e-mailadres verwijderen
   add_field: Een e-mailadres toevoegen
-
 
 sales:
   card_headline: Nieuw album
