@@ -6,7 +6,7 @@ Days 4: Jeudi
 Days 5: Vendredi
 Days 6: Samedi
 
-#new
+
 months.01: Janvier
 months.02: Février
 months.03: Mars
@@ -45,13 +45,13 @@ loading: Chargement....
 
 meta_description_1: La première plate-forme belge de financement participatif de concerts.
 meta_description_2: Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !
-#new
+
 meta_description_event: Découvrez %artist% en live le %date% !
 meta_description_artist: Découvrez %artist% sur Un-Mute.
 meta_description_hall: "Un-Mute présente son partenaire : %hall%."
 meta_description_sales: Découvrez cet album inédit, en vente à prix libre sur Un-Mute
 
-#new
+
 error:
   intro: Apparemment, nous ne sommes pas sur la même longueur d'ondes...
   generic:
@@ -84,19 +84,17 @@ header:
     my_profile: Mon profil
     my_orders: Mes commandes
     log_out: Déconnexion
-    my_rewards: Mes récompenses #new
+    my_rewards: Mes récompenses 
 
 
 home:
-  #new
   og_title: Un-Mute | Découvrez, soutenez, produisez
   concept:
     title: Le principe
-    content_1: Nos mini-festivals ne sont confirmés que si suffisamment de tickets sont vendus.
+    content_1: Nos festivals ne sont confirmés que si suffisamment de tickets sont vendus.
     content_2: Si l'objectif n'est pas atteint au bout d'un mois, tout le monde est remboursé.
   concerts:
     title: En cours de financement
-  #new
   spotlights:
     title_1: Découvrez trois artistes par festival
     title_2: À découvrir
@@ -120,7 +118,6 @@ home:
     content_3: <strong>Vous désirez proposer une salle à nos artistes ?</strong> <a href="%contact_url%">Prenez contact avec l'équipe Un-Mute</a>.
     more_info: Plus d'infos
     login_link: Rejoindre Un-Mute
-  #new
   partners:
     title: Nos partenaires
 
@@ -224,7 +221,7 @@ team:
     gonzague: Conquis par l'idée, <span class='um-label um-semi-bold'>Gonzague</span>, jeune webmaster diplômé en informatique, accepte directement de participer au projet. La coordination du développement d'une plateforme Web de cette envergure constitue un défi des plus motivants à ses yeux, en accord avec son envie de participer au lancement d'une start-up au sortir de ses études.
     louis: Sollicité pour assurer l'encadrement juridique du projet, <span class='um-label um-semi-bold'>Louis</span> n'a pas tardé à répondre positivement à cette invitation. La possibilité qui lui était ainsi offerte de mettre les connaissances théoriques acquises durant ses cinq années de formation juridique au service d'un projet sous-tendu par des valeurs qui lui étaient chères a fini de le convaincre de s'investir pleinement dans Un-Mute.
     alice: "Concernant la communication, <span class='um-label um-semi-bold'>Alice</span> alimente l'équipe avec ses 6 années d'expériences professionnelles en PME puis en institution non marchande. Diplômée de l'IHECS et de la KUL en culturele studies, Un-Mute était une belle opportunité de rajouter à son arc un secteur d'activité qui l'a toujours passionnée  : la communication événementielle et culturelle !"
-    #new
+    
     alexis: "Passionné de musique, <span class='um-label um-semi-bold'>Alexis</span> a été vite conquis par l’idée du projet. Doté d’expérience en événementiel et actif au sein d’une agence digitale depuis plus de 3 ans, Alexis entend mettre à disposition son expérience en communication digitale et en coordination de projets pour soutenir la croissance de l’ASBL. Le projet constitue en effet à ses yeux un véritable potentiel pour réunir deux ses aspirations : la musique et l’entreprenariat, au sein d’une équipe motivée et multidisciplinaire."
 
 pillars:
@@ -299,7 +296,7 @@ catalog_events:
     contact-us: Si vous êtes un artiste et que vous souhaitez organiser un micro-festival grâce à Un-Mute, <a href="%contact_url%">contactez-nous</a>.
   running:
     title: Festivals en cours de financement
-    #new
+    
     intro:  Les événements suivants ont besoin de soutien pour pouvoir être produits ! Offrez à ces artistes la possibilité de se produire dans une salle comble en achetant des tickets pour leurs festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement ?</a>
   confirmed:
     title: Festivals confirmés
@@ -321,7 +318,7 @@ event:
   og_title: Festival Un-Mute avec %artist%
   title: Festival Un-Mute avec %artist%
   generic_name: Festival Un-Mute avec %artist%
-  reward: Profitez-en, des récompenses sont applicables à cet événement ! #new
+  reward: Profitez-en, des récompenses sont applicables à cet événement ! 
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
@@ -369,21 +366,19 @@ event:
     tickets_left: %tickets% tickets disponibles
     title:  Achetez vos tickets
     over: Il n'est pas possible d'acheter des tickets pour cet événement.
-    #new
+    
     to_much_reduction: Vous ne pouvez pas sélectionner plusieurs réductions
   hall:
     known: Lieu du festival
     unknown: Salles potentielles
-  #new
   description: "Découvrez trois artistes émergents lors d'un Festival Un-Mute. Tête d'affiche : %host%"
-  #new
   sponsorship:
     title: Invitez des amis
     total: Invitations envoyées
     total_validated: Invitations validées
     button_invit: Envoyez des invitations
 
-#new
+
 conditions:
   last_update: "Dernière mise-à-jour effectuée le : %date%"
   accept_last:
@@ -478,14 +473,14 @@ pay_cart:
             quantity: Quantité
             unitprice: Prix unitaire
             total: Total
-            #new
+            
             total_without_reduction: Total sans réduction
             reduction: Réduction
             price: Prix
             applied_rewards: "Récompense(s) appliquée(s):"
         reduction: Récompense(s) appliquée(s)
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
-    #new
+    
     recap_reward:
         invitation: "%use% invitations"
         consommable: "%use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €."
@@ -504,7 +499,7 @@ pay_cart:
         title: Récapitulatif
         total: "[0,1] Total pour %count% article| [2, Inf[ Total pour %count% articles"
 
-    #new
+    
     not_authenticated:
       intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute.
       signin_label: J'ai un compte sur Un-Mute
@@ -522,7 +517,6 @@ my_orders:
         totalprice: Prix total
         order: Commande
         tickets: Tickets
-    #new
     button:
       sponsorship: Invitez des amis
 
@@ -530,7 +524,7 @@ notifs:
     title: Mes notifications
     empty: Vous n'avez pas encore reçu de notification.
     see_more: Voir plus
-    button: Voir # new
+    button: Voir
 
 new_artist:
   title: Nouvel artiste
@@ -539,7 +533,6 @@ new_artist:
       Pendant ce temps, vous pourrez ajouter des photos et vidéos à cet artiste et étoffer son profil.
   warning: En créant un artiste, vous certifiez en être le représentant, ou l'un des membres s'il s'agit d'un groupe.
   urls_explanation: Dans les champs suivants, veuillez introduire vos éventuels liens sous forme d'URL valides <strong>commençant par <em>http://</em> ou <em>https://</em></strong>
-  #new
   phone_explanation: Si vous renseignez un numéro de téléphone, il ne sera utilisé que par l'équipe Un-Mute afin de vous contacter. Ce numéro ne sera pas rendu public.
 
 my_artists:
@@ -585,13 +578,11 @@ artist_profile:
     see: Voir le profil
     leave: Quitter l'artiste
   see:
-    #new
     deleted:
       title: Artiste supprimé
       content: Cet artiste a malheureusement été supprimé par ses propriétaires. Son profil n'est donc plus accessible.
     invisible:
       content: Le profil de cet artiste n'est pas public.
-    #new
     owned:
       to_be_examined: Le profil de votre artiste doit être vérifié par un administrateur avant d'être rendu public. Vous allez probablement être contacté par un administrateur dans les jours qui viennent.
       invisible: Le profil de votre artiste n'est pas visible du grand public.
@@ -703,19 +694,18 @@ order_pdf:
       unit_price: Prix unitaire
       total_price: Prix
       promo: promotion
-      reduction: Réduction #new
-      total_reduction_price: Prix avec réduction #new
+      reduction: Réduction
+      total_reduction_price: Prix avec réduction
   process:
     title: Processus d'achat Un-Mute
     content: Vous serez remboursé(e) de l'intégralité du paiement si l'artiste soutenu ne parvient pas à vendre au moins %min_tickets% tickets sur Un-Mute pour ce festival. Pour les détails de notre processus d'achat, référez-vous à nos conditions générales accessibles sur <a href="https://un-mute.be">https://un-mute.be</a>
-  #NEEEW
   conditions:
     title: Conditions d'achat
     content: Visitez nos conditions générales d'utilisation et de vente à l'adresse %url%
   footer:
     tracking: "Cette confirmation de commande a été générée le %date%. Identifiant commande : %id%"
 
-#new
+
 tickets_pdf:
   ticket:
     title: Festival Un-Mute @%hall_name%
@@ -741,7 +731,7 @@ tickets_pdf:
 notices:
   edition: Les modifications ont été enregistrées.
   event_create: Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans son organisation !
-  #new
+  
   artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; vous allez être contacté(e) par l'équipe Un-Mute dans les jours qui viennent.
   artist_role: Votre rôle a bien été enregistré.
   # Next line: invitation to become administrator of a specific artist on Un-Mute
@@ -757,16 +747,16 @@ notices:
   change_email: Votre adresse e-mail a bien été modifiée.
   account_deletion: Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit. Bonne continuation !
   change_password: Votre mot de passe a bien été modifié.
-  #new
+  
   social:
     connection_email_confirmed: Vous êtes désormais connecté.
     connection_email_new_account: Nous avons lié votre compte Facebook au compte Un-Mute existant pour l'adresse %email%.
     connection_oauth_confirmed: Vous êtes désormais connecté au travers de votre compte Facebook.
     registration_success: Votre compte Un-Mute a bien été créé avec vos données de Facebook. Vous pouvez définir un mot de passe à tout moment dans votre page de profil si vous souhaitez également pouvoir vous connecter à Un-Mute sans passer par Facebook.
   proposition: Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.
-  #new
+  
   registration: Votre inscription a bien été enregistrée. Vous pouvez désormais passer au paiement. Notez que vous avez reçu un e-mail contenant un lien d'activation de votre compte. Il vous faudra cliquer sur ce lien pour pouvoir vous connecter ultérieurement à la plateforme.
-  #new
+  
   sponsorship:
     cart_success: Félicitations ! Vous avez bien validé votre parrainage ; votre parrain va pouvoir remporter des bonus grâce à vous !
     send_sponsorship:
@@ -836,7 +826,7 @@ labels:
     twitter: Lien Twitter
     website: Site Web
     instagram: Lien Instagram
-    #new
+    
     phone: Numéro de téléphone
     leave:
       submit: Quitter %artist%
@@ -853,7 +843,7 @@ labels:
 
   suggestionbox:
     email: Adresse e-mail
-    #new
+    
     phone: Numéro de téléphone
     name: Nom
     firstname: Prénom
@@ -910,12 +900,12 @@ labels:
   video:
     url: "URL de la vidéo (adresses acceptées : Youtube/Vimeo/Dailymotion)"
 
-  #new
+  
   conditions:
     accept_new: J'ai lu et j'accepte les dernières <a href="%conditionsUrl%" target="_blank">conditions générales d'utilisation de la plateforme Un-Mute</a>
     submit: Accepter et continuer sur le site
     logout: Je souhaite me déconnecter
-#new
+
   proposition_hall:
     name: Nom de la salle
     contact_email: Adresse email
@@ -966,12 +956,12 @@ proposition:
   explication: Ne renseignez que la date de début si vous désirez renseigner une date unique et remplissez les deux dates si votre événement peut s'étaler sur une certaine durée.
   redirection: Si vous ne souhaitez pas soumettre une proposition d'événement mais souhaitez nous contacter ou nous proposer une nouvelle salle, nous vous invitons à remplir <a href="%url%">ce formulaire</a>.
 
-#new
+
 rewards:
   title: Mes récompenses
   empty: Aucune récompense ne vous a été attrbiuée pour le moment.
 
-#new
+
 reward:
   feature: Caractéristique
   creation_date: Date d'obtention
@@ -993,7 +983,7 @@ reward:
   reduction:
     reduction: réduction
 
-#new
+
 sponsorship_modal:
   title: Parrainez des amis
   content: Invitez vos amis à s'inscrire et acheter des places pour un événement et profitez de bonus le jour J.
@@ -1011,7 +1001,7 @@ sponsorship_modal:
   remove_field: Retirer une adresse e-mail
   add_field: Ajouter une adresse e-mail
 
-#new
+
 sales:
   card_headline: Album inédit
   card_status: En vente

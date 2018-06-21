@@ -1,6 +1,75 @@
+failed_contract_artist:
+  title: "Your Un-Mute festival: outcome"
+  content: |
+    You couldn't get enough contributors to organize <a href="%event_url%">your %step%</a>.
+
+    Want to try again? Contact us to be part of our next event!
+
+
+    The Un-Mute team
+
+failed_contract_fan:
+  title: Festival Un-Mute with %artist% - results
+  content: |
+    Dear producer,
+
+    The artist %artist% that you supported couldn't get enough contributors to organize <a href="%event_url%">their %step%</a>.
+
+    The festival won't take place and you will be refunded entirely.
+
+    Want to see %artist% on stage anyway? Help them again for their next event!
+
+    Want to support other artists? Visit <a href="%events_url%">our events section</a>
+
+
+    The Un-Mute team
+
+successful_contract_artist:
+  title: Your festival is confirmed!
+  content: |
+    Congratulations, you managed to get enough contributors; <a href="%event_url%">your %step%</a> will be organized by Un-Mute.
+    The festival will take place on %date% in the venue <a href="%hall_url%">%hall_name%</a>.
+
+    Musically,
+
+    The Un-Mute team
+
+successful_contract_fan:
+  title: Your just produced a festival!
+  content: |
+    Congratulations, the <a href="%event_url%">%step% of %artist%</a> has reached its objective and will be produced thanks to the Un-Mute community!
+
+    The event will take place on %date% in the venue <a href="%hall_url%">%hall_name%</a>.
+
+    You will soon receive your tickets for this festival.
+
+    Musically,
+
+    The Un-Mute team
+
+ongoing_cart:
+  title: Your cart
+  content: You haven't completed your purchases on your last visit. Elements in your cart ould help produce artists so don't wait any longer!
+
+reminder_contract_artist:
+  title: "Your festival - reminder"
+  content: |
+    You only have %places% tickets left to sell for your %step% on %date% to take place!
+
+    As of today, you still have %nbDays% days to encourage your fans to buy more tickets.
+
+    The Un-Mute team will also promote your project through its own channels in the days to come.
+
+tickets_sent:
+  title: Your tickets are available
+  content: |
+    Your tickets for our festival of %date% in the venue "%hall_name%" are available.
+
+    Don't forget to bring them the day of the festival. They are available in <a href="%orders_url%">your personal space</a.
+
 #New
 reward_attribution:
-  title: Nouvelle récompense
+  title: New reward
   content: |
     You just received a new Un-Mute reward!
 

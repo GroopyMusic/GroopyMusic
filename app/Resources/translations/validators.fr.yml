@@ -125,6 +125,3 @@ proposition_contract_artist:
     null: Il vous faut choisir un artiste.
   end_date:
     not_valable: La date de fin ne peut pas être antérieure à la date de début.
-
-
-

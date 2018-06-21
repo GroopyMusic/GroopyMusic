@@ -1,4 +1,3 @@
-#new
 months.01: January
 months.02: February
 months.03: March
@@ -12,7 +11,7 @@ months.10: October
 months.11: November
 months.12: Décember
 
-#new
+
 meta_description: The first Belgian concert crowd-funding platform. With Un-Mute, fans choose the artists they wish to see perform in their area. Just buy the tickets before the cut-off date - the concert takes place if the minimum number of tickets are sold!
 meta_description_event: Discover %artist% on stage on %date%!
 meta_description_artist: Discover %artist% on Un-Mute.
@@ -53,14 +52,26 @@ card:
 home:
   concept:
     title: Concept
-    content_1: Would you like to see the emancipation of the Belgian music scene&nbsp;? Produce the artist of your choice and help them land up to 3 concerts&nbsp;?
-    content_2: Un-Mute acts as a liaison in the organisation of concerts all around Belgium. As a “producer”, you are a necessary actor in building tomorrow’s Belgian music scene by <a href="#" data-toggle="popover" title="Know more" data-content="Do you wish to know more about what we do? <a href='%about_url%'>Click here!</a>"participating in a no-risk crowd-funding system</a>.
+    content_1: Our festivals are only confirmed if enough tickets are sold
+    content_2: If the objective isn't reached in a month, everyone is refunded
   concerts:
-    title: Concerts
-    content: Our artists aim to fill concert halls across the nation. Learn more about what they hope to achieve and help them reach their goals.
-    see_all: See the complete list
+    title: Currently being funded
+  spotlights:
+    title_1: Discover three artists per festival
+    title_2: In the spotlights
+    headline: Discover %artist% live on %date%
+    lineup:
+      title: Line-up
+      host: Host artist
+      invited: Invited artists
+    tickets:
+      title: Tickets
+      selling: On sale
+      soldout: Sold out
+    video:
+      title: Our last video
   news:
-    title: News
+    title: New artists
   join_us:
     title: Join us
     content_1: <strong>Do you wish to become a <a href="%about_url%">producer</a> and support an artist?</strong> See <a href="%catalog_url%">our artist catalogue</a>.
@@ -68,6 +79,8 @@ home:
     content_3: <strong>Do you wish to offer a venue for our artists?</strong> <a href="%contact_url%">Contact our team</a>.
     more_info: More info
     login_link: Join Un-Mute
+  partners:
+      title: Our partners
 
 navigation: Navigation
 static_menu:
@@ -87,6 +100,7 @@ footer:
   about: About
   contact: Contact
   conditions: Conditions
+  press: Press access
 
 about:
   title: About
@@ -192,26 +206,26 @@ contact:
 
 catalog_halls:
   title: Partners
-  intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des concerts sont susceptibles d'être organisés.
-  empty: Il n'y a pas encore de salle partenaire sur la plateforme.
+  intro: Everywhere in Belgium, venues encourage the musical production of our artists. Discover our partner venues in which festivals are likely to be organized.
+  empty: There is no venue on Un-Mute for now.
 
 hall:
-  short_description_label: En quelques mots
+  short_description_label: In a few words
   description_label: Description
   ephemeral:
-    intro:  Cette salle est <strong>éphémère</strong>. Des événements sont susceptibles d'y être organisés
-    known_dates: du %firstDate% au %lastDate%
-    unknown_dates: pendant une période limitée
+    intro: This venue is <strong>ephemeral</strong>. Events are likely to be organized
+    known_dates: between %firstDate% and %lastDate%
+    unknown_dates: for a limited period
   infos:
-    title: Caractéristiques
-    capacity: Capacité
+    title: Characteristics
+    capacity: Capacity
     province: Province
-    website: Site Web
+    website: Website
 
 catalog_artists:
-  title: Nos artistes
-  empty: Il n'y a pas encore d'artiste sur Un-Mute. Revenez bientôt !
-  intro: Bienvenue sur le catalogue des artistes belges Un-Mute ! Découvrez le profil ainsi que la biographie de chaque artiste et choisissez celui que vous désirez voir prochainement en concert !
+  title: Our artists
+  empty: There are no artists yet.
+  intro: Welcome on our artists catalog! Discover their profile and their biography, and choose the one that you want to see on stage next!
   join_us: Want to join us as an artist? <a href="%url%">Create your profile</a>. In a few minutes, you will have created your Un-Mute identity.
 
 catalog_events:
@@ -245,7 +259,7 @@ event:
     validation_date: Validation date
     step: Venue category
     state: Sales state
-    province: Festival geographic area
+    province: Geographic area
     no_province: To be confirmed
     tickets_sold: Tickets buyed by producers
     tickets_left: Tickets on sale
@@ -276,6 +290,12 @@ event:
   hall:
     known: Festival venue
     unknown: Possible venues
+  description: "Discover three rising artists during this Un-Mute Festival. Main artist: %host%"
+  sponsorship:
+    title: Invite friends
+    total: Sent invitations
+    total_validated: Validated invitations
+    button_invit: Send invitations
 
 faq:
   title: FAQ
@@ -361,22 +381,25 @@ pay_cart:
             total: Total
 
 my_orders:
-    title: My orders
-    empty: You haven't ordered anything on Un-Mute.be yet. Check out our <a href="%catalog_url%">artistes</a> and help them <a href="{{ path('catalog_crowdfundings') }}">reach their objectives</a>!
-    labels:
-        details: Détails
-        state: State
-        date: Date
-        quantity: Quantity
-        unitprice: Unit price
-        totalprice: Total price
-        order: Order
-        tickets: Tickets
+  title: My orders
+  empty: You haven't ordered anything on Un-Mute.be yet. Check out our <a href="%catalog_url%">artistes</a> and help them <a href="{{ path('catalog_crowdfundings') }}">reach their objectives</a>!
+  labels:
+      details: Détails
+      state: State
+      date: Date
+      quantity: Quantity
+      unitprice: Unit price
+      totalprice: Total price
+      order: Order
+      tickets: Tickets
+  button:
+    sponsorship: Invite your friends
 
 notifs:
     title: My notifications
     empty: You haven't received any notification yet.
     see_more: See more
+    button: Open
 
 new_artist:
   title: New artist profile
@@ -513,7 +536,7 @@ leave_artist:
   confirm: Leave %artist%
 
 
-#new
+
 error:
   intro: Apparently, we're not on the same wavelength...
   generic:
@@ -527,11 +550,24 @@ error:
     content: You do not have the right to reach this page. Are you sure to be at the right place?
 
 header:
+  slogan: The crowdfunding platform for festivals & musical projects
   nav:
-    my_rewards: My rewards #new
+    home: Accueil
+    about: About
+    artists: Artists
+    partners: Venues
+    events: Events
+    sign_up: Sign up
+    sign_in: Sign in
+    all_notifications: All notifications
+    my_account: My account
+    my_artists: My artists
+    my_profile: My profile
+    my_orders: My orders
+    log_out: Log out
+    my_rewards: My rewards
 
 home:
-  #new
   og_title: Un-Mute | Discover, support, produce
   concept:
     title: Our concept
@@ -539,7 +575,7 @@ home:
     content_2: If the objective is not reached after one month, everybody is repaid.
   concerts:
     title: Currently being funded
-  #new
+  
   spotlights:
     title_1: Discover three artists per festival
     title_2: In the spotlights
@@ -556,23 +592,23 @@ home:
       title: Our last video
   news:
     title: New artists
-  #new
+  
   partners:
     title: Partners
 
 team:
   members:
-   #new
+   
     alexis: "Passionné de musique, <span class='um-label um-semi-bold'>Alexis</span> a été vite conquis par l’idée du projet. Doté d’expérience en événementiel et actif au sein d’une agence digitale depuis plus de 3 ans, Alexis entend mettre à disposition son expérience en communication digitale et en coordination de projets pour soutenir la croissance de l’ASBL. Le projet constitue en effet à ses yeux un véritable potentiel pour réunir deux ses aspirations : la musique et l’entreprenariat, au sein d’une équipe motivée et multidisciplinaire."
 
-#new
+
 jplist:
   sort_by: Sort by
   no_results: No results found
   action: Filter...
 
 catalog_halls:
-  #new
+  
   filtering:
     name_asc: Name A-Z
     name_desc: Name Z-A
@@ -581,7 +617,7 @@ catalog_halls:
     search_name: Search...
 
 catalog_artists:
-  #new
+  
   filtering:
     name_asc: Name A-Z
     name_desc: Name Z-A
@@ -590,9 +626,9 @@ catalog_artists:
 catalog_events:
   running:
     title: Festivals currently being funded
-    #new
+    
     intro: The following events need support to be produced! Offer to these artists the possibility of occurring in a full house by buying tickets for their festivals. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggest artists, halls and events to Un-Mute! <a href='%proposition_url%'>This way!</a>">Do you wish to propose an event?</a>
-  #new
+  
   filtering:
     date_asc: Date
     gauge_asc: Success rate asc.
@@ -603,12 +639,12 @@ catalog_events:
     sold_out: Sold out
 
 event:
-  reward: "Order now and take advantage of the following Un-Mute rewards:" #new
-  #new
+  reward: "Order now and take advantage of the following Un-Mute rewards:" 
+  
   description: "Discover three emergent artists during an Un-Mute Festival. Headliner: %host%"
   dday: Today is the concert! You can still buy tickets online or, as far as places are available, buy them on the spot (cash or Bancontact app).
   buy_tickets:
-    #new
+    
     to_much_reduction: You cannot apply multiple discounts on a single order
   sponsorship:
     title: Invite your friends
@@ -616,7 +652,7 @@ event:
     total_validated: Confirmed
     button_invit: Send new invites
 
-#new
+
 conditions:
   last_update: "Last update on: %date%"
   accept_last:
@@ -626,25 +662,25 @@ conditions:
 pay_cart:
     recap:
       labels:
-          #new
+          
           total_without_reduction: Total without discount
           reduction: Discount
           price: Price
           applied_rewards: "Applied Un-Mute reward(s):"
       reduction: Applied Un-Mute reward(s)
-    #new
+    
     recap_reward:
       invitation: "%use% invitations"
       consommable: "%use% consumable packs for %quantity% %type% ticket(s) with a total value of %value% €."
       reduction: '%reduction% % discount applied to %nbReducedCounterpart% tickets "%counterpart%"'
-    #new
+    
     not_authenticated:
       intro: To be able to finalize your order, you must be logged in.
       signin_label: I already have an Un-Mute account
       signup_label: I don't have an Un-Mute account yet
 
 my_orders:
-  #new
+  
   button:
     sponsorship: Invite your friends
 
@@ -652,18 +688,18 @@ notifs:
     button: View # new
 
 new_artist:
-  #new
+  
   phone_explanation: If you fill in a phone number, it will only be used by the Un-Mute team to contact you. This number will not be made public.
 
 artist_profile:
   see:
-    #new
+    
     deleted:
       title: Deleted artist
       content: Unfortunately, this artist has been deleted by his owners. His profile is no longer available.
     invisible:
       content: This artist profile is not public.
-    #new
+    
     owned:
       to_be_examined: The profile of your artist must be verified by an administrator before it will be made public. You are probably going to be contacted by an administrator in the few next hours or days.
       invisible: The profile of your artist hasn't been made public yet.
@@ -678,14 +714,35 @@ order_pdf:
   intro: Thanks for ordering festival tickets with Un-Mute. You will find below all information about your order. If there is anything else that you would like to know, please contact us at contact@un-mute.be
   sales:
     intro: Thanks for ordering albums with Un-Mute. You will find below all information about your order.  If there is anything else that you would like to know, please contact us at contact@un-mute.be
+  promo: "Note: for any order passed during the first week of tickets sales for this event, you will receive %nb_promotional% ticket for each pack of %nb_organic_needed% tickets bought."
   labels:
+    order_date: Order date
+    event: Supported event
+    event_date: Event date
+    total_amount: Amount paid
+    nb_tickets: Tickets bought
+    nb_tickets_promo: Additional tickets obtained by promotion
     rewards: Applied Un-Mute reward(s)
     sales: Album
   details:
     labels:
-      reduction: Discount #new
-      total_reduction_price: Price incl. discounts #new
-#new
+      counterpart: Article
+      quantity: Quantity
+      unit_price: Unit price
+      total_price:  Price
+      promo: promotion
+      reduction: Discount 
+      total_reduction_price: Price incl. discounts 
+  process:
+    title: Un-Mute purchase process
+    content: Your order will fully be refunded if the supported artist doesn't sell at least %min_tickets% tickets on Un-Mute for this festival. For more details about our purchase process, visit our terms of use on <a href="https://un-mute.be">https://un-mute.be</a>.
+  conditions:
+      title: Purchase conditions
+      content: Visit our terms of use and sale at %url%
+  footer:
+    tracking: "This order confirmation was generated on %date%. Order id: %id%"
+
+
 tickets_pdf:
   rewards: "- Un-Mute rewards" # new
   ticket:
@@ -704,18 +761,18 @@ tickets_pdf:
     -	All terms of service are available on <a href="%conditionsUrl%">%conditionsUrl%</a>.
 
 notices:
-  #new
+  
   artist_create: The artist %artist% has been created. For now, the profile is invisible on Un-Mute except for you; the Un-Mute team will contact you in the few next hours or days.
   artist_role: This role has been saved.
-  #new
+  
   social:
     connection_email_confirmed: You are now logged in.
     connection_email_new_account: We linked your Facebook account to the existing Un-Mute account for the address %email%.
     connection_oauth_confirmed: You are now logged in through your Facebook account.
     registration_success: Your Un-Mute account has been created with your Facebook profile data. You can define a password at any time in your profile edit page if you wish to also be able to log in using Un-Mute credentials.
-  #new
+  
   registration: Your subscription is successful. You can now proceed to payment. Please note that you have received an activation link by email. You will need to click it if you want to log again into our system with Un-Mute credentials in the future.
-  #new
+  
   sponsorship:
     cart_success: Congratulations! You have validated your sponsorship; your sponsor might receive bonuses!
     send_sponsorship:
@@ -733,21 +790,21 @@ notices:
 
 labels:
   artist:
-    #new
+    
     phone: Phone number
     instagram: Instagram
 
   suggestionbox:
-    #new
+    
     phone: Phone number
 
-  #new
+  
   conditions:
     accept_new: I have read and I accept the last <a href="%conditionsUrl%" target="_blank">terms of service</a> of Un-Mute.be
     submit: Accept & continue on the website
     logout: I want to log out
 
-  #new
+  
   proposition_hall:
     name: Place/hall name
     contact_email: Email address
@@ -798,12 +855,12 @@ proposition:
   explication: Only fill in the start date if the event will take place at a unique date and fill in the two dates if your event can spread out on a certain duration.
   redirection: If you do not wish to submit a proposition of event but wish to contact us or to propose us a new concert hall, we invite you to fill in <a href="%url%">this form</a> instead.
 
-#new
+
 rewards:
   title: My rewards
   empty: You didn't receive any rewards at te moment.
 
-#new
+
 reward:
   feature: Feature
   creation_date: Date
@@ -825,7 +882,7 @@ reward:
   reduction:
     reduction: reduction
 
-#new
+
 sponsorship_modal:
   title: Send invites to your friends
   content: Invite your friends to sign up and buy tickets for an event you are going to & enjoy bonuses on D-Day.
@@ -843,7 +900,7 @@ sponsorship_modal:
   remove_field: Remove last email address
   add_field: Add an email address
 
-#new
+
 sales:
   card_headline: New album
   card_status: Selling

@@ -1,28 +1,84 @@
-#new
 default_signature: |
     Musically,
 
     The Un-Mute Team
 
-#new
 footer_links:
   home: Home
   about: About
   contact: Contact
 
-#new
 add_to_contacts: Add "%address%" to your contacts to make sure to receive all of our e-mails.
 
 subjects:
+  change_email_confirmation: Change your password
+  new_ownership_request: Someone thinks you own an artist profile on Un-Mute
+  order_recap: Your order on Un-Mute.be
   concert:
+    artist:
+      known_outcome: Your Un-Mute event - outcome
+      reminder: "Your event on Un-Mute.be (reminder)"
     fan:
-      viptickets: Your Un-Mute tickets for %artist% #new
-  refunded_payment: Your tickets are refunded #new
-  artist_validated: Your Un-Mute artist has been verified #new
+      viptickets: Your Un-Mute tickets for %artist%
+  refunded_payment: Your tickets are refunded
+  artist_validated: Your Un-Mute artist has been verified
+  reward_attribution: New reward
+  sponsorship_invitation: Invitation to be sponsored on Un-Mute
+
+others:
+  message_from_artist: "Message from the artist:"
+
+change_email:
+  confirmation: |
+    Hello %username%,
+
+    You have made a request to change your email address linked to your Un-Mute account.
+
+    To confirm this change, click on the link here below:
+
+    %confirmationUrl%
 
 concert:
+  artist:
+    failure: |
+      Dear artist,
+
+      Unfortunately, You couldn't get enough contributors to allow the organization of your %step% initially booked on %date%
+
+      The producers that supported your project will be entirely refunded.
+
+      Want to try again later in another venue? We're right here! Our platform on %url% is open to you and will always be.
+    confirmation: |
+      Congratulations!
+
+      You are supported by enough producers: Un-Mute will organize your festival on %date% in the venue "%hall%"!
+    reminder: |
+      Hello %artist%,
+
+      You only have %places% tickets left to sell for your %step% on %date% to take place!
+
+      As of today, you still have %days% days to encourage your fans to buy more tickets.
+
+      The Un-Mute team will also promote your project through its own channels in the days to come.
   fan:
-    #new
+    confirmation: |
+        Congratulations!
+
+        The artist "%artist%" just reached his/her objective. In other words, Un-Mute will organize a festival starring %artist% thanks to you! The festival will take place on %date% in the venue "%hall%". You will soon receive your tickets and all practical information about the festival.
+
+        Want to support/discover other artists? Visit our events section: %events_link%!
+    tickets: |
+      Hello %username%,
+
+      Here's some practical information you’ll need before the %artist% concert on %date% at %hall%.
+
+      %firstparts%
+
+      You'll find your concert ticket(s) in the attachement below (PDF format).
+
+      We ask you to print this ticket(s) and present it the night of the concert.
+
+      If you have any questions, contact us at contact@un-mute.be
     vip_tickets: |
       Hello,
 
@@ -35,20 +91,60 @@ concert:
       %additional_info%
 
       If you have questions, please contact us at contact@un-mute.be
+    failure: |
+      Dear producer,
 
-    #new
+      The artist %artist% that you decided to support couldn't reach his/her objective; the Un-Mute festival is now cancelled.
+
+      We will entirely refund your order in the next 10 working days.
+
+      Want to see %artist% on stage anyway? Help them again for their next event!
+
+      Want to support other artists? Visit %artistCatalogUrl%!
+    
     details:
       invited2: Invited artists at this Festival are %invited1% et %invited2%.
       invited1: The invited artist at this Festival is %invited1%.
+  admin:
+    newly_successful: |
+      Dear administrator,
 
-#new
+      The artist %artist% has reached the ticket goal for their %step% scheduled for %date%.
+
+      You can validate (or invalidate, if necessary) the concert in the administrator section of our website, indicating the venue and the date of the concert. An email will be sent to all the producers, as well as the artist.
+
+order: |
+    Thank you for placing an order with Un-Mute! It is thanks to these support actions that Belgian artists succeed in performing and sharing their music. Thanks for them !
+
+    You will find the summary of your order in attachments, and in your personal space on %url%.
+
+contact:
+  copy: |
+    Your message on Un-Mute.be has well been received. We will answer shortly if necessary.
+
+    Here it is:
+
+    -- Concerns: %type%
+    -- Object: %object%
+    -- Message:
+
+ownershiprequest:
+  member: |
+    You have been added to the administration of the artist "%artist%" on Un-Mute, the crowdfunding platform for musical creations.
+
+    To confirm that administration status, please follow this link: %confirmationUrl%
+
+  nonmember: |
+    You have been added to the artist "%artist%" sur la plateforme Un-Mute, on Un-Mute, the crowdfunding platform for musical creations.
+
+    To confirm that administration status, please create your account on Un-Mute.be, then follow this link: %confirmationUrl%
+
 artist:
   validated: |
     The artist profile that you created on Un-Mute (stage name: %artist%) has been verified by an administrator.
 
     It is now publicly visible on the website and eligible to participate at Un-Mute Festivals.
 
-#new
 vip_inscription:
   copy: |
     Your Press subscription on Un-Mute.be has well been received. This is what you filled in:
@@ -61,7 +157,6 @@ vip_inscription:
 
     For questions, please contact us at contact@un-mute.be
 
-#new
 payment:
   refunded: |
     Dear Producer,
@@ -70,7 +165,7 @@ payment:
 
     We hope to see you soon on Un-Mute.be to support other artists and bring them on stage!
 
-#new
+
 reward_attribution:
   content: |
     You just received a new Un-Mute reward!
@@ -79,15 +174,9 @@ reward_attribution:
     For more information, visit %rewards_url%.
   my_rewards: My rewards
 
-#new
 sponsorship_invitation:
   content: |
     %user_name% invites you to join the Un-Mute collaborative musical platform and attend "%contract_name%" with him/her!
     %content%
     Follow this link to validate the invitation: %url%
   invit_message_header: "This message was attached to the invitation by %user_name%:"
-
-order: |
-    Thank you for placing an order with Un-Mute! It is thanks to these support actions that Belgian artists succeed in performing and sharing their music. Thanks for them !
-
-    You will find the summary of your order in attachments, and in your personal space on %url%.

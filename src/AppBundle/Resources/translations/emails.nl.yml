@@ -33,13 +33,10 @@ concert:
 
       Wilt je een herkansing nemen in een andere zaalcategorie? Aarzel niet! Onze platform %url% staat voor je open en zal het altijd blijven.
 
-
     confirmation: |
       Félicitations !
 
       Je wordt gesteund door voldoende producers: Un-Mute biedt je de organisatie van je concert op %date% in de zaal "%hall%".
-
-      Dit concert kan je de mogelijkheid bieden om deel te nemen aan een multi-lokale tour georganiseerd door Un-Mute. We zullen contact met jij opnemen voor meer informatie hierover.
 
     reminder: |
       Hallo %artist%,
@@ -48,27 +45,6 @@ concert:
       Vanaf vandaag heb je nog %days% dagen om je fans opnieuw motiveren via je communicatiekanalen.
 
       Van onze kant zijn we van plan om jouw evenement de komende dagen met onze eigen middelen te promoten.
-    details: |
-        Beste artiest,
-
-        Hier zijn de praktische informaties over je concert in de zaal "%hall%"
-
-        Planning van de avond :
-
-           -- Soundcheck (%host% - host) : 14u30
-           -- Soundcheck (%invited1%) : 16u
-           -- Soundcheck (%invited2%) : 17u
-           -- Tijd van het concert (%invited1%) :  19u (45 minuten)
-           -- Tijd van het concert (%invited2%) :  20u15 (45 minuten)
-           -- Tijd van het concert (%host%) :  21u30 (1u)
-
-        Belangrijk: we vragen elke groep om 30 minuten voor de soundchecktijd aan te komen!
-
-        Tot slot, kunt je ons het gegevensblad van jouw groep sturen evenals het contract (bijgevoegd) dat je tegen het einde van deze week ondertekend moet terugsturen?
-
-        Als je vragen heeft, aarzel dan niet om ons te contacteren via het e-mail adres pierre@un-mute.be
-
-        We kijken er naar uit je binnenkort op het podium te zien!
         
   fan:
     confirmation: |

@@ -1,5 +1,17 @@
+change_password:
+  submit: Change my password
+
 profile:
   show:
+    address: Address
+    artists: My artists
+    birthday: Birthday
+    email: Email
+    firstname: First name
+    genres: Musical interests
+    inscription_date: Inscription date
+    lastname: Last name
+    newsletter: Commercial communications
     #new
     facebook:
       label: Facebook account
@@ -8,7 +20,15 @@ profile:
       disconnect_submit: Dissociate
       disconnect_cancel: Cancel
 
+
 registration:
+  title: Inscription
+  intro: Create your profile in a few seconds to support your favorite artists!
+  tab-um-title: Create an Un-Mute account
+  tab-fb-title: Sign up with Facebook
+  tab-fb:
+    intro: |
+      You can create your profile by signing in your Facebook account. That will automatically create an Un-Mute account, linked to the email address that is used for your Facebook account.
   already_logged:
     #new
     message: |
@@ -19,3 +39,44 @@ registration:
         <a class="list-group-item list-group-item-action" href="%hallsUrl%">Un-Mute concert halls</a>
         <a class="list-group-item list-group-item-action" href="%profileUrl%">Your account</a>
       </div>
+    back: Back to homepage
+    logout: I want to log out
+  back: Back to website
+  check_email: Thank you for signing up. You should have received a confirmation email with an activation link. This is the last step before getting into your own personal space on Un-Mute!
+  confirmed: Your account has been verified. From now on, discover your favorite artists and support them through their musical projects!
+  email:
+    message: |
+      Hi %username%,
+
+      Thank you for signing up! Your Un-Mute account has been created.
+
+      Could you please confirm that this email address is correct by clicking on the following link : %confirmationUrl%?
+  submit: Create my Un-Mute account
+
+resetting:
+  check_email: |
+    You should have received an email with a reinitializition link.
+
+    Please note you can only ask for a new password every %tokenLifetime% hours.
+
+    If you don't receive the email, please check your spam folder or try again later.
+  email:
+    subject: Password reinitialization
+    message: |
+      Hi %username%,
+
+      Did you forger your Un-Mute password?
+
+      No big deal; you can create a new password by following this link: %confirmationUrl%
+  request:
+    submit: Send reinitialization link
+    username: Email address
+  reset:
+    submit: Change my password
+
+security:
+  login:
+    password: Password
+    remember_me: Remember me
+    submit: Connect with Un-Mute
+    username: Email address

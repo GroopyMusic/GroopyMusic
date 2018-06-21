@@ -648,8 +648,8 @@ order_pdf:
   title: Samenvatting van uw bestelling
   intro: Bedankt voor het plaatsen van een bestelling voor festivaltickets met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar contact@un-mute.be
   sales:
-     intro:
-  promo: "Opmerking: voor elke bestelling geplaatst tijdens de eerste week van kaartverkoop voor dit evenement (dwz tot %end_date%), met %nb_organic_needed% gekochte tickets, ontvangt u er %nb_promotional%."
+  intro: Bedankt voor het plaatsen van een bestelling voor albums met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar contact@un-mute.be
+    promo: "Opmerking: voor elke bestelling geplaatst tijdens de eerste week van kaartverkoop voor dit evenement (dwz tot %end_date%), met %nb_organic_needed% gekochte tickets, ontvangt u er %nb_promotional%."
   labels:
     order_date: Bestelling datum
     event: Evenement ondersteund
@@ -672,7 +672,11 @@ order_pdf:
       content: U krijgt de volledige betaling terug als de ondersteunde artiest ten minste geen %min_tickets% Un-Mute-tickets voor dit festival kan verkopen. Voor meer informatie over ons aankoopproces, verwijzen wij naar onze algemene voorwaarden op <a href="https://un-mute.be">https://un-mute.be</a>
   footer:
       tracking: "Deze orderbevestiging is gegenereerd op %date%. Bestel-ID: %id%"
-
+  conditions:
+    title: Aankoopvoorwaarden
+    content: bezoek onze algemene gebruiks- en verkoopvoorwaarden op %url%
+  footer:
+    tracking: "Cette confirmation de commande a été générée le %date%. Identifiant commande : %id%"
 #new
 tickets_pdf:
   ticket:

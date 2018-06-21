@@ -59,7 +59,6 @@ concert:
 
       Vous êtes soutenu(s) par suffisamment de producteurs : Un-Mute vous offre l'organisation de votre festival le %date% dans la salle "%hall%".
 
-      Ce festival vous offrira peut-être la possibilité de participer à une tournée multi-locale organisée par Un-Mute. Nous vous recontacterons pour plus d'informations à ce sujet.
     reminder: |
       Bonjour %artist%,
 
@@ -68,29 +67,6 @@ concert:
       À partir d'aujourd'hui, vous avez encore %days% jours pour relancer vos fans via vos canaux de communication.
 
       De notre côté, nous prévoyons de promouvoir votre évènement dans les prochains jours via nos propres moyens.
-
-    details: |
-      Cher artiste,
-
-       Voici les informations pratiques concernant votre festival du %date% dans la salle "%hall%".
-
-       Planning de la soirée :
-
-           -- Soundcheck (%host% - hôte) : 14h30
-           -- Soundcheck (%invited1%) : 16h
-           -- Soundcheck (%invited2%) : 17h
-           -- Heure du concert (%invited1%) :  19h (45 minutes)
-           -- Heure du concert (%invited2%) :  20h15 (45 minutes)
-           -- Heure du concert (%host% - hôte) :  21h30 (1h)
-
-       Important : nous demandons à chaque groupe d'arriver 30 minutes avant leur heure de soundcheck !
-
-       Enfin, pourriez-vous nous envoyer la fiche technique de votre groupe ainsi que le contrat (en pièce jointe) que vous devez nous renvoyer signé au plus tard fin de cette semaine ?
-
-       Si vous avez des questions, n'hésitez pas à nous joindre par mail à l'adresse contact@un-mute.be
-
-
-       Nous nous réjouissons de vous voir bientôt sur scène !
 
   fan:
     confirmation: |
