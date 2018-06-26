@@ -18,7 +18,7 @@
                 <td>{{ purchase.quantityOrganic }}</td>
             </tr>
             <tr>
-                <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}{% if purchase.counterpart.freePrice %} (choisi librement){% endif %}</td>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}{% if purchase.counterpart.freePrice %} ({{ 'freely_chosen'|trans|raw }}){% endif %}</td>
                 <td>{{ purchase.unitaryPrice }} €</td>
             </tr>
             </tbody>

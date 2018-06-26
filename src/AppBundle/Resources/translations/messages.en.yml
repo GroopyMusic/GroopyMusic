@@ -45,6 +45,7 @@ ticket: ticket
 tickets: tickets
 people: people
 success_limit: Success limit
+freely_chosen: Freely chosen
 more_info: More information
 step: Category
 confirmed: Confirmed
@@ -938,8 +939,6 @@ sales:
     title: About the artist
     genres: Musical styles
     see_profile: View profile
-
-
 
 pot:
   infos:
