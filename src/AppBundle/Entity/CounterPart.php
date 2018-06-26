@@ -65,9 +65,15 @@ class CounterPart implements TranslatableInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="BaseStep", inversedBy="counterParts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $step;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="counterParts")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $contractArtist;
 
     /**
      * @ORM\Column(name="maximum_amount", type="smallint")
@@ -196,5 +202,21 @@ class CounterPart implements TranslatableInterface
     public function setMinimumPrice($minimum_price)
     {
         $this->minimum_price = $minimum_price;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContractArtist()
+    {
+        return $this->contractArtist;
+    }
+
+    /**
+     * @param mixed $contractArtist
+     */
+    public function setContractArtist($contractArtist)
+    {
+        $this->contractArtist = $contractArtist;
     }
 }

@@ -40,3 +40,9 @@ app_webhooks:
     resource: "@AppBundle/Controller/WebHooksController.php"
     type:     annotation
     prefix: /wh/
+
+app_pots:
+  resource: "@AppBundle/Controller/PotController.php"
+  type: annotation
+  prefix: /chapots/
+  # prod = other domain ?

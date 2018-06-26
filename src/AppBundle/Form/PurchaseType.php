@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractArtist;
+use AppBundle\Entity\ContractArtistPot;
 use AppBundle\Entity\ContractArtistSales;
 use AppBundle\Entity\Purchase;
 use Symfony\Component\Form\AbstractType;
@@ -27,7 +28,7 @@ class PurchaseType extends AbstractType
             'label' => false,
         ));
 
-        if($contract_artist instanceof ContractArtistSales) {
+        if($contract_artist instanceof ContractArtistSales || $contract_artist instanceof ContractArtistPot) {
             $builder->add('free_price_value', NumberType::class, array(
                 'attr' => [
                     'class' => 'quantity',

@@ -6,7 +6,6 @@ Days 4: Donderdag
 Days 5: Vrijdag
 Days 6: Zaterdag
 
-
 months.01: Januari
 months.02: Februari
 months.03: Maart
@@ -46,16 +45,17 @@ loading: Lading…
 meta_description_1: Het eerste Belgische platform voor crowdfundingconcerten.
 meta_description_2: Met Un-Mute bepaalt u, het publiek, welke artiesten u in uw regio wilt zien spelen. U koopt concertkaarten op voorhand die alleen worden bevestigd als er een minimumaantal tickets wordt verkocht!
 
-meta_description_event: Ontdek %artist% live op %date% !
+meta_description_event: Ontdek %artist% live op %date%!
 meta_description_artist: Ontdek %artist% op Un-Mute.
 meta_description_hall: "Un-Mute presenteert zijn partner : %hall%."
-
+meta_description_sales: Nieuw album te koop op Un-Mute
+meta_description_pot: Koop je concertkaarten voor de prijs van je keuze om je steun aan onze artiesten te tonen!
 
 error:
   intro: Blijkbaar zijn we niet op dezelfde golflengte...
   generic:
     title: Error
-    content: Oeps ... Er is een onbekende fout opgetreden tijdens uw bezoek. Als het probleem aanhoudt kan je contact met ons opnemen !
+    content: Oeps ... Er is een onbekende fout opgetreden tijdens uw bezoek. Als het probleem aanhoudt kan je contact met ons opnemen!
   e404:
     title: 404
     content: Aie, aie, deze pagina bestaat niet (of niet meer). Misschien is het gemakkelijker om op <a href="%homeUrl%">la page d'accueil</a> terug te gaan ?
@@ -415,61 +415,84 @@ threeds:
     unknown_error: Er is een onbekende fout opgetreden tijdens 3D Secure-verificatie.
 
 pay_cart:
-    title: Betaling van uw bestelling
+  title: Betaling van uw bestelling
+  intro: |
+      <p>
+          Welkom bij het beveiligde gedeelte van Un-Mute, %firstName%. Hier kunt u uw tickets betalen en de artiesten steunen die u tijdens uw bezoek hebben overtuigd.        </p>
+      <p>
+          Bij het betalen van deze items, verzekert u dat u de <a target="_blank" href="%conditionsUrl%"> algemene verkoopvoorwaarden </a> hebt gelezen.
+          Ter herinnering, uw tickets worden terugbetaald als er niet genoeg andere producenten zijn die deze artiest ondersteunen.
+          Anders, als dit evenement succesvol is, ontvangt u uw tickets een paar dagen voor het festival per e-mail en op Un-Mute.
+      </p>
+  conditions:
+    error: U moet de algemene voorwaarden accepteren om door te gaan.
+    label: Ik accepteer de algemene voorwaarden en ik wil graag betalen
+  methods:
+    creditcard: Creditcard
+    bancontact: Bancontact
+  proceed:
+    threeds:
+      error: Er is een fout opgetreden. Probeer het later opnieuw en waarschuw een Un-Mute-beheerder als het probleem aanhoudt.
+      pending: <b>Verlaat UnMute.be niet tijdens de operatie.</b> Even geduld aub, uw aanvraag wordt verwerkt.
+    creditcard:
+      title: Betaling met creditcard
+      popover:
+          title: Geautoriseerde kaarten
+          content: Onze betalingen worden beveiligd door de Stripe-interface. Wij accepteren alle creditcards.
+          apparent: Meer infos
+      labels:
+          creditcard: Creditcard
+          exp: Vervaldatum.
+          cvc: Visueel cryptogram
+      submit: Met mijn creditcard betalen
+    bancontact:
+      title: Met Bancontact betalen
+      popover:
+          title: Geautoriseerde kaarten
+          content: Onze betalingen worden beveiligd door de Stripe-interface. Wij accepteren alle belgische creditcards.
+          apparent: Meer infos
+      info: U wordt doorverwezen naar de pagina voor betalingsautorisatie van uw bankoperator.
+      submit: Verder met Bancontact gaan.
+      pending: U wordt doorgestuurd naar de autorisatiepagina van uw bank. Als er niets gebeurt, probeert u het opnieuw.
+  recap:
+    promo_title: Promotie
+    title: Uw tickets
+    labels:
+      counterpart: Type
+      concert: Festival
+      date: Datum
+      quantity: Aantal
+      unitprice: Eenheidsprijs
+      total: Totaal
+      artist: Artiest
+    total: "[0,1] Totaal voor %count% ticket| [2, Inf[ Totaal voor %count% tickets"
+  sales:
     intro: |
-        <p>
-            Welkom bij het beveiligde gedeelte van Un-Mute, %firstName%. Hier kunt u uw tickets betalen en de artiesten steunen die u tijdens uw bezoek hebben overtuigd.        </p>
-
-        <p>
-            Bij het betalen van deze items, verzekert u dat u de <a target="_blank" href="%conditionsUrl%"> algemene verkoopvoorwaarden </a> hebt gelezen.
-            Ter herinnering, uw tickets worden terugbetaald als er niet genoeg andere producenten zijn die deze artiest ondersteunen.
-            Anders, als dit evenement succesvol is, ontvangt u uw tickets een paar dagen voor het festival per e-mail en op Un-Mute.
-        </p>
-    conditions:
-        error: U moet de algemene voorwaarden accepteren om door te gaan.
-        label: Ik accepteer de algemene voorwaarden en ik wil graag betalen
-    methods:
-        creditcard: Creditcard
-        bancontact: Bancontact
-    proceed:
-        threeds:
-            error: Er is een fout opgetreden. Probeer het later opnieuw en waarschuw een Un-Mute-beheerder als het probleem aanhoudt.
-            pending: <b>Verlaat UnMute.be niet tijdens de operatie.</b> Even geduld aub, uw aanvraag wordt verwerkt.
-        creditcard:
-            title: Betaling met creditcard
-            popover:
-                title: Geautoriseerde kaarten
-                content: Onze betalingen worden beveiligd door de Stripe-interface. Wij accepteren alle creditcards.
-                apparent: Meer infos
-            labels:
-                creditcard: Creditcard
-                exp: Vervaldatum.
-                cvc: Visueel cryptogram
-            submit: Met mijn creditcard betalen
-        bancontact:
-            title: Met Bancontact betalen
-            popover:
-                title: Geautoriseerde kaarten
-                content: Onze betalingen worden beveiligd door de Stripe-interface. Wij accepteren alle belgische creditcards.
-                apparent: Meer infos
-            info: U wordt doorverwezen naar de pagina voor betalingsautorisatie van uw bankoperator.
-            submit: Verder met Bancontact gaan.
-            pending: U wordt doorgestuurd naar de autorisatiepagina van uw bank. Als er niets gebeurt, probeert u het opnieuw.
+      <p>
+          Bedankt voor het ondersteunen van %artist% in zijn campagne voor verkooprecords. Het is dankzij jouw steun dat Belgische artiesten hun publiek kunnen spelen en bereiken.
+      </p>
+      <p>
+        Als je wilt doorgaan met het betalen van goederen, moet je de <a target="_blank" href="%conditionsUrl%">algemene voorwaarden</a> hebben gelezen en accepteren.
+      </p>
     recap:
-        promo_title: Promotie
-        title: Uw tickets
-        labels:
-            counterpart: Type
-            concert: Festival
-            date: Datum
-            quantity: Aantal
-            unitprice: Eenheidsprijs
-            total: Totaal
-        total: "[0,1] Totaal voor %count% ticket| [2, Inf[ Totaal voor %count% tickets"
-    not_authenticated:
-      intro: Om uw bestelling te voltooien, moet u aangemeld zijn bij Un-Mute.
-      signin_label: Ik heb een account op Un-Mute
-      signup_label: Ik heb nog geen Un-Mute-account
+      title: Samenvatting
+      total: "[0,1] Totaal voor %count% artikel| [2, Inf[ Totaal voor %count% goederen"
+  pot:
+    intro: |
+      <p>
+          Bedankt voor het ondersteunen van %artist% in zijn campagne. Het is dankzij jouw steun dat Belgische artiesten hun publiek kunnen spelen en bereiken.
+      </p>
+
+      <p>
+          Als je wilt doorgaan met het betalen van goederen, moet je de <a target="_blank" href="%conditionsUrl%">algemene voorwaarden</a> hebben gelezen en accepteren.
+      </p>
+    recap:
+      title: Samenvatting
+      total: "[0,1] Totaal voor %count% ticket| [2, Inf[ Totaal voor %count% tickets"
+  not_authenticated:
+    intro: Om uw bestelling te voltooien, moet u aangemeld zijn bij Un-Mute.
+    signin_label: Ik heb een account op Un-Mute
+    signup_label: Ik heb nog geen Un-Mute-account
 
 my_orders:
   title: Mijn bestellingen
@@ -650,6 +673,7 @@ order_pdf:
     nb_tickets_promo: Aantal extra tickets verkregen per promotie
     rewards: Beloningen
     sales: Album
+    pot: Evenement ondersteund
   details:
     title: Details van de bestelling
     labels:
@@ -695,7 +719,7 @@ notices:
   artist_ownership_request_refused: Uw keuze is opgeslagen.
   artist_leave_last: Je hebt het beheer van %artist% verlaten. Jij was de laatste eigenaar van deze artiest; het is van het platform verwijderd.
   artist_leave: Je hebt het beheer van %artist% verlaten.
-  payment: Uw betaling is ontvangen. U ontvangt per e-mail een samenvatting. Je tickets worden verzonden als de artiest %artist% dit festival kan deblokkeren.
+  payment: Uw betaling is ontvangen. U ontvangt per e-mail een samenvatting.
   change_email_request: Uw aanvraag is ontvangen Om de wijziging van het e-mailadres te valideren, moet u op een koppeling klikken die naar het nieuwe aangevraagde adres is verzonden.
   change_email_logged_out: Uw email is gewijzigd; blijkbaar was je ingelogd met een ander account, dus hebben je uitgelogd.
   change_email: Uw e-mailadres is gewijzigd.
@@ -920,10 +944,33 @@ sales:
   contributors: "[0,1]bijdrage| [2, Inf[bijdragen"
   infos:
     title: Infos
+    opening_date: Begin van de verkoop
+    closing_date: Einde van de verkoop
   about_host:
     title: Over de artiest
+    genres: Muzikale stijlen
+    see_profile: Profiel bekijken
   buy:
     title: Koop het album
+    over: Het is niet langer mogelijk om een bijdrage te leveren aan deze campagne.
+  labels:
+    quantity: Kwantiteit
+    free_price: Prijs (vrij, min. € %min%)
+
+pot:
+  infos:
+    title: Infos
+    opening_date: Begin van de verkoop
+    date_event: Concert datum
+  contributors: "[0,1]bijdrage| [2, Inf[bijdragen"
+  stillselling: Verkoop bezig
+  about_host:
+    title: Over de artiest
+    genres: Muzikale stijlen
+    see_profile: Profiel bekijken
+  buy:
+    title: Tickets kopen
+    over: Het is niet langer mogelijk om een bijdrage te leveren aan deze campagne.
   labels:
     quantity: Kwantiteit
     free_price: Prijs (vrij, min. € %min%)

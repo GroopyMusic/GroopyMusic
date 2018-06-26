@@ -11,7 +11,7 @@ use Sonata\TranslationBundle\Model\TranslatableInterface;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"concert" = "Step", "sales" = "StepSales", "default" = "BaseStep"})
+ * @ORM\DiscriminatorMap({"concert" = "Step", "sales" = "StepSales", "pot" = "StepPot", "default" = "BaseStep"})
  */
 class BaseStep implements TranslatableInterface
 {

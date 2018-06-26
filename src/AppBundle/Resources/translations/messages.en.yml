@@ -11,10 +11,15 @@ months.10: October
 months.11: November
 months.12: Décember
 
-meta_description: The first Belgian concert crowd-funding platform. With Un-Mute, fans choose the artists they wish to see perform in their area. Just buy the tickets before the cut-off date - the concert takes place if the minimum number of tickets are sold!
+meta_description_1: Het eerste Belgische crowdfundingplatform voor concerten.
+meta_description_2: Met Un-Mute bepaal jij, het publiek, welke artiesten je wilt zien on stage in jouw regio. U koopt van tevoren concertkaarten, die alleen worden bevestigd als er een minimumaantal tickets wordt verkocht!
+
+meta_description: The first Belgian concert crowdfunding platform. With Un-Mute, fans choose the artists they wish to see perform in their area. Just buy the tickets before the cut-off date - the concert takes place if the minimum number of tickets are sold!
 meta_description_event: Discover %artist% on stage on %date%!
 meta_description_artist: Discover %artist% on Un-Mute.
 meta_description_hall: "Un-Mute partner: %hall%."
+meta_description_sales: Discover the new exclusive album on Un-Mute
+meta_description_pot: Buy your tickets at the price of your choice to show your support for our artists
 
 Days 0: Sunday
 Days 1: Monday
@@ -74,7 +79,7 @@ home:
   join_us:
     title: Join us
     content_1: <strong>Do you wish to become a <a href="%about_url%">producer</a> and support an artist?</strong> See <a href="%catalog_url%">our artist catalogue</a>.
-    content_2: <strong>Are you an <a href="%about_url%">artist</a> interested in our concept?</strong> Join our <a href="%register_url%">Un-mute network</a> for free today.
+    content_2: <strong>Are you an <a href="%about_url%">artist</a> interested in our concept?</strong> Join our <a href="%register_url%">Un-Mute network</a> for free today.
     content_3: <strong>Do you wish to offer a venue for our artists?</strong> <a href="%contact_url%">Contact our team</a>.
     more_info: More info
     login_link: Join Un-Mute
@@ -326,57 +331,86 @@ threeds:
     error: 3D Secure authentication has failed. Your order and payment are cancelled. Click <a href="%backUrl%">here</a> to go back.
 
 pay_cart:
-    title: Checkout
-    intro: |
-        <p>
-            Welcome in our secure payment area, %firstName%. You can here pay your tickets and mark your support for the artists
-            who convinced you to come to their shows.
-        </p>
+  title: Checkout
+  intro: |
+      <p>
+          Welcome in our secure payment area, %firstName%. You can here pay your tickets and mark your support for the artists
+          who convinced you to come to their shows.
+      </p>
 
-        <p>
-            By proceeding, you assure having read our <a target="_blank" href="%conditionsUrl%">terms of service</a>.
-            Remember your tickets will be refunded if there are not enough producers to fund this festival.
-            Otherwise, you will receive your tickets by email a few days and in your personal space on Un-Mute a few days before the festival.
-        </p>
-    conditions:
-        error: You need to accept our terms of service to proceed.
-        label: I accept the terms of service and want to proceed to payment
-    methods:
-        creditcard: Credit card
-        bancontact: Bancontact
-    proceed:
-        threeds:
-            error: An error occurred. Please try again later and inform an Un-Mute administrator if the problem persists.
-            pending: <b>Your payment is being processed. Don't leave Un-Mute.be until it is completed.</b>
-        creditcard:
-            title: Credit card checkout
-            popover:
-                title: Authorized cards
-                content: Our payments are secured by the Stripe system. We accept all kinds of credit cards.
-                apparent: More info
-            labels:
-                creditcard: Credit card
-                exp: Expiration date
-                cvc: Visual crypto
-            submit: Pay with my credit card
-        bancontact:
-            title: Bancontact checkout
-            popover:
-                title: Authorized cards
-                content: Our payments are secured by the Stripe system. We accept all kinds of Belgian debit cards.
-                apparent: More info
-            info: You will be redirected to the authentication page of your bank owner.
-            submit: Continue with Bancontact
-            pending: You are being redirected to the authentication page of your bank owner. If nothing happens, please try again.
-    recap:
-        title: Your tickets
+      <p>
+          By proceeding, you assure having read our <a target="_blank" href="%conditionsUrl%">terms of service</a>.
+          Remember your tickets will be refunded if there are not enough producers to fund this festival.
+          Otherwise, you will receive your tickets by email and in your personal space on Un-Mute a few days before the festival.
+      </p>
+  conditions:
+    error: You need to accept our terms of service to proceed.
+    label: I accept the terms of service and want to proceed to payment
+  methods:
+    creditcard: Credit card
+    bancontact: Bancontact
+  proceed:
+    threeds:
+        error: An error occurred. Please try again later and inform an Un-Mute administrator if the problem persists.
+        pending: <b>Your payment is being processed. Don't leave Un-Mute.be until it is completed.</b>
+    creditcard:
+        title: Credit card checkout
+        popover:
+            title: Authorized cards
+            content: Our payments are secured by the Stripe system. We accept all kinds of credit cards.
+            apparent: More info
         labels:
-            counterpart: Type
-            concert: Festival
-            date: Date
-            quantity: Quantity
-            unitprice: Unit price
-            total: Total
+            creditcard: Credit card
+            exp: Expiration date
+            cvc: Visual crypto
+        submit: Pay with my credit card
+    bancontact:
+        title: Bancontact checkout
+        popover:
+            title: Authorized cards
+            content: Our payments are secured by the Stripe system. We accept all kinds of Belgian debit cards.
+            apparent: More info
+        info: You will be redirected to the authentication page of your bank owner.
+        submit: Continue with Bancontact
+        pending: You are being redirected to the authentication page of your bank owner. If nothing happens, please try again.
+  recap:
+    title: Your tickets
+    labels:
+      counterpart: Type
+      concert: Festival
+      date: Date
+      quantity: Quantity
+      unitprice: Unit price
+      total: Total
+      artist: Supported artist
+  sales:
+    intro: |
+       <p>
+         Thanks for supporting %artist% into selling albums. It is thanks to those kind of gestures that Belgian artists can perform on stage and share their music.
+       </p>
+
+       <p>
+          By proceeding, you assure having read our <a target="_blank" href="%conditionsUrl%">terms of service</a>.
+       </p>
+    recap:
+      title: Recap
+      total: "[0,1] Total for %count% article| [2, Inf[ Total for %count% articles"
+  pot:
+    intro: |
+      <p>
+         Thanks for supporting %artist% in their campaign. It is thanks to those kind of gestures that Belgian artists can perform on stage and share their music.
+      </p>
+
+      <p>
+        By proceeding, you assure having read our <a target="_blank" href="%conditionsUrl%">terms of service</a>.
+      </p>
+    recap:
+      title: Récap
+      total: "[0,1] Total for %count% ticket| [2, Inf[ Total for %count% tickets"
+  not_authenticated:
+      intro: To go further, you must sign in.
+      signin_label: I have an Un-Mute account.
+      signup_label: I don't have an Un-Mute account yet.
 
 my_orders:
   title: My orders
@@ -532,8 +566,6 @@ leave_artist:
     busy: You can't leave the administration of that artist profile for now as you are its last owner, and an event involving that artist is currently being funded.
   cancel: Cancel
   confirm: Leave %artist%
-
-
 
 error:
   intro: Apparently, we're not on the same wavelength...
@@ -709,6 +741,7 @@ order_pdf:
     nb_tickets_promo: Additional tickets obtained by promotion
     rewards: Applied Un-Mute reward(s)
     sales: Album
+    pot: Supported event
   details:
     labels:
       counterpart: Article
@@ -746,18 +779,28 @@ tickets_pdf:
     -	All terms of service are available on <a href="%conditionsUrl%">%conditionsUrl%</a>.
 
 notices:
-  
+  edition: Changes have been saved.
+  event_create: Your event has been created. Gather now producers who can support you in his organization!
   artist_create: The artist %artist% has been created. For now, the profile is invisible on Un-Mute except for you; the Un-Mute team will contact you in the few next hours or days.
   artist_role: This role has been saved.
-  
+  artist_ownership_requests: The invitations have been sent.
+  artist_ownership_request_cancel: Invitation canceled.
+  artist_ownership_request_accepted: Congratulations, you are now part of the managers of the artist %artist%.
+  artist_ownership_request_refused: Your choice has been saved.
+  artist_leave_last: You have left the management of %artist%. You were the last owner of this artist; it has been removed from the platform.
+  artist_leave: You have left the management of %artist%.
+  payment: Your payment has been received. You will receive a summary by e-mail.
+  change_email_request: Your request has been received. To validate the change of e-mail address, you must click on a link that has been sent to the new address requested.
+  change_email_logged_out: Your e-mail has been modified; apparently, you were logged in with another account so we allowed ourselves to log out.
+  change_email: Your e-mail address has been changed.
+  account_deletion: Your Un-Mute account has been deleted. Know that you can always create a new one if you want to. Good continuation!
+  change_password: Your password has been changed.
   social:
     connection_email_confirmed: You are now logged in.
     connection_email_new_account: We linked your Facebook account to the existing Un-Mute account for the address %email%.
     connection_oauth_confirmed: You are now logged in through your Facebook account.
     registration_success: Your Un-Mute account has been created with your Facebook profile data. You can define a password at any time in your profile edit page if you wish to also be able to log in using Un-Mute credentials.
-  
   registration: Your subscription is successful. You can now proceed to payment. Please note that you have received an activation link by email. You will need to click it if you want to log again into our system with Un-Mute credentials in the future.
-  
   sponsorship:
     cart_success: Congratulations! You have validated your sponsorship; your sponsor might receive bonuses!
     send_sponsorship:
@@ -879,14 +922,39 @@ sales:
   card_headline: New album
   card_status: Selling
   card_action: Buy yours
-  stillselling: Currently selling
+  stillselling: Campaign in progress
   contributors: "[0,1]contributor| [2, Inf[contributors"
   infos:
     title: Infos
-  about_host:
-    title: About the artist
+    opening_date: Start of campaign
+    closing_date: End of campaign
+  labels:
+    free_price: "Price (your choice, min. %min% €)"
+    quantity: Quantity
   buy:
     title: Buy the album
-  labels:
+    over: "It is no longer possible to contribute to this campaign."
+  about_host:
+    title: About the artist
+    genres: Musical styles
+    see_profile: View profile
+
+
+
+pot:
+  infos:
+    title: Infos
+    opening_date: Start of campaign
+    date_event: Concert date
+  contributors: "[0,1]contributor| [2, Inf[contributors"
+  stillselling: Campaign in progress
+  about_host:
+    title: About the artist
+    genres: Musical styles
+    see_profile: View profile
+  buy:
+    title: Buy tickets
+    over: It is no longer possible to contribute to this campaign.
+  labels:
     quantity: Quantity
     free_price: Price (your choice, min. %min% €)

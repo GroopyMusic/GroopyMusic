@@ -9,7 +9,10 @@
     {% set photos = artist.allPhotos %}
 
     {% set is_event = contract is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
-    {% set url_contract = is_event ? path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) : path('artist_contract_sales', {'id': contract.id, 'slug': contract.artist.slug}) %}
+    {% set is_pot = contract is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
+    {% set is_sales = contract is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
+    {% set url_contract = is_event ? path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) :
+        (is_pot ? path('pot_pot', {'id': contract.id, 'slug': contract.artist.slug}) : path('artist_contract_sales', {'id': contract.id, 'slug': contract.artist.slug})) %}
 
     {% if photos is not empty %}
         {% set rotation = true %}
@@ -31,6 +34,7 @@
         <div class="um-card-header w-100" style="background-image: url({{ src }});">
             <span class="um-card-date btn-primary sharp p-2{% if contract.state in contract.successfulStates and is_event %} successful-progress-bg{% endif %}">
                 {% if is_event %}{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
+                {% elseif is_pot %}{{ contract.date|date('j') }} {{ contract.date|date('M')|trans }}
                 {% else %}{{ 'sales.card_status'|trans }}
                 {% endif %}
             </span>
@@ -39,10 +43,17 @@
         <div class="w-100 position-relative">
 
             {# Sales #}
-            {% if not is_event %}
+            {% if is_sales %}
                 <div class="progress um-card-progress sales-progress bg-secondary py-3">
                     <div class="progress-bar" style="width:100%">
                         <span class="text-uppercase">{{ 'sales.card_headline'|trans }}</span>
+                    </div>
+                </div>
+            {# Cha'pot #}
+            {% elseif is_pot %}
+                <div class="progress um-card-progress sales-progress bg-secondary py-3">
+                    <div class="progress-bar" style="width:100%">
+                        <span class="text-uppercase">{{ 'pot.card_headline'|trans }}</span>
                     </div>
                 </div>
             {# Event #}
