@@ -352,9 +352,9 @@ class Ticket
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDateValidated(): \DateTime
+    public function getDateValidated()
     {
         return $this->date_validated;
     }

@@ -266,6 +266,10 @@ class TicketingManager
             'rewards' => $ticket->getRewards()
         ];
 
+        if($ticket->getDateValidated() != null) {
+            $arr['Heure du scan'] = $ticket->getDateValidated()->format('d/m/Y H:i');
+        }
+
         if ($ticket->getCounterPart() != null) {
             $arr['Type de ticket'] = $ticket->getCounterPart()->__toString();
         }
