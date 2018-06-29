@@ -39,6 +39,7 @@
                     <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
                 {% endif %}
             </a>
+        #}
             {% if last_notifs is not empty %}
                 <div class="modal fade" id="notifs-modal" tabindex="-1" role="dialog" aria-labelledby="notifs-modal-label" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -53,6 +54,8 @@
                         </div>
                     </div>
                 </div>
+            {% endif %}
+        {#
                 <ul class="dropdown-menu notifications-menu-preview" role="menu" aria-labelledby="notifs-toggler">
                     <div class="notifications-menu-preview-heading"><h4 class="menu-title"><a href="{{ path('user_notifications') }}">{{ 'header.nav.all_notifications'|trans|raw }}</a></h4>
                     </div>

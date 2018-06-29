@@ -128,6 +128,12 @@ class Ticket
     private $rewards;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="date_validated", type="datetime", nullable=true)
+     */
+    private $date_validated;
+
+    /**
      * Get id
      *
      * @return integer
@@ -343,5 +349,21 @@ class Ticket
     public function getRewards()
     {
         return $this->rewards;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateValidated(): \DateTime
+    {
+        return $this->date_validated;
+    }
+
+    /**
+     * @param \DateTime $date_validated
+     */
+    public function setDateValidated(\DateTime $date_validated)
+    {
+        $this->date_validated = $date_validated;
     }
 }
