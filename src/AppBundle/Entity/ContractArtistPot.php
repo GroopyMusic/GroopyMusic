@@ -3,20 +3,17 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
-* @ORM\Table(name="contract_artist_sales")
-* @ORM\Entity(repositoryClass="AppBundle\Repository\ContractArtistSalesRepository")
-*/
-class ContractArtistSales extends BaseContractArtist {
-
-    const STATE_REFUNDED = 'state.refunded';
-    const STATE_FAILED = 'state.failed';
-    const STATE_ONGOING = 'state.ongoing';
+ * @ORM\Table(name="contract_artist_pot")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ContractArtistPotRepository")
+ */
+class ContractArtistPot extends BaseContractArtist
+{
     const STATE_PASSED = 'state.passed';
+    const STATE_ONGOING = 'state.ongoing';
 
-    const UNCROWDABLE_STATES = [self::STATE_REFUNDED, self::STATE_FAILED, self::STATE_PASSED];
+    const UNCROWDABLE_STATES = [self::STATE_PASSED];
     const SUCCESSFUL_STATES = [self::STATE_ONGOING];
 
     public function __toString()
@@ -27,12 +24,6 @@ class ContractArtistSales extends BaseContractArtist {
     public function getState() {
         if(isset($this->state)) {
             return $this->state;
-        }
-        if($this->refunded) {
-            return self::STATE_REFUNDED;
-        }
-        if($this->failed) {
-            return self::STATE_FAILED;
         }
         if($this->dateEnd < (new \DateTime())) {
             return self::STATE_PASSED;
@@ -63,26 +54,51 @@ class ContractArtistSales extends BaseContractArtist {
     }
 
     /**
-     * @var StepSales
+     * @var StepPot
      *
-     * @ORM\ManyToOne(targetEntity="StepSales")
+     * @ORM\ManyToOne(targetEntity="StepPot")
      * @ORM\JoinColumn(nullable=false)
      */
     protected $step;
 
     /**
-     * @return StepSales
+     * @ORM\Column(name="date_event", type="datetime", nullable=false)
      */
-    public function getStep(): StepSales
+    private $date_event;
+
+    /**
+     * @return StepPot
+     */
+    public function getStep(): StepPot
     {
         return $this->step;
     }
 
     /**
-     * @param StepSales $step
+     * @param StepPot $step
      */
-    public function setStep(StepSales $step)
+    public function setStep(StepPot $step)
     {
         $this->step = $step;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateEvent()
+    {
+        return $this->date_event;
+    }
+
+    /**
+     * @param \DateTime $date
+     * @return ContractArtistPot
+     */
+    public function setDateEvent($date_event)
+    {
+        $this->date_event = $date_event;
+        $this->dateEnd = $date_event;
+
+        return $this;
     }
 }

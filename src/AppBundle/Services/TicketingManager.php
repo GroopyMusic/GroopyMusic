@@ -71,7 +71,6 @@ class TicketingManager
             }
             for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
                 $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0));
-                $i++;
             }
         }
         $this->rewardSpendingService->giveRewardToTicket($contractFan);
@@ -287,6 +286,7 @@ class TicketingManager
     {
         if (!$ticket->isValidated()) {
             $ticket->setValidated(true);
+            $ticket->setDateValidated(new \DateTime());
             $this->em->persist($ticket);
             $this->em->flush();
         }

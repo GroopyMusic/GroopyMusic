@@ -6,6 +6,10 @@
         <table class="content-box-table">
             <tbody>
             <tr>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.artist'|trans|raw }}</td>
+                <td>{{ contract.contractArtist.artist }}</td>
+            </tr>
+            <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
                 <td>{{ purchase.counterpart.name }}</td>
             </tr>
@@ -14,7 +18,7 @@
                 <td>{{ purchase.quantityOrganic }}</td>
             </tr>
             <tr>
-                <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}{% if purchase.counterpart.freePrice %} (choisi librement){% endif %}</td>
+                <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}{% if purchase.counterpart.freePrice %} ({{ 'freely_chosen'|trans|raw }}){% endif %}</td>
                 <td>{{ purchase.unitaryPrice }} €</td>
             </tr>
             </tbody>
@@ -93,6 +97,12 @@
                                 })|raw }}
                             {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
                                 {{ 'pay_cart.sales.intro'|trans({
+                                    '%artist%': contract_fan.contractArtist.artist,
+                                    '%firstName%': app.user.firstname,
+                                    '%conditionsUrl%': path('conditions') ~ '#cgv'
+                                })|raw }}
+                            {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
+                                {{ 'pay_cart.pot.intro'|trans({
                                     '%artist%': contract_fan.contractArtist.artist,
                                     '%firstName%': app.user.firstname,
                                     '%conditionsUrl%': path('conditions') ~ '#cgv'
@@ -353,7 +363,8 @@
                             </div>
                         </div>
                     </div>
-                {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
+                {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales')
+                    or contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
                     <div class="col-12 col-md-4 order-1 order-md-2">
                         <div class="content-box">
                             <div class="content-box-header">

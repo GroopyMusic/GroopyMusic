@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "sales" = "ContractArtistSales", "default" = "BaseContractArtist"})
+ * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "sales" = "ContractArtistSales", "pot" = "ContractArtistPot", "default" = "BaseContractArtist"})
  */
 class BaseContractArtist implements TranslatableInterface
 {
@@ -66,6 +66,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->test_period = true;
         $this->promotions = new ArrayCollection();
         $this->no_threshold = false;
+        $this->counterParts = new ArrayCollection();
     }
 
     public function isInTestPeriod() {
@@ -256,6 +257,7 @@ class BaseContractArtist implements TranslatableInterface
         return $fans;
     }
 
+
     /**
      * @return array
      */
@@ -263,8 +265,31 @@ class BaseContractArtist implements TranslatableInterface
         return $this->getPayments()->toArray();
     }
 
+    public function getCounterParts() {
+        if($this->counterParts->count() == 0) {
+            return $this->step->getCounterParts();
+        }
+        else {
+            return $this->counterParts;
+        }
+    }
+
+
     // Unmapped
     protected $state;
+
+     // Step entity
+    /** @var BaseStep */
+    protected $step;
+
+    // Discriminator
+    protected $type;
+
+    // Conditions approval (user form only)
+    protected $accept_conditions;
+
+    // Deadline calculation (@deprecated)
+    protected $theoritical_deadline;
 
     /**
      * @var int
@@ -408,14 +433,10 @@ class BaseContractArtist implements TranslatableInterface
      */
     protected $no_threshold;
 
-    // Discriminator
-    protected $type;
-
-    // Conditions approval (user form only)
-    protected $accept_conditions;
-
-    // Deadline calculation (@deprecated)
-    protected $theoritical_deadline;
+    /**
+     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="step")
+     */
+    protected $counterParts;
 
     /**
      * Get id
@@ -1001,6 +1022,12 @@ class BaseContractArtist implements TranslatableInterface
     public function getVipInscriptions()
     {
         return $this->vip_inscriptions;
+    }
+
+    public function removeCounterPart(CounterPart $counterpart) {
+        $this->counterParts->removeElement($counterpart);
+
+        return $this;
     }
 
     /**

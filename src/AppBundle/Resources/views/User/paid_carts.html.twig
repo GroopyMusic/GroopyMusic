@@ -60,6 +60,8 @@
                                             <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">{{ 'event.generic_name'|trans({'%artist%': contract.contractArtist.artist.artistname}) }}</a>
                                         {% elseif contract.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
                                             <a href="{{ path('artist_contract_sales', {'id':contract.contractArtist.id }) }}">{{ contract.contractArtist.title }}</a>
+                                        {% elseif contract.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
+                                            <a href="{{ path('pot_pot', {'id':contract.contractArtist.id }) }}">{{ contract.contractArtist.title }}</a>
                                         {% endif %}
                                 {% endfor %}
                                 {% endfor %}

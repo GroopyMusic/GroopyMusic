@@ -10,7 +10,7 @@
     {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
 {% endif %}
 
-{% block description_part_1 %}{{ contract.getTitle }} - {{ 'meta_description_sales'|trans({'%artist%': artist.artistname}) }}{% endblock %}
+{% block description_part_1 %}{{ contract.getTitle }} - {{ 'meta_description_pot'|trans({'%artist%': artist.artistname}) }}{% endblock %}
 
 {% block open_graph %}
     <meta property="og:title"
@@ -34,12 +34,12 @@
                 <div class="content-box">
                     <div class="content-box-content text-center">
 
-                        <h3 class="mb-3">{{ 'sales.infos.title'|trans|raw }}</h3>
+                        <h3 class="mb-3">{{ 'pot.infos.title'|trans|raw }}</h3>
 
                         <div class="col-12 row equal content-box-row">
                             <div class="col-12 col-md-6 content-box-col">
                                 <div class="contract-info-title">
-                                    {{ 'sales.infos.opening_date'|trans|raw }}
+                                    {{ 'pot.infos.opening_date'|trans|raw }}
                                 </div>
                                 <div class="contract-info-content">
                                     {{ contract.startDate|date('d/m/Y') }}
@@ -47,10 +47,10 @@
                             </div>
                             <div class="col-12 col-md-6 content-box-col">
                                 <div class="contract-info-title">
-                                    {{ 'sales.infos.closing_date'|trans|raw }}
+                                    {{ 'pot.infos.date_event'|trans|raw }}
                                 </div>
                                 <div class="contract-info-content">
-                                    {{ contract.dateEnd|date('d/m/Y') }}
+                                    {{ contract.dateEvent|date('d/m/Y') }}
                                 </div>
                             </div>
                         </div>
@@ -62,14 +62,14 @@
                         </div>
                         <div class="row equal content-box-row no-border-top">
                             <div class="col-12 content-box-col">
-                                {{ contract.nbCounterPartsPaid }} <span class="contract-info-title">{{ 'sales.contributors'|transchoice(contract.nbCounterPartsPaid) }}</span>
+                                {{ contract.nbCounterPartsPaid }} <span class="contract-info-title">{{ 'pot.contributors'|transchoice(contract.nbCounterPartsPaid) }}</span>
                             </div>
                         </div>
                         <div class="row equal content-box-row no-border-bottom no-border-top">
                             <div class="col-12 content-box-col">
                                 {% if contract.isCrowdable %}
                                     <span class="text-positive um-semi-bold"><img class="green-check"
-                                                                                  src="{{ asset('images/green-check.png') }}"/>{{ 'sales.stillselling'|trans|raw }}</span>
+                                                                                  src="{{ asset('images/green-check.png') }}"/>{{ 'pot.stillselling'|trans|raw }}</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -78,21 +78,21 @@
                 <div class="content-box">
                     <div class="content-box-content">
 
-                        <h3 class="mb-3 text-center"> {{ 'sales.about_host.title'|trans|raw }}</h3>
+                        <h3 class="mb-3 text-center"> {{ 'pot.about_host.title'|trans|raw }}</h3>
 
                         <div class="um-semi-bold">{{ artist.artistname }}</div>
                         <p>{{ artist.getShortDescription }}</p>
 
                         {% if artist.genres is not empty %}
                             <div class="mb-3">
-                                <span class="contract-info-title small"> {{ 'sales.about_host.genres'|trans|raw }}</span>
+                                <span class="contract-info-title small"> {{ 'pot.about_host.genres'|trans|raw }}</span>
                                 {% for genre in artist.genres %} {{ genre }} {% endfor %}
                             </div>
                         {% endif %}
 
                         <p class="text-center"><a
                                     href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}"
-                                    class="btn btn-outline-primary"> {{ 'sales.about_host.see_profile'|trans|raw }}</a>
+                                    class="btn btn-outline-primary"> {{ 'pot.about_host.see_profile'|trans|raw }}</a>
                         </p>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
             <div class="col-12 col-lg-4">
                 <div class="col-12 content-box mt-4">
                     <div class="content-box-header">
-                        <h3>{{ 'sales.buy.title'|trans|raw }}</h3>
+                        <h3>{{ 'pot.buy.title'|trans|raw }}</h3>
                     </div>
 
                     <div class="content-box-content">
@@ -141,7 +141,7 @@
                                             </div>
                                             <div class="col-12 row">
                                                 <div class="col-6">
-                                                    {{ 'sales.labels.free_price'|trans({'%min%': counterpart.minimumPrice}) }}
+                                                    {{ 'pot.labels.free_price'|trans({'%min%': counterpart.minimumPrice}) }}
                                                 </div>
                                                 <div class="col-6 px-3">
                                                     <div class="w-90 position-relative">
@@ -151,7 +151,7 @@
                                             </div>
                                             <div class="col-12 row pt-3">
                                                 <div class="col-6">
-                                                    {{'sales.labels.quantity'|trans }}
+                                                    {{'pot.labels.quantity'|trans }}
                                                 </div>
 
                                                 <div class="col-6 px-3">
@@ -174,7 +174,7 @@
                             {{ form_widget(form.submit) }}
                             {{ form_end(form) }}
                         {% else %}
-                            <p class="text-uppercase small font-weight-bold">{{ 'sales.buy.over'|trans|raw }}</p>
+                            <p class="text-uppercase small font-weight-bold">{{ 'pot.buy.over'|trans|raw }}</p>
                         {% endif %}
                     </div>
                 </div>

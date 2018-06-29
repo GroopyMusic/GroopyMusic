@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for pot in pots %}
+        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': pot, 'bgwhite': true, 'jplist': false} %}
+    {% endfor %}
+{% endblock %}

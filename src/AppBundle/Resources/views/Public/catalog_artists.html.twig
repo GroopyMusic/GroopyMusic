@@ -42,15 +42,17 @@
                         <input data-path=".artist-name" type="text" value="" placeholder="{{ 'catalog_artists.filtering.search_name'|trans }}" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
                     </div>
 
-                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-genres" data-path=".artist-genres">
-                        {% for genre in genres %}
-                            {% set slug = "jplist-" ~ genre|slug %}
-                            <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
-                                <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">{{ genre }}</span>
-                            </label>
-                        {% endfor %}
+                    <div class="jplist-drop-down" data-control-type="filter-drop-down" data-control-action="filter" data-control-name="artist-genres-filter" data-path=".artist-genres">
+                        <div class="jplist-dd-panel"></div>
+                        <ul>
+                            <li class="active"><span data-path="default" style="color:grey">{{ 'jplist.action'|trans }}</span></li>
+                            {% for genre in genres %}
+                                {% set slug = "jplist-" ~ genre|slug %}
+                                <li>
+                                    <span data-path=".{{ slug }}">{{ genre }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
 
                     <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-province" data-path=".artist-province">

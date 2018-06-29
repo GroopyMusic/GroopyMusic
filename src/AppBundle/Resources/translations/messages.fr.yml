@@ -6,7 +6,6 @@ Days 4: Jeudi
 Days 5: Vendredi
 Days 6: Samedi
 
-
 months.01: Janvier
 months.02: Février
 months.03: Mars
@@ -37,6 +36,7 @@ ticket: ticket
 tickets: tickets
 people: personnes
 success_limit: Seuil de réussite
+freely_chosen: choisi librement
 more_info: Plus d'infos
 step: Catégorie
 confirmed: Festival confirmé !
@@ -50,7 +50,7 @@ meta_description_event: Découvrez %artist% en live le %date% !
 meta_description_artist: Découvrez %artist% sur Un-Mute.
 meta_description_hall: "Un-Mute présente son partenaire : %hall%."
 meta_description_sales: Découvrez cet album inédit, en vente à prix libre sur Un-Mute
-
+meta_description_pot: Achetez vos tickets au prix de votre choix pour montrer votre soutien à nos artistes
 
 error:
   intro: Apparemment, nous ne sommes pas sur la même longueur d'ondes...
@@ -365,9 +365,8 @@ event:
     tbc: Bientôt annoncé
   buy_tickets:
     tickets_left: %tickets% tickets disponibles
-    title:  Achetez vos tickets
+    title: Achetez vos tickets
     over: Il n'est pas possible d'acheter des tickets pour cet événement.
-    
     to_much_reduction: Vous ne pouvez pas sélectionner plusieurs réductions
   hall:
     known: Lieu du festival
@@ -474,19 +473,17 @@ pay_cart:
             quantity: Quantité
             unitprice: Prix unitaire
             total: Total
-            
             total_without_reduction: Total sans réduction
             reduction: Réduction
             price: Prix
             applied_rewards: "Récompense(s) appliquée(s):"
+            artist: Artiste soutenu
         reduction: Récompense(s) appliquée(s)
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
-    
     recap_reward:
         invitation: "%use% invitations"
         consommable: "%use% pack de consommations contenant %quantity% ticket(s) %type% d'une valeur de %value% €."
         reduction: '%reduction% % de réduction appliquée à %nbReducedCounterpart% tickets "%counterpart%"'
-
     sales:
       intro: |
         <p>
@@ -499,8 +496,18 @@ pay_cart:
       recap:
         title: Récapitulatif
         total: "[0,1] Total pour %count% article| [2, Inf[ Total pour %count% articles"
+    pot:
+      intro: |
+        <p>
+           Merci de soutenir %artist% dans sa campagne. C'est grâce à votre soutien que les artistes belges peuvent se produire et toucher leur public.
+        </p>
 
-    
+        <p>
+          En procédant au paiement des articles que vous avez sélectionnés, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
+        </p>
+      recap:
+        title: Récapitulatif
+        total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
     not_authenticated:
       intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute.
       signin_label: J'ai un compte sur Un-Mute
@@ -687,6 +694,7 @@ order_pdf:
     nb_tickets_promo: Nombre de tickets supplémentaires obtenus par promotion
     rewards: Récompense(s) appliquée(s)
     sales: Album concerné
+    pot: Evénement soutenu
   details:
     title: Détails de la commande
     labels:
@@ -732,7 +740,6 @@ tickets_pdf:
 notices:
   edition: Les modifications ont été enregistrées.
   event_create: Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans son organisation !
-  
   artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; vous allez être contacté(e) par l'équipe Un-Mute dans les jours qui viennent.
   artist_role: Votre rôle a bien été enregistré.
   # Next line: invitation to become administrator of a specific artist on Un-Mute
@@ -742,22 +749,19 @@ notices:
   artist_ownership_request_refused: Votre choix a bien été enregistré.
   artist_leave_last: Vous avez quitté la gestion de %artist%. Vous êtiez le dernier propriétaire de cet artiste ; il a donc été supprimé de la plateforme.
   artist_leave: Vous avez bien quitté la gestion de %artist%.
-  payment: Votre paiement a bien été reçu. Vous allez recevoir un récapitulatif par e-mail. Vos tickets vous seront envoyés si %artist% parvient à débloquer ce festival.
+  payment: Votre paiement a bien été reçu. Vous allez recevoir un récapitulatif par e-mail.
   change_email_request: Votre demande a bien été reçue. Pour valider le changement d'adresse e-mail, il vous faut cliquer sur un lien qui a été envoyé à la nouvelle adresse demandée.
   change_email_logged_out: Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.
   change_email: Votre adresse e-mail a bien été modifiée.
   account_deletion: Votre compte Un-Mute a bien été supprimé. Sachez que vous pourrez toujours en créer un nouveau si le coeur vous en dit. Bonne continuation !
   change_password: Votre mot de passe a bien été modifié.
-  
   social:
     connection_email_confirmed: Vous êtes désormais connecté.
     connection_email_new_account: Nous avons lié votre compte Facebook au compte Un-Mute existant pour l'adresse %email%.
     connection_oauth_confirmed: Vous êtes désormais connecté au travers de votre compte Facebook.
     registration_success: Votre compte Un-Mute a bien été créé avec vos données de Facebook. Vous pouvez définir un mot de passe à tout moment dans votre page de profil si vous souhaitez également pouvoir vous connecter à Un-Mute sans passer par Facebook.
   proposition: Votre proposition a bien été reçue et sera traitée dans les plus brefs délais.
-  
   registration: Votre inscription a bien été enregistrée. Vous pouvez désormais passer au paiement. Notez que vous avez reçu un e-mail contenant un lien d'activation de votre compte. Il vous faudra cliquer sur ce lien pour pouvoir vous connecter ultérieurement à la plateforme.
-  
   sponsorship:
     cart_success: Félicitations ! Vous avez bien validé votre parrainage ; votre parrain va pouvoir remporter des bonus grâce à vous !
     send_sponsorship:
@@ -1002,7 +1006,6 @@ sponsorship_modal:
   remove_field: Retirer une adresse e-mail
   add_field: Ajouter une adresse e-mail
 
-
 sales:
   card_headline: Album inédit
   card_status: En vente
@@ -1011,10 +1014,33 @@ sales:
   contributors: "[0,1]contributeur| [2, Inf[contributeurs"
   infos:
     title: Infos
+    opening_date: Début des ventes
+    closing_date: Fin des ventes
   about_host:
-    title: A propos de l'artiste
+    title: À propos de l'artiste
+    genres: Styles musicaux
+    see_profile: Voir le profil
   buy:
     title: Acheter l'album
+    over: Il n'est plus possible de contribuer à cette campagne.
+  labels:
+    quantity: Quantité
+    free_price: Prix (libre, min. %min% €)
+
+pot:
+  infos:
+    title: Infos
+    opening_date: Début de campagne
+    date_event: Date du concert
+  contributors: "[0,1]contributeur| [2, Inf[contributeurs"
+  stillselling: Campagne en cours
+  about_host:
+    title: À propos de l'artiste
+    genres: Styles musicaux
+    see_profile: Voir le profil
+  buy:
+    title: Acheter des tickets
+    over: Il n'est plus possible de contribuer à cette campagne.
   labels:
     quantity: Quantité
     free_price: Prix (libre, min. %min% €)

@@ -35,7 +35,7 @@ class ContractFan
         $this->contractArtist = $ca;
         $this->purchases = new ArrayCollection();
 
-        foreach ($ca->getStep()->getCounterParts() as $cp) {
+        foreach ($ca->getCounterParts() as $cp) {
             $purchase = new Purchase();
             $purchase->setCounterpart($cp);
             $this->addPurchase($purchase);

@@ -420,8 +420,6 @@ class PublicController extends Controller
                 $this->addFlash('error', 'errors.sales.uncrowdable'); // TODO
             } elseif ($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
                 $this->addFlash('error', 'errors.order_max');
-            } elseif ($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
-                $this->addFlash('error', 'errors.order_max_promo');
             } else {
                 /** @var Cart $cart */
                 if ($user != null) {

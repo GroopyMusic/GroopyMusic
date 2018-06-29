@@ -39,6 +39,7 @@
                     <span class="color-secondary p-1 rounded-circle">{{ unseen_nb }}</span>
                 {% endif %}
             </a>
+        #}
             {% if last_notifs is not empty %}
                 <div class="modal fade" id="notifs-modal" tabindex="-1" role="dialog" aria-labelledby="notifs-modal-label" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -53,6 +54,8 @@
                         </div>
                     </div>
                 </div>
+            {% endif %}
+        {#
                 <ul class="dropdown-menu notifications-menu-preview" role="menu" aria-labelledby="notifs-toggler">
                     <div class="notifications-menu-preview-heading"><h4 class="menu-title"><a href="{{ path('user_notifications') }}">{{ 'header.nav.all_notifications'|trans|raw }}</a></h4>
                     </div>
@@ -74,7 +77,10 @@
                 <a class="dropdown-item" href="{{ path('user_notifications') }}">{{ 'header.nav.my_notifications'|trans|raw }}{% if unseen_nb > 0 %} ({{ unseen_nb }}){% endif %}</a>
                 {#<a class="dropdown-item" href="{{ path('user_rewards') }}">{{ 'header.nav.my_rewards'|trans|raw }}</a>#}
                 {% if is_granted('ROLE_TICKETING') %}<a class="dropdown-item" href="{{ path('ticketing_index') }}">Ticketing</a>{% endif %}
-                {% if is_granted('ROLE_ADMIN') %}<a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>{% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a class="dropdown-item" href="{{ path('pot_index') }}">Pots communs</a>
+                    <a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>
+                {% endif %}
                 <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">{{ 'header.nav.log_out'|trans|raw }}</a>
             </div>
         </div>

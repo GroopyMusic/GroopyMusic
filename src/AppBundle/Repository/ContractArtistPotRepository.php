@@ -2,9 +2,10 @@
 
 namespace AppBundle\Repository;
 
+
 use AppBundle\Entity\Artist;
 
-class ContractArtistSalesRepository extends \Doctrine\ORM\EntityRepository
+class ContractArtistPotRepository extends \Doctrine\ORM\EntityRepository
 {
     private function queryVisible() {
         return $this->createQueryBuilder('c')
@@ -24,11 +25,11 @@ class ContractArtistSalesRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('agt')
             ->addSelect('cpt')
             ->addSelect('ap')
-            ->orderBy('c.dateEnd', 'ASC')
+            ->orderBy('c.date_event', 'ASC')
             ->where('c.failed = 0')
-            ->andWhere('c.dateEnd > :yesterday')
+            ->andWhere('c.date_event > :yesterday')
             ->setParameter('yesterday', new \DateTime('yesterday'))
-        ;
+            ;
     }
 
     /**
@@ -42,10 +43,10 @@ class ContractArtistSalesRepository extends \Doctrine\ORM\EntityRepository
             $qb->setMaxResults($limit);
         }
 
-        return $qb
-            ->getQuery()
-            ->getResult()
-            ;
+         return $qb
+                ->getQuery()
+                ->getResult()
+         ;
     }
 
     public function findCurrentsForArtist(Artist $artist) {
@@ -54,6 +55,7 @@ class ContractArtistSalesRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('artist', $artist)
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
+
 }
