@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="{% block description %}{% endblock %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="theme-color" content="#f08722">
+
+    <title>{% block headtitle %}Y&B{% endblock %}</title>
+    {% block open_graph %}{% endblock %}
+    {% block stylesheets %}
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        {% stylesheets filter='scssphp, cssrewrite' output="css/compiled/yb/layout.min.css"
+            "yb/yb.scss"
+            %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endblock %}
+
+    <!--<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />-->
+</head>
+<body>
+{% if app.environment == 'prod' %}
+    <!-- Google Tag Manager (noscript)
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KFPJV6V"
+                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+{% endif %}
+
+<noscript>
+    <div class="noscript-warning">
+        {{ "noscript.warning"|trans }}
+    </div>
+</noscript>
+<!--[if lte IE 8]>
+<div class="noscript-warning">
+    {{ "ie.warning"|trans }}
+</div>
+<![endif]-->
+
+{% block nav %}
+{% endblock %}
+
+<header class="masthead text-white text-center">
+    {% block header %}
+
+    {% endblock %}
+</header>
+
+<main id="main">
+    {% block body %}{% endblock %}
+</main>
+
+    <footer class="footer bg-light">
+        {% block footer %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+                        <ul class="list-inline mb-2">
+                            <li class="list-inline-item">
+                                <a href="#">About</a>
+                            </li>
+                            <li class="list-inline-item">&sdot;</li>
+                            <li class="list-inline-item">
+                                <a href="#">Contact</a>
+                            </li>
+                            <li class="list-inline-item">&sdot;</li>
+                            <li class="list-inline-item">
+                                <a href="#">Terms of Use</a>
+                            </li>
+                            <li class="list-inline-item">&sdot;</li>
+                            <li class="list-inline-item">
+                                <a href="#">Privacy Policy</a>
+                            </li>
+                        </ul>
+                        <p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2018. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </footer>
+
+{% block javascripts %}
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script type="text/javascript" src="{{ asset('js/backup/jquery-3.2.0.min.js') }}"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    {# popper.js needed to use bootstrap modals #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+    {% javascripts filter='jsqueeze' output='js/compiled/yb/main.js'
+    'yb/js/yb.js'
+    %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+
+    {% if app.environment == 'prod' %}
+
+        <!-- Google Tag Manager
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-KFPJV6V');</script>
+        <!-- End Google Tag Manager -->
+
+        <!-- Global site tag (gtag.js) - Google Analytics
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109142671-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-109142671-1');
+        </script>-->
+    {% endif %}
+    {% block additional_javascripts %}{% endblock %}
+{% endblock %}
+
+</body>
+</html>
