@@ -4,7 +4,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand js-scroll-trigger" href="#page-top">Start Bootstrap</a>
+            <a class="navbar-brand js-scroll-trigger" href="#home">Y&B Ticketing</a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fa fa-bars"></i>
@@ -12,16 +12,16 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav text-uppercase ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#portfolio">Portfolio</a>
+                        <a class="nav-link js-scroll-trigger" href="#home">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#about">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#team">Team</a>
+                        <a class="nav-link js-scroll-trigger" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#pricing">Pricing</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
@@ -34,7 +34,7 @@
 
 {% block header %}
     <div class="overlay"></div>
-    <div class="container">
+    <div class="container" id="home">
         <div class="row">
             <div class="col-xl-9 mx-auto">
                 <h1 class="mb-5">Build a landing page for your business or project and generate more leads!</h1>
@@ -42,11 +42,8 @@
             <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                 <form>
                     <div class="form-row">
-                        <div class="col-12 col-md-9 mb-2 mb-md-0">
-                            <input type="email" class="form-control form-control-lg" placeholder="Enter your email...">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <button type="submit" class="btn btn-block btn-lg btn-primary">Sign up!</button>
+                        <div class="col-12">
+                            <a type="submit" class="js-scroll-trigger btn btn-block btn-lg btn-primary" href="#services">Discover our services</a>
                         </div>
                     </div>
                 </form>
@@ -56,37 +53,57 @@
 {% endblock %}
 
 {% block body %}
+
+    <section id="about">
+        <div class="container p-5">
+            <h2>About</h2>
+            <p>
+                YB allows to ...
+            </p>
+        </div>
+    </section>
+
     <!-- Icons Grid -->
-    <section class="features-icons bg-light text-center">
+    <section class="features-icons bg-light text-center" id="services">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
                         <div class="features-icons-icon d-flex">
-                            <i class="icon-screen-desktop m-auto text-primary"></i>
+                            <i class="fas fa-ticket-alt mx-auto"></i>
                         </div>
-                        <h3>Fully Responsive</h3>
-                        <p class="lead mb-0">This theme will look great on any device, no matter the size!</p>
+                        <h3>Ticketing</h3>
+                        <p class="lead mb-0">Sell entries for your events or other artistic goods with online campaigns</p>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
                         <div class="features-icons-icon d-flex">
-                            <i class="icon-layers m-auto text-primary"></i>
+                            <i class="fas fa-bullseye mx-auto"></i>
                         </div>
-                        <h3>Bootstrap 4 Ready</h3>
-                        <p class="lead mb-0">Featuring the latest build of the new Bootstrap 4 framework!</p>
+                        <h3>Flexible objectives</h3>
+                        <p class="lead mb-0">You decide the success threshold for your campaigns</p>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
+                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex">
+                            <i class="fas fa-hand-holding-usd mx-auto"></i>
+                        </div>
+                        <h3>No financial risk</h3>
+                        <p class="lead mb-0">If the campaign fails, you can refund everyone for free; no financial risk, even for you!</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
                     <div class="features-icons-item mx-auto mb-0 mb-lg-3">
                         <div class="features-icons-icon d-flex">
-                            <i class="icon-check m-auto text-primary"></i>
+                            <i class="fas fa-lock mx-auto"></i>
                         </div>
-                        <h3>Easy to Use</h3>
-                        <p class="lead mb-0">Ready to use with your own content, or customize the source files!</p>
+                        <h3>Secure</h3>
+                        <p class="lead mb-0">All payments and refunds are fully secured</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -95,34 +112,86 @@
     <section class="showcase">
         <div class="container-fluid p-0">
             <div class="row no-gutters">
-
                 <div class="col-lg-6 order-lg-2 text-white showcase-img" style="background-image: url('img/bg-showcase-1.jpg');"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text">
-                    <h2>Fully Responsive Design</h2>
-                    <p class="lead mb-0">When you use a theme created by Start Bootstrap, you know that the theme will look great on any device, whether it's a phone, tablet, or desktop the page will behave responsively!</p>
+                    <h2>1 - Create your own campaign</h2>
+                    <p class="lead mb-0"></p>
                 </div>
             </div>
             <div class="row no-gutters">
                 <div class="col-lg-6 text-white showcase-img" style="background-image: url('img/bg-showcase-2.jpg');"></div>
                 <div class="col-lg-6 my-auto showcase-text">
-                    <h2>Updated For Bootstrap 4</h2>
-                    <p class="lead mb-0">Newly improved, and full of great utility classes, Bootstrap 4 is leading the way in mobile responsive web development! All of the themes on Start Bootstrap are now using Bootstrap 4!</p>
+                    <h2>2 - Customize your campaign landing page</h2>
+                    <p class="lead mb-0"></p>
                 </div>
             </div>
             <div class="row no-gutters">
                 <div class="col-lg-6 order-lg-2 text-white showcase-img" style="background-image: url('img/bg-showcase-3.jpg');"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text">
-                    <h2>Easy to Use &amp; Customize</h2>
-                    <p class="lead mb-0">Landing Page is just HTML and CSS with a splash of SCSS for users who demand some deeper customization options. Out of the box, just add your content and images, and your new landing page will be ready to go!</p>
+                    <h2>3 - Diffuse your campaign link</h2>
+                    <p class="lead mb-0"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="container">
+            <h2>Pricing</h2>
+            <div class="card-deck mb-3 text-center">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">Free</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>10 users included</li>
+                            <li>2 GB of storage</li>
+                            <li>Email support</li>
+                            <li>Help center access</li>
+                        </ul>
+                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button>
+                    </div>
+                </div>
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">Pro</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">$15 <small class="text-muted">/ mo</small></h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>20 users included</li>
+                            <li>10 GB of storage</li>
+                            <li>Priority email support</li>
+                            <li>Help center access</li>
+                        </ul>
+                        <button type="button" class="btn btn-lg btn-block btn-primary">Get started</button>
+                    </div>
+                </div>
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">Enterprise</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">$29 <small class="text-muted">/ mo</small></h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>30 users included</li>
+                            <li>15 GB of storage</li>
+                            <li>Phone and email support</li>
+                            <li>Help center access</li>
+                        </ul>
+                        <button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="contact">
-        <div class="text-align: center">
+        <div class="container">
             <h1 class="section-header">Get in <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> Touch with us</span></h1>
-            <h3>Lorem Ipsum is simply dummy text of the printing and typesetting industry</h3>
+            <h3>If you want to create an online campaign, please contact us</h3>
         </div>
         <div class="contact-section">
             <div class="container">
