@@ -434,7 +434,7 @@ class BaseContractArtist implements TranslatableInterface
     protected $no_threshold;
 
     /**
-     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="step")
+     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="contractArtist")
      */
     protected $counterParts;
 
