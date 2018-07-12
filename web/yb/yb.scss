@@ -1,3 +1,11 @@
+$main-orange: #ea900c;
+$theme-colors: (
+        "primary": $main-orange,
+        "secondary": #607D8B
+);
+$primary: $main-orange !default;
+$menu-color: #eadf0c;
+
 @import "../../vendor/twbs/bootstrap/scss/bootstrap.scss";
 
 $white: #fff !default;
@@ -11,9 +19,7 @@ $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 $black: #000 !default;
-$main-orange: #ea900c;
 
-$primary: #fed136 !default;
 
 body {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -25,14 +31,19 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 700;
+  font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  font-weight: bold;
 }
 
 header.masthead {
+  height: 100vh;
   position: relative;
   background-color: #343a40;
-  background: url("../img/bg-masthead.jpg") no-repeat center center;
+  background: url("images/illustration-guitars.jpg") no-repeat center center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -57,7 +68,7 @@ header.masthead h1 {
 
 @media (min-width: 768px) {
   header.masthead {
-    padding-top: 12rem;
+    padding-top: 18rem;
     padding-bottom: 12rem;
   }
   header.masthead h1 {
@@ -80,9 +91,8 @@ header.masthead h1 {
   }
 }
 
-.features-icons {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+#about {
+  background: rgba(255, 193, 7, 0.35);
 }
 
 .features-icons .features-icons-item {
@@ -143,16 +153,14 @@ footer.footer {
 }
 
 #contact{
-
   font-family: 'Teko', sans-serif;
   padding-top: 60px;
   width: 100%;
   width: 100vw;
   height: 550px;
   background: $main-orange; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to left, $main-orange, #ffc107); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, $main-orange, #ffc107); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  color : #fff;
+  background: -webkit-linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35)); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 .contact-section{
   padding-top: 40px;
@@ -222,7 +230,7 @@ textarea.form-control {
         color: white;
         &.active,
         &:hover {
-          color: $primary;
+          color: $menu-color;
         }
       }
     }
@@ -264,4 +272,28 @@ textarea.form-control {
 
 .fas {
   color: $main-orange;
+}
+
+#services-step-1 {
+  background: -webkit-linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
+  background: linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
+  .showcase-img {
+    background-image: url('images/illustration-event.jpg');
+  }
+}
+
+#services-step-2 {
+  background: -webkit-linear-gradient(to right, #ea900c, rgba(255, 193, 7, 0.35));
+  background: linear-gradient(to right, #ea900c, rgba(255, 193, 7, 0.35));
+  .showcase-img {
+    background-image: url('images/illustration-guitar.jpg');
+  }
+}
+
+#services-step-3 {
+  background: -webkit-linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
+  background: linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
+  .showcase-img {
+    background-image: url('images/step-3.jpg');
+  }
 }
