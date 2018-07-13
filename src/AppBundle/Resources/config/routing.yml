@@ -46,3 +46,9 @@ app_pots:
   type: annotation
   prefix: /chapots/
   # prod = other domain ?
+
+yb:
+  resource: "@AppBundle/Controller/YBController.php"
+  type: annotation
+  prefix: /yb/
+  # prod = other domain ?

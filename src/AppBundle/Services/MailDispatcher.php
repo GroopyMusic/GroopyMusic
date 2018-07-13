@@ -15,6 +15,7 @@ use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Category;
 use AppBundle\Entity\VIPInscription;
+use AppBundle\Entity\YB\YBContact;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,8 +31,11 @@ class MailDispatcher
 
     const TO = ["no-reply@un-mute.be" => self::DEFAULT_LOCALE];
 
-    const REPLY_TO = ["pierre@un-mute.be"];
+    const REPLY_TO = ["contact@un-mute.be"];
     const REPLY_TO_NAME = "Un-Mute ASBL";
+
+    const YB_REPLY_TO = ["pierre@un-mute.be"];
+    const YB_REPLY_TO_NAME = "Un-Mute ASBL";
 
     const ADMIN_TO = ["pierre@un-mute.be" => self::DEFAULT_LOCALE, "gonzague@un-mute.be" => self::DEFAULT_LOCALE];
 
@@ -514,27 +518,27 @@ class MailDispatcher
     }
 
 
-    /*
-    public function sendDetailsKnownArtist(ContractArtist $contractArtist) {
-        $users = $contractArtist->getArtistProfiles();
-        // mail to artists
-        $bcc = array_map(function(User $elem) {
-            return $elem->getEmail();
-        }, $users);
+    // ------------------------ YB
 
-        $firstParts = $contractArtist->getCoartists();
-
-        $first = $firstParts[0] ?: null;
-        $second = $firstParts[1] ?: null;
-
-        $params = [
-            'artist' => $contractArtist->getArtist(),
-            'contract' => $contractArtist,
-            'first' => $first,
-            'second' => $second,
-        ];
+    public function sendAdminYBContact(YBContact $contact) {
+        $subject = 'YB contact form';
+        $params = ['contact' => $contact];
         $subject_params = [];
-        $this->sendEmail(MailTemplateProvider::DETAILS_KNOWN_CONTRACT_ARTIST_TEMPLATE, 'subjects.concert.artist.details', $params, $subject_params, $bcc);
+        $reply_to = $contact->getEmail();
+        $reply_to_name = $contact->getName();
+
+        $this->sendAdminEmail(MailTemplateProvider::YB_ADMIN_CONTACT, $subject, $params, $subject_params, [], $reply_to, $reply_to_name);
     }
-    */
+
+    public function sendYBContactCopy(YBContact $contact) {
+        $subject = 'Contact form';
+        $params = ['contact' => $contact];
+        $subject_params = [];
+        $recipient = [$contact->getEmail()];
+        $recipientName = $contact->getName();
+        $reply_to = self::YB_REPLY_TO;
+        $reply_to_name = self::YB_REPLY_TO_NAME;
+
+        $this->sendEmail(MailTemplateProvider::YB_CONTACT_COPY, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
 }

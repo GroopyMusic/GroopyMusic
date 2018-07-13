@@ -1,16 +1,16 @@
-#new
+
 default_signature: |
     À très bientôt pour de nouvelles aventures musicales,
 
     L'équipe Un-Mute
 
-#new
+
 footer_links:
   home: Accueil
   about: A propos
   contact: Contact
 
-#new
+
 add_to_contacts: Ajoutez "%address%" à votre carnet d'adresse pour assurer la réception de nos e-mails.
 
 subjects:
@@ -26,11 +26,11 @@ subjects:
       known_outcome: "Festival de %artist% : résultat des courses"
       tickets: Vos tickets Un-Mute pour %artist%
       # TODO add pluralization
-      viptickets: Vos tickets Un-Mute pour %artist% #new
-  refunded_payment: Nous avons remboursé vos tickets #new
-  artist_validated: Votre artiste sur Un-Mute a été vérifié #new
-  reward_attribution: Nouvelle récompense #new
-  sponsorship_invitation: Invitation à être parrainé #new
+      viptickets: Vos tickets Un-Mute pour %artist% 
+  refunded_payment: Nous avons remboursé vos tickets 
+  artist_validated: Votre artiste sur Un-Mute a été vérifié 
+  reward_attribution: Nouvelle récompense 
+  sponsorship_invitation: Invitation à être parrainé 
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -88,7 +88,7 @@ concert:
 
       Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
 
-    #new
+    
     vip_tickets: |
       Bonjour,
 
@@ -112,7 +112,7 @@ concert:
       Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d'un prochain évènement !
 
       Envie de soutenir d'autres artistes ? Rendez-vous sur %artistCatalogUrl% !
-    #new
+    
     details:
       invited2: Les artistes invités au festival sont %invited1% et %invited2%.
       invited1: L'artiste invité au festival est %invited1%.
@@ -168,14 +168,14 @@ admin :
 
       Raison de l'événement : %reasonEvent%
 
-#new
+
 artist:
   validated: |
     Le profil artiste que vous avez créé sur Un-Mute (nom de scène : %artist%) a bien été vérifié par un administrateur.
 
     Il est à présent visible publiquement sur la plateforme et éligible pour participer à des Festivals Un-Mute.
 
-#new
+
 vip_inscription:
   copy: |
     Votre inscription Presse sur Un-Mute.be a bien été enregistrée. Voici les informations que vous avez fournies :
@@ -188,7 +188,7 @@ vip_inscription:
 
     Pour toute question, n'hésitez pas à nous contacter par mail : contact@un-mute.be
 
-#new
+
 payment:
   refunded: |
     Cher Producteur,
@@ -197,7 +197,7 @@ payment:
 
     Rendez-vous sur Un-Mute pour soutenir d'autres artistes et les faire monter sur scène !
 
-#new
+
 reward_attribution:
   content: |
     Vous avez reçu une nouvelle récompense !
@@ -206,10 +206,21 @@ reward_attribution:
     Pour plus d'informations, consultez la page %rewards_url%.
   my_rewards: Mes récompenses
 
-#new
+
 sponsorship_invitation:
   content: |
     %user_name% vous invite à rejoindre la plateforme Un-Mute et à participer à l'événement %contract_name% avec lui !
     %content%
     Suivez le lien suivant pour valider cette invitation : %url%
   invit_message_header: "Voici son message d'invitation :"
+
+yb: 
+  contact: 
+    copy: |
+      Your message on Un-Mute.be has well been received. We will answer shortly if necessary.
+
+      Here it is:
+
+      -- Name: %name%
+      -- Email: %email%
+      -- Message:
