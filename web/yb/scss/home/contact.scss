@@ -1,0 +1,42 @@
+#contact{
+  padding-top: 60px;
+  padding-right: 1rem;
+  width: 100%;
+  background: $main-orange; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35)); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  .contact-section{
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .form-line{
+    border-right: 1px solid #B29999;
+  }
+
+  .form-group{
+    margin-top: 10px;
+  }
+  label{
+    font-size: 1.3em;
+    line-height: 1em;
+    font-weight: normal;
+  }
+  .form-control{
+    font-size: 1.3em;
+    color: #080808;
+  }
+  textarea.form-control {
+    height: 135px;
+    /* margin-top: px;*/
+  }
+
+  .submit{
+    font-size: 1.1em;
+    float: right;
+    width: 150px;
+    background-color: transparent;
+    color: #fff;
+  }
+}
