@@ -535,7 +535,7 @@ class MailDispatcher
         $params = ['contact' => $contact];
         $subject_params = [];
         $recipient = [$contact->getEmail()];
-        $recipientName = [$contact->getName()];
+        $recipientName = $contact->getName();
         $reply_to = self::YB_REPLY_TO;
         $reply_to_name = self::YB_REPLY_TO_NAME;
 

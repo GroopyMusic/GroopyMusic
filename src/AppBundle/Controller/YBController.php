@@ -35,8 +35,8 @@ class YBController extends Controller
             $em->flush();
 
             // Mail
-            $mailDispatcher->sendAdminYBContact($contact);
             $mailDispatcher->sendYBContactCopy($contact);
+            $mailDispatcher->sendAdminYBContact($contact);
 
             $this->addFlash('yb_notice', 'Thank you for your message. We will come back to you soon.');
             return $this->redirectToRoute('yb_index');
