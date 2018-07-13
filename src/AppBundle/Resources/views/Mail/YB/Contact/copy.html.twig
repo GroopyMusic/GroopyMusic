@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.html.twig' %}
+
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('yb.contact.copy', {
+                '%name%': contact.name,
+                '%email%': contact.email
+            })|raw }}
+
+            {{ contact.message|nl2br }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

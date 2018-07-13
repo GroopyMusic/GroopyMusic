@@ -1,0 +1,215 @@
+{% extends "yb/base.html.twig" %}
+
+{% block nav %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="#home">Y&B Ticketing</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav text-uppercase ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#pricing">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block header %}
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-9 mx-auto">
+                <h1 class="mb-5">Your musical sales and events can start as online campaigns</h1>
+            </div>
+            <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                <form>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <a type="submit" class="js-scroll-trigger btn btn-lg btn-secondary" href="#services">Discover our services</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+
+    <section id="about">
+        <div class="container p-5">
+            <h2>About</h2>
+            <p class="big">
+                Want to create an online sales campaign? To sell tickets for an event? YB.com offers a 100% Belgian solution, which allows crowdfunding: you can set the goal of your campaign and refund all participants if necessary. The project team, young and settled in Brussels, accompanies you throughout the implementation of the campaign, with unbeatable rates on the ticketing market.
+            </p>
+        </div>
+    </section>
+
+    <!-- Icons Grid -->
+    <section class="features-icons bg-light p-3 p-md-5" id="services">
+        <div class="container">
+            <h2>Services</h2>
+            <div class="row text-center">
+                <div class="col-lg-3">
+                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex">
+                            <i class="fas fa-ticket-alt mx-auto"></i>
+                        </div>
+                        <h3>Ticketing</h3>
+                        <p class="lead mb-0">Sell entries for your events or other artistic goods with online campaigns</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex">
+                            <i class="fas fa-bullseye mx-auto"></i>
+                        </div>
+                        <h3>Flexible objectives</h3>
+                        <p class="lead mb-0">You decide the success threshold for your campaigns</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex">
+                            <i class="fas fa-hand-holding-usd mx-auto"></i>
+                        </div>
+                        <h3>No financial risk</h3>
+                        <p class="lead mb-0">If the campaign fails, you can refund everyone for free; no financial risk, even for you!</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+                        <div class="features-icons-icon d-flex">
+                            <i class="fas fa-lock mx-auto"></i>
+                        </div>
+                        <h3>Secure</h3>
+                        <p class="lead mb-0">All payments and refunds are fully secured</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Showcases -->
+    <section class="showcase">
+        <div class="container-fluid p-0">
+            <div class="row no-gutters" id="services-step-1">
+                <div class="col-lg-6 order-lg-2 text-white showcase-img"></div>
+                <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+                    <h3>You could organize your private events...</h3>
+                    <p class="lead mb-0">... without taking any risk!</p>
+                </div>
+            </div>
+            <div class="row no-gutters" id="services-step-2">
+                <div class="col-lg-6 text-white showcase-img"></div>
+                <div class="col-lg-6 my-auto showcase-text">
+                    <h3>And what if you want to book an artist in your venue?</h3>
+                    <p class="lead mb-0">Well, start an online campaign to test the public interest.</p>
+                </div>
+            </div>
+            <div class="row no-gutters" id="services-step-3">
+                <div class="col-lg-6 order-lg-2 text-white showcase-img"></div>
+                <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+                    <h3>Online sales campaigns are also possible</h3>
+                    <p class="lead mb-0">Just contact us to start your campaign; we'll see what we can tailor for you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="p-3 p-md-5">
+        <div class="container">
+            <h2>Pricing</h2>
+            <div class="card-deck mb-3 text-center">
+                <div class="card mb-4 box-shadow my-auto">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">Ticketing campaign</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>You get 90 % of all tickets sales</li>
+                            <li>Free refunds</li>
+                            <li>Email & phone support</li>
+                        </ul>
+                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">Contact us</a>
+                    </div>
+                </div>
+                <div class="card mb-4 box-shadow my-auto">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">Sales campaign</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>You get 90 % of all sales</li>
+                            <li>Free refunds</li>
+                            <li>Email & phone support</li>
+                        </ul>
+                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">Contact us</a>
+                    </div>
+                </div>
+                <div class="card mb-4 box-shadow my-auto">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">Fully installed & customized campaign system</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Our team designs a unique, tailored campaigning solution for your needs</li>
+                            <li>Free refunds</li>
+                            <li>Email & phone support</li>
+                        </ul>
+                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">Contact us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h1 class="section-header">Get in <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> touch with us</span></h1>
+            <h3>If you want to create an online campaign, please contact us</h3>
+        </div>
+        <div class="contact-section">
+            <div class="container">
+                {{ form_start(form) }}
+                    <div class="row">
+                        <div class="col-12 col-md-6 form-line">
+                            <div class="form-group">
+                                {{ form_row(form.name) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(form.email) }}
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.message) }}
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>  Send Message</button>
+                            </div>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+    </section>
+{% endblock %}
