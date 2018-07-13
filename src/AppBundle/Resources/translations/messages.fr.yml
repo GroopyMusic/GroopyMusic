@@ -48,7 +48,6 @@ meta_description_2: Avec Un-Mute, c’est vous, le public, qui décidez des arti
 
 meta_description_event: Découvrez %artist% en live le %date% !
 meta_description_artist: Découvrez %artist% sur Un-Mute.
-meta_description_hall: "Un-Mute présente son partenaire : %hall%."
 meta_description_sales: Découvrez cet album inédit, en vente à prix libre sur Un-Mute
 meta_description_pot: Achetez vos tickets au prix de votre choix pour montrer votre soutien à nos artistes
 
@@ -74,8 +73,8 @@ header:
     home: Accueil
     about: À propos
     artists: Artistes
-    partners: Salles
-    events: Événements
+    tickets: Tickets
+    events: Festivals
     sign_up: Inscription
     sign_in: Connexion
     all_notifications: Voir toutes les notifications
@@ -129,7 +128,6 @@ static_menu:
   team: L'équipe
   faq: FAQ
   catalog_artists: Catalogue des artistes
-  catalog_halls: Catalogue des salles
   catalog_events: Événements à venir
   conditions: Conditions d'utilisation
   contact: Contact
@@ -252,30 +250,6 @@ jplist:
   sort_by: Trier par
   no_results: Aucun résultat trouvé
   action: Filtrer...
-
-catalog_halls:
-  title: Salles partenaires
-  intro: Partout en Belgique, des salles encouragent la production musicale de nos artistes. Découvrez les salles partenaires d'Un-Mute dans lesquelles des festivals sont susceptibles d'être organisés. <a href="#" data-toggle="popover" title="Proposer un événement" data-content="Suggérez des artistes, salles et événements à Un-Mute ! <a href='%proposition_url%'>C'est par ici !</a>">Vous souhaitez proposer un événement dans votre salle ?</a>
-  empty: Il n'y a pas encore de salle partenaire sur la plateforme.
-  filtering:
-    name_asc: Nom A-Z
-    name_desc: Nom Z-A
-    capacity_asc: Capacité croissante
-    capacity_desc: Capacité décroissante
-    search_name: Chercher...
-
-hall:
-  short_description_label: En quelques mots
-  description_label: Description
-  ephemeral:
-    intro:  Cette salle est <strong>éphémère</strong>. Des événements sont susceptibles d'y être organisés
-    known_dates: du %firstDate% au %lastDate%
-    unknown_dates: pendant une période limitée
-  infos:
-    title: Caractéristiques
-    capacity: Capacité
-    province: Province
-    website: Site Web
 
 catalog_artists:
   title: Nos artistes
@@ -717,7 +691,7 @@ order_pdf:
 
 tickets_pdf:
   ticket:
-    title: Festival Un-Mute @%hall_name%
+    title: Festival de la Découverte
     is_entry: |
         Ce ticket est votre droit d'entrée.
         Merci de le présenter sur un support lisible.
@@ -732,7 +706,7 @@ tickets_pdf:
     -	Ce titre d’entrée est non-échangeable, non-remboursable et ne pourra être remplacé en cas de perte, vol ou destruction.
     -	Les conditions générales sont consultables à l'adresse <a href="%conditionsUrl%">%conditionsUrl%</a>.
   agenda:
-    title: Événements Un-Mute à venir
+    title: Festivals Un-Mute à venir
     confirmed: CONFIRMÉ
     not_confirmed: à confirmer
     sold_out: SOLD OUT

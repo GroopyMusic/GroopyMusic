@@ -86,7 +86,12 @@
             {% endif %}
 
             <div class="um-card-content w-100">
-                <h5 style="font-size:1.1rem;{% if not is_event %}padding-top:15px;{% endif %}">{% if news is defined and news %}{{ 'card.new_event'|trans|raw }} - {% endif %}{{ is_event ? contract.artist.artistname : contract.getTitle }}</h5>
+                <h5 style="font-size:1.1rem;{% if not is_event %}padding-top:15px;{% endif %}">{{ contract.getTitle }}</h5>
+                <p>
+                    {% for art in contract.allArtists %}
+                        {% if not loop.first %} - {% endif %}{{ art }}
+                    {% endfor %}
+                </p>
                 <p>
                     {% if is_event %}
                         {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}

@@ -50,9 +50,17 @@ class ContractArtist extends BaseContractArtist
         return in_array($this->getState(), $this->getPendingStates());
     }
 
-    // TODO translate
     public function getDisplayName() {
-        return $this->step . ' de ' . $this->artist;
+        if($this->artist == null) {
+            $str = $this->step;
+            foreach($this->coartists_list as $coartist) {
+                $str .= ' - ' . $coartist;
+            }
+            return $str;
+        }
+        else {
+            return $this->step . ' de ' . $this->artist;
+        }
     }
 
     public static function getUncrowdableStates() {
@@ -149,6 +157,18 @@ class ContractArtist extends BaseContractArtist
 
     public function isValidatedBelowObjective() {
         return $this->isInSuccessfulState() && $this->getTicketsSold() < $this->getMinTickets();
+    }
+
+    public function getAllArtists()
+    {
+        $artists = [];
+        if($this->main_artist != null) {
+            $artists[] = $this->main_artist;
+        }
+        foreach($this->coartists_list_plain as $coartist) {
+            $artists[] = $coartist;
+        }
+        return $artists;
     }
 
     public function getMinTickets() {
@@ -271,27 +291,6 @@ class ContractArtist extends BaseContractArtist
        }
     }
 
-    public function __toString()
-    {
-        switch($this->currentLocale) {
-            case 'fr':
-                return 'Festival Un-Mute avec '. $this->artist;
-
-            case 'en':
-                return 'Un-Mute Festival with '. $this->artist;
-
-            case 'nl':
-                return 'Un-Mute Festival met ' . $this->artist;
-                //FOR TEST
-            default :
-                return 'Festival Un-Mute avec ' . $this->artist;
-        }
-    }
-
-
-    // Also add as main artist for the concert
-    // TODO simplify this process, for now this is needed to make the queries for finding available artists work properly
-    // because of inheritance of BaseContractArtist
     public function setArtist(\AppBundle\Entity\Artist $artist)
     {
         parent::setArtist($artist);
@@ -467,6 +466,7 @@ class ContractArtist extends BaseContractArtist
 
     /**
      * @ORM\ManyToOne(targetEntity="Artist", inversedBy="contracts")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $main_artist;
 

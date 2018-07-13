@@ -49,7 +49,7 @@ class BaseContractArtist implements TranslatableInterface
 
     public function __toString()
     {
-        return 'Festival Un-Mute avec '. $this->artist;
+        return '' . $this->getTitle();
     }
 
     public function __construct() {
@@ -223,11 +223,16 @@ class BaseContractArtist implements TranslatableInterface
         return $this->getNbAvailable($cp) < $quantity;
     }
 
+    public function getAllArtists() {
+        return $this->artist;
+    }
+
     public function getArtistProfiles() {
         $result = [];
 
-        foreach($this->artist->getArtistsUser() as $artist_user) {
-            $result[] = $artist_user->getUser();
+        foreach($this->getAllArtists() as $artist) {
+            foreach($artist->getArtistsUser() as $artist_user)
+                $result[] = $artist_user->getUser();
         }
 
         return $result;
@@ -318,7 +323,7 @@ class BaseContractArtist implements TranslatableInterface
      * @var Artist
      *
      * @ORM\ManyToOne(targetEntity="Artist", inversedBy="base_contracts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     protected $artist;
 

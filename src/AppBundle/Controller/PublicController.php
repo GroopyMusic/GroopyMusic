@@ -256,42 +256,6 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/halls", name="catalog_halls")
-     */
-    public function hallsAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $halls = $em->getRepository('AppBundle:Hall')->findVisible();
-        $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
-        $provinces = $em->getRepository('AppBundle:Province')->findAll();
-
-        return $this->render('@App/Public/catalog_halls.html.twig', array(
-            'halls' => $halls,
-            'steps' => $steps,
-            'provinces' => $provinces
-        ));
-    }
-
-    /**
-     * @Route("/halls/{id}-{slug}", name="hall")
-     */
-    public function hallAction(Hall $hall, $slug = null)
-    {
-
-        if ($slug !== null && $slug != $hall->getSlug()) {
-            return $this->redirectToRoute('hall', ['id' => $hall->getId(), 'slug' => $hall->getSlug()]);
-        }
-
-        if (!$hall->getVisible()) {
-            throw $this->createNotFoundException('Hall not visible');
-        }
-
-        return $this->render('@App/Public/hall.html.twig', array(
-            'hall' => $hall,
-        ));
-    }
-
-    /**
      * @Route("/crowdfundings", name="catalog_crowdfundings")
      */
     public function artistContractsAction(UserInterface $user = null)
@@ -329,10 +293,10 @@ class PublicController extends Controller
      */
     public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null)
     {
-
-        if ($contract->getArtist()->getSlug() != $slug) {
-            return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
+        if ($contract->getSlug() != $slug) {
+            return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getSlug()]);
         }
+
         $em = $this->getDoctrine()->getManager();
         $potential_halls = $em->getRepository('AppBundle:Hall')->findPotential($contract->getStep(), $contract->getProvince());
 
@@ -789,5 +753,16 @@ class PublicController extends Controller
             $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
             return $this->redirectToRoute('homepage');
         }
+    }
+
+    /**
+     * @Route("/tickets", name="tickets_marketplace")
+     */
+    public function ticketsAction() {
+        // TODO
+
+        return $this->render('@App/Public/tickets.html.twig', [
+
+        ]);
     }
 }

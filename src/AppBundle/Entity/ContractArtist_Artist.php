@@ -44,6 +44,11 @@ class ContractArtist_Artist
     private $artist;
 
     /**
+     * @ORM\Column(name="time", type="datetime", nullable=true)
+     */
+    private $time;
+
+    /**
      * Get id
      *
      * @return int
@@ -123,5 +128,21 @@ class ContractArtist_Artist
     public function getArtist()
     {
         return $this->artist;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTime()
+    {
+        return $this->time;
+    }
+
+    /**
+     * @param mixed $time
+     */
+    public function setTime($time)
+    {
+        $this->time = $time;
     }
 }
