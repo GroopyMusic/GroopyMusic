@@ -34,7 +34,7 @@
 
 {% block header %}
     <div class="overlay"></div>
-    <div class="container" id="home">
+    <div class="container">
         <div class="row">
             <div class="col-xl-9 mx-auto">
                 <h1 class="mb-5">Your musical sales and events can start as online campaigns</h1>
@@ -190,29 +190,26 @@
         </div>
         <div class="contact-section">
             <div class="container">
-                <form>
+                {{ form_start(form) }}
                     <div class="row">
                         <div class="col-12 col-md-6 form-line">
                             <div class="form-group">
-                                <label for="exampleInputUsername">Your name</label>
-                                <input type="text" class="form-control" id="" placeholder=" Enter Name">
+                                {{ form_row(form.name) }}
                             </div>
                             <div class="form-group">
-                                <label for="exampleInputEmail">Email Address</label>
-                                <input type="email" class="form-control" id="exampleInputEmail" placeholder=" Enter Email id">
+                                {{ form_row(form.email) }}
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 form-line">
+                        <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for ="description"> Message</label>
-                                <textarea  class="form-control" id="description" placeholder="Enter Your Message"></textarea>
+                                {{ form_row(form.message) }}
                             </div>
                             <div>
-                                <button type="button" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>  Send Message</button>
+                                <button type="submit" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>  Send Message</button>
                             </div>
                         </div>
                     </div>
-                </form>
+                {{ form_end(form) }}
             </div>
     </section>
 {% endblock %}

@@ -40,4 +40,6 @@ $('document').ready(function() {
     // Collapse the navbar when page is scrolled
     $(window).scroll(navbarCollapse);
 
+    $('.modal-notice').modal('show');
+
 });

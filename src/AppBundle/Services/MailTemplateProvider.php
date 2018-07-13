@@ -57,6 +57,11 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ADMIN_VIP_INSCRIPTION_FORM = 'AppBundle:Mail/VIPInscription:admin.txt.twig';
     const ADMIN_NEW_ARTIST = 'AppBundle:Mail/Admin:new_artist.txt.twig';
 
+
+    // YB
+    const YB_ADMIN_CONTACT = 'AppBundle:Mail/YB/Contact:admin.txt.twig';
+    const YB_CONTACT_COPY = 'AppBundle:Mail/YB/Contact:copy.txt.twig';
+
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
      * @param string $template

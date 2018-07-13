@@ -44,13 +44,41 @@
 {% block nav %}
 {% endblock %}
 
-<header class="masthead text-white text-center">
+<header id="home" class="masthead text-white text-center">
     {% block header %}
 
     {% endblock %}
 </header>
 
 <main id="main">
+    {% block notices %}
+        {% set notice_bag = app.request.session.flashbag.get('yb_notice') %}
+        {% if notice_bag is not empty %}
+            {% for message in notice_bag %}
+            <!-- Modal HTML -->
+            <div class="modal-notice modal fade in">
+                <div class="modal-dialog modal-confirm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="icon-box">
+                                <i class="far fa-check-circle"></i>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h4>Thank you!</h4>
+                            <p>{{ message }}</p>
+                            <button class="btn btn-success" data-dismiss="modal"><span>Back to website</span> <i class="far fa-arrow-alt-circle-right"></i>
+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+    </div>
     {% block body %}{% endblock %}
 </main>
 

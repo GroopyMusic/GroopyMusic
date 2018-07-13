@@ -1,0 +1,21 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    Un nouveau message a été reçu par l'intermédiaire du formulaire de contact.
+
+    Le voici :
+     -> Expéditeur : {{ contact.name }}
+     -> E-mail : {{ contact.email }}
+     -> Message :
+        {{ contact.message|nl2br }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/YB/Contact:admin.html.twig' %}
+{% endblock %}
