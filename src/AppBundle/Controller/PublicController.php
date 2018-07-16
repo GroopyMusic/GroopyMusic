@@ -266,10 +266,10 @@ class PublicController extends Controller
 
         $sales_contracts = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
 
-        $provinces = array_unique(array_map(function(ContractArtist $elem) {
-            return $elem->getProvince();
+        /*$provinces = array_unique(array_map(function(ContractArtist $elem) {
+            return $elem->getFestival();
         }, $current_contracts));
-
+*/
         $genres = array_unique(ArrayHelper::flattenArray(array_map(function(ContractArtist $elem) {
             return $elem->getGenres();
         }, $current_contracts)));
@@ -282,7 +282,7 @@ class PublicController extends Controller
             'current_contracts' => $current_contracts,
             'prevalidation_contracts' => $prevalidation_contracts,
             'sales_contracts' => $sales_contracts,
-            'provinces' => $provinces,
+            //'provinces' => $provinces,
             'genres' => $genres,
             'steps' => $steps,
         ));
@@ -298,7 +298,6 @@ class PublicController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        $potential_halls = $em->getRepository('AppBundle:Hall')->findPotential($contract->getStep(), $contract->getProvince());
 
         $isParticipant = false;
         $nb_sponsorships = 0;
@@ -355,7 +354,6 @@ class PublicController extends Controller
         return $this->render('@App/Public/artist_contract.html.twig', array(
             'contract' => $contract,
             'form' => $form->createView(),
-            'potential_halls' => $potential_halls,
             'potential_user_rewards' => $potential_user_rewards,
             'is_participant' => $isParticipant,
             'nb_sponsorships' => $nb_sponsorships,

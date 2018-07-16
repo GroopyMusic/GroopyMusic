@@ -343,22 +343,6 @@ class BaseContractArtist implements TranslatableInterface
     protected $reminders_artist;
 
     /**
-     * @var ContractArtistPossibility
-     *
-     * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    protected $preferences;
-
-    /**
-     * @var ContractArtistPossibility
-     *
-     * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    protected $reality;
-
-    /**
      * @ORM\Column(name="collected_amount", type="integer")
      */
     protected $collected_amount;
@@ -640,31 +624,6 @@ class BaseContractArtist implements TranslatableInterface
     }
 
     /**
-     * Set preferences
-     *
-     * @param \AppBundle\Entity\ContractArtistPossibility $preferences
-     *
-     * @return BaseContractArtist
-     */
-    public function setPreferences(\AppBundle\Entity\ContractArtistPossibility $preferences = null)
-    {
-        $this->preferences = $preferences;
-        $preferences->setContract($this);
-
-        return $this;
-    }
-
-    /**
-     * Get preferences
-     *
-     * @return \AppBundle\Entity\ContractArtistPossibility
-     */
-    public function getPreferences()
-    {
-        return $this->preferences;
-    }
-
-    /**
      * Set collectedAmount
      *
      * @param integer $collectedAmount
@@ -734,33 +693,6 @@ class BaseContractArtist implements TranslatableInterface
     public function getSuccessful()
     {
         return $this->successful;
-    }
-
-    /**
-     * Set reality
-     *
-     * @param \AppBundle\Entity\ContractArtistPossibility $reality
-     *
-     * @return BaseContractArtist
-     */
-    public function setReality(\AppBundle\Entity\ContractArtistPossibility $reality = null)
-    {
-        $this->reality = $reality;
-
-        if($reality != null)
-            $reality->setContract($this);
-
-        return $this;
-    }
-
-    /**
-     * Get reality
-     *
-     * @return \AppBundle\Entity\ContractArtistPossibility
-     */
-    public function getReality()
-    {
-        return $this->reality;
     }
 
     /**
@@ -1074,5 +1006,29 @@ class BaseContractArtist implements TranslatableInterface
     public function setNoThreshold(bool $no_threshold)
     {
         $this->no_threshold = $no_threshold;
+    }
+
+    /**
+     * Get noThreshold
+     *
+     * @return boolean
+     */
+    public function getNoThreshold()
+    {
+        return $this->no_threshold;
+    }
+
+    /**
+     * Add counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     *
+     * @return BaseContractArtist
+     */
+    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counterParts[] = $counterPart;
+
+        return $this;
     }
 }

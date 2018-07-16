@@ -33,7 +33,7 @@
     <div class="um-card {% for class in card_classes %}{{ class }} {% endfor %} position-relative{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
         <div class="um-card-header w-100" style="background-image: url({{ src }});">
             <span class="um-card-date btn-primary sharp p-2{% if contract.state in contract.successfulStates and is_event %} successful-progress-bg{% endif %}">
-                {% if is_event %}{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }}
+                {% if is_event %}{% for festivalDate in contract.festivalDates %}{% if not loop.first %} & {% endif %}{{ festivalDate|date('j') }} {{ festivalDate|date('M')|trans }}{% endfor %}
                 {% elseif is_pot %}{{ contract.date|date('j') }} {{ contract.date|date('M')|trans }}
                 {% else %}{{ 'sales.card_status'|trans }}
                 {% endif %}
@@ -74,14 +74,8 @@
                 </div>
 
                 <span class="d-none event-gauge">{{ contract.isInSuccessfulState ? 100 : progress_100 }}</span>
-                <span class="d-none event-date">{{ contract.dateConcert|date('m/d/Y') }}</span>
+                <span class="d-none event-date">{% if contract.festivalDates is not empty %}{{ contract.festivalDates[0]|date('m/d/Y') }}{% endif %}</span>
                 <span class="d-none event-genres">{% for genre in contract.genres %}<span class="d-none jplist-{{ genre|slug }}">{% if not loop.first %} {% endif %}{{ genre }}</span>{% endfor %}</span>
-                {% set step_slug, province_slug
-                    =   "jplist-" ~ contract.step.slug,
-                        "jplist-" ~ contract.province|slug
-                %}
-                <span class="d-none event-step {{ step_slug }}">{{ contract.step }}</span>
-                <span class="d-none event-province {{ province_slug }}">{{ contract.province }}</span>
                 <span class="d-none event-state {% if contract.isInSuccessfulState %}event-confirmed{% else %}event-not-confirmed{% endif %}{% if contract.soldOut %} event-sold-out{% endif %}">{{ contract.state }}</span>
             {% endif %}
 
@@ -94,8 +88,8 @@
                 </p>
                 <p>
                     {% if is_event %}
-                        {% if contract.hallConcert is not null %}{{ contract.hallConcert.getName }} | {{ contract.hallConcert.province }}
-                        {% else %}{{ contract.province is not null ? contract.province : contract.artist.province }}
+                        {% if not contract.hasNoDefinedHall %}
+                            {% for hall in contract.festivalHalls %}{% if not loop.first %} | {% endif %}{{ hall.getName }} ({{ hall.province }}){% endfor %}
                         {% endif %}
                     {% endif %}
                 </p>

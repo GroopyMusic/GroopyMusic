@@ -34,6 +34,17 @@ class ContractArtist extends BaseContractArtist
     const STATE_PENDING = 'state.pending';
     const STATE_TEST_PERIOD = 'state.test_period';
 
+    public function __construct()
+    {
+        parent::_construct();
+        $this->tickets_sold = 0;
+        $this->tickets_reserved = 0;
+        $this->tickets_sent = false;
+        $this->nb_closing_days = self::NB_DAYS_OF_CLOSING;
+        $this->min_tickets = 0;
+        $this->festivaldays = new ArrayCollection();
+    }
+
     public function isUncrowdable() {
         return in_array($this->getState(), $this->getUncrowdableStates());
     }
@@ -53,8 +64,8 @@ class ContractArtist extends BaseContractArtist
     public function getDisplayName() {
         if($this->artist == null) {
             $str = $this->step;
-            foreach($this->coartists_list as $coartist) {
-                $str .= ' - ' . $coartist;
+            foreach($this->getAllArtists() as $artist) {
+                $str .= ' - ' . $artist;
             }
             return $str;
         }
@@ -130,7 +141,7 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getLastSellingDate() {
-        $dateconcert_copy = clone $this->getDateConcert();
+        $dateconcert_copy = clone $this->getLastFestivalDate();
         return $dateconcert_copy->modify('-' . ($this->nb_closing_days) . ' days');
     }
 
@@ -148,7 +159,9 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getMaxTickets() {
-        return $this->getHallConcert() != null ? $this->getHallConcert()->getCapacity() : $this->step->getMaxTickets();
+        return array_sum(array_map(function(CounterPart $counterPart) {
+            return $counterPart->getMaximumAmount();
+        }, $this->getCounterParts()->toArray()));
     }
 
     public function getTotalNbAvailable() {
@@ -157,18 +170,6 @@ class ContractArtist extends BaseContractArtist
 
     public function isValidatedBelowObjective() {
         return $this->isInSuccessfulState() && $this->getTicketsSold() < $this->getMinTickets();
-    }
-
-    public function getAllArtists()
-    {
-        $artists = [];
-        if($this->main_artist != null) {
-            $artists[] = $this->main_artist;
-        }
-        foreach($this->coartists_list_plain as $coartist) {
-            $artists[] = $coartist;
-        }
-        return $artists;
     }
 
     public function getMinTickets() {
@@ -187,10 +188,6 @@ class ContractArtist extends BaseContractArtist
             return 0;
 
         return $min - $booked;
-    }
-
-    public function isDDay() {
-        return $this->getDateConcert()->diff(new \DateTime())->days == 0 && (new \DateTime() >= $this->getDateConcert());
     }
 
     public function getState() {
@@ -217,13 +214,12 @@ class ContractArtist extends BaseContractArtist
         if($this->successful)
         {
             // Concert in the future
-            if($this->getDateConcert() >= $today3->modify('-1 day')) {
+            if($this->getLastFestivalDate() >= $today3->modify('-1 day')) {
                 // Sold out
                 if ($this->getTotalBookedTickets() >= $max_tickets)
                     return self::STATE_SUCCESS_SOLDOUT;
                 // No more selling
-                $dateConcert2 = clone $this->getDateConcert();
-                $dateConcert2->setTime(self::FESTIVAL_START_HOUR, self::FESTIVAL_START_MINUTE);
+                $dateConcert2 = clone $this->getLastFestivalDate();
                 if ($today2->modify('+' . ($this->nb_closing_days) . ' days') > $dateConcert2)
                     return self::STATE_SUCCESS_CLOSED;
                 // Successful, in the future, not sold out, not closed => ongoing
@@ -258,62 +254,11 @@ class ContractArtist extends BaseContractArtist
         return self::STATE_PENDING;
     }
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->coartists_list = new ArrayCollection();
-        $this->coartists_list_plain = [];
-        $this->tickets_sold = 0;
-        $this->tickets_reserved = 0;
-        $this->tickets_sent = false;
-        $this->nb_closing_days = self::NB_DAYS_OF_CLOSING;
-        $this->min_tickets = 0;
-    }
-
-    public function addCoArtist(Artist $artist) {
-
-        foreach($this->coartists_list as $col) {
-            if($col->getArtist()->getId() == $artist->getId()) {
-                return;
-            }
-        }
-
-        $ca_a = new ContractArtist_Artist();
-        $ca_a->setArtist($artist)->setContract($this);
-        $this->addCoartistsList($ca_a);
-    }
-
-    public function removeCoArtist(Artist $artist) {
-       foreach($this->coartists_list as $col) {
-           if($col->getArtist()->getId() == $artist->getId()) {
-               $this->coartists_list->removeElement($col);
-           }
-       }
-    }
-
     public function setArtist(\AppBundle\Entity\Artist $artist)
     {
         parent::setArtist($artist);
         $this->main_artist = $artist;
         return $this;
-    }
-
-    public function getCoartists() {
-        return array_map(function($elem) {
-            return $elem->getArtist();
-        }, $this->coartists_list->toArray());
-    }
-
-    // Facilitates admin list export
-    public function getCoartistsExport() {
-        $exportList = array();
-        $i = 1;
-        foreach ($this->getCoartists() as $key => $val) {
-            $exportList[] = $i .
-                ') id: '. $val->getId() . ', nom: ' . $val->getArtistname();
-            $i++;
-        }
-        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
     public function addTicketsSold($quantity) {
@@ -332,13 +277,64 @@ class ContractArtist extends BaseContractArtist
         $this->tickets_reserved -= $quantity;
     }
 
-    public function getDateConcert() {
-        if(isset($this->reality) && $this->reality->getDate() != null) {
-            return $this->reality->getDate();
+    private $festivalDates = null;
+    private $festivalHalls = null;
+
+    /** @return array */
+    public function getFestivalDates() {
+        if($this->festivalDates == null) {
+            $this->festivalDates = array_map(function (FestivalDay $festivalDay) {
+                return $festivalDay->getDate();
+            }, $this->festivaldays->toArray());
         }
-        else {
-            return $this->preferences->getDate();
+        return $this->festivalDates;
+    }
+
+    /** @return array */
+    public function getFestivalHalls() {
+        if($this->festivalHalls == null) {
+            $this->festivalHalls = array_map(function (FestivalDay $festivalDay) {
+                return $festivalDay->getHall();
+            }, $this->festivaldays->toArray());
         }
+        return $this->festivalHalls;
+    }
+
+    /** @return bool */
+    public function hasOnlyOneDate() {
+        return count($this->getFestivalDates()) == 1;
+    }
+
+    /** @return \DateTime */
+    public function getOnlyDate() {
+        return $this->getFestivalDates()[0];
+    }
+
+    public function getFirstFestivalDate() {
+        return min($this->getFestivalDates());
+    }
+
+    public function getLastFestivalDate() {
+        return max($this->getFestivalDates());
+    }
+
+    /** @return bool */
+    public function hasOnlyOneHall() {
+        return count(array_filter($this->getFestivalHalls(), function($elem) { return $elem != null; })) == 1;
+    }
+
+    /** @return Hall */
+    public function getOnlyHall() {
+        return array_filter($this->getFestivalHalls(), function($elem) { return $elem != null; })[0];
+    }
+
+    /** @return bool */
+    public function hasNoDefinedHall() {
+        return count(array_filter($this->getFestivalHalls(), function($elem) { return $elem != null; })) == 0;
+    }
+
+    public function getFirstHall() {
+        return $this->getOnlyHall();
     }
 
     public function getCounterPartsSent() {
@@ -351,62 +347,45 @@ class ContractArtist extends BaseContractArtist
         }));
     }
 
-    /**
-     * @return Hall
-     */
-    public function getHallConcert() {
-        if(isset($this->reality) && $this->reality->getHall() != null) {
-            return $this->reality->getHall();
-        }
-        return null;
-    }
+    // unmapped, memoized
+    private $artistperformances = null;
 
-    /**
-     * @Assert\Callback(groups={"flow_createcontract_step1"})
-     */
-    public function validateStep(ExecutionContextInterface $context, $payload)
-    {
-        $available_dates = $this->step->getAvailableDates($this->province);
-        if(count($available_dates) == 0) {
-            $available_dates = $this->step->getAvailableDates();
-            if(count($available_dates) == 0) {
-                $context->buildViolation("Il n'est pas possible de trouver une date pour cette catégorie de salle, merci d'essayer plus tard ou de changer de catégorie")
-                    ->atPath('step')
-                    ->addViolation();
+    public function getArtistPerformances() {
+        if($this->artistperformances == null) {
+            $performances_days = [];
+            $i = 0;
+
+            foreach($this->getFestivaldays() as $festivalDay) {
+                foreach($festivalDay->getArtistPerformances() as $artistPerformance) {
+                    $performances_days[$i][] = $artistPerformance;
+                }
+                $i++;
             }
+
+            $this->artistperformances = $performances_days;
         }
+        return $this->artistperformances;
     }
 
-    /**
-     * @Assert\Callback(groups={"flow_createcontract_step1"})
-     */
-    public function validateProvince(ExecutionContextInterface $context, $payload)
+    // unmapped, memoized
+    private $all_artists = null;
+
+    public function getAllArtists()
     {
-        $available_dates = $this->step->getAvailableDates($this->province);
-        if(count($available_dates) == 0) {
-            $context->buildViolation('Aucune date trouvée dans cette province pour cette catégorie de salle')
-                ->atPath('province')
-                ->addViolation();
+        if($this->all_artists == null) {
+            $all_artists = [];
+            foreach($this->getArtistPerformances() as $artistPerformance_day) {
+                foreach($artistPerformance_day as $artistPerformance)
+                    $all_artists[] = $artistPerformance->getArtist();
+            }
+            $this->all_artists = $all_artists;
         }
+
+        return $this->all_artists;
     }
 
-    /**
-     * @Assert\Callback(groups={"flow_createcontract_step2"})
-     */
-    public function validatePreferences(ExecutionContextInterface $context, $payload)
-    {
-        $step = $this->step;
-        $province = $this->province;
-        $date = $this->preferences->getDate()->format(Hall::DATE_FORMAT);
-
-        $availableDates = $step->getAvailableDates($province);
-
-        if(!in_array($date, $availableDates)) {
-            $context->buildViolation("Date non disponible")
-                ->atPath('preferences')
-                ->addViolation();
-        }
-    }
+    // Unmapped, memoized
+    private $genres;
 
     public function getGenres() {
         if($this->genres != null) {
@@ -414,37 +393,13 @@ class ContractArtist extends BaseContractArtist
         }
 
         $genres = [];
-        foreach($this->getArtist()->getGenres() as $genre) {
-            $genres[] = $genre;
-        }
-
-        foreach($this->getCoartists() as $coartist) {
-            foreach($coartist->getGenres() as $genre) {
+        foreach($this->getAllArtists() as $artist) {
+            foreach($artist->getGenres() as $genre)
                 $genres[] = $genre;
-            }
         }
         $this->genres = array_unique($genres);
         return $this->genres;
     }
-
-    // Unmapped
-    private $genres;
-
-    // Unmapped
-    private $coartists_list_plain = [];
-
-    /**
-     * @ORM\OneToMany(targetEntity="ContractArtist_Artist", mappedBy="contract", cascade={"all"}, orphanRemoval=true)
-     */
-    private $coartists_list;
-
-    /**
-     * @var Province
-     *
-     * @ORM\ManyToOne(targetEntity="Province")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $province;
 
     /**
      * @var Step
@@ -491,82 +446,16 @@ class ContractArtist extends BaseContractArtist
     private $sponsorship_reward;
 
     /**
-     * Set coartistsList
-     *
-     * @param ArrayCollection $coartistsList
-     *
-     * @return ContractArtist
+     * @var bool
+     * @ORM\Column(name="known_lineup", type="boolean")
      */
-    public function setCoartistsList($list)
-    {
-        if (count($list) > 0) {
-            foreach ($list as $elem) {
-                $this->addCoartistsList($elem);
-            }
-        }
-
-        return $this;
-    }
+    private $known_lineup;
 
     /**
-     * Add coartistsList
-     *
-     * @param \AppBundle\Entity\ContractArtist_Artist $coartistsList
-     *
-     * @return ContractArtist
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\FestivalDay")
      */
-    public function addCoartistsList(\AppBundle\Entity\ContractArtist_Artist $coartistsList)
-    {
-        $this->coartists_list[] = $coartistsList;
-        $coartistsList->setContract($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove coartistsList
-     *
-     * @param \AppBundle\Entity\ContractArtist_Artist $coartistsList
-     */
-    public function removeCoartistsList(\AppBundle\Entity\ContractArtist_Artist $coartistsList)
-    {
-        $this->coartists_list->removeElement($coartistsList);
-        $coartistsList->setContract(null)->setArtist(null);
-    }
-
-    /**
-     * Get coartistsList
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCoartistsList()
-    {
-        return $this->coartists_list;
-    }
-
-    /**
-     * Set province
-     *
-     * @param \AppBundle\Entity\Province $province
-     *
-     * @return ContractArtist
-     */
-    public function setProvince(\AppBundle\Entity\Province $province = null)
-    {
-        $this->province = $province;
-
-        return $this;
-    }
-
-    /**
-     * Get province
-     *
-     * @return \AppBundle\Entity\Province
-     */
-    public function getProvince()
-    {
-        return $this->province;
-    }
+    private $festivaldays;
 
     /**
      * Set step
@@ -728,29 +617,6 @@ class ContractArtist extends BaseContractArtist
     }
 
     /**
-     * @return array
-     */
-    public function getCoartistsListPlain(): array
-    {
-        if(empty($this->coartists_list_plain)) {
-            foreach($this->coartists_list as $col) {
-                $this->coartists_list_plain[] = $col->getArtist();
-            }
-        }
-
-        return $this->coartists_list_plain;
-    }
-
-
-    public function addCoartistsListPlain(Artist $artist) {
-        $this->addCoArtist($artist);
-    }
-    public function removeCoartistsListPlain(Artist $artist) {
-        $this->removeCoArtist($artist);
-    }
-
-
-    /**
      * Set sponsorshipReward
      *
      * @param Reward $sponsorshipReward
@@ -771,5 +637,87 @@ class ContractArtist extends BaseContractArtist
     public function getSponsorshipReward()
     {
         return $this->sponsorship_reward;
+    }
+
+    /**
+     * Set knownLineup
+     *
+     * @param boolean $knownLineup
+     *
+     * @return ContractArtist
+     */
+    public function setKnownLineup($knownLineup)
+    {
+        $this->known_lineup = $knownLineup;
+
+        return $this;
+    }
+
+    /**
+     * Get knownLineup
+     *
+     * @return boolean
+     */
+    public function getKnownLineup()
+    {
+        return $this->known_lineup;
+    }
+
+    /**
+     * Get noThreshold
+     *
+     * @return boolean
+     */
+    public function getNoThreshold()
+    {
+        return $this->no_threshold;
+    }
+
+    /**
+     * Add festivalday
+     *
+     * @param \AppBundle\Entity\FestivalDay $festivalday
+     *
+     * @return ContractArtist
+     */
+    public function addFestivalday(\AppBundle\Entity\FestivalDay $festivalday)
+    {
+        $this->festivaldays[] = $festivalday;
+
+        return $this;
+    }
+
+    /**
+     * Remove festivalday
+     *
+     * @param \AppBundle\Entity\FestivalDay $festivalday
+     */
+    public function removeFestivalday(\AppBundle\Entity\FestivalDay $festivalday)
+    {
+        $this->festivaldays->removeElement($festivalday);
+    }
+
+    /**
+     * Get festivaldays
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFestivaldays()
+    {
+        return $this->festivaldays;
+    }
+
+    /**
+     * Add counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     *
+     * @return ContractArtist
+     */
+    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counterParts[] = $counterPart;
+
+        return $this;
     }
 }

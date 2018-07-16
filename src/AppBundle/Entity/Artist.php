@@ -310,6 +310,11 @@ class Artist implements TranslatableInterface
      */
     private $phone;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ArtistPerformance", mappedBy="artist")
+     */
+    private $performances;
+
     // Form only
     public $ownership_requests_form;
 
@@ -972,5 +977,73 @@ class Artist implements TranslatableInterface
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * Add ownershipRequestsForm
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $ownershipRequestsForm
+     *
+     * @return Artist
+     */
+    public function addOwnershipRequestsForm(\AppBundle\Entity\ArtistPerformance $ownershipRequestsForm)
+    {
+        $this->ownership_requests_form[] = $ownershipRequestsForm;
+
+        return $this;
+    }
+
+    /**
+     * Remove ownershipRequestsForm
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $ownershipRequestsForm
+     */
+    public function removeOwnershipRequestsForm(\AppBundle\Entity\ArtistPerformance $ownershipRequestsForm)
+    {
+        $this->ownership_requests_form->removeElement($ownershipRequestsForm);
+    }
+
+    /**
+     * Get ownershipRequestsForm
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOwnershipRequestsForm()
+    {
+        return $this->ownership_requests_form;
+    }
+
+    /**
+     * Add performance
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $performance
+     *
+     * @return Artist
+     */
+    public function addPerformance(\AppBundle\Entity\ArtistPerformance $performance)
+    {
+        $this->performances[] = $performance;
+
+        return $this;
+    }
+
+    /**
+     * Remove performance
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $performance
+     */
+    public function removePerformance(\AppBundle\Entity\ArtistPerformance $performance)
+    {
+        $this->performances->removeElement($performance);
+    }
+
+    /**
+     * Get performances
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPerformances()
+    {
+        return $this->performances;
     }
 }

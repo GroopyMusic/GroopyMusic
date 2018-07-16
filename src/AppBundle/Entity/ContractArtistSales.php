@@ -85,4 +85,28 @@ class ContractArtistSales extends BaseContractArtist {
     {
         $this->step = $step;
     }
+
+    /**
+     * Get noThreshold
+     *
+     * @return boolean
+     */
+    public function getNoThreshold()
+    {
+        return $this->no_threshold;
+    }
+
+    /**
+     * Add counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     *
+     * @return ContractArtistSales
+     */
+    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counterParts[] = $counterPart;
+
+        return $this;
+    }
 }

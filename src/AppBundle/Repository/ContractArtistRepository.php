@@ -40,30 +40,31 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     public function baseQueryBuilder()
     {
         return $this->createQueryBuilder('c')
-            ->join('c.artist', 'a')
             ->join('c.step', 's')
-            ->join('c.preferences', 'p')
-            ->leftJoin('c.reality', 'r')
-            // ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
-            // ->leftJoin('r.hall', 'h')
+            ->join('c.festivaldays', 'fd')
+            ->leftJoin('fd.hall', 'h')
+            ->leftJoin('fd.performances', 'perf')
+            ->leftJoin('perf.artist', 'a')
             ->leftJoin('s.counterParts', 'cp')
             ->leftJoin('a.genres', 'ag')
             ->leftJoin('a.photos', 'ap')
             ->leftJoin('ag.translations', 'agt')
             ->leftJoin('cp.translations', 'cpt')
             ->leftJoin('a.translations', 'at')
-            ->addSelect('a')
             ->addSelect('s')
-            ->addSelect('r')
-            ->addSelect('p')
             ->addSelect('cp')
             ->addSelect('ag')
             ->addSelect('ap')
             ->addSelect('at')
             ->addSelect('agt')
             ->addSelect('cpt')
-            ->orderBy('r.date', 'ASC')
-            ->addOrderBy('p.date', 'ASC');
+            ->addSelect('fd')
+            ->addSelect('h')
+            ->addSelect('perf')
+            ->addSelect('a')
+            ->where('fd.date > :yesterday')
+            ->setParameter('yesterday', new \DateTime('yesterday'))
+        ;
     }
 
     public function queryVisible($prevalidation = false, $strict = false)
@@ -71,33 +72,31 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         $prevalidation_operator = $strict ? '=' : '<=';
 
         return $this->createQueryBuilder('c')
-            ->join('c.artist', 'a')
+            ->join('c.festivaldays', 'fd')
+            ->leftJoin('fd.hall', 'h')
+            ->leftJoin('fd.performances', 'perf')
+            ->leftJoin('perf.artist', 'a')
             ->join('c.step', 's')
-            ->join('c.preferences', 'p')
-            ->leftJoin('c.reality', 'r')
-            ->where('r INSTANCE OF AppBundle\Entity\ConcertPossibility')
-            // ->leftJoin('r.hall', 'h') >>> ERROR
             ->leftJoin('s.counterParts', 'cp')
             ->leftJoin('a.genres', 'ag')
             ->leftJoin('a.photos', 'ap')
             ->leftJoin('ag.translations', 'agt')
             ->leftJoin('cp.translations', 'cpt')
             ->leftJoin('a.translations', 'at')
-            ->addSelect('a')
             ->addSelect('s')
-            ->addSelect('r')
-            ->addSelect('p')
             ->addSelect('cp')
             ->addSelect('ag')
             ->addSelect('at')
             ->addSelect('agt')
             ->addSelect('cpt')
             ->addSelect('ap')
-            ->orderBy('r.date', 'ASC')
-            ->addOrderBy('p.date', 'ASC')
+            ->addSelect('fd')
+            ->addSelect('h')
+            ->addSelect('perf')
+            ->addSelect('a')
             ->where('c.failed = 0')
+            ->andWhere('fd.date > :yesterday')
             ->andWhere('c.test_period ' . $prevalidation_operator . ' :prevalidation')
-            ->andWhere('(r.date is not null AND r.date >= :yesterday) OR (p.date >= :yesterday)')
             ->setParameter('prevalidation', $prevalidation)
             ->setParameter('yesterday', new \DateTime('yesterday'))
         ;
@@ -132,7 +131,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     public function findNewContracts($max)
     {
         return $this->queryVisible()
-            ->orderBy('p.date', 'desc')
+            ->orderBy('fd.date', 'desc')
             ->setMaxResults($max)
             ->getQuery()
             ->getResult();
@@ -155,17 +154,18 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     public function findNotSuccessfulYet($limit = null)
     {
         $qb = $this->queryVisible()
-            //->andWhere('c.dateEnd > :now')
+            ->andWhere('c.dateEnd > :now')
             ->andWhere('c.tickets_sold < c.min_tickets')
             ->andWhere('c.successful = 0')
-            // TODO modify r.date --> concert date (new field)
-            ->orderBy('p.date', 'asc');
+            ->orderBy('fd.date', 'asc')
+        ;
 
         if ($limit != null) {
             $qb->setMaxResults($limit);
         }
 
         return $qb
+            ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();
     }
@@ -182,7 +182,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         }
 
         return $qb
-            ->orderBy('p.date', 'asc')
+            ->orderBy('fd.date', 'asc')
             ->getQuery()
             ->getResult();
     }
@@ -195,7 +195,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         $qb = $this->queryVisible(true, false);
 
         return $qb
-            ->orderBy('p.date', 'asc')
+            ->orderBy('fd.date', 'asc')
             ->getQuery()
             ->getResult();
     }
@@ -214,7 +214,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         }
 
         return $qb
-            ->orderBy('p.date', 'asc')
+            ->orderBy('fd.date', 'asc')
             ->getQuery()
             ->getResult();
     }
@@ -325,18 +325,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
      */
     public function isValidForSponsorship($contract_id)
     {
-        return $this->getEntityManager()->createQuery(
-            'SELECT ca
-                  FROM AppBundle:ContractArtist ca
-                  LEFT JOIN ca.reality r
-                  LEFT JOIN ca.preferences pr
-                  WHERE ca.id = ?1
-                  AND ( (r.id IS NOT NULL AND r.date > ?2) OR (r.id IS NULL AND pr.date >?2) )
-                  AND ca.refunded = 0
-                  AND ca.failed = 0
-                  ')
-            ->setParameter(1, $contract_id)
-            ->setParameter(2, new \DateTime())
+        return $this->queryVisible()
+            ->andWhere('c.failed = 0')
+            ->andWhere('c.refunded = 0')
+            ->andWhere('c.id = :cid')
+            ->setParameter('cid', $contract_id)
+            ->getQuery()
             ->getOneOrNullResult();
     }
 
@@ -349,13 +343,17 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     public function getUserContractArtists($user)
     {
         return $this->getEntityManager()->createQuery(
-            'SELECT ca,r,p,u
+            // TODO
+            'SELECT ca,fd,h, perf, a,u
                   FROM AppBundle:ContractArtist ca
-                  LEFT JOIN ca.reality r
+                  JOIN ca.festivaldays fd
+                  LEFT JOIN fd.hall h
+                  LEFT JOIN fd.performances perf
+                  LEFT JOIN perf.artist a
                   LEFT JOIN ca.preferences pr
                   LEFT JOIN ca.payments p
                   LEFT JOIN p.user u
-                  WHERE p.refunded = 0 AND ((r.id IS NOT NULL AND r.date > ?2) OR (r.id IS NULL AND pr.date >?2) )
+                  WHERE p.refunded = 0 AND (fd.date > ?2)
                   AND ca.refunded = 0
                   AND ca.failed = 0
                   AND u.id = ?1
