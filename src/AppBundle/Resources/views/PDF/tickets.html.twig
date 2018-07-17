@@ -49,32 +49,33 @@
                     <td>
                     </td>
                     <td colspan="2" style="width:130mm">
-                        <div class="text-center ticket-title text-bold">{{ 'tickets_pdf.ticket.title'|trans({'%hall_name%': ticket.contractArtist.hallConcert.name})|upper }}
-                            <br/>{{ (ticket.contractArtist.dateConcert|date('d') ~ ' ' ~ ('months.' ~ ticket.contractArtist.dateConcert|date('m'))|trans ~ ' ' ~ ticket.contractArtist.dateConcert|date('Y'))|upper }}
-                        </div>
-                        <div class="lineup-title next-to-logo">{{ ticket.contractArtist.mainArtist }}
-                            {% if ticket.contractArtist.coArtists is not empty %}
-                                {%- if ticket.contractArtist.coArtists[0] is defined %} - {{ ticket.contractArtist.coArtists[0] }}{%- endif -%}
-                                {%- if ticket.contractArtist.coArtists[1] is defined %} - {{ ticket.contractArtist.coArtists[1] }}{%- endif -%}
-                            {% endif %}
+                        {% if ticket.counterPart is not null %}
+                            <div>{{ ticket.counterPart.name }}</div>
+                        {% endif %}
+                        <div class="text-center ticket-title text-bold">{{ ticket.contractArtist.title }}
+                            <br/>{% for date in ticket.contractArtist.festivalDates %}{% if not loop.first %} - {% endif %}{{ (date|date('d') ~ ' ' ~ ('months.' ~ date|date('m'))|trans ~ ' ' ~ date|date('Y'))|upper }}{% endfor %}
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td style="width: 30mm; font-size: 3mm;" valign="bottom">{{ ticket.barCodeText }}</td>
                     <td colspan="2" class="td-timing">
-                        <p class="next-to-logo text-bold text-secondary">
-                            18:00 Doors<br/>
-                            {% if ticket.contractArtist.coArtists is not empty %}
-                                {%- if ticket.contractArtist.coArtists[1] is defined -%}19:00 {{ ticket.contractArtist.coArtists[1] }}
-                                    <br/>{% endif %}
-                                {%- if ticket.contractArtist.coArtists[0] is defined -%}20:15 {{ ticket.contractArtist.coArtists[0] }}
-                                    <br/>{% endif %}
-                            {% endif %}
-                            21:30 {{ ticket.contractArtist.mainArtist }}
-                        </p>
-                        <p class="text-right">{{ ticket.contractArtist.hallConcert.name }}
-                            - {{ ticket.contractArtist.hallConcert.address }}</p>
+                        {% if ticket.contractArtist.knownLineup %}
+                            <p class="next-to-logo text-secondary">
+                            {% for festivalday in ticket.contractArtist.festivalDays %}
+                                <div>
+                                    <b>{{ ('Days ' ~ festivalday.date|date('w'))|trans }} {{ festivalday.date|date('j') }} {{ ('months.' ~ festivalday.date|date('m'))|trans }}</b>
+                                    <br />{{ 'doors_opening'|trans }} : {{ festivalday.date|date('H:i') }}
+                                    {% for performance in festivalday.performances %}
+                                        <br />{{ performance.time|date('H:i') }} - {{ performance.timeEnd|date('H:i') }} : {{ performance.artist }}
+                                    {% endfor %}
+                                </div>
+                                {% if festivalday.hall is not null %}
+                                <p class="text-right">{{ festivalday.hall.name }}
+                                    - {{ festivalday.hall.address }}</p>
+                            </p>
+                        {% endif %}
+
                     </td>
                 </tr>
             </table>
@@ -101,10 +102,9 @@
                     <h4>{{ 'tickets_pdf.agenda.title'|trans }}</h4>
                     {% for event in agenda %}
                         <p style="margin-top: 2px">
-                            <a href="{{ url('artist_contract', {'id': event.id, 'slug': event.artist.slug}) }}"
+                            <a href="{{ url('artist_contract', {'id': event.id, 'slug': event.slug}) }}"
                                style="text-decoration: none;">
-                                {{ event.artist }} @{{ event.hallConcert }}
-                                >>> {{ ('Days ' ~ event.dateConcert|date('w'))|trans ~ ' ' ~ event.dateConcert|date('d') ~ ' ' ~ ('months.' ~ event.dateConcert|date('m'))|trans }}
+                                {{ event.titleWithDates }}
                                 ({% if event.isSoldOut %}{{ 'tickets_pdf.agenda.sold_out'|trans }}{% elseif event.isInSuccessfulState %}{{ 'tickets_pdf.agenda.confirmed'|trans }}{% else %}{{ 'tickets_pdf.agenda.not_confirmed'|trans }}{% endif %})
                             </a>
                         </p>

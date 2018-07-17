@@ -141,7 +141,7 @@ class Artist implements TranslatableInterface
         else {
             foreach($this->contracts as $contract) {
                 /** @var ContractArtist $contract */
-                if($contract->getDateConcert() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
+                if($contract->getLastFestivalDate() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
                     return $contract;
                 }
             }
@@ -154,7 +154,7 @@ class Artist implements TranslatableInterface
 
         foreach($this->contracts as $contract) {
             /** @var ContractArtist $contract */
-            if($contract->getDateConcert() < (new \DateTime()) && $contract->getSuccessful() && !$contract->getFailed()) {
+            if($contract->getLastFestivalDate() < (new \DateTime()) && $contract->getSuccessful() && !$contract->getFailed()) {
                 $contracts[] = $contract;
             }
         }

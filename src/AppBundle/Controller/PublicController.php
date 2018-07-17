@@ -12,6 +12,7 @@ use AppBundle\Entity\Hall;
 use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
+use AppBundle\Form\CartType;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\PropositionContractArtistType;
 use AppBundle\Services\MailDispatcher;
@@ -753,14 +754,35 @@ class PublicController extends Controller
         }
     }
 
+    private function populateCart(Cart $cart, $artistContracts) {
+        foreach($artistContracts as $artistContract) {
+            $fanContract = new ContractFan($artistContract);
+            $cart->addContract($fanContract);
+        }
+        return $cart;
+    }
+
     /**
      * @Route("/tickets", name="tickets_marketplace")
      */
-    public function ticketsAction() {
-        // TODO
+    public function ticketsAction(EntityManagerInterface $em, UserInterface $user) {
+        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+
+        if ($user != null) {
+            $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        }
+        if (!isset($cart) || $cart == null) {
+            $cart = $this->createCartForUser($user);
+        } else {
+            $cart = $this->cleanCart($cart, $em);
+        }
+
+        $cart = $this->populateCart($cart, $current_contracts);
+
+        $form = $this->createForm(CartType::class, $cart);
 
         return $this->render('@App/Public/tickets.html.twig', [
-
+            'form' => $form->createView(),
         ]);
     }
 }

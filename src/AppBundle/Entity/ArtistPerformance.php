@@ -10,6 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class ArtistPerformance
 {
+    public function getTimeEnd() {
+        $time2 = clone $this->time;
+        $time2->modify('+'.$this->duration.'minutes');
+        return $time2;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

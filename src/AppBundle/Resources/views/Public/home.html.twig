@@ -15,21 +15,12 @@
 {% block main_attributes %}class="pt-0 pb-0"{% endblock %}
 
 {% block body %}
-    <div class="container-fluid-med-pad bg-body-strong" id="home-carousel-row">
+    <div class="container-fluid bg-body-strong">
         <h3 class="alt-title text-center">{{ 'home.concerts.title'|trans|raw }}</h3>
-        <div class="jcarousel mx-auto my-auto">
-            <ul>
-                {% for crowdfunding in crowdfundings %}
-                    <li>
-                        {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': false, 'card_classes': ['pb-3']} %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="mt-3 w-100 text-center{% if crowdfundings|length > 1 and crowdfundings|length <= 3 %} d-block d-md-none{% elseif crowdfundings|length == 1 %} d-none{% endif %}">
-            <div class="jcarousel-prev jcarousel-control btn btn-secondary rounded-circle d-inline-block"><img class="img-fluid" src="{{ asset('images/icons/arrow-left.svg') }}" /></div>
-            <div class="jcarousel-next jcarousel-control btn btn-secondary rounded-circle d-inline-block"><img class="img-fluid" src="{{ asset('images/icons/arrow-right.svg') }}" /></div>
+        <div class="row">
+            {% for crowdfunding in crowdfundings %}
+                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': false, 'card_classes': ['pb-3']} %}
+            {% endfor %}
         </div>
     </div>
 

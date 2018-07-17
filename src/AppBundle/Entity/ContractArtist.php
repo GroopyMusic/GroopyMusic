@@ -74,6 +74,18 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
+    public function getDisplayDates() {
+        $str = '';
+        $i = 1;
+        foreach($this->getFestivalDates() as $date) {
+            if($i > 1)
+                $str .= ' - ';
+            $str .= $date->format('d/m/Y');
+            $i++;
+        }
+        return $str;
+    }
+
     public function getTitleWithDates() {
         $str = $this->getTitle();
         if(!empty($this->getFestivalDates())) {
@@ -327,10 +339,12 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getFirstFestivalDate() {
+        if(empty($this->getFestivalDates())) return null;
         return min($this->getFestivalDates());
     }
 
     public function getLastFestivalDate() {
+        if(empty($this->getFestivalDates())) return null;
         return max($this->getFestivalDates());
     }
 

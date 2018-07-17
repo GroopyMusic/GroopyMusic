@@ -3,118 +3,40 @@
 {% block card_content %}
 
     {% set rotation = false %}
-    {% set src = asset('images/contract-card-default.jpg') %}
-
-    {% set artist = contract.artist %}
-    {% set photos = artist.allPhotos %}
+    {% set src = asset('yb/images/illustration-guitars.jpg') %}
 
     {% set is_event = contract is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
     {% set is_pot = contract is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
     {% set is_sales = contract is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
-    {% set url_contract = is_event ? path('artist_contract', {'id': contract.id, 'slug': contract.artist.slug}) :
+    {% set url_contract = is_event ? path('artist_contract', {'id': contract.id, 'slug': contract.slug}) :
         (is_pot ? path('pot_pot', {'id': contract.id, 'slug': contract.artist.slug}) : path('artist_contract_sales', {'id': contract.id, 'slug': contract.artist.slug})) %}
 
-    {% if photos is not empty %}
-        {% set rotation = true %}
-        {% set imgstring = '[' %}
-        {% for photo in photos %}
-            {% if loop.first %}
-                {% set src = absolute_url(asset(artist.webPath(photo))) %}
-            {% endif %}
-            {% set imgstring = imgstring ~ '"' ~ absolute_url(asset(artist.webPath(photo))) ~ '"' %}
-            {% if not loop.last %}
-                {% set imgstring = imgstring ~ "," %}
-            {% else %}
-                {% set imgstring = imgstring ~ ']' %}
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
-    <div class="um-card {% for class in card_classes %}{{ class }} {% endfor %} position-relative{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
-        <div class="um-card-header w-100" style="background-image: url({{ src }});">
-            <span class="um-card-date btn-primary sharp p-2{% if contract.state in contract.successfulStates and is_event %} successful-progress-bg{% endif %}">
-                {% if is_event %}{% for festivalDate in contract.festivalDates %}{% if not loop.first %} & {% endif %}{{ festivalDate|date('j') }} {{ festivalDate|date('M')|trans }}{% endfor %}
-                {% elseif is_pot %}{{ contract.date|date('j') }} {{ contract.date|date('M')|trans }}
-                {% else %}{{ 'sales.card_status'|trans }}
-                {% endif %}
-            </span>
-        </div>
-
-        <div class="w-100 position-relative">
-
-            {# Sales #}
-            {% if is_sales %}
-                <div class="progress um-card-progress sales-progress bg-secondary py-3">
-                    <div class="progress-bar" style="width:100%">
-                        <span class="text-uppercase">{{ 'sales.card_headline'|trans }}</span>
-                    </div>
+    <div class="thumbnail img-thumb-bg{% for class in card_classes %} {{ class }}{% endfor %}" style="background-image: url({{ src }});">
+        <div class="overlay"></div>
+        <div class="caption">
+        {% if is_event %}
+            <div class="tag"><a href="#">{% if contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
+                             {% else %}{{ 'stillselling'|trans }}
+                    {% endif %}</a>
+            </div>
+        {% endif %}
+            <div class="title"><a href="#">{{ is_event ? contract.titleWithDates : contract.title }}</a></div>
+            <div class="clearfix">
+                <div class="meta-data">{% for art in contract.allArtists %}{% if not loop.first %} - {% endif %}{{ art }}{% endfor %}</div>
+                    {% if is_event %}<a href="#" class="text-white"><i class="fas fa-ticket-alt"></i> TICKETS</a>
+                    {% elseif is_sales or is_pot %}<a href="#" class="text-white"><i class="fas fa-compact-disc"></i> {{ 'sales.card_headline'|trans }}</a>
+                    {% endif %}
                 </div>
-            {# Cha'pot #}
-            {% elseif is_pot %}
-                <div class="progress um-card-progress sales-progress bg-secondary py-3">
-                    <div class="progress-bar" style="width:100%">
-                        <span class="text-uppercase">{{ 'pot.card_headline'|trans }}</span>
-                    </div>
-                </div>
-            {# Event #}
-            {% else %}
-                {% if contract.state in contract.successfulStates %}
-                    <div class="progress um-card-progress successful-progress py-3">
-                        <div class="progress-bar" style="width:100%">
-                            <span class="text-white text-uppercase">{{ 'confirmed'|trans|raw }}</span>
-                        </div>
-                    </div>
-                {% endif %}
-
+            <div class="content">
+                <p>{{ contract.getDescription|raw }}</p>
+            </div>
+            {% if is_event %}
                 {% set progress_100 = contract.percentObjective %}
-                <div class="progress um-card-progress{% if contract.isInSuccessfulState %} invisible{% endif %}">
-                    <div class="progress-bar" style="padding-left: 2rem;width:{{ progress_100 }}%">
-                        <span class="progress-bar-percent">{{ progress_100 }}%</span>
-                    </div>
-                </div>
-
                 <span class="d-none event-gauge">{{ contract.isInSuccessfulState ? 100 : progress_100 }}</span>
                 <span class="d-none event-date">{% if contract.festivalDates is not empty %}{{ contract.festivalDates[0]|date('m/d/Y') }}{% endif %}</span>
                 <span class="d-none event-genres">{% for genre in contract.genres %}<span class="d-none jplist-{{ genre|slug }}">{% if not loop.first %} {% endif %}{{ genre }}</span>{% endfor %}</span>
                 <span class="d-none event-state {% if contract.isInSuccessfulState %}event-confirmed{% else %}event-not-confirmed{% endif %}{% if contract.soldOut %} event-sold-out{% endif %}">{{ contract.state }}</span>
             {% endif %}
-
-            <div class="um-card-content w-100">
-                <h5 style="font-size:1.1rem;{% if not is_event %}padding-top:15px;{% endif %}">{{ contract.getTitle }}</h5>
-                <p>
-                    {% for art in contract.allArtists %}
-                        {% if not loop.first %} - {% endif %}{{ art }}
-                    {% endfor %}
-                </p>
-                <p>
-                    {% if is_event %}
-                        {% if not contract.hasNoDefinedHall %}
-                            {% for hall in contract.festivalHalls %}{% if not loop.first %} | {% endif %}{{ hall.getName }} ({{ hall.province }}){% endfor %}
-                        {% endif %}
-                    {% endif %}
-                </p>
-                {% if is_event %}
-                    {% if clickable is defined and not clickable %}
-                        {% if contract.soldOut %}
-                            <a class="btn small btn-secondary" href="{{ url_contract }}">
-                                Sold out
-                            </a>
-                        {% else %}
-                            <a class="btn small btn-primary" href="{{ url_contract }}">
-                                Tickets
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                {% else %}
-                    <a class="btn small btn-primary" href="{{ url_contract }}">
-                        {{ 'sales.card_action'|trans }}
-                    </a>
-                {% endif %}
-
-            </div>
         </div>
-        {% if clickable is not defined or clickable %}
-            <a class="um-card-link" href="{{ url_contract }}"></a>
-        {% endif %}
     </div>
 {% endblock %}
