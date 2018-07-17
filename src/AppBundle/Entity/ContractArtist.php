@@ -74,6 +74,22 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
+    public function getTitleWithDates() {
+        $str = $this->getTitle();
+        if(!empty($this->getFestivalDates())) {
+            $str .= ' (';
+            $i = 1;
+            foreach($this->getFestivalDates() as $date) {
+                if($i > 1)
+                    $str .= ' - ';
+                $str .= $date->format('d/m/Y');
+                $i++;
+            }
+            $str.= ')';
+        }
+        return $str;
+    }
+
     public static function getUncrowdableStates() {
         return [
             self::STATE_REFUNDED,

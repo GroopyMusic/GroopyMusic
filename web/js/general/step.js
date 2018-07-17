@@ -8,7 +8,15 @@ $(function() {
     function calculateTickets() {
         var q = 0;
         $('.quantity.form-control').each(function() {
-            q += parseInt($(this).val());
+            var qval = parseInt($(this).val());
+            q += qval;
+            var $select2_container = $(this).closest('.counterpart-form').find('.select2-artists');
+            if(qval == 0) {
+                $select2_container.hide();
+            }
+            else {
+                $select2_container.show();
+            }
         });
         tickets = q;
     }

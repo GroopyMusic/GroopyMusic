@@ -186,6 +186,11 @@ class Purchase
     private $free_price_value;
 
     /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Artist")
+     */
+    private $artists;
+
+    /**
      * Get id
      *
      * @return int
@@ -419,5 +424,39 @@ class Purchase
     public function setFreePriceValue($free_price_value)
     {
         $this->free_price_value = $free_price_value;
+    }
+
+    /**
+     * Add artist
+     *
+     * @param \AppBundle\Entity\Artist $artist
+     *
+     * @return Purchase
+     */
+    public function addArtist(\AppBundle\Entity\Artist $artist)
+    {
+        $this->artists[] = $artist;
+
+        return $this;
+    }
+
+    /**
+     * Remove artist
+     *
+     * @param \AppBundle\Entity\Artist $artist
+     */
+    public function removeArtist(\AppBundle\Entity\Artist $artist)
+    {
+        $this->artists->removeElement($artist);
+    }
+
+    /**
+     * Get artists
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArtists()
+    {
+        return $this->artists;
     }
 }

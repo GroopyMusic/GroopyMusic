@@ -1,7 +1,4 @@
 var contract_id = null;
-$(document).ready(function () {
-    console.log("ready!");
-});
 
 function addEmailInput() {
     var div = $('#sponsorship-modal-email-inputs-div');

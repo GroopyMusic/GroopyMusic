@@ -40,11 +40,9 @@
             </tr>
             <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.concert'|trans|raw }}</td>
-                <td>{{ 'event.generic_name'|trans({'%artist%': contract.contractArtist.artist.artistname}) }}</td>
-            </tr>
-            <tr>
-                <td class="contract-info-title">{{ 'pay_cart.recap.labels.date'|trans|raw }}</td>
-                <td>{{ contract.contractArtist.dateConcert|date('d/m/Y') }}</td>
+                <td>{{ contract.contractArtist.title }}
+                    ({% for date in contract.contractArtist.festivalDates %}{% if not loop.first %} - {% endif %}{{ date|date('d/m/Y') }}{% endfor %})
+                </td>
             </tr>
             <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.quantity'|trans|raw }}</td>
@@ -54,6 +52,12 @@
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}</td>
                 <td>{% if not promotional %}{{ purchase.counterpart.price }} €{% else %}0 €{% endif %}</td>
             </tr>
+            {% if purchase.artists is not empty %}
+                <tr>
+                    <td class="contract-info-title">{{ 'supported_artists' }}</td>
+                    <td>{% for artist in purchase.artists %}{% if not loop.first %}, {% endif %}{{ artist }}{% endfor %}</td>
+                </tr>
+            {% endif %}
             {% if contract.userRewards is not empty and (purchase.reducedPrice != null or purchase.reducedPrice == 0) and purchase.nbReducedCounterparts > 0 %}
                 {% for userReward in contract.userRewards %}
                     {% if userReward.reward.getType == "Réduction" %}

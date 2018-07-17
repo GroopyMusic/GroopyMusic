@@ -112,25 +112,6 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/cart", name="user_cart")
-     */
-    public function cartAction(UserInterface $user)
-    {
-
-        $em = $this->getDoctrine()->getManager();
-        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-
-        if ($cart == null) {
-            $cart = $this->createCartForUser($user);
-            $em->flush();
-        }
-
-        return $this->render('@App/User/cart.html.twig', array(
-            'cart' => $cart,
-        ));
-    }
-
-    /**
      * @Route("/paid-carts", name="user_paid_carts")
      */
     public function paidCartsAction(Request $request, UserInterface $user)
@@ -147,7 +128,6 @@ class UserController extends Controller
             'is_payment' => $is_payment,
         ));
     }
-
 
     /**
      * @Route("/my-artists", name="user_my_artists")
@@ -327,7 +307,6 @@ class UserController extends Controller
      */
     public function advancedAction(Request $request, UserInterface $user)
     {
-
         /** @var User $user */
         $form = $this->createFormBuilder(['submit' => false])
             ->add('submit', SubmitType::class, array(

@@ -374,11 +374,6 @@ class BaseContractArtist implements TranslatableInterface
     protected $asking_refund;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Newsletter", inversedBy="contracts")
-     */
-    protected $newsletter;
-
-    /**
      * @ORM\Column(name="reminders_admin", type="smallint")
      */
     protected $reminders_admin;
@@ -785,30 +780,6 @@ class BaseContractArtist implements TranslatableInterface
     public function getAskingRefund()
     {
         return $this->asking_refund;
-    }
-
-    /**
-     * Set newsletter
-     *
-     * @param \AppBundle\Entity\Newsletter $newsletter
-     *
-     * @return BaseContractArtist
-     */
-    public function setNewsletter(\AppBundle\Entity\Newsletter $newsletter = null)
-    {
-        $this->newsletter = $newsletter;
-
-        return $this;
-    }
-
-    /**
-     * Get newsletter
-     *
-     * @return \AppBundle\Entity\Newsletter
-     */
-    public function getNewsletter()
-    {
-        return $this->newsletter;
     }
 
     /**

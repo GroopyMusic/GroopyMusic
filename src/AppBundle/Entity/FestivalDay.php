@@ -47,6 +47,11 @@ class FestivalDay
     private $performances;
 
     /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CounterPart", mappedBy="festivaldays")
+     */
+    private $counterparts;
+
+    /**
      * Get id
      *
      * @return integer
@@ -136,5 +141,39 @@ class FestivalDay
     public function getPerformances()
     {
         return $this->performances;
+    }
+
+    /**
+     * Add counterpart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterpart
+     *
+     * @return FestivalDay
+     */
+    public function addCounterpart(\AppBundle\Entity\CounterPart $counterpart)
+    {
+        $this->counterparts[] = $counterpart;
+
+        return $this;
+    }
+
+    /**
+     * Remove counterpart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterpart
+     */
+    public function removeCounterpart(\AppBundle\Entity\CounterPart $counterpart)
+    {
+        $this->counterparts->removeElement($counterpart);
+    }
+
+    /**
+     * Get counterparts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCounterparts()
+    {
+        return $this->counterparts;
     }
 }

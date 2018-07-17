@@ -343,14 +343,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     public function getUserContractArtists($user)
     {
         return $this->getEntityManager()->createQuery(
-            // TODO
-            'SELECT ca,fd,h, perf, a,u
+            'SELECT ca,fd,h, perf, p, a,u
                   FROM AppBundle:ContractArtist ca
                   JOIN ca.festivaldays fd
                   LEFT JOIN fd.hall h
                   LEFT JOIN fd.performances perf
                   LEFT JOIN perf.artist a
-                  LEFT JOIN ca.preferences pr
                   LEFT JOIN ca.payments p
                   LEFT JOIN p.user u
                   WHERE p.refunded = 0 AND (fd.date > ?2)

@@ -6,7 +6,6 @@
     {% set is_sales = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
     {% set is_pot = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
 
-
     <h1>{{ 'order_pdf.title'|trans|raw }}</h1>
 
     <p>{{ 'order_pdf.sales.intro'|trans|raw }}</p>
@@ -18,9 +17,8 @@
         <li>{{ 'order_pdf.labels.order_date'|trans|raw }} : {{ cf.date|date('d/m/Y') }}</li>
         {% if is_event %}
             <li>{{ 'order_pdf.labels.event'|trans|raw }}
-                : {{ 'event.generic_name'|trans({'%artist%':cf.contractArtist.artist.artistname})|raw }}
+                : {{ cf.contractArtist.titleWithDates|raw }}
             </li>
-            <li>{{ 'order_pdf.labels.event_date'|trans|raw }} : {{ cf.contractArtist.dateConcert|date('d/m/Y') }}</li>
             <li>{{ 'order_pdf.labels.nb_tickets'|trans|raw }} : {{ cf.counterPartsQuantityOrganic }}</li>
         {% elseif is_sales %}
             <li>{{ 'order_pdf.labels.sales'|trans|raw }}

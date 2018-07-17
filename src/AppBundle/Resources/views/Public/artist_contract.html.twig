@@ -81,37 +81,41 @@
         {% set tickets_left = contract.totalNbAvailable %}
         <div class="row mt-4">
             <div class="col-12 col-lg-8">
+
+                <div class="col-12 content-box">
+                    <div class="content-box-header">
+                        <h3>{{ 'event.lineup.title'|trans|raw }}</h3>
+                    </div>
+                    <div class="content-box-content">
+                        {% for day in contract.festivalDays %}
+                            <h4>{{ ('Days ' ~ day.date|date('w'))|trans }} {{ day.date|date('j') }} {{ ('months.' ~ day.date|date('m'))|trans }}</h4>
+                            <table class="content-box-table">
+                                <tbody>
+                                <tr>
+                                    <td class="contract-info-title">{{ 'doors_opening' }}</td>
+                                    <td>
+                                        {{ day.date|date('H:i') }}
+                                    </td>
+                                </tr>
+
+                                {% for performance in day.performances %}
+                                    <tr>
+                                        {% if contract.knownLineup %}<td class="contract-info-title">{{ performance.time|date('H:i') }}</td>{% endif %}
+                                        <td {% if not contract.knownLineup %}colspan="2"{% endif %}>
+                                            <a href="{{ path('artist_profile', {'id': performance.artist.id, 'slug': performance.artist.slug}) }}">{{ performance.artist.artistname }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                    </div>
+                </div>
+
                 <div class="content-box">
                     <div class="content-box-content text-center">
 
                         <h3 class="mb-3">{{ 'event.infos.title'|trans|raw }}</h3>
-
-                        <div class="col-12 row equal content-box-row">
-                            <div class="col-12 col-md-4 content-box-col">
-
-                                {% if state in contract.successfulStates %}
-                                    {% if state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
-                                        <div class="um-label">
-                                            SOLD <br/> OUT
-                                        </div>
-                                    {% else %}
-                                        <div class="contract-info-title">
-                                            {{ 'event.infos.closing_date'|trans|raw }}
-                                        </div>
-                                        <div class="contract-info-content">
-                                            {{ contract.lastSellingDate|date('d/m/Y') }}
-                                        </div>
-                                    {% endif %}
-                                {% else %}
-                                    <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                        {{ 'event.infos.validation_date'|trans|raw }}
-                                    </div>
-                                    <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                        {{ contract.dateEnd|date('d/m/Y') }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
 
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
@@ -128,10 +132,11 @@
 
                         <div class="col-12 row equal content-box-row">
                             <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
+                                <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
+                                    {{ 'event.infos.validation_date'|trans|raw }}
                                 </div>
-                                <div class="contract-info-content">
-
+                                <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
+                                    {{ contract.dateEnd|date('d/m/Y') }}
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 content-box-col">
@@ -176,36 +181,6 @@
                 </div>
             </div>
             <div class="col-12 col-lg-4">
-                <div class="col-12 content-box">
-                    <div class="content-box-header">
-                        <h3>{{ 'event.lineup.title'|trans|raw }}</h3>
-                    </div>
-                    <div class="content-box-content">
-                        {% for day in contract.festivalDays %}
-                            <h4>{{ ('Days ' ~ day.date|date('w'))|trans }} {{ day.date|date('j') }} {{ ('months.' ~ day.date|date('m'))|trans }}</h4>
-                            <table class="content-box-table">
-                                <tbody>
-                                <tr>
-                                    <td class="contract-info-title">{{ 'doors_opening' }}</td>
-                                    <td>
-                                        {{ day.date|date('H:i') }}
-                                    </td>
-                                </tr>
-
-                                {% for performance in day.performances %}
-                                    <tr>
-                                        {% if contract.knownLineup %}<td class="contract-info-title">{{ performance.time|date('H:i') }}</td>{% endif %}
-                                        <td {% if not contract.knownLineup %}colspan="2"{% endif %}>
-                                            <a href="{{ path('artist_profile', {'id': performance.artist.id, 'slug': performance.artist.slug}) }}">{{ performance.artist.artistname }}</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        {% endfor %}
-                    </div>
-                </div>
-
                 <div class="col-12 content-box mt-4">
                     <div class="content-box-header">
                         {% if state not in contract.uncrowdableStates %}
@@ -239,7 +214,7 @@
                                             <div class="container px-0">
                                                 <div class="count-input space-bottom">
                                                     <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                                    {{ form_widget(purchase) }}
+                                                    {{ form_widget(purchase.quantity) }}
                                                     <a class="incr-btn" data-action="increase"
                                                        data-max="{{ tickets_left }}"
                                                        href="#">&plus;</a>
@@ -247,6 +222,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {% if counterpart.potentialArtists is not empty %}
+                                        <div class="select2-artists">
+                                            {{ form_row(purchase.artists) }}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             {#{{ form_row(form.user_rewards) }}#}
