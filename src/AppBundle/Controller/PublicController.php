@@ -81,6 +81,50 @@ class PublicController extends Controller
         }
     }
 
+    private function handleCheckout($cfs, $user, EntityManagerInterface $em, Request $request) {
+        /** @var Cart $cart */
+        if ($user != null) {
+            $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        }
+
+        if (!isset($cart) || $cart == null) {
+            $cart = $this->createCartForUser($user);
+        } else {
+            $cart = $this->cleanCart($cart, $em);
+        }
+
+        foreach($cfs as $cf) {
+            /** @var ContractFan $cf */
+            $qty = 0;
+            foreach ($cf->getPurchases() as $purchase) {
+                $pqty = $purchase->getQuantity();
+                if ($pqty == 0) {
+                    $cf->removePurchase($purchase);
+                }
+                $qty += $pqty;
+            }
+            if($qty == 0) {
+                if ($cart->hasContract($cf)) {
+                    $cart->removeContract($cf);
+                }
+            }
+            else {
+                if(!$cart->hasContract($cf)) {
+                    $cart->addContract($cf);
+                }
+            }
+        }
+
+        foreach($cart->getContracts() as $contract_fan) {
+            if ($contract_fan->getContractArtist()->isUncrowdable()) {
+                $this->addFlash('error', 'errors.event.uncrowdable');
+            }
+        }
+
+        $em->flush();
+        $request->getSession()->set('cart_id', $cart->getId());
+    }
+
     /**
      * @Route("/", name="homepage")
      */
@@ -321,35 +365,9 @@ class PublicController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($contract->isUncrowdable()) {
-                $this->addFlash('error', 'errors.event.uncrowdable');
-            } elseif ($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
-                $this->addFlash('error', 'errors.order_max');
-            } elseif ($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
-                $this->addFlash('error', 'errors.order_max_promo');
-            } else {
-                /** @var Cart $cart */
-                if ($user != null) {
-                    $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-                }
+            $this->handleCheckout([$cf], $user, $em, $request);
 
-                if (!isset($cart) || $cart == null) {
-                    $cart = $this->createCartForUser($user);
-                } else {
-                    $cart = $this->cleanCart($cart, $em);
-                }
-
-                foreach ($cf->getPurchases() as $purchase) {
-                    if ($purchase->getQuantity() == 0) {
-                        $cf->removePurchase($purchase);
-                    }
-                }
-                $cart->addContract($cf);
-
-                $em->flush();
-                $request->getSession()->set('cart_id', $cart->getId());
-                return $this->redirectToRoute('checkout');
-            }
+            return $this->redirectToRoute('checkout');
         }
 
         return $this->render('@App/Public/artist_contract.html.twig', array(
@@ -765,7 +783,7 @@ class PublicController extends Controller
     /**
      * @Route("/tickets", name="tickets_marketplace")
      */
-    public function ticketsAction(EntityManagerInterface $em, UserInterface $user) {
+    public function ticketsAction(Request $request, EntityManagerInterface $em, UserInterface $user = null) {
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
 
         if ($user != null) {
@@ -780,6 +798,13 @@ class PublicController extends Controller
         $cart = $this->populateCart($cart, $current_contracts);
 
         $form = $this->createForm(CartType::class, $cart);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->handleCheckout($cart->getContracts()->toArray(), $user, $em, $request);
+            return $this->redirectToRoute('checkout');
+        }
 
         return $this->render('@App/Public/tickets.html.twig', [
             'form' => $form->createView(),

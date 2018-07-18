@@ -83,6 +83,10 @@ class Cart
         }, $this->contracts->toArray()));
     }
 
+    public function hasContract(ContractFan $cf) {
+        return $this->contracts->contains($cf);
+    }
+
     /**
      * @var int
      *

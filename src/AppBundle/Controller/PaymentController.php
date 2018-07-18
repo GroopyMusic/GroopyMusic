@@ -75,12 +75,13 @@ class PaymentController extends Controller
             if ($contract_artist->isUncrowdable()) {
                 $this->addFlash('error', 'errors.event_uncrowdable');
                 return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
-            } elseif ($contract->getCounterPartsQuantityOrganic() > $contract_artist->getTotalNbAvailable()) {
-                $this->addFlash('error', 'errors.order_max');
-                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
-            } elseif ($contract->getCounterPartsQuantity() > $contract_artist->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
-                $this->addFlash('error', 'errors.order_max_promo');
-                return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
+            }
+
+            foreach($contract->getPurchases() as $purchase) {
+                if($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
+                    $this->addFlash('error', 'errors.order_max');
+                    return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $artist->getSlug()]);
+                }
             }
 
             if ($cart->isProblematic()) {

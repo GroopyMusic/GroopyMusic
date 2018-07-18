@@ -70,21 +70,19 @@ class ContractFanType extends AbstractType
 
     public function validate(ContractFan $contractFan, ExecutionContextInterface $context)
     {
-        if ($contractFan->getCounterPartsQuantity() == 0) {
+        if ($contractFan->getCart() == null && $contractFan->getCounterPartsQuantity() == 0) {
             $context->addViolation('contractfan.quantity_min');
         }
 
         $contract_artist = $contractFan->getContractArtist();
-        if($contract_artist instanceof ContractArtist) {
-            if ($contractFan->getCounterPartsQuantity() > $contractFan->getContractArtist()->getStep()->getMaxTickets() - $contractFan->getContractArtist()->getTicketsSold()) {
-                $context->addViolation('contractfan.quantity_max');
-            }
-        }
 
         foreach($contractFan->getPurchases() as $purchase) {
             /** @var Purchase $purchase */
             if($purchase->getCounterPart()->getFreePrice() && $purchase->getFreePriceValue() < $purchase->getCounterpart()->getMinimumPrice()) {
                 $context->addViolation('contractfan.free_price_min');
+            }
+            if($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
+                $context->addViolation('contractfan.quantity_max');
             }
         }
 

@@ -8,6 +8,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class CartType extends AbstractType
 {
@@ -27,10 +29,20 @@ class CartType extends AbstractType
         ;
     }
 
+    public function validate(Cart $cart, ExecutionContextInterface $context)
+    {
+        if($cart->getNbArticles() == 0) {
+            $context->addViolation('cart.empty');
+        }
+    }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Cart::class,
+            'constraints' => array(
+                new Assert\Callback(array($this, 'validate'))
+            ),
         ]);
     }
 
