@@ -216,7 +216,7 @@
                                                     <a class="incr-btn" data-action="decrease" href="#">–</a>
                                                     {{ form_widget(purchase.quantity) }}
                                                     <a class="incr-btn" data-action="increase"
-                                                       data-max="{{ tickets_left }}"
+                                                       data-max="{{ contract.nbAvailable(counterpart) }}"
                                                        href="#">&plus;</a>
                                                 </div>
                                             </div>

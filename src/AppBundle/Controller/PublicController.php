@@ -352,7 +352,6 @@ class PublicController extends Controller
             if ($em->getRepository('AppBundle:User')->isParticipant($contract->getId(), $user->getId()) != null) {
                 $isParticipant = true;
                 $nb_sponsorships = $user->getSponsorships()->count();
-                $nb_validated_sponsorships = 0;
                 $nb_validated_sponsorships = $em->getRepository('AppBundle:SponsorshipInvitation')->getNumberOfValidatedInvitation($user->getId());
             }
         } else {
@@ -360,7 +359,7 @@ class PublicController extends Controller
         }
 
         $cf = new ContractFan($contract);
-        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards, 'entity_manager' => $em,]);
+        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -456,9 +455,11 @@ class PublicController extends Controller
             if ($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
                 $em->remove($other_potential_cart);
             }
+        }
+        $rewardSpendingService->setBaseAmount($cart->getFirst());
 
+        if($user != null) {
             ##reward consume
-            $rewardSpendingService->setBaseAmount($cart->getFirst());
             $cart->getFirst()->setUserRewards(new arrayCollection($rewardSpendingService->getApplicableReward($cart->getFirst())));
             $rewardSpendingService->applyReward($cart->getFirst());
 

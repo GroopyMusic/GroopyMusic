@@ -66,7 +66,7 @@ class PaymentManager
             // Remove refunded tickets from sold tickets
             // Unless crodwfunding is failed
             if ($payment->getContractArtist() instanceof ContractArtist && !$payment->getContractArtist()->getFailed()) {
-                $payment->getContractArtist()->removeTicketsSold($payment->getContractFan()->getCounterPartsQuantity());
+                $payment->getContractArtist()->removeTicketsSold($payment->getContractFan()->getTresholdIncrease());
             }
 
             $this->em->persist($payment);

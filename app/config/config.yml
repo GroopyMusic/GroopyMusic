@@ -14,7 +14,7 @@ imports:
 parameters:
     locale: fr
     mailer_from_name: "Un-Mute"
-    locales: [fr, nl, en]
+    locales: [fr]
     facebook_page_url: https://www.facebook.com/UnMuteasbl/
     expanded_locales: {fr: fr_FR, en: en_US, nl: nl_NL}
 

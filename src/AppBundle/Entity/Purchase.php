@@ -30,6 +30,10 @@ class Purchase
         $this->ticket_rewards = new ArrayCollection();
     }
 
+    public function getThresholdIncrease() {
+        return $this->getQuantity() * $this->getCounterpart()->getThresholdIncrease();
+    }
+
     public function getPromotions()
     {
         return array_map(function (Purchase_Promotion $p_promotion) {

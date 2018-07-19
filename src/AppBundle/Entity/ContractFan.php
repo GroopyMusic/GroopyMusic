@@ -60,6 +60,12 @@ class ContractFan
         return $this->getRefunded();
     }
 
+    public function getTresholdIncrease() {
+        return array_sum(array_map(function(Purchase $purchase) {
+            return $purchase->getThresholdIncrease();
+        }, $this->purchases->toArray()));
+    }
+
     public function generateBarCode()
     {
         if (empty($this->barcode_text))

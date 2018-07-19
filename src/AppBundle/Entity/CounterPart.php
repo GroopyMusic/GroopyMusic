@@ -113,6 +113,11 @@ class CounterPart implements TranslatableInterface
     private $festivaldays;
 
     /**
+     * @ORM\Column(name="threshold_increase", type="smallint")
+     */
+    private $threshold_increase;
+
+    /**
      * Get id
      *
      * @return int
@@ -281,5 +286,29 @@ class CounterPart implements TranslatableInterface
     public function getFestivaldays()
     {
         return $this->festivaldays;
+    }
+
+    /**
+     * Set thresholdIncrease
+     *
+     * @param integer $thresholdIncrease
+     *
+     * @return CounterPart
+     */
+    public function setThresholdIncrease($thresholdIncrease)
+    {
+        $this->threshold_increase = $thresholdIncrease;
+
+        return $this;
+    }
+
+    /**
+     * Get thresholdIncrease
+     *
+     * @return integer
+     */
+    public function getThresholdIncrease()
+    {
+        return $this->threshold_increase;
     }
 }

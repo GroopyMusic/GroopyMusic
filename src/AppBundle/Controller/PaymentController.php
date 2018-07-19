@@ -117,7 +117,7 @@ class PaymentController extends Controller
                 $contract_artist->addAmount($contract->getAmount());
 
                 if ($contract_artist instanceof ContractArtist) {
-                    $contract_artist->addTicketsSold($contract->getCounterPartsQuantity());
+                    $contract_artist->addTicketsSold($contract->getTresholdIncrease());
                 }
 
                 $charge = \Stripe\Charge::create(array(

@@ -63,7 +63,7 @@ class ContractFanType extends AbstractType
                 $builder
                     ->add('submit', SubmitType::class, array(
                         'label' => 'labels.contractfan.submit',
-                        'attr' => ['class' => 'btn btn-primary'],
+                        'attr' => ['class' => 'btn btn-primary submit-cart'],
                     ));
         });
     }
