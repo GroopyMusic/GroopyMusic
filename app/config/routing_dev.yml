@@ -17,3 +17,9 @@ JMSTranslationBundle_ui:
     resource: "@JMSTranslationBundle/Controller/"
     type:     annotation
     prefix:   /_trans
+
+yb:
+  prefix: /yb/
+  host: ~
+  resource: "@AppBundle/Controller/YBController.php"
+  type: annotation

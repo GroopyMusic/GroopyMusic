@@ -64,3 +64,10 @@ jmose_command_scheduler:
 fp_js_form_validator:
     resource: "@FpJsFormValidatorBundle/Resources/config/routing.xml"
     prefix: /fp_js_form_validator
+
+yb:
+  resource: "@AppBundle/Controller/YBController.php"
+  type: annotation
+  schemes: ['%http_protocol%']
+  host: ticked-it.be
+  prefix: /

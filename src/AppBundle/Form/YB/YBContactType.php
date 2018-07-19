@@ -22,7 +22,7 @@ class YBContactType extends AbstractType
         $builder
             ->add('name', TextType::class, array(
                 'required' => true,
-                'label' => 'Name',
+                'label' => false,
                 'attr' => ['placeholder' => 'Name'],
                 'constraints' => array(
                     new NotBlank(),
@@ -33,7 +33,7 @@ class YBContactType extends AbstractType
             ))
             ->add('email', EmailType::class, array(
                 'required' => true,
-                'label' => 'Email',
+                'label' => false,
                 'attr' => ['placeholder' => 'Email'],
                 'constraints' => [
                     new Email(),
@@ -43,7 +43,7 @@ class YBContactType extends AbstractType
             ))
             ->add('message', TextareaType::class, array(
                 'required' => true,
-                'label' => 'Message',
+                'label' => false,
                 'attr' => ['placeholder' => 'Message'],
                 'constraints' => [
                     new NotBlank(),
