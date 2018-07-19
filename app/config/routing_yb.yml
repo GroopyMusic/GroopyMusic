@@ -1,0 +1,5 @@
+yb_controller:
+  resource: "@AppBundle/Controller/YBController.php"
+  type: annotation
+  schemes: ['%http_protocol%']
+  prefix: /

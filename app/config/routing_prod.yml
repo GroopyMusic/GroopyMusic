@@ -1,0 +1,10 @@
+_main:
+    resource: routing.yml
+
+yb:
+  resource: "routing_yb.yml"
+  host: ticked-it.be
+
+um:
+  resource: "routing_um.yml"
+  host: un-mute.be

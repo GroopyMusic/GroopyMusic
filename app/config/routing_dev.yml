@@ -13,13 +13,15 @@ _errors:
 _main:
     resource: routing.yml
 
+yb:
+  resource: "routing_yb.yml"
+  prefix: /yb/
+
+um:
+  resource: "routing_um.yml"
+  prefix: /
+
 JMSTranslationBundle_ui:
     resource: "@JMSTranslationBundle/Controller/"
     type:     annotation
     prefix:   /_trans
-
-yb:
-  prefix: /yb/
-  host: ~
-  resource: "@AppBundle/Controller/YBController.php"
-  type: annotation
