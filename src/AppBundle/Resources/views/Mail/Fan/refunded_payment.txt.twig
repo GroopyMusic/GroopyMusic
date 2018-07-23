@@ -6,8 +6,8 @@
 
 {% block content %}
     {{ email_content('payment.refunded', {
-        '%event%': email_link(url('artist_contract', {'id': payment.contractArtist.id}), payment.contractArtist.displayName),
-        '%cf%': payment.contractFan.barcodeText,
+        'amount': payment.amount,
+        'date': payment.date('d/m/Y H:i:s')
     })|raw }}
 {% endblock %}
 

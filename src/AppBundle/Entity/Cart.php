@@ -127,6 +127,11 @@ class Cart
     private $date_creation;
 
     /**
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="cart")
+     */
+    private $payment;
+
+    /**
      * Get id
      *
      * @return int

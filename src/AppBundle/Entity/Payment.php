@@ -20,7 +20,7 @@ class Payment
 
     public function __toString()
     {
-        $str = 'Paiement de ' . $this->getUser() . ' de ' . $this->getAmount() . ' € pour l\'événement "' . $this->getContractArtist() . '" (' . $this->contractFan . ')';
+        $str = 'Paiement de ' . $this->getUser() . ' de ' . $this->getAmount();
         if($this->refunded) {
             $str .= ' - REMBOURSE';
         }
@@ -29,6 +29,13 @@ class Payment
 
     public function __construct() {
         $this->asking_refund = new ArrayCollection();
+    }
+
+    public function getContractsFan() {
+        if($this->cart != null) {
+            return $this->cart->getContracts()->toArray();
+        }
+        return [$this->contractFan];
     }
 
     public function isRefundReady() {
@@ -48,15 +55,21 @@ class Payment
     }
 
     public function getCounterPartsQuantity() {
-        return $this->contractFan->getCounterPartsQuantity();
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantity();
+        }, $this->getContractsFan()));
     }
 
     public function getCounterPartsQuantityOrganic() {
-        return $this->contractFan->getCounterPartsQuantityOrganic();
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityOrganic();
+        }, $this->getContractsFan()));
     }
 
     public function getCounterPartsQuantityPromotional() {
-        return $this->contractFan->getCounterPartsQuantityPromotional();
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityPromotional();
+        }, $this->getContractsFan()));
     }
 
     /**
@@ -96,7 +109,9 @@ class Payment
 
     /**
      * @var ContractFan
+     * @deprecated
      * @ORM\OneToOne(targetEntity="ContractFan", inversedBy="payment", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $contractFan;
 
@@ -116,6 +131,13 @@ class Payment
      * @ORM\ManyToMany(targetEntity="User")
      */
     private $asking_refund;
+
+    /**
+     * @var Cart
+     * @ORM\OneToOne(targetEntity="Cart", inversedBy="payment", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $cart;
 
     /**
      * Get id

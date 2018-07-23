@@ -4,9 +4,11 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
-            {{ email_content('payment.refunded', {
-                'amount': payment.amount,
-                'date': payment.date('d/m/Y H:i:s')
+            {{ email_content('contract_fan.refunded', {
+                'amount': cf.amount,
+                'date': cf.payment.date('d/m/Y H:i:s'),
+                'event': cf.contractArtist.getTitle(),
+                'cf_id': cf.barcodeText
             })|raw }}
         {% endblock %}
     {% endspaceless %}

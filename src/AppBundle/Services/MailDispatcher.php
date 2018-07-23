@@ -357,6 +357,20 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::REFUNDED_PAYMENT_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
+    public function sendRefundedContractFan(ContractFan $cf) {
+        $params = [
+            'cf' => $cf,
+        ];
+
+        $to = [$cf->getUser()->getEmail() => $cf->getUser()->getPreferredLocale()];
+        $toName = [$cf->getUser()->getDisplayName()];
+
+        $subject = 'subjects.refunded_contract_fan';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::REFUNDED_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
     public function sendArtistValidated(Artist $artist)
     {
         $params = [

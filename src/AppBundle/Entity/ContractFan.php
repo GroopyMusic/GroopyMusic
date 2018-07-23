@@ -15,6 +15,7 @@ class ContractFan
 {
     const ORDERS_DIRECTORY = 'pdf/orders/';
     const TICKETS_DIRECTORY = 'pdf/tickets/';
+    const VOTES_TO_REFUND = 2;
 
     public function __toString()
     {
@@ -58,6 +59,22 @@ class ContractFan
     public function isRefunded()
     {
         return $this->getRefunded();
+    }
+
+    public function isRefundReady() {
+        return count($this->asking_refund) >= self::VOTES_TO_REFUND;
+    }
+
+    public function isAskedRefundBy(User $user) {
+        return $this->asking_refund->contains($user);
+    }
+
+    public function isAskedRefundByOne() {
+        return count($this->asking_refund) >= 1;
+    }
+
+    public function isOneStepFromBeingRefunded() {
+        return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
     }
 
     public function getTresholdIncrease() {
@@ -273,6 +290,13 @@ class ContractFan
     private $ticket_rewards;
 
     /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\JoinColumn(name="contract_fan_refund_request")
+     */
+    private $asking_refund;
+
+    /**
      * Get id
      *
      * @return int
@@ -482,6 +506,9 @@ class ContractFan
      */
     public function getPayment()
     {
+        if($this->cart != null) {
+            return $this->cart->getPayment();
+        }
         return $this->payment;
     }
 
