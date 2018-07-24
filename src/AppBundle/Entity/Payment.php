@@ -116,12 +116,6 @@ class Payment
     private $contractFan;
 
     /**
-     * @var ContractArtist
-     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="payments")
-     */
-    private $contractArtist;
-
-    /**
      * @ORM\Column(name="amount", type="float")
      */
     private $amount;
@@ -270,30 +264,6 @@ class Payment
     }
 
     /**
-     * Set contractArtist
-     *
-     * @param \AppBundle\Entity\BaseContractArtist $contractArtist
-     *
-     * @return Payment
-     */
-    public function setContractArtist(\AppBundle\Entity\BaseContractArtist $contractArtist = null)
-    {
-        $this->contractArtist = $contractArtist;
-
-        return $this;
-    }
-
-    /**
-     * Get contractArtist
-     *
-     * @return \AppBundle\Entity\BaseContractArtist
-     */
-    public function getContractArtist()
-    {
-        return $this->contractArtist;
-    }
-
-    /**
      * Add askingRefund
      *
      * @param \AppBundle\Entity\User $askingRefund
@@ -357,5 +327,29 @@ class Payment
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    /**
+     * Set cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     *
+     * @return Payment
+     */
+    public function setCart(\AppBundle\Entity\Cart $cart = null)
+    {
+        $this->cart = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Get cart
+     *
+     * @return \AppBundle\Entity\Cart
+     */
+    public function getCart()
+    {
+        return $this->cart;
     }
 }

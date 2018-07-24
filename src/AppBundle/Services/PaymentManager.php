@@ -94,6 +94,12 @@ class PaymentManager
 
             $this->em->persist($cf);
 
+            if(array_sum(array_map(function(ContractFan $contractFan) {
+                    return $contractFan->getRefunded() ? 0 : 1;
+                }, $cf->getCart()->getContracts()->toArray())) == 0) {
+                $cf->getPayment()->setRefunded(true);
+            }
+
             $this->notifyUserRefundedContractFan($cf);
         }
     }

@@ -456,12 +456,18 @@ class PublicController extends Controller
                 $em->remove($other_potential_cart);
             }
         }
-        $rewardSpendingService->setBaseAmount($cart->getFirst());
+
+        foreach($cart->getContracts() as $cf) {
+            $rewardSpendingService->setBaseAmount($cf);
+        }
 
         if($user != null) {
             ##reward consume
-            $cart->getFirst()->setUserRewards(new arrayCollection($rewardSpendingService->getApplicableReward($cart->getFirst())));
-            $rewardSpendingService->applyReward($cart->getFirst());
+
+            foreach($cart->getContracts() as $cf) {
+                $cf->setUserRewards(new arrayCollection($rewardSpendingService->getApplicableReward($cf)));
+                $rewardSpendingService->applyReward($cf);
+            }
 
             $cart->setUser($user);
             $em->persist($cart);
@@ -532,7 +538,6 @@ class PublicController extends Controller
         return $this->render('@App/User/pay_cart.html.twig', array(
             'cart' => $cart,
             'error_conditions' => false,
-            'contract_fan' => $cart->getFirst(),
             'form' => $form_view,
         ));
     }

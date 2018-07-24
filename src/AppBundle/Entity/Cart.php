@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Cart
 {
+    const ORDERS_DIRECTORY = 'pdf/orders/festivals/';
+
     public function __toString()
     {
         $str = 'Panier ';
@@ -37,16 +39,12 @@ class Cart
         $this->date_creation = new \Datetime();
     }
 
-    /** @return ContractFan */
-    public function getFirst() {
-        return $this->contracts->first();
+    public function isRefunded() {
+        return $this->payment->getRefunded();
     }
 
-    // For single-contract cart
     public function getState() {
-        $contractFan = $this->contracts->first();
-
-        if($contractFan->getRefunded()) {
+        if($this->payment->getRefunded()) {
             return 'Remboursé';
         }
 
@@ -55,7 +53,26 @@ class Cart
         }
     }
 
-    // TODO don't forget that counterparts have a maximum amount ; set to 10000 in DB
+    public function getFirst() {
+        return $this->contracts->first();
+    }
+
+    public function generateBarCode()
+    {
+        if (empty($this->barcode_text))
+            $this->barcode_text = 'um-c' . $this->id . uniqid();
+    }
+
+    public function getOrderFileName()
+    {
+        return $this->getBarcodeText() . '.pdf';
+    }
+
+    public function getPdfPath()
+    {
+        return self::ORDERS_DIRECTORY . $this->getOrderFileName();
+    }
+
     public function isProblematic() {
         return false;
         foreach($this->contracts as $contract) {
@@ -130,6 +147,11 @@ class Cart
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="cart")
      */
     private $payment;
+
+    /**
+     * @ORM\Column(name="barcode_text", type="string", length=255, nullable=true)
+     */
+    private $barcode_text;
 
     /**
      * Get id
@@ -270,5 +292,53 @@ class Cart
     public function getDateCreation()
     {
         return $this->date_creation;
+    }
+
+    /**
+     * Set payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     *
+     * @return Cart
+     */
+    public function setPayment(\AppBundle\Entity\Payment $payment = null)
+    {
+        $this->payment = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Get payment
+     *
+     * @return \AppBundle\Entity\Payment
+     */
+    public function getPayment()
+    {
+        return $this->payment;
+    }
+
+    /**
+     * Set barcodeText
+     *
+     * @param string $barcodeText
+     *
+     * @return ContractFan
+     */
+    public function setBarcodeText($barcodeText)
+    {
+        $this->barcode_text = $barcodeText;
+
+        return $this;
+    }
+
+    /**
+     * Get barcodeText
+     *
+     * @return string
+     */
+    public function getBarcodeText()
+    {
+        return $this->barcode_text;
     }
 }

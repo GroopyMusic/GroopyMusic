@@ -429,27 +429,25 @@ class UserController extends Controller
      */
     public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em)
     {
-
-        $contract = $cart->getFirst();
-        if ($contract->isRefunded() || $contract->getUser() != $user) {
+        if ($cart->isRefunded() || $cart->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
 
-        if (empty($contract->getBarcodeText())) {
-            $contract->generateBarCode();
+        if (empty($cart->getBarcodeText())) {
+            $cart->generateBarCode();
         }
 
         $finder = new Finder();
-        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
-        $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::ORDERS_DIRECTORY);
+        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $cart->getPdfPath();
+        $finder->files()->name($cart->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $cart::ORDERS_DIRECTORY);
 
         if (count($finder) == 0) {
-            $writer->writeOrder($contract);
-            $em->persist($contract);
+            $writer->writeOrder($cart);
+            $em->persist($cart);
             $em->flush();
             $finder = new Finder();
-            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
-            $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::ORDERS_DIRECTORY);
+            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $cart->getPdfPath();
+            $finder->files()->name($cart->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $cart::ORDERS_DIRECTORY);
         }
 
         foreach ($finder as $file) {

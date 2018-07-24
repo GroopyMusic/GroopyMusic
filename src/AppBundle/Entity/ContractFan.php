@@ -641,4 +641,38 @@ class ContractFan
     {
         return $this->ticket_rewards;
     }
+
+    /**
+     * Add askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     *
+     * @return ContractFan
+     */
+    public function addAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund[] = $askingRefund;
+
+        return $this;
+    }
+
+    /**
+     * Remove askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     */
+    public function removeAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund->removeElement($askingRefund);
+    }
+
+    /**
+     * Get askingRefund
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAskingRefund()
+    {
+        return $this->asking_refund;
+    }
 }

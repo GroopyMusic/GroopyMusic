@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
@@ -54,9 +55,14 @@ class PDFWriter
         $html2pdf->output($path, $dest);
     }
 
-    public function writeOrder(ContractFan $cf) {
-        $cf->generateBarCode();
-        $this->write(self::ORDER_TEMPLATE, $cf->getPdfPath(), ['cf' => $cf, 'user_rewards' => $cf->getUserRewards()]);
+    public function writeOrder(Cart $cart) {
+        foreach($cart->getContracts() as $cf) {
+            $cf->generateBarCode();
+        }
+        $cart->generateBarCode();
+        $pdfpath = $cart->getPdfPath();
+
+        $this->write(self::ORDER_TEMPLATE, $pdfpath, ['cart' => $cart]);//, 'user_rewards' => $cart->getUserRewards()]);
     }
 
     public function writeTickets($path, $tickets, $agenda = []) {

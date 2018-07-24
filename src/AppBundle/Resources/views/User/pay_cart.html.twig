@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% set contract_fan = cart.first %}
+
 {% macro recap_zone_sales(purchase, contract) %}
 
     <div class="content-box-content-zone">
