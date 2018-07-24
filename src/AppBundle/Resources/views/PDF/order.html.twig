@@ -1,6 +1,6 @@
 {% extends '@App/PDF/layout.html.twig' %}
 
-{% block content %}
+{% block page %}
 
     {% for cf in cart.contracts %}
         <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
@@ -39,7 +39,7 @@
                     <li>{{ 'order_pdf.labels.nb_tickets_promo'|trans|raw }} : {{ freeTickets }}</li>
                 {% endif %}
                 {% set hasReduction = false %}
-                {% if user_rewards is not empty %}
+                {% if user_rewards is defined and user_rewards is not empty %}
                     <li>
                         <div>{{ 'order_pdf.labels.rewards'|trans|raw }} :</div>
                         {% for user_reward in user_rewards %}
@@ -94,7 +94,7 @@
                     <th>{{ 'order_pdf.details.labels.quantity'|trans|raw }}</th>
                     <th>{{ 'order_pdf.details.labels.unit_price'|trans|raw }}</th>
                     <th>{{ 'order_pdf.details.labels.total_price'|trans|raw }}</th>
-                    {% if user_rewards is not empty and hasReduction == true %}
+                    {% if user_rewards is defined and user_rewards is not empty and hasReduction == true %}
                         <th>{{ 'order_pdf.details.labels.reduction'|trans|raw }}</th>
                         <th>{{ 'order_pdf.details.labels.total_reduction_price'|trans|raw }}</th>
                     {% endif %}
@@ -113,7 +113,7 @@
                         <td>
                             {{ purchase.amount }} €
                         </td>
-                        {% if user_rewards is not empty and hasReduction == true %}
+                        {% if user_rewards is defined and user_rewards is not empty and hasReduction == true %}
                             <td> - {{ purchase.amount - purchase.getReducedAmount }} €</td>
                             <td>{{ purchase.getReducedAmount }} €</td>
                         {% endif %}
@@ -157,6 +157,6 @@
 {% endblock %}
 
 {% block footer_content %}
-    <p>{{ 'order_pdf.footer.tracking'|trans({'%date%': cf.date|date('d/m/Y'), '%id%': cart.barcodeText})|raw }}</p>
+    <p>{{ 'order_pdf.footer.tracking'|trans({'%date%': cart.first.date|date('d/m/Y'), '%id%': cart.barcodeText})|raw }}</p>
     {{ parent() }}
 {% endblock %}

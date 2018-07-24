@@ -136,22 +136,6 @@ class BaseContractArtist implements TranslatableInterface
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
-    // Facilitates admin list export
-    public function getPaymentsExport() {
-        $exportList = array();
-        $i = 1;
-        foreach ($this->payments as $key => $val) {
-            /** @var Payment $val */
-            if(!$val->getRefunded()) {
-                $exportList[] = $i .
-                    ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
-                $i++;
-            }
-        }
-        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
-    }
-
-
     public function isRefundReady() {
         return count($this->asking_refund) >= self::VOTES_TO_REFUND;
     }
@@ -263,13 +247,6 @@ class BaseContractArtist implements TranslatableInterface
     }
 
 
-    /**
-     * @return array
-     */
-    public function getPaymentsArray() {
-        return $this->getPayments()->toArray();
-    }
-
     public function getCounterParts() {
         if($this->counterParts->count() == 0) {
             return $this->step->getCounterParts();
@@ -331,11 +308,6 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\Column(name="motivations", type="text", nullable=true)
      */
     protected $motivations;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Payment", mappedBy="contractArtist")
-     */
-    protected $payments;
 
     /**
      * @ORM\Column(name="reminders_artist", type="smallint")
@@ -563,40 +535,6 @@ class BaseContractArtist implements TranslatableInterface
     public function getMotivations()
     {
         return $this->motivations;
-    }
-
-    /**
-     * Add payment
-     *
-     * @param \AppBundle\Entity\Payment $payment
-     *
-     * @return BaseContractArtist
-     */
-    public function addPayment(\AppBundle\Entity\Payment $payment)
-    {
-        $this->payments[] = $payment;
-
-        return $this;
-    }
-
-    /**
-     * Remove payment
-     *
-     * @param \AppBundle\Entity\Payment $payment
-     */
-    public function removePayment(\AppBundle\Entity\Payment $payment)
-    {
-        $this->payments->removeElement($payment);
-    }
-
-    /**
-     * Get payments
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPayments()
-    {
-        return $this->payments;
     }
 
     /**

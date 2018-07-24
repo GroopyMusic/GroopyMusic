@@ -188,9 +188,8 @@ class PaymentController extends Controller
      */
     public function sendOrderRecap(Request $request, Cart $cart, MailDispatcher $dispatcher, TicketingManager $ticketingManager)
     {
+        $dispatcher->sendOrderRecap($cart);
         foreach($cart->getContracts() as $cf) {
-            $dispatcher->sendOrderRecap($cf);
-
             if ($cf->getContractArtist() instanceof ContractArtist && $cf->getContractArtist()->getCounterPartsSent()) {
                 $ticketingManager->sendUnSentTicketsForContractFan($cf);
             }

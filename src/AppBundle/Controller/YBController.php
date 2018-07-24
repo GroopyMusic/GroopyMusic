@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\YB\YBContact;
+use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Form\YB\YBContactType;
 use AppBundle\Services\MailDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,6 +45,37 @@ class YBController extends Controller
 
         return $this->render('@App/YB/home.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}", name="yb_campaign")
+     */
+    public function campaignAction(YBContractArtist $c) {
+
+
+        return $this->render('@App/YB/campaign.html.twig', [
+            'campaign' => $c,
+        ]);
+    }
+
+    /**
+     * @Route("/terms", name="yb_terms")
+     */
+    public function termsAction() {
+
+        return $this->render('@App/YB/terms.html.twig', [
+
+        ]);
+    }
+
+    /**
+     * @Route("/checkout", name="yb_checkout")
+     */
+    public function checkoutAction() {
+
+        return $this->render('@App/YB/checkout.html.twig', [
+
         ]);
     }
 }

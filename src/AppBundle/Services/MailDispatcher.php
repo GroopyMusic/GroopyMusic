@@ -281,15 +281,15 @@ class MailDispatcher
         $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days, $places);
     }
 
-    public function sendOrderRecap(ContractFan $contractFan)
+    public function sendOrderRecap(Cart $cart)
     {
         // TODO should be another way of getting pdf path
-        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '/../web/' . $contractFan->getPdfPath()];
+        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '/../web/' . $cart->getPdfPath()];
 
-        $to = [$contractFan->getFan()->getEmail() => $contractFan->getFan()->getPreferredLocale()];
-        $toName = [$contractFan->getFan()->getDisplayName()];
+        $to = [$cart->getUser()->getEmail() => $cart->getUser()->getPreferredLocale()];
+        $toName = [$cart->getUser()->getDisplayName()];
         $subject = 'subjects.order_recap';
-        $params = ['motivations' => $contractFan->getContractArtist()->getMotivations()];
+        $params = [];
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::ORDER_RECAP_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);

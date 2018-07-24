@@ -40,11 +40,11 @@ class Cart
     }
 
     public function isRefunded() {
-        return $this->payment->getRefunded();
+        return $this->getPayment()->getRefunded();
     }
 
     public function getState() {
-        if($this->payment->getRefunded()) {
+        if($this->getPayment()->getRefunded()) {
             return 'Remboursé';
         }
 
@@ -315,7 +315,7 @@ class Cart
      */
     public function getPayment()
     {
-        return $this->payment;
+        return $this->payment != null ? $this->payment : $this->getFirst()->getPayment();
     }
 
     /**
