@@ -187,9 +187,12 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getMaxTickets() {
-        return array_sum(array_map(function(CounterPart $counterPart) {
+        $normal_soldout = array_sum(array_map(function(CounterPart $counterPart) {
             return $counterPart->getMaximumAmount();
         }, $this->getCounterParts()->toArray()));
+
+        $global_soldout = $this->global_soldout == null ? $normal_soldout : $this->global_soldout;
+        return min($global_soldout, $normal_soldout);
     }
 
     public function getTotalNbAvailable() {
@@ -749,5 +752,29 @@ class ContractArtist extends BaseContractArtist
         $this->counterParts[] = $counterPart;
 
         return $this;
+    }
+
+    /**
+     * Set globalSoldout
+     *
+     * @param integer $globalSoldout
+     *
+     * @return ContractArtist
+     */
+    public function setGlobalSoldout($globalSoldout)
+    {
+        $this->global_soldout = $globalSoldout;
+
+        return $this;
+    }
+
+    /**
+     * Get globalSoldout
+     *
+     * @return integer
+     */
+    public function getGlobalSoldout()
+    {
+        return $this->global_soldout;
     }
 }

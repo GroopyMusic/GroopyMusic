@@ -67,6 +67,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->promotions = new ArrayCollection();
         $this->no_threshold = false;
         $this->counterParts = new ArrayCollection();
+        $this->global_soldout = null;
     }
 
     public function isInTestPeriod() {
@@ -177,7 +178,6 @@ class BaseContractArtist implements TranslatableInterface
         }
         return null;
     }
-
 
     public function getNbAvailable(CounterPart $cp) {
         $nb = $cp->getMaximumAmount();
@@ -421,6 +421,11 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="contractArtist")
      */
     protected $counterParts;
+
+    /**
+     * @ORM\Column(name="global_soldout", type="integer", nullable=true)
+     */
+    protected $global_soldout;
 
     /**
      * Get id
@@ -1001,5 +1006,29 @@ class BaseContractArtist implements TranslatableInterface
         $this->counterParts[] = $counterPart;
 
         return $this;
+    }
+
+    /**
+     * Set globalSoldout
+     *
+     * @param integer $globalSoldout
+     *
+     * @return BaseContractArtist
+     */
+    public function setGlobalSoldout($globalSoldout)
+    {
+        $this->global_soldout = $globalSoldout;
+
+        return $this;
+    }
+
+    /**
+     * Get globalSoldout
+     *
+     * @return integer
+     */
+    public function getGlobalSoldout()
+    {
+        return $this->global_soldout;
     }
 }

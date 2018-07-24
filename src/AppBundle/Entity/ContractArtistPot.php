@@ -125,4 +125,28 @@ class ContractArtistPot extends BaseContractArtist
 
         return $this;
     }
+
+    /**
+     * Set globalSoldout
+     *
+     * @param integer $globalSoldout
+     *
+     * @return ContractArtistPot
+     */
+    public function setGlobalSoldout($globalSoldout)
+    {
+        $this->global_soldout = $globalSoldout;
+
+        return $this;
+    }
+
+    /**
+     * Get globalSoldout
+     *
+     * @return integer
+     */
+    public function getGlobalSoldout()
+    {
+        return $this->global_soldout;
+    }
 }

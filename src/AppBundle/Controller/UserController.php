@@ -467,10 +467,8 @@ class UserController extends Controller
     /**
      * @Route("/user/tickets/{id}", name="user_get_tickets")
      */
-    public function getTicketsAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em)
+    public function getTicketsAction(Request $request, UserInterface $user, ContractFan $contract, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em)
     {
-
-        $contract = $cart->getFirst();
         if ($contract->isRefunded() || $contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
             throw $this->createAccessDeniedException();
         }
@@ -480,10 +478,6 @@ class UserController extends Controller
         $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
 
         if (count($finder) == 0) {
-
-            // TODO is this line necessary ?
-            $writer->writeOrder($contract);
-
             $ticketingManager->generateTicketsForContractFan($contract);
             $writer->writeTickets($contract->getTicketsPath(), $contract->getTickets());
             $contract->setcounterpartsSent(true);
