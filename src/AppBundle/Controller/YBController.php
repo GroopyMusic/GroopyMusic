@@ -49,10 +49,13 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("/campaign/{id}", name="yb_campaign")
+     * @Route("/campaign/{id}/{slug}", name="yb_campaign")
      */
-    public function campaignAction(YBContractArtist $c) {
+    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, $slug = null) {
 
+        if($slug != null && $c->getSlug() != $slug) {
+            return $this->redirectToRoute('yb_campaign', ['id' => $c->getId(), 'slug' => $c->getSlug()]);
+        }
 
         return $this->render('@App/YB/campaign.html.twig', [
             'campaign' => $c,

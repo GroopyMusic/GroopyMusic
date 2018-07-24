@@ -51,6 +51,20 @@ class ContractFan
         $this->ticket_rewards = new ArrayCollection();
     }
 
+    public function getState() {
+        if($this->refunded) {
+            return 'Remboursé';
+        }
+
+        elseif($this->isPaid()) {
+            return 'Payé';
+        }
+
+        else {
+            return '';
+        }
+    }
+
     public function isPaid()
     {
         return $this->getPaid();

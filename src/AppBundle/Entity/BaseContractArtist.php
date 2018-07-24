@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "sales" = "ContractArtistSales", "pot" = "ContractArtistPot", "default" = "BaseContractArtist"})
+ * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "sales" = "ContractArtistSales", "pot" = "ContractArtistPot", "yb" = "AppBundle\Entity\YB\YBContractArtist", "default" = "BaseContractArtist"})
  */
 class BaseContractArtist implements TranslatableInterface
 {
@@ -398,6 +398,12 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\Column(name="global_soldout", type="integer", nullable=true)
      */
     protected $global_soldout;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Photo")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    protected $photo;
 
     /**
      * Get id
@@ -968,5 +974,29 @@ class BaseContractArtist implements TranslatableInterface
     public function getGlobalSoldout()
     {
         return $this->global_soldout;
+    }
+
+    /**
+     * Set photo
+     *
+     * @param \AppBundle\Entity\Photo $photo
+     *
+     * @return BaseContractArtist
+     */
+    public function setPhoto(\AppBundle\Entity\Photo $photo = null)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Get photo
+     *
+     * @return \AppBundle\Entity\Photo
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
     }
 }
