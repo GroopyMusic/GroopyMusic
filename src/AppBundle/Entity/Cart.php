@@ -154,6 +154,11 @@ class Cart
     private $barcode_text;
 
     /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\YBOrder", mappedBy="cart")
+     */
+    private $yb_order;
+
+    /**
      * Get id
      *
      * @return int

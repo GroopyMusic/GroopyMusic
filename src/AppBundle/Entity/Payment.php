@@ -99,6 +99,7 @@ class Payment
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="payments")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -114,6 +115,25 @@ class ContractFan
                     $this->addTicket(new Ticket($this, $counterPart, $j));
                 }
             }
+        }
+    }
+
+    public function getEmail() {
+        if($this->getContractArtist() instanceof YBContractArtist) {
+            return $this->getCart()->getYbOrder()->getEmail();
+        }
+        else {
+            return $this->getUser()->getEmail();
+        }
+    }
+
+    /** @return PhysicalPersonInterface */
+    public function getPhysicalPerson() {
+        if($this->getContractArtist() instanceof YBContractArtist) {
+            return $this->getCart()->getYbOrder();
+        }
+        else {
+            return $this->getUser();
         }
     }
 

@@ -82,6 +82,8 @@ class PaymentController extends Controller
                 }
             }
 
+
+            $em->flush();
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
             \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
@@ -120,17 +122,15 @@ class PaymentController extends Controller
 
                 $cart->setConfirmed(true)->setPaid(true);
 
-               /* foreach($cart->getContracts() as $contract) {
-                    $contract_artist = $contract->getContractArtist();
-                    //reward
-                    $rewardSpendingService->consumeReward($contract);
-                    //sponsorship
-                    $sponsorship = $sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($user, $contract_artist);
-                }*/
+                /* foreach($cart->getContracts() as $contract) {
+                     $contract_artist = $contract->getContractArtist();
+                     //reward
+                     $rewardSpendingService->consumeReward($contract);
+                     //sponsorship
+                     $sponsorship = $sponsorshipService->giveSponsorshipRewardOnPurchaseIfPossible($user, $contract_artist);
+                 }*/
 
                 $em->persist($cart);
-
-                $em->flush();
 
                 return $this->redirectToRoute('user_cart_payment_stripe_success', array('id' => $cart->getId())); //, 'sponsorship' => $sponsorship));
 

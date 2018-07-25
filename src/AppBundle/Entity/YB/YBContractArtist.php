@@ -37,6 +37,20 @@ class YBContractArtist extends BaseContractArtist
         $this->threshold = 0;
     }
 
+    public function addSoldCounterParts($nb) {
+        $this->sold_counterparts += $nb;
+        return $this;
+    }
+
+    public function removeSoldCounterParts($nb) {
+        $this->sold_counterparts -= $nb;
+        return $this;
+    }
+
+    public function isEvent() {
+        return $this->getDateEvent() != null;
+    }
+
     public function isUncrowdable() {
         return in_array($this->getState(), self::UNCROWDABLE_STATES);
     }
