@@ -310,4 +310,45 @@ class TicketingManager
             return $agenda;
         }
     }
+
+    // YB
+    public function generateAndSendYBTickets(ContractFan $cf) {
+
+        if (!$cf->getcounterpartsSent()) {
+            $cf->generateBarCode();
+
+            // TODO enhance this process, tickets shouldn't be removed & re-built (or should they ?)
+            foreach ($cf->getTickets() as $ticket) {
+                $cf->removeTicket($ticket);
+            }
+
+            //if(!empty($contractFan->getTickets())) {
+            foreach ($cf->getPurchases() as $purchase) {
+                /** @var Purchase $purchase */
+                $counterPart = $purchase->getCounterpart();
+
+                $j = 1;
+                while ($j <= $purchase->getQuantityOrganic()) {
+                    $cf->addTicket(new Ticket($cf, $counterPart, $j, $counterPart->getPrice()));
+                    $j++;
+                }
+                for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
+                    $cf->addTicket(new Ticket($cf, $counterPart, $j + $i, 0));
+                }
+            }
+
+            try {
+                $this->writer->writeTickets($cf->getTicketsPath(), $cf->getTickets(), []);
+                $this->mailDispatcher->sendYBTickets($cf);
+                $this->em->persist($cf);
+                $cf->setcounterpartsSent(true);
+            } catch (\Exception $e) {
+                $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
+                return $e;
+            }
+        }
+
+        $this->em->flush();
+        return null;
+    }
 }

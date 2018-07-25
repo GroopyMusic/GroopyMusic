@@ -62,6 +62,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     // YB
     const YB_ADMIN_CONTACT = 'AppBundle:Mail/YB/Contact:admin.txt.twig';
     const YB_CONTACT_COPY = 'AppBundle:Mail/YB/Contact:copy.txt.twig';
+    const YB_ORDER_RECAP = 'AppBundle:Mail/YB/Order:recap.txt.twig';
+    const YB_TICKETS = 'AppBundle:Mail/YB/Order:tickets.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()

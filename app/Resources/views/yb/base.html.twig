@@ -58,15 +58,8 @@
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#services"}}">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#pricing"}}">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#contact"}}">Contact</a>
-                    </li>
+                    {% block nav_details_links %}
+                    {% endblock %}
                 </ul>
             </div>
         </div>
@@ -164,7 +157,6 @@
                             <li class="list-inline-item">
                                 <a href="{{ path('yb_terms') }}">Terms of Use</a>
                             </li>
-                            <li class="list-inline-item">&sdot;</li>
                         </ul>
                         <p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2018. All Rights Reserved.</p>
                     </div>
@@ -181,6 +173,9 @@
     {# popper.js needed to use bootstrap modals #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://js.stripe.com/v2/"></script>
 
     <script
             src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"

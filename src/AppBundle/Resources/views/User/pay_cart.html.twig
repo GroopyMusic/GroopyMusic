@@ -502,7 +502,7 @@
                             email: '{{ app.user.email }}'
                         },
                         redirect: {
-                            return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
+                            return_url: '{{ absolute_url(path('user_cart_payment_pending')) }}'
                         },
                         statement_descriptor: 'Un-Mute - purchase {{ contract_fan.id }}'
                     }).then(function (result) {

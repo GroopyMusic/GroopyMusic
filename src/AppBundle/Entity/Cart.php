@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\YBOrder;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -104,6 +106,24 @@ class Cart
         return $this->contracts->contains($cf);
     }
 
+    /** @return PhysicalPersonInterface */
+    public function getPhysicalPerson() {
+        if($this->yb_order != null) {
+            return $this->yb_order;
+        }
+        else {
+            return $this->user;
+        }
+    }
+
+    public function getEmail() {
+        return $this->getPhysicalPerson()->getEmail();
+    }
+
+    public function getDate() {
+        return $this->yb_order != null ? $this->yb_order->getDate() : $this->date_creation;
+    }
+
     /**
      * @var int
      *
@@ -128,32 +148,38 @@ class Cart
     private $paid;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart", cascade={"all"})
      */
     private $contracts;
 
     /**
+     * @var null|User
      * @ORM\ManyToOne(targetEntity="User", inversedBy="carts")
      * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 
     /**
+     * @var \DateTime
      * @ORM\Column(name="date_creation", type="datetime")
      */
     private $date_creation;
 
     /**
+     * @var Payment
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="cart")
      */
     private $payment;
 
     /**
+     * @var string
      * @ORM\Column(name="barcode_text", type="string", length=255, nullable=true)
      */
     private $barcode_text;
 
     /**
+     * @var YBOrder
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\YBOrder", mappedBy="cart")
      */
     private $yb_order;
@@ -345,5 +371,29 @@ class Cart
     public function getBarcodeText()
     {
         return $this->barcode_text;
+    }
+
+    /**
+     * Set ybOrder
+     *
+     * @param \AppBundle\Entity\YB\YBOrder $ybOrder
+     *
+     * @return Cart
+     */
+    public function setYbOrder(\AppBundle\Entity\YB\YBOrder $ybOrder = null)
+    {
+        $this->yb_order = $ybOrder;
+
+        return $this;
+    }
+
+    /**
+     * Get ybOrder
+     *
+     * @return \AppBundle\Entity\YB\YBOrder
+     */
+    public function getYbOrder()
+    {
+        return $this->yb_order;
     }
 }

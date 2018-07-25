@@ -11,10 +11,15 @@ header.masthead {
   padding-top: 8rem;
   padding-bottom: 8rem;
 
-  &.campaign-masthead {
+  &.campaign-masthead, &.checkout-masthead {
     background-image: none;
     height: auto;
     max-height: 100vh;
+  }
+
+  &.checkout-masthead {
+    padding-top: 8rem;
+    padding-bottom: 4rem;
   }
 
   .overlay {

@@ -66,6 +66,12 @@ class ContractFan
         }
     }
 
+    public function initAmount() {
+        $this->amount = array_sum(array_map(function(Purchase $purchase) {
+            return $purchase->getAmount();
+        }, $this->purchases->toArray()));
+    }
+
     public function isPaid()
     {
         return $this->getPaid();
@@ -119,12 +125,7 @@ class ContractFan
     }
 
     public function getEmail() {
-        if($this->getContractArtist() instanceof YBContractArtist) {
-            return $this->getCart()->getYbOrder()->getEmail();
-        }
-        else {
-            return $this->getUser()->getEmail();
-        }
+        return $this->getPhysicalPerson()->getEmail();
     }
 
     /** @return PhysicalPersonInterface */

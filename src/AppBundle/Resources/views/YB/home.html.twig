@@ -1,5 +1,17 @@
 {% extends "yb/base.html.twig" %}
 
+{% block nav_details_links %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#services"}}">Services</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#pricing"}}">Pricing</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#contact"}}">Contact</a>
+    </li>
+{% endblock %}
+
 {% block header %}
     <div class="overlay"></div>
     <div class="container">

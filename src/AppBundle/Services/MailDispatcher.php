@@ -548,11 +548,36 @@ class MailDispatcher
         $subject = 'Contact form';
         $params = ['contact' => $contact];
         $subject_params = [];
-        $recipient = [$contact->getEmail()];
+        $recipient = [$contact->getEmail() => $this->translator->getLocale()];
         $recipientName = $contact->getName();
         $reply_to = self::YB_REPLY_TO;
         $reply_to_name = self::YB_REPLY_TO_NAME;
 
         $this->sendEmail(MailTemplateProvider::YB_CONTACT_COPY, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+    public function sendYBOrderRecap(Cart $cart) {
+        $subject = 'Your order on ticked-it.be';
+        $params = ['cart' => $cart];
+        $subject_params = [];
+        $recipient = [$cart->getEmail() => $this->translator->getLocale()];
+        $recipientName = '';
+        $reply_to = self::YB_REPLY_TO;
+        $reply_to_name = self::YB_REPLY_TO_NAME;
+
+        $this->sendEmail(MailTemplateProvider::YB_ORDER_RECAP, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+    public function sendYBTickets(ContractFan $cf) {
+        $subject = 'Your tickets are right here!';
+        $params = ['cf' => $cf];
+        $subject_params = [];
+        $recipient = [$cf->getEmail() => $this->translator->getLocale()];
+        $recipientName = '';
+        $reply_to = self::YB_REPLY_TO;
+        $reply_to_name = self::YB_REPLY_TO_NAME;
+        $attachments = ['ticked-it-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
+
+        $this->sendEmail(MailTemplateProvider::YB_TICKETS, $subject, $params, $subject_params, [], $attachments, $recipient, $recipientName, $reply_to, $reply_to_name);
     }
 }

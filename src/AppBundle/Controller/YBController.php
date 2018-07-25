@@ -7,8 +7,10 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBOrder;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\YB\YBContactType;
+use AppBundle\Form\YBOrderType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\TicketingManager;
@@ -17,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class YBController extends Controller
 {
@@ -70,6 +73,15 @@ class YBController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
 
             $cart = new Cart();
+
+            foreach($cf->getPurchases() as $purchase) {
+                if($purchase->getQuantity() == 0) {
+                    $cf->removePurchase($purchase);
+                }
+            }
+
+            $cf->initAmount();
+
             $cart->addContract($cf);
             $cart->setConfirmed(true);
 
@@ -100,7 +112,7 @@ class YBController extends Controller
     /**
      * @Route("/checkout", name="yb_checkout")
      */
-    public function checkoutAction(EntityManagerInterface $em) {
+    public function checkoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator) {
 
         /** @var Cart $cart */
         $cart = $em->getRepository('AppBundle:Cart')->find(intval($request->getSession()->get('yb_cart_id')));
@@ -114,7 +126,23 @@ class YBController extends Controller
             // We set an explicit test for amount changes as it has legal impacts
             if (floatval($amount) !=  floatval($cart->getAmount() * 100)) {
                 $this->addFlash('error', 'errors.order_changed');
-                return $this->render('@App/User/pay_cart.html.twig', array(
+                return $this->render('@App/YB/checkout.html.twig', array(
+                    'cart' => $cart,
+                    'error_conditions' => false,
+                ));
+            }
+
+            $first_name = $_POST['first_name'];
+            $last_name = $_POST['last_name'];
+            $email = $_POST['email'];
+
+            $order = new YBOrder();
+            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
+
+            $errors = $validator->validate($order);
+            if(count($errors) > 0) {
+                $this->addFlash('error', 'errors.order_coords');
+                return $this->render('@App/YB/checkout.html.twig', array(
                     'cart' => $cart,
                     'error_conditions' => false,
                 ));
@@ -137,6 +165,7 @@ class YBController extends Controller
                 }
             }
 
+            $em->persist($order);
             $em->flush();
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
@@ -208,12 +237,12 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("/payment-success/{id}", name="yb_payment_success")
+     * @Route("/payment/success/{id}", name="yb_payment_success")
      */
     public function paymentSuccessAction(Cart $cart, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager) {
 
         // Send order recap
-        $mailDispatcher->sendYBOrderRecap();
+        $mailDispatcher->sendYBOrderRecap($cart);
 
         $i = 0;
         $only_c = null;
@@ -238,5 +267,25 @@ class YBController extends Controller
         else {
             return $this->redirectToRoute('yb_index');
         }
+    }
+
+    /**
+     * @Route("payment/pending/{id}", name="yb_cart_payment_pending")
+     */
+    public function cartPendingAction(Request $request, Cart $cart)
+    {
+        /** @var Cart $cart */
+        if ($cart == null || count($cart->getContracts()) == 0) {
+            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+        }
+
+        $source = $request->get('source');
+        $client_secret = $request->get('client_secret');
+
+        return $this->render('@App/YB/payment_pending.html.twig', array(
+            'cart' => $cart,
+            'source' => $source,
+            'client_secret' => $client_secret,
+        ));
     }
 }
