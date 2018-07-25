@@ -4,6 +4,7 @@ namespace AppBundle\Entity\YB;
 
 use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\Photo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,6 +21,14 @@ class YBContractArtist extends BaseContractArtist
     const STATE_ONGOING = 'state.ongoing';
     const STATE_PASSED = 'state.passed';
 
+    const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT];
+
+    const PHOTOS_DIR = 'yb/images/campaigns/';
+
+    public static function getWebPath(Photo $photo) {
+        return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
     public function __construct()
     {
         parent::_construct();
@@ -28,7 +37,14 @@ class YBContractArtist extends BaseContractArtist
         $this->threshold = 0;
     }
 
-    // Unmapped
+    public function isUncrowdable() {
+        return in_array($this->getState(), self::UNCROWDABLE_STATES);
+    }
+
+    public function isCrowdable() {
+        return !$this->isUncrowdable();
+    }
+
     public function getState() {
         if(isset($this->state)) {
             return $this->state;

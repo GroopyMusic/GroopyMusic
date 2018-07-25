@@ -42,4 +42,21 @@ $('document').ready(function() {
 
     $('.modal-notice').modal('show');
 
+    $('.quantity-right-plus').click(function(e){
+        e.preventDefault();
+
+        var $q = $(this).closest('.input-group').find('input.quantity');
+        var quantity = parseInt($q.val());
+        $q.val(quantity + 1);
+    });
+
+    $('.quantity-left-minus').click(function(e){
+        e.preventDefault();
+
+        var $q = $(this).closest('.input-group').find('input.quantity');
+        var quantity = parseInt($q.val());
+        if(quantity>0){
+            $q.val(quantity - 1);
+        }
+    });
 });

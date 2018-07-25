@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Form\ContractFanType;
 use AppBundle\Form\YB\YBContactType;
 use AppBundle\Services\MailDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,14 +53,26 @@ class YBController extends Controller
     /**
      * @Route("/campaign/{id}/{slug}", name="yb_campaign")
      */
-    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, $slug = null) {
+    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, Request $request, $slug = null) {
 
         if($slug != null && $c->getSlug() != $slug) {
             return $this->redirectToRoute('yb_campaign', ['id' => $c->getId(), 'slug' => $c->getSlug()]);
         }
 
+        $cf = new ContractFan($c);
+        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => null]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // TODO Handle checkout
+
+            return $this->redirectToRoute('yb_checkout');
+        }
+
         return $this->render('@App/YB/campaign.html.twig', [
             'campaign' => $c,
+            'form' => $form->createView(),
         ]);
     }
 
