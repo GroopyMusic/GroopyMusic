@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -116,7 +117,7 @@ class YBController extends Controller
 
         /** @var Cart $cart */
         $cart = $em->getRepository('AppBundle:Cart')->find(intval($request->getSession()->get('yb_cart_id')));
-        if ($cart == null || count($cart->getContracts()) == 0) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
             throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
         }
 
@@ -132,20 +133,26 @@ class YBController extends Controller
                 ));
             }
 
-            $first_name = $_POST['first_name'];
-            $last_name = $_POST['last_name'];
-            $email = $_POST['email'];
+            if($cart->getYbOrder() == null) {
+                $first_name = $_POST['first_name'];
+                $last_name = $_POST['last_name'];
+                $email = $_POST['email'];
 
-            $order = new YBOrder();
-            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
+                $order = new YBOrder();
+                $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
 
-            $errors = $validator->validate($order);
-            if(count($errors) > 0) {
-                $this->addFlash('error', 'errors.order_coords');
-                return $this->render('@App/YB/checkout.html.twig', array(
-                    'cart' => $cart,
-                    'error_conditions' => false,
-                ));
+                $errors = $validator->validate($order);
+                if(count($errors) > 0) {
+                    $this->addFlash('error', 'errors.order_coords');
+                    return $this->render('@App/YB/checkout.html.twig', array(
+                        'cart' => $cart,
+                        'error_conditions' => false,
+                    ));
+                }
+            }
+
+            else {
+                $order = $cart->getYbOrder();
             }
 
             foreach($cart->getContracts() as $cf) {
@@ -237,45 +244,12 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("/payment/success/{id}", name="yb_payment_success")
-     */
-    public function paymentSuccessAction(Cart $cart, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager) {
-
-        // Send order recap
-        $mailDispatcher->sendYBOrderRecap($cart);
-
-        $i = 0;
-        $only_c = null;
-        foreach($cart->getContracts() as $contract) {
-            /** @var YBContractArtist $campaign */
-            $campaign = $contract->getContractArtist();
-
-            // Need to also send tickets
-            if($campaign->isEvent() && ($campaign->getSuccessful() || $campaign->getTicketsSent() || $campaign->hasNoThreshold())) {
-                $ticketingManager->generateAndSendYBTickets($contract);
-            }
-
-            $i++;
-            $only_c = $campaign;
-        }
-
-        $this->addFlash('yb_notice', 'Paiement bien reçu ! Checkez vos mails.');
-
-        if($i == 1) {
-            return $this->redirectToRoute('yb_campaign', ['id' => $only_c->getId()]);
-        }
-        else {
-            return $this->redirectToRoute('yb_index');
-        }
-    }
-
-    /**
      * @Route("payment/pending/{id}", name="yb_cart_payment_pending")
      */
-    public function cartPendingAction(Request $request, Cart $cart)
+    public function paymentPendingAction(Request $request, Cart $cart)
     {
         /** @var Cart $cart */
-        if ($cart == null || count($cart->getContracts()) == 0) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
             throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
         }
 
@@ -287,5 +261,85 @@ class YBController extends Controller
             'source' => $source,
             'client_secret' => $client_secret,
         ));
+    }
+
+    /**
+     * @Route("/payment/success", name="yb_payment_success")
+     */
+    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request) {
+
+        /** @var Cart $cart */
+        $cart = $em->getRepository('AppBundle:Cart')->find(intval($request->getSession()->get('yb_cart_id')));
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+        }
+
+        // Send order recap
+        $mailDispatcher->sendYBOrderRecap($cart);
+
+        foreach($cart->getContracts() as $contract) {
+            /** @var YBContractArtist $campaign */
+            $campaign = $contract->getContractArtist();
+
+            // Need to also send tickets
+            if($campaign->isEvent() && ($campaign->getSuccessful() || $campaign->getTicketsSent() || $campaign->hasNoThreshold())) {
+                $ticketingManager->generateAndSendYBTickets($contract);
+            }
+        }
+
+        $cart->setPaid(true);
+        $cart->generateBarCode();
+        $em->flush();
+
+        $request->getSession()->remove('yb_cart_id');
+
+        $this->addFlash('yb_notice', 'Paiement bien reçu ! Checkez vos mails.');
+
+        return $this->redirectToRoute('yb_order', ['code' => $cart->getBarCodeText()]);
+    }
+
+    /**
+     * @Route("/ticked-it-order/{code}", name="yb_order")
+     */
+    public function orderAction(EntityManagerInterface $em, $code) {
+
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+
+        return $this->render('AppBundle:YB:order.html.twig', [
+            'cart' => $cart,
+        ]);
+    }
+
+    /**
+     * @Route("/api/submit-order-coordinates", name="yb_ajax_post_order")
+     */
+    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator) {
+        /** @var Cart $cart */
+        $cart = $em->getRepository('AppBundle:Cart')->find(intval($request->getSession()->get('yb_cart_id')));
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+        }
+
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $email = $_POST['email'];
+        $cart_id = intval($_POST['cart_id']);
+
+        if($cart_id != $cart->getId()) {
+            throw new \Exception("Cart changed");
+        }
+
+        $order = new YBOrder();
+        $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
+        $errors = $validator->validate($order);
+        if($errors->count() > 0) {
+            throw new \Exception($errors->offsetGet(0));
+        }
+
+        $em->persist($order);
+        $em->persist($cart);
+        $em->flush();
+
+        return new Response(' ', 200);
     }
 }

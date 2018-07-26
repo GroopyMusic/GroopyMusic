@@ -15,11 +15,6 @@ class Purchase
 {
     const MAX_QTY = 100000;
 
-    public function __toString()
-    {
-        return $this->counterpart . ' (x' . $this->quantity . ')' . $this->getActuallyAppliedPromotionsString();
-    }
-
     public function __construct()
     {
         $this->quantity = 0;
@@ -29,6 +24,17 @@ class Purchase
         $this->purchase_promotions = new ArrayCollection();
         $this->ticket_rewards = new ArrayCollection();
     }
+
+    public function __toString()
+    {
+        return $this->counterpart . ' (x' . $this->quantity . ')' . $this->getActuallyAppliedPromotionsString();
+    }
+
+    public function getDisplayWithAmount() {
+        return $this->__toString() . ' - ' . $this->getAmount() . ' €';
+    }
+
+
 
     public function getThresholdIncrease() {
         return $this->getQuantity() * $this->getCounterpart()->getThresholdIncrease();

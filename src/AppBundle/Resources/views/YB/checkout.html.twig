@@ -29,7 +29,7 @@
                 <!-- Used to display Element errors -->
                 <div class="stripe-error alert alert-danger" role="alert"></div>
                 <div id="stripe-loader">
-                    {{ hidden_loader() }}
+                    {{ hidden_loader(true, false) }}
                 </div>
             </div>
             <form id="payment-form" method="post">
@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="checkout-payment-form card card-info mt-2">
-                    <div class="card-header">Paiement</div>
+                    <div class="card-header">Paiement <i class="fab fa-stripe"></i></div>
                     <div class="card-body">
 
                         <div class="form-row">
@@ -105,10 +105,9 @@
                                     <div id="credit-card" class="payment-method w-100">
                                         <div class="col-12 content-box-content-zone">
                                             <h5>
-                                                {{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a href="#"
-                                                                                                       data-toggle="popover"
-                                                                                                       title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }}"
-                                                                                                       data-content="{{ 'pay_cart.proceed.creditcard.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.creditcard.popover.apparent'|trans|raw }}</a>
+                                                {{ 'pay_cart.proceed.creditcard.title'|trans|raw }}
+                                                <i class="fab fa-cc-visa"></i>
+                                                <i class="fab fa-cc-mastercard"></i>
                                             </h5>
                                         </div>
                                         <div class="content-box-content-zone no-border">
@@ -132,7 +131,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 text-center mt-5">
+                                            <div class="col-12 mt-5">
                                                 <input type="submit" class="btn btn-primary"
                                                        value="{{ 'pay_cart.proceed.creditcard.submit'|trans|raw }}"/>
                                             </div>
@@ -143,10 +142,7 @@
                                          style="display:none;">
                                         <div class="col-12 content-box-content-zone">
                                             <h5>
-                                                {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#"
-                                                                                                       data-toggle="popover"
-                                                                                                       title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}"
-                                                                                                       data-content="{{ 'pay_cart.proceed.bancontact.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.bancontact.popover.apparent'|trans|raw }}</a>
+                                                {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <i class="far fa-credit-card"></i>
                                             </h5>
                                             <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
                                         </div>
@@ -286,26 +282,45 @@
 
         $('#choose-bancontact').click(function (e) {
             e.preventDefault();
-            displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+
+            displayLoader("", false);
             scrollToLoader();
 
-            stripe.createSource({
-                type: 'bancontact',
-                amount: amount,
-                currency: 'eur',
-                bancontact: {
-                    preferred_language: 'fr'
-                },
-                owner: {
-                    name: '{{ app.user.displayName }}',
-                    email: '{{ app.user.email }}'
-                },
-                redirect: {
-                    return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'id': cart.id})) }}'
-                },
-                statement_descriptor: 'Ticked-it.be - cart {{ cart.id }}'
-            }).then(function (result) {
-                on3DSSource(result);
+            var $first_name = $('#first_name');
+            var $last_name = $('#last_name');
+            var $email = $('#email');
+
+            $.post('{{ url('yb_ajax_post_order') }}', {
+                'first_name': $first_name.val(),
+                'last_name': $last_name.val(),
+                'email': $email.val(),
+                'cart_id': {{ cart.id }}
+            }, function() {
+                displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+                scrollToLoader();
+
+                stripe.createSource({
+                    type: 'bancontact',
+                    amount: amount,
+                    currency: 'eur',
+                    bancontact: {
+                        preferred_language: 'fr'
+                    },
+                    owner: {
+                        name: '{{ app.user.displayName }}',
+                        email: '{{ app.user.email }}'
+                    },
+                    redirect: {
+                        return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'id': cart.id})) }}'
+                    },
+                    statement_descriptor: 'Ticked-it.be - cart {{ cart.id }}'
+                }).then(function (result) {
+                    on3DSSource(result);
+                });
+            })
+            .fail(function() {
+                displayForm();
+                displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
             });
         });
 
@@ -328,19 +343,38 @@
             }
 
             if (result.card.three_d_secure == 'required') {
-                displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
-                stripe.createSource({
-                    type: 'three_d_secure',
-                    amount: amount,
-                    currency: "eur",
-                    three_d_secure: {
-                        card: result.id
-                    },
-                    redirect: {
-                        return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'id': cart.id})) }}'
-                    }
-                }).then(function (result) {
-                    on3DSSource(result)
+
+                displayLoader("", false);
+                scrollToLoader();
+
+                var $first_name = $('#first_name');
+                var $last_name = $('#last_name');
+                var $email = $('#email');
+
+                $.post('{{ url('yb_ajax_post_order') }}', {
+                    'first_name': $first_name.val(),
+                    'last_name': $last_name.val(),
+                    'email': $email.val(),
+                    'cart_id': {{ cart.id }}
+                }, function() {
+                    displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+                    stripe.createSource({
+                        type: 'three_d_secure',
+                        amount: amount,
+                        currency: "eur",
+                        three_d_secure: {
+                            card: result.id
+                        },
+                        redirect: {
+                            return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'id': cart.id})) }}'
+                        }
+                    }).then(function (result) {
+                        on3DSSource(result)
+                    });
+                })
+                .fail(function() {
+                    displayForm();
+                    displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
                 });
             }
             else {
@@ -393,9 +427,18 @@
             }, 500);
         }
 
-        function displayLoader(html) {
+        function scrollToError() {
+            $('html, body').animate({
+                scrollTop: $(".stripe-error").first().offset().top - 300
+            }, 500);
+        }
+
+        function displayLoader(html, hideform = true) {
             $loader.show();
-            $('form').hide();
+
+            if(hideform)
+                $('form').hide();
+
             hideError();
             if (html) {
                 $loaderexplanation.html(html);
@@ -421,6 +464,8 @@
             $('.stripe-error').show();
             $loader.hide();
             $loaderexplanation.hide();
+
+            scrollToError();
         }
 
         function hideError() {

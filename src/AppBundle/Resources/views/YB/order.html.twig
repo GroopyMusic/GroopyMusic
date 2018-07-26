@@ -1,0 +1,38 @@
+{% extends 'yb/base.html.twig' %}
+
+{% if cart.contracts|length == 1 %}
+    {% set campaign = cart.first.contractArtist %}
+    {% set photo = campaign.photo is not null ? campaign.photo : false %}
+
+    {% block header_container %}
+        <header class="masthead checkout-masthead text-white" {% if photo %}style="background-image: url('{{ absolute_url(asset(campaign.webPath(photo))) }}');"{% endif %} >
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-9 mx-auto">
+                        <h1 class="mb-5 small">{{ campaign.getTitle }}</h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="container">
+        <h2>Votre commande <span class="text-muted">numéro {{ cart.barcodeText }}</span></h2>
+
+        {% for contract in cart.contracts %}
+            <h3>{{ contract.contractArtist.getTitle }}</h3>
+            <ul class="list-group">
+                {% for purchase in contract.purchases %}
+                    <li>{{ purchase }} <span class="text-muted">- {{ purchase.amount }} €</span></li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+
+        <div>
+            TOTAL : {{ cart.amount }} €
+        </div>
+    </div>
+{% endblock %}

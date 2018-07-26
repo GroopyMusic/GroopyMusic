@@ -58,9 +58,10 @@ class UtilitiesExtension extends \Twig_Extension
         return strip_tags(html_entity_decode($value));
     }
 
-    public function hidden_loader($hidden = true) {
+    public function hidden_loader($hidden = true, $um = true) {
         return $this->twig->render('patterns/utils/hidden_loader.html.twig', [
             'hidden' => $hidden,
+            'um' => $um,
         ]);
     }
 

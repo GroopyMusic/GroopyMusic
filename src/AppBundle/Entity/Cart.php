@@ -45,6 +45,10 @@ class Cart
         return $this->getPayment()->getRefunded();
     }
 
+    public function isPaid() {
+        return $this->getPaid();
+    }
+
     public function getState() {
         if($this->getPayment()->getRefunded()) {
             return 'Remboursé';

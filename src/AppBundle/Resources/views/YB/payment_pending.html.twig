@@ -19,7 +19,7 @@
 {% endif %}
 
 {% block body %}
-    <div class="container">
+    <div class="container py-3">
         <h3>{{ 'threeds.title'|trans|raw }}</h3>
 
         <form method="post" action="{{ path('yb_checkout') }}" id="payment-form">
@@ -27,7 +27,7 @@
 
         <div class="stripe-error alert alert-danger" role="alert"></div>
         <div id="stripe-loader">
-            {{ hidden_loader(false) }}
+            {{ hidden_loader(false, false) }}
         </div>
     </div>
 {% endblock %}

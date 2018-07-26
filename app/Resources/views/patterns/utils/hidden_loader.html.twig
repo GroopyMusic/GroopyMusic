@@ -1,4 +1,26 @@
 <div style="display:none;" class="loader-explanation mb-3"></div>
+
+{% if um %}
 <div class="loader"{% if hidden %} style="display:none;"{% endif %}>
     <img class="img-fluid" src="{{ asset('images/loader.gif') }}" />
 </div>
+{% else %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="loader"{% if hidden %} style="display:none;"{% endif %}>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
