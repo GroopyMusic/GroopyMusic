@@ -338,7 +338,7 @@ class TicketingManager
             }
 
             try {
-                $this->writer->writeTickets($cf->getTicketsPath(), $cf->getTickets(), []);
+                $this->writer->writeYBTickets($cf->getTicketsPath(), $cf->getTickets(), []);
                 $this->mailDispatcher->sendYBTickets($cf);
                 $this->em->persist($cf);
                 $cf->setcounterpartsSent(true);

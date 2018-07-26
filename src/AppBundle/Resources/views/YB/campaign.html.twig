@@ -28,6 +28,12 @@
                 {% endif %}
 
                 {{ campaign.getDescription|nl2br }}
+
+                {% if campaign.campaignPhotos is not empty %}
+                    {% for photo in campaign.campaignPhotos %}
+                        <img class="img-fluid d-block py-3" src="{{ asset(campaign.webPath(photo)) }}" />
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <div class="col-12 col-md-5">

@@ -801,4 +801,38 @@ class ContractArtist extends BaseContractArtist
     {
         return $this->photo;
     }
+
+    /**
+     * Add campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     *
+     * @return ContractArtist
+     */
+    public function addCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos[] = $campaignPhoto;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     */
+    public function removeCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos->removeElement($campaignPhoto);
+    }
+
+    /**
+     * Get campaignPhotos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaignPhotos()
+    {
+        return $this->campaign_photos;
+    }
 }

@@ -406,6 +406,11 @@ class BaseContractArtist implements TranslatableInterface
     protected $photo;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Photo")
+     */
+    protected $campaign_photos;
+
+    /**
      * Get id
      *
      * @return int
@@ -998,5 +1003,39 @@ class BaseContractArtist implements TranslatableInterface
     public function getPhoto()
     {
         return $this->photo;
+    }
+
+    /**
+     * Add campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     *
+     * @return BaseContractArtist
+     */
+    public function addCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos[] = $campaignPhoto;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     */
+    public function removeCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos->removeElement($campaignPhoto);
+    }
+
+    /**
+     * Get campaignPhotos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaignPhotos()
+    {
+        return $this->campaign_photos;
     }
 }

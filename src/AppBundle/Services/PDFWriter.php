@@ -22,6 +22,7 @@ class PDFWriter
 {
     const ORDER_TEMPLATE = 'order.html.twig';
     const TICKETS_TEMPLATE = 'tickets.html.twig';
+    const YB_TICKETS_TEMPLATE = 'yb_tickets.html.twig';
 
     private $twig;
     /** @var RouterInterface Router */
@@ -69,6 +70,13 @@ class PDFWriter
         if(!empty($tickets)) {
             // We know all tickets are for same event
             $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
+        }
+    }
+
+    public function writeYBTickets($path, $tickets, $agenda = []) {
+        if(!empty($tickets)) {
+            // We know all tickets are for same event
+            $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
         }
     }
 

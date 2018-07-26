@@ -684,3 +684,13 @@ jmose_command_scheduler_list: /command-scheduler/list
 
 # Desc: /command-scheduler/monitor
 jmose_command_scheduler_monitor: /command-scheduler/monitor
+
+#############################
+########## TICKED-IT.BE #####
+#############################
+yb_index: /
+yb_campaign: /campagne/{id}/{slug}
+yb_terms: /conditions
+yb_checkout: /checkout
+yb_order: /ticked-it-commande/{code}
+

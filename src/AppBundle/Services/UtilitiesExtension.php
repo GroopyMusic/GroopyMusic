@@ -28,6 +28,7 @@ class UtilitiesExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFilter('decode_html', array($this, 'decode')),
             new \Twig_SimpleFilter('slug', array($this, 'slugify')),
+            new \Twig_SimpleFilter('fancy_date', array($this, 'fancy_date')),
         );
     }
 
@@ -45,6 +46,7 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('facebook_like_widget', array($this, 'facebook_like_widget', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('facebook_connect_widget', array($this, 'facebook_connect_widget', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('lorem_ipsum', array($this, 'lorem_ipsum', array('is_safe' => array('html')))),
+            new \Twig_SimpleFunction('fancy_date', array($this, 'fancy_date', array('is_safe' => array('html')))),
         );
     }
 
@@ -140,6 +142,12 @@ class UtilitiesExtension extends \Twig_Extension
 
     public function slugify($str) {
         return $this->stringHelper->slugify($str);
+    }
+
+    public function fancy_date($date) {
+        return $this->twig->render(':patterns/utils:fancy_date.html.twig', array(
+            'date' => $date,
+        ));
     }
 
 }

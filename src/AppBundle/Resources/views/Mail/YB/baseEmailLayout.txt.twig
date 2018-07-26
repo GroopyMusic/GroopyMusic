@@ -38,7 +38,7 @@
 {{ txtHR }}
 {% block footerInfoText %}
 
-Un-Mute ASBL
+Ticked-it!
 
 {{ 'add_to_contacts'|trans({'%address%': sendMailAccountAddress}) }}
 {% endblock %}
@@ -53,7 +53,7 @@ Un-Mute ASBL
 {% endif %}
 {% endblock %}
 {% block footerLinks %}
-- {{ 'footer_links.home'|trans }} : {{ url('yb_index') }}
+{{ url('yb_index') }}
 {% endblock %}
 
 {% endautoescape %}

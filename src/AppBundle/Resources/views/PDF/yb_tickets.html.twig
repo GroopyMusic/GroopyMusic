@@ -1,0 +1,33 @@
+{% extends '@App/PDF/yb_layout.html.twig' %}
+
+{% block additional_styles %}
+{% endblock %}
+
+{% block page %}
+    {% for ticket in tickets %}
+        {% set campaign = ticket.contractArtist %}
+        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            {{ block('header') }}
+            {{ block('footer') }}
+
+            <h2>Ceci est votre ticket Ticked-it!</h2>
+
+            <p>
+                Il donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a>.
+            {% if campaign.is_event %}
+                <br />Date de l'événement : le {{ campaign.dateEvent|fancy_date }}
+            {% endif %}
+            </p>
+
+            <qrcode value="{{ ticket.barCodeText }}" ec="H"
+                    style="width: 30mm; background-color: white; color: black;"></qrcode>
+            {{ ticket.barcodeText }}
+
+            {{ ticket.price }} € - {{ ticket.name }}
+
+            <div style="font-size: 80%;">
+                <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
+            </div>
+        </page>
+    {% endfor %}
+{% endblock %}
