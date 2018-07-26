@@ -283,7 +283,7 @@
         $('#choose-bancontact').click(function (e) {
             e.preventDefault();
 
-            displayLoader("", false);
+            displayLoader("");
             scrollToLoader();
 
             var $first_name = $('#first_name');
@@ -294,7 +294,7 @@
                 'first_name': $first_name.val(),
                 'last_name': $last_name.val(),
                 'email': $email.val(),
-                'cart_id': {{ cart.id }}
+                'cart_code': "{{ cart.barcodeText }}"
             }, function() {
                 displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
                 scrollToLoader();
@@ -307,11 +307,11 @@
                         preferred_language: 'fr'
                     },
                     owner: {
-                        name: '{{ app.user.displayName }}',
-                        email: '{{ app.user.email }}'
+                        name: $first_name.val() + ' ' + $last_name.val(),
+                        email: $email.val()
                     },
                     redirect: {
-                        return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'id': cart.id})) }}'
+                        return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'code': cart.barcodeText})) }}'
                     },
                     statement_descriptor: 'Ticked-it.be - cart {{ cart.id }}'
                 }).then(function (result) {
@@ -355,7 +355,7 @@
                     'first_name': $first_name.val(),
                     'last_name': $last_name.val(),
                     'email': $email.val(),
-                    'cart_id': {{ cart.id }}
+                    'cart_code': "{{ cart.barcodeText }}"
                 }, function() {
                     displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
                     stripe.createSource({
@@ -366,12 +366,12 @@
                             card: result.id
                         },
                         redirect: {
-                            return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'id': cart.id})) }}'
+                            return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'code': cart.barcodeText})) }}'
                         }
                     }).then(function (result) {
                         on3DSSource(result)
                     });
-                }
+                })
                 .fail(function() {
                     displayForm();
                     displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
@@ -415,8 +415,8 @@
             displayLoader();
             scrollToLoader();
             var extraDetails = {
-                name: '{{ app.user.displayName }}',
-                email: '{{ app.user.username }}'
+                name: $('#first_name').val + ' ' + $('#last_name').val(),
+                email: $('#email').val()
             };
             stripe.createToken(cardNumberElement, extraDetails).then(onToken);
         });

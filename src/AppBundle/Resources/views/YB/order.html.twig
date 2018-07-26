@@ -19,20 +19,31 @@
 {% endif %}
 
 {% block body %}
-    <div class="container">
-        <h2>Votre commande <span class="text-muted">numéro {{ cart.barcodeText }}</span></h2>
+    <div class="container py-5">
+        <h2>Votre commande</h2>
+
+        <p>
+            Numéro de commande: <span class="text-muted">{{ cart.barcodeText }}</span>
+            <br /> Date de la commande : {{ cart.date|fancy_date }}
+            <br />Etat de la commande : {{ cart.state }}
+        </p>
 
         {% for contract in cart.contracts %}
             <h3>{{ contract.contractArtist.getTitle }}</h3>
             <ul class="list-group">
                 {% for purchase in contract.purchases %}
-                    <li>{{ purchase }} <span class="text-muted">- {{ purchase.amount }} €</span></li>
+                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} €</span></li>
                 {% endfor %}
             </ul>
         {% endfor %}
 
-        <div>
+        <div class="py-2 text-right">
             TOTAL : {{ cart.amount }} €
         </div>
+
+        <p>
+            Cette page constitue une confirmation de commande mais n'est aucunement un droit d'entrée pour un événement.
+            Vos tickets y seront accessibles et vous seront envoyés par mail le cas échéant.
+        </p>
     </div>
 {% endblock %}

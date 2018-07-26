@@ -61,7 +61,7 @@ class YBController extends Controller
     /**
      * @Route("/campaign/{id}/{slug}", name="yb_campaign")
      */
-    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, Request $request, $slug = null) {
+    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, Request $request, ValidatorInterface $validator, $slug = null) {
 
         if($slug != null && $c->getSlug() != $slug) {
             return $this->redirectToRoute('yb_campaign', ['id' => $c->getId(), 'slug' => $c->getSlug()]);
@@ -73,7 +73,7 @@ class YBController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $cart = new Cart();
+            $cart = new Cart(false);
 
             foreach($cf->getPurchases() as $purchase) {
                 if($purchase->getQuantity() == 0) {
@@ -85,13 +85,12 @@ class YBController extends Controller
 
             $cart->addContract($cf);
             $cart->setConfirmed(true);
+            $cart->generateBarCode();
 
             $em->persist($cart);
             $em->flush();
 
-            $request->getSession()->set('yb_cart_id', $cart->getId());
-
-            return $this->redirectToRoute('yb_checkout');
+            return $this->redirectToRoute('yb_checkout', ['code' => $cart->getBarcodeText()]);
         }
 
         return $this->render('@App/YB/campaign.html.twig', [
@@ -111,17 +110,18 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("/checkout", name="yb_checkout")
+     * @Route("/checkout/{code}", name="yb_checkout")
      */
-    public function checkoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator) {
+    public function checkoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, $code) {
+
+
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
 
         /** @var Cart $cart */
-        $cart = $em->getRepository('AppBundle:Cart')->find(intval($request->getSession()->get('yb_cart_id')));
         if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
-            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+            throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
-
-        if ($request->getMethod() == 'POST' && $_POST['accept_conditions']) {
+        if ($request->getMethod() == 'POST' && isset($_POST['accept_conditions']) && $_POST['accept_conditions']) {
 
             $amount = intval($_POST['amount']);
             // We set an explicit test for amount changes as it has legal impacts
@@ -161,13 +161,13 @@ class YBController extends Controller
                 $contract_artist = $cf->getContractArtist();
                 if ($contract_artist->isUncrowdable()) {
                     $this->addFlash('error', 'errors.event_uncrowdable');
-                    return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $contract_artist->getSlug()]);
+                    return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
                 }
 
                 foreach ($cf->getPurchases() as $purchase) {
                     if ($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
                         $this->addFlash('error', 'errors.order_max');
-                        return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $contract_artist->getSlug()]);
+                        return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
                     }
                 }
             }
@@ -208,10 +208,8 @@ class YBController extends Controller
                 $payment->setChargeId($charge->id);
                 $em->persist($payment);
 
-                $cart->setConfirmed(true)->setPaid(true);
-
                 $em->persist($cart);
-                return $this->redirectToRoute('yb_payment_success', array('id' => $cart->getId())); //, 'sponsorship' => $sponsorship));
+                return $this->redirectToRoute('yb_payment_success', array('code' => $cart->getBarcodeText())); //, 'sponsorship' => $sponsorship));
 
             } catch (\Stripe\Error\Card $e) {
                 $this->addFlash('error', 'errors.stripe.card');
@@ -244,13 +242,15 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("payment/pending/{id}", name="yb_cart_payment_pending")
+     * @Route("payment/pending/{code}", name="yb_cart_payment_pending")
      */
-    public function paymentPendingAction(Request $request, Cart $cart)
+    public function paymentPendingAction(Request $request, EntityManagerInterface $em, $code)
     {
         /** @var Cart $cart */
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+
         if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
-            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+            throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
 
         $source = $request->get('source');
@@ -264,14 +264,14 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("/payment/success", name="yb_payment_success")
+     * @Route("/payment/success/{code}", name="yb_payment_success")
      */
-    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request) {
+    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request, $code) {
 
         /** @var Cart $cart */
-        $cart = $em->getRepository('AppBundle:Cart')->find(intval($request->getSession()->get('yb_cart_id')));
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
         if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
-            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
+            throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
 
         // Send order recap
@@ -288,10 +288,7 @@ class YBController extends Controller
         }
 
         $cart->setPaid(true);
-        $cart->generateBarCode();
         $em->flush();
-
-        $request->getSession()->remove('yb_cart_id');
 
         $this->addFlash('yb_notice', 'Paiement bien reçu ! Checkez vos mails.');
 
@@ -314,23 +311,21 @@ class YBController extends Controller
      * @Route("/api/submit-order-coordinates", name="yb_ajax_post_order")
      */
     public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator) {
-        /** @var Cart $cart */
-        $cart = $em->getRepository('AppBundle:Cart')->find(intval($request->getSession()->get('yb_cart_id')));
-        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
-            throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
-        }
-
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
-        $cart_id = intval($_POST['cart_id']);
+        $cart_code = $_POST['cart_code'];
 
-        if($cart_id != $cart->getId()) {
-            throw new \Exception("Cart changed");
+        /** @var Cart $cart */
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+            throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
 
         $order = new YBOrder();
         $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
+        $cart->setYbOrder($order);
+        
         $errors = $validator->validate($order);
         if($errors->count() > 0) {
             throw new \Exception($errors->offsetGet(0));

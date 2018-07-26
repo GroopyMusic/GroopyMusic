@@ -71,8 +71,10 @@
                                     {% endfor %}
                                 </div>
                                 {% if festivalday.hall is not null %}
-                                <p class="text-right">{{ festivalday.hall.name }}
-                                    - {{ festivalday.hall.address }}</p>
+                                    <p class="text-right">{{ festivalday.hall.name }}
+                                        - {{ festivalday.hall.address }}</p>
+                                {% endif %}
+                            {% endfor %}
                             </p>
                         {% endif %}
 

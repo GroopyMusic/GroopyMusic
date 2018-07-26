@@ -33,16 +33,19 @@ class Cart
         return $str . ' (valeur : ' . $this->getAmount() . ' €)';
     }
 
-    public function __construct()
+    public function __construct($um = true)
     {
         $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->confirmed = false;
         $this->paid = false;
         $this->date_creation = new \Datetime();
+        $this->um = $um;
     }
 
+    private $um = true;
+
     public function isRefunded() {
-        return $this->getPayment()->getRefunded();
+        return $this->payment == null ? false : $this->payment->getRefunded();
     }
 
     public function isPaid() {
@@ -65,8 +68,18 @@ class Cart
 
     public function generateBarCode()
     {
-        if (empty($this->barcode_text))
-            $this->barcode_text = 'um-c' . $this->id . uniqid();
+        if (empty($this->barcode_text)) {
+            if ($this->um) {
+                $str = 'um';
+            } else {
+                $str = 'yb';
+            }
+
+            $str .= 'c' . $this->id . uniqid();
+
+            $this->barcode_text = $str;
+        }
+        return $this->barcode_text;
     }
 
     public function getOrderFileName()

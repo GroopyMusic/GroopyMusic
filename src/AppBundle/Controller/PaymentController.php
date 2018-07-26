@@ -71,13 +71,13 @@ class PaymentController extends Controller
                 $contract_artist = $cf->getContractArtist();
                 if ($contract_artist->isUncrowdable()) {
                     $this->addFlash('error', 'errors.event_uncrowdable');
-                    return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $contract_artist->getSlug()]);
+                    return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
                 }
 
                 foreach($cf->getPurchases() as $purchase) {
                     if($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
                         $this->addFlash('error', 'errors.order_max');
-                        return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), $contract_artist->getSlug()]);
+                        return $this->redirectToRoute('artist_contract', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
                     }
                 }
             }

@@ -22,7 +22,7 @@
     <div class="container py-3">
         <h3>{{ 'threeds.title'|trans|raw }}</h3>
 
-        <form method="post" action="{{ path('yb_checkout') }}" id="payment-form">
+        <form method="post" action="{{ path('yb_checkout', {'code': cart.barcodeText}) }}" id="payment-form">
         </form>
 
         <div class="stripe-error alert alert-danger" role="alert"></div>
