@@ -332,14 +332,14 @@
                 }, onCardSource);
             } else if (result.error) {
                 displayForm();
-                displayError(result.error.message);
+                displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
             }
         }
 
         function onCardSource(status, result) {
             if (result.error) {
                 displayForm();
-                displayError(result.error.message);
+                displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
             }
 
             if (result.card.three_d_secure == 'required') {

@@ -34,8 +34,8 @@ class MailDispatcher
     const REPLY_TO = ["contact@un-mute.be"];
     const REPLY_TO_NAME = "Un-Mute ASBL";
 
-    const YB_REPLY_TO = ["pierre@un-mute.be"];
-    const YB_REPLY_TO_NAME = "Un-Mute ASBL";
+    const YB_REPLY_TO = ["info@ticked-it.be"];
+    const YB_REPLY_TO_NAME = "Ticked-it!";
 
     const ADMIN_TO = ["pierre@un-mute.be" => self::DEFAULT_LOCALE, "gonzague@un-mute.be" => self::DEFAULT_LOCALE];
 

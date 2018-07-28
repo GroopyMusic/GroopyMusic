@@ -17,8 +17,11 @@ use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -308,6 +311,45 @@ class YBController extends Controller
     }
 
     /**
+     * @Route("/ticked-it-tickets/{code}", name="yb_get_tickets")
+     */
+    public function getTicketsAction(EntityManagerInterface $em, TicketingManager $ticketingManager, $code) {
+
+        $contract = $em->getRepository('AppBundle:ContractFan')->findOneBy(['barcode_text' => $code]);
+
+        if ($contract->isRefunded() || !$contract->getContractArtist()->getTicketsSent()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $finder = new Finder();
+        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
+        $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
+
+        if (count($finder) == 0) {
+            $ticketingManager->generateAndSendYBTickets($contract);
+            $contract->setcounterpartsSent(true);
+
+            $em->persist($contract);
+            $em->flush();
+            $finder = new Finder();
+            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
+            $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
+        }
+
+        foreach ($finder as $file) {
+            $response = new BinaryFileResponse($filePath);
+            // Set headers
+            $response->headers->set('Cache-Control', 'private');
+            $response->headers->set('Content-Type', 'PDF');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                'ticked-it-tickets.pdf'
+            ));
+            return $response;
+        }
+    }
+
+    /**
      * @Route("/api/submit-order-coordinates", name="yb_ajax_post_order")
      */
     public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator) {
@@ -337,4 +379,6 @@ class YBController extends Controller
 
         return new Response(' ', 200);
     }
+
+
 }

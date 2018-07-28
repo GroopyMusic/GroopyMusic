@@ -13,21 +13,23 @@
             <h2>Ceci est votre ticket Ticked-it!</h2>
 
             <p>
-                Il donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a>.
-            {% if campaign.is_event %}
+                Il donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
+            {% if campaign.isEvent %}
                 <br />Date de l'événement : le {{ campaign.dateEvent|fancy_date }}
             {% endif %}
             </p>
 
             <qrcode value="{{ ticket.barCodeText }}" ec="H"
                     style="width: 30mm; background-color: white; color: black;"></qrcode>
-            {{ ticket.barcodeText }}
+            <p>
+                {{ ticket.barcodeText }}
+            </p>
+            <p>
+                {{ ticket.price }} € - {{ ticket.name }}
+            </p>
 
-            {{ ticket.price }} € - {{ ticket.name }}
+            <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }}</p>
 
-            <div style="font-size: 80%;">
-                <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
-            </div>
         </page>
     {% endfor %}
 {% endblock %}

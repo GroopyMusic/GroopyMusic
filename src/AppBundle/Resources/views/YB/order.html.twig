@@ -35,6 +35,7 @@
                     <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} €</span></li>
                 {% endfor %}
             </ul>
+            <p><a href="{{ url('yb_get_tickets', {'code': contract.barcodeText}) }}"><i class="fas fa-file-download"></i> Télécharger les tickets</a></p>
         {% endfor %}
 
         <div class="py-2 text-right">
