@@ -1,0 +1,66 @@
+# app/config/routing.yml
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+    schemes: ['%http_protocol%']
+
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /login
+    schemes: ['%http_protocol%']
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /connect
+    schemes: ['%http_protocol%']
+
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /login
+    schemes: ['%http_protocol%']
+
+facebook_login:
+    path: /login/check-facebook
+    schemes: ['%http_protocol%']
+
+app_all:
+    resource: "@AppBundle/Resources/config/routing.yml"
+    schemes: ['%http_protocol%']
+
+azine_email_bundle:
+    resource: "@AzineEmailBundle/Resources/config/routing.yml"
+    prefix: /mail
+    schemes: ['%http_protocol%']
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+    schemes: ['%http_protocol%']
+
+app_select2:
+    resource: "@AppBundle/Controller/Select2Controller.php"
+    type: annotation
+    prefix: /select2
+    schemes: ['%http_protocol%']
+
+oneup_uploader:
+    resource: .
+    type: uploader
+    schemes: ['%http_protocol%']
+
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /admin
+    schemes: ['%http_protocol%']
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
+    schemes: ['%http_protocol%']
+
+jmose_command_scheduler:
+    resource: "@JMoseCommandSchedulerBundle/Resources/config/routing.yml"
+    prefix:   /
+
+fp_js_form_validator:
+    resource: "@FpJsFormValidatorBundle/Resources/config/routing.xml"
+    prefix: /fp_js_form_validator
