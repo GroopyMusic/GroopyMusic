@@ -3,11 +3,13 @@
 {% block card_content %}
 
     {% set rotation = false %}
-    {% set src = asset('yb/images/illustration-guitars.jpg') %}
 
     {% set is_event = contract is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
     {% set is_pot = contract is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
     {% set is_sales = contract is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
+
+    {% set src = is_sales and contract.artist is not null and contract.artist.profilepic is not null ? contract.artist.webPath(contract.artist.profilepic) : asset('yb/images/illustration-guitars.jpg') %}
+
     {% set url_contract = is_event ? path('artist_contract', {'id': contract.id, 'slug': contract.slug}) :
         (is_pot ? path('pot_pot', {'id': contract.id, 'slug': contract.artist.slug}) : path('artist_contract_sales', {'id': contract.id, 'slug': contract.artist.slug})) %}
 
@@ -15,16 +17,16 @@
         <div class="overlay"></div>
         <div class="caption">
         {% if is_event %}
-            <div class="tag"><a href="#">{% if contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
+            <div class="tag"><a href="{{ url_contract }}">{% if contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
                              {% else %}{{ 'stillselling'|trans }}
                     {% endif %}</a>
             </div>
         {% endif %}
-            <div class="title"><a href="#">{{ is_event ? contract.titleWithDates : contract.title }}</a></div>
+            <div class="title"><a href="{{ url_contract }}">{{ is_event ? contract.titleWithDates : contract.title }}</a></div>
             <div class="clearfix">
                 <div class="meta-data">{% for art in contract.allArtists %}{% if not loop.first %} - {% endif %}{{ art }}{% endfor %}</div>
-                    {% if is_event %}<a href="#" class="text-white"><i class="fas fa-ticket-alt"></i> TICKETS</a>
-                    {% elseif is_sales or is_pot %}<a href="#" class="text-white"><i class="fas fa-compact-disc"></i> {{ 'sales.card_headline'|trans }}</a>
+                    {% if is_event %}<a href="{{ url_contract }}" class="text-white"><i class="fas fa-ticket-alt"></i> TICKETS</a>
+                    {% elseif is_sales or is_pot %}<a href="{{ url_contract }}" class="text-white"><i class="fas fa-compact-disc"></i> {{ 'sales.card_headline'|trans }}</a>
                     {% endif %}
                 </div>
             <div class="content">

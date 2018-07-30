@@ -391,7 +391,7 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $cf = new ContractFan($contract);
-        $form = $this->createForm(ContractFanType::class, $cf, ['entity_manager' => $em]);
+        $form = $this->createForm(ContractFanType::class, $cf);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

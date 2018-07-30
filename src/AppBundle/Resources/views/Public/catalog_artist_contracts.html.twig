@@ -21,12 +21,17 @@
     {% if current_contracts is empty %}
         <div class="container">
             <h3 class="text-center mb-3">{{ 'catalog_events.empty.title'|trans|raw }}</h3>
-            <p class="p-info">
-                {{ 'catalog_events.empty.content'|trans({'%facebook_url%':"https://www.facebook.com/UnMuteasbl/"})|raw }}
-            </p>
-            <p class="text-center">
-                {{ 'catalog_events.empty.contact-us'|trans({'%contact_url%': path('suggestionBox')})|raw }}
-            </p>
+
+            <div class="content-box">
+                <div class="content-box-content">
+                    <p>
+                        {{ 'catalog_events.empty.content'|trans({'%facebook_url%':"https://www.facebook.com/UnMuteasbl/"})|raw }}
+                    </p>
+                    <p>
+                        {{ 'catalog_events.empty.contact-us'|trans({'%contact_url%': path('suggestionBox')})|raw }}
+                    </p>
+                </div>
+            </div>
         </div>
     {% else %}
         <div class="container" id="events-catalogue">

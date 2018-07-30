@@ -266,9 +266,9 @@ catalog_events:
     title: Événements en pré-validation
     intro: Les événements suivants sont en cours de prévalidation ; ils ne sont visibles que par les artistes qui les hôtent et les administrateurs Un-Mute.
   empty:
-    title: Événements Un-Mute
-    content: Il n'y a aucun événement à soutenir en ce moment. Revenez très vite pour des nouveautés et tenez-vous au courant grâce à <a href="%facebook_url%">notre page sur Facebook.</a>
-    contact-us: Si vous êtes un artiste et que vous souhaitez organiser un micro-festival grâce à Un-Mute, <a href="%contact_url%">contactez-nous</a>.
+    title: Festivals Un-Mute
+    content: Nos premiers festivals prendront place à Bruxelles et dans la province de Liège dès novembre prochain. Les ventes de tickets commenceront à la fin du mois d'août. Tenez-vous au courant grâce à <a href="%facebook_url%">notre page sur Facebook.</a>
+    contact-us: Si vous êtes un artiste et que vous souhaitez organiser participer à un festival Un-Mute, <a href="%contact_url%">contactez-nous</a>.
   running:
     title: Festivals en cours de financement
     

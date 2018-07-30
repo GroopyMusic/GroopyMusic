@@ -11,85 +11,28 @@
         <h2 class="text-center mb-3">{{ 'about.title'|trans|raw }}</h2>
 
         <div class="row">
-            <div class="col-12 col-md-4 content-box">
-                <div id="static-toc" class="fixed-toc col-12 col-md-4">
-                    <div class="content-box-header">
-                        <h3>{{ 'navigation'|trans|raw }}</h3>
-                    </div>
-                    <nav id="toc-nav" data-toggle="toc" class="navbar nav-pills navbar-expand-md content-box-content">
-                        <ul class="flex-column">
-                            <li class="nav-item"><a class="scroll" href="#about-intro">{{ 'about.menu.concept'|trans|raw }}</a></li>
-                            <li class="nav-item"><a class="scroll" href="#about-how-it-works">{{ 'about.menu.how_it_works'|trans|raw }}</a></li>
-                            <li class="nav-item"><a class="scroll" href="#advantages-artists">{{ 'about.menu.artists'|trans|raw }}</a></li>
-                            <li class="nav-item"><a class="scroll" href="#advantages-producers">{{ 'about.menu.producers'|trans|raw }}</a></li>
-                            <li class="nav-item"><a class="scroll" href="#advantages-halls">{{ 'about.menu.halls'|trans|raw }}</a></li>
-                            <li class="nav-item"><a class="scroll" href="#team">{{ 'about.menu.team'|trans|raw }}</a></li>
-                            <li class="nav-item"><a class="scroll" href="#more-info">{{ 'about.menu.more_info'|trans|raw }}</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-8 static-content content-box">
+            <div class="col-12 col-md-12 static-content content-box">
                 <div class="content-box-content content-box-content-zones">
-                    <div class="content-box-content-zone" id="about-intro">
-                        <h3>{{ 'about.concept.title'|trans|raw }}</h3>
-                        <p>
-                            {{ 'about.concept.content'|trans|raw|nl2br }}
-                        </p>
+                    <div class="content-box-content-zone">
+                        Un-Mute ASBL vous déniche les petites pépites de la scène belge !
                     </div>
-
-                    <div class="content-box-content-zone" id="about-how-it-works">
-                        <h3>{{ 'about.how_it_works.title'|trans|raw }}</h3>
-                        <div class="py-3 text-center">
-                            <a class="d-none d-md-inline-block" href="{{ asset('images/concept.jpg') }}" data-fancybox>
-                                <img class="img-fluid" src="{{ asset('images/concept.png') }}" />
-                            </a>
-                            <div class="d-inline-block d-md-none">
-                                <img class="img-fluid" src="{{ asset('images/concept-vertical.png') }}" />
-                            </div>
-                        </div>
-                        <p>
-                            {{ 'about.how_it_works.content'|trans({'%catalog_url%': path('catalog_artists'), '%faq_url%': path('faq')})|raw|nl2br }}
-                        </p>
+                    <div class="content-box-content-zone">
+                        Que ce soit pour organiser un mini festival ou un festival inter-villes, le principe est simple :
+                        Les groupes doivent atteindre un certain seuil pour confirmer l’organisation d’un festival.
+                        Pour cela, un nombre précis de places doit être vendu à leurs fans.
                     </div>
-
-                    <div class="content-box-content-zone" id="advantages-artists">
-                        <h3>{{ 'about.artists.title'|trans|raw }}</h3>
-                        <img src="{{ asset('images/icons/advantages-artist.png') }}" class="um-icon float-sm-right" />
-                        {{ 'about.artists.content'|trans|raw }}
-                    </div>
-
-                    <div class="content-box-content-zone" id="advantages-producers">
-                        <h3>{{ 'about.producers.title'|trans|raw }}</h3>
-                        <img src="{{ asset('images/icons/advantages-producer.png') }}" class="um-icon float-sm-right" />
-                        {{ 'about.producers.content'|trans|raw }}
-                    </div>
-
-                    <div class="content-box-content-zone" id="advantages-halls">
-                        <h3>{{ 'about.halls.title'|trans|raw }}</h3>
-                        <img src="{{ asset('images/icons/advantages-hall.png') }}" class="um-icon float-sm-right" />
-                        {{ 'about.halls.content'|trans|raw }}
-                    </div>
-                    <div class="content-box-content-zone" id="team">
-                        <h3>{{ 'about.team.title'|trans|raw }}</h3>
-                        <p>
-                            {{ 'about.team.content'|trans({'%team_url%':  path('team') })|raw }}
-                        </p>
-                    </div>
-                    <div class="content-box-content-zone" id="more-info">
-                        <h3>{{ 'about.more_info.title'|trans|raw }}</h3>
-                        <p>
-                            {{ 'about.more_info.content'|trans({'%faq_url%': path('faq'), '%contact_url%': path('suggestionBox')})|raw }}
-                        </p>
+                    <div class="content-box-content-zone">
+                        Là où certains festivals produisent des artistes déjà connus, Un-Mute se veut être une plateforme de découverte musicale, révélatrice d’artistes émergents belges.
+                        Un-Mute innove sur 4 aspects en permettant :
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-handshake"></i> aux artistes de <span class="um-label-small-bold">collaborer</span> sur un même pied et sans distinction ;</li>
+                            <li><i class="fas fa-map-marked-alt"></i> aux artistes <span class="um-label-small-bold">locaux</span> d’organiser ensemble des concerts dans différents lieux en Belgique ;</li>
+                            <li><i class="fas fa-hand-paper"></i> à vous de <span class="um-label-small-bold">participer</span> à la production et l'émancipation de la scène belge en achetant des tickets pour soutenir vos groupes préférés ;</li>
+                            <li><i class="fas fa-headphones"></i> aux amateurs de musique de <span class="um-label-small-bold">découvrir</span> les nouveaux talents belges près de chez soi.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block additional_javascripts %}
-    {{ parent() }}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
 {% endblock %}
