@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('yb.order.tickets', {
+        '%name%': cf.physicalPerson.displayName,
+        '%event%': cf.contractArtist.getTitle,
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/YB/Order:tickets.html.twig' %}
+{% endblock %}

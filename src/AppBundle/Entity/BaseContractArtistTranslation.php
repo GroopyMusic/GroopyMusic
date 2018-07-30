@@ -10,6 +10,12 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 class BaseContractArtistTranslation
 {
     use ORMBehaviors\Translatable\Translation;
+    use ORMBehaviors\Sluggable\Sluggable;
+
+    public function getSluggableFields()
+    {
+       return ['title'];
+    }
 
     /**
      * @ORM\Column(name="additional_info", type="text", nullable=true)

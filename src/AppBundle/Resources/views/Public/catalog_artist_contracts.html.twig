@@ -12,7 +12,7 @@
 
             <div class="row">
                 {% for contract in prevalidation_contracts %}
-                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'bgwhite': true} %}
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'xs': 12, 'md': 12, 'contract': contract, 'bgwhite': true} %}
                 {% endfor %}
             </div>
         </div>
@@ -122,7 +122,14 @@
             {% endif %}
             <div class="row jp-list">
                 {% for contract in current_contracts %}
-                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'bgwhite': true, 'jplist': true} %}
+                    {% set months = 0 %}
+
+                    {% if contract.firstFestivalDate|date('m') > months % 12 %}
+                        {% set months = contract.firstFestivalDate|date('m') %}
+                        <h3>{{ ('months.' ~ months)|trans }} {{ contract.firstFestivalDate|date('Y') }}</h3>
+                    {% endif %}
+
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'xs': 12, 'md': 12, 'contract': contract, 'bgwhite': true, 'jplist': true} %}
                 {% endfor %}
             </div>
         </div>

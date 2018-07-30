@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
@@ -21,6 +22,7 @@ class PDFWriter
 {
     const ORDER_TEMPLATE = 'order.html.twig';
     const TICKETS_TEMPLATE = 'tickets.html.twig';
+    const YB_TICKETS_TEMPLATE = 'yb_tickets.html.twig';
 
     private $twig;
     /** @var RouterInterface Router */
@@ -54,15 +56,27 @@ class PDFWriter
         $html2pdf->output($path, $dest);
     }
 
-    public function writeOrder(ContractFan $cf) {
-        $cf->generateBarCode();
-        $this->write(self::ORDER_TEMPLATE, $cf->getPdfPath(), ['cf' => $cf, 'user_rewards' => $cf->getUserRewards()]);
+    public function writeOrder(Cart $cart) {
+        foreach($cart->getContracts() as $cf) {
+            $cf->generateBarCode();
+        }
+        $cart->generateBarCode();
+        $pdfpath = $cart->getPdfPath();
+
+        $this->write(self::ORDER_TEMPLATE, $pdfpath, ['cart' => $cart]);//, 'user_rewards' => $cart->getUserRewards()]);
     }
 
     public function writeTickets($path, $tickets, $agenda = []) {
         if(!empty($tickets)) {
             // We know all tickets are for same event
             $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
+        }
+    }
+
+    public function writeYBTickets($path, $tickets, $agenda = []) {
+        if(!empty($tickets)) {
+            // We know all tickets are for same event
+            $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
         }
     }
 

@@ -47,6 +47,23 @@ class CounterPart implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
+    // Unmapped, memoized
+    private $potential_artists = null;
+
+    public function getPotentialArtists() {
+        if($this->potential_artists == null) {
+            $artists = [];
+
+            foreach($this->festivaldays as $festivalday) {
+                foreach($festivalday->getPerformances() as $performance) {
+                    $artists[] = $performance->getArtist();
+                }
+            }
+            $this->potential_artists = array_unique($artists);
+        }
+        return $this->potential_artists;
+    }
+
     /**
      * @var int
      *
@@ -89,6 +106,16 @@ class CounterPart implements TranslatableInterface
      * @ORM\Column(name="minimum_price", type="smallint")
      */
     private $minimum_price;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\FestivalDay", inversedBy="counterparts")
+     */
+    private $festivaldays;
+
+    /**
+     * @ORM\Column(name="threshold_increase", type="smallint")
+     */
+    private $threshold_increase;
 
     /**
      * Get id
@@ -218,5 +245,70 @@ class CounterPart implements TranslatableInterface
     public function setContractArtist($contractArtist)
     {
         $this->contractArtist = $contractArtist;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->festivaldays = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add festivalday
+     *
+     * @param \AppBundle\Entity\FestivalDay $festivalday
+     *
+     * @return CounterPart
+     */
+    public function addFestivalday(\AppBundle\Entity\FestivalDay $festivalday)
+    {
+        $this->festivaldays[] = $festivalday;
+
+        return $this;
+    }
+
+    /**
+     * Remove festivalday
+     *
+     * @param \AppBundle\Entity\FestivalDay $festivalday
+     */
+    public function removeFestivalday(\AppBundle\Entity\FestivalDay $festivalday)
+    {
+        $this->festivaldays->removeElement($festivalday);
+    }
+
+    /**
+     * Get festivaldays
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFestivaldays()
+    {
+        return $this->festivaldays;
+    }
+
+    /**
+     * Set thresholdIncrease
+     *
+     * @param integer $thresholdIncrease
+     *
+     * @return CounterPart
+     */
+    public function setThresholdIncrease($thresholdIncrease)
+    {
+        $this->threshold_increase = $thresholdIncrease;
+
+        return $this;
+    }
+
+    /**
+     * Get thresholdIncrease
+     *
+     * @return integer
+     */
+    public function getThresholdIncrease()
+    {
+        return $this->threshold_increase;
     }
 }

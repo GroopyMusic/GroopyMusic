@@ -161,10 +161,17 @@ payment:
   refunded: |
     Dear Producer,
 
-    Your tickets for %event% have entirely been refunded (order id: %cf%).
+    Your tickets bought on Un-Mute for a total amount of %amount% € have entirely been refunded (order date: %date%).
 
-    We hope to see you soon on Un-Mute.be to support other artists and bring them on stage!
+    We hope to see you soon on Un-Mute.be to support our artists and bring them on stage!
 
+contract_fan:
+  refunded: |
+    Dear Producer,
+
+    Your tickets for %event% for a total amount of %amount% € have entirely been refunded (order id: %cf_id%, order date: %date%).
+
+    We hope to see you soon on Un-Mute.be to support our artists and bring them on stage!
 
 reward_attribution:
   content: |

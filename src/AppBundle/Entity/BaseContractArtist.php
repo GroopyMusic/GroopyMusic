@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "sales" = "ContractArtistSales", "pot" = "ContractArtistPot", "default" = "BaseContractArtist"})
+ * @ORM\DiscriminatorMap({"concert" = "ContractArtist", "sales" = "ContractArtistSales", "pot" = "ContractArtistPot", "yb" = "AppBundle\Entity\YB\YBContractArtist", "default" = "BaseContractArtist"})
  */
 class BaseContractArtist implements TranslatableInterface
 {
@@ -49,7 +49,7 @@ class BaseContractArtist implements TranslatableInterface
 
     public function __toString()
     {
-        return 'Festival Un-Mute avec '. $this->artist;
+        return '' . $this->getTitle();
     }
 
     public function __construct() {
@@ -67,6 +67,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->promotions = new ArrayCollection();
         $this->no_threshold = false;
         $this->counterParts = new ArrayCollection();
+        $this->global_soldout = null;
     }
 
     public function isInTestPeriod() {
@@ -135,22 +136,6 @@ class BaseContractArtist implements TranslatableInterface
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
-    // Facilitates admin list export
-    public function getPaymentsExport() {
-        $exportList = array();
-        $i = 1;
-        foreach ($this->payments as $key => $val) {
-            /** @var Payment $val */
-            if(!$val->getRefunded()) {
-                $exportList[] = $i .
-                    ') Utilisateur : ' . $val->getUser()->getDisplayName() . ', montant : ' . $val->getAmount() . ', date : ' . $val->getDate()->format('d/m/Y') . ', contreparties : ' . $val->getContractFan();
-                $i++;
-            }
-        }
-        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
-    }
-
-
     public function isRefundReady() {
         return count($this->asking_refund) >= self::VOTES_TO_REFUND;
     }
@@ -177,7 +162,6 @@ class BaseContractArtist implements TranslatableInterface
         }
         return null;
     }
-
 
     public function getNbAvailable(CounterPart $cp) {
         $nb = $cp->getMaximumAmount();
@@ -223,11 +207,16 @@ class BaseContractArtist implements TranslatableInterface
         return $this->getNbAvailable($cp) < $quantity;
     }
 
+    public function getAllArtists() {
+        return $this->artist;
+    }
+
     public function getArtistProfiles() {
         $result = [];
 
-        foreach($this->artist->getArtistsUser() as $artist_user) {
-            $result[] = $artist_user->getUser();
+        foreach($this->getAllArtists() as $artist) {
+            foreach($artist->getArtistsUser() as $artist_user)
+                $result[] = $artist_user->getUser();
         }
 
         return $result;
@@ -257,13 +246,6 @@ class BaseContractArtist implements TranslatableInterface
         return $fans;
     }
 
-
-    /**
-     * @return array
-     */
-    public function getPaymentsArray() {
-        return $this->getPayments()->toArray();
-    }
 
     public function getCounterParts() {
         if($this->counterParts->count() == 0) {
@@ -318,7 +300,7 @@ class BaseContractArtist implements TranslatableInterface
      * @var Artist
      *
      * @ORM\ManyToOne(targetEntity="Artist", inversedBy="base_contracts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     protected $artist;
 
@@ -328,30 +310,9 @@ class BaseContractArtist implements TranslatableInterface
     protected $motivations;
 
     /**
-     * @ORM\OneToMany(targetEntity="Payment", mappedBy="contractArtist")
-     */
-    protected $payments;
-
-    /**
      * @ORM\Column(name="reminders_artist", type="smallint")
      */
     protected $reminders_artist;
-
-    /**
-     * @var ContractArtistPossibility
-     *
-     * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    protected $preferences;
-
-    /**
-     * @var ContractArtistPossibility
-     *
-     * @ORM\OneToOne(targetEntity="ContractArtistPossibility", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    protected $reality;
 
     /**
      * @ORM\Column(name="collected_amount", type="integer")
@@ -383,11 +344,6 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\ManyToMany(targetEntity="User")
      */
     protected $asking_refund;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Newsletter", inversedBy="contracts")
-     */
-    protected $newsletter;
 
     /**
      * @ORM\Column(name="reminders_admin", type="smallint")
@@ -437,6 +393,22 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="contractArtist")
      */
     protected $counterParts;
+
+    /**
+     * @ORM\Column(name="global_soldout", type="integer", nullable=true)
+     */
+    protected $global_soldout;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Photo")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    protected $photo;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Photo")
+     */
+    protected $campaign_photos;
 
     /**
      * Get id
@@ -577,40 +549,6 @@ class BaseContractArtist implements TranslatableInterface
     }
 
     /**
-     * Add payment
-     *
-     * @param \AppBundle\Entity\Payment $payment
-     *
-     * @return BaseContractArtist
-     */
-    public function addPayment(\AppBundle\Entity\Payment $payment)
-    {
-        $this->payments[] = $payment;
-
-        return $this;
-    }
-
-    /**
-     * Remove payment
-     *
-     * @param \AppBundle\Entity\Payment $payment
-     */
-    public function removePayment(\AppBundle\Entity\Payment $payment)
-    {
-        $this->payments->removeElement($payment);
-    }
-
-    /**
-     * Get payments
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPayments()
-    {
-        return $this->payments;
-    }
-
-    /**
      * Set reminders
      *
      * @param integer $reminders
@@ -632,31 +570,6 @@ class BaseContractArtist implements TranslatableInterface
     public function getRemindersArtist()
     {
         return $this->reminders_artist;
-    }
-
-    /**
-     * Set preferences
-     *
-     * @param \AppBundle\Entity\ContractArtistPossibility $preferences
-     *
-     * @return BaseContractArtist
-     */
-    public function setPreferences(\AppBundle\Entity\ContractArtistPossibility $preferences = null)
-    {
-        $this->preferences = $preferences;
-        $preferences->setContract($this);
-
-        return $this;
-    }
-
-    /**
-     * Get preferences
-     *
-     * @return \AppBundle\Entity\ContractArtistPossibility
-     */
-    public function getPreferences()
-    {
-        return $this->preferences;
     }
 
     /**
@@ -729,33 +642,6 @@ class BaseContractArtist implements TranslatableInterface
     public function getSuccessful()
     {
         return $this->successful;
-    }
-
-    /**
-     * Set reality
-     *
-     * @param \AppBundle\Entity\ContractArtistPossibility $reality
-     *
-     * @return BaseContractArtist
-     */
-    public function setReality(\AppBundle\Entity\ContractArtistPossibility $reality = null)
-    {
-        $this->reality = $reality;
-
-        if($reality != null)
-            $reality->setContract($this);
-
-        return $this;
-    }
-
-    /**
-     * Get reality
-     *
-     * @return \AppBundle\Entity\ContractArtistPossibility
-     */
-    public function getReality()
-    {
-        return $this->reality;
     }
 
     /**
@@ -848,30 +734,6 @@ class BaseContractArtist implements TranslatableInterface
     public function getAskingRefund()
     {
         return $this->asking_refund;
-    }
-
-    /**
-     * Set newsletter
-     *
-     * @param \AppBundle\Entity\Newsletter $newsletter
-     *
-     * @return BaseContractArtist
-     */
-    public function setNewsletter(\AppBundle\Entity\Newsletter $newsletter = null)
-    {
-        $this->newsletter = $newsletter;
-
-        return $this;
-    }
-
-    /**
-     * Get newsletter
-     *
-     * @return \AppBundle\Entity\Newsletter
-     */
-    public function getNewsletter()
-    {
-        return $this->newsletter;
     }
 
     /**
@@ -1069,5 +931,111 @@ class BaseContractArtist implements TranslatableInterface
     public function setNoThreshold(bool $no_threshold)
     {
         $this->no_threshold = $no_threshold;
+    }
+
+    /**
+     * Get noThreshold
+     *
+     * @return boolean
+     */
+    public function getNoThreshold()
+    {
+        return $this->no_threshold;
+    }
+
+    /**
+     * Add counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     *
+     * @return BaseContractArtist
+     */
+    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counterParts[] = $counterPart;
+
+        return $this;
+    }
+
+    /**
+     * Set globalSoldout
+     *
+     * @param integer $globalSoldout
+     *
+     * @return BaseContractArtist
+     */
+    public function setGlobalSoldout($globalSoldout)
+    {
+        $this->global_soldout = $globalSoldout;
+
+        return $this;
+    }
+
+    /**
+     * Get globalSoldout
+     *
+     * @return integer
+     */
+    public function getGlobalSoldout()
+    {
+        return $this->global_soldout;
+    }
+
+    /**
+     * Set photo
+     *
+     * @param \AppBundle\Entity\Photo $photo
+     *
+     * @return BaseContractArtist
+     */
+    public function setPhoto(\AppBundle\Entity\Photo $photo = null)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Get photo
+     *
+     * @return \AppBundle\Entity\Photo
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * Add campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     *
+     * @return BaseContractArtist
+     */
+    public function addCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos[] = $campaignPhoto;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     */
+    public function removeCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos->removeElement($campaignPhoto);
+    }
+
+    /**
+     * Get campaignPhotos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaignPhotos()
+    {
+        return $this->campaign_photos;
     }
 }

@@ -49,9 +49,6 @@ catalog_artists: /artists
 # Desc: /crowdfundings
 catalog_crowdfundings: /events
 
-# Desc: /halls
-catalog_halls: /partners
-
 # Desc: /conditons
 conditions: /end-user-agreement
 
@@ -103,9 +100,6 @@ fos_user_security_logout: /logout
 fp_js_form_validator:
     # Desc: /fp_js_form_validator/check_unique_entity
     check_unique_entity: /fp_js_form_validator/check_unique_entity
-
-# Desc: /halls/{id}-{slug}
-hall: '/partners/{id}-{slug}'
 
 # Desc: /
 homepage: /

@@ -193,10 +193,18 @@ payment:
   refunded: |
     Cher Producteur,
 
-    Vos tickets achetés pour le %event% ont été entièrement remboursés (numéro de commande : %cf%).
+    Vos tickets achetés sur Un-Mute pour un total de %amount% € ont été complètement remboursés (date de la commande : %date%).
 
-    Rendez-vous sur Un-Mute pour soutenir d'autres artistes et les faire monter sur scène !
+    Rendez-vous sur Un-Mute pour soutenir des artistes et les faire monter sur scène !
 
+#new
+contract_fan:
+  refunded: |
+    Cher Producteur,
+
+    Vos tickets achetés sur Un-Mute pour un total de %amount% € pour l'événement %event% ont été complètement remboursés (identifiant commande: %cf_id%, date de la commande : %date%).
+
+    Rendez-vous sur Un-Mute pour soutenir des artistes et les faire monter sur scène !
 
 reward_attribution:
   content: |
@@ -224,3 +232,18 @@ yb:
       -- Name: %name%
       -- Email: %email%
       -- Message:
+
+  order:
+    recap:
+      intro: |
+        Merci pour votre commande sur Ticked-it!, la billetterie belge en ligne. Vous trouverez ci-dessous un récapitulatif de votre commande passée le %date%.
+      threshold: |
+        La campagne à laquelle vous avez contribué contient un seuil de validation, elle ne sera confirmée que si ce seuil est atteint. Ce n'est qu'alors que vous recevrez le contenu de votre commande. Dans le cas contraire, vous serez entièrement remboursé(e).
+      outro: |
+        A très bientôt !
+    tickets: |
+      Cher %name%,
+
+      Veuillez trouver vos tickets pour "%event%" en pièce jointe.
+
+      Passez une excellente journée,

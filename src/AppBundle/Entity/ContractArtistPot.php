@@ -101,4 +101,110 @@ class ContractArtistPot extends BaseContractArtist
 
         return $this;
     }
+
+    /**
+     * Get noThreshold
+     *
+     * @return boolean
+     */
+    public function getNoThreshold()
+    {
+        return $this->no_threshold;
+    }
+
+    /**
+     * Add counterPart
+     *
+     * @param \AppBundle\Entity\CounterPart $counterPart
+     *
+     * @return ContractArtistPot
+     */
+    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
+    {
+        $this->counterParts[] = $counterPart;
+
+        return $this;
+    }
+
+    /**
+     * Set globalSoldout
+     *
+     * @param integer $globalSoldout
+     *
+     * @return ContractArtistPot
+     */
+    public function setGlobalSoldout($globalSoldout)
+    {
+        $this->global_soldout = $globalSoldout;
+
+        return $this;
+    }
+
+    /**
+     * Get globalSoldout
+     *
+     * @return integer
+     */
+    public function getGlobalSoldout()
+    {
+        return $this->global_soldout;
+    }
+
+    /**
+     * Set photo
+     *
+     * @param \AppBundle\Entity\Photo $photo
+     *
+     * @return ContractArtistPot
+     */
+    public function setPhoto(\AppBundle\Entity\Photo $photo = null)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Get photo
+     *
+     * @return \AppBundle\Entity\Photo
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * Add campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     *
+     * @return ContractArtistPot
+     */
+    public function addCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos[] = $campaignPhoto;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaignPhoto
+     *
+     * @param \AppBundle\Entity\Photo $campaignPhoto
+     */
+    public function removeCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
+    {
+        $this->campaign_photos->removeElement($campaignPhoto);
+    }
+
+    /**
+     * Get campaignPhotos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaignPhotos()
+    {
+        return $this->campaign_photos;
+    }
 }

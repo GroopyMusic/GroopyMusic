@@ -5,7 +5,7 @@ about: /about
 artist_cancel_ownership_request: '/artiest/{id}/verzoek-annuleren/{request_id}'
 
 # Desc: /events/{id}-{slug}
-artist_contract: '/evenementen/{id}-concert-van-{slug}'
+artist_contract: '/events/{id}-concert-van-{slug}'
 
 # Desc: /sales/{id}-{slug}
 artist_contract_sales: '/albums/{id}-{slug}'
@@ -42,9 +42,6 @@ catalog_artists: /artiesten
 
 # Desc: /crowdfundings
 catalog_crowdfundings: /evenementen
-
-# Desc: /halls
-catalog_halls: /zalen
 
 # Desc: /conditons
 conditions: /Algemene voorwaarden
@@ -93,9 +90,6 @@ fos_user_security_login: /login
 
 # Desc: /logout
 fos_user_security_logout: /logout
-
-# Desc: /halls/{id}-{slug}
-hall: '/zalen/{id}-{slug}'
 
 # Desc: /
 homepage: /

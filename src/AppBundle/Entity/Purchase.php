@@ -15,11 +15,6 @@ class Purchase
 {
     const MAX_QTY = 100000;
 
-    public function __toString()
-    {
-        return $this->counterpart . ' (x' . $this->quantity . ')' . $this->getActuallyAppliedPromotionsString();
-    }
-
     public function __construct()
     {
         $this->quantity = 0;
@@ -28,6 +23,21 @@ class Purchase
         $this->reducedPrice = 0;
         $this->purchase_promotions = new ArrayCollection();
         $this->ticket_rewards = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->counterpart . ' (x' . $this->quantity . ')' . $this->getActuallyAppliedPromotionsString();
+    }
+
+    public function getDisplayWithAmount() {
+        return $this->__toString() . ' - ' . $this->getAmount() . ' €';
+    }
+
+
+
+    public function getThresholdIncrease() {
+        return $this->getQuantity() * $this->getCounterpart()->getThresholdIncrease();
     }
 
     public function getPromotions()
@@ -184,6 +194,11 @@ class Purchase
      * @ORM\Column(name="free_price_value", type="float", nullable=true)
      */
     private $free_price_value;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Artist")
+     */
+    private $artists;
 
     /**
      * Get id
@@ -419,5 +434,39 @@ class Purchase
     public function setFreePriceValue($free_price_value)
     {
         $this->free_price_value = $free_price_value;
+    }
+
+    /**
+     * Add artist
+     *
+     * @param \AppBundle\Entity\Artist $artist
+     *
+     * @return Purchase
+     */
+    public function addArtist(\AppBundle\Entity\Artist $artist)
+    {
+        $this->artists[] = $artist;
+
+        return $this;
+    }
+
+    /**
+     * Remove artist
+     *
+     * @param \AppBundle\Entity\Artist $artist
+     */
+    public function removeArtist(\AppBundle\Entity\Artist $artist)
+    {
+        $this->artists->removeElement($artist);
+    }
+
+    /**
+     * Get artists
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArtists()
+    {
+        return $this->artists;
     }
 }

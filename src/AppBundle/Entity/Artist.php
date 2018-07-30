@@ -141,7 +141,7 @@ class Artist implements TranslatableInterface
         else {
             foreach($this->contracts as $contract) {
                 /** @var ContractArtist $contract */
-                if($contract->getDateConcert() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
+                if($contract->getLastFestivalDate() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
                     return $contract;
                 }
             }
@@ -154,7 +154,7 @@ class Artist implements TranslatableInterface
 
         foreach($this->contracts as $contract) {
             /** @var ContractArtist $contract */
-            if($contract->getDateConcert() < (new \DateTime()) && $contract->getSuccessful() && !$contract->getFailed()) {
+            if($contract->getLastFestivalDate() < (new \DateTime()) && $contract->getSuccessful() && !$contract->getFailed()) {
                 $contracts[] = $contract;
             }
         }
@@ -309,6 +309,11 @@ class Artist implements TranslatableInterface
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
      */
     private $phone;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ArtistPerformance", mappedBy="artist")
+     */
+    private $performances;
 
     // Form only
     public $ownership_requests_form;
@@ -972,5 +977,73 @@ class Artist implements TranslatableInterface
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * Add ownershipRequestsForm
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $ownershipRequestsForm
+     *
+     * @return Artist
+     */
+    public function addOwnershipRequestsForm(\AppBundle\Entity\ArtistPerformance $ownershipRequestsForm)
+    {
+        $this->ownership_requests_form[] = $ownershipRequestsForm;
+
+        return $this;
+    }
+
+    /**
+     * Remove ownershipRequestsForm
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $ownershipRequestsForm
+     */
+    public function removeOwnershipRequestsForm(\AppBundle\Entity\ArtistPerformance $ownershipRequestsForm)
+    {
+        $this->ownership_requests_form->removeElement($ownershipRequestsForm);
+    }
+
+    /**
+     * Get ownershipRequestsForm
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOwnershipRequestsForm()
+    {
+        return $this->ownership_requests_form;
+    }
+
+    /**
+     * Add performance
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $performance
+     *
+     * @return Artist
+     */
+    public function addPerformance(\AppBundle\Entity\ArtistPerformance $performance)
+    {
+        $this->performances[] = $performance;
+
+        return $this;
+    }
+
+    /**
+     * Remove performance
+     *
+     * @param \AppBundle\Entity\ArtistPerformance $performance
+     */
+    public function removePerformance(\AppBundle\Entity\ArtistPerformance $performance)
+    {
+        $this->performances->removeElement($performance);
+    }
+
+    /**
+     * Get performances
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPerformances()
+    {
+        return $this->performances;
     }
 }

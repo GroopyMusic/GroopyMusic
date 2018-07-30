@@ -1,158 +1,162 @@
 {% extends '@App/PDF/layout.html.twig' %}
 
-{% block content %}
+{% block page %}
 
-    {% set is_event = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
-    {% set is_sales = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
-    {% set is_pot = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
+    {% for cf in cart.contracts %}
+        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            {{ block('header') }}
+            {{ block('footer') }}
+            {% set is_event = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
+            {% set is_sales = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
+            {% set is_pot = cf.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
 
+            <h1>{{ 'order_pdf.title'|trans|raw }}</h1>
 
-    <h1>{{ 'order_pdf.title'|trans|raw }}</h1>
+            <p>{{ 'order_pdf.sales.intro'|trans|raw }}</p>
 
-    <p>{{ 'order_pdf.sales.intro'|trans|raw }}</p>
+            {% for promotion in cf.contractArtist.currentPromotions %}
+                <p>{{ 'order_pdf.promo'|trans({'%end_date%':promotion.endDate|date('d/m/Y'), '%nb_organic_needed%':promotion.nbOrganicNeeded, '%nb_promotional%':promotion.nbPromotional})|raw }}</p>
+            {% endfor %}
+            <ul>
+                <li>{{ 'order_pdf.labels.order_date'|trans|raw }} : {{ cf.date|date('d/m/Y') }}</li>
+                {% if is_event %}
+                    <li>{{ 'order_pdf.labels.event'|trans|raw }}
+                        : {{ cf.contractArtist.titleWithDates|raw }}
+                    </li>
+                    <li>{{ 'order_pdf.labels.nb_tickets'|trans|raw }} : {{ cf.counterPartsQuantityOrganic }}</li>
+                {% elseif is_sales %}
+                    <li>{{ 'order_pdf.labels.sales'|trans|raw }}
+                        : {{ cf.contractArtist.title|raw }}</li>
+                {% elseif is_pot %}
+                    <li>{{ 'order_pdf.labels.pot'|trans|raw }}
+                        : {{ cf.contractArtist.title|raw }}</li>
+                {% endif %}
 
-    {% for promotion in cf.contractArtist.currentPromotions %}
-        <p>{{ 'order_pdf.promo'|trans({'%end_date%':promotion.endDate|date('d/m/Y'), '%nb_organic_needed%':promotion.nbOrganicNeeded, '%nb_promotional%':promotion.nbPromotional})|raw }}</p>
-    {% endfor %}
-    <ul>
-        <li>{{ 'order_pdf.labels.order_date'|trans|raw }} : {{ cf.date|date('d/m/Y') }}</li>
-        {% if is_event %}
-            <li>{{ 'order_pdf.labels.event'|trans|raw }}
-                : {{ 'event.generic_name'|trans({'%artist%':cf.contractArtist.artist.artistname})|raw }}
-            </li>
-            <li>{{ 'order_pdf.labels.event_date'|trans|raw }} : {{ cf.contractArtist.dateConcert|date('d/m/Y') }}</li>
-            <li>{{ 'order_pdf.labels.nb_tickets'|trans|raw }} : {{ cf.counterPartsQuantityOrganic }}</li>
-        {% elseif is_sales %}
-            <li>{{ 'order_pdf.labels.sales'|trans|raw }}
-                : {{ cf.contractArtist.title|raw }}</li>
-        {% elseif is_pot %}
-            <li>{{ 'order_pdf.labels.pot'|trans|raw }}
-                : {{ cf.contractArtist.title|raw }}</li>
-        {% endif %}
+                <li>{{ 'order_pdf.labels.total_amount'|trans|raw }} : {{ cf.amount }} €</li>
 
-        <li>{{ 'order_pdf.labels.total_amount'|trans|raw }} : {{ cf.amount }} €</li>
-
-        {% set freeTickets = cf.counterPartsQuantityPromotional %}
-        {% if freeTickets > 0 %}
-            <li>{{ 'order_pdf.labels.nb_tickets_promo'|trans|raw }} : {{ freeTickets }}</li>
-        {% endif %}
-        {% set hasReduction = false %}
-        {% if user_rewards is not empty %}
-            <li>
-                <div>{{ 'order_pdf.labels.rewards'|trans|raw }} :</div>
-                {% for user_reward in user_rewards %}
-                    <div> >> {{ user_reward.reward.name }} :</div>
-                    {% if user_reward.remainUse > cf.getCounterPartsQuantity %}
-                        {% set nbUse = cf.getCounterPartsQuantity %}
-                    {% else %}
-                        {% set nbUse = 0 %}
-                        {% for ticket in user_reward.tickets %}
-                            {% if ticket.contractFan.id == cf.id %}
-                                {% set nbUse = nbUse+1 %}
+                {% set freeTickets = cf.counterPartsQuantityPromotional %}
+                {% if freeTickets > 0 %}
+                    <li>{{ 'order_pdf.labels.nb_tickets_promo'|trans|raw }} : {{ freeTickets }}</li>
+                {% endif %}
+                {% set hasReduction = false %}
+                {% if user_rewards is defined and user_rewards is not empty %}
+                    <li>
+                        <div>{{ 'order_pdf.labels.rewards'|trans|raw }} :</div>
+                        {% for user_reward in user_rewards %}
+                            <div> >> {{ user_reward.reward.name }} :</div>
+                            {% if user_reward.remainUse > cf.getCounterPartsQuantity %}
+                                {% set nbUse = cf.getCounterPartsQuantity %}
+                            {% else %}
+                                {% set nbUse = 0 %}
+                                {% for ticket in user_reward.tickets %}
+                                    {% if ticket.contractFan.id == cf.id %}
+                                        {% set nbUse = nbUse+1 %}
+                                    {% endif %}
+                                {% endfor %}
                             {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                    <div style="font-size: 80%">
-                        {% if  user_reward.reward.getType == "Réduction" %}
-                            {% for purchase in cf.purchases %}
-                                {% if purchase.nbReducedCounterparts > 0 %}
-                                    <div>{{ 'pay_cart.recap_reward.reduction'|trans({
+                            <div style="font-size: 80%">
+                                {% if  user_reward.reward.getType == "Réduction" %}
+                                    {% for purchase in cf.purchases %}
+                                        {% if purchase.nbReducedCounterparts > 0 %}
+                                            <div>{{ 'pay_cart.recap_reward.reduction'|trans({
+                                                    "%use%":nbUse,
+                                                    "%nbReducedCounterpart%":purchase.nbReducedCounterparts,
+                                                    "%reduction%":user_reward.rewardTypeParameters.reduction,
+                                                    "%counterpart%":purchase.counterPart
+                                                })|raw }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% elseif user_reward.reward.getType == "Invitation" %}
+                                    <div>{{ 'pay_cart.recap_reward.invitation'|trans({"%use%":nbUse})|raw }}</div>
+                                {% elseif  user_reward.reward.getType == "Consommation" %}
+                                    <div>{{ 'pay_cart.recap_reward.consommable'|trans({
                                             "%use%":nbUse,
-                                            "%nbReducedCounterpart%":purchase.nbReducedCounterparts,
-                                            "%reduction%":user_reward.rewardTypeParameters.reduction,
-                                            "%counterpart%":purchase.counterPart
+                                            "%quantity%":user_reward.rewardTypeParameters.quantity,
+                                            "%type%": user_reward.rewardTypeParameters.type_consomable,
+                                            "%value%":user_reward.rewardTypeParameters.value
                                         })|raw }}</div>
                                 {% endif %}
-                            {% endfor %}
-                        {% elseif user_reward.reward.getType == "Invitation" %}
-                            <div>{{ 'pay_cart.recap_reward.invitation'|trans({"%use%":nbUse})|raw }}</div>
-                        {% elseif  user_reward.reward.getType == "Consommation" %}
-                            <div>{{ 'pay_cart.recap_reward.consommable'|trans({
-                                    "%use%":nbUse,
-                                    "%quantity%":user_reward.rewardTypeParameters.quantity,
-                                    "%type%": user_reward.rewardTypeParameters.type_consomable,
-                                    "%value%":user_reward.rewardTypeParameters.value
-                                })|raw }}</div>
+                            </div>
+                            {% if user_reward.reward.getType == "Réduction" %}
+                                {% set hasReduction = true %}
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                {% endif %}
+            </ul>
+
+
+            <h2>{{ 'order_pdf.details.title'|trans|raw }}</h2>
+
+            <table>
+                <tr>
+                    <th>{{ 'order_pdf.details.labels.counterpart'|trans|raw }}</th>
+                    <th>{{ 'order_pdf.details.labels.quantity'|trans|raw }}</th>
+                    <th>{{ 'order_pdf.details.labels.unit_price'|trans|raw }}</th>
+                    <th>{{ 'order_pdf.details.labels.total_price'|trans|raw }}</th>
+                    {% if user_rewards is defined and user_rewards is not empty and hasReduction == true %}
+                        <th>{{ 'order_pdf.details.labels.reduction'|trans|raw }}</th>
+                        <th>{{ 'order_pdf.details.labels.total_reduction_price'|trans|raw }}</th>
+                    {% endif %}
+                </tr>
+                {% for purchase in cf.purchases %}
+                    <tr>
+                        <td>
+                            {{ purchase.counterpart.name }}
+                        </td>
+                        <td>
+                            {{ purchase.quantityOrganic }}
+                        </td>
+                        <td>
+                            {{ purchase.unitaryPrice }} €{% if purchase.counterpart.freePrice %} (choisi librement){% endif %}
+                        </td>
+                        <td>
+                            {{ purchase.amount }} €
+                        </td>
+                        {% if user_rewards is defined and user_rewards is not empty and hasReduction == true %}
+                            <td> - {{ purchase.amount - purchase.getReducedAmount }} €</td>
+                            <td>{{ purchase.getReducedAmount }} €</td>
                         {% endif %}
-                    </div>
-                    {% if user_reward.reward.getType == "Réduction" %}
-                        {% set hasReduction = true %}
+                    </tr>
+
+                    {% set freeTickets = purchase.quantityPromotional %}
+                    {% if freeTickets > 0 %}
+                        <tr>
+                            <td>
+                                {{ purchase.counterpart.name }} - {{ 'order_pdf.details.labels.promo'|trans|raw }}
+                            </td>
+                            <td>
+                                {{ freeTickets }}
+                            </td>
+                            <td>
+                                0 €
+                            </td>
+                            <td>
+                                0 €
+                            </td>
+                        </tr>
                     {% endif %}
                 {% endfor %}
-            </li>
-        {% endif %}
-    </ul>
+            </table>
 
+            {% if is_event %}
+                <h2>{{ 'order_pdf.process.title'|trans|raw }}</h2>
 
-    <h2>{{ 'order_pdf.details.title'|trans|raw }}</h2>
-
-    <table>
-        <tr>
-            <th>{{ 'order_pdf.details.labels.counterpart'|trans|raw }}</th>
-            <th>{{ 'order_pdf.details.labels.quantity'|trans|raw }}</th>
-            <th>{{ 'order_pdf.details.labels.unit_price'|trans|raw }}</th>
-            <th>{{ 'order_pdf.details.labels.total_price'|trans|raw }}</th>
-            {% if user_rewards is not empty and hasReduction == true %}
-                <th>{{ 'order_pdf.details.labels.reduction'|trans|raw }}</th>
-                <th>{{ 'order_pdf.details.labels.total_reduction_price'|trans|raw }}</th>
+                <p>
+                    {{ 'order_pdf.process.content'|trans({'%min_tickets%': cf.contractArtist.minTickets})|raw }}
+                </p>
             {% endif %}
-        </tr>
-        {% for purchase in cf.purchases %}
-            <tr>
-                <td>
-                    {{ purchase.counterpart.name }}
-                </td>
-                <td>
-                    {{ purchase.quantityOrganic }}
-                </td>
-                <td>
-                    {{ purchase.unitaryPrice }} €{% if purchase.counterpart.freePrice %} (choisi librement){% endif %}
-                </td>
-                <td>
-                    {{ purchase.amount }} €
-                </td>
-                {% if user_rewards is not empty and hasReduction == true %}
-                    <td> - {{ purchase.amount - purchase.getReducedAmount }} €</td>
-                    <td>{{ purchase.getReducedAmount }} €</td>
-                {% endif %}
-            </tr>
 
-            {% set freeTickets = purchase.quantityPromotional %}
-            {% if freeTickets > 0 %}
-                <tr>
-                    <td>
-                        {{ purchase.counterpart.name }} - {{ 'order_pdf.details.labels.promo'|trans|raw }}
-                    </td>
-                    <td>
-                        {{ freeTickets }}
-                    </td>
-                    <td>
-                        0 €
-                    </td>
-                    <td>
-                        0 €
-                    </td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    </table>
+            <h2>{{ 'order_pdf.conditions.title'|trans|raw }}</h2>
 
-    {% if is_event %}
-        <h2>{{ 'order_pdf.process.title'|trans|raw }}</h2>
-
-        <p>
-            {{ 'order_pdf.process.content'|trans({'%min_tickets%': cf.contractArtist.minTickets})|raw }}
-        </p>
-    {% endif %}
-
-    <h2>{{ 'order_pdf.conditions.title'|trans|raw }}</h2>
-
-    <p>
-        {{ 'order_pdf.conditions.content'|trans({'%url%': url('conditions')}) }}
-    </p>
+            <p>
+                {{ 'order_pdf.conditions.content'|trans({'%url%': url('conditions')}) }}
+            </p>
+        </page>
+    {% endfor %}
 {% endblock %}
 
 {% block footer_content %}
-    <p>{{ 'order_pdf.footer.tracking'|trans({'%date%': cf.date|date('d/m/Y'), '%id%': cf.barcodeText})|raw }}</p>
+    <p>{{ 'order_pdf.footer.tracking'|trans({'%date%': cart.first.date|date('d/m/Y'), '%id%': cart.barcodeText})|raw }}</p>
     {{ parent() }}
 {% endblock %}

@@ -2,13 +2,25 @@ header.masthead {
   height: 100vh;
   position: relative;
   background-color: #343a40;
-  background: url("images/illustration-guitars.jpg") no-repeat center center;
+  background-repeat: no-repeat;
+  background-position: center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
   padding-top: 8rem;
   padding-bottom: 8rem;
+
+  &.campaign-masthead, &.checkout-masthead {
+    background-image: none;
+    height: auto;
+    max-height: 100vh;
+  }
+
+  &.checkout-masthead {
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+  }
 
   .overlay {
     position: absolute;

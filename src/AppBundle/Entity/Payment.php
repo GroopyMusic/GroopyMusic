@@ -20,7 +20,7 @@ class Payment
 
     public function __toString()
     {
-        $str = 'Paiement de ' . $this->getUser() . ' de ' . $this->getAmount() . ' € pour l\'événement "' . $this->getContractArtist() . '" (' . $this->contractFan . ')';
+        $str = 'Paiement de ' . $this->getUser() . ' de ' . $this->getAmount();
         if($this->refunded) {
             $str .= ' - REMBOURSE';
         }
@@ -29,6 +29,13 @@ class Payment
 
     public function __construct() {
         $this->asking_refund = new ArrayCollection();
+    }
+
+    public function getContractsFan() {
+        if($this->cart != null) {
+            return $this->cart->getContracts()->toArray();
+        }
+        return [$this->contractFan];
     }
 
     public function isRefundReady() {
@@ -48,15 +55,21 @@ class Payment
     }
 
     public function getCounterPartsQuantity() {
-        return $this->contractFan->getCounterPartsQuantity();
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantity();
+        }, $this->getContractsFan()));
     }
 
     public function getCounterPartsQuantityOrganic() {
-        return $this->contractFan->getCounterPartsQuantityOrganic();
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityOrganic();
+        }, $this->getContractsFan()));
     }
 
     public function getCounterPartsQuantityPromotional() {
-        return $this->contractFan->getCounterPartsQuantityPromotional();
+        return array_sum(array_map(function(ContractFan $contractFan) {
+            return $contractFan->getCounterPartsQuantityPromotional();
+        }, $this->getContractsFan()));
     }
 
     /**
@@ -86,6 +99,7 @@ class Payment
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="payments")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 
@@ -96,15 +110,11 @@ class Payment
 
     /**
      * @var ContractFan
+     * @deprecated
      * @ORM\OneToOne(targetEntity="ContractFan", inversedBy="payment", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $contractFan;
-
-    /**
-     * @var ContractArtist
-     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="payments")
-     */
-    private $contractArtist;
 
     /**
      * @ORM\Column(name="amount", type="float")
@@ -116,6 +126,13 @@ class Payment
      * @ORM\ManyToMany(targetEntity="User")
      */
     private $asking_refund;
+
+    /**
+     * @var Cart
+     * @ORM\OneToOne(targetEntity="Cart", inversedBy="payment", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $cart;
 
     /**
      * Get id
@@ -248,30 +265,6 @@ class Payment
     }
 
     /**
-     * Set contractArtist
-     *
-     * @param \AppBundle\Entity\BaseContractArtist $contractArtist
-     *
-     * @return Payment
-     */
-    public function setContractArtist(\AppBundle\Entity\BaseContractArtist $contractArtist = null)
-    {
-        $this->contractArtist = $contractArtist;
-
-        return $this;
-    }
-
-    /**
-     * Get contractArtist
-     *
-     * @return \AppBundle\Entity\BaseContractArtist
-     */
-    public function getContractArtist()
-    {
-        return $this->contractArtist;
-    }
-
-    /**
      * Add askingRefund
      *
      * @param \AppBundle\Entity\User $askingRefund
@@ -335,5 +328,29 @@ class Payment
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    /**
+     * Set cart
+     *
+     * @param \AppBundle\Entity\Cart $cart
+     *
+     * @return Payment
+     */
+    public function setCart(\AppBundle\Entity\Cart $cart = null)
+    {
+        $this->cart = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Get cart
+     *
+     * @return \AppBundle\Entity\Cart
+     */
+    public function getCart()
+    {
+        return $this->cart;
     }
 }

@@ -36,7 +36,7 @@
                 stripeTokenHandler(source);
             }
             else if (source.status == 'failed') {
-                displayError("{{ 'threeds.error'|trans({'%backUrl%': absolute_url(path('artist_contract', {'id': contract_fan.contractArtist.id}))})|raw }}");
+                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('catalog_crowdfundings')})|raw }}");
             }
              /*else if (source.status != 'pending') {
                  displayError("{{ 'threeds.unknown_error'|trans|raw }}");
@@ -72,10 +72,6 @@
             hiddenInput.setAttribute('type', 'hidden');
             hiddenInput.setAttribute('name', 'stripeSource');
             hiddenInput.setAttribute('value', source.id);
-            var hiddenInput2 = document.createElement('input');
-            hiddenInput2.setAttribute('type', 'hidden');
-            hiddenInput2.setAttribute('name', 'fancontract_id');
-            hiddenInput2.setAttribute('value', '{{ contract_fan.id }}');
             var hiddenInput3 = document.createElement('input');
             hiddenInput3.setAttribute('type', 'hidden');
             hiddenInput3.setAttribute('name', 'amount');
@@ -85,7 +81,6 @@
             hiddenInput4.setAttribute('name', 'accept_conditions');
             hiddenInput4.setAttribute('value', 'true');
             form.appendChild(hiddenInput);
-            form.appendChild(hiddenInput2);
             form.appendChild(hiddenInput3);
             form.appendChild(hiddenInput4);
             // Submit the form

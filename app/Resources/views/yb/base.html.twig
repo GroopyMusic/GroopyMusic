@@ -1,13 +1,14 @@
+{% trans_default_domain 'yb' %}
 <!DOCTYPE html>
 <html lang="en{# app.request.locale #}">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="description" content="{% block description %}{% endblock %}" />
+    <meta name="description" content="{% block meta_description %}{% endblock %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <meta name="theme-color" content="#f08722">
 
-    <title>{% block headtitle %}Y&B{% endblock %}</title>
+    <title>{% block headtitle %}Ticked-it!{% endblock %}</title>
     {% block open_graph %}{% endblock %}
     {% block stylesheets %}
         <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
@@ -24,33 +25,90 @@
 </head>
 <body>
 {% if app.environment == 'prod' %}
-    <!-- Google Tag Manager (noscript)
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KFPJV6V"
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5LTWLR"
                       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 {% endif %}
 
 <noscript>
     <div class="noscript-warning">
-        {{ "noscript.warning"|trans }}
+        {{ "noscript.warning"|trans({}, 'messages') }}
     </div>
 </noscript>
 <!--[if lte IE 8]>
 <div class="noscript-warning">
-    {{ "ie.warning"|trans }}
+    {{ "ie.warning"|trans({}, 'messages') }}
 </div>
 <![endif]-->
 
 {% block nav %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger font-weight-bold" href="{{ path('yb_index') ~ "#home"}}">Ticked-it!</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav text-uppercase ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#home"}}">{{ 'menu.home'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">{{ 'menu.about'|trans }}</a>
+                    </li>
+                    {% block nav_details_links %}
+                    {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </nav>
 {% endblock %}
 
-<header id="home" class="masthead text-white text-center">
+{% block header_container %}
+<header id="home" class="masthead text-white text-center" style="background-image:url('{{ absolute_url(asset('yb/images/illustration-guitars.jpg')) }}')">
     {% block header %}
-
     {% endblock %}
 </header>
+{% endblock %}
 
 <main id="main">
+    {% set error_bag = app.request.session.flashbag.get('error') %}
+
+    {% if error_bag is not empty
+    or ((errors is defined and errors|length > 0) or (form is defined and form is not null and not form.vars.valid))%}
+
+        <div class="container">
+            {% for message in error_bag %}
+                {{ error(message)|raw }}
+            {% endfor%}
+
+            {% spaceless %}
+                {% if (errors is defined and errors|length > 0) or ((form is defined and form is not null and not form.vars.valid) or (form1 is defined and form1 is not null and not form1.vars.valid) or (form2 is defined and form2 is not null and not form2.vars.valid)) %}
+                    <div id="errors" class="my-3">
+                        {% if (form is defined and form is not null and not form.vars.valid) %}
+                            {{ form_errors(form) }}
+                        {% endif %}
+                        {% if (form1 is defined and form1 is not null and not form1.vars.valid) %}
+                            {{ form_errors(form1) }}
+                        {% endif %}
+                        {% if (form2 is defined and form2 is not null and not form2.vars.valid) %}
+                            {{ form_errors(form2) }}
+                        {% endif %}
+
+                        {% if errors is defined and errors|length > 0 %}
+                            <ul>
+                                {% for error in errors %}
+                                    <li class="error">{{ error }}</li><br/>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endspaceless %}
+        </div>
+    {% endif %}
     {% block notices %}
         {% set notice_bag = app.request.session.flashbag.get('yb_notice') %}
         {% if notice_bag is not empty %}
@@ -66,10 +124,10 @@
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body text-center">
-                            <h4>Thank you!</h4>
+                            <h4>{{ 'notice.title'|trans }}</h4>
                             <p>{{ message }}</p>
-                            <button class="btn btn-success" data-dismiss="modal"><span>Back to website</span> <i class="far fa-arrow-alt-circle-right"></i>
-
+                            <button class="btn btn-success" data-dismiss="modal">
+                                <span>{{ 'notice.back'|title }}</span><i class="far fa-arrow-alt-circle-right"></i>
                             </button>
                         </div>
                     </div>
@@ -89,18 +147,18 @@
                     <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
                         <ul class="list-inline mb-2">
                             <li class="list-inline-item">
-                                <a class="js-scroll-trigger" href="#about">About</a>
+                                <a class="js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">{{ 'footer.about'|trans }}</a>
                             </li>
                             <li class="list-inline-item">&sdot;</li>
                             <li class="list-inline-item">
-                                <a class="js-scroll-trigger" href="#contact">Contact</a>
+                                <a class="js-scroll-trigger" href="{{ path('yb_index') ~ "#contact"}}">{{ 'footer.contact'|trans }}</a>
                             </li>
                             <li class="list-inline-item">&sdot;</li>
                             <li class="list-inline-item">
-                                <a href="#">Terms of Use</a>
+                                <a href="{{ path('yb_terms') }}">{{ 'footer.terms'|trans }}</a>
                             </li>
                         </ul>
-                        <p class="text-muted small mb-4 mb-lg-0">&copy; Ticked-it 2018. All Rights Reserved.</p>
+                        <p class="text-muted small mb-4 mb-lg-0">{{ 'footer.copyright'|trans|nl2br }}</p>
                     </div>
                 </div>
             </div>
@@ -116,6 +174,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://js.stripe.com/v2/"></script>
+
     <script
             src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
             integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
@@ -130,23 +191,23 @@
 
     {% if app.environment == 'prod' %}
 
-        <!-- Google Tag Manager
+        <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-KFPJV6V');</script>
+            })(window,document,'script','dataLayer','GTM-P5LTWLR');</script>
         <!-- End Google Tag Manager -->
 
-        <!-- Global site tag (gtag.js) - Google Analytics
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109142671-1"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109142671-2"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'UA-109142671-1');
-        </script>-->
+            gtag('config', 'UA-109142671-2');
+        </script>
     {% endif %}
     {% block additional_javascripts %}{% endblock %}
 {% endblock %}

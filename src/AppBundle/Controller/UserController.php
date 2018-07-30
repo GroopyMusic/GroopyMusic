@@ -112,25 +112,6 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/cart", name="user_cart")
-     */
-    public function cartAction(UserInterface $user)
-    {
-
-        $em = $this->getDoctrine()->getManager();
-        $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-
-        if ($cart == null) {
-            $cart = $this->createCartForUser($user);
-            $em->flush();
-        }
-
-        return $this->render('@App/User/cart.html.twig', array(
-            'cart' => $cart,
-        ));
-    }
-
-    /**
      * @Route("/paid-carts", name="user_paid_carts")
      */
     public function paidCartsAction(Request $request, UserInterface $user)
@@ -147,7 +128,6 @@ class UserController extends Controller
             'is_payment' => $is_payment,
         ));
     }
-
 
     /**
      * @Route("/my-artists", name="user_my_artists")
@@ -327,7 +307,6 @@ class UserController extends Controller
      */
     public function advancedAction(Request $request, UserInterface $user)
     {
-
         /** @var User $user */
         $form = $this->createFormBuilder(['submit' => false])
             ->add('submit', SubmitType::class, array(
@@ -450,27 +429,25 @@ class UserController extends Controller
      */
     public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em)
     {
-
-        $contract = $cart->getFirst();
-        if ($contract->isRefunded() || $contract->getUser() != $user) {
+        if ($cart->isRefunded() || $cart->getUser() != $user) {
             throw $this->createAccessDeniedException();
         }
 
-        if (empty($contract->getBarcodeText())) {
-            $contract->generateBarCode();
+        if (empty($cart->getBarcodeText())) {
+            $cart->generateBarCode();
         }
 
         $finder = new Finder();
-        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
-        $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::ORDERS_DIRECTORY);
+        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $cart->getPdfPath();
+        $finder->files()->name($cart->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $cart::ORDERS_DIRECTORY);
 
         if (count($finder) == 0) {
-            $writer->writeOrder($contract);
-            $em->persist($contract);
+            $writer->writeOrder($cart);
+            $em->persist($cart);
             $em->flush();
             $finder = new Finder();
-            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getPdfPath();
-            $finder->files()->name($contract->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::ORDERS_DIRECTORY);
+            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $cart->getPdfPath();
+            $finder->files()->name($cart->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $cart::ORDERS_DIRECTORY);
         }
 
         foreach ($finder as $file) {
@@ -490,10 +467,8 @@ class UserController extends Controller
     /**
      * @Route("/user/tickets/{id}", name="user_get_tickets")
      */
-    public function getTicketsAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em)
+    public function getTicketsAction(Request $request, UserInterface $user, ContractFan $contract, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em)
     {
-
-        $contract = $cart->getFirst();
         if ($contract->isRefunded() || $contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
             throw $this->createAccessDeniedException();
         }
@@ -503,10 +478,6 @@ class UserController extends Controller
         $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
 
         if (count($finder) == 0) {
-
-            // TODO is this line necessary ?
-            $writer->writeOrder($contract);
-
             $ticketingManager->generateTicketsForContractFan($contract);
             $writer->writeTickets($contract->getTicketsPath(), $contract->getTickets());
             $contract->setcounterpartsSent(true);
