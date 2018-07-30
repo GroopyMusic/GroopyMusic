@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,6 +16,7 @@ class ContractFan
 {
     const ORDERS_DIRECTORY = 'pdf/orders/';
     const TICKETS_DIRECTORY = 'pdf/tickets/';
+    const VOTES_TO_REFUND = 2;
 
     public function __toString()
     {
@@ -50,6 +52,26 @@ class ContractFan
         $this->ticket_rewards = new ArrayCollection();
     }
 
+    public function getState() {
+        if($this->refunded) {
+            return 'Remboursé';
+        }
+
+        elseif($this->isPaid()) {
+            return 'Payé';
+        }
+
+        else {
+            return '';
+        }
+    }
+
+    public function initAmount() {
+        $this->amount = array_sum(array_map(function(Purchase $purchase) {
+            return $purchase->getAmount();
+        }, $this->purchases->toArray()));
+    }
+
     public function isPaid()
     {
         return $this->getPaid();
@@ -58,6 +80,28 @@ class ContractFan
     public function isRefunded()
     {
         return $this->getRefunded();
+    }
+
+    public function isRefundReady() {
+        return count($this->asking_refund) >= self::VOTES_TO_REFUND;
+    }
+
+    public function isAskedRefundBy(User $user) {
+        return $this->asking_refund->contains($user);
+    }
+
+    public function isAskedRefundByOne() {
+        return count($this->asking_refund) >= 1;
+    }
+
+    public function isOneStepFromBeingRefunded() {
+        return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
+    }
+
+    public function getTresholdIncrease() {
+        return array_sum(array_map(function(Purchase $purchase) {
+            return $purchase->getThresholdIncrease();
+        }, $this->purchases->toArray()));
     }
 
     public function generateBarCode()
@@ -77,6 +121,20 @@ class ContractFan
                     $this->addTicket(new Ticket($this, $counterPart, $j));
                 }
             }
+        }
+    }
+
+    public function getEmail() {
+        return $this->getPhysicalPerson()->getEmail();
+    }
+
+    /** @return PhysicalPersonInterface */
+    public function getPhysicalPerson() {
+        if($this->getContractArtist() instanceof YBContractArtist) {
+            return $this->getCart()->getYbOrder();
+        }
+        else {
+            return $this->getUser();
         }
     }
 
@@ -265,6 +323,13 @@ class ContractFan
      * @ORM\OneToMany(targetEntity="RewardTicketConsumption", mappedBy="contractFan",cascade={"all"})
      */
     private $ticket_rewards;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\JoinColumn(name="contract_fan_refund_request")
+     */
+    private $asking_refund;
 
     /**
      * Get id
@@ -476,6 +541,9 @@ class ContractFan
      */
     public function getPayment()
     {
+        if($this->cart != null) {
+            return $this->cart->getPayment();
+        }
         return $this->payment;
     }
 
@@ -607,5 +675,39 @@ class ContractFan
     public function getTicketRewards()
     {
         return $this->ticket_rewards;
+    }
+
+    /**
+     * Add askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     *
+     * @return ContractFan
+     */
+    public function addAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund[] = $askingRefund;
+
+        return $this;
+    }
+
+    /**
+     * Remove askingRefund
+     *
+     * @param \AppBundle\Entity\User $askingRefund
+     */
+    public function removeAskingRefund(\AppBundle\Entity\User $askingRefund)
+    {
+        $this->asking_refund->removeElement($askingRefund);
+    }
+
+    /**
+     * Get askingRefund
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAskingRefund()
+    {
+        return $this->asking_refund;
     }
 }

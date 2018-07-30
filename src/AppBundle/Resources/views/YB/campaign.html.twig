@@ -1,0 +1,91 @@
+{% extends 'yb/base.html.twig' %}
+{% trans_default_domain 'yb' %}
+
+{% set photo = campaign.photo is not null ? campaign.photo : false %}
+
+{% block header_container %}
+    <header class="masthead campaign-masthead text-white" {% if photo %}style="background-image: url('{{ absolute_url(asset(campaign.webPath(photo))) }}');"{% endif %} >
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 mx-auto">
+                    <h1 class="mb-5">{{ campaign.getTitle }}</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        {% set is_event = campaign.dateEvent is not null %}
+
+        <div class="row">
+            <div class="col-12 col-md-7">
+                {% if is_event %}
+                    <div class="mb-2">
+                        <b>Date : {{ campaign.dateEvent|date('d/m/Y') }}</b>
+                    </div>
+                {% endif %}
+
+                {{ campaign.getDescription|nl2br }}
+
+                {% if campaign.campaignPhotos is not empty %}
+                    {% for photo in campaign.campaignPhotos %}
+                        <img class="img-fluid d-block py-3" src="{{ asset(campaign.webPath(photo)) }}" />
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="col-12 col-md-5">
+                <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
+
+                {% if campaign.isCrowdable %}
+                    {{ form_start(form) }}
+
+                    {% for purchase in form.purchases %}
+                        {% set counterpart = purchase.vars.value.counterpart %}
+                        <div class="counterpart-form p-3 my-2 border">
+
+                            <div class="form-group form-row">
+                                {{ form_errors(purchase) }}
+
+                                <div class="col-8">
+                                    <label class="font-weight-bold">{{ counterpart.name }}</label>
+                                </div>
+                                <div class="col-4">
+                                    {{ counterpart.price }} €
+                                </div>
+                                <div class="col-8">{{ counterpart.getDescription|raw }}</div>
+                                <div class="col-4">
+                                    <div class="container px-0">
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-left-minus btn btn-secondary btn-number"  data-type="minus" data-field="">
+                                                    <i class="text-white fas fa-minus"></i>
+                                                </button>
+                                            </span>
+                                            {{ form_widget(purchase.quantity) }}
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-field="">
+                                                    <i class="text-white fas fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {{ form_widget(form.submit) }}
+
+                    {{ form_end(form) }}
+                {% else %}
+                    <p>Il n'est plus possible de contribuer à cette campagne.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

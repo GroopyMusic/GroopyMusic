@@ -1,0 +1,87 @@
+{% block style %}
+    <style type="text/css">
+        .header {
+            text-align: center;
+            color: #ea900c;
+            font-weight: bold;
+        }
+
+        #content {
+            margin-left: 20px;
+        }
+
+        h1 {
+            text-align:center;
+            color: #ea900c;
+        }
+        td, th {
+            padding: 5px 10px;
+        }
+        .footer {
+            background-color: #607D8B;
+            width: 100%;
+            padding: 20px 20px;
+            color: white;
+        }
+        .footer p {
+            margin: 0 auto;
+            text-align:center;
+            color: white;
+        }
+
+        a, a:visited {
+            color: inherit;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-secondary {
+            color: #4a4b4d;
+        }
+
+        .text-bold {
+            font-weight: bold;
+        }
+
+        {% block additional_styles %}
+        {% endblock %}
+    </style>
+{% endblock %}
+
+{% block page %}
+    <page {% block page_margins %}backtop="25mm" backbottom="30mm" backleft="10mm" backright="10mm"{% endblock %}>
+        {% block header %}
+            <page_header>
+                <div class="header">
+                    {% block header_content %}
+                        <h1>Ticked-it!</h1>
+                    {% endblock %}
+                </div>
+            </page_header>
+        {% endblock %}
+        {% block footer %}
+            <page_footer>
+                <div class="footer">
+                    {% block footer_content %}
+                        <p>
+                            Ticked-it! - info@ticked-it.be
+                        </p>
+                    {% endblock %}
+                </div>
+            </page_footer>
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+    </page>
+{% endblock %}

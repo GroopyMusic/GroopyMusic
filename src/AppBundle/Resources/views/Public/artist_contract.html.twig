@@ -10,11 +10,20 @@
     {% set og_src = absolute_url(asset(artist.webPath(photos|first))) %}
 {% endif %}
 
-{% block description_part_1 %}{{ 'meta_description_event'|trans({'%artist%': artist.artistname, '%date%': contract.dateConcert|date('j') ~ ' ' ~ ('months.' ~ contract.dateConcert|date('m'))|trans}) }}{% endblock %}
+{% set artists_str = '' %}
+{% for artist in contract.allArtists %}
+    {% if not loop.first and loop.last %}
+         {% set artists_str = artists_str ~ ' & '%}
+    {% elseif not loop.first %}
+        {% set artists_str = artists_str ~ ', '%}
+    {% endif %}
+    {% set artists_str = artists_str ~ artist.artistname %}
+{% endfor %}
+{% block description_part_1 %}{{ 'meta_description_event'|trans({'%artists%': artists_str}) }}{% endblock %}
 
 {% block open_graph %}
     <meta property="og:title"
-          content="{{ contract.dateConcert|date('j') }} {{ contract.dateConcert|date('M')|trans }} - {{ 'event.og_title'|trans({'%artist%':contract.artist.artistname})|raw }}"/>
+          content="{{ contract.getTitle }}"/>
     <meta property="og:type" content="article"/>
     <meta property="og:url"
           content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
@@ -24,8 +33,6 @@
 {% set owns = app.user is not null ? app.user.owns(contract.artist) : false %}
 {% set state = contract.state %}
 
-{% set hall_confirmed = (contract.hallConcert is not null) %}
-{% set hall_potential = (state not in contract.uncrowdableStates and potential_halls is not empty) %}
 {% set first_counterpart = contract.firstCounterPart %}
 
 {% block body %}
@@ -33,14 +40,11 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2">
-                <h2 class="text-center">{{ 'event.title'|trans({'%artist%':contract.artist.artistname})|raw }}</h2>
+                <h2 class="text-center">{{ contract.getTitle }}</h2>
             </div>
         </div>
 
-        {% if contract.inSuccessfulState and contract.isDDay and state not in contract.uncrowdableStates %}
-        <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
-                               src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.dday'|trans|raw }}</p>
-        {% elseif state not in contract.uncrowdableStates and contract.isLastSellingDate %}
+        {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
             <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block"
                                    src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.tickets'|trans|raw }}
             </p>
@@ -77,69 +81,41 @@
         {% set tickets_left = contract.totalNbAvailable %}
         <div class="row mt-4">
             <div class="col-12 col-lg-8">
+
+                <div class="col-12 content-box">
+                    <div class="content-box-header">
+                        <h3>{{ 'event.lineup.title'|trans|raw }}</h3>
+                    </div>
+                    <div class="content-box-content">
+                        {% for day in contract.festivalDays %}
+                            <h4>{{ ('Days ' ~ day.date|date('w'))|trans }} {{ day.date|date('j') }} {{ ('months.' ~ day.date|date('m'))|trans }}</h4>
+                            <table class="content-box-table">
+                                <tbody>
+                                <tr>
+                                    <td class="contract-info-title">{{ 'doors_opening' }}</td>
+                                    <td>
+                                        {{ day.date|date('H:i') }}
+                                    </td>
+                                </tr>
+
+                                {% for performance in day.performances %}
+                                    <tr>
+                                        {% if contract.knownLineup %}<td class="contract-info-title">{{ performance.time|date('H:i') }}</td>{% endif %}
+                                        <td {% if not contract.knownLineup %}colspan="2"{% endif %}>
+                                            <a href="{{ path('artist_profile', {'id': performance.artist.id, 'slug': performance.artist.slug}) }}">{{ performance.artist.artistname }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                    </div>
+                </div>
+
                 <div class="content-box">
                     <div class="content-box-content text-center">
 
                         <h3 class="mb-3">{{ 'event.infos.title'|trans|raw }}</h3>
-
-                        <div class="col-12 row equal content-box-row">
-                            <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
-                                    {{ 'event.infos.date'|trans|raw }}
-                                </div>
-                                <div class="contract-info-content">
-                                    {{ contract.dateConcert|date('d/m/Y') }}
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                    {{ 'event.infos.opening_date'|trans|raw }}
-                                </div>
-                                <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                    {{ contract.startDate|date('d/m/Y') }}
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-4 content-box-col">
-
-                                {% if state in contract.successfulStates %}
-                                    {% if state is constant('STATE_SUCCESS_SOLDOUT', contract) %}
-                                        <div class="um-label">
-                                            SOLD <br/> OUT
-                                        </div>
-                                    {% else %}
-                                        <div class="contract-info-title">
-                                            {{ 'event.infos.closing_date'|trans|raw }}
-                                        </div>
-                                        <div class="contract-info-content">
-                                            {{ contract.lastSellingDate|date('d/m/Y') }}
-                                        </div>
-                                    {% endif %}
-                                {% else %}
-                                    <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                        {{ 'event.infos.validation_date'|trans|raw }}
-                                    </div>
-                                    <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                        {{ contract.dateEnd|date('d/m/Y') }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-12 row equal content-box-row no-border-top">
-                            <div class="col-12 content-box-col">
-                                <span class="contract-info-title pr-2">
-                                    {{ 'event.infos.step'|trans|raw }}
-                                </span>
-
-                                <span class="contract-info-content pr-1">
-                                {{ contract.step }}<a href="#" data-toggle="popover" title="{{ contract.step }}"
-                                                      class="ml-2 px-1 py-0 btn btn-outline-primary"
-                                                      data-content="{{ contract.step.getDescription }}<br />
-                                                      <a href='{{ path('faq') }}'>{{ 'more_info'|trans|raw }}</a>">?</a>
-                                </span>
-                            </div>
-                        </div>
 
                         <div class="col-12 content-box-col">
                             <span class="contract-info-title pr-2">
@@ -156,15 +132,11 @@
 
                         <div class="col-12 row equal content-box-row">
                             <div class="col-12 col-md-4 content-box-col">
-                                <div class="contract-info-title">
-                                    {{ 'event.infos.province'|trans|raw }}
+                                <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
+                                    {{ 'event.infos.validation_date'|trans|raw }}
                                 </div>
-                                <div class="contract-info-content">
-                                    {% if hall_confirmed %}
-                                        {{ contract.hallConcert.province }}
-                                    {% else %}
-                                        {{ contract.province ?: 'event.infos.no_province'|trans|raw }}
-                                    {% endif %}
+                                <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
+                                    {{ contract.dateEnd|date('d/m/Y') }}
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 content-box-col">
@@ -207,68 +179,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="content-box">
-                    <div class="content-box-content">
-
-                        <h3 class="mb-3 text-center"> {{ 'event.about_host.title'|trans|raw }}</h3>
-
-                        <div class="um-semi-bold">{{ artist.artistname }}</div>
-                        <p>{{ artist.getShortDescription }}</p>
-
-                        {% if artist.genres is not empty %}
-                            <div class="mb-3">
-                                <span class="contract-info-title small"> {{ 'event.about_host.genres'|trans|raw }}</span>
-                                {% for genre in artist.genres %} {{ genre }} {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        <p class="text-center"><a
-                                    href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}"
-                                    class="btn btn-outline-primary"> {{ 'event.about_host.see_profile'|trans|raw }}</a>
-                        </p>
-                    </div>
-                </div>
             </div>
             <div class="col-12 col-lg-4">
-                <div class="col-12 content-box">
-                    <div class="content-box-header">
-                        <h3>{{ 'event.lineup.title'|trans|raw }}</h3>
-                    </div>
-                    <div class="content-box-content">
-                        <table class="content-box-table">
-                            <tbody>
-                            <tr>
-                                <td class="contract-info-title">{{ 'event.lineup.host'|trans|raw }}</td>
-                                <td>
-                                    <a href="{{ path('artist_profile', {'id': contract.artist.id, 'slug': contract.artist.slug}) }}">{{ contract.artist.artistname }}
-                                </td>
-                            </tr>
-                            {% set i = 1 %}
-                            {% for coartist_artist in contract.coartistsList %}
-                                {% set coartist = coartist_artist.artist %}
-                                <tr>
-                                    <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}
-                                        &nbsp;{{ i }}</td>
-                                    <td>
-                                        <a href="{{ path('artist_profile', {'id': coartist.id, 'slug': coartist.slug}) }}">{{ coartist.artistname }}</a>
-                                    </td>
-                                </tr>
-                                {% set i = i + 1 %}
-                            {% endfor %}
-                            {% if i <= 2 %}
-                                {% for j in i..2 %}
-                                    <tr>
-                                        <td class="contract-info-title"> {{ 'event.lineup.invited'|trans|raw }}
-                                            &nbsp;{{ j }}</td>
-                                        <td><i> {{ 'event.lineup.tbc'|trans|raw }}</i></td>
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 <div class="col-12 content-box mt-4">
                     <div class="content-box-header">
                         {% if state not in contract.uncrowdableStates %}
@@ -302,14 +214,19 @@
                                             <div class="container px-0">
                                                 <div class="count-input space-bottom">
                                                     <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                                    {{ form_widget(purchase) }}
+                                                    {{ form_widget(purchase.quantity) }}
                                                     <a class="incr-btn" data-action="increase"
-                                                       data-max="{{ tickets_left }}"
+                                                       data-max="{{ contract.nbAvailable(counterpart) }}"
                                                        href="#">&plus;</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    {% if counterpart.potentialArtists is not empty %}
+                                        <div class="select2-artists">
+                                            {{ form_row(purchase.artists) }}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             {#{{ form_row(form.user_rewards) }}#}
@@ -352,31 +269,25 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if hall_confirmed or hall_potential %}
+
+                {% if not contract.hasNoDefinedHall %}
                     <div class="col-12 content-box mt-4">
                         <div class="content-box-header">
-                            {% if hall_confirmed %}
-                                <h3>{{ 'event.hall.known'|trans|raw }}</h3>
-                            {% else %}
-                                <h3>{{ 'event.hall.unknown'|trans|raw }}</h3>
-                            {% endif %}
+                            <h3>{{ 'event.hall.known'|trans|raw }}</h3>
                         </div>
+
                         <div class="content-box-content">
                             <div id="carouselPotentialHalls" class="carousel slide" data-ride="carousel">
                                 <div class="carousel-inner">
-                                    {% if hall_confirmed %}
-                                        <div class="carousel-item active">
-                                            {% include 'AppBundle:Public/Card:hall.html.twig' with {'hall': contract.hallConcert, 'xs': 12, 'md':12, 'no_rotation_hall':false} %}
+                                    {% set i = 0 %}
+                                    {% for hall in contract.festivalHalls if hall is not null %}
+                                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                            {% include 'AppBundle:Public/Card:hall.html.twig' with {'xs': 12, 'md':12, 'no_rotation_hall':true} %}
                                         </div>
-                                    {% else %}
-                                        {% for hall in potential_halls %}
-                                            <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                                {% include 'AppBundle:Public/Card:hall.html.twig' with {'xs': 12, 'md':12, 'no_rotation_hall':true} %}
-                                            </div>
-                                        {% endfor %}
-                                    {% endif %}
+                                        {% set i = i + 1 %}
+                                    {% endfor %}
                                 </div>
-                                {% if not hall_confirmed and potential_halls|length > 1 %}
+                                {% if i > 1 %}
                                     <a class="carousel-control-prev" href="#carouselPotentialHalls" role="button"
                                        data-slide="prev">
                                         <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-1"
@@ -410,19 +321,22 @@
     {
       "@context": "http://schema.org",
       "@type": "Event",
-      "name": "{{ artist }} - Un-Mute Festival",
-      "startDate": "{{ contract.dateConcert|date('Y-m-d') }}T19:00",
-      "endDate": "{{ contract.dateConcert|date('Y-m-d') }}T22:30",
-      {% if hall_confirmed %}
+      "name": "Un-Mute Festival",
+      {% set firstdate = contract.festivalDates|first %}
+      {% set lastdate = contract.festivalDates|last %}
+      "startDate": "{{ firstdate|date('Y-m-d\\TH:i') }}",
+      "endDate": "{{ lastdate|date('Y-m-d') }}T23:59",
+      {% if not contract.hasNoDefinedHall %}
+        {% set firsthall = contract.firstHall %}
       "location": {
         "@type": "Place",
-        "name": "{{ contract.hallConcert }}",
+        "name": "{{ firsthall.name }}",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "{{ contract.hallConcert.address.naturalStreet }}",
-          "addressLocality": "{{ contract.hallConcert.address.city }}",
-          "postalCode": "{{ contract.hallConcert.address.zipcode }}",
-          "addressCountry": "{{ contract.hallConcert.address.country }}"
+          "streetAddress": "{{ firsthall.address.naturalStreet }}",
+          "addressLocality": "{{ firsthall.address.city }}",
+          "postalCode": "{{ firsthall.address.zipcode }}",
+          "addressCountry": "{{ firsthall.address.country }}"
         }
       },
       {% endif %}

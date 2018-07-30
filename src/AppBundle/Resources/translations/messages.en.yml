@@ -17,7 +17,6 @@ meta_description_2: Met Un-Mute bepaal jij, het publiek, welke artiesten je wilt
 meta_description: The first Belgian concert crowdfunding platform. With Un-Mute, fans choose the artists they wish to see perform in their area. Just buy the tickets before the cut-off date - the concert takes place if the minimum number of tickets are sold!
 meta_description_event: Discover %artist% on stage on %date%!
 meta_description_artist: Discover %artist% on Un-Mute.
-meta_description_hall: "Un-Mute partner: %hall%."
 meta_description_sales: Discover the new exclusive album on Un-Mute
 meta_description_pot: Buy your tickets at the price of your choice to show your support for our artists
 
@@ -94,7 +93,6 @@ static_menu:
   team: Our team
   faq: FAQ
   catalog_artists: Artist catalogue
-  catalog_halls: Venue catalogue
   catalog_events: Upcoming events
   conditions: Conditions
   contact: Contact
@@ -206,25 +204,7 @@ contact:
     explanation: Apparently, yolu haven't entered any email address. We won't be able to contact you back if needed...
     confirm: Send
     cancel: Cancel
-  confirmation: Your message has well been received. 
-
-catalog_halls:
-  title: Partners
-  intro: Everywhere in Belgium, venues encourage the musical production of our artists. Discover our partner venues in which festivals are likely to be organized.
-  empty: There is no venue on Un-Mute for now.
-
-hall:
-  short_description_label: In a few words
-  description_label: Description
-  ephemeral:
-    intro: This venue is <strong>ephemeral</strong>. Events are likely to be organized
-    known_dates: between %firstDate% and %lastDate%
-    unknown_dates: for a limited period
-  infos:
-    title: Characteristics
-    capacity: Capacity
-    province: Province
-    website: Website
+  confirmation: Your message has well been received.
 
 catalog_artists:
   title: Our artists
@@ -583,11 +563,11 @@ error:
 header:
   slogan: The crowdfunding platform for festivals & musical projects
   nav:
-    home: Accueil
+    home: Home
     about: About
     artists: Artists
-    partners: Venues
-    events: Events
+    tickets: Tickets
+    events: Festivals
     sign_up: Sign up
     sign_in: Sign in
     all_notifications: All notifications
@@ -635,14 +615,6 @@ jplist:
   sort_by: Sort by
   no_results: No results found
   action: Filter...
-
-catalog_halls:
-  filtering:
-    name_asc: Name A-Z
-    name_desc: Name Z-A
-    capacity_asc: Capacity -
-    capacity_desc: Capacity +
-    search_name: Search...
 
 catalog_artists:
   filtering:
@@ -765,7 +737,7 @@ order_pdf:
 tickets_pdf:
   rewards: "- Un-Mute rewards" # new
   ticket:
-    title: Un-Mute Festival @%hall_name%
+    title: Discovery Festival
     is_entry: |
         This ticket is your entrance fee.
         Please present it on a readable support.

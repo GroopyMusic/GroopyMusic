@@ -30,7 +30,7 @@ class Ticket
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
-            $this->name = $cf->getUser()->getDisplayName();
+            $this->name = $cf->getPhysicalPerson()->getDisplayName();
         } else {
             $this->barcode_text = $this->generateBarCode($num);
             $this->contractArtist = $contractArtist;
@@ -116,9 +116,9 @@ class Ticket
     private $name;
 
     /**
-     * @var ContractArtist
+     * @var BaseContractArtist
      *
-     * @ORM\ManyToOne(targetEntity="ContractArtist")
+     * @ORM\ManyToOne(targetEntity="BaseContractArtist")
      */
     private $contractArtist;
 
@@ -290,11 +290,11 @@ class Ticket
     /**
      * Set contractArtist
      *
-     * @param \AppBundle\Entity\ContractArtist $contractArtist
+     * @param \AppBundle\Entity\BaseContractArtist $contractArtist
      *
      * @return Ticket
      */
-    public function setContractArtist(\AppBundle\Entity\ContractArtist $contractArtist = null)
+    public function setContractArtist(\AppBundle\Entity\BaseContractArtist $contractArtist = null)
     {
         $this->contractArtist = $contractArtist;
 
@@ -304,7 +304,7 @@ class Ticket
     /**
      * Get contractArtist
      *
-     * @return \AppBundle\Entity\ContractArtist
+     * @return \AppBundle\Entity\BaseContractArtist
      */
     public function getContractArtist()
     {

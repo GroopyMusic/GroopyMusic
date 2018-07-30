@@ -121,4 +121,26 @@ class Select2Controller extends Controller
         return new Response(json_encode($contractArtistsArray), 200, array('Content-Type' => 'application/json'));
     }
 
+    /**
+     * @Route("/counterpart-artists", name="select2_counterpart_artists")
+     */
+    public function counterpartArtistsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $counterPart_id = $request->get('counterpart');
+
+        $counterPart = $em->getRepository('AppBundle:CounterPart')->find($counterPart_id);
+        $artists = $counterPart->getPotentialArtists();
+        $artistsArray = [];
+
+        foreach ($artists as $artist) {
+            $artistsArray[] = array(
+                'id' => $artist->getId(),
+                'text' => $artist->__toString(),
+            );
+        }
+        return new Response(json_encode($artistsArray), 200, array('Content-Type' => 'application/json'));
+    }
+
 }

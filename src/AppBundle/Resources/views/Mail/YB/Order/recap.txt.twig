@@ -1,0 +1,34 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('yb.order.recap.intro', {
+                '%date%': cart.date|date('d/m/Y'),
+    })|raw }}
+
+    {% set threshold_announced = false %}
+
+    {% for contract in cart.contracts %}
+        {% if not threshold_announced and not contract.contractArtist.noThreshold %}
+            {{ email_content('yb.order.recap.threshold') }}
+            {% set threshold_announced = true %}
+        {% endif %}
+        {{ contract.contractArtist.getTitle|upper }}
+        {% for purchase in contract.purchases %}
+            --> {{ purchase }} - {{ purchase.amount }} €
+        {% endfor %}
+    {% endfor %}
+
+    {{ email_content('yb.order.recap.outro', {
+    })|raw }}
+
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/YB/Order:recap.html.twig' %}
+{% endblock %}

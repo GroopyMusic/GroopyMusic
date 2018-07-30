@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\YBOrder;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Cart
 {
+    const ORDERS_DIRECTORY = 'pdf/orders/festivals/';
+
     public function __toString()
     {
         $str = 'Panier ';
@@ -29,24 +33,27 @@ class Cart
         return $str . ' (valeur : ' . $this->getAmount() . ' €)';
     }
 
-    public function __construct()
+    public function __construct($um = true)
     {
         $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->confirmed = false;
         $this->paid = false;
         $this->date_creation = new \Datetime();
+        $this->um = $um;
     }
 
-    /** @return ContractFan */
-    public function getFirst() {
-        return $this->contracts->first();
+    private $um = true;
+
+    public function isRefunded() {
+        return $this->payment == null ? false : $this->payment->getRefunded();
     }
 
-    // For single-contract cart
+    public function isPaid() {
+        return $this->getPaid();
+    }
+
     public function getState() {
-        $contractFan = $this->contracts->first();
-
-        if($contractFan->getRefunded()) {
+        if($this->getPayment()->getRefunded()) {
             return 'Remboursé';
         }
 
@@ -55,7 +62,36 @@ class Cart
         }
     }
 
-    // TODO don't forget that counterparts have a maximum amount ; set to 10000 in DB
+    public function getFirst() {
+        return $this->contracts->first();
+    }
+
+    public function generateBarCode()
+    {
+        if (empty($this->barcode_text)) {
+            if ($this->um) {
+                $str = 'um';
+            } else {
+                $str = 'yb';
+            }
+
+            $str .= 'c' . $this->id . uniqid();
+
+            $this->barcode_text = $str;
+        }
+        return $this->barcode_text;
+    }
+
+    public function getOrderFileName()
+    {
+        return $this->getBarcodeText() . '.pdf';
+    }
+
+    public function getPdfPath()
+    {
+        return self::ORDERS_DIRECTORY . $this->getOrderFileName();
+    }
+
     public function isProblematic() {
         return false;
         foreach($this->contracts as $contract) {
@@ -69,11 +105,16 @@ class Cart
         return false;
     }
 
-    public function getAmount() {
-        return array_sum(array_map(function($contract) {
-            /** @var ContractFan $contract */
-            return $contract->getAmount();
-        }, $this->contracts->toArray()));
+    // Unmapped
+    private $amount = null;
+    public function getAmount() : int {
+        if($this->amount == null) {
+            $this->amount = array_sum(array_map(function($contract) {
+                /** @var ContractFan $contract */
+                return $contract->getAmount();
+            }, $this->contracts->toArray()));
+        }
+        return $this->amount;
     }
 
     public function getNbArticles() {
@@ -81,6 +122,28 @@ class Cart
             /** @var ContractFan $contract */
             return count($contract->getPurchases());
         }, $this->contracts->toArray()));
+    }
+
+    public function hasContract(ContractFan $cf) {
+        return $this->contracts->contains($cf);
+    }
+
+    /** @return PhysicalPersonInterface */
+    public function getPhysicalPerson() {
+        if($this->yb_order != null) {
+            return $this->yb_order;
+        }
+        else {
+            return $this->user;
+        }
+    }
+
+    public function getEmail() {
+        return $this->getPhysicalPerson()->getEmail();
+    }
+
+    public function getDate() {
+        return $this->yb_order != null ? $this->yb_order->getDate() : $this->date_creation;
     }
 
     /**
@@ -107,20 +170,41 @@ class Cart
     private $paid;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="ContractFan", mappedBy="cart", cascade={"all"})
      */
     private $contracts;
 
     /**
+     * @var null|User
      * @ORM\ManyToOne(targetEntity="User", inversedBy="carts")
      * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 
     /**
+     * @var \DateTime
      * @ORM\Column(name="date_creation", type="datetime")
      */
     private $date_creation;
+
+    /**
+     * @var Payment
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="cart")
+     */
+    private $payment;
+
+    /**
+     * @var string
+     * @ORM\Column(name="barcode_text", type="string", length=255, nullable=true)
+     */
+    private $barcode_text;
+
+    /**
+     * @var YBOrder
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\YBOrder", mappedBy="cart")
+     */
+    private $yb_order;
 
     /**
      * Get id
@@ -261,5 +345,77 @@ class Cart
     public function getDateCreation()
     {
         return $this->date_creation;
+    }
+
+    /**
+     * Set payment
+     *
+     * @param \AppBundle\Entity\Payment $payment
+     *
+     * @return Cart
+     */
+    public function setPayment(\AppBundle\Entity\Payment $payment = null)
+    {
+        $this->payment = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Get payment
+     *
+     * @return \AppBundle\Entity\Payment
+     */
+    public function getPayment()
+    {
+        return $this->payment != null ? $this->payment : $this->getFirst()->getPayment();
+    }
+
+    /**
+     * Set barcodeText
+     *
+     * @param string $barcodeText
+     *
+     * @return ContractFan
+     */
+    public function setBarcodeText($barcodeText)
+    {
+        $this->barcode_text = $barcodeText;
+
+        return $this;
+    }
+
+    /**
+     * Get barcodeText
+     *
+     * @return string
+     */
+    public function getBarcodeText()
+    {
+        return $this->barcode_text;
+    }
+
+    /**
+     * Set ybOrder
+     *
+     * @param \AppBundle\Entity\YB\YBOrder $ybOrder
+     *
+     * @return Cart
+     */
+    public function setYbOrder(\AppBundle\Entity\YB\YBOrder $ybOrder = null)
+    {
+        $this->yb_order = $ybOrder;
+
+        return $this;
+    }
+
+    /**
+     * Get ybOrder
+     *
+     * @return \AppBundle\Entity\YB\YBOrder
+     */
+    public function getYbOrder()
+    {
+        return $this->yb_order;
     }
 }

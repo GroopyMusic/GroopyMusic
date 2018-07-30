@@ -1,0 +1,51 @@
+{% extends 'yb/base.html.twig' %}
+{% trans_default_domain 'yb' %}
+
+{% if cart.contracts|length == 1 %}
+    {% set campaign = cart.first.contractArtist %}
+    {% set photo = campaign.photo is not null ? campaign.photo : false %}
+
+    {% block header_container %}
+        <header class="masthead checkout-masthead text-white" {% if photo %}style="background-image: url('{{ absolute_url(asset(campaign.webPath(photo))) }}');"{% endif %} >
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-9 mx-auto">
+                        <h1 class="mb-5 small">{{ campaign.getTitle }}</h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="container py-5">
+        <h2>Votre commande</h2>
+
+        <p>
+            Numéro de commande: <span class="text-muted">{{ cart.barcodeText }}</span>
+            <br /> Date de la commande : {{ cart.date|fancy_date }}
+            <br />Etat de la commande : {{ cart.state }}
+        </p>
+
+        {% for contract in cart.contracts %}
+            <h3>{{ contract.contractArtist.getTitle }}</h3>
+            <ul class="list-group">
+                {% for purchase in contract.purchases %}
+                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} €</span></li>
+                {% endfor %}
+            </ul>
+            <p><a href="{{ url('yb_get_tickets', {'code': contract.barcodeText}) }}"><i class="fas fa-file-download"></i> Télécharger les tickets</a></p>
+        {% endfor %}
+
+        <div class="py-2 text-right">
+            TOTAL : {{ cart.amount }} €
+        </div>
+
+        <p>
+            Cette page constitue une confirmation de commande mais n'est aucunement un droit d'entrée pour un événement.
+            Vos tickets y seront accessibles et vous seront envoyés par mail le cas échéant.
+        </p>
+    </div>
+{% endblock %}

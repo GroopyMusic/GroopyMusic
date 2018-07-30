@@ -34,8 +34,8 @@ class MailDispatcher
     const REPLY_TO = ["contact@un-mute.be"];
     const REPLY_TO_NAME = "Un-Mute ASBL";
 
-    const YB_REPLY_TO = ["pierre@un-mute.be"];
-    const YB_REPLY_TO_NAME = "Un-Mute ASBL";
+    const YB_REPLY_TO = ["info@ticked-it.be"];
+    const YB_REPLY_TO_NAME = "Ticked-it!";
 
     const ADMIN_TO = ["pierre@un-mute.be" => self::DEFAULT_LOCALE, "gonzague@un-mute.be" => self::DEFAULT_LOCALE];
 
@@ -281,15 +281,15 @@ class MailDispatcher
         $this->notification_dispatcher->notifyReminderArtistContract($users, $contract, $nb_days, $places);
     }
 
-    public function sendOrderRecap(ContractFan $contractFan)
+    public function sendOrderRecap(Cart $cart)
     {
         // TODO should be another way of getting pdf path
-        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '/../web/' . $contractFan->getPdfPath()];
+        $attachments = ['votreCommande.pdf' => $this->kernel->getRootDir() . '/../web/' . $cart->getPdfPath()];
 
-        $to = [$contractFan->getFan()->getEmail() => $contractFan->getFan()->getPreferredLocale()];
-        $toName = [$contractFan->getFan()->getDisplayName()];
+        $to = [$cart->getUser()->getEmail() => $cart->getUser()->getPreferredLocale()];
+        $toName = [$cart->getUser()->getDisplayName()];
         $subject = 'subjects.order_recap';
-        $params = ['motivations' => $contractFan->getContractArtist()->getMotivations()];
+        $params = [];
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::ORDER_RECAP_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
@@ -355,6 +355,20 @@ class MailDispatcher
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::REFUNDED_PAYMENT_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    public function sendRefundedContractFan(ContractFan $cf) {
+        $params = [
+            'cf' => $cf,
+        ];
+
+        $to = [$cf->getUser()->getEmail() => $cf->getUser()->getPreferredLocale()];
+        $toName = [$cf->getUser()->getDisplayName()];
+
+        $subject = 'subjects.refunded_contract_fan';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::REFUNDED_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
     public function sendArtistValidated(Artist $artist)
@@ -534,11 +548,36 @@ class MailDispatcher
         $subject = 'Contact form';
         $params = ['contact' => $contact];
         $subject_params = [];
-        $recipient = [$contact->getEmail()];
+        $recipient = [$contact->getEmail() => $this->translator->getLocale()];
         $recipientName = $contact->getName();
         $reply_to = self::YB_REPLY_TO;
         $reply_to_name = self::YB_REPLY_TO_NAME;
 
         $this->sendEmail(MailTemplateProvider::YB_CONTACT_COPY, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+    public function sendYBOrderRecap(Cart $cart) {
+        $subject = 'Your order on ticked-it.be';
+        $params = ['cart' => $cart];
+        $subject_params = [];
+        $recipient = [$cart->getEmail() => $this->translator->getLocale()];
+        $recipientName = '';
+        $reply_to = self::YB_REPLY_TO;
+        $reply_to_name = self::YB_REPLY_TO_NAME;
+
+        $this->sendEmail(MailTemplateProvider::YB_ORDER_RECAP, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+    public function sendYBTickets(ContractFan $cf) {
+        $subject = 'Your tickets are right here!';
+        $params = ['cf' => $cf];
+        $subject_params = [];
+        $recipient = [$cf->getEmail() => $this->translator->getLocale()];
+        $recipientName = '';
+        $reply_to = self::YB_REPLY_TO;
+        $reply_to_name = self::YB_REPLY_TO_NAME;
+        $attachments = ['ticked-it-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
+
+        $this->sendEmail(MailTemplateProvider::YB_TICKETS, $subject, $params, $subject_params, [], $attachments, $recipient, $recipientName, $reply_to, $reply_to_name);
     }
 }

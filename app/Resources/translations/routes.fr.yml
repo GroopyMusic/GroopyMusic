@@ -11,7 +11,7 @@ artist_ajax_remove_photo: '/artiste/{id}/api/remove-photo'
 artist_cancel_ownership_request: '/artiste/{id}/annuler-requete/{request_id}'
 
 # Desc: /events/{id}-{slug}
-artist_contract: '/evenements/{id}-concert-de-{slug}'
+artist_contract: '/evenements/{id}-{slug}'
 
 # Desc: /sales/{id}-{slug}
 artist_contract_sales: '/albums/{id}-{slug}'
@@ -48,9 +48,6 @@ catalog_artists: /artistes
 
 # Desc: /crowdfundings
 catalog_crowdfundings: /evenements
-
-# Desc: /halls
-catalog_halls: /salles
 
 # Desc: /conditons
 conditions: /conditons-generales
@@ -101,11 +98,9 @@ fos_user_security_login: /login
 fos_user_security_logout: /logout
 
 fp_js_form_validator:
-    # Desc: /fp_js_form_validator/check_unique_entity
-    check_unique_entity: /fp_js_form_validator/check_unique_entity
 
-# Desc: /halls/{id}-{slug}
-hall: '/salles/{id}-{slug}'
+# Desc: /fp_js_form_validator/check_unique_entity
+check_unique_entity: /fp_js_form_validator/check_unique_entity
 
 # Desc: /
 homepage: /
@@ -689,3 +684,4 @@ jmose_command_scheduler_list: /command-scheduler/list
 
 # Desc: /command-scheduler/monitor
 jmose_command_scheduler_monitor: /command-scheduler/monitor
+

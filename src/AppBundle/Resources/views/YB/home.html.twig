@@ -1,35 +1,16 @@
 {% extends "yb/base.html.twig" %}
+{% trans_default_domain 'yb' %}
 
-{% block nav %}
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand js-scroll-trigger" href="#home">Ticked-it!</a>
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fa fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav text-uppercase ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#pricing">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% block nav_details_links %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#services"}}">{{ 'menu.services'|trans }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#pricing"}}">{{ 'menu.pricing'|trans }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#contact"}}">{{ 'menu.contact'|trans }}</a>
+    </li>
 {% endblock %}
 
 {% block header %}
@@ -37,13 +18,13 @@
     <div class="container">
         <div class="row">
             <div class="col-xl-9 mx-auto">
-                <h1 class="mb-5">Your musical sales and events can start as online campaigns</h1>
+                <h1 class="mb-5">{{ 'home.headline'|trans }}</h1>
             </div>
             <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                 <form>
                     <div class="form-row">
                         <div class="col-12">
-                            <a type="submit" class="js-scroll-trigger btn btn-lg btn-secondary" href="#services">Discover our services</a>
+                            <a type="submit" class="js-scroll-trigger btn btn-lg btn-secondary" href="#services">{{ 'home.cta'|trans }}</a>
                         </div>
                     </div>
                 </form>
@@ -56,9 +37,9 @@
 
     <section id="about">
         <div class="container p-5">
-            <h2>About</h2>
+            <h2>{{ 'home.about.title'|trans }}</h2>
             <p class="big">
-                Want to create an online sales campaign? To sell tickets for an event? YB.com offers a 100% Belgian solution, which allows crowdfunding: you can set the goal of your campaign and refund all participants if necessary. The project team, young and settled in Brussels, accompanies you throughout the implementation of the campaign, with unbeatable rates on the ticketing market.
+                {{ 'home.about.content'|trans|nl2br }}
             </p>
         </div>
     </section>
@@ -66,15 +47,15 @@
     <!-- Icons Grid -->
     <section class="features-icons bg-light p-3 p-md-5" id="services">
         <div class="container">
-            <h2>Services</h2>
+            <h2>{{ 'home.services.title'|trans }}</h2>
             <div class="row text-center">
                 <div class="col-lg-3">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
                         <div class="features-icons-icon d-flex">
                             <i class="fas fa-ticket-alt mx-auto"></i>
                         </div>
-                        <h3>Ticketing</h3>
-                        <p class="lead mb-0">Sell entries for your events or other artistic goods with online campaigns</p>
+                        <h3>{{ 'home.services.ticketing.title'|trans }}</h3>
+                        <p class="lead mb-0">{{ 'home.services.ticketing.content'|trans }}</p>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -82,8 +63,8 @@
                         <div class="features-icons-icon d-flex">
                             <i class="fas fa-bullseye mx-auto"></i>
                         </div>
-                        <h3>Flexible objectives</h3>
-                        <p class="lead mb-0">You decide the success threshold for your campaigns</p>
+                        <h3>{{ 'home.services.flexibility.title'|trans }}</h3>
+                        <p class="lead mb-0">{{ 'home.services.flexibility.content'|trans }}</p>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -91,8 +72,8 @@
                         <div class="features-icons-icon d-flex">
                             <i class="fas fa-hand-holding-usd mx-auto"></i>
                         </div>
-                        <h3>No financial risk</h3>
-                        <p class="lead mb-0">If the campaign fails, you can refund everyone for free; no financial risk, even for you!</p>
+                        <h3>{{ 'home.services.no_risk.title'|trans }}</h3>
+                        <p class="lead mb-0">{{ 'home.services.no_risk.content'|trans }}</p>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -100,8 +81,8 @@
                         <div class="features-icons-icon d-flex">
                             <i class="fas fa-lock mx-auto"></i>
                         </div>
-                        <h3>Secure</h3>
-                        <p class="lead mb-0">All payments and refunds are fully secured</p>
+                        <h3>{{ 'home.services.security.title'|trans }}</h3>
+                        <p class="lead mb-0">{{ 'home.services.security.content'|trans }}</p>
                     </div>
                 </div>
 
@@ -115,22 +96,22 @@
             <div class="row no-gutters" id="services-step-1">
                 <div class="col-lg-6 order-lg-2 text-white showcase-img"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text">
-                    <h3>You could organize your private events...</h3>
-                    <p class="lead mb-0">... without taking any risk!</p>
+                    <h3>{{ 'home.examples.example_1.title'|trans }}</h3>
+                    <p class="lead mb-0">{{ 'home.examples.example_1.content'|trans }}</p>
                 </div>
             </div>
             <div class="row no-gutters" id="services-step-2">
                 <div class="col-lg-6 text-white showcase-img"></div>
                 <div class="col-lg-6 my-auto showcase-text">
-                    <h3>And what if you want to book an artist in your venue?</h3>
-                    <p class="lead mb-0">Well, start an online campaign to test the public interest.</p>
+                    <h3>{{ 'home.examples.example_2.title'|trans }}</h3>
+                    <p class="lead mb-0">{{ 'home.examples.example_2.content'|trans }}</p>
                 </div>
             </div>
             <div class="row no-gutters" id="services-step-3">
                 <div class="col-lg-6 order-lg-2 text-white showcase-img"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text">
-                    <h3>Online sales campaigns are also possible</h3>
-                    <p class="lead mb-0">Just contact us to start your campaign; we'll see what we can tailor for you.</p>
+                    <h3>{{ 'home.examples.example_3.title'|trans }}</h3>
+                    <p class="lead mb-0">{{ 'home.examples.example_3.content'|trans }}</p>
                 </div>
             </div>
         </div>
@@ -138,48 +119,39 @@
 
     <section id="pricing" class="p-3 p-md-5">
         <div class="container">
-            <h2>Pricing</h2>
+            <h2>{{ 'home.pricing.title'|trans }}</h2>
             <div class="card-deck mb-3 text-center">
                 <div class="card mb-4 box-shadow my-auto">
                     <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Ticketing campaign</h4>
+                        <h4 class="my-0 font-weight-normal">{{ 'home.pricing.campaign_1.title'|trans }}</h4>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mt-3 mb-4">
-                            <li>Tickets generation for your events</li>
-                            <li>QR codes for easy scanning</li>
-                            <li>You choose the tickets prices or let the customer choose</li>
-                            <li>Free refunds</li>
-                            <li>Email & phone support</li>
+                            {{ 'home.pricing.campaign_1.list'|trans|raw }}
                         </ul>
-                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">Contact us</a>
+                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">{{ 'home.pricing.contact_us'|trans }}</a>
                     </div>
                 </div>
                 <div class="card mb-4 box-shadow my-auto">
                     <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Sales campaign</h4>
+                        <h4 class="my-0 font-weight-normal">{{ 'home.pricing.campaign_2.title'|trans }}</h4>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mt-3 mb-4">
-                            <li>Sell different types of goods</li>
-                            <li>You choose the goods prices or let the customer choose</li>
-                            <li>Free refunds</li>
-                            <li>Email & phone support</li>
+                            {{ 'home.pricing.campaign_2.list'|trans|raw }}
                         </ul>
-                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">Contact us</a>
+                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">{{ 'home.pricing.contact_us'|trans }}</a>
                     </div>
                 </div>
                 <div class="card mb-4 box-shadow my-auto">
                     <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Fully installed & customized campaign system</h4>
+                        <h4 class="my-0 font-weight-normal">{{ 'home.pricing.campaign_custom.title'|trans }}</h4>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mt-3 mb-4">
-                            <li>Our team designs a unique, tailored campaigning solution for your needs</li>
-                            <li>Free refunds</li>
-                            <li>Email & phone support</li>
+                            {{ 'home.pricing.campaign_custom.list'|trans|raw }}
                         </ul>
-                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">Contact us</a>
+                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">{{ 'home.pricing.contact_us'|trans }}</a>
                     </div>
                 </div>
             </div>
@@ -188,8 +160,8 @@
 
     <section id="contact">
         <div class="container">
-            <h1 class="section-header">Get in <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> touch with us</span></h1>
-            <h3>If you want to create an online campaign, please contact us</h3>
+            <h2 class="section-header text-left">{{ 'home.contact.title'|trans }}</h2>
+            <h3>{{ 'home.contact.subtitle'|trans }}</h3>
         </div>
         <div class="contact-section">
             <div class="container">
@@ -209,7 +181,7 @@
                                 {{ form_row(form.message) }}
                             </div>
                             <div>
-                                <button type="submit" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>  Send Message</button>
+                                <button type="submit" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> {{ 'home.contact.send'|trans }}</button>
                             </div>
                         </div>
                     </div>

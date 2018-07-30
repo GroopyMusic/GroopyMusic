@@ -1,0 +1,55 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div class="container">
+
+        {{ form_start(form) }}
+
+        {% for contract in form.contracts %}
+            {% set contractArtist = contract.vars.data.contractArtist %}
+
+            <h3>{{ contractArtist.getTitle }}</h3>
+
+            {% for purchase in contract.children.purchases %}
+
+                {% set counterpart = purchase.vars.value.counterpart %}
+                <div class="counterpart-form">
+
+                    <div class="form-group form-row">
+                        {{ form_errors(purchase) }}
+
+                        <div class="col-8">
+                            <label class="counterpart-label">{{ counterpart.name }}</label>
+                        </div>
+                        <div class="col-4 counterpart-price">
+                            {{ counterpart.price }} €
+                        </div>
+                        <div class="col-8">{{ counterpart.getDescription|raw }}</div>
+                        <div class="col-4">
+                            <div class="container px-0">
+                                <div class="count-input space-bottom">
+                                    <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                    {{ form_widget(purchase.quantity) }}
+                                    <a class="incr-btn" data-action="increase"
+                                       data-max="{{ contractArtist.nbAvailable(counterpart) }}"
+                                       href="#">&plus;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if counterpart.potentialArtists is not empty %}
+                        <div class="select2-artists">
+                            {{ form_row(purchase.artists) }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% do contract.setRendered %}
+        {% endfor %}
+
+
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}

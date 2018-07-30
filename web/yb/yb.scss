@@ -23,6 +23,8 @@ $black: #000 !default;
 @import "scss/modal.scss";
 @import "scss/home.scss";
 @import "scss/footer.scss";
+@import "scss/payment.scss";
+@import "scss/loader.scss";
 
 body {
   font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -40,4 +42,8 @@ h6 {
 h2 {
   text-align: center;
   font-weight: bold;
+}
+
+.btn, button, a {
+  cursor: pointer;
 }

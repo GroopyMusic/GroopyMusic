@@ -12,6 +12,7 @@ use AppBundle\Entity\Hall;
 use AppBundle\Entity\PropositionContractArtist;
 use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
+use AppBundle\Form\CartType;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\PropositionContractArtistType;
 use AppBundle\Services\MailDispatcher;
@@ -78,6 +79,50 @@ class PublicController extends Controller
             }
             return $cart;
         }
+    }
+
+    private function handleCheckout($cfs, $user, EntityManagerInterface $em, Request $request) {
+        /** @var Cart $cart */
+        if ($user != null) {
+            $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        }
+
+        if (!isset($cart) || $cart == null) {
+            $cart = $this->createCartForUser($user);
+        } else {
+            $cart = $this->cleanCart($cart, $em);
+        }
+
+        foreach($cfs as $cf) {
+            /** @var ContractFan $cf */
+            $qty = 0;
+            foreach ($cf->getPurchases() as $purchase) {
+                $pqty = $purchase->getQuantity();
+                if ($pqty == 0) {
+                    $cf->removePurchase($purchase);
+                }
+                $qty += $pqty;
+            }
+            if($qty == 0) {
+                if ($cart->hasContract($cf)) {
+                    $cart->removeContract($cf);
+                }
+            }
+            else {
+                if(!$cart->hasContract($cf)) {
+                    $cart->addContract($cf);
+                }
+            }
+        }
+
+        foreach($cart->getContracts() as $contract_fan) {
+            if ($contract_fan->getContractArtist()->isUncrowdable()) {
+                $this->addFlash('error', 'errors.event.uncrowdable');
+            }
+        }
+
+        $em->flush();
+        $request->getSession()->set('cart_id', $cart->getId());
     }
 
     /**
@@ -256,42 +301,6 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/halls", name="catalog_halls")
-     */
-    public function hallsAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $halls = $em->getRepository('AppBundle:Hall')->findVisible();
-        $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
-        $provinces = $em->getRepository('AppBundle:Province')->findAll();
-
-        return $this->render('@App/Public/catalog_halls.html.twig', array(
-            'halls' => $halls,
-            'steps' => $steps,
-            'provinces' => $provinces
-        ));
-    }
-
-    /**
-     * @Route("/halls/{id}-{slug}", name="hall")
-     */
-    public function hallAction(Hall $hall, $slug = null)
-    {
-
-        if ($slug !== null && $slug != $hall->getSlug()) {
-            return $this->redirectToRoute('hall', ['id' => $hall->getId(), 'slug' => $hall->getSlug()]);
-        }
-
-        if (!$hall->getVisible()) {
-            throw $this->createNotFoundException('Hall not visible');
-        }
-
-        return $this->render('@App/Public/hall.html.twig', array(
-            'hall' => $hall,
-        ));
-    }
-
-    /**
      * @Route("/crowdfundings", name="catalog_crowdfundings")
      */
     public function artistContractsAction(UserInterface $user = null)
@@ -302,10 +311,10 @@ class PublicController extends Controller
 
         $sales_contracts = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
 
-        $provinces = array_unique(array_map(function(ContractArtist $elem) {
-            return $elem->getProvince();
+        /*$provinces = array_unique(array_map(function(ContractArtist $elem) {
+            return $elem->getFestival();
         }, $current_contracts));
-
+*/
         $genres = array_unique(ArrayHelper::flattenArray(array_map(function(ContractArtist $elem) {
             return $elem->getGenres();
         }, $current_contracts)));
@@ -318,7 +327,7 @@ class PublicController extends Controller
             'current_contracts' => $current_contracts,
             'prevalidation_contracts' => $prevalidation_contracts,
             'sales_contracts' => $sales_contracts,
-            'provinces' => $provinces,
+            //'provinces' => $provinces,
             'genres' => $genres,
             'steps' => $steps,
         ));
@@ -329,12 +338,11 @@ class PublicController extends Controller
      */
     public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null)
     {
-
-        if ($contract->getArtist()->getSlug() != $slug) {
-            return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
+        if ($contract->getSlug() != $slug) {
+            return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getSlug()]);
         }
+
         $em = $this->getDoctrine()->getManager();
-        $potential_halls = $em->getRepository('AppBundle:Hall')->findPotential($contract->getStep(), $contract->getProvince());
 
         $isParticipant = false;
         $nb_sponsorships = 0;
@@ -344,7 +352,6 @@ class PublicController extends Controller
             if ($em->getRepository('AppBundle:User')->isParticipant($contract->getId(), $user->getId()) != null) {
                 $isParticipant = true;
                 $nb_sponsorships = $user->getSponsorships()->count();
-                $nb_validated_sponsorships = 0;
                 $nb_validated_sponsorships = $em->getRepository('AppBundle:SponsorshipInvitation')->getNumberOfValidatedInvitation($user->getId());
             }
         } else {
@@ -352,46 +359,19 @@ class PublicController extends Controller
         }
 
         $cf = new ContractFan($contract);
-        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards, 'entity_manager' => $em,]);
+        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($contract->isUncrowdable()) {
-                $this->addFlash('error', 'errors.event.uncrowdable');
-            } elseif ($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
-                $this->addFlash('error', 'errors.order_max');
-            } elseif ($cf->getCounterPartsQuantity() > $contract->getTotalNbAvailable() + ContractArtist::MAXIMUM_PROMO_OVERFLOW) {
-                $this->addFlash('error', 'errors.order_max_promo');
-            } else {
-                /** @var Cart $cart */
-                if ($user != null) {
-                    $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-                }
+            $this->handleCheckout([$cf], $user, $em, $request);
 
-                if (!isset($cart) || $cart == null) {
-                    $cart = $this->createCartForUser($user);
-                } else {
-                    $cart = $this->cleanCart($cart, $em);
-                }
-
-                foreach ($cf->getPurchases() as $purchase) {
-                    if ($purchase->getQuantity() == 0) {
-                        $cf->removePurchase($purchase);
-                    }
-                }
-                $cart->addContract($cf);
-
-                $em->flush();
-                $request->getSession()->set('cart_id', $cart->getId());
-                return $this->redirectToRoute('checkout');
-            }
+            return $this->redirectToRoute('checkout');
         }
 
         return $this->render('@App/Public/artist_contract.html.twig', array(
             'contract' => $contract,
             'form' => $form->createView(),
-            'potential_halls' => $potential_halls,
             'potential_user_rewards' => $potential_user_rewards,
             'is_participant' => $isParticipant,
             'nb_sponsorships' => $nb_sponsorships,
@@ -475,11 +455,19 @@ class PublicController extends Controller
             if ($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
                 $em->remove($other_potential_cart);
             }
+        }
 
+        foreach($cart->getContracts() as $cf) {
+            $rewardSpendingService->setBaseAmount($cf);
+        }
+
+        if($user != null) {
             ##reward consume
-            $rewardSpendingService->setBaseAmount($cart->getFirst());
-            $cart->getFirst()->setUserRewards(new arrayCollection($rewardSpendingService->getApplicableReward($cart->getFirst())));
-            $rewardSpendingService->applyReward($cart->getFirst());
+
+            foreach($cart->getContracts() as $cf) {
+                $cf->setUserRewards(new arrayCollection($rewardSpendingService->getApplicableReward($cf)));
+                $rewardSpendingService->applyReward($cf);
+            }
 
             $cart->setUser($user);
             $em->persist($cart);
@@ -550,7 +538,6 @@ class PublicController extends Controller
         return $this->render('@App/User/pay_cart.html.twig', array(
             'cart' => $cart,
             'error_conditions' => false,
-            'contract_fan' => $cart->getFirst(),
             'form' => $form_view,
         ));
     }
@@ -789,5 +776,44 @@ class PublicController extends Controller
             $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
             return $this->redirectToRoute('homepage');
         }
+    }
+
+    private function populateCart(Cart $cart, $artistContracts) {
+        foreach($artistContracts as $artistContract) {
+            $fanContract = new ContractFan($artistContract);
+            $cart->addContract($fanContract);
+        }
+        return $cart;
+    }
+
+    /**
+     * @Route("/tickets", name="tickets_marketplace")
+     */
+    public function ticketsAction(Request $request, EntityManagerInterface $em, UserInterface $user = null) {
+        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+
+        if ($user != null) {
+            $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+        }
+        if (!isset($cart) || $cart == null) {
+            $cart = $this->createCartForUser($user);
+        } else {
+            $cart = $this->cleanCart($cart, $em);
+        }
+
+        $cart = $this->populateCart($cart, $current_contracts);
+
+        $form = $this->createForm(CartType::class, $cart);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->handleCheckout($cart->getContracts()->toArray(), $user, $em, $request);
+            return $this->redirectToRoute('checkout');
+        }
+
+        return $this->render('@App/Public/tickets.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

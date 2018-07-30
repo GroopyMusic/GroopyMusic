@@ -28,6 +28,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ORDER_RECAP_TEMPLATE = 'AppBundle:Mail/Fan:order.txt.twig';
     const TICKETS_TEMPLATE = 'AppBundle:Mail/Fan:tickets.txt.twig';
     const REFUNDED_PAYMENT_TEMPLATE = 'AppBundle:Mail/Fan:refunded_payment.txt.twig';
+    const REFUNDED_CONTRACT_FAN_TEMPLATE = 'AppBundle:Mail/Fan:refunded_contract_fan.txt.twig';
     const VIP_TICKETS_TEMPLATE = 'AppBundle:Mail/VIPInscription:vip_tickets.txt.twig';
 
     const CHANGE_EMAIL_CONFIRMATION_TEMPLATE = 'AppBundle:Mail/User:change_email_confirmation.txt.twig';
@@ -61,6 +62,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     // YB
     const YB_ADMIN_CONTACT = 'AppBundle:Mail/YB/Contact:admin.txt.twig';
     const YB_CONTACT_COPY = 'AppBundle:Mail/YB/Contact:copy.txt.twig';
+    const YB_ORDER_RECAP = 'AppBundle:Mail/YB/Order:recap.txt.twig';
+    const YB_TICKETS = 'AppBundle:Mail/YB/Order:tickets.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
@@ -167,6 +170,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
             self::TICKETS_TEMPLATE,
             self::VIP_TICKETS_TEMPLATE,
             self::REFUNDED_PAYMENT_TEMPLATE,
+            self::REFUNDED_CONTRACT_FAN_TEMPLATE,
             self::ARTIST_VALIDATED_TEMPLATE,
 
             self::CHANGE_EMAIL_CONFIRMATION_TEMPLATE,

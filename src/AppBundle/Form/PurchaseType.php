@@ -12,7 +12,10 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class PurchaseType extends AbstractType
 {
@@ -36,6 +39,22 @@ class PurchaseType extends AbstractType
                 'label' => false,
             ));
         }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $purchase = $event->getData();
+            if(!empty($purchase->getCounterPart()->getPotentialArtists())) {
+                $event->getForm()->add('artists', Select2EntityType::class, array(
+                    'required' => false,
+                    'label' => false,
+                    'multiple' => true,
+                    'remote_route' => 'select2_counterpart_artists',
+                    'remote_params' => ['counterpart' => $purchase->getCounterPart()->getId()],
+                    'class' => 'AppBundle\Entity\Artist',
+                    'primary_key' => 'id',
+                ));
+            }
+        });
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

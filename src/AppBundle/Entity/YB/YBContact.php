@@ -106,4 +106,14 @@ class YBContact
     {
         $this->date = $date;
     }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
