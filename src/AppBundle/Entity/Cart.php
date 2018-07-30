@@ -105,11 +105,16 @@ class Cart
         return false;
     }
 
-    public function getAmount() {
-        return array_sum(array_map(function($contract) {
-            /** @var ContractFan $contract */
-            return $contract->getAmount();
-        }, $this->contracts->toArray()));
+    // Unmapped
+    private $amount = null;
+    public function getAmount() : int {
+        if($this->amount == null) {
+            $this->amount = array_sum(array_map(function($contract) {
+                /** @var ContractFan $contract */
+                return $contract->getAmount();
+            }, $this->contracts->toArray()));
+        }
+        return $this->amount;
     }
 
     public function getNbArticles() {

@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="checkout-payment-form card card-info mt-2">
-                    <div class="card-header">Paiement <i class="fab fa-stripe"></i></div>
+                    <div class="card-header"><i class="fas fa-lock"></i>  Paiement <i class="fab fa-stripe" title="Nous utilisons Stripe pour garantir la sécurité de vos paiements."></i> </div>
                     <div class="card-body">
                         <p>{{ 'pay_cart.conditions.intro'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>
                         <div class="form-row">
@@ -134,7 +134,7 @@
                                             </div>
                                             <div class="col-12 mt-5">
                                                 <input type="submit" class="btn btn-primary"
-                                                       value="{{ 'pay_cart.proceed.creditcard.submit'|trans|raw }}"/>
+                                                       value="{{ 'pay_cart.proceed.creditcard.submit'|trans({'%amount%': cart.amount})|raw }}"/>
                                             </div>
                                         </div>
                                     </div>
@@ -151,7 +151,7 @@
                                             <div id="bc-card-element" class="text-center">
                                                 <button type="button" class="btn btn-primary mt-3"
                                                         id="choose-bancontact">
-                                                    {{ 'pay_cart.proceed.bancontact.submit'|trans|raw }}
+                                                    {{ 'pay_cart.proceed.bancontact.submit'|trans({'%amount%': cart.amount})|raw }}
                                                 </button>
                                             </div>
                                         </div>
