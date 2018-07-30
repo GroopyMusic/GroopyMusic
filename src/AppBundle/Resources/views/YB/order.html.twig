@@ -1,4 +1,5 @@
 {% extends 'yb/base.html.twig' %}
+{% trans_default_domain 'yb' %}
 
 {% if cart.contracts|length == 1 %}
     {% set campaign = cart.first.contractArtist %}

@@ -1,0 +1,110 @@
+menu:
+  home: Accueil
+  about: À propos
+  services: Services
+  pricing: Prix
+  contact: Contact
+
+footer:
+  about: À propos
+  contact: Contact
+  terms: Conditions d'utilisation
+  copyright: &copy; Ticked-it! 2018. Tous droits réservés.
+
+notice:
+  title: Merci !
+  back: Retour
+
+home:
+  headline: À la recherche d'une billetterie simple et flexible ?
+  cta: Découvrez ce que nous offrons
+  about:
+    title: À propos
+    content: Vous souhaitez lancer une campagne de vente de tickets en ligne ? Ticked-it.be propose une solution 100 % belge, qui permet l'utilisation d'un système de crowdfunding si vous le désirez. Déterminez l'objectif de votre campagne et remboursez, sans aucun frais, tous les participants si nécessaire. L'équipe du projet, jeune et installée à Bruxelles, vous accompagne tout au long de l'implantation de votre campagne, avec des prix imbattables sur le marché du ticketing.
+  services:
+    title: Nos services
+    ticketing:
+      title: Ticketing
+      content: Vendez des tickets ou d'autres articles à l'aide de campagnes en ligne
+    flexibility:
+      title: Objectifs flexibles
+      content: Vous décidez du seuil de réussite de vos campagnes
+    no_risk:
+      title: Aucun risque
+      content: Si la campagne se solde en échec, vous remboursez tout le monde sans frais.
+    security:
+      title: Secure
+      content: Tous les paiements et remboursements sont parfaitement sécurisés.
+  examples:
+    example_1:
+      title: Un événement privé à organiser ?
+      content: Faites-le sans ne prendre aucun risque !
+    example_2:
+      title: Faire venir un artiste dans votre salle de concert ?
+      content: C'est facile. Lancez une campagne en ligne pour tester l'intérêt de votre public !
+    example_3:
+      title: Besoin de vendre des articles pour votre projet ?
+      content: Contactez-nous, tout simplement, et nous verrons ce que nous pouvons faire pour vous.
+  pricing:
+    title: Campagnes & prix
+    contact_us: Contactez-nous
+    campaign_1:
+       title: Campagne de ticketing
+       list: |
+         <li>Génération de tickets pour vos événements</li>
+         <li>Scan facile grâce aux QR codes</li>
+         <li>Vous fixez les prix des tickets, ou laissez les clients choisir</li>
+         <li>Remboursements gratuits</li>
+         <li>Support par e-mail et téléphone</li>
+     campaign_2:
+       title: Campagne de vente en ligne
+       list: |
+          <li>Vendez les biens de votre choix</li>
+          <li>Vous fixez les prix, ou laissez les clients choisir</li>
+          <li>Remboursements gratuits</li>
+          <li>Support par e-mail et téléphone</li>
+     campaign_custom:
+       title: Système de billetterie personnalisé
+       list: |
+           <li>Notre équipe conçoit une solution unique et sur mesure pour vos besoins</li>
+           <li>Remboursements gratuits</li>
+           <li>Support par e-mail et téléphone</li>
+  contact:
+    title: Contactez-nous
+    subtitle: Si vous souhaitez vous lancer dans votre première campagne en ligne, contactez-nous
+    send: Envoyer
+
+pay_cart:
+    title: Paiement de votre commande
+    conditions:
+      error: Vous devez accepter les conditions générales pour continuer.
+      label: J'accepte les conditions générales et je souhaite procéder au paiement
+      intro: |
+          En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
+    methods:
+        creditcard: Carte de crédit
+        bancontact: Bancontact
+    proceed:
+        threeds:
+            error: Une erreur est survenue. Veuillez réessayer plus tard et en informer un administrateur si le problème persiste.
+            pending: <b>Ne quittez pas Ticked-it.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement.
+        creditcard:
+            title: Payer par carte de crédit
+            labels:
+                creditcard: Carte de crédit
+                exp: Date d'exp.
+                cvc: Cryptogramme visuel
+            submit: Payer avec ma carte de crédit
+        bancontact:
+            title: Payer par Bancontact
+            info: Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.
+            submit: Poursuivre avec Bancontact
+            pending: Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.
+
+threeds:
+    title: Paiement de votre commande
+    pending_stripe: Veuillez patienter, votre demande est en cours de traitement. <b>Ne quittez pas Ticked-it.be pendant l'opération.</b>...
+    pending: Veuillez patienter, votre demande est en cours de traitement. <b>Ne quittez pas Ticked-it.be pendant l'opération.</b>...
+    # In the next line, it is important to keep the href attribute between simple quotes as this text is used in JS surrounded by double quotes.
+    error: L'authentification 3D Secure de votre carte bancaire a échoué. Le paiement, ainsi que votre commande, sont annulés. Clickez <a href='%backUrl%'>ici</a> pour revenir en arrière.
+    unknown_error: Une erreur inconnue s'est produite lors de l'authentification 3D Secure.

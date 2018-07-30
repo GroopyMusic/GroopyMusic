@@ -1,4 +1,5 @@
 {% extends 'yb/base.html.twig' %}
+{% trans_default_domain 'yb' %}
 
 {% if cart.contracts|length == 1 %}
     {% set campaign = cart.first.contractArtist %}
@@ -44,14 +45,14 @@
                                 <label for="first_name">First name</label>
                                 <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" value="" required>
                                 <div class="invalid-feedback">
-                                    Valid first name is required.
+                                    Veuillez renseigner un prénom valide.
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="last_name">Last name</label>
                                 <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" value="" required>
                                 <div class="invalid-feedback">
-                                    Valid last name is required.
+                                    Veuillez renseigner un nom valide.
                                 </div>
                             </div>
                         </div>
@@ -59,7 +60,7 @@
                             <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com">
                             <div class="invalid-feedback">
-                                Please enter a valid email address.
+                                Veuillez renseigner un email valide.
                             </div>
                         </div>
                     </div>
@@ -68,7 +69,7 @@
                 <div class="checkout-payment-form card card-info mt-2">
                     <div class="card-header">Paiement <i class="fab fa-stripe"></i></div>
                     <div class="card-body">
-
+                        <p>{{ 'pay_cart.conditions.intro'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>
                         <div class="form-row">
                             {% if error_conditions %}
                                 <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>

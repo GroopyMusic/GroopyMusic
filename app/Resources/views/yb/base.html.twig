@@ -1,3 +1,4 @@
+{% trans_default_domain 'yb' %}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}">
 <head>
@@ -24,20 +25,20 @@
 </head>
 <body>
 {% if app.environment == 'prod' %}
-    <!-- Google Tag Manager (noscript)
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KFPJV6V"
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5LTWLR"
                       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 {% endif %}
 
 <noscript>
     <div class="noscript-warning">
-        {{ "noscript.warning"|trans }}
+        {{ "noscript.warning"|trans({}, 'messages') }}
     </div>
 </noscript>
 <!--[if lte IE 8]>
 <div class="noscript-warning">
-    {{ "ie.warning"|trans }}
+    {{ "ie.warning"|trans({}, 'messages') }}
 </div>
 <![endif]-->
 
@@ -45,18 +46,17 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand js-scroll-trigger" href="{{ path('yb_index') ~ "#home"}}">Ticked-it!</a>
+            <a class="navbar-brand js-scroll-trigger font-weight-bold" href="{{ path('yb_index') ~ "#home"}}">Ticked-it!</a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
                 <i class="fa fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav text-uppercase ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#home"}}">Home</a>
+                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#home"}}">{{ 'menu.home'|trans }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">About</a>
+                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">{{ 'menu.about'|trans }}</a>
                     </li>
                     {% block nav_details_links %}
                     {% endblock %}
@@ -124,10 +124,10 @@
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body text-center">
-                            <h4>Thank you!</h4>
+                            <h4>{{ 'notice.title'|trans }}</h4>
                             <p>{{ message }}</p>
-                            <button class="btn btn-success" data-dismiss="modal"><span>Back to website</span> <i class="far fa-arrow-alt-circle-right"></i>
-
+                            <button class="btn btn-success" data-dismiss="modal">
+                                <span>{{ 'notice.back'|title }}</span><i class="far fa-arrow-alt-circle-right"></i>
                             </button>
                         </div>
                     </div>
@@ -147,18 +147,18 @@
                     <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
                         <ul class="list-inline mb-2">
                             <li class="list-inline-item">
-                                <a class="js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">About</a>
+                                <a class="js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">{{ 'footer.about'|trans }}</a>
                             </li>
                             <li class="list-inline-item">&sdot;</li>
                             <li class="list-inline-item">
-                                <a class="js-scroll-trigger" href="{{ path('yb_index') ~ "#contact"}}">Contact</a>
+                                <a class="js-scroll-trigger" href="{{ path('yb_index') ~ "#contact"}}">{{ 'footer.contact'|trans }}</a>
                             </li>
                             <li class="list-inline-item">&sdot;</li>
                             <li class="list-inline-item">
-                                <a href="{{ path('yb_terms') }}">Terms of Use</a>
+                                <a href="{{ path('yb_terms') }}">{{ 'footer.terms'|trans }}</a>
                             </li>
                         </ul>
-                        <p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2018. All Rights Reserved.</p>
+                        <p class="text-muted small mb-4 mb-lg-0">{{ 'footer.copyright'|trans|nl2br }}</p>
                     </div>
                 </div>
             </div>
@@ -191,23 +191,23 @@
 
     {% if app.environment == 'prod' %}
 
-        <!-- Google Tag Manager
+        <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-KFPJV6V');</script>
+            })(window,document,'script','dataLayer','GTM-P5LTWLR');</script>
         <!-- End Google Tag Manager -->
 
-        <!-- Global site tag (gtag.js) - Google Analytics
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109142671-1"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109142671-2"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'UA-109142671-1');
-        </script>-->
+            gtag('config', 'UA-109142671-2');
+        </script>
     {% endif %}
     {% block additional_javascripts %}{% endblock %}
 {% endblock %}

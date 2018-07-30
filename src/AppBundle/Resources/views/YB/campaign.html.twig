@@ -1,4 +1,5 @@
 {% extends 'yb/base.html.twig' %}
+{% trans_default_domain 'yb' %}
 
 {% set photo = campaign.photo is not null ? campaign.photo : false %}
 
@@ -81,7 +82,7 @@
 
                     {{ form_end(form) }}
                 {% else %}
-                    <p>Il n'est plus possible d'acheter des tickets pour cet événement.</p>
+                    <p>Il n'est plus possible de contribuer à cette campagne.</p>
                 {% endif %}
             </div>
         </div>
