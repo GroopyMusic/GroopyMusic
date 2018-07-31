@@ -1,6 +1,8 @@
 {% extends 'yb/base.html.twig' %}
 {% trans_default_domain 'yb' %}
 
+{% block headtitle %}{{ campaign.getTitle }}{% endblock %}
+{% block meta_description %}{{ campaign.getDescription|slice(0,100) }}{% endblock %}
 {% set photo = campaign.photo is not null ? campaign.photo : false %}
 
 {% block header_container %}
