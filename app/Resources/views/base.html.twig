@@ -6,6 +6,7 @@
         <meta name="description" content="{% block description %}{% block description_part_1 %}{{ 'meta_description_1'|trans }}{% endblock %} {% block description_part_2 %}{{ 'meta_description_2'|trans }}{% endblock %}{% endblock %}" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <meta name="theme-color" content="#f08722">
+        {% block additional_metas %}{% endblock %}
 
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
         {% block open_graph %}{% endblock %}

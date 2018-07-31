@@ -17,12 +17,12 @@
         <div class="overlay"></div>
         <div class="caption">
         {% if is_event %}
-            <div class="tag"><a href="{{ url_contract }}">{% if contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
+            <div class="tag success"><a href="{{ url_contract }}">{% if contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
                              {% else %}{{ 'stillselling'|trans }}
                     {% endif %}</a>
             </div>
         {% endif %}
-            <div class="title"><a href="{{ url_contract }}">{{ is_event ? contract.titleWithDates : contract.getTitle }}</a></div>
+            <h5 class="title"><a href="{{ url_contract }}">{{ is_event ? contract.titleWithDates : contract.getTitle }}</a></h5>
             <div class="clearfix">
                 <div class="meta-data">{% for art in contract.allArtists %}{% if not loop.first %} - {% endif %}{{ art }}{% endfor %}</div>
                     {% if is_event %}<a href="{{ url_contract }}" class="text-white"><i class="fas fa-ticket-alt"></i> TICKETS</a>

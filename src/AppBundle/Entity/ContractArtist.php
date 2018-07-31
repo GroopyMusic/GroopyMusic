@@ -94,7 +94,7 @@ class ContractArtist extends BaseContractArtist
             foreach($this->getFestivalDates() as $date) {
                 if($i > 1)
                     $str .= ' - ';
-                $str .= $date->format('d/m/Y');
+                $str .= $date->format('d/m');
                 $i++;
             }
             $str.= ')';
