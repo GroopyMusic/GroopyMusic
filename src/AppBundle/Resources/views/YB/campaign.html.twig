@@ -4,7 +4,7 @@
 {% set photo = campaign.photo is not null ? campaign.photo : false %}
 
 {% block header_container %}
-    <header class="masthead campaign-masthead text-white" {% if photo %}style="background-image: url('{{ absolute_url(asset(campaign.webPath(photo))) }}');"{% endif %} >
+    <header class="masthead campaign-masthead text-white" {% if photo %}style="background-image: url('{{ yb_asset(campaign.webPath(photo)) }}');"{% endif %} >
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
@@ -32,7 +32,7 @@
 
                 {% if campaign.campaignPhotos is not empty %}
                     {% for photo in campaign.campaignPhotos %}
-                        <img class="img-fluid d-block py-3" src="{{ asset(campaign.webPath(photo)) }}" />
+                        <img class="img-fluid d-block py-3" src="{{ yb_asset(campaign.webPath(photo)) }}" />
                     {% endfor %}
                 {% endif %}
             </div>

@@ -47,6 +47,7 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('facebook_connect_widget', array($this, 'facebook_connect_widget', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('lorem_ipsum', array($this, 'lorem_ipsum', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('fancy_date', array($this, 'fancy_date', array('is_safe' => array('html')))),
+            new \Twig_SimpleFunction('yb_asset', array($this, 'yb_asset', array('is_safe' => array('html')))),
         );
     }
 
@@ -147,6 +148,12 @@ class UtilitiesExtension extends \Twig_Extension
     public function fancy_date($date) {
         return $this->twig->render(':patterns/utils:fancy_date.html.twig', array(
             'date' => $date,
+        ));
+    }
+
+    public function yb_asset($url) {
+        return $this->twig->render(':patterns/utils:yb_asset.html.twig', array(
+            'url' => $url,
         ));
     }
 
