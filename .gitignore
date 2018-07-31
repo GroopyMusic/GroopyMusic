@@ -25,6 +25,8 @@
 !/web/pdf/viptickets
 !/web/pdf/phtickets
 /web/yb/images/campaigns/*
+/web/yb/tickets/*
+!/web/yb/tickets
 !web/yb/images/campaigns
 !web/uploads
 !web/uploads/artist_gallery

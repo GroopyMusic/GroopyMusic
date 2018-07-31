@@ -1,4 +1,5 @@
 {% extends '@App/PDF/yb_layout.html.twig' %}
+{% trans_default_domain 'yb' %}
 
 {% block additional_styles %}
 {% endblock %}
@@ -15,17 +16,17 @@
             <p>
                 Il donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
             {% if campaign.isEvent %}
-                <br />Date de l'événement : le {{ campaign.dateEvent|fancy_date }}
+                <br />Date de l'événement : {{ campaign.dateEvent|fancy_date }}
             {% endif %}
             </p>
 
             <qrcode value="{{ ticket.barCodeText }}" ec="H"
                     style="width: 30mm; background-color: white; color: black;"></qrcode>
             <p>
-                {{ ticket.barcodeText }}
+                {{ ticket.barCodeText }}
             </p>
             <p>
-                {{ ticket.price }} € - {{ ticket.name }}
+                {{ ticket.counterPart.getName }} - {{ ticket.price }} € - {{ ticket.name }}
             </p>
 
             <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }}</p>

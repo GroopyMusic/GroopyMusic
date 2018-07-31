@@ -545,7 +545,7 @@ class MailDispatcher
     }
 
     public function sendYBContactCopy(YBContact $contact) {
-        $subject = 'Contact form';
+        $subject = 'Formulaire de contact Ticked-it!';
         $params = ['contact' => $contact];
         $subject_params = [];
         $recipient = [$contact->getEmail() => $this->translator->getLocale()];
@@ -557,7 +557,7 @@ class MailDispatcher
     }
 
     public function sendYBOrderRecap(Cart $cart) {
-        $subject = 'Your order on ticked-it.be';
+        $subject = 'Votre commande sur Ticked-it!';
         $params = ['cart' => $cart];
         $subject_params = [];
         $recipient = [$cart->getEmail() => $this->translator->getLocale()];
@@ -569,7 +569,7 @@ class MailDispatcher
     }
 
     public function sendYBTickets(ContractFan $cf) {
-        $subject = 'Your tickets are right here!';
+        $subject = 'Vos tickets sont arrivés';
         $params = ['cf' => $cf];
         $subject_params = [];
         $recipient = [$cf->getEmail() => $this->translator->getLocale()];

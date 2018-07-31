@@ -16,6 +16,7 @@ class ContractFan
 {
     const ORDERS_DIRECTORY = 'pdf/orders/';
     const TICKETS_DIRECTORY = 'pdf/tickets/';
+    const YB_TICKETS_DIRECTORY = 'yb/tickets/';
     const VOTES_TO_REFUND = 2;
 
     public function __toString()
@@ -150,7 +151,10 @@ class ContractFan
 
     public function getTicketsPath()
     {
-        return self::TICKETS_DIRECTORY . $this->getTicketsFileName();
+        if($this->contractArtist instanceof YBContractArtist)
+            return self::YB_TICKETS_DIRECTORY . $this->getTicketsFileName();
+        else
+            return self::TICKETS_DIRECTORY . $this->getTicketsFileName();
     }
 
     public function getTicketsFileName()

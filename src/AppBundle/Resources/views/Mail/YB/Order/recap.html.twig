@@ -7,6 +7,7 @@
 
             {{ email_content('yb.order.recap.intro', {
                 '%date%': cart.date|date('d/m/Y'),
+                '%order_url%': email_link(url('yb_order', {'code': cart.barcodeText}))
             })|raw }}
 
             {% set threshold_announced = false %}

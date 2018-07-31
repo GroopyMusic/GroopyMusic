@@ -25,7 +25,7 @@
 
         <p>
             Numéro de commande: <span class="text-muted">{{ cart.barcodeText }}</span>
-            <br /> Date de la commande : {{ cart.date|fancy_date }}
+            <br />Date de la commande : {{ cart.date|fancy_date }}
             <br />Etat de la commande : {{ cart.state }}
         </p>
 
@@ -36,7 +36,9 @@
                     <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} €</span></li>
                 {% endfor %}
             </ul>
-            <p><a href="{{ url('yb_get_tickets', {'code': contract.barcodeText}) }}"><i class="fas fa-file-download"></i> Télécharger les tickets</a></p>
+            {% if not contract.refunded and contract.counterpartsSent %}
+                <p><a href="{{ url('yb_get_tickets', {'code': contract.barcodeText}) }}"><i class="fas fa-file-download"></i> Télécharger les tickets</a></p>
+            {% endif %}
         {% endfor %}
 
         <div class="py-2 text-right">
@@ -44,8 +46,9 @@
         </div>
 
         <p>
-            Cette page constitue une confirmation de commande mais n'est aucunement un droit d'entrée pour un événement.
-            Vos tickets y seront accessibles et vous seront envoyés par mail le cas échéant.
+            Cette page constitue une confirmation de commande mais n'est pas un droit d'entrée.
+            Il vous faut présenter vos tickets sur un support lisible afin d'accéder aux événements auxquels ils donnent accès.
+            {% if cart.contracts|length == 1 and cart.first.contractArtist.isEvent and cart.first.counterpartsSent %}Ces tickets sont disponibles sur cette page et vous ont été envoyés par e-mail.{% endif %}
         </p>
     </div>
 {% endblock %}

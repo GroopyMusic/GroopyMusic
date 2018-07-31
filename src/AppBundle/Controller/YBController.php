@@ -103,7 +103,7 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("/terms", name="yb_terms")
+     * @Route("/conditions", name="yb_terms")
      */
     public function termsAction() {
 
@@ -293,7 +293,7 @@ class YBController extends Controller
         $cart->setPaid(true);
         $em->flush();
 
-        $this->addFlash('yb_notice', 'Paiement bien reçu ! Checkez vos mails.');
+        $this->addFlash('yb_notice', 'Paiement bien reçu ! Votre commande est validée. Vous devriez avoir reçu un récapitulatif par e-mail.');
 
         return $this->redirectToRoute('yb_order', ['code' => $cart->getBarCodeText()]);
     }
@@ -323,9 +323,10 @@ class YBController extends Controller
 
         $finder = new Finder();
         $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
-        $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
+        $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::YB_TICKETS_DIRECTORY);
 
         if (count($finder) == 0) {
+            $contract->setcounterpartsSent(false);
             $ticketingManager->generateAndSendYBTickets($contract);
             $contract->setcounterpartsSent(true);
 
@@ -333,7 +334,7 @@ class YBController extends Controller
             $em->flush();
             $finder = new Finder();
             $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
-            $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
+            $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::YB_TICKETS_DIRECTORY);
         }
 
         foreach ($finder as $file) {

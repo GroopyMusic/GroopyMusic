@@ -225,9 +225,9 @@ sponsorship_invitation:
 yb: 
   contact: 
     copy: |
-      Your message on Un-Mute.be has well been received. We will answer shortly if necessary.
+      Votre message sur Ticked-it.be a bien été reçu. Nous vous répondrons rapidement si besoin.
 
-      Here it is:
+      Voici une copie de votre message :
 
       -- Name: %name%
       -- Email: %email%
@@ -236,7 +236,7 @@ yb:
   order:
     recap:
       intro: |
-        Merci pour votre commande sur Ticked-it!, la billetterie belge en ligne. Vous trouverez ci-dessous un récapitulatif de votre commande passée le %date%.
+        Merci pour votre commande sur Ticked-it!, la billetterie belge en ligne. Vous trouverez ci-dessous un récapitulatif de votre commande passée le %date%. Les informations de votre commande sont également accessibles à l'adresse %order_url%.
       threshold: |
         La campagne à laquelle vous avez contribué contient un seuil de validation, elle ne sera confirmée que si ce seuil est atteint. Ce n'est qu'alors que vous recevrez le contenu de votre commande. Dans le cas contraire, vous serez entièrement remboursé(e).
       outro: |

@@ -322,18 +322,19 @@ class TicketingManager
                 $cf->removeTicket($ticket);
             }
 
+            $j = 1;
             //if(!empty($contractFan->getTickets())) {
             foreach ($cf->getPurchases() as $purchase) {
                 /** @var Purchase $purchase */
                 $counterPart = $purchase->getCounterpart();
 
-                $j = 1;
-                while ($j <= $purchase->getQuantityOrganic()) {
+                for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
                     $cf->addTicket(new Ticket($cf, $counterPart, $j, $counterPart->getPrice()));
                     $j++;
                 }
                 for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                    $cf->addTicket(new Ticket($cf, $counterPart, $j + $i, 0));
+                    $cf->addTicket(new Ticket($cf, $counterPart, $j, 0));
+                    $j++;
                 }
             }
 
