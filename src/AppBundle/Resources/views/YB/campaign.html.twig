@@ -23,7 +23,7 @@
         {% set is_event = campaign.dateEvent is not null %}
 
         <div class="row">
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-lg-7">
                 {% if is_event %}
                     <div class="mb-2">
                         <b>Date : {{ campaign.dateEvent|date('d/m/Y') }}</b>
@@ -39,7 +39,7 @@
                 {% endif %}
             </div>
 
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-lg-5">
                 <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
 
                 {% if campaign.isCrowdable %}
@@ -52,14 +52,14 @@
                             <div class="form-group form-row">
                                 {{ form_errors(purchase) }}
 
-                                <div class="col-8">
+                                <div class="col-8 col-sm-9 col-lg-8">
                                     <label class="font-weight-bold">{{ counterpart.name }}</label>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-4 col-sm-3 col-lg-4">
                                     {{ counterpart.price }} €
                                 </div>
-                                <div class="col-8">{{ counterpart.getDescription|raw }}</div>
-                                <div class="col-4">
+                                <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
+                                <div class="col-4 col-sm-3 col-lg-4">
                                     <div class="container px-0">
                                         <div class="input-group">
                                             <span class="input-group-btn">

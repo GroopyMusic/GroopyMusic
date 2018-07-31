@@ -25,6 +25,7 @@ $black: #000 !default;
 @import "scss/footer.scss";
 @import "scss/payment.scss";
 @import "scss/loader.scss";
+@import 'scss/campaign.scss';
 
 body {
   font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -46,4 +47,8 @@ h2 {
 
 .btn, button, a {
   cursor: pointer;
+}
+
+.btn-primary {
+  @extend .text-white;
 }

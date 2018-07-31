@@ -1,0 +1,11 @@
+@include media-breakpoint-down(lg) {
+
+  .quantity-left-minus, .quantity-right-plus {
+    padding: 1px 6px;
+  }
+
+  .quantity {
+    padding: 0.25rem;
+  }
+
+}

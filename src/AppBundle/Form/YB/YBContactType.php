@@ -23,7 +23,7 @@ class YBContactType extends AbstractType
             ->add('name', TextType::class, array(
                 'required' => true,
                 'label' => false,
-                'attr' => ['placeholder' => 'Name'],
+                'attr' => ['placeholder' => 'Nom'],
                 'constraints' => array(
                     new NotBlank(),
                     new Length([
