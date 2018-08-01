@@ -25,10 +25,10 @@ home:
     title: Nos services
     ticketing:
       title: Ticketing
-      content: Vendez des tickets ou d'autres articles à l'aide de campagnes en ligne
+      content: Vendez des tickets ou d'autres articles à l'aide de campagnes en ligne.
     flexibility:
       title: Objectifs flexibles
-      content: Vous décidez du seuil de réussite de vos campagnes
+      content: Vous décidez du seuil de réussite de vos campagnes.
     no_risk:
       title: Aucun risque
       content: Si la campagne se solde en échec, vous remboursez tout le monde sans frais.
@@ -44,7 +44,7 @@ home:
       content: C'est facile. Lancez une campagne en ligne pour tester l'intérêt de votre public !
     example_3:
       title: Besoin de vendre des articles pour votre projet ?
-      content: Contactez-nous, tout simplement, et nous verrons ce que nous pouvons faire pour vous.
+      content: Contactez-nous et nous verrons ce que nous pouvons faire pour vous.
   pricing:
     title: Campagnes & prix
     contact_us: Contactez-nous
@@ -71,7 +71,7 @@ home:
            <li>Support par e-mail et téléphone</li>
   contact:
     title: Contactez-nous
-    subtitle: Si vous souhaitez vous lancer dans votre première campagne en ligne, contactez-nous
+    subtitle: Si vous souhaitez vous lancer dans votre première campagne en ligne, faites-nous signe.
     send: Envoyer
 
 pay_cart:
