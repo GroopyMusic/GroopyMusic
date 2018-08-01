@@ -237,25 +237,6 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/faq", name="faq")
-     */
-    public function faqAction(EntityManagerInterface $em)
-    {
-        $steps = $em->getRepository('AppBundle:Step')->findOrderedStepsWithoutPhases();
-        return $this->render('AppBundle:Public:faq.html.twig', array(
-            'steps' => $steps,
-        ));
-    }
-
-    /**
-     * @Route("/team", name="team")
-     */
-    public function teamAction()
-    {
-        return $this->render('AppBundle:Public:team.html.twig');
-    }
-
-    /**
      * @Route("/suggestions", name="suggestionBox")
      */
     public function suggestionBoxAction()
