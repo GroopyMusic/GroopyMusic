@@ -80,7 +80,7 @@ pay_cart:
     error: Vous devez accepter les conditions générales pour continuer.
     label: J'accepte les conditions générales et je souhaite procéder au paiement
     intro: |
-        En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
+        En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales d'utilisation et de vente</a>.
   methods:
     creditcard: Carte de crédit
     bancontact: Bancontact
