@@ -467,7 +467,7 @@ class UserController extends Controller
     /**
      * @Route("/user/tickets/{id}", name="user_get_tickets")
      */
-    public function getTicketsAction(Request $request, UserInterface $user, ContractFan $contract, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em)
+    public function getTicketsAction(Request $request, UserInterface $user, ContractFan $contract, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em, UserRolesManager $rolesManager)
     {
         if ($contract->isRefunded() || ($contract->getUser() != $user && !$rolesManager->userHasRole($user, 'ROLE_ADMIN')) || !$contract->getContractArtist()->getCounterPartsSent()) {
             throw $this->createAccessDeniedException();
