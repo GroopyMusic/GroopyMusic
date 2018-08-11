@@ -427,9 +427,9 @@ class UserController extends Controller
     /**
      * @Route("/user/orders/{id}", name="user_get_order")
      */
-    public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em)
+    public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em, UserRolesManager $rolesManager)
     {
-        if ($cart->isRefunded() || $cart->getUser() != $user) {
+        if ($cart->isRefunded() || ($cart->getUser() != $user && !$rolesManager->userHasRole($user, 'ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException();
         }
 
@@ -469,7 +469,7 @@ class UserController extends Controller
      */
     public function getTicketsAction(Request $request, UserInterface $user, ContractFan $contract, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em)
     {
-        if ($contract->isRefunded() || $contract->getUser() != $user || !$contract->getContractArtist()->getCounterPartsSent()) {
+        if ($contract->isRefunded() || ($contract->getUser() != $user && !$rolesManager->userHasRole($user, 'ROLE_ADMIN')) || !$contract->getContractArtist()->getCounterPartsSent()) {
             throw $this->createAccessDeniedException();
         }
 
