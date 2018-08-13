@@ -69,7 +69,7 @@ card:
   new_artist: NOUVEL ARTISTE
 
 header:
-  slogan: La plateforme de financement participatif de concerts
+  slogan: Les festivals de la découverte, partout en Belgique
   nav:
     home: Accueil
     about: À propos
@@ -95,7 +95,7 @@ home:
     content_1: Nos festivals ne sont confirmés que si suffisamment de tickets sont vendus.
     content_2: Si l'objectif n'est pas atteint au bout d'un mois, tout le monde est remboursé.
   concerts:
-    title: En cours de financement
+    title: Festivals
   spotlights:
     title_1: Découvrez trois artistes par festival
     title_2: À découvrir

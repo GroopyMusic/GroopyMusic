@@ -26,7 +26,7 @@
                               height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <!-- End Google Tag Manager (noscript) -->
         {% endif %}
-        <header id="header">
+        <div id="page_head">
             <noscript>
                 <div class="noscript-warning">
                     {{ "noscript.warning"|trans }}
@@ -38,9 +38,11 @@
                 </div>
             <![endif]-->
             {% block header %}
-                {% include ':patterns:header_nav.html.twig' with {'home_header': false} %}
+                <header>
+                    {% include ':patterns:header_nav.html.twig' with {'home_header': false} %}
+                </header>
             {% endblock %}
-        </header>
+        </div>
 
         <main id="main" {% block main_attributes %}{% endblock %}>
             {% block modal_login_form %}

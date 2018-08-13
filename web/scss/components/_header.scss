@@ -1,9 +1,15 @@
-header {
-  background-color: $secondary-background;
-  background-image: url('../images/live/live-1-small.jpg');
-  background-size: cover;
-  background-position: center;
+header.masthead {
+  height: 100vh;
+  position: relative;
+  background-color: #343a40;
   background-repeat: no-repeat;
+  background-position: center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
 
   #not-auth-perma-links {
     position: fixed;
@@ -19,42 +25,6 @@ header {
     position: fixed;
     left: 10px;
     top: 10px;
-  }
-
-  .jumbotron {
-    background-color: transparent !important;
-    margin-bottom: 0 !important;
-    padding: 2rem 1rem !important;
-
-    @include media-breakpoint-down(sm) {
-      .container {
-        padding-top: 5rem;
-      }
-    }
-  }
-
-  #mainNav {
-    transition: background-color 1s ease;
-    -webkit-transition: background-color 1s ease;
-    -moz-transition: background-color 1s ease;
-    -o-transition: background-color 1s ease;
-
-    background-color: rgba(30, 22, 25, 0.9);
-    min-height: 50px;
-
-    .nav-item {
-      text-transform: uppercase;
-      padding-left: 6px;
-      padding-right: 6px;
-      .nav-link {
-        color: white;
-      }
-    }
-
-    &.stickytop {
-      @extend .fixed-top;
-      background-color: rgba(59, 59, 59, 1);
-    }
   }
 
   #logo {
@@ -83,42 +53,66 @@ header {
     width: 150px;
     height: 150px;
   }
+}
 
-  .dropdown-menu {
-    position: absolute !important;
-    background-color: black;
-    padding-bottom: 0;
-    max-width: initial;
-  }
+  #mainNav {
+    transition: background-color 1s ease;
+    -webkit-transition: background-color 1s ease;
+    -moz-transition: background-color 1s ease;
+    -o-transition: background-color 1s ease;
 
-  #dropdownMenuButton, .btn.btn-primary.header-button, #notifs-toggler, #language_switcher {
-    background: transparent;
-    border: 1px solid #9D9D9D;
-    color: $main-color;
-  }
+    background-color: rgba(30, 22, 25, 0.9);
+    min-height: 50px;
 
-  .btn.btn-primary.header-button {
-    @extend .px-3;
-  }
+    .nav-item {
+      text-transform: uppercase;
+      padding-left: 6px;
+      padding-right: 6px;
+      .nav-link {
+        color: white;
+      }
+    }
 
-  .dropdown-menu .dropdown-item {
-    background-color: black;
-    color: white;
-    padding-left: 10px;
-    &:hover {
-      background-color: $main-color;
-      color: black;
+    &.stickytop {
+      @extend .fixed-top;
+      background-color: rgba(59, 59, 59, 1);
+    }
+
+    .dropdown-menu {
+      position: absolute !important;
+      background-color: black;
+      padding-bottom: 0;
+      max-width: initial;
+    }
+
+    #dropdownMenuButton, .btn.btn-primary.header-button, #notifs-toggler, #language_switcher {
+      background: transparent;
+      border: 1px solid #9D9D9D;
+      color: $main-color;
+    }
+
+    .btn.btn-primary.header-button {
+      @extend .px-3;
+    }
+
+    .dropdown-menu .dropdown-item {
+      background-color: black;
+      color: white;
+      padding-left: 10px;
+      &:hover {
+        background-color: $main-color;
+        color: black;
+      }
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+    }
+
+    #menuLogo {
+      position: relative;
     }
   }
-
-  .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
-  }
-
-  #menuLogo {
-    position: relative;
-  }
-
 
 
   // > SMall
@@ -252,7 +246,7 @@ header {
       list-style: none;
     }
   }
-}
+
 
 @include media-breakpoint-down(md) {
 

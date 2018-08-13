@@ -19,7 +19,7 @@
 {% block main_attributes %}class="pt-0 pb-0"{% endblock %}
 
 {% block body %}
-    <div class="container-fluid bg-body-strong">
+    <div id="festivals" class="container-fluid bg-body-strong">
         <h3 class="alt-title text-center">{{ 'home.concerts.title'|trans|raw }}</h3>
         <div class="row">
             {% for crowdfunding in crowdfundings %}
@@ -30,28 +30,27 @@
 
     <div id="home-explanations" class="container-fluid position-relative">
         <div id="parallax-guitar-bg" class="d-none d-md-block parallax"></div>
-        <div class="row p-md-5">
+        <div class="row p-md-5 text-center">
             <div class="col-12 col-md-6">
-                <div class="row">
-                    <div class="col-12 col-md-4 my-auto text-center">
-                        <img class="img-fluid home-explanations-icon" src="{{ asset('images/icons/concert.png') }}" />
-                    </div>
-                    <div class="col-12 col-md-8 my-auto">
-                        {{ 'home.concept.content_1'|trans|raw }}
-                    </div>
-                </div>
+                <i class="fas fa-handshake"></i>
+                <h3>Collaboratif</h3>
+                <p>blablablablabla</p>
+            </div>
+            <div class="col-12 col-md-6">
+                <i class="fas fa-handshake"></i>
+                <h3>Collaboratif</h3>
+                <p>blablablablabla</p>
+            </div>
+            <div class="col-12 col-md-6">
+                <i class="fas fa-handshake"></i>
+                <h3>Collaboratif</h3>
+                <p>blablablablabla</p>
+            </div> <div class="col-12 col-md-6">
+                <i class="fas fa-handshake"></i>
+                <h3>Collaboratif</h3>
+                <p>blablablablabla</p>
             </div>
 
-            <div class="col-12 col-md-6 mt-3 mt-md-0 t">
-                <div class="row">
-                    <div class="col-12 col-md-4 my-auto text-center">
-                        <img  class="img-fluid home-explanations-icon" src="{{ asset('images/icons/refund.png') }}" />
-                    </div>
-                    <div class="col-12 col-md-8 my-auto">
-                        {{ 'home.concept.content_2'|trans|raw }}
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -66,24 +65,6 @@
             {% endif %}
         {% endfor %}
         </div>
-    </div>
-
-    <div id="join-us" class="container-fluid bg-grey text-center position-relative py-4">
-        <h3 class="alt-title">{{ 'home.join_us.title'|trans|raw }}</h3>
-        <p class="text-center">
-            {{ 'home.join_us.content_1'|trans({'%about_url%': path('about') ~ '#advantages-producers', '%catalog_url%':path('catalog_artists')})|raw }}
-        </p>
-        <p class="text-center">
-            {{ 'home.join_us.content_2'|trans({'%about_url%': path('about') ~ '#advantages-artists', '%register_url%':path('fos_user_registration_register')})|raw }}
-        </p>
-        <p class="text-center">
-            {{ 'home.join_us.content_3'|trans({'%contact_url%': path('suggestionBox')})|raw }}
-        </p>
-
-        <p class="text-center">
-            <a href="{{ path('about') }}" class="btn btn-outline-primary small mt-2">{{ 'home.join_us.more_info'|trans|raw }}</a>
-            <a href="{{ path('fos_user_security_login') }}" class="btn btn-primary small ml-0 ml-md-2 mt-2">{{ 'home.join_us.login_link'|trans|raw }}</a>
-        </p>
     </div>
 
     <div class="container-fluid bg-body-strong text-center py-4" id="friends">
@@ -106,29 +87,6 @@
 {% endblock %}
 
 {% block additional_javascripts %}
-
-    <script type="text/javascript">
-        $(function() {
-            var $header = $('header');
-            var $header_height = $('header').outerHeight();
-            function parallax(){
-                var desktop = $('#logo-video-container').is(":visible");
-                var scrolled = $(window).scrollTop();
-                if(desktop) {
-                    $header.css({'background-position-y':  (( scrolled * 1.4 - $header_height / 2) + 'px')});
-                }
-                else {
-                    $header.css('background-position-y', 'center');
-                }
-                $('#parallax-guitar-bg').css('top', -(scrolled * 0.5) + 'px');
-            }
-            $(window).scroll(function(e){
-                parallax();
-            });
-            parallax();
-        });
-    </script>
-
 
     <script type="application/ld+json">
     {
