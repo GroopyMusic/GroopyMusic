@@ -50,9 +50,7 @@ h1 {
 }
 
 .um-label {
-
   @extend .text-uppercase;
-  color: #2d2c2c;
   &-small {
     @extend .um-label;
     @extend .small;

@@ -25,18 +25,19 @@ $spacer: 1.2rem;
 $successful-progress-bg: #6bc361;
 $transparent-orange: rgba(146, 141, 134, 0.22);
 $transparent-orange-2: rgba(254, 223, 161, 0.8);
+$main-yellow: #eadf0c;
 
 // =======
 // typos =
 // =======
 
-@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Exo+2|Lato|Barlow+Condensed|Passion+One|Satisfy');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Exo+2|Lato|Barlow+Condensed|Passion+One|Satisfy|Hind');
 
 
-$headline-font: 'Satisfy';
+$headline-font: 'Hind';
 $headline-color: white;
-$secondary-font: 'Exo 2', sans-serif;
-$font: 'Montserrat', 'sans-serif';
+$secondary-font: 'Hind', sans-serif;
+$font: 'Hind', 'Montserrat', 'sans-serif';
 
 // main paddings/margins
 

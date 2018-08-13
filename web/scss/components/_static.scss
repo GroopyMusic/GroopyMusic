@@ -29,3 +29,18 @@
     }
   }
 }
+
+.about-headline {
+  i {
+    font-size: 3rem;
+  }
+  color: $main-yellow;
+  border: 1px $main-yellow solid;
+  border-right: 0 none;
+}
+
+.about-content {
+  border: 1px white solid;
+  border-left: 0 none;
+
+}
