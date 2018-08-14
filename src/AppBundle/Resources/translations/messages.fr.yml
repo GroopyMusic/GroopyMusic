@@ -830,7 +830,7 @@ labels:
     mailcopy: Recevoir une copie du message par mail
     message: Message
     object: Objet
-    submit: Envoyer
+    submit: <i class="fas fa-paper-plane"></i> Envoyer
     type: Type de message
 
   user:

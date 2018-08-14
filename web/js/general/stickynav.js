@@ -66,4 +66,5 @@ $(function() {
     $('.navbar-collapse').on('hidden.bs.collapse', function() {
         onResize();
     });
+
 });

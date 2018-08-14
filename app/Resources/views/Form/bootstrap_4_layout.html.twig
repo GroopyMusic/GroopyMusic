@@ -27,7 +27,7 @@
 
 {% block button_widget -%}
     {%- set attr = attr|merge({class: (attr.class|default('btn-secondary') ~ ' btn')|trim}) -%}
-    {{- parent() -}}
+    {% autoescape false %}{{- parent()|raw -}}{% endautoescape %}
 {%- endblock button_widget %}
 
 {% block checkbox_widget -%}
@@ -91,7 +91,7 @@
         {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-legend')|trim}) -%}
     {%- endif -%}
     {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' form-control-label')|trim}) -%}
-    {{- parent()|raw -}}
+    {% autoescape false %}{{- parent()|raw -}}{% endautoescape %}
 {%- endblock form_label %}
 
 {% block checkbox_radio_label -%}

@@ -1,8 +1,11 @@
 {% extends "base.html.twig" %}
 
+{% block main_attributes %}class="bg-body-light"{% endblock %}
 {% block body %}
+    <section class="container p-4 pb-5 pt-0 position-relative">
+        <p><a class="scroll" href="#equipe">Voir les membres de l'équipe<br />
+                <i class="fas fa-arrow-down"></i></a></p>
 
-    <div class="container">
         <h3 class="text-center mb-4">{{ 'contact.title'|trans|raw }}</h3>
 
         <p class="mb-3">{{ 'contact.intro'|trans|raw }}</p>
@@ -35,7 +38,58 @@
                 </div>
             </div>
         </div>
-    </div>
+        <div class="separating-waves"></div>
+    </section>
+
+    <section id="equipe" class="container px-4 pt-4 position-relative">
+        <h3 class="text-center">L'équipe</h3>
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/piet.jpg') }}" />
+                <p>Pierre <span class="text-uppercase">Blackman</span>
+                    <br />Coordinateur du projet
+                    <br />pierre@un-mute.be
+                    <br />+32 497 21 26 54
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/gonzague.jpg') }}" />
+                <p>Gonzague <span class="text-uppercase">Yernaux</span>
+                    <br />Développeur Web
+                    <br />gonzague@un-mute.be
+                    <br />+32 473 75 75 87
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alice.jpg') }}" />
+                <p>Alice <span class="text-uppercase">Blackman</span>
+                    <br />Responsable communication
+                    <br />alice@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/louis.jpg') }}" />
+                <p>Louis <span class="text-uppercase">Leboutte</span>
+                    <br />Responsable juridique
+                    <br />louis@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alexis.jpg') }}" />
+                <p>Alexis <span class="text-uppercase">Wuyts</span>
+                    <br />Responsable partenaires
+                    <br />alexis@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/adrien.jpg') }}" />
+                <p>Adrien <span class="text-uppercase">Vervekken</span>
+                    <br />Community manager
+                    <br />adrien@un-mute.be
+                </p>
+            </div>
+        </div>
+    </section>
 {% endblock %}
 
 
