@@ -32,7 +32,7 @@
             {% set province_slug
                 = "jplist-" ~ artist.province|slug
             %}
-            <h5 class="artist-name">{% if news is defined and news %}{{ 'card.new_artist'|trans|raw }} - {% endif %}{{ artist.artistname }}</h5>
+            <h5 class="artist-name">{% if news is defined and news %}{{ 'card.new_artist'|trans|raw }} - {% endif %}{{ artist.artistname }} {% if repeated %}repeated{% endif %}</h5>
             <p>{{ preview(artist.getShortDescription(), 50)|raw }}</p>
             <span class="d-none artist-province {{ province_slug }}">{{ artist.province }}</span>
             <span class="d-none artist-genres">{% for genre in artist.genres %}{% if not loop.first %} {% endif %}<span class="jplist-{{ genre|slug }}">{{ genre }}</span>{% endfor %}</span>

@@ -111,7 +111,7 @@ home:
     video:
       title: Notre dernière vidéo
   news:
-    title: Derniers artistes inscrits
+    title: Ils sont à l'affiche
   join_us:
     title: Rejoignez-nous
     content_1: <strong>Vous désirez devenir <a href="%about_url%">producteur</a> et soutenir un artiste ?</strong> Découvrez <a href="%catalog_url%">le catalogue des artistes</a>.
