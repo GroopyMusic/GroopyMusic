@@ -82,7 +82,6 @@
             </ul>
 
             <div class="content-box">
-
                 {% if not artist.validated and not artist.visible and owned %}
                     <p class="p-info">{{ 'artist_profile.see.owned.to_be_examined'|trans|raw }}</p>
                 {% elseif artist.validated and not artist.visible and owned %}
@@ -115,7 +114,7 @@
                             </div>
                         </div>
 
-                        {%  if current_sales is not empty %}
+                        {% if current_sales is not empty %}
                             <h4 class="mt-4">{{ 'artist_profile.see.current_sales'|trans|raw }}</h4>
                             <div class="list-group">
                              {% for sale in current_sales %}
@@ -175,9 +174,11 @@
                         {% endif %}
 
                         {% set currentContract = artist.currentContract %}
-                        {% if currentContract is not null %}
-                            <h4 class="mt-4">{{ 'artist_profile.see.current_event'|trans|raw }}</h4>
-                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
+                        {% if currentContract %}
+                            <h3 class="mt-4">{{ 'artist_profile.see.current_event'|trans|raw }}</h3>
+                            {% for currentContract in artist.currentContracts %}
+                                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
+                            {% endfor %}
                         {% endif %}
 
                         {% for contract in artist.passedSuccessfulContracts() %}

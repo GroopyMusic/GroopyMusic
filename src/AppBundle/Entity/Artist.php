@@ -111,6 +111,10 @@ class Artist implements TranslatableInterface
         return $currentContract == null || $currentContract->isInSuccessfulState();
     }
 
+    public function hasCurrentContract() {
+        return $this->currentContract() != null;
+    }
+
     public function hasOneLink() {
         return !empty($this->website)
             || !empty($this->twitter)
@@ -135,18 +139,27 @@ class Artist implements TranslatableInterface
         return $photos;
     }
 
+    // Unmapped
+    private $currentContracts = false;
+
     public function currentContract($allow_preval = false) {
-        if(empty($this->contracts))
-            return null;
-        else {
-            foreach($this->contracts as $contract) {
-                /** @var ContractArtist $contract */
-                if($contract->getLastFestivalDate() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
-                    return $contract;
+        if($this->currentContracts === false) {
+            $this->currentContracts = [];
+            if(!empty($this->contracts))
+            {
+                foreach($this->contracts as $contract) {
+                    /** @var ContractArtist $contract */
+                    if($contract->getLastFestivalDate() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
+                        $this->currentContracts[] = $contract;
+                    }
                 }
             }
         }
-        return null;
+        return $this->currentContracts;
+    }
+
+    public function currentContracts() {
+        return $this->currentContract();
     }
 
     public function getPassedSuccessfulContracts() {

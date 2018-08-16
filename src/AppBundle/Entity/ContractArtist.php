@@ -351,6 +351,19 @@ class ContractArtist extends BaseContractArtist
         return max($this->getFestivalDates());
     }
 
+    /** @return string */
+    public function getDisplayHalls() {
+        $str = '';
+        $i = 1;
+        foreach($this->getFestivalHalls() as $hall) {
+            if($i > 1)
+                $str .= ' - ';
+            $str .= $hall->__toString();
+            $i++;
+        }
+        return $str;
+    }
+
     /** @return bool */
     public function hasOnlyOneHall() {
         return count(array_filter($this->getFestivalHalls(), function($elem) { return $elem != null; })) == 1;

@@ -1,6 +1,6 @@
 {% macro menu_logo(home_header = false) %}
     <li id="menuLogo"{% if not home_header %} class="d-none d-lg-inline-block"{% endif %}>
-        <a {% if not home_header %}href="{{ path('homepage') }}"{% else %}class="scroll" href="#header"{% endif %}><img id="nav-logo" {% if not home_header %}class="opacity-1"{% endif %} src="{{ asset('images/wave.png') }}" /></a>
+        <a href="{{ path('homepage') }}#home" class="scroll"><img id="nav-logo" {% if not home_header %}class="opacity-1"{% endif %} src="{{ asset('images/wave.png') }}" /></a>
     </li>
 {% endmacro %}
 
@@ -19,7 +19,7 @@
         <ul class="navbar-nav mx-auto text-center pt-3 pt-md-0">
 
             <li class="d-inline-block d-lg-none nav-item">
-                <a class="nav-link" href="{{ path('homepage') }}">{{ 'header.nav.home'|trans|raw }}</a>
+                <a class="nav-link scroll" href="{{ path('homepage') }}#home">{{ 'header.nav.home'|trans|raw }}</a>
             </li>
 
             <li class="nav-item left-nav-item{% if not home_header %} stickytop{% endif %}">
@@ -34,7 +34,7 @@
 
 
             <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">
-                <a class="nav-link" href="{{ path('catalog_crowdfundings') }}">{{ 'header.nav.events'|trans|raw }}</a>
+                <a class="nav-link scroll" href="{{ path('homepage') }}#festivals">{{ 'header.nav.events'|trans|raw }}</a>
             </li>
 
             <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">

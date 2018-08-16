@@ -1,6 +1,6 @@
 
 
-<header class="masthead position-relative" style="background-image:url('{{ absolute_url(asset('images/live/live-1.jpg')) }}')">
+<header id="home" class="masthead position-relative" style="background-image:url('{{ absolute_url(asset('images/live/live-1.jpg')) }}')">
     {% include ':patterns:header_nav.html.twig' with {'home_header': false} %}
     <div class="container justify-content-center align-items-center text-center position-relative">
         <a id="logo-header-container" href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>

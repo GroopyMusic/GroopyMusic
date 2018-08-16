@@ -44,7 +44,7 @@
             <span class="d-none hall-capacity">{{ hall.capacity }}</span>
 
             {% if hall.website is not empty %}
-                <a class="btn small btn-outline-primary" href="{{ absolute_url(hall.website) }}">{{ 'more_info'|trans }}</a>
+                <a class="btn small btn-outline-primary" target="_blank" href="{{ absolute_url(hall.website) }}">{{ 'more_info'|trans }}</a>
             {% endif %}
         </div>
 

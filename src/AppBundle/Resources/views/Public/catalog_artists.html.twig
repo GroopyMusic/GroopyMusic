@@ -65,6 +65,14 @@
                             </label>
                         {% endfor %}
                     </div>
+
+                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-hascontract" data-path=".artist-has-current-contract">
+                        <label class="custom-control custom-checkbox pl-3" for="checkbox-has-current-contract">
+                            <input data-path=".artist-has-current-contract" id="checkbox-has-current-contract" class="form-check-input custom-control-input" type="checkbox"{% if affiche_checked %} checked{% endif %}>
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">A l'affiche</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 

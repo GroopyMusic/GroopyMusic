@@ -23,9 +23,14 @@
         <h3 class="alt-title text-center">{{ 'home.concerts.title'|trans|raw }}</h3>
         <div class="row">
             {% for crowdfunding in crowdfundings %}
-                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': false, 'card_classes': ['pb-3']} %}
+                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':6, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': true, 'card_classes': ['pb-3']} %}
             {% endfor %}
         </div>
+        <p class="text-center mt-4">
+            <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary">
+                Voir les tickets en vente <b class="far fa-arrow-alt-circle-right"></b>
+            </a>
+        </p>
         <div class="separating-waves high"></div>
     </section>
 
@@ -54,8 +59,8 @@
             </div>
         </div>
         <p class="text-center">
-            <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary">
-                Voir les tickets en vente
+            <a href="{{ path('about') }}" class="btn btn-primary">
+                Plus sur notre fonctionnement <b class="far fa-arrow-alt-circle-right"></b>
             </a>
         </p>
         <div class="separating-waves low prior"></div>
@@ -68,18 +73,18 @@
             <div id="wrapper" class="mx-auto">
                 <div id="carousel">
                     {% for new in news %}
-                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true} %}
+                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true} %}
                     {% endfor %}
                     {% for new in news %}
-                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new.object, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true, 'repeated': true} %}
+                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true, 'repeated': true} %}
                     {% endfor %}
                 </div>
             </div>
         </div>
 
-        <p class="text-center">
+        <p class="text-center mt-3">
             <a href="{{ path('catalog_artists', {'affiche': 'true'}) }}" class="btn btn-primary">
-                Voir tous les artistes à l'affiche
+                Voir tous les artistes à l'affiche <i class="far fa-arrow-alt-circle-right"></i>
             </a>
         </p>
 
@@ -107,7 +112,6 @@
 
 {% block additional_javascripts %}
 
-    <script src="{{ asset('js/lib/jquery.carouFredSel-6.0.4-packed.js') }}"></script>
     <script type="text/javascript">
         $(function() {
 
@@ -116,7 +120,7 @@
 
             $c.carouFredSel({
                 align: false,
-                items: 4,
+                items: {{ news|length }},
                 scroll: {
                     items: 1,
                     duration: 3000,
@@ -125,20 +129,18 @@
                 }
             });
 
+            $w.bind('resize.example', function () {
+                var nw = $w.width();
+                if (nw < 990) {
+                    nw = 990;
+                }
+
+                $c.width(nw * 3);
+                $c.parent().width(nw);
+
+            }).trigger('resize.example');
+
         });
-
-        $w.bind('resize.example', function() {
-            var nw = $w.width();
-            if (nw < 990) {
-                nw = 990;
-            }
-
-            $c.width(nw * 3);
-            $c.parent().width(nw);
-
-        }).trigger('resize.example');
-
-
     </script>
 
 

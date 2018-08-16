@@ -100,6 +100,7 @@
   margin-top: 5px;
 }
 .img-thumb-bg {
+  color: white;
   padding: 0;
   overflow: hidden;
   min-height: 200px;
@@ -139,57 +140,69 @@
 }
 .img-thumb-bg .caption {
   bottom: -5px;
-  height: 100px;
   font-size: 12px;
   position: absolute;
   padding: 0 20px 20px;
   transition: all 0.3s ease-in-out;
 }
-.img-thumb-bg .caption .tag a {
-  color: #fff;
-  padding: 0 5px;
-  font-size: 12px;
-  border-radius: 2px;
-  display: inline-block;
-  text-transform: uppercase;
-  background-color: #34b16c;
+.img-thumb-bg .tag {
+  position: relative;
+  z-index: 1000;
+  a {
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 2px;
+    display: inline-block;
+    text-transform: uppercase;
+    background-color: #34b16c;
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
-.img-thumb-bg .caption .title {
-  margin-top: 5px;
-  font-size: 18px;
-  line-height: 20px;
-  text-transform: uppercase;
+
+.thumbnail .thumbnail-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* cursor: pointer; */
+  height: 100%;
+  z-index: 1000;
 }
-.img-thumb-bg .caption .title a {
-  color: #fff;
+
+.thumbnail {
+  .caption i {
+    color: $main-yellow;
+  }
+  .artists-list, .artists-list i {
+    color: #c0bfbb;
+  }
 }
-.img-thumb-bg .caption .title a:hover {
-  color: #f0da22;
-}
-.img-thumb-bg .caption .meta-data {
-  color: #777;
-  font-size: 12px;
-  line-height: 12px;
-  margin-bottom: 15px;
-}
-.img-thumb-bg .caption .meta-data a {
-  color: #777;
-}
-.img-thumb-bg .caption .meta-data a .fa {
-  color: #2980B9;
-}
-.img-thumb-bg .caption .meta-data a:hover {
-  color: #2980B9;
-}
-.img-thumb-bg .caption .content {
-  display: none;
-}
-.img-thumb-bg:hover .overlay {
-  background: rgba(46, 49, 58, 0.8);
-}
-.img-thumb-bg:hover .caption {
-  bottom: 60px;
-}
-.img-thumb-bg:hover .caption .content {
-  display: block;
-}
+
+
+  .img-thumb-bg .caption .title {
+    margin-top: 5px;
+    font-size: 18px;
+    line-height: 20px;
+    text-transform: uppercase;
+  }
+  .img-thumb-bg .caption .title a {
+    color: #fff;
+  }
+  .img-thumb-bg:hover .caption .title a {
+    color: #f0da22;
+  }
+  .img-thumb-bg .caption .content {
+    display: none;
+  }
+  .img-thumb-bg:hover .overlay {
+    background: rgba(46, 49, 58, 0.8);
+  }
+  .img-thumb-bg:hover .caption {
+    bottom: 15px;
+  }
+  .img-thumb-bg:hover .caption .content {
+    display: block;
+  }

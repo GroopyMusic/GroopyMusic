@@ -68,6 +68,7 @@
 {% javascripts filter='jsqueeze' output='js/compiled/main.js'
     'js/lib/*'
     'js/general/*'
+    'js/carousel/*'
 %}
     <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
@@ -86,8 +87,6 @@
         Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "{{ 'dictMaxFilesExceeded'|trans({}, 'dropzone') }}";
     </script>
 {% endif %}
-
-<script src="{{ asset('js/carousel/jcarousel.js') }}"></script>
 
 {#
 

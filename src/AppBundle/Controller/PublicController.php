@@ -132,99 +132,20 @@ class PublicController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $NB_MAX_NEWS = 4;
-        $NB_MAX_CROWDS = 10000;
+        $crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
 
-        $new_artists = $em->getRepository('AppBundle:Artist')->findNewArtists($NB_MAX_NEWS);
+        $news = [];
 
-        $news = array_map(function ($artist) {
-            return ['type' => 'artist', 'object' => $artist];
-        }, $new_artists);
-
-        $all_crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
-        $potential_spotlights = $all_crowdfundings;
-
-        // --------------- Order of crowdfundings determination : based on genres preferences
-        $crowdfundings = [];
-
-        if ($user != null && count($user->getGenres()) > 0) {
-            $genres = $user->getGenres()->toArray();
-            $genre = $genres[array_rand($genres, 1)];
-        } else {
-            $genre = null;
+        foreach($crowdfundings as $crowd) {
+            $news = array_merge($news, $crowd->getAllArtists());
         }
 
-
-        // Efficient shuffle
-        if ($genre != null) {
-            for ($i = 0; $i < $NB_MAX_CROWDS && count($all_crowdfundings) > 0; $i++) {
-
-                $randomKey = array_rand($all_crowdfundings, 1);
-
-                if ($i < 2) {
-                    $genre_candidates = array_filter($all_crowdfundings, function ($elem, $key) use ($genre) {
-                        return $elem->getArtist()->getGenres()->contains($genre);
-                    }, ARRAY_FILTER_USE_BOTH);
-
-                    if (count($genre_candidates) > 0) {
-                        $randomKey = array_rand($genre_candidates, 1);
-                    }
-                }
-
-                $crowdfundings[] = $all_crowdfundings[$randomKey];
-                unset($all_crowdfundings[$randomKey]);
-            }
-        } else {
-            $crowdfundings = $all_crowdfundings;
-        }
-
-        $sales = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
-        $crowdfundings = array_merge($crowdfundings, $sales);
-
-        // -------------------------------------------------
-
-        // --------------- Spotlight determination
-
-        /** @var ContractArtist $spotlight */
-        $spotlight = null;
-        shuffle($potential_spotlights);
-        foreach ($potential_spotlights as $c) {
-            /** @var ContractArtist $c */
-            if ($spotlight == null) {
-                $spotlight = $c;
-                continue;
-            }
-            if ($c->isCrowdable()) {
-
-                if (!$spotlight->isCrowdable()) {
-                    $spotlight = $c;
-                    continue;
-                }
-
-                // Best candidate
-                if ($c->isInSuccessfulState()) {
-                    if (!$spotlight->isInSuccessfulState()) {
-                        $spotlight = $c;
-                        continue;
-                    }
-                }
-
-                if ($spotlight->isInSuccessfulState()) {
-                    continue;
-                }
-            } else {
-                if ($spotlight->isCrowdable()) {
-                    continue;
-                }
-            }
-            $spotlight = rand(0, 1) == 0 ? $spotlight : $c;
-        }
-        // -------------------------------------------------
-
+        $news = array_unique($news);
+        shuffle($news);
+        
         return $this->render('AppBundle:Public:home.html.twig', array(
             'news' => $news,
             'crowdfundings' => $crowdfundings,
-            'spotlight' => $spotlight,
         ));
     }
 
@@ -549,6 +470,7 @@ class PublicController extends Controller
             'artists' => $artists,
             'genres' => $genres,
             'provinces' => $provinces,
+            'affiche_checked' => $request->get('affiche', false),
         ));
     }
 
