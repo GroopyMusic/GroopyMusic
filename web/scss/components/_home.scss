@@ -26,6 +26,7 @@
 }
 
 #wrapper-wrapper {
+  overflow: hidden !important;
   min-height: 350px;
 }
 
@@ -49,7 +50,7 @@
   margin: auto !important;
 }
 
-#home-explanations {
+#about {
   @extend .text-white;
 
   background-image: url('../images/live/live-10.jpg');

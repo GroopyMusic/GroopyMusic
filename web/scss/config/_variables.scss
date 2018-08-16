@@ -31,13 +31,15 @@ $main-yellow: #eadf0c;
 // typos =
 // =======
 
-@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Exo+2|Lato|Barlow+Condensed|Passion+One|Satisfy|Hind');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Exo+2|Lato|Barlow+Condensed|Passion+One|Satisfy|Hind|Abel|Acme|Basic|Boogaloo|Concert+One|Jua|Titan+One');
 
 
 $headline-font: 'Hind';
 $headline-color: white;
+$title-font: 'Basic', 'Abel', 'Hind', 'cursive';
 $secondary-font: 'Hind', sans-serif;
 $font: 'Hind', 'Montserrat', 'sans-serif';
+$logo-font: 'Montserrat';
 
 // main paddings/margins
 

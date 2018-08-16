@@ -78,6 +78,7 @@
     background: black;
     opacity: 0;
 
+
     &:hover {
       opacity: 0.1;
     }
@@ -94,12 +95,7 @@
 
 
 /* NEW GENERATION CARDS */
-
-.thumbnail-title {
-  font-size: 20px;
-  margin-top: 5px;
-}
-.img-thumb-bg {
+.thumbnail {
   color: white;
   padding: 0;
   overflow: hidden;
@@ -113,42 +109,37 @@
   border-radius: 5px;
   background-position: center;
   background-color: transparent;
-  background-image: url('http://projects.mostlikers.com/_images/estate-image.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-}
-.img-thumb-bg p {
-  color: #fff;
-  margin-bottom: 0;
-  line-height: 16px;
-}
-.img-thumb-bg .overlay {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  transition: all 0.3s ease-in-out;
-  background: rgba(0, 0, 0, 0);
-  background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 50%, #000000 100%);
-  background: -ms-linear-gradient(top, rgba(0, 0, 0, 0) 50%, #000000 100%);
-  background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 50%, #000000 100%);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, #000000 100%);
-  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 50%, #000000 100%);
-  background: -webkit-gradient(left top, left bottom, color-stop(50%, rgba(0, 0, 0, 0)), color-stop(100%, #000000));
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#000000', GradientType=0);
-}
-.img-thumb-bg .caption {
-  bottom: -5px;
-  font-size: 12px;
-  position: absolute;
-  padding: 0 20px 20px;
-  transition: all 0.3s ease-in-out;
-}
-.img-thumb-bg .tag {
-  position: relative;
-  z-index: 1000;
-  a {
+  .overlay {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    transition: all 0.8s ease-in-out;
+    background: rgba(0, 0, 0, 0.40);
+    background: -o-linear-gradient(top, rgba(0, 0, 0, 0.40) 50%, #000000 100%);
+    background: -ms-linear-gradient(top, rgba(0, 0, 0, 0.40) 50%, #000000 100%);
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.40) 50%, #000000 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.40) 50%, #000000 100%);
+    background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.40) 50%, #000000 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(50%, rgba(0, 0, 0, 0.40)), color-stop(100%, #000000));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#000000', GradientType=0);
+  }
+  .thumbnail-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* cursor: pointer; */
+    height: 100%;
+    z-index: 1000;
+  }
+
+  .tag {
+    position: relative;
+    z-index: 1000;
     color: #fff;
     padding: 5px 10px;
     font-size: 1rem;
@@ -160,49 +151,49 @@
       text-decoration: none;
     }
   }
-}
 
-.thumbnail .thumbnail-link {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  /* cursor: pointer; */
-  height: 100%;
-  z-index: 1000;
-}
+  .caption {
+    bottom: -5px;
+    font-size: 1rem;
+    margin-top: 30px;
+    position: relative;
+    padding: 0 20px 5px 20px;
 
-.thumbnail {
-  .caption i {
-    color: $main-yellow;
+    &, & .title a{
+      transition: all 0.3s ease-in-out;
+    }
+
+    i {
+      color: $main-yellow;
+    }
+    .title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      a {
+        color: white;
+      }
+    }
+    .content {
+      display: none;
+    }
+  }
+  &:hover {
+    .overlay {
+      background: rgba(46, 49, 58, 0.8);
+    }
+    .caption {
+      .title {
+        a {
+          color: #f0da22;
+        }
+      }
+      .content {
+        display: block;
+      }
+    }
   }
   .artists-list, .artists-list i {
     color: #c0bfbb;
   }
 }
-
-
-  .img-thumb-bg .caption .title {
-    margin-top: 5px;
-    font-size: 18px;
-    line-height: 20px;
-    text-transform: uppercase;
-  }
-  .img-thumb-bg .caption .title a {
-    color: #fff;
-  }
-  .img-thumb-bg:hover .caption .title a {
-    color: #f0da22;
-  }
-  .img-thumb-bg .caption .content {
-    display: none;
-  }
-  .img-thumb-bg:hover .overlay {
-    background: rgba(46, 49, 58, 0.8);
-  }
-  .img-thumb-bg:hover .caption {
-    bottom: 15px;
-  }
-  .img-thumb-bg:hover .caption .content {
-    display: block;
-  }

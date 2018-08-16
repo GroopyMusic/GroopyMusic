@@ -21,10 +21,9 @@
             {% endif %}
             <div class="overlay"></div>
             {% if is_event %}
-                <div class="tag success"><a href="{{ url_contract }}">{% if contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
+                <a class="tag success" href="{{ url_contract }}">{% if contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
                         {% else %}{{ 'stillselling'|trans }}
                         {% endif %}</a>
-                </div>
             {% endif %}
             <div class="caption">
                 <h5 class="title"><a href="{{ url_contract }}">{{ contract.getTitle }}</a></h5>
@@ -38,10 +37,6 @@
                         {% endif %}
                     </div>
 
-                <div class="content">
-                    <p>{{ contract.getDescription|raw }}
-                    </p>
-                </div>
                 {% if is_event %}
                     {% set progress_100 = contract.percentObjective %}
                     <span class="d-none event-gauge">{{ contract.isInSuccessfulState ? 100 : progress_100 }}</span>
