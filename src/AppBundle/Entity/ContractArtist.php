@@ -355,7 +355,8 @@ class ContractArtist extends BaseContractArtist
     public function getDisplayHalls() {
         $str = '';
         $i = 1;
-        foreach($this->getFestivalHalls() as $hall) {
+        $halls = array_unique($this->getFestivalHalls());
+        foreach($halls as $hall) {
             if($i > 1)
                 $str .= ' - ';
             $str .= $hall->__toString();
@@ -427,6 +428,7 @@ class ContractArtist extends BaseContractArtist
             $this->all_artists = $all_artists;
         }
 
+        shuffle($this->all_artists);
         return $this->all_artists;
     }
 

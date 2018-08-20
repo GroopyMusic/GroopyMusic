@@ -246,22 +246,8 @@ class PublicController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $isParticipant = false;
-        $nb_sponsorships = 0;
-        $nb_validated_sponsorships = 0;
-        if ($user != null) {
-            $potential_user_rewards = $em->getRepository('AppBundle:User_Reward')->getPossibleActiveRewards($user, $contract);
-            if ($em->getRepository('AppBundle:User')->isParticipant($contract->getId(), $user->getId()) != null) {
-                $isParticipant = true;
-                $nb_sponsorships = $user->getSponsorships()->count();
-                $nb_validated_sponsorships = $em->getRepository('AppBundle:SponsorshipInvitation')->getNumberOfValidatedInvitation($user->getId());
-            }
-        } else {
-            $potential_user_rewards = [];
-        }
-
         $cf = new ContractFan($contract);
-        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => $potential_user_rewards]);
+        $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => []]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -274,10 +260,6 @@ class PublicController extends Controller
         return $this->render('@App/Public/artist_contract.html.twig', array(
             'contract' => $contract,
             'form' => $form->createView(),
-            'potential_user_rewards' => $potential_user_rewards,
-            'is_participant' => $isParticipant,
-            'nb_sponsorships' => $nb_sponsorships,
-            'nb_validated_sponsorships' => $nb_validated_sponsorships
         ));
     }
 

@@ -14,7 +14,6 @@
     {% set url_contract = is_event ? path('artist_contract', {'id': contract.id, 'slug': contract.slug}) :
         (is_pot ? path('pot_pot', {'id': contract.id, 'slug': contract.artist.slug}) : path('artist_contract_sales', {'id': contract.id, 'slug': contract.artist.slug})) %}
 
-
         <div class="thumbnail img-thumb-bg{% for class in card_classes %} {{ class }}{% endfor %}" style="background-image: url({{ src }});">
             {% if clickable %}
                 <a class="thumbnail-link" href="{{ url_contract }}"></a>
