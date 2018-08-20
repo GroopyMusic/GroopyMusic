@@ -31,7 +31,6 @@
 
 {% endblock %}
 
-{% set owns = app.user is not null ? app.user.owns(contract.artist) : false %}
 {% set state = contract.state %}
 
 {% set first_counterpart = contract.firstCounterPart %}
