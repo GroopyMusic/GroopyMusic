@@ -178,16 +178,27 @@ artist:
 
 vip_inscription:
   copy: |
-    Votre inscription Presse sur Un-Mute.be a bien été enregistrée. Voici les informations que vous avez fournies :
+    Votre demande d'accréditation sur Un-Mute.be a bien été enregistrée. Voici les informations que vous avez fournies :
+
+    --> Festival : %festival%
     --> Nom : %name%
     --> Adresse e-mail : %email%
     --> Société/groupe médiatique : %company%
     --> Fonction : %function%
+    --> Commentaire : %commentary%
 
-    Nous vous attendons donc à 18h le %date% pour le %event%.
+    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse contact@un-mute.be
 
-    Pour toute question, n'hésitez pas à nous contacter par mail : contact@un-mute.be
+volunteer_proposal:
+  copy: |
+    Votre proposition de bénévolat sur Un-Mute.be a bien été enregistrée. Voici les informations que vous avez fournies :
 
+    --> Festival : %festival%
+    --> Nom : %name%
+    --> Adresse e-mail : %email%
+    --> Commentaire : %commentary%
+
+    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse contact@un-mute.be
 
 payment:
   refunded: |

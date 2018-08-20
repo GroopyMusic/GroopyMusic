@@ -4,12 +4,12 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/** VIPInscription
+/** VolunteerProposal
  *
- * @ORM\Table(name="vip_inscription")
+ * @ORM\Table(name="volunteer_proposal")
  * @ORM\Entity
  **/
-class VIPInscription implements PhysicalPersonInterface
+class VolunteerProposal implements PhysicalPersonInterface
 {
     public function __construct()
     {
@@ -18,7 +18,7 @@ class VIPInscription implements PhysicalPersonInterface
 
     public function __toString()
     {
-        return $this->getDisplayName() . ' (' . $this->function . ' chez ' . $this->company . ')';
+        return $this->getDisplayName();
     }
 
     public function getDisplayName() {
@@ -56,16 +56,6 @@ class VIPInscription implements PhysicalPersonInterface
     private $email;
 
     /**
-     * @ORM\Column(name="company", type="string", length=255)
-     */
-    private $company;
-
-    /**
-     * @ORM\Column(name="function", type="string", length=255)
-     */
-    private $function;
-
-    /**
      * @ORM\Column(name="counterparts_sent", type="boolean")
      */
     private $counterparts_sent;
@@ -90,7 +80,7 @@ class VIPInscription implements PhysicalPersonInterface
      *
      * @param string $lastName
      *
-     * @return VIPInscription
+     * @return VolunteerProposal
      */
     public function setLastName($lastName)
     {
@@ -114,7 +104,7 @@ class VIPInscription implements PhysicalPersonInterface
      *
      * @param string $firstName
      *
-     * @return VIPInscription
+     * @return VolunteerProposal
      */
     public function setFirstName($firstName)
     {
@@ -138,7 +128,7 @@ class VIPInscription implements PhysicalPersonInterface
      *
      * @param string $email
      *
-     * @return VIPInscription
+     * @return VolunteerProposal
      */
     public function setEmail($email)
     {
@@ -158,59 +148,11 @@ class VIPInscription implements PhysicalPersonInterface
     }
 
     /**
-     * Set company
-     *
-     * @param string $company
-     *
-     * @return VIPInscription
-     */
-    public function setCompany($company)
-    {
-        $this->company = $company;
-
-        return $this;
-    }
-
-    /**
-     * Get company
-     *
-     * @return string
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     * Set function
-     *
-     * @param string $function
-     *
-     * @return VIPInscription
-     */
-    public function setFunction($function)
-    {
-        $this->function = $function;
-
-        return $this;
-    }
-
-    /**
-     * Get function
-     *
-     * @return string
-     */
-    public function getFunction()
-    {
-        return $this->function;
-    }
-
-    /**
      * Set contractArtist
      *
      * @param \AppBundle\Entity\BaseContractArtist $contractArtist
      *
-     * @return VIPInscription
+     * @return VolunteerProposal
      */
     public function setContractArtist(\AppBundle\Entity\BaseContractArtist $contractArtist = null)
     {
@@ -234,7 +176,7 @@ class VIPInscription implements PhysicalPersonInterface
      *
      * @param boolean $counterpartsSent
      *
-     * @return VIPInscription
+     * @return VolunteerProposal
      */
     public function setCounterpartsSent($counterpartsSent)
     {
@@ -258,7 +200,7 @@ class VIPInscription implements PhysicalPersonInterface
      *
      * @param string $commentary
      *
-     * @return VIPInscription
+     * @return VolunteerProposal
      */
     public function setCommentary($commentary)
     {

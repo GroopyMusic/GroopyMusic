@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block headtitle %}Bénévoles | Un-Mute{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <h2 class="text-center text-primary"><i class="fas fa-hands-helping"></i> Proposition de bénévolat</h2>
+        <p class="my-4 d-none d-md-block">
+            Vous aimeriez participer à la mise en place d'un de nos festivals ?
+            Vous souhaitez aider notre équipe d'une façon ou d'une autre ?
+            Remplissez le formulaire suivant ou <a href="{{ path('suggestionBox') }}">contactez-nous</a> !
+        </p>
+
+        <div class="content-box">
+            <div class="content-box-content">
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+    <div class="separating-waves colored high prior"></div>
+{% endblock %}

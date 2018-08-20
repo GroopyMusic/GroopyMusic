@@ -36,14 +36,14 @@
 
 {% set first_counterpart = contract.firstCounterPart %}
 
-{% set image_url = contract.photo is not null ? contract.webPath(contract.photo) : 'images/live/live-1.jpg' %}
+{% set image_url = contract.photo is not null ? contract.webPath(contract.photo) : 'images/live/live-6.jpg' %}
 
 {% block header_attributes %}id="home" class="masthead masthead-small position-relative" style="background-image:url('{{ absolute_url(asset(image_url)) }}')"{% endblock %}
 
 {% block header_header %}
     <div class="container justify-content-center text-white align-items-center text-center position-relative">
-        <h2 class="text-bold">{{ contract.getTitle }}</h2>
-        <p>{{ contract.getDescription }}</p>
+        <h2 class="text-bold py-2">{{ contract.getTitle }}</h2>
+        <p class="big p-3 p-md-5">{{ contract.getDescription }}</p>
     </div>
     <div class="text-center">
         <a class="scroll btn btn-outline-primary" href="#tickets">Tickets</a>
@@ -213,7 +213,7 @@
         <div class="separating-waves high prior"></div>
     </section>
 
-    <section class="container-fluid position-relative bg-body-light" id="tickets">
+    <section class="container-fluid position-relative bg-body-light p-4 mt-2" id="tickets">
         <h3 class="text-primary text-center"><i class="fas fa-ticket-alt"></i> Tickets</h3>
         {% if state not in contract.uncrowdableStates %}
             {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}

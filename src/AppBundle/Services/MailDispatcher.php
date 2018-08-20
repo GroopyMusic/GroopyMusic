@@ -15,6 +15,7 @@ use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Category;
 use AppBundle\Entity\VIPInscription;
+use AppBundle\Entity\VolunteerProposal;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
@@ -203,9 +204,20 @@ class MailDispatcher
         $recipientName = [$inscription->getDisplayName()];
         $params = ['inscription' => $inscription];
         $subject_params = [];
-        $subject = 'Votre inscription Presse sur Un-Mute';
+        $subject = "Votre demande d'accréditation sur Un-Mute";
 
         $this->sendEmail(MailTemplateProvider::VIPINSCRIPTIONCOPY_TEMPLATE, $subject, $params, $subject_params, [], [], $recipient, $recipientName);
+    }
+
+    public function sendVolunteerProposalCopy(VolunteerProposal $inscription)
+    {
+        $recipient = [$inscription->getEmail() => $this->translator->getLocale()];
+        $recipientName = [$inscription->getDisplayName()];
+        $params = ['inscription' => $inscription];
+        $subject_params = [];
+        $subject = "Votre proposition de bénévolat sur Un-Mute";
+
+        $this->sendEmail(MailTemplateProvider::VOLUNTEERPROPOSALCOPY_TEMPLATE, $subject, $params, $subject_params, [], [], $recipient, $recipientName);
     }
 
     public function sendKnownOutcomeContract(ContractArtist $contract, $success)
@@ -471,9 +483,18 @@ class MailDispatcher
     {
         $params = ['inscription' => $inscription];
         $subject_params = [];
-        $subject = 'Nouvelle inscription Presse';
+        $subject = "Nouvelle demande d'accréditation";
 
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_VIP_INSCRIPTION_FORM, $subject, $params, $subject_params);
+    }
+
+    public function sendAdminVolunteerProposal(VolunteerProposal $inscription)
+    {
+        $params = ['inscription' => $inscription];
+        $subject_params = [];
+        $subject = 'Nouvelle proposition de bénévolat';
+
+        $this->sendAdminEmail(MailTemplateProvider::ADMIN_VOLUNTEER_PROPOSAL_FORM, $subject, $params, $subject_params);
     }
 
     public function sendAdminTicketsSent(ContractArtist $contractArtist)

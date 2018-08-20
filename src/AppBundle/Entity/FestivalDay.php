@@ -185,4 +185,38 @@ class FestivalDay
     {
         return $this->counterparts;
     }
+
+    /**
+     * Add festival
+     *
+     * @param \AppBundle\Entity\ContractArtist $festival
+     *
+     * @return FestivalDay
+     */
+    public function addFestival(\AppBundle\Entity\ContractArtist $festival)
+    {
+        $this->festivals[] = $festival;
+
+        return $this;
+    }
+
+    /**
+     * Remove festival
+     *
+     * @param \AppBundle\Entity\ContractArtist $festival
+     */
+    public function removeFestival(\AppBundle\Entity\ContractArtist $festival)
+    {
+        $this->festivals->removeElement($festival);
+    }
+
+    /**
+     * Get festivals
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFestivals()
+    {
+        return $this->festivals;
+    }
 }

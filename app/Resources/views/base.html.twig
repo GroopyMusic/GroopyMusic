@@ -72,10 +72,11 @@
         {% block footer %}
             <footer {% block footer_attributes %}class="footer pt-3"{% endblock %}>
                 <div class="footer-links mb-4 row text-center">
-                    <div class="col-xs-12 col-sm-3"><a href="{{ path('about') }}">{{ 'footer.about'|trans }}</a></div>
-                    <div class="col-xs-12 col-sm-3"><a href="{{ path('conditions') }}">{{ 'footer.conditions'|trans }}</a></div>
-                    <div class="col-xs-12 col-sm-3"><a href="{{ path('suggestionBox') }}">{{ 'footer.contact'|trans }}</a></div>
-                    <div class="col-xs-12 col-sm-3"><a href="{{ path('press') }}">{{ 'footer.press'|trans }}</a></div>
+                    <div class="col-xs-12 col-sm-2 offset-sm-1"><a href="{{ path('about') }}">{{ 'footer.about'|trans }}</a></div>
+                    <div class="col-xs-12 col-sm-2"><a href="{{ path('conditions') }}">{{ 'footer.conditions'|trans }}</a></div>
+                    <div class="col-xs-12 col-sm-2"><a href="{{ path('suggestionBox') }}">{{ 'footer.contact'|trans }}</a></div>
+                    <div class="col-xs-12 col-sm-2"><a href="{{ path('volunteering') }}">{{ 'footer.volunteering'|trans }}</a></div>
+                    <div class="col-xs-12 col-sm-2"><a href="{{ path('press') }}">{{ 'footer.press'|trans }}</a></div>
                 </div>
                 <div class="copyright row">
                     <span class="text-uppercase">© Un-Mute <a href="{{ facebook_page_url }}"><img class="ml-2" height="20" src="{{ asset('images/facebook.jpg') }}" /></a></span>

@@ -3,7 +3,6 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\ContractArtist;
-use AppBundle\Entity\VIPInscription;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class VIPInscriptionType extends AbstractType
+class VolunteerProposalType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -39,14 +38,6 @@ class VIPInscriptionType extends AbstractType
                 'constraints' => [new Email()],
                 'label' => 'Adresse e-mail',
             ))
-            ->add('company', TextType::class, array(
-                'constraints' => [new NotBlank()],
-                'label' => 'Entreprise / Groupe / Société / Média',
-            ))
-            ->add('function', TextType::class, array(
-                'constraints' => [new NotBlank()],
-                'label' => 'Fonction',
-            ))
             ->add('commentary', TextareaType::class, array(
                 'required' => false,
                 'label' => 'Commentaire (facultatif)'
@@ -59,13 +50,11 @@ class VIPInscriptionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-           'data_class' => VIPInscription::class,
-        ]);
+
     }
 
     public function getBlockPrefix()
     {
-        return 'app_bundle_vipinscription_type';
+        return 'app_bundle_volunteer_proposal_type';
     }
 }

@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\VIPInscription;
+use AppBundle\Entity\VolunteerProposal;
 use AppBundle\Form\VIPInscriptionType;
+use AppBundle\Form\VolunteerProposalType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\TicketingManager;
@@ -36,8 +38,6 @@ class TempShitController extends Controller
     public function VIPInscriptionAction(Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher) {
 
         $inscription = new VIPInscription();
-        $BD = $em->getRepository('AppBundle:ContractArtist')->findOneById($this->container->getParameter('vip_inscription_event_id'));
-        $inscription->setContractArtist($BD);
 
         $form = $this->createForm(VIPInscriptionType::class, $inscription);
 
@@ -46,7 +46,7 @@ class TempShitController extends Controller
         if($form->isSubmitted() && $form->isValid()) {
             $em->persist($inscription);
             $em->flush();
-            $this->addFlash('notice', 'Votre inscription a bien été enregistrée. Au plaisir de vous voir le 10 avril prochain !');
+            $this->addFlash('notice', "Votre demande d'accréditation a bien été enregistrée. Nous vous contacterons sous peu !");
 
             try {
                 $mailDispatcher->sendAdminVIPInscription($inscription);
@@ -60,6 +60,39 @@ class TempShitController extends Controller
         }
 
         return $this->render('@App/Public/Temp/vip_inscription.html.twig', array(
+            'form' => $form->createView(),
+            'inscription' => $inscription,
+        ));
+    }
+
+    /**
+     * @Route("/benevoles", name="volunteering")
+     */
+    public function VolunteerProposalAction(Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher) {
+
+        $inscription = new VolunteerProposal();
+
+        $form = $this->createForm(VolunteerProposalType::class, $inscription);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($inscription);
+            $em->flush();
+            $this->addFlash('notice', "Votre proposision de bénévolat a bien été enregistrée. Nous vous contacterons sous peu !");
+
+            try {
+                $mailDispatcher->sendAdminVolunteerProposal($inscription);
+                // Notif ??
+                $mailDispatcher->sendVolunteerProposalCopy($inscription);
+            } catch(\Exception $e) {
+
+            }
+
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/Public/Temp/volunteer_proposal.html.twig', array(
             'form' => $form->createView(),
             'inscription' => $inscription,
         ));

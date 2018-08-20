@@ -4,12 +4,10 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
-            {{ email_content('vip_inscription.copy', {
+            {{ email_content('volunteer_proposal.copy', {
                 '%name%': inscription.displayName,
                 '%email%': inscription.email,
                 '%festival%': email_link(absolute_url(path('artist_contract', {'id': inscription.contractArtist.id})), inscription.contractArtist.getTitle),
-                '%company%': inscription.company,
-                '%function%': inscription.function,
                 '%contact_url%': email_link(absolute_url(path('suggestionBox'))),
                 '%commentary%': inscription.commentary
             })|raw }}

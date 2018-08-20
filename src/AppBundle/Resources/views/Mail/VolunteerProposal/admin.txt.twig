@@ -4,10 +4,10 @@
 
 {% autoescape false %}
     {% block content %}
-        Nouvelle demande d'accréditation pour "{{ inscription.contractArtist }}". La personne inscrite est : {{ inscription }}.
+        Nouvelle inscription Bénévolat à "{{ inscription.contractArtist }}". La personne inscrite est : {{ inscription }}.
     {% endblock %}
 {% endautoescape %}
 
 {% block body_html %}
-    {% include '@App/Mail/VIPInscription/admin.html.twig' %}
+    {% include 'AppBundle:Mail/VolunteerProposal:admin.html.twig' %}
 {% endblock %}

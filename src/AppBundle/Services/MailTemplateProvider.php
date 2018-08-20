@@ -38,6 +38,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
 
     const SUGGESTIONBOXCOPY_TEMPLATE = 'AppBundle:Mail/SuggestionBox:copy.txt.twig';
     const VIPINSCRIPTIONCOPY_TEMPLATE = 'AppBundle:Mail/VIPInscription:copy.txt.twig';
+    const VOLUNTEERPROPOSALCOPY_TEMPLATE = 'AppBundle:Mail/VolunteerProposal:copy.txt.twig';
 
     const RANKING_EMAIL_USER_TEMPLATE = "AppBundle:Mail/User:ranking_email.txt.twig";
     const REWARD_ATTRIBUTION_TEMPLATE = "AppBundle:Mail/User:reward_attribution.txt.twig";
@@ -56,8 +57,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const ADMIN_CONTACT_FORM = 'AppBundle:Mail/SuggestionBox:admin.txt.twig';
     const ADMIN_PROPOSITION_SUBMIT = 'AppBundle:Mail/Admin:proposition_submit.txt.twig';
     const ADMIN_VIP_INSCRIPTION_FORM = 'AppBundle:Mail/VIPInscription:admin.txt.twig';
+    const ADMIN_VOLUNTEER_PROPOSAL_FORM = 'AppBundle:Mail/VolunteerProposal:admin.txt.twig';
     const ADMIN_NEW_ARTIST = 'AppBundle:Mail/Admin:new_artist.txt.twig';
-
 
     // YB
     const YB_ADMIN_CONTACT = 'AppBundle:Mail/YB/Contact:admin.txt.twig';
