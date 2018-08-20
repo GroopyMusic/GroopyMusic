@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container">
-        <h3>{{ 'threeds.title'|trans|raw }}</h3>
+        <h3 class="text-center">{{ 'threeds.title'|trans|raw }}</h3>
 
         <form method="post" action="{{ path('user_cart_payment_stripe') }}" id="payment-form">
         </form>
@@ -36,11 +36,8 @@
                 stripeTokenHandler(source);
             }
             else if (source.status == 'failed') {
-                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('catalog_crowdfundings')})|raw }}");
+                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('tickets_marketplace')})|raw }}");
             }
-             /*else if (source.status != 'pending') {
-                 displayError("{{ 'threeds.unknown_error'|trans|raw }}");
-             }*/
         }
         function displayLoader(html) {
             $loader.show();

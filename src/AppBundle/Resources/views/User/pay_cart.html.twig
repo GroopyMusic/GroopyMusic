@@ -31,7 +31,7 @@
 
 {% macro recap_zone(purchase, contract, promotional = false) %}
     <div class="content-box-content-zone">
-        <table class="content-box-table">
+        <table class="table recap-table">
             <tbody>
             {% if promotional %}
                 <div class="um-label text-center"><strong>{{ 'pay_cart.recap.promo_title'|trans|raw }}</strong></div>
@@ -245,7 +245,7 @@
                                                 <h5>
                                                     {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#"
                                                                                                            data-toggle="popover"
-                                                                                                           title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }} <i class='fab fa-cc-stripe'></i>"
+                                                                                                           title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}"
                                                                                                            data-content="{{ 'pay_cart.proceed.bancontact.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.bancontact.popover.apparent'|trans|raw }}</a>
                                                 </h5>
                                                 <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
@@ -282,8 +282,8 @@
                                 </div>
 
                                 <label class="custom-control custom-radio d-block mb-2">
-                                    <input type="radio" name="sign-in-choice" value="sign-up"
-                                           class="custom-control-input"{% if form.vars.submitted %} checked{% endif %}>
+                                    <input type="radio" name="sign-in-choice" value="sign-up" checked
+                                           class="custom-control-input">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">{{ 'pay_cart.not_authenticated.signup_label'|trans|raw }}</span>
                                 </label>
@@ -298,22 +298,26 @@
 
                 {% if contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
                     <div class="col-12 col-md-4 order-1 order-md-2">
-                        <div class="content-box">
-                            <div class="content-box-header">
-                                <h3>{{ 'pay_cart.recap.title'|trans|raw }}</h3>
+                        <div class="card card-info">
+                            <div class="card-header">
+                                <h3 class="text-primary text-center">{{ 'pay_cart.recap.title'|trans|raw }}</h3>
                             </div>
-                            <div class="content-box-content-zones content-box-content">
+
+                            <div class="card-content">
+                                <ul class="list-group">
                                 {% set sum_tickets = 0 %}
                                 {% set amoutWithoutReduction = 0 %}
                                 {% set hasReduction = false %}
                                 {% set hasReward = false %}
                                 {% for fan_contract in cart.contracts %}
                                     {% for purchase in fan_contract.purchases %}
-                                        {{ macros.recap_zone(purchase, fan_contract, false) }}
+                                        <li class="list-group-item">
+                                            {{ macros.recap_zone(purchase, fan_contract, false) }}
                                         {% set freeTickets = purchase.quantityPromotional %}
                                         {% if freeTickets > 0 %}
                                             {{ macros.recap_zone(purchase, fan_contract, true) }}
                                         {% endif %}
+                                        </li>
                                     {% endfor %}
                                     {% if fan_contract.userRewards is not empty %}
                                         {% set hasReward = true %}
@@ -326,51 +330,22 @@
                                     {% set amoutWithoutReduction = amoutWithoutReduction + fan_contract.getAmountWithoutReduction %}
                                     {% set sum_tickets = sum_tickets + fan_contract.counterPartsQuantity %}
                                 {% endfor %}
-                                {% if hasReward == true %}
-                                    <div class="content-box-content-zone">
-                                        <table class="content-box-table">
-                                            <tr class="no-border">
-                                                <td class="contract-info-title big">{{ 'pay_cart.recap.labels.applied_rewards'|trans|raw }}</td>
-                                            </tr>
-                                            {% for fan_contract in cart.contracts %}
-                                                {% if fan_contract.userRewards is not empty %}
-                                                    {% for user_reward in fan_contract.userRewards %}
-                                                        <tr>
-                                                            <td class="contract-info-title">
-                                                                >> {{ user_reward.reward.name }}</td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </table>
-                                    </div>
-                                {% endif %}
-                                <div class="content-box-content-zone no-border">
-                                    <table class="content-box-table">
-                                        {% if hasReduction == true %}
-                                            <tr class="no-border">
-                                                <td class="contract-info-title big">{{ 'pay_cart.recap.labels.total_without_reduction'|trans|raw }}</td>
-                                                <td class="big font-weight-bold">{{ amoutWithoutReduction }} €</td>
-                                            </tr>
-                                            <tr class="no-border">
-                                                <td class="contract-info-title big">{{ 'pay_cart.recap.labels.reduction'|trans|raw }}</td>
-                                                <td class="big font-weight-bold" style="color:red">
-                                                    - {{ amoutWithoutReduction - cart.amount }} €
-                                                </td>
-                                            </tr>
-                                        {% endif %}
+
+                                <li class="list-group-item">
+                                    <table class="table recap-table">
                                         <tr class="no-border">
                                             <td class="contract-info-title big">{{ 'pay_cart.recap.total'|transchoice(sum_tickets)|raw }}</td>
                                             <td class="big font-weight-bold">{{ cart.amount }} €</td>
                                         </tr>
                                     </table>
-                                </div>
+                                </li>
+                            </ul>
                             </div>
-                        </div>
+                            </div>
                     </div>
                 {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales')
                     or contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
-                    <div class="col-12 col-md-4 order-1 order-md-2">
+                    <div class="col-12 col-md-4 order-1 order-md-2 mb-2 mb-md-0">
                         <div class="content-box">
                             <div class="content-box-header">
                                 <h3>{{ 'pay_cart.sales.recap.title'|trans|raw }}</h3>

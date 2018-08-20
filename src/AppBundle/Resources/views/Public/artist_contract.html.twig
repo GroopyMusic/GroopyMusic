@@ -63,26 +63,32 @@
                     <h3 class="text-primary text-center"><i class="fas fa-music"></i> {{ 'event.lineup.title'|trans|raw }}</h3>
                     <div class="content-box-content">
                         {% for day in contract.festivalDays %}
-                            <h4{% if not loop.first %} class="pt-3"{% endif %}>{{ ('Days ' ~ day.date|date('w'))|trans }} {{ day.date|date('j') }} {{ ('months.' ~ day.date|date('m'))|trans }}</h4>
+                            <h4{% if not loop.first %} class="pt-3"{% endif %}>{{ ('Days ' ~ day.date|date('w'))|trans }} {{ day.date|date('j') }} {{ ('months.' ~ day.date|date('m'))|trans }} {{ day.date|date('Y') }}</h4>
                             <table class="table">
                                 <tbody>
-                                <tr>
-                                    <td class="contract-info-title text-left">{{ 'doors_opening'|trans }}</td>
-                                    <td>
-                                        {{ day.date|date('H:i') }}
-                                    </td>
-                                </tr>
 
                                 {% if contract.knownLineup %}
+                                    <tr>
+                                        <td>
+                                            {{ day.date|date('H:i') }}
+                                        </td>
+                                        <td>{{ 'doors_opening'|trans }}</td>
+                                    </tr>
                                     {% for performance in day.performances %}
                                             <tr>
-                                                <td class="contract-info-title text-left">{{ performance.time|date('H:i') }}</td>
+                                                <td>{{ performance.time|date('H:i') }}</td>
                                                 <td>
                                                     <a href="{{ path('artist_profile', {'id': performance.artist.id, 'slug': performance.artist.slug}) }}">{{ performance.artist.artistname }}</a>
                                                 </td>
                                             </tr>
                                     {% endfor %}
                                 {% else %}
+                                    <tr>
+                                        <td class="contract-info-title text-left">{{ 'doors_opening'|trans }}</td>
+                                        <td>
+                                            {{ day.date|date('H:i') }}
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class="contract-info-title text-left">Artistes</td>
                                         <td>{% for performance in day.performances %}{% if not loop.first %} - {% endif %}<a href="{{ path('artist_profile', {'id': performance.artist.id, 'slug': performance.artist.slug}) }}">{{ performance.artist.artistName }}</a>{% endfor %}</td>
@@ -149,6 +155,10 @@
         <div class="separating-waves low prior"></div>
     </section>
     <section class="container-fluid position-relative bg-body-strong">
+
+        <h3 class="text-center">État du financement participatif</h3>
+        {% if state not in contract.successfulStates %}<p class="font-italic text-center">Ce festival ne sera confirmé que si suffisamment de tickets sont vendus d'ici la date de validation. <a href="{{ path('homepage') }}#about" class="text-secondary">En savoir plus</a></p>{% endif %}
+
         <div class="content-box solid-borders">
             <div class="content-box-content no-border text-center bg-transparent">
                 <div class="col-12 content-box-col">
@@ -203,7 +213,7 @@
                         <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
                              style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                     </div>
-                    <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} successful-progress-text{% else %} text-primary{% endif %}">
+                    <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
                         {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
                     </div>
                 </div>

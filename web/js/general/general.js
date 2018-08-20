@@ -1,5 +1,7 @@
 $(function () {
 
+    $('.modal-notice').modal('show');
+
     Dropzone.autoDiscover = false;
 
     $.fn.textWidth = function () {

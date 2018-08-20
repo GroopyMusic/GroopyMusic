@@ -16,6 +16,19 @@ table tr {
   }
 }
 
+.table {
+  &.recap-table {
+    td {
+      border: 0 none;
+      vertical-align: middle;
+    }
+  }
+}
+
+.list-group-item {
+  border-color: rgba(0, 0, 0, 0.22);
+}
+
 table.um-table {
   @extend .pt-3;
 

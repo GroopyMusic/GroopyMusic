@@ -1,13 +1,26 @@
 {% set notice_bag = app.request.session.flashbag.get('notice') %}
+
 {% if notice_bag is not empty %}
-    <div class="container">
     {% for message in notice_bag %}
-        <div class="mb-2 alert alert-success alert-dismissible fade show">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            {{ message|trans|raw }}
+        <!-- Modal HTML -->
+        <div class="modal-notice modal fade in">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-confirm-content modal-content">
+                    <div class="modal-confirm-header">
+                        <div class="icon-box">
+                            <i class="far fa-check-circle"></i>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-confirm-body text-center">
+                        <h4>{{ 'notice.title'|trans }}</h4>
+                        <p>{{ message }}</p>
+                        <button class="btn btn-success" data-dismiss="modal">
+                            <span>{{ 'notice.back'|trans }}</span><i class="far fa-arrow-alt-circle-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     {% endfor %}
-    </div>
 {% endif %}

@@ -24,8 +24,8 @@
     }
 
     .td-timing {
-    padding-top: 7mm;
-    font-size: 4mm;
+    padding-top: 20mm;
+    font-size: 3mm;
     }
 {% endblock %}
 
@@ -41,7 +41,9 @@
 
                 <tr class="text-white">
                     <td style="width: 30mm; text-align: center;">{{ ticket.price }} €</td>
-                    <td style="width: 50mm;">{{ ticket.name }}</td>
+                    <td style="width: 50mm;">{{ ticket.name }} {% if ticket.counterPart is not null %}
+                            <br />{{ ticket.counterPart.name }}
+                        {% endif %}</td>
                     <td style="width: 70mm; font-size:3mm;"
                         class="text-right">{{ 'tickets_pdf.ticket.is_entry'|trans|nl2br }}</td>
                 </tr>
@@ -49,9 +51,6 @@
                     <td>
                     </td>
                     <td colspan="2" style="width:130mm">
-                        {% if ticket.counterPart is not null %}
-                            <div>{{ ticket.counterPart.name }}</div>
-                        {% endif %}
                         <div class="text-center ticket-title text-bold">{{ ticket.contractArtist.title }}
                             <br/>{% for date in ticket.contractArtist.festivalDates %}{% if not loop.first %} - {% endif %}{{ (date|date('d') ~ ' ' ~ ('months.' ~ date|date('m'))|trans ~ ' ' ~ date|date('Y'))|upper }}{% endfor %}
                         </div>
@@ -61,7 +60,6 @@
                     <td style="width: 30mm; font-size: 3mm;" valign="bottom">{{ ticket.barCodeText }}</td>
                     <td colspan="2" class="td-timing">
                         {% if ticket.contractArtist.knownLineup %}
-                            <p class="next-to-logo text-secondary">
                             {% for festivalday in ticket.contractArtist.festivalDays %}
                                 <div>
                                     <b>{{ ('Days ' ~ festivalday.date|date('w'))|trans }} {{ festivalday.date|date('j') }} {{ ('months.' ~ festivalday.date|date('m'))|trans }}</b>
@@ -75,7 +73,6 @@
                                         - {{ festivalday.hall.address }}</p>
                                 {% endif %}
                             {% endfor %}
-                            </p>
                         {% endif %}
 
                     </td>

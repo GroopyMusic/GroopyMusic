@@ -26,6 +26,9 @@
                               height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <!-- End Google Tag Manager (noscript) -->
         {% endif %}
+        {% block flashes %}
+            {% include ":patterns:notices.html.twig" %}
+        {% endblock %}
         <div id="page_head">
             <noscript>
                 <div class="noscript-warning">
@@ -50,10 +53,6 @@
                 {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     {% include '@FOSUser/Security/login_content.html.twig' %}
                 {% endif %}
-            {% endblock %}
-
-            {% block flashes %}
-                {% include ":patterns:notices.html.twig" %}
             {% endblock %}
 
             {% block errors %}

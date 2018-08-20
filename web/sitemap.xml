@@ -33,42 +33,7 @@
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://un-mute.be/salles</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/evenements</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
     <loc>https://un-mute.be/nouveau-mdp/requete</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/evenements/14-concert-de-fitz</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/evenements/15-concert-de-the-vectors</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/evenements/5-concert-de-hollywood-bedsheets</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/artistes/35-the-terminal</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/artistes/33-frozen-nation</loc>
     <lastmod>2018-04-12T12:58:58+00:00</lastmod>
     <priority>0.80</priority>
   </url>
@@ -86,16 +51,6 @@
     <loc>https://un-mute.be/presse</loc>
     <lastmod>2018-04-12T12:58:58+00:00</lastmod>
     <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/equipe-et-valeurs</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/foire-aux-questions</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/18-61minds</loc>

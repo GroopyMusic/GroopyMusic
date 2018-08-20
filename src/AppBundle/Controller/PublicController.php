@@ -343,7 +343,7 @@ class PublicController extends Controller
         /** @var $cart Cart */
         if ($cart_id == null) {
             $this->addFlash('error', 'errors.order_changed');
-            return $this->redirectToRoute('catalog_crowdfundings');
+            return $this->redirectToRoute('tickets_marketplace');
         }
 
         $em = $this->getDoctrine()->getManager();

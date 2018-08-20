@@ -45,6 +45,10 @@ loading: Chargement....
 stillselling: Tickets en vente
 doors_opening: Ouverture des portes
 
+notice:
+  title: Merci !
+  back: Continuer
+
 meta_description_1: La première plate-forme belge de financement participatif de concerts.
 meta_description_2: Avec Un-Mute, c’est vous, le public, qui décidez des artistes que vous souhaitez voir se produire dans votre région. Vous achetez à l’avance des tickets de concerts qui ne seront confirmés que si un nombre minimum de places est vendu !
 

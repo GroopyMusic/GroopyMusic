@@ -8,9 +8,6 @@
             </p>
 
             <div class="text-center mb-3">
-                {% if available_artist %}
-                    <a class="btn btn-primary" href="{{ path('user_new_contract_artist_temp') }}">{{ 'my_artists.new_event'|trans|raw }}</a>
-                {% endif %}
                 <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">{{ 'my_artists.new_artist'|trans|raw }}</a>
             </div>
 
