@@ -38,8 +38,9 @@
                 </div>
             <![endif]-->
             {% block header %}
-                <header>
+                <header {% block header_attributes %}{% endblock %}>
                     {% include ':patterns:header_nav.html.twig' with {'home_header': false} %}
+                    {% block header_header %}{% endblock %}
                 </header>
             {% endblock %}
         </div>

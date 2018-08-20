@@ -98,7 +98,6 @@
                         <div id="payment-intro">
                             {% if contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
                                 {{ 'pay_cart.intro'|trans({
-                                    '%firstName%': app.user.firstname,
                                     '%conditionsUrl%': path('conditions') ~ '#cgv'
                                 })|raw }}
                             {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
@@ -208,7 +207,7 @@
                                                 <h5>
                                                     {{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a href="#"
                                                                                                            data-toggle="popover"
-                                                                                                           title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }}"
+                                                                                                           title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }} <i class='fab fa-cc-stripe'></i>"
                                                                                                            data-content="{{ 'pay_cart.proceed.creditcard.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.creditcard.popover.apparent'|trans|raw }}</a>
                                                 </h5>
                                             </div>
@@ -235,7 +234,7 @@
                                                 </div>
                                                 <div class="col-12 text-center mt-5">
                                                     <input type="submit" class="btn btn-primary"
-                                                           value="{{ 'pay_cart.proceed.creditcard.submit'|trans|raw }}"/>
+                                                           value="{{ 'pay_cart.proceed.creditcard.submit'|trans({'%amount%': cart.amount})|raw }}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -246,7 +245,7 @@
                                                 <h5>
                                                     {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#"
                                                                                                            data-toggle="popover"
-                                                                                                           title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}"
+                                                                                                           title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }} <i class='fab fa-cc-stripe'></i>"
                                                                                                            data-content="{{ 'pay_cart.proceed.bancontact.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.bancontact.popover.apparent'|trans|raw }}</a>
                                                 </h5>
                                                 <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
@@ -255,7 +254,7 @@
                                                 <div id="bc-card-element" class="text-center">
                                                     <button type="button" class="btn btn-primary mt-3"
                                                             id="choose-bancontact">
-                                                        {{ 'pay_cart.proceed.bancontact.submit'|trans|raw }}
+                                                        {{ 'pay_cart.proceed.bancontact.submit'|trans({'%amount%': cart.amount})|raw }}
                                                     </button>
                                                 </div>
                                             </div>

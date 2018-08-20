@@ -7,12 +7,6 @@
         {% if artists is empty %}
             <p>{{ 'catalog_artists.empty'|trans|raw }}</p>
         {% else %}
-            <p>
-                {{ 'catalog_artists.intro'|trans({'%proposition_url%': path('proposition')})|raw }}
-            </p>
-            <p>
-                {{ 'catalog_artists.join_us'|trans({'%url%': path('fos_user_registration_register')})|raw }}
-            </p>
 
             <div>
                 <!-- ios button: show/hide panel -->

@@ -2,14 +2,45 @@
   @extend .w-100;
 
   $waveheight: 80px;
+  $waveheight2: 40px;
 
   position: absolute;
-  bottom: -40px;
+  bottom: -($waveheight/2);
   left: 0;
   height: $waveheight;
 
   background: url('../images/bar2.png') repeat-x;
   background-size: $waveheight $waveheight;
+
+  &.colored {
+    background: url('../images/bar.png') repeat-x;
+    background-size: $waveheight2 $waveheight2;
+    bottom: -($waveheight2/2);
+    height: $waveheight2;
+
+    &.big {
+      background-size: $waveheight $waveheight;
+      bottom: -($waveheight/2);
+      height: $waveheight;
+    }
+
+    &.low {
+      background: url('../images/bar_low.png') repeat-x;
+      background-size: $waveheight2 $waveheight2;
+
+      &.big {
+        background-size: $waveheight $waveheight;
+      }
+    }
+
+    &.high {
+      background: url('../images/bar_high.png') repeat-x;
+      background-size: $waveheight2 $waveheight2;
+      &.big {
+        background-size: $waveheight $waveheight;
+      }
+    }
+  }
 
   &.prior {
     z-index: 1000;

@@ -499,7 +499,7 @@ class ContractArtist extends BaseContractArtist
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\FestivalDay")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\FestivalDay", inversedBy="festivals")
      */
     private $festivaldays;
 

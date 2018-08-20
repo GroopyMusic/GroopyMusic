@@ -23,7 +23,7 @@ class CartType extends AbstractType
                 ]
             ])
             ->add('submit', SubmitType::class, array(
-                'label' => 'labels.contractfan.submit',
+                'label' => 'Continuer',
                 'attr' => ['class' => 'btn btn-primary submit-cart'],
             ))
         ;

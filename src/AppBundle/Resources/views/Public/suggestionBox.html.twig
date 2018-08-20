@@ -2,30 +2,43 @@
 
 {% block main_attributes %}class="bg-body-light"{% endblock %}
 {% block body %}
-
-    <section id="coords" class="container pb-2 position-relative">
-        <h3 class="text-center mb-3 text-primary"><i class="fas fa-address-card"></i> Nos coordonnées</h3>
-        <p>
-            Un-Mute ASBL</br>
-            Place Saint-Antoine 3, 1040 Bruxelles<br />
-            contact@un-mute.be
-        </p>
-    </section>
-
-
     <section id="contact" class="container pb-2 position-relative">
-        <h3 class="text-center mb-4 text-primary"><i class="fas fa-comment"></i> {{ 'contact.title'|trans|raw }}</h3>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <h3 class="text-center mb-4  text-primary"><i class="fas fa-address-card"></i> Nos coordonnées</h3>
+                <div class="content-box">
+                    <div class="content-box-content">
+                        <p>
+                            Un-Mute ASBL<br />
+                            0664.782.372<br />
+                            <br />
+                            <b><i class="fas fa-map-marker-alt"></i> Siège social</b><br />
+                            Place Saint-Antoine 3, 1040 Bruxelles<br />
+                            Belgique<br />
+                            <br />
+                            <b><i class="fas fa-envelope"></i></i> Mail</b><br />
+                            contact@un-mute.be<br />
+                            <br />
+                            <b><i class="fas fa-phone"></i> Téléphone</b><br />
+                            +32 497 21 26 54
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-8">
+                <h3 class="text-center mb-4 text-primary"><i class="fas fa-comment"></i> {{ 'contact.title'|trans|raw }}</h3>
 
-        <p class="mb-3">{{ 'contact.intro'|trans|raw }}</p>
-
-        <div class="content-box">
-            <div class="content-box-content">
-                {{ hidden_loader() }}
-                <div id="suggestionbox_form">
-                    {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+                <div class="content-box">
+                    <div class="content-box-content">
+                        {{ hidden_loader() }}
+                        <div id="suggestionbox_form">
+                            {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Modal -->
         <div class="modal fade" id="suggestionmodal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -49,51 +62,55 @@
     </section>
 
     <section id="equipe" class="container px-4 pt-2 position-relative">
-        <h3 class="text-center text-primary mb-2"><i class="fas fa-user-friends"></i> L'équipe</h3>
-        <div class="row">
-            <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/piet.jpg') }}" />
-                <p>Pierre <span class="text-uppercase">Blackman</span>
-                    <br />Coordinateur du projet
-                    <br />pierre@un-mute.be
-                    <br />+32 497 21 26 54
-                </p>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/gonzague.jpg') }}" />
-                <p>Gonzague <span class="text-uppercase">Yernaux</span>
-                    <br />Développeur Web
-                    <br />gonzague@un-mute.be
-                    <br />+32 473 75 75 87
-                </p>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alice.jpg') }}" />
-                <p>Alice <span class="text-uppercase">Blackman</span>
-                    <br />Responsable communication
-                    <br />alice@un-mute.be
-                </p>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/louis.jpg') }}" />
-                <p>Louis <span class="text-uppercase">Leboutte</span>
-                    <br />Responsable juridique
-                    <br />louis@un-mute.be
-                </p>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alexis.jpg') }}" />
-                <p>Alexis <span class="text-uppercase">Wuyts</span>
-                    <br />Responsable partenaires
-                    <br />alexis@un-mute.be
-                </p>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/adrien.jpg') }}" />
-                <p>Adrien <span class="text-uppercase">Vervekken</span>
-                    <br />Community manager
-                    <br />adrien@un-mute.be
-                </p>
+        <div class="content-box">
+            <div class="content-box-content">
+                <h3 class="text-center text-primary mb-2"><i class="fas fa-user-friends"></i> L'équipe</h3>
+                <div class="row">
+                    <div class="col-12 col-md-4 col-lg-2 text-center">
+                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/piet.jpg') }}" />
+                        <p>Pierre <span class="text-uppercase">Blackman</span>
+                            <br />Coordinateur du projet
+                            <br />pierre@un-mute.be
+                            <br />+32 497 21 26 54
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 text-center">
+                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/gonzague.jpg') }}" />
+                        <p>Gonzague <span class="text-uppercase">Yernaux</span>
+                            <br />Développeur Web
+                            <br />gonzague@un-mute.be
+                            <br />+32 473 75 75 87
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 text-center">
+                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alice.jpg') }}" />
+                        <p>Alice <span class="text-uppercase">Blackman</span>
+                            <br />Responsable communication
+                            <br />alice@un-mute.be
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 text-center">
+                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/louis.jpg') }}" />
+                        <p>Louis <span class="text-uppercase">Leboutte</span>
+                            <br />Responsable juridique
+                            <br />louis@un-mute.be
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 text-center">
+                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alexis.jpg') }}" />
+                        <p>Alexis <span class="text-uppercase">Wuyts</span>
+                            <br />Responsable partenaires
+                            <br />alexis@un-mute.be
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 text-center">
+                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/adrien.jpg') }}" />
+                        <p>Adrien <span class="text-uppercase">Vervekken</span>
+                            <br />Community manager
+                            <br />adrien@un-mute.be
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

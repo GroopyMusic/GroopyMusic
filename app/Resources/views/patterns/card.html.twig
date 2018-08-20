@@ -3,7 +3,7 @@
 {% set bgwhite = bgwhite|default(false) %}
 {% set card_classes = card_classes|default([]) %}
 {% set repeated = repeated|default(0) %}
-
+{% set clickable = clickable|default(true) %}
 
 <div {% if repeated > 0 %}id="rpt{{ repeated }}"{% endif %} class="col-xs-{{ xs }} col-md-{{ md }} mt-4 mt-md-3{% if jplist is defined and jplist %} jp-list-item{% endif %} card-wrapper">
     {% block card_content %}

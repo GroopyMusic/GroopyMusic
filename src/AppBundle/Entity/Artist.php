@@ -145,15 +145,15 @@ class Artist implements TranslatableInterface
     public function currentContract($allow_preval = false) {
         if($this->currentContracts === false) {
             $this->currentContracts = [];
-            if(!empty($this->contracts))
-            {
-                foreach($this->contracts as $contract) {
-                    /** @var ContractArtist $contract */
-                    if($contract->getLastFestivalDate() >= (new \DateTime()) && !$contract->getFailed() && $contract->isInTestPeriod() <= $allow_preval) {
-                        $this->currentContracts[] = $contract;
-                    }
+
+            foreach($this->getPerformances() as $performance) {
+                $festivalDay = $performance->getFestivalDay();
+                $contract = $festivalDay->getFestival();
+                if($festivalDay->getDate()  >= (new \DateTime()) && !$contract->getFailed()) {
+                    $this->currentContracts[] = $contract;
                 }
             }
+            $this->currentContracts = array_unique($this->currentContracts);
         }
         return $this->currentContracts;
     }

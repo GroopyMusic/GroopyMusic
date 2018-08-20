@@ -1,5 +1,13 @@
 header.masthead {
   height: 100vh;
+
+  &.small {
+    @include media-breakpoint-up(md) {
+      height: 70vh;
+    }
+
+  }
+
   position: relative;
   background-color: #343a40;
   background-repeat: no-repeat;

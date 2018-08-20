@@ -1,7 +1,10 @@
 $(function() {
     var tickets = 0;
+    var totalprice = 0;
+    var needForTotal = $('#cart-total').length;
 
     function calculateTickets() {
+        var tp = 0;
         var q = 0;
         $('.quantity.form-control').each(function() {
             var qval = parseInt($(this).val());
@@ -11,10 +14,18 @@ $(function() {
                 $select2_container.hide();
             }
             else {
+                if(needForTotal) {
+                    var price = parseInt($(this).closest('.count-input').attr('data-price'));
+                    tp += price * qval;
+                }
                 $select2_container.show();
             }
         });
         tickets = q;
+        totalprice = tp;
+        if(needForTotal) {
+            $('#cart-total').text(totalprice);
+        }
     }
 
     $('.quantity.form-control').on('change', function() {
@@ -32,7 +43,6 @@ $(function() {
     }
 
     disableIfNoTickets();
-
 
     $(".incr-btn").on("click", function (e) {
         var $button = $(this);

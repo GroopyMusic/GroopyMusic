@@ -399,14 +399,9 @@ pay_cart:
     title: Paiement de votre commande
     intro: |
         <p>
-            Bienvenue dans l'espace sécurisé d'Un-Mute, %firstName%. Vous pouvez ici effectuer le paiement de vos tickets et ainsi soutenir les artistes qui
-            vous ont convaincu lors de votre visite.
-        </p>
-
-        <p>
-            En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
-            Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres producteurs qui soutiennent cet artiste.
-            Sinon, si cet événement a assez de succès, vous recevrez vos tickets par e-mail, et sur Un-Mute, quelques jours avant le festival.
+            En procédant au paiement de vos tickets, vous assurez avoir lu nos <a target="_blank" href="%conditionsUrl%">conditions générales de vente</a>.
+            Pour rappel, vos tickets vous seront remboursés s'il n'y a pas assez d'autres personnes qui participent au financement de ce festival.
+            Sinon, si cet événement a assez de succès, vous recevrez vos tickets par e-mail, et sur votre espace Un-Mute, quelques semaines avant le festival.
         </p>
     conditions:
         error: Vous devez accepter les conditions générales pour continuer.
@@ -428,7 +423,7 @@ pay_cart:
                 creditcard: Carte de crédit
                 exp: Date d'exp.
                 cvc: Cryptogramme visuel
-            submit: Payer avec ma carte de crédit
+            submit: Payer %amount% € par carte de crédit
         bancontact:
             title: Payer par Bancontact
             popover:
@@ -436,7 +431,7 @@ pay_cart:
                 content: Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.
                 apparent: + d'infos
             info: Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.
-            submit: Poursuivre avec Bancontact
+            submit: Payer %amount% € avec Bancontact
             pending: Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.
     recap:
         promo_title: Promotion

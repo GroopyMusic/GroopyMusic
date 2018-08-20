@@ -1,64 +1,100 @@
 {% extends "base.html.twig" %}
 
+{% block main_attributes %}class="bg-body-light"{% endblock %}
+
 {% block body %}
+    <div id="tickets" class="container-fluid" style="padding-top:0 !important;">
+        <h2 class="text-center text-primary text-uppercase">Tickets</h2>
 
-    <div class="container">
-        <h2 class="text-center">Tickets</h2>
-        <div class="content-box">
-            <div class="content-box-content">
+        {% if form.contracts is not empty %}
+        {{ form_start(form) }}
 
-                {% if form.contracts is not empty %}
-                    {{ form_start(form) }}
+        {% for contract in form.contracts %}
+            <section class="position-relative rounded">
+                {% set contractArtist = contract.vars.data.contractArtist %}
 
-                    {% for contract in form.contracts %}
-                        {% set contractArtist = contract.vars.data.contractArtist %}
+                <h3 class="tickets-festival-title">{{ contractArtist.getTitle }}</h3>
 
-                        <h3>{{ contractArtist.getTitle }}</h3>
+                <div class="position-relative p-4">
+                        <div class="d-inline-block align-middle">
+                            <div><i class="fas fa-calendar-alt"></i> {{ contractArtist.displayDates }}</div>
+                            <div><i class="fas fa-map-marker-alt"></i> {{ contractArtist.displayHalls }}</div>
+                        </div>
+                        <div class="d-inline-block align-middle pl-3">
+                            <a href="{{ path('artist_contract', {'id': contractArtist.id, 'slug': contractArtist.getSlug}) }}" target="_blank" class="btn btn-outline-primary sharp">Voir la fiche</a>
+                        </div>
+                    <div class="separating-waves colored high"></div>
+                </div>
 
-                        {% for purchase in contract.children.purchases %}
+                <div class="position-relative px-3">
 
-                            {% set counterpart = purchase.vars.value.counterpart %}
-                            <div class="counterpart-form">
+                    <div class="row d-none d-md-flex p-3 counterparts-header">
+                        <div class="col-md-3 um-label-bold">
+                            Ticket
+                        </div>
+                        <div class="col-6 col-md-4 my-auto um-label-bold">
+                            Description
+                        </div>
+                        <div class="col-6 col-md-2 my-auto um-label-bold">
+                            Prix
+                        </div>
+                        <div class="col-6 col-md-3 my-auto um-label-bold">
+                            Quantité
+                        </div>
+                    </div>
 
-                                <div class="form-group form-row">
-                                    {{ form_errors(purchase) }}
+                    {% for purchase in contract.children.purchases %}
+                        <div class="row counterpart-form border">
+                            
+                        {% set counterpart = purchase.vars.value.counterpart %}
+                            <div class="col-6 col-md-3 py-2 my-auto">
+                                <div>{{ form_errors(purchase) }}</div>
+                                <label class="counterpart-label"><i class="fas fa-ticket-alt"></i> {{ counterpart.name }}</label>
+                            </div>
 
-                                    <div class="col-8">
-                                        <label class="counterpart-label">{{ counterpart.name }}</label>
-                                    </div>
-                                    <div class="col-4 counterpart-price">
-                                        {{ counterpart.price }} €
-                                    </div>
-                                    <div class="col-8">{{ counterpart.getDescription|raw }}</div>
-                                    <div class="col-4">
-                                        <div class="container px-0">
-                                            <div class="count-input space-bottom">
-                                                <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                                {{ form_widget(purchase.quantity) }}
-                                                <a class="incr-btn" data-action="increase"
-                                                   data-max="{{ contractArtist.nbAvailable(counterpart) }}"
-                                                   href="#">&plus;</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-6 col-md-4 py-2 my-auto">
+                                {{ counterpart.getDescription|raw }}
+                            </div>
+
+                            <div class="col-6 col-md-2 py-2 my-auto">
+                                {{ counterpart.price }} €
+                            </div>
+
+                            <div class="col-6 col-md-3 py-2 my-auto">
+                                <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
+                                    <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                    {{ form_widget(purchase.quantity) }}
+                                    <a class="incr-btn" data-action="increase"
+                                       data-max="{{ contractArtist.nbAvailable(counterpart) }}"
+                                       href="#">&plus;</a>
                                 </div>
                                 {% if counterpart.potentialArtists is not empty %}
                                     <div class="select2-artists">
-                                        {{ form_row(purchase.artists) }}
+                                        Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
+                                        {{ form_widget(purchase.artists) }}
                                     </div>
                                 {% endif %}
                             </div>
-                        {% endfor %}
-                        {% do contract.setRendered %}
+                        </div>
                     {% endfor %}
+                    {% do contract.setRendered %}
+                    <div class="separating-waves colored low"></div>
+                </div>
+            </section>
+        {% endfor %}
 
-                    {{ form_end(form) }}
 
-                {% else %}
-                    Soyez prêts, les ventes de tickets pour nos premiers festivals commencent à la fin du mois d'août !
-                {% endif %}
-
-            </div>
+        <div class="text-right mt-4">
+            <div>TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</div>
+            {{ form_widget(form.submit) }}
         </div>
+
+        {{ form_end(form) }}
+
+        {% else %}
+            <p>
+                Soyez prêts, les ventes de tickets pour nos premiers festivals commencent à la fin du mois d'août !
+            </p>
+        {% endif %}
     </div>
 {% endblock %}

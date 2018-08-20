@@ -7,9 +7,12 @@
   font-size: 1.4em;
 }
 
-.counterpart-form:not(:first-of-type) {
-  @extend .pt-3;
-  border-top: 1px solid #D3D3D3;
+.counterpart-form {
+  background: white;
+}
+
+.counterparts-header {
+  background-color: #ffcd72;
 }
 
 .contract-info
@@ -31,4 +34,16 @@
 .free-price-euro-sign {
   top: 6px;
   right: 10px;
+}
+
+@include media-breakpoint-down(lg) {
+
+  .quantity-left-minus, .quantity-right-plus {
+    padding: 1px 6px;
+  }
+
+  .quantity {
+    padding: 0.25rem;
+  }
+
 }

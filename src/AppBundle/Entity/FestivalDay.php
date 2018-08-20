@@ -20,6 +20,10 @@ class FestivalDay
         return $this->getPerformances();
     }
 
+    public function getFestival() {
+        return $this->festivals->first();
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -50,6 +54,11 @@ class FestivalDay
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CounterPart", mappedBy="festivaldays")
      */
     private $counterparts;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="ContractArtist", mappedBy="festivaldays")
+     */
+    private $festivals;
 
     /**
      * Get id

@@ -177,7 +177,7 @@
                         {% if currentContract %}
                             <h3 class="mt-4">{{ 'artist_profile.see.current_event'|trans|raw }}</h3>
                             {% for currentContract in artist.currentContracts %}
-                                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract} %}
+                                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': currentContract, 'md': 12, 'xs': 12} %}
                             {% endfor %}
                         {% endif %}
 
