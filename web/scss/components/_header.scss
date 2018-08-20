@@ -1,9 +1,10 @@
 header.masthead {
   height: 100vh;
 
-  &.small {
+  &-small {
     @include media-breakpoint-up(md) {
       height: 70vh;
+      max-height:100vh;
     }
 
   }

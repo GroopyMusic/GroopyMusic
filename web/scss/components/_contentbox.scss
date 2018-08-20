@@ -1,4 +1,11 @@
 .content-box {
+
+  &.solid-borders {
+    .content-box-row, .content-box-col, .content-box-content, .content-box-content-zones, .content-box-content-zone, .content-box-content-zone-vert  {
+    border-color: black !important;
+    }
+  }
+
   @extend .mb-3;
 
   &-row {
@@ -53,6 +60,10 @@
 
     &.border-left {
       border-left: 2px solid #d0d2d4;
+    }
+
+    &.no-border {
+      border: 0 none !important;
     }
 
     &-zones {
