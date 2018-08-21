@@ -42,7 +42,7 @@
             </tr>
             <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.concert'|trans|raw }}</td>
-                <td>{{ contract.contractArtist.title }}
+                <td>{{ contract.contractArtist.getTitle }}
                     ({% for date in contract.contractArtist.festivalDates %}{% if not loop.first %} - {% endif %}{{ date|date('d/m/Y') }}{% endfor %})
                 </td>
             </tr>
@@ -96,7 +96,7 @@
                 <div class="col-12 col-md-8 order-2 order-md-1">
                     {% if app.user %}
                         <div id="payment-intro">
-                            {% if contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
+                            {% if (not contract_fan) or contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
                                 {{ 'pay_cart.intro'|trans({
                                     '%conditionsUrl%': path('conditions') ~ '#cgv'
                                 })|raw }}
@@ -204,10 +204,11 @@
 
                                         <div id="credit-card" class="payment-method w-100">
                                             <div class="col-12 content-box-content-zone">
-                                                <h5>
+                                                <h5><i class="fab fa-cc-visa"></i>
+                                                    <i class="fab fa-cc-mastercard"></i>
                                                     {{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a href="#"
                                                                                                            data-toggle="popover"
-                                                                                                           title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }} <i class='fab fa-cc-stripe'></i>"
+                                                                                                           title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }}"
                                                                                                            data-content="{{ 'pay_cart.proceed.creditcard.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.creditcard.popover.apparent'|trans|raw }}</a>
                                                 </h5>
                                             </div>
@@ -242,7 +243,7 @@
                                         <div id="debit-card" class="form-row payment-method w-100"
                                              style="display:none;">
                                             <div class="col-12 content-box-content-zone">
-                                                <h5>
+                                                <h5><i class="far fa-credit-card"></i>
                                                     {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#"
                                                                                                            data-toggle="popover"
                                                                                                            title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}"
@@ -296,7 +297,7 @@
                     {% endif %}
                 </div>
 
-                {% if contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
+                {% if (not contract_fan) or  contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
                     <div class="col-12 col-md-4 order-1 order-md-2">
                         <div class="card card-info">
                             <div class="card-header">
@@ -476,9 +477,9 @@
                             email: '{{ app.user.email }}'
                         },
                         redirect: {
-                            return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
+                            return_url: '{{ absolute_url(path('user_cart_payment_pending', {'cart_code': cart.barcodeText})) }}'
                         },
-                        statement_descriptor: 'Un-Mute - purchase {{ contract_fan.id }}'
+                        statement_descriptor: 'Un-Mute - purchase {{ cart.id }}'
                     }).then(function (result) {
                         on3DSSource(result);
                     });
@@ -512,7 +513,7 @@
                                 card: result.id
                             },
                             redirect: {
-                                return_url: '{{ absolute_url(path('user_cart_payment_pending', {'contract_id': contract_fan.id})) }}'
+                                return_url: '{{ absolute_url(path('user_cart_payment_pending', {'cart_code': cart.barcodeText})) }}'
                             }
                         }).then(function (result) {
                             on3DSSource(result)
@@ -541,7 +542,7 @@
                         stripeTokenHandler(source);
                     }
                     else if (source.status == 'failed') {
-                        displayError("{{ 'threeds.error'|trans({'%backUrl%': absolute_url(path('artist_contract', {'id': contract_fan.contractArtist.id}))})|raw }}");
+                        displayError("{{ 'threeds.error'|trans({'%backUrl%': absolute_url(path('tickets_marketplace'))})|raw }}");
                     }
                     {#else if (source.status != 'pending') {
                         displayError("{{ 'threeds.unknown_error'|trans|raw }}");
@@ -616,8 +617,8 @@
 
                     var hiddenInput2 = document.createElement('input');
                     hiddenInput2.setAttribute('type', 'hidden');
-                    hiddenInput2.setAttribute('name', 'fancontract_id');
-                    hiddenInput2.setAttribute('value', '{{ contract_fan.id }}');
+                    hiddenInput2.setAttribute('name', 'cart_code');
+                    hiddenInput2.setAttribute('value', '{{ cart.barcodeText }}');
 
                     var hiddenInput3 = document.createElement('input');
                     hiddenInput3.setAttribute('type', 'hidden');

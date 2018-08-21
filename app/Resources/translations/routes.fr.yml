@@ -151,16 +151,16 @@ user_ajax_update_motivations: '/api/update-motivations/{id}'
 user_cart: /panier
 
 # Desc: /secure-zone/cart/payment/pending/{contract_id}
-user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{contract_id}'
+user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{cart_code}'
 
 # Desc: /secure-zone/cart/payment
 user_cart_payment_stripe: /zone-securisee/panier/paiement
 
 # Desc: /secure-zone/cart/payment/success/{id}
-user_cart_payment_stripe_success: '/zone-securisee/panier/paiement-reussi/{id}'
+user_cart_payment_stripe_success: '/zone-securisee/panier/paiement-reussi/{cart_code}'
 
 # Desc: /secure-zone/cart/send-recap-{id}
-user_cart_send_order_recap: '/secure-zone/cart/send-recap-{id}'
+user_cart_send_order_recap: '/secure-zone/cart/send-recap-{cart_code}'
 
 # Desc: /change-email
 user_change_email: /changer-email

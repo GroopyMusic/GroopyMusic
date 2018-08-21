@@ -59,22 +59,22 @@ class TicketingManager
             $contractFan->removeTicket($ticket);
         }
 
+        $j = 1;
         //if(!empty($contractFan->getTickets())) {
         foreach ($contractFan->getPurchases() as $purchase) {
             /** @var Purchase $purchase */
             $counterPart = $purchase->getCounterpart();
 
-            $j = 1;
-            while ($j <= $purchase->getQuantityOrganic()) {
+            for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
                 $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice()));
                 $j++;
             }
             for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j + $i, 0));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, 0));
+                $j++;
             }
         }
         $this->rewardSpendingService->giveRewardToTicket($contractFan);
-        //}
     }
 
     public function generateTicketsForPhysicalPerson(PhysicalPersonInterface $physicalPerson, ContractArtist $contractArtist, $counterPart, $nb)

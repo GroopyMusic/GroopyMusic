@@ -41,7 +41,7 @@
 
 {% block header_header %}
     <div class="container justify-content-center text-white align-items-center text-center position-relative">
-        <h2 class="text-bold py-2">{{ contract.getTitle }}</h2>
+        <h2 class="festival-title text-uppercase font-weight-bold py-2">{{ contract.getTitle }}</h2>
         <p class="big p-3 p-md-5">{{ contract.getDescription }}</p>
     </div>
     <div class="text-center">
@@ -124,7 +124,7 @@
                         <div id="carouselPotentialHalls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 {% set i = 0 %}
-                                {% for hall in contract.festivalHalls if hall is not null %}
+                                {% for hall in contract.uniqueFestivalHalls if hall is not null %}
                                     <div class="carousel-item {% if loop.first %}active{% endif %}">
                                         {% include 'AppBundle:Public/Card:hall.html.twig' with {'xs': 12, 'md':12, 'no_rotation_hall':true} %}
                                     </div>

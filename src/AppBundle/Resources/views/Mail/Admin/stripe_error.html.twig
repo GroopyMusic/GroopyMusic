@@ -10,7 +10,6 @@
 
             <ul>
                 <li>Message : {{ stripe_error.message }}</li>
-                <li>Request ID : {{ stripe_error.requestId }}</li>
                 <li>Date d'envoi de ce message : {{ 'now'|date('d/m/Y H:i:s') }}</li>
             </ul>
         {% endblock %}

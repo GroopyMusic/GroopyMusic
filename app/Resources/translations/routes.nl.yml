@@ -110,7 +110,7 @@ user_advanced_options: /geavanceerde-instellingen
 user_cart: /basket
 
 # Desc: /secure-zone/cart/payment/pending/{contract_id}
-user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{contract_id}'
+user_cart_payment_pending: '/zone-securisee/paiement-en-attente/'
 
 # Desc: /secure-zone/cart/payment
 user_cart_payment_stripe: /beveiligd-zone/basket/betaling

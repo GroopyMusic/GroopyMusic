@@ -64,6 +64,7 @@ class PublicController extends Controller
     {
         $cart = new Cart();
         $cart->setUser($user);
+        $cart->generateBarCode();
         $this->getDoctrine()->getManager()->persist($cart);
         return $cart;
     }
@@ -98,7 +99,7 @@ class PublicController extends Controller
             $qty = 0;
             foreach ($cf->getPurchases() as $purchase) {
                 $pqty = $purchase->getQuantity();
-                if ($pqty == 0) {
+                if ($pqty == 0 || $pqty == null) {
                     $cf->removePurchase($purchase);
                 }
                 $qty += $pqty;
@@ -115,14 +116,9 @@ class PublicController extends Controller
             }
         }
 
-        foreach($cart->getContracts() as $contract_fan) {
-            if ($contract_fan->getContractArtist()->isUncrowdable()) {
-                $this->addFlash('error', 'errors.event.uncrowdable');
-            }
-        }
-
+        $em->persist($cart);
         $em->flush();
-        $request->getSession()->set('cart_id', $cart->getId());
+        return $cart;
     }
 
     /**
@@ -142,7 +138,7 @@ class PublicController extends Controller
 
         $news = array_unique($news);
         shuffle($news);
-        
+
         return $this->render('AppBundle:Public:home.html.twig', array(
             'news' => $news,
             'crowdfundings' => $crowdfundings,
@@ -252,9 +248,9 @@ class PublicController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->handleCheckout([$cf], $user, $em, $request);
+            $cart = $this->handleCheckout([$cf], $user, $em, $request);
 
-            return $this->redirectToRoute('checkout');
+            return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
         }
 
         return $this->render('@App/Public/artist_contract.html.twig', array(
@@ -316,33 +312,46 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/checkout", name="checkout")
+     * @Route("/checkout/{cart_code}", name="checkout")
      */
-    public function checkoutAction(Request $request, UserInterface $user = null, RewardSpendingService $rewardSpendingService)
+    public function checkoutAction(Request $request, UserInterface $user = null, RewardSpendingService $rewardSpendingService, $cart_code)
     {
-
-        $cart_id = $request->getSession()->get('cart_id', null);
+        $em = $this->getDoctrine()->getManager();
         /** @var $cart Cart */
-        if ($cart_id == null) {
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
+
+        if ($cart == null) {
             $this->addFlash('error', 'errors.order_changed');
             return $this->redirectToRoute('tickets_marketplace');
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $cart = $em->getRepository('AppBundle:Cart')->find($cart_id);
+        foreach($cart->getContracts() as $contract) {
+            $em->persist($contract);
+            $rewardSpendingService->setBaseAmount($contract);
+            foreach($contract->getPurchases() as $purchase) {
+                echo($purchase->getAmount());
+                if($purchase->getAmount() == 0) {
+                    $contract->removePurchase($purchase);
+                }
+            }
 
+            if($contract->getAmount() == 0) {
+                $cart->removeContract($contract);
+            }
+        }
+
+        if ($cart->getAmount() == 0) {
+            // $this->addFlash('error', 'errors.order_changed');
+            // return $this->redirectToRoute('tickets_marketplace');
+        }
         // When user logs in at this point, we could find another cart already related to him
         // -> that potential cart must be removed from DB as we should only use the $cart instance
         if ($user != null) {
             $other_potential_cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
-            if ($other_potential_cart != null && $other_potential_cart->getId() != $cart_id) {
+            if ($other_potential_cart != null && $other_potential_cart->getId() != $cart->getId()) {
                 $em->remove($other_potential_cart);
             }
-        }
-
-        foreach($cart->getContracts() as $cf) {
-            $rewardSpendingService->setBaseAmount($cf);
         }
 
         if($user != null) {
@@ -355,9 +364,11 @@ class PublicController extends Controller
 
             $cart->setUser($user);
             $em->persist($cart);
-            $em->flush();
+            
         }
 
+        $em->flush();
+        
         $form_view = null;
 
         // Registration form
@@ -417,7 +428,6 @@ class PublicController extends Controller
 
             }
         }
-
 
         return $this->render('@App/User/pay_cart.html.twig', array(
             'cart' => $cart,
@@ -677,14 +687,7 @@ class PublicController extends Controller
     public function ticketsAction(Request $request, EntityManagerInterface $em, UserInterface $user = null) {
         $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
 
-        if ($user != null) {
-            $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-        }
-        if (!isset($cart) || $cart == null) {
-            $cart = $this->createCartForUser($user);
-        } else {
-            $cart = $this->cleanCart($cart, $em);
-        }
+        $cart = new Cart();
 
         $cart = $this->populateCart($cart, $current_contracts);
 
@@ -693,8 +696,9 @@ class PublicController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->handleCheckout($cart->getContracts()->toArray(), $user, $em, $request);
-            return $this->redirectToRoute('checkout');
+            $cart = $this->handleCheckout($cart->getContracts()->toArray(), $user, $em, $request);
+
+            return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
         }
 
         return $this->render('@App/Public/tickets.html.twig', [

@@ -331,6 +331,11 @@ class ContractArtist extends BaseContractArtist
         return $this->festivalHalls;
     }
 
+    /** @return array */
+    public function getUniqueFestivalHalls() {
+        return array_unique($this->getFestivalHalls());
+    }
+
     /** @return bool */
     public function hasOnlyOneDate() {
         return count($this->getFestivalDates()) == 1;
