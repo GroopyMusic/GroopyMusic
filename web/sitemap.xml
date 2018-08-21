@@ -4,259 +4,234 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
-
   <url>
     <loc>https://un-mute.be/</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>1.00</priority>
   </url>
   <url>
     <loc>https://un-mute.be/inscription/</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://un-mute.be/login</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/a-propos</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/tickets</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://un-mute.be/nouveau-mdp/requete</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.20</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/evenements/749983-la-tentation-bruxelles</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://un-mute.be/contact</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <loc>https://un-mute.be/evenements/749984-le-kursaal-liege</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/a-propos</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/50-sey</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/51-samourais-dog</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/48-naked-passion</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/39-the-daring-man</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/49-kongs</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/52-streamless</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://un-mute.be/conditons-generales</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/contact</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/benevoles</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://un-mute.be/presse</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/18-61minds</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/23-alijane</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/14-azerty</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/13-bob-doug</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/24-circus-cafe</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/29-colt</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.64</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/36-crescent-sky</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.64</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/37-endless-disorder</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/15-endless-dive</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/28-fitz</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.64</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/33-frozen-nation</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/17-hollywood-bedsheets</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.64</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/41-kangling</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/16-keep-yourself-alive</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/artistes/22-le-loup</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/4-madmagus</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/31-manesse</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/26-maya</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/artistes/19-monday-penny</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/20-nico-dovan</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/27-noemie-rhea</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.64</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/45-piwileman</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/1-seeusoon</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/25-sian-able</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.64</priority>
+  </url>
+  <url>
+    <loc>https://un-mute.be/artistes/35-the-terminal</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/12-the-vectors</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/21-wild-shelter</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
     <loc>https://un-mute.be/artistes/32-z-band</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
     <priority>0.64</priority>
   </url>
   <url>
-    <loc>https://un-mute.be/salles/5-halles-saint-gery</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
+    <loc>https://un-mute.be/albums/16-piwileman</loc>
+    <lastmod>2018-08-21T02:02:38+00:00</lastmod>
+    <priority>0.51</priority>
   </url>
-  <url>
-    <loc>https://un-mute.be/salles/26-garcia-lorca</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/31-la-tentation</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/40-le-moulin-fantome</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/32-atelier-210</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/39-le-bouche-a-oreille</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/42-le-spacium</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/27-sazzn-jazz</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/8-passage-oublie</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/33-zik-zak</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/38-le-rideau-rouge</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/25-taverne-du-theatre</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/24-casino-de-vivegnis</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/41-le-petit-chapeau-rond-rouge</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/37-doktor-jack</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/34-ferme-du-biereau</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/salles/35-lacte-3</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/evenements/12-concert-de-maya</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-  <url>
-    <loc>https://un-mute.be/evenements/3-concert-de-bob-doug</loc>
-    <lastmod>2018-04-12T12:58:58+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
-
-
 </urlset>
