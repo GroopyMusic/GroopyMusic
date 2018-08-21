@@ -10,7 +10,7 @@
         {{ form_start(form) }}
 
         {% for contract in form.contracts %}
-            <section class="position-relative rounded">
+            <section class="position-relative rounded{% if not loop.first %} mt-5{% endif %}">
                 {% set contractArtist = contract.vars.data.contractArtist %}
 
                 <h3 class="tickets-festival-title">{{ contractArtist.getTitle }}</h3>
