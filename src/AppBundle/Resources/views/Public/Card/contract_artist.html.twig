@@ -42,6 +42,8 @@
                     <span class="d-none event-date">{% if contract.festivalDates is not empty %}{{ contract.festivalDates[0]|date('m/d/Y') }}{% endif %}</span>
                     <span class="d-none event-genres">{% for genre in contract.genres %}<span class="d-none jplist-{{ genre|slug }}">{% if not loop.first %} {% endif %}{{ genre }}</span>{% endfor %}</span>
                     <span class="d-none event-state {% if contract.isInSuccessfulState %}event-confirmed{% else %}event-not-confirmed{% endif %}{% if contract.soldOut %} event-sold-out{% endif %}">{{ contract.state }}</span>
+                {% else %}
+
                 {% endif %}
             </div>
         </div>

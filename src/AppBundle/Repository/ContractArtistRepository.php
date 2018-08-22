@@ -175,6 +175,8 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
      */
     public function findVisible($limit = null)
     {
+        return [];
+
         $qb = $this->queryVisible();
 
         if ($limit != null) {

@@ -129,6 +129,7 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+        $sales = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
 
         $news = [];
 
@@ -136,11 +137,14 @@ class PublicController extends Controller
             $news = array_merge($news, $crowd->getAllArtists());
         }
 
+
+
         $news = array_unique($news);
         shuffle($news);
 
         return $this->render('AppBundle:Public:home.html.twig', array(
             'news' => $news,
+            'sales' => $sales,
             'crowdfundings' => $crowdfundings,
         ));
     }
