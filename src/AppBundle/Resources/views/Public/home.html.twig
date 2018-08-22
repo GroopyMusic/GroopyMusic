@@ -25,7 +25,7 @@
             {% for crowdfunding in crowdfundings %}
                 {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':6, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': true, 'card_classes': ['pb-3']} %}
             {% else %}
-                <p class="text-center">Les festivals de la Découverte auront lieu en novembre 2018. Les affiches ne sont pas encore annoncées et les tickets pas encore en vente. Revenez voir vite, il y aura du nouveau fin août !</p>
+                <p class="text-center px-5 mx-0 mx-md-5 big">Les festivals de la Découverte auront lieu en novembre 2018. Les affiches ne sont pas encore annoncées et les tickets pas encore en vente. Revenez voir vite, il y aura du nouveau fin août !</p>
             {% endfor %}
         </div>
         {% if crowdfundings is not empty %}
