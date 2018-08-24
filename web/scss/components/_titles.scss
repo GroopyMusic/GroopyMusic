@@ -13,6 +13,7 @@ h1 {
 }
 
 .alt-title {
+  @extend .mt-3, .mt-md-2;
   font-family: $secondary-font;
 }
 

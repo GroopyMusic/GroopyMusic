@@ -19,7 +19,7 @@
     <ul>
     {% for owner in owners if owner.user.id != app.user.id %}
         <li>{{ owner.user.displayName }}
-            <br> {{ 'owners.others.role_label'|trans|raw }} : {% if owner.role is not null %}{{ owner.role }}{% endif %}
+            {% if owner.role is not null %}<br> {{ 'owners.others.role_label'|trans|raw }} : {{ owner.role }}{% endif %}
         </li>
     {% endfor %}
     {% for request in requests %}

@@ -10,7 +10,7 @@
             <div class="content-box">
                 <div class="content-box-content">
                     <p>
-                        {{ 'validate_ownership.cancelled'|trans({'%demander%': request.demander.displayName, '%artist_url%': path('artist_profile', {'id': request.artist.id}), '%artist%': request.artist.artistname})|raw }} L'utilisateur %demander% souhaite que vous le rejoigniez dans la gestion de l'artiste <a target="_blank" href="%artist_url%">%artist%</a>.
+                        {{ 'validate_ownership.non_cancelled'|trans({'%demander%': request.demander.displayName, '%artist_url%': path('artist_profile', {'id': request.artist.id}), '%artist%': request.artist.artistname})|raw }}.
                     </p>
                     {{ form_start(form) }}
                         {{ form_row(form.accept) }}

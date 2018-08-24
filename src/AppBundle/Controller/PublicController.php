@@ -137,8 +137,6 @@ class PublicController extends Controller
             $news = array_merge($news, $crowd->getAllArtists());
         }
 
-
-
         $news = array_unique($news);
         shuffle($news);
 
@@ -506,10 +504,10 @@ class PublicController extends Controller
         }
 
         $mailUser = $em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
-        if ($mailUser != null) {
+        if ($user != null) {
             // Manually log out if another user is logged in, then redirect to here
             // see https://stackoverflow.com/questions/28827418/log-user-out-in-symfony-2-application-when-remember-me-is-enabled/28828377#28828377
-            if ($mailUser->getId() != $user->getId()) {
+            if ($mailUser == null || $mailUser->getId() != $user->getId()) {
                 // Logging user out.
                 $this->get('security.token_storage')->setToken(null);
 

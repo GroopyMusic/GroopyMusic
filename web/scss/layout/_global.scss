@@ -1,12 +1,17 @@
+html {
+  overflow-x: hidden;
+}
 body {
   padding-right: 0 !important;
+  font-family: $font;
   overflow-x: hidden !important;
-  font-family:$font;
   font-weight: 400;
 }
 
 main {
+  @extend .pt-3, .pt-md-4;
   position: relative;
+  padding-bottom: 40px;
 }
 
 .bg-body, body {
@@ -28,11 +33,6 @@ main {
 .container-fluid-med-pad {
   @extend .container-fluid;
   @extend .p-4, .p-sm-4, .p-md-4, .p-lg-4, .p-xl-4;
-}
-
-main {
-  padding-top: 50px;
-  padding-bottom: 40px;
 }
 
 .noscript-warning {

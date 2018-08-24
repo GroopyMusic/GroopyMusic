@@ -329,6 +329,7 @@ class Artist implements TranslatableInterface
     private $performances;
 
     // Form only
+    /** @var ArrayCollection */
     public $ownership_requests_form;
 
     /**
@@ -490,21 +491,6 @@ class Artist implements TranslatableInterface
     public function getOwnershipRequests()
     {
         return $this->ownership_requests;
-    }
-
-    /**
-     * Add ownershipRequest
-     *
-     * @param \AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest
-     *
-     * @return Artist
-     */
-    public function addOwnershipRequestForm(\AppBundle\Entity\ArtistOwnershipRequest $ownershipRequest)
-    {
-        $this->ownership_requests_form[] = $ownershipRequest;
-        $ownershipRequest->setArtist($this);
-
-        return $this;
     }
 
     /**
@@ -993,25 +979,11 @@ class Artist implements TranslatableInterface
     }
 
     /**
-     * Add ownershipRequestsForm
-     *
-     * @param \AppBundle\Entity\ArtistPerformance $ownershipRequestsForm
-     *
-     * @return Artist
-     */
-    public function addOwnershipRequestsForm(\AppBundle\Entity\ArtistPerformance $ownershipRequestsForm)
-    {
-        $this->ownership_requests_form[] = $ownershipRequestsForm;
-
-        return $this;
-    }
-
-    /**
      * Remove ownershipRequestsForm
      *
-     * @param \AppBundle\Entity\ArtistPerformance $ownershipRequestsForm
+     * @param \AppBundle\Entity\ArtistOwnershipRequest $ownershipRequestsForm
      */
-    public function removeOwnershipRequestsForm(\AppBundle\Entity\ArtistPerformance $ownershipRequestsForm)
+    public function removeOwnershipRequestsForm(\AppBundle\Entity\ArtistOwnershipRequest $ownershipRequestsForm)
     {
         $this->ownership_requests_form->removeElement($ownershipRequestsForm);
     }

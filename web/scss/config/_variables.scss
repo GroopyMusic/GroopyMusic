@@ -37,8 +37,8 @@ $main-yellow: #eadf0c;
 $headline-font: 'Hind';
 $headline-color: white;
 $title-font: 'Basic', 'Abel', 'Hind', 'cursive';
-$secondary-font: 'Hind', sans-serif;
 $font: 'Hind', 'Montserrat', 'sans-serif';
+$secondary-font: $font;
 $logo-font: 'Montserrat';
 
 // main paddings/margins

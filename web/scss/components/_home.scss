@@ -49,6 +49,7 @@
   &.low {
     background: url('../images/bar2_low.png') repeat-x;
     background-size: $waveheight $waveheight;
+    bottom: -($waveheight/2 - 1);
   }
   &.high {
     background: url('../images/bar2_high.png') repeat-x;
@@ -84,7 +85,7 @@
 #about {
   @extend .text-white;
 
-  background-image: url('../images/live/live-10.jpg');
+  background-image: url('../images/live/live-10-op.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

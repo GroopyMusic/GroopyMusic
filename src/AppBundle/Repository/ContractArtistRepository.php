@@ -40,8 +40,8 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
     public function baseQueryBuilder()
     {
         return $this->createQueryBuilder('c')
-            ->join('c.step', 's')
-            ->join('c.festivaldays', 'fd')
+            ->leftJoin('c.step', 's')
+            ->leftJoin('c.festivaldays', 'fd')
             ->leftJoin('fd.hall', 'h')
             ->leftJoin('fd.performances', 'perf')
             ->leftJoin('perf.artist', 'a')
@@ -62,8 +62,6 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->addSelect('h')
             ->addSelect('perf')
             ->addSelect('a')
-            ->where('fd.date > :yesterday')
-            ->setParameter('yesterday', new \DateTime('yesterday'))
         ;
     }
 

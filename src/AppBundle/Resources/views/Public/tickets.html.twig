@@ -16,14 +16,13 @@
                 <h3 class="tickets-festival-title">{{ contractArtist.getTitle }}</h3>
 
                 <div class="position-relative p-4">
-                        <div class="d-inline-block align-middle">
-                            <div><i class="fas fa-calendar-alt"></i> {{ contractArtist.displayDates }}</div>
-                            <div><i class="fas fa-map-marker-alt"></i> {{ contractArtist.displayHalls }}</div>
-                        </div>
-                        <div class="d-inline-block align-middle pl-3">
-                            <a href="{{ path('artist_contract', {'id': contractArtist.id, 'slug': contractArtist.getSlug}) }}" target="_blank" class="btn btn-outline-primary sharp">Voir la fiche</a>
-                        </div>
-                    <div class="separating-waves colored high"></div>
+                    <div class="d-inline-block align-middle">
+                        <div><i class="fas fa-calendar-alt"></i> {{ contractArtist.displayDates }}</div>
+                        <div><i class="fas fa-map-marker-alt"></i> {{ contractArtist.displayHalls }}</div>
+                    </div>
+                    <div class="d-inline-block align-middle pl-3">
+                        <a href="{{ path('artist_contract', {'id': contractArtist.id, 'slug': contractArtist.getSlug}) }}" target="_blank" class="btn btn-outline-primary sharp">Voir la fiche</a>
+                    </div>
                 </div>
 
                 <div class="position-relative px-3">
@@ -78,7 +77,6 @@
                         </div>
                     {% endfor %}
                     {% do contract.setRendered %}
-                    <div class="separating-waves colored low"></div>
                 </div>
             </section>
         {% endfor %}
@@ -97,4 +95,5 @@
             </p>
         {% endif %}
     </div>
+    <div class="separating-waves colored high prior"></div>
 {% endblock %}

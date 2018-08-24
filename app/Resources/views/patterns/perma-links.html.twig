@@ -1,5 +1,5 @@
 {% if not home_header and not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-    <div id="inscription-perma-link">
+    <div id="inscription-perma-link" class="d-none d-{% if home_header %}md{% else %}lg{% endif %}-inline-block"">
         {% block inscription_perma_link %}
             <a class="btn btn-primary text-uppercase inscription-link header-button text-white d-none d-{% if home_header %}md{% else %}lg{% endif %}-inline-block" href="{{ path('fos_user_registration_register') }}">{{ 'header.nav.sign_up'|trans|raw }}</a>
         {% endblock %}

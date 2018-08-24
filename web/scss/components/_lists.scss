@@ -2,15 +2,5 @@ ul.um-list {
   list-style: none;
   padding: 0;
   margin: 0;
-
-  & > li {
-    &::before {
-      content: "\f105";
-      font-family: FontAwesome;
-      color: $secondary-background;
-      margin-right: 4px;
-    }
-    padding-bottom: 1rem;
-  }
 }
 

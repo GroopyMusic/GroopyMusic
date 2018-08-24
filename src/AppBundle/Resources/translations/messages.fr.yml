@@ -608,6 +608,7 @@ artist_profile:
 validate_ownership:
   title: Rejoindre
   cancelled: Cette requête a été annulée par son émetteur.
+  non_cancelled: L'utilisateur %demander% souhaite que vous le rejoigniez dans la gestion de l'artiste <a target="_blank" href="%artist_url%">%artist%</a>
 
 owners:
   my_role:

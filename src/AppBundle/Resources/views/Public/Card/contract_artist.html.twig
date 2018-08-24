@@ -28,8 +28,12 @@
                 <h5 class="title"><a href="{{ url_contract }}">{{ contract.getTitle }}</a></h5>
                 <div class="clearfix">
                     {% if is_event %}
-                        <div><i class="fas fa-calendar-alt"></i> {{ contract.displayDates }}</div>
-                        <div><i class="fas fa-map-marker-alt"></i> {{ contract.displayHalls }}</div>
+                        {% if contract.festivalDates is not empty %}
+                            <div><i class="fas fa-calendar-alt"></i> {{ contract.displayDates }}</div>
+                        {% endif %}
+                        {% if contract.festivalHalls is not empty %}
+                            <div><i class="fas fa-map-marker-alt"></i> {{ contract.displayHalls }}</div>
+                        {% endif %}
                     {% endif %}
                     <div class="artists-list">{% for art in contract.allArtists %}{% if not loop.first %} - {% endif %}{{ art }}{% endfor %}</div>
                         {% if is_sales or is_pot %}<a href="{{ url_contract }}" class="text-white"><i class="fas fa-compact-disc"></i> {{ 'sales.card_headline'|trans }}</a>

@@ -105,9 +105,9 @@
                             <div class="col-12 col-md-6">
                                 {% if artist.genres is not empty %}
                                     <div class="um-label um-semi-bold">{{ 'artist_profile.see.genres'|trans|raw }}</div>
-                                    <ul class="um-list">
+                                    <ul class="fa-ul">
                                         {% for genre in artist.genres %}
-                                            <li>{{ genre }}</li>
+                                            <li><span class="fa-li"><i class="text-primary fas fa-circle"></i></span>{{ genre }}</li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}
@@ -185,7 +185,7 @@
                             {% if loop.first %}
                                 <h3 class="mt-4">{{ 'artist_profile.see.passed_events'|trans|raw }}</h3>
                             {% endif %}
-                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' %}
+                            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'md': 12, 'xs': 12}  %}
                         {% endfor %}
                     </div>
 
