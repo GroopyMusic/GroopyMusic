@@ -194,7 +194,7 @@ class YBController extends Controller
                     $contract_artist = $contract->getContractArtist();
 
                     $contract_artist->addAmount($contract->getAmount());
-                    $contract_artist->addSoldCounterparts($contract->getTresholdIncrease());
+                    $contract_artist->updateCounterPartsSold($contract);
                 }
 
                 $payment = new Payment();

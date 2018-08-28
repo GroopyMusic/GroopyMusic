@@ -129,7 +129,6 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
-        $sales = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
 
         $news = [];
 
@@ -142,7 +141,6 @@ class PublicController extends Controller
 
         return $this->render('AppBundle:Public:home.html.twig', array(
             'news' => $news,
-            'sales' => $sales,
             'crowdfundings' => $crowdfundings,
         ));
     }
@@ -198,6 +196,17 @@ class PublicController extends Controller
         return new Response($this->renderView('AppBundle:Public/Form:suggestionBox.html.twig', array(
             'form' => $form->createView(),
         )));
+    }
+
+    /**
+     * @Route("/sales", name="catalog_sales")
+     */
+    public function salesAction(EntityManagerInterface $em) {
+        $sales = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
+
+        return $this->render('@App/Public/sales.html.twig', array(
+            'sales' => $sales, 
+        ));
     }
 
     /**

@@ -185,7 +185,7 @@
                             {{ 'event.infos.tickets_sold'|trans|raw }}
                         </div>
                         <div class="contract-info-content">
-                            {{ contract.totalBookedTicketsMajored }}
+                            {{ contract.totalBookedTicketsMajored|round(0,'floor') }}
                         </div>
                     </div>
 
@@ -195,7 +195,7 @@
 
                         </div>
                         <div class="contract-info-content">
-                            {{ max(0, tickets_left) }}
+                            {{ max(0, tickets_left)|round(0,'ceil') }}
                         </div>
                     </div>
                 </div>
@@ -206,7 +206,7 @@
                                  {{ 'event.infos.tickets_objective'|trans|raw }}
                             </span>
                         <span class="contract-info-content">
-                                {{ contract.step.minTickets }}
+                                {{ contract.minTickets }}
                             </span>
                     {% endif %}
                     {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}

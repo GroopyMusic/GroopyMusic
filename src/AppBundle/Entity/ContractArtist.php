@@ -161,7 +161,7 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getTotalBookedTickets() {
-        return $this->tickets_reserved + $this->tickets_sold;
+        return $this->tickets_reserved + $this->getCounterpartsSold();
     }
 
     public function getTotalBookedTicketsMajored() {
@@ -182,15 +182,26 @@ class ContractArtist extends BaseContractArtist
         return $today->diff($this->dateEnd)->days == 1 && $today < $this->dateEnd;
     }
 
+    /** @deprecated  */
+    public function getTicketsSold() {
+        return $this->getCounterpartsSold();
+    }
+
     public function getTicketsSoldMajored() {
-        return min($this->getTicketsSold(), $this->getMaxTickets());
+        return min($this->getCounterPartsSold(), $this->getMaxTickets());
     }
 
     public function getMaxTickets() {
-        $normal_soldout = array_sum(array_map(function(CounterPart $counterPart) {
-            return $counterPart->getMaximumAmount();
-        }, $this->getCounterParts()->toArray()));
-
+        if(!empty($this->getFestivaldays())) {
+            $normal_soldout = array_sum(array_map(function(FestivalDay $festivalDay) {
+                return $festivalDay->getMaxTickets();
+            }, $this->festivaldays->toArray()));
+        }
+        else {
+            $normal_soldout = array_sum(array_map(function(CounterPart $counterPart) {
+                return $counterPart->getMaximumAmount();
+            }, $this->getCounterParts()->toArray()));
+        }
         $global_soldout = $this->global_soldout == null ? $normal_soldout : $this->global_soldout;
         return min($global_soldout, $normal_soldout);
     }
@@ -204,11 +215,11 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getMinTickets() {
-        if($this->min_tickets <= 0) {
+        if(!$this->hasNoThreshold() && $this->threshold <= 0) {
             return $this->getStep()->getMinTickets();
         }
         else {
-            return $this->min_tickets;
+            return $this->threshold;
         }
     }
 
@@ -290,14 +301,6 @@ class ContractArtist extends BaseContractArtist
         parent::setArtist($artist);
         $this->main_artist = $artist;
         return $this;
-    }
-
-    public function addTicketsSold($quantity) {
-        $this->tickets_sold += $quantity;
-    }
-
-    public function removeTicketsSold($quantity) {
-        $this->tickets_sold -= $quantity;
     }
 
     public function addTicketsReserved($quantity) {
@@ -484,11 +487,6 @@ class ContractArtist extends BaseContractArtist
     private $nb_closing_days;
 
     /**
-     * @ORM\Column(name="min_tickets", type="smallint")
-     */
-    private $min_tickets;
-
-    /**
      * @ORM\Column(name="tickets_reserved", type="smallint")
      */
     private $tickets_reserved;
@@ -520,7 +518,6 @@ class ContractArtist extends BaseContractArtist
     public function setStep(\AppBundle\Entity\Step $step)
     {
         $this->step = $step;
-        $this->min_tickets = $step->getMinTickets();
 
         return $this;
     }
@@ -533,30 +530,6 @@ class ContractArtist extends BaseContractArtist
     public function getStep()
     {
         return $this->step;
-    }
-
-    /**
-     * Set ticketsSold
-     *
-     * @param integer $ticketsSold
-     *
-     * @return ContractArtist
-     */
-    public function setTicketsSold($ticketsSold)
-    {
-        $this->tickets_sold = $ticketsSold;
-
-        return $this;
-    }
-
-    /**
-     * Get ticketsSold
-     *
-     * @return integer
-     */
-    public function getTicketsSold()
-    {
-        return $this->tickets_sold;
     }
 
     /**
@@ -640,9 +613,7 @@ class ContractArtist extends BaseContractArtist
      */
     public function setMinTickets($minTickets)
     {
-        $this->min_tickets = $minTickets;
-
-        return $this;
+        return $this->setThreshold($minTickets);
     }
 
     /**
@@ -854,5 +825,67 @@ class ContractArtist extends BaseContractArtist
     public function getCampaignPhotos()
     {
         return $this->campaign_photos;
+    }
+
+    /**
+     * Set threshold
+     *
+     * @param integer $threshold
+     *
+     * @return ContractArtist
+     */
+    public function setThreshold($threshold)
+    {
+        $this->threshold = $threshold;
+
+        return $this;
+    }
+
+    /**
+     * Get threshold
+     *
+     * @return integer
+     */
+    public function getThreshold()
+    {
+        return $this->threshold;
+    }
+
+    /**
+     * Set counterpartsSold
+     *
+     * @param float $counterpartsSold
+     *
+     * @return ContractArtist
+     */
+    public function setCounterpartsSold($counterpartsSold)
+    {
+        $this->counterparts_sold = $counterpartsSold;
+
+        return $this;
+    }
+
+    /**
+     * Get counterpartsSold
+     *
+     * @return float
+     */
+    public function getCounterpartsSold()
+    {
+        return $this->counterparts_sold;
+    }
+
+    /**
+     * Set ticketsSold
+     *
+     * @param integer $ticketsSold
+     *
+     * @return ContractArtist
+     */
+    public function setTicketsSold($ticketsSold)
+    {
+        $this->tickets_sold = $ticketsSold;
+
+        return $this;
     }
 }

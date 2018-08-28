@@ -191,4 +191,52 @@ class ContractArtistSales extends BaseContractArtist {
     {
         return $this->campaign_photos;
     }
+
+    /**
+     * Set threshold
+     *
+     * @param integer $threshold
+     *
+     * @return ContractArtistSales
+     */
+    public function setThreshold($threshold)
+    {
+        $this->threshold = $threshold;
+
+        return $this;
+    }
+
+    /**
+     * Get threshold
+     *
+     * @return integer
+     */
+    public function getThreshold()
+    {
+        return $this->threshold;
+    }
+
+    /**
+     * Set counterpartsSold
+     *
+     * @param float $counterpartsSold
+     *
+     * @return ContractArtistSales
+     */
+    public function setCounterpartsSold($counterpartsSold)
+    {
+        $this->counterparts_sold = $counterpartsSold;
+
+        return $this;
+    }
+
+    /**
+     * Get counterpartsSold
+     *
+     * @return float
+     */
+    public function getCounterpartsSold()
+    {
+        return $this->counterparts_sold;
+    }
 }

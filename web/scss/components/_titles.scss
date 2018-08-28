@@ -1,11 +1,8 @@
 h1 {
   color: $headline-color;
-  font: $title-font;
+  font-family: $logo-font;
   font-weight: bold;
-    @include media-breakpoint-down(md) {
-      font-size: 2rem;
-    }
-
+  font-size: 3rem;
 }
 
 .festival-title {

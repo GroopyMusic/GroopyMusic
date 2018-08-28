@@ -68,6 +68,8 @@ class BaseContractArtist implements TranslatableInterface
         $this->no_threshold = false;
         $this->counterParts = new ArrayCollection();
         $this->global_soldout = null;
+        $this->threshold = 0;
+        $this->counterparts_sold = 0;
     }
 
     public function isInTestPeriod() {
@@ -256,6 +258,37 @@ class BaseContractArtist implements TranslatableInterface
         }
     }
 
+    public function calculateCounterPartsSold() {
+        $this->counterparts_sold = 0;
+        if($this instanceof ContractArtist) {
+            foreach ($this->getFestivaldays() as $festivalday) {
+                $festivalday->setTicketsSold(0);
+            }
+        }
+        foreach($this->getContractsFanPaid() as $cf) {
+            $this->updateCounterPartsSold($cf);
+        }
+    }
+
+    public function updateCounterPartsSold(ContractFan $cf) {
+        $this->addCounterPartsSold($cf->getTresholdIncrease());
+        foreach($cf->getPurchases() as $purchase) {
+            /** @var Purchase $purchase */
+            if($purchase->getCounterpart()->getFestivaldays() != null) {
+                foreach($purchase->getCounterpart()->getFestivaldays() as $festivalday) {
+                    $festivalday->updateTicketsSold($purchase);
+                }
+            }
+        }
+    }
+
+    public function addCounterPartsSold($quantity) {
+        $this->counterparts_sold += $quantity;
+    }
+
+    public function removeCounterPartsSold($quantity) {
+        $this->counterparts_sold -= $quantity;
+    }
 
     // Unmapped
     protected $state;
@@ -409,6 +442,17 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\ManyToMany(targetEntity="Photo")
      */
     protected $campaign_photos;
+
+    /**
+     * @var int
+     * @ORM\Column(name="threshold", type="smallint")
+     */
+    protected $threshold;
+
+    /**
+     * @ORM\Column(name="counterparts_sold", type="float")
+     */
+    protected $counterparts_sold;
 
     /**
      * Get id
@@ -1037,5 +1081,53 @@ class BaseContractArtist implements TranslatableInterface
     public function getCampaignPhotos()
     {
         return $this->campaign_photos;
+    }
+
+    /**
+     * Set threshold
+     *
+     * @param integer $threshold
+     *
+     * @return BaseContractArtist
+     */
+    public function setThreshold($threshold)
+    {
+        $this->threshold = $threshold;
+
+        return $this;
+    }
+
+    /**
+     * Get threshold
+     *
+     * @return integer
+     */
+    public function getThreshold()
+    {
+        return $this->threshold;
+    }
+
+    /**
+     * Set counterpartsSold
+     *
+     * @param float $counterpartsSold
+     *
+     * @return BaseContractArtist
+     */
+    public function setCounterpartsSold($counterpartsSold)
+    {
+        $this->counterparts_sold = $counterpartsSold;
+
+        return $this;
+    }
+
+    /**
+     * Get counterpartsSold
+     *
+     * @return float
+     */
+    public function getCounterpartsSold()
+    {
+        return $this->counterparts_sold;
     }
 }

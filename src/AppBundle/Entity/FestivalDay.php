@@ -24,6 +24,39 @@ class FestivalDay
         return $this->festivals->first();
     }
 
+    public function getMaxTickets() {
+        $normal_soldout = array_sum(array_map(function(CounterPart $counterPart) {
+            return $counterPart->getMaximumAmount();
+        }, $this->getCounterParts()->toArray()));
+
+        $global_soldout = $this->global_soldout == null ? $normal_soldout : $this->global_soldout;
+        return min($global_soldout, $normal_soldout);
+    }
+
+    public function getTotalBookedTickets() {
+        return $this->tickets_sold;
+    }
+
+    public function getTicketsSoldMajored() {
+        return min($this->getTicketsSold(), $this->getMaxTickets());
+    }
+
+    public function getTotalNbAvailable() {
+        return $this->getMaxTickets() - $this->getTotalBookedTickets();
+    }
+
+    public function updateTicketsSold(Purchase $purchase) {
+        $this->addTicketsSold($purchase->getTresholdIncrease());
+    }
+
+    public function addTicketsSold($quantity) {
+        $this->tickets_sold += $quantity;
+    }
+
+    public function removeTicketsSold($quantity) {
+        $this->tickets_sold -= $quantity;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -59,6 +92,16 @@ class FestivalDay
      * @ORM\ManyToMany(targetEntity="ContractArtist", mappedBy="festivaldays")
      */
     private $festivals;
+
+    /**
+     * @ORM\Column(name="tickets_sold", type="float")
+     */
+    private $tickets_sold;
+
+    /**
+     * @ORM\Column(name="global_soldout", type="smallint")
+     */
+    private $global_soldout;
 
     /**
      * Get id
@@ -218,5 +261,53 @@ class FestivalDay
     public function getFestivals()
     {
         return $this->festivals;
+    }
+
+    /**
+     * Set ticketsSold
+     *
+     * @param float $ticketsSold
+     *
+     * @return FestivalDay
+     */
+    public function setTicketsSold($ticketsSold)
+    {
+        $this->tickets_sold = $ticketsSold;
+
+        return $this;
+    }
+
+    /**
+     * Get ticketsSold
+     *
+     * @return float
+     */
+    public function getTicketsSold()
+    {
+        return $this->tickets_sold;
+    }
+
+    /**
+     * Set globalSoldout
+     *
+     * @param integer $globalSoldout
+     *
+     * @return FestivalDay
+     */
+    public function setGlobalSoldout($globalSoldout)
+    {
+        $this->global_soldout = $globalSoldout;
+
+        return $this;
+    }
+
+    /**
+     * Get globalSoldout
+     *
+     * @return integer
+     */
+    public function getGlobalSoldout()
+    {
+        return $this->global_soldout;
     }
 }

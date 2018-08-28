@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div class="container">
+        <h3 class="text-center mb-4">En vente sur Un-Mute</h3>
+
+        {% for sale in sales %}
+            {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': sale, 'md': 12, 'xs': 12} %}
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

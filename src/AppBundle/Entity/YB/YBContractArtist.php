@@ -32,19 +32,7 @@ class YBContractArtist extends BaseContractArtist
     public function __construct()
     {
         parent::_construct();
-        $this->sold_counterparts = 0;
         $this->tickets_sent = false;
-        $this->threshold = 0;
-    }
-
-    public function addSoldCounterParts($nb) {
-        $this->sold_counterparts += $nb;
-        return $this;
-    }
-
-    public function removeSoldCounterParts($nb) {
-        $this->sold_counterparts -= $nb;
-        return $this;
     }
 
     public function isEvent() {
@@ -120,12 +108,6 @@ class YBContractArtist extends BaseContractArtist
     private $tickets_sent;
 
     /**
-     * @var int
-     * @ORM\Column(name="threshold", type="integer", nullable=true)
-     */
-    private $threshold;
-
-    /**
      * @var \DateTime
      * @ORM\Column(name="date_closure", type="datetime")
      */
@@ -136,30 +118,6 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="date_event", type="datetime", nullable=true)
      */
     private $date_event;
-
-    /**
-     * Set soldCounterparts
-     *
-     * @param integer $soldCounterparts
-     *
-     * @return YBContractArtist
-     */
-    public function setSoldCounterparts($soldCounterparts)
-    {
-        $this->sold_counterparts = $soldCounterparts;
-
-        return $this;
-    }
-
-    /**
-     * Get soldCounterparts
-     *
-     * @return integer
-     */
-    public function getSoldCounterparts()
-    {
-        return $this->sold_counterparts;
-    }
 
     /**
      * Set ticketsSent
@@ -183,30 +141,6 @@ class YBContractArtist extends BaseContractArtist
     public function getTicketsSent()
     {
         return $this->tickets_sent;
-    }
-
-    /**
-     * Set threshold
-     *
-     * @param integer $threshold
-     *
-     * @return YBContractArtist
-     */
-    public function setThreshold($threshold)
-    {
-        $this->threshold = $threshold;
-
-        return $this;
-    }
-
-    /**
-     * Get threshold
-     *
-     * @return integer
-     */
-    public function getThreshold()
-    {
-        return $this->threshold;
     }
 
     /**
@@ -255,5 +189,77 @@ class YBContractArtist extends BaseContractArtist
     public function getDateEvent()
     {
         return $this->date_event;
+    }
+
+    /**
+     * Set threshold
+     *
+     * @param integer $threshold
+     *
+     * @return YBContractArtist
+     */
+    public function setThreshold($threshold)
+    {
+        $this->threshold = $threshold;
+
+        return $this;
+    }
+
+    /**
+     * Get threshold
+     *
+     * @return integer
+     */
+    public function getThreshold()
+    {
+        return $this->threshold;
+    }
+
+    /**
+     * Set soldCounterparts
+     *
+     * @param integer $soldCounterparts
+     *
+     * @return YBContractArtist
+     */
+    public function setSoldCounterparts($soldCounterparts)
+    {
+        $this->sold_counterparts = $soldCounterparts;
+
+        return $this;
+    }
+
+    /**
+     * Get soldCounterparts
+     *
+     * @return integer
+     */
+    public function getSoldCounterparts()
+    {
+        return $this->sold_counterparts;
+    }
+
+    /**
+     * Set counterpartsSold
+     *
+     * @param float $counterpartsSold
+     *
+     * @return YBContractArtist
+     */
+    public function setCounterpartsSold($counterpartsSold)
+    {
+        $this->counterparts_sold = $counterpartsSold;
+
+        return $this;
+    }
+
+    /**
+     * Get counterpartsSold
+     *
+     * @return float
+     */
+    public function getCounterpartsSold()
+    {
+        return $this->counterparts_sold;
     }
 }

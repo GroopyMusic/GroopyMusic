@@ -113,9 +113,14 @@ class CounterPart implements TranslatableInterface
     private $festivaldays;
 
     /**
-     * @ORM\Column(name="threshold_increase", type="smallint")
+     * @ORM\Column(name="threshold_increase", type="float")
      */
     private $threshold_increase;
+
+    /**
+     * @ORM\Column(name="is_child_entry", type="boolean")
+     */
+    private $is_child_entry;
 
     /**
      * Get id
@@ -291,7 +296,7 @@ class CounterPart implements TranslatableInterface
     /**
      * Set thresholdIncrease
      *
-     * @param integer $thresholdIncrease
+     * @param float $thresholdIncrease
      *
      * @return CounterPart
      */
@@ -305,10 +310,34 @@ class CounterPart implements TranslatableInterface
     /**
      * Get thresholdIncrease
      *
-     * @return integer
+     * @return float
      */
     public function getThresholdIncrease()
     {
         return $this->threshold_increase;
+    }
+
+    /**
+     * Set isChildEntry
+     *
+     * @param boolean $isChildEntry
+     *
+     * @return CounterPart
+     */
+    public function setIsChildEntry($isChildEntry)
+    {
+        $this->is_child_entry = $isChildEntry;
+
+        return $this;
+    }
+
+    /**
+     * Get isChildEntry
+     *
+     * @return boolean
+     */
+    public function getIsChildEntry()
+    {
+        return $this->is_child_entry;
     }
 }

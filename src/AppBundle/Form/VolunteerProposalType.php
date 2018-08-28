@@ -21,6 +21,7 @@ class VolunteerProposalType extends AbstractType
     {
         $builder
             ->add('contractArtist', EntityType::class, array(
+                'label' => 'Festival',
                 'class' => ContractArtist::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->queryVisible();

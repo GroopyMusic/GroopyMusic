@@ -102,7 +102,7 @@ class PaymentController extends Controller
 
                     $contract_artist->addAmount($contract->getAmount());
                     if ($contract_artist instanceof ContractArtist) {
-                        $contract_artist->addTicketsSold($contract->getTresholdIncrease());
+                        $contract_artist->updateCounterPartsSold($contract);
                     }
                 }
 

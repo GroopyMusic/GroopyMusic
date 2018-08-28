@@ -90,7 +90,11 @@
 
             <div class="between-tickets"></div>
             <div style="font-size: 80%;">
-                <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}</p>
+                <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}
+                {% if ticket.counterpart.isChildEntry %}<br />
+                    - Ce ticket d'entrée à prix réduit n'est valable que pour un enfant de moins de 12 ans. Une carte d'identité peut être demandée à l'entrée pour vérifier l'âge de l'enfant. Tout enfant devra être accompagné par un adulte. Attention, exposer des enfants à des concerts peut nuire à leur santé. Nous vous conseillons l'utilisation de casques anti-bruit ou d'autres dispositifs réduisant les risques auditifs pour les enfants.
+                {% endif %}
+                </p>
             </div>
 
             <div class="between-tickets"></div>

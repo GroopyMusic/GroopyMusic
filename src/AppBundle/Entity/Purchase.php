@@ -35,7 +35,6 @@ class Purchase
     }
 
 
-
     public function getThresholdIncrease() {
         return $this->getQuantity() * $this->getCounterpart()->getThresholdIncrease();
     }
