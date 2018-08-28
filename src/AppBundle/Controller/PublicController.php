@@ -312,7 +312,7 @@ class PublicController extends Controller
 
                 $em->flush();
                 $request->getSession()->set('cart_id', $cart->getId());
-                return $this->redirectToRoute('checkout');
+                return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
             }
         }
 

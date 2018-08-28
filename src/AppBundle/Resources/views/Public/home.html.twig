@@ -34,13 +34,6 @@
                     Voir les tickets en vente <b class="far fa-arrow-alt-circle-right"></b>
                 </a>
             </p>
-        {% elseif sales|length > 0 %}
-            </section>
-            <section class="container-fluid position-relative bg-body-light">
-            <h3 class="alt-title text-center mt-2 mt-lg-0">En vente</h3>
-            {% for sale in sales %}
-                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': sale, 'md': 6, 'xs':12, 'news':false, 'bgwhite': true} %}
-            {% endfor %}
         {% endif %}
     </section>
 
