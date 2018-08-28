@@ -69,28 +69,28 @@
     </section>
 
     {% if crowdfundings is not empty %}
-    <section class="container-fluid position-relative bg-body-very-strong py-4">
-        <h3 class="alt-title text-center text-white mt-2 mt-lg-0">{{ 'home.news.title'|trans|raw }}</h3>
+        <section class="container-fluid position-relative bg-body-very-strong py-4">
+            <h3 class="alt-title text-center text-white mt-2 mt-lg-0">{{ 'home.news.title'|trans|raw }}</h3>
 
-        <div class="position-relative mx-auto" id="wrapper-wrapper">
-            <div id="wrapper" class="mx-auto">
-                <div id="carousel">
-                    {% for new in news %}
-                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true} %}
-                    {% endfor %}
-                    {% for new in news %}
-                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true, 'repeated': true} %}
-                    {% endfor %}
+            <div class="position-relative mx-auto" id="wrapper-wrapper">
+                <div id="wrapper" class="mx-auto">
+                    <div id="carousel">
+                        {% for new in news %}
+                            {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true} %}
+                        {% endfor %}
+                        {% for new in news %}
+                            {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true, 'repeated': true} %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <p class="text-center mt-3">
-            <a href="{{ path('catalog_artists', {'affiche': 'true'}) }}" class="btn btn-primary">
-                Voir tous les artistes à l'affiche <i class="far fa-arrow-alt-circle-right"></i>
-            </a>
-        </p>
-    </section>
+            <p class="text-center mt-3">
+                <a href="{{ path('catalog_artists', {'affiche': 'true'}) }}" class="btn btn-primary">
+                    Voir tous les artistes à l'affiche <i class="far fa-arrow-alt-circle-right"></i>
+                </a>
+            </p>
+        </section>
     {% endif %}
 
     <section class="container-fluid position-relative bg-body-strong text-center py-4" id="friends">

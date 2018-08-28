@@ -12,14 +12,22 @@ $dev-bg-color: #BDBDBD;
 // =================
 // Main colors for =
 // =================
+
 $main-color: #f08722;
+$secondary-color: #043197;
 $danger-color: #982615;
 $positive-color: #6cb59d;
+$theme-colors: (
+        "primary": $main-color,
+        "secondary": $secondary-color,
+        "success": $positive-color,
+);
+
 $main-background: rgb(245, 248, 250);
 $main-background-strong: #ffcd72;;
 $main-background-light: #ebf3f8;
-$secondary-background: #7a7b7f;;
-$main-background-very-strong: #6a6969;
+$secondary-background: #1b316d;;
+$main-background-very-strong: $secondary-background;
 $secondary-link-color: #a06c01;
 $spacer: 1.2rem;
 $successful-progress-bg: #6bc361;

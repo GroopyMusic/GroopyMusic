@@ -21,6 +21,10 @@
 {% endfor %}
 {% block description_part_1 %}{{ 'meta_description_event'|trans({'%artists%': artists_str}) }}{% endblock %}
 
+{% block headtitle %}
+    {{ contract.getTitle }}
+{% endblock %}
+
 {% block open_graph %}
     <meta property="og:title"
           content="{{ contract.getTitle }}"/>
@@ -57,7 +61,7 @@
     {% set max_tickets = contract.maxTickets %}
     {% set tickets_left = contract.totalNbAvailable %}
     {% if contract.festivalHalls is not empty and contract.festivalDays is not empty %}
-    <section class="container-fluid position-relative" style="padding-top: 0 !important;">
+    <section class="container-fluid position-relative" style="padding-top: 1.2rem !important;">
         <div class="row mt-4">
             <div class="col-12 col-lg-8">
                 <div class="col-12 content-box">
