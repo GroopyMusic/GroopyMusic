@@ -1,0 +1,53 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
+
+    {{ form_start(form) }}
+
+    <section class="container my-4 py-2 my-md-5 border">
+        <h2>Infos générales </h2>
+        <div class="row">
+            <div class="col-12">
+                {{ form_widget(form.translations) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                {{ form_row(form.dateEvent) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(form.dateClosure) }}
+            </div>
+        </div>
+    </section>
+    <section class="container my-4 py-2 my-md-5 border">
+        <h2>Financement participatif</h2>
+        <div class="col-12">
+            {{ form_row(form.noThreshold) }}
+        </div>
+        <div class="col-12 col-md-6">
+            {{ form_row(form.threshold) }}
+        </div>
+        <div class="col-12 col-md-6">
+            {{ form_row(form.dateEnd) }}
+        </div>
+    </section>
+    <section class="container my-4 py-2 my-md-5 border">
+        <h2>Tickets</h2>
+        {{ form_row(form.counterParts) }}
+    </section>
+
+    {{ form_end(form) }}
+{% endblock  %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        yb_collection({
+            add:'<a class="btn btn-outline-secondary" href="#">Ajouter</a>',
+            remove:'<a class="danger-color" href="#">Supprimer</a>'
+        });
+    </script>
+{% endblock %}

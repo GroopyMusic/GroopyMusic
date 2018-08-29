@@ -31,7 +31,7 @@ class YBContractArtist extends BaseContractArtist
 
     public function __construct()
     {
-        parent::_construct();
+        parent::__construct();
         $this->tickets_sent = false;
     }
 

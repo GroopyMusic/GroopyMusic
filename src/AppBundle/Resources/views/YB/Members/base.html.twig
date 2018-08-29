@@ -1,0 +1,16 @@
+{% extends 'yb/base.html.twig' %}
+
+{% block additional_javascripts %}
+    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
+
+    <script type="text/javascript">
+        function yb_collection(options) {
+            $('.collection').collection($.extend({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>'
+            }, options));
+        }
+    </script>
+{% endblock %}

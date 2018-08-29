@@ -250,7 +250,7 @@ class BaseContractArtist implements TranslatableInterface
 
 
     public function getCounterParts() {
-        if($this->counterParts->count() == 0) {
+        if($this->counterParts->count() == 0 && $this->step != null) {
             return $this->step->getCounterParts();
         }
         else {

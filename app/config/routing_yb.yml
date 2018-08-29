@@ -3,3 +3,9 @@ yb_controller:
   type: annotation
   schemes: ['%http_protocol%']
   prefix: /
+
+yb_members_controller:
+  resource: "@AppBundle/Controller/YBMembersController.php"
+  type: annotation
+  schemes: ['%http_protocol%']
+  prefix: /edit
