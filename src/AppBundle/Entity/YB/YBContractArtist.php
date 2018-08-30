@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\YB;
 
 use AppBundle\Entity\BaseContractArtist;
+use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Photo;
 use Doctrine\ORM\Mapping as ORM;
@@ -118,6 +119,11 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="date_event", type="datetime", nullable=true)
      */
     private $date_event;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="yb_campaigns")
+     */
+    private $handlers;
 
     /**
      * Set ticketsSent
@@ -261,5 +267,39 @@ class YBContractArtist extends BaseContractArtist
     public function getCounterpartsSold()
     {
         return $this->counterparts_sold;
+    }
+
+    /**
+     * Add handler
+     *
+     * @param \AppBundle\Entity\User $handler
+     *
+     * @return YBContractArtist
+     */
+    public function addHandler(\AppBundle\Entity\User $handler)
+    {
+        $this->handlers[] = $handler;
+
+        return $this;
+    }
+
+    /**
+     * Remove handler
+     *
+     * @param \AppBundle\Entity\User $handler
+     */
+    public function removeHandler(\AppBundle\Entity\User $handler)
+    {
+        $this->handlers->removeElement($handler);
+    }
+
+    /**
+     * Get handlers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHandlers()
+    {
+        return $this->handlers;
     }
 }

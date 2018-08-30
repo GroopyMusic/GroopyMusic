@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\SponsorshipInvitation;
+use AppBundle\Entity\YB\YBContractArtist;
 use Azine\EmailBundle\Entity\RecipientInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -33,6 +34,8 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->category_statistics = new ArrayCollection();
         $this->user_conditions = new ArrayCollection();
         $this->sponsorships = new ArrayCollection();
+        $this->yb = false;
+        $this->yb_campaigns = new ArrayCollection();
     }
 
     public function owns(Artist $artist)
@@ -140,6 +143,14 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function isFirstVisit()
     {
         return $this->user_conditions->isEmpty();
+    }
+
+    public function ownsYBCampaign(YBContractArtist $contractArtist) {
+        return $this->yb_campaigns->contains($contractArtist);
+    }
+
+    public function isYB() {
+        return $this->getYB();
     }
 
     // Form only
@@ -275,6 +286,16 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      * @ORM\OneToOne(targetEntity="SponsorshipInvitation", mappedBy="target_invitation",cascade={"all"}, orphanRemoval=true)
      */
     private $sponsorship_invitation;
+
+    /**
+     * @ORM\Column(name="yb", type="boolean")
+     */
+    private $yb;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBContractArtist", mappedBy="handlers")
+     */
+    private $yb_campaigns;
 
     /**
      * @param mixed $salutation
@@ -990,5 +1011,63 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     function getSponsorshipInvitation()
     {
         return $this->sponsorship_invitation;
+    }
+
+    /**
+     * Set yb
+     *
+     * @param boolean $yb
+     *
+     * @return User
+     */
+    public function setYb($yb)
+    {
+        $this->yb = $yb;
+
+        return $this;
+    }
+
+    /**
+     * Get yb
+     *
+     * @return boolean
+     */
+    public function getYb()
+    {
+        return $this->yb;
+    }
+
+    /**
+     * Add ybCampaign
+     *
+     * @param \AppBundle\Entity\YB\YBContractArtist $ybCampaign
+     *
+     * @return User
+     */
+    public function addYbCampaign(\AppBundle\Entity\YB\YBContractArtist $ybCampaign)
+    {
+        $this->yb_campaigns[] = $ybCampaign;
+
+        return $this;
+    }
+
+    /**
+     * Remove ybCampaign
+     *
+     * @param \AppBundle\Entity\YB\YBContractArtist $ybCampaign
+     */
+    public function removeYbCampaign(\AppBundle\Entity\YB\YBContractArtist $ybCampaign)
+    {
+        $this->yb_campaigns->removeElement($ybCampaign);
+    }
+
+    /**
+     * Get ybCampaigns
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getYbCampaigns()
+    {
+        return $this->yb_campaigns;
     }
 }

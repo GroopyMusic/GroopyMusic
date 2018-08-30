@@ -72,6 +72,9 @@ services:
         - {name: kernel.event_subscriber }
 
     AppBundle\EventListener\KernelListener:
+      arguments:
+        $session_name: '%session.name%'
+        $remember_me_name: '%session.remember_me.name%'
       tags:
         - {name: kernel.event_subscriber }
 
