@@ -22,6 +22,7 @@ class YBMembersController extends Controller
      */
     public function dashboardAction()
     {
+        throw $this->createAccessDeniedException();
         $campaign = new YBContractArtist();
         $form = $this->createForm(YBContractArtistType::class, $campaign);
         return $this->render('@App/YB/Members/dashboard.html.twig', [
