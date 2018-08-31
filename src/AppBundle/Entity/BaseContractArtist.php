@@ -21,7 +21,7 @@ class BaseContractArtist implements TranslatableInterface
     const VOTES_TO_REFUND = 2;
     const NB_PROMO_DAYS = 7;
     const NB_TEST_PERIOD_DAYS = 20;
-    const PHOTOS_DIR = 'festivals/';
+    const PHOTOS_DIR = 'images/festivals/';
 
     public function __call($method, $arguments)
     {
