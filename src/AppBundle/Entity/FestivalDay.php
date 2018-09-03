@@ -49,6 +49,10 @@ class FestivalDay
         $this->addTicketsSold($purchase->getThresholdIncrease());
     }
 
+    public function updateHalfTicketsSold(Purchase $purchase) {
+        $this->addTicketsSold($purchase->getThresholdIncrease() / 2);
+    }
+
     public function addTicketsSold($quantity) {
         $this->tickets_sold += $quantity;
     }
