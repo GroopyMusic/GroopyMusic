@@ -46,7 +46,7 @@ class FestivalDay
     }
 
     public function updateTicketsSold(Purchase $purchase) {
-        $this->addTicketsSold($purchase->getTresholdIncrease());
+        $this->addTicketsSold($purchase->getThresholdIncrease());
     }
 
     public function addTicketsSold($quantity) {
