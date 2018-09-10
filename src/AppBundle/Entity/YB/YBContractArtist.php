@@ -34,6 +34,8 @@ class YBContractArtist extends BaseContractArtist
     {
         parent::__construct();
         $this->tickets_sent = false;
+        $this->date_closure = new \DateTime();
+        $this->sold_counterparts = 0;
     }
 
     public function isEvent() {
@@ -49,7 +51,7 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function getState() {
-        if(isset($this->state)) {
+        if($this->state != null) {
             return $this->state;
         }
 
@@ -59,22 +61,22 @@ class YBContractArtist extends BaseContractArtist
 
         // Failure & refunded
         if($this->refunded)
-            return self::STATE_REFUNDED;
+            return $this->state = self::STATE_REFUNDED;
 
         // Marked as failure
         if($this->failed)
-            return self::STATE_FAILED;
+            return $this->state = self::STATE_FAILED;
 
         if($this->getNbCounterPartsPaid() >= $max_cp) {
-            return self::STATE_SOLD_OUT;
+            return $this->state = self::STATE_SOLD_OUT;
         }
 
         if($this->no_threshold) {
             if($this->date_closure >= $today) {
-                return self::STATE_ONGOING;
+                return $this->state = self::STATE_ONGOING;
             }
             else {
-                return self::STATE_PASSED;
+                return $this->state = self::STATE_PASSED;
             }
         }
 
@@ -98,7 +100,7 @@ class YBContractArtist extends BaseContractArtist
 
     /**
      * @var integer
-     * @ORM\Column(name="sold_counterparts", type="integer")
+     * @ORM\Column(name="sold_counterparts", type="float")
      */
     private $sold_counterparts;
 

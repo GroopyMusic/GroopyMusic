@@ -2,11 +2,24 @@
 
 {% block body %}
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+
+            {% if campaign.id is null %}
+                <li class="active"><span>Nouvelle campagne</span></li>
+            {% else %}
+                <li><a href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+                <li class="active"><span>Edition</span></li>
+            {% endif %}
+        </ol>
+    </section>
+
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/counterpart.html.twig'  ':Form:jquery.collection.html.twig' %}
 
     {{ form_start(form) }}
 
-    <section class="container my-4 py-2 my-md-5 border">
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Infos générales </h2>
         <div class="row">
             <div class="col-12">
@@ -22,22 +35,32 @@
             </div>
         </div>
     </section>
-    <section class="container my-4 py-2 my-md-5 border">
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Financement participatif</h2>
-        <div class="col-12">
-            {{ form_row(form.noThreshold) }}
+        <p>Dans le cas où vous souhaitez définir un nombre minimum d'articles à vendre avant la validation du financement participatif, il vous faut définir ce seuil ainsi qu'une date à laquelle les acheteurs seront avertis de la réussite ou non du financement participatif.</p>
+        <div class="col-12" id="yb_no_threshold_checkbox">
+            {{ form_widget(form.noThreshold) }}
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 yb_threshold_only">
             {{ form_row(form.threshold) }}
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 yb_threshold_only">
             {{ form_row(form.dateEnd) }}
         </div>
     </section>
-    <section class="container my-4 py-2 my-md-5 border">
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Tickets</h2>
-        {{ form_row(form.counterParts) }}
+        {{ form_row(form.globalSoldout) }}
+        {{ form_widget(form.counterParts) }}
     </section>
+
+    {% if form.acceptConditions is defined %}
+        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <p><a href="{{ path('yb_terms') }}">Lire nos conditions d'utilisation</a></p>
+            {{ form_widget(form.acceptConditions) }}
+        </section>
+    {% endif %}
 
     {{ form_end(form) }}
 {% endblock  %}
@@ -46,8 +69,16 @@
     {{ parent() }}
     <script type="text/javascript">
         yb_collection({
-            add:'<a class="btn btn-outline-secondary" href="#">Ajouter</a>',
-            remove:'<a class="danger-color" href="#">Supprimer</a>'
+            add:'<a class="btn btn-outline-secondary" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un ticket</a>',
+            remove:'<div class="w-100 text-right"><a class="btn btn-danger" href="#">Supprimer</a></div>'
         });
+
+        var $chckbx = $('#yb_no_threshold_checkbox input[type="checkbox"]');
+
+        $chckbx.on('change', function() {
+            $('.yb_threshold_only').toggle(!this.checked);
+        });
+
+        $chckbx.trigger("change");
     </script>
 {% endblock %}

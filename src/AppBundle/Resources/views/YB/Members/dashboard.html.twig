@@ -2,21 +2,42 @@
 
 {% macro campaign_row(campaign) %}
 
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>{{ campaign.getTitle }}</h3>
+        </div>
+        <div class="col-12 col-md-3">
+            {{ campaign.soldCounterparts }} articles vendus
+        </div>
+        <div class="col-12 col-md-2">
+            <a href="{{ path('yb_campaign', {'id': campaign.id}) }}"><i class="fas fa-eye text-secondary"></i> Voir la page de la campagne</a>
+        </div>
+
+        <div class="col-12 col-md-2">
+            <a href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}"><i class="fas fa-edit text-secondary"></i> Modifier les informations</a>
+        </div>
+        <div class="col-12 col-md-2">
+            <a href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}"><i class="fas fa-list text-secondary"></i> Accéder à la liste de commandes</a>
+        </div>
+        <div class="col-12 col-md-3">
+            <i class="fas fa-check-square text-secondary"></i> Annuler/confirmer
+        </div>
+    </div>
+
 {% endmacro %}
 
 {% block body %}
 
     {% import _self as macros %}
 
-    <section class="container">
+    <section class="container py-5">
         <p>
-            <i class="far fa-plus-square"></i>
-            <a href="{{ path('yb_members_campaign_new') }}">Nouvelle campagne</a>
+            <a href="{{ path('yb_members_campaign_new') }}"><i class="far fa-plus-square"></i> Nouvelle campagne</a>
         </p>
     </section>
 
     {% if current_campaigns is not empty %}
-        <section class="container">
+        <section class="container pb-5">
             <h2>Campagnes en cours</h2>
             {% for campaign in current_campaigns %}
                 {{ macros.campaign_row(campaign) }}
@@ -25,7 +46,7 @@
     {% endif %}
 
     {% if passed_campaigns is not empty %}
-        <section class="container">
+        <section class="container pb-5">
             <h2>Campagnes passées</h2>
             {% for campaign in passed_campaigns %}
                 {{ macros.campaign_row(campaign) }}

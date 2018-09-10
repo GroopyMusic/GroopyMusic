@@ -26,6 +26,8 @@ $black: #000 !default;
 @import "scss/payment.scss";
 @import "scss/loader.scss";
 @import 'scss/campaign.scss';
+@import "scss/edition.scss";
+@import 'scss/breadcrumbs.scss';
 
 body {
   font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, sans-serif;

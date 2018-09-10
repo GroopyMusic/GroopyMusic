@@ -1,9 +1,37 @@
 {% extends "@App/YB/Members/base.html.twig" %}
 
 {% block body %}
-    <section>
 
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+            <li class="active"><span>Liste de commandes</span></li>
+        </ol>
+    </section>
 
-
+    <section class="container">
+        {% for cf in cfs %}
+            <div class="cf-row border my-3 px-2">
+                <div class="row">
+                    <div class="col-3 col-md-1">#{{ loop.index }}</div>
+                    <div class="col-9 col-md-5">{{ cf.date|date('d/m/Y H:i') }}</div>
+                    <div class="col-4 col-md-2">{{ cf.amount }} €</div>
+                    <div class="col-8 col-md-4">{{ cf.displayName }}</div>
+                </div>
+                <div>
+                    <a data-toggle="collapse" href="#cf-details-{{ loop.index }}" role="button" aria-expanded="false" aria-controls="cf-details-{{ loop.index }}">
+                        <i class="fas fa-caret-square-down"></i> Voir plus
+                    </a>
+                </div>
+                <div class="collapse" id="cf-details-{{ loop.index }}">
+                    {% for purchase in cf.purchases %}
+                        <div class="pt-2">{{ purchase.displayWithAmount }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            Il n'y a eu aucune commande pour cet événement pour l'instant.
+        {% endfor %}
     </section>
 {% endblock  %}

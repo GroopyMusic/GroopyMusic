@@ -1,6 +1,8 @@
 {% extends "yb/base.html.twig" %}
 {% trans_default_domain 'yb' %}
 
+{% block main_attributes %}class="home-main"{% endblock %}
+
 {% block nav_details_links %}
     <li class="nav-item">
         <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#services"}}">{{ 'menu.services'|trans }}</a>

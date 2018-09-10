@@ -1,4 +1,8 @@
-{% extends 'yb/base.html.twig' %}
+{% extends 'yb/base_simple_header.html.twig' %}
+
+{% block nav_details_links %}
+
+{% endblock %}
 
 {% block additional_javascripts %}
     <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>

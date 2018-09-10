@@ -19,6 +19,7 @@ class CounterPartType extends AbstractType
     {
         $builder
             ->add('translations', TranslationsType::class, [
+                'label' => false,
                 'locales' => ['fr'],
                 'fields' => [
                     'name' => [
@@ -41,7 +42,7 @@ class CounterPartType extends AbstractType
             ))
             ->add('price', NumberType::class, array(
                 'required' => true,
-                'label' => 'Prix',
+                'label' => 'Prix (en euros)',
             ))
             ->add('thresholdIncrease', NumberType::class, array(
                 'required' => true,

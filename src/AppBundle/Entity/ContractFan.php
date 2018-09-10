@@ -125,6 +125,10 @@ class ContractFan
         }
     }
 
+    public function getDisplayName() {
+        return $this->getPhysicalPerson()->getDisplayName();
+    }
+
     public function getEmail() {
         return $this->getPhysicalPerson()->getEmail();
     }

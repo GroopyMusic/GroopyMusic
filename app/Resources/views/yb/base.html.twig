@@ -73,7 +73,7 @@
 </header>
 {% endblock %}
 
-<main id="main">
+<main id="main" {% block main_attributes %}{% endblock %}>
     {% set error_bag = app.request.session.flashbag.get('error') %}
 
     {% if error_bag is not empty

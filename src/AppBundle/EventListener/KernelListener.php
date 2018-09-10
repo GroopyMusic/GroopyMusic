@@ -5,25 +5,31 @@ namespace AppBundle\EventListener;
 use AppBundle\Controller\ConditionsController;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\UserBundle\Controller\SecurityController;
+use FOS\UserBundle\FOSUserBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class KernelListener implements EventSubscriberInterface
 {
     private $tokenStorage;
     private $em;
     private $conditionsController;
+    private $securityController;
     private $session_name;
     private $remember_me_name;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, $session_name, $remember_me_name)
+    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, $session_name, $remember_me_name)
     {
         $this->tokenStorage = $tokenStorage;
         $this->em = $em;
         $this->conditionsController = $conditionsController;
+        $this->securityController = $securityController;
         $this->session_name = $session_name;
         $this->remember_me_name = $remember_me_name;
     }
@@ -65,13 +71,15 @@ class KernelListener implements EventSubscriberInterface
             return;
         }
 
-        if($yb != $user->isYB()) {
+        if($yb > $user->isYB()) {
             // Logging user out.
             $this->tokenStorage->setToken(null);
 
             // Invalidating the session.
             $session->invalidate();
-            return;
+            $controller = $this->securityController;
+            $session->getFlashBag()->add('error', "Votre compte n'est pas autorisé pour Ticked-it ; il faut qu'un administrateur Un-Mute vous donne les privilèges nécessaires.");
+            $event->setController(array($controller, 'loginAction'));
         }
 
 
@@ -85,7 +93,7 @@ class KernelListener implements EventSubscriberInterface
             $user->setPreferredLocale($request->getLocale());
             $last_conditions = $this->em->getRepository('AppBundle:Conditions')->findLast();
 
-            if(!$user->isYB() && ($last_conditions == null) || $user->hasAccepted($last_conditions))
+            if(($last_conditions == null) || $user->hasAccepted($last_conditions))
                 return;
 
             $event->setController(array($controller, 'acceptLastAction'));

@@ -325,7 +325,7 @@ class BaseContractArtist implements TranslatableInterface
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_end", type="datetime")
+     * @ORM\Column(name="date_end", type="datetime", nullable=true)
      */
     protected $dateEnd;
 
@@ -423,7 +423,7 @@ class BaseContractArtist implements TranslatableInterface
     protected $no_threshold;
 
     /**
-     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="contractArtist")
+     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="contractArtist", cascade={"all"})
      */
     protected $counterParts;
 
@@ -932,7 +932,7 @@ class BaseContractArtist implements TranslatableInterface
 
     public function removeCounterPart(CounterPart $counterpart) {
         $this->counterParts->removeElement($counterpart);
-
+        $counterpart->setContractArtist(null);
         return $this;
     }
 
@@ -997,6 +997,7 @@ class BaseContractArtist implements TranslatableInterface
     public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
     {
         $this->counterParts[] = $counterPart;
+        $counterPart->setContractArtist($this);
 
         return $this;
     }

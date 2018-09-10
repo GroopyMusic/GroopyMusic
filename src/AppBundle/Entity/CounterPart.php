@@ -17,6 +17,13 @@ class CounterPart implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
 
+    public function __construct()
+    {
+        $this->festivaldays = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->free_price = false;
+        $this->minimum_price = 0;
+    }
+
     public function __call($method, $arguments)
     {
         try {
@@ -251,14 +258,6 @@ class CounterPart implements TranslatableInterface
     {
         $this->contractArtist = $contractArtist;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->festivaldays = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
     /**
      * Add festivalday
      *
