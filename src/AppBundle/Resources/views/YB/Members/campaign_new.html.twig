@@ -35,18 +35,49 @@
             </div>
         </div>
     </section>
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Images </h2>
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(form.photo) }}
+                {% if campaign.id is not null and campaign.photo is not null %}
+                    <div class="col-12 col-md-6"><img class="img-fluid" src="{{ absolute_url(asset(campaign.webPath(campaign.photo))) }}" /></div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            {% if campaign.id is not null %}
+                <div class="dropzone" id="#campaign_edit_photos"></div>
+            {% else %}s
+                <p>Une fois la campagne créée, vous pourrez ajouter d'autres images pour l'illustrer.</p>
+            {% endif %}
+        </div>
+    </section>
+
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Financement participatif</h2>
-        <p>Dans le cas où vous souhaitez définir un nombre minimum d'articles à vendre avant la validation du financement participatif, il vous faut définir ce seuil ainsi qu'une date à laquelle les acheteurs seront avertis de la réussite ou non du financement participatif.</p>
-        <div class="col-12" id="yb_no_threshold_checkbox">
-            {{ form_widget(form.noThreshold) }}
-        </div>
-        <div class="col-12 col-md-6 yb_threshold_only">
-            {{ form_row(form.threshold) }}
-        </div>
-        <div class="col-12 col-md-6 yb_threshold_only">
-            {{ form_row(form.dateEnd) }}
-        </div>
+        {% if campaign.id is null %}
+            <p>
+                Dans le cas où vous souhaitez définir un nombre minimum d'articles à vendre avant la validation du financement participatif, il vous faut définir ce seuil ainsi qu'une date à laquelle les acheteurs seront avertis de la réussite ou non du financement participatif.<br />
+                <b>Attention</b> : vou ne pourrez plus modifier ce comportement (avec seuil ou non) une fois la campagne créée.
+            </p>
+            <div class="col-12" id="yb_no_threshold_checkbox">
+                {{ form_widget(form.noThreshold) }}
+            </div>
+        {% elseif not campaign.noThreshold %}
+            <div class="col-12 col-md-6 yb_threshold_only">
+                {{ form_row(form.threshold) }}
+            </div>
+            <div class="col-12 col-md-6 yb_threshold_only">
+                {{ form_row(form.dateEnd) }}
+            </div>
+        {% else %}
+            <p>Pas applicable à cette campagne.</p>
+            {% do form.noThreshold.setRendered %}
+            {% do form.threshold.setRendered %}
+            {% do form.dateEnd.setRendered %}
+        {% endif %}
     </section>
 
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
@@ -68,17 +99,83 @@
 {% block additional_javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        yb_collection({
-            add:'<a class="btn btn-outline-secondary" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un ticket</a>',
-            remove:'<div class="w-100 text-right"><a class="btn btn-danger" href="#">Supprimer</a></div>'
+
+        $(function() {
+            yb_collection({
+                add:'<a class="btn btn-outline-secondary" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un ticket</a>',
+                remove:'<div class="w-100 text-right"><a class="btn btn-danger" href="#">Supprimer</a></div>'
+            });
+
+            var $chckbx = $('#yb_no_threshold_checkbox input[type="checkbox"]');
+
+            $chckbx.on('change', function() {
+                $('.yb_threshold_only').toggle(!this.checked);
+            });
+
+            $chckbx.trigger("change");
+
+            var $dropzone = $("div.dropzone");
+            var mocks = [];
+            {% for photo in campaign.campaignPhotos %}
+                mocks.push({
+                    name: "{{ photo.filename }}",
+                    url: "{{ absolute_url(asset(campaign.webPath(photo))) }}",
+                    size: 12345
+                });
+            {% endfor %}
+
+            $dropzone.dropzone({
+                url: "{{ oneup_uploader_endpoint('yb_campaign') }}",
+                resizeWidth: 1000,
+                maxFiles: 5,
+                addRemoveLinks: true,
+                params: {
+                    campaign: {{ campaign.id }}
+                },
+                accept: function (file, done) {
+                    console.log(file);
+                    if ((file.type).toLowerCase() != "image/jpg" &&
+                        (file.type).toLowerCase() != "image/gif" &&
+                        (file.type).toLowerCase() != "image/jpeg" &&
+                        (file.type).toLowerCase() != "image/png"
+                    ) {
+                        done("Invalid file");
+                    }
+                    else {
+                        done();
+                    }
+                },
+                removedfile: function(file) {
+                    $.ajax({
+                        method: 'get',
+                        url: "{{ path('yb_members_campaign_remove_photo', {'id': campaign.id}) }}",
+                        data: {
+                            filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
+                        },
+                        complete: function() {
+                            file.previewElement.remove();
+                        }
+                    });
+                },
+                init: function() {
+                    var i = 0;
+                    while(i < mocks.length) {
+                        var mock = mocks[i];
+                        mock.accepted = true;
+
+                        this.files.push(mock);
+                        this.createThumbnailFromUrl(mock, mock.url);
+                        this.emit('addedfile', mock);
+                        this.emit("thumbnail", mock, mock.url);
+                        this.emit('complete', mock);
+                        i++;
+                    }
+                    $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
+                },
+                success: function(file, serverResponse) {
+                    file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;
+                }
+            });
         });
-
-        var $chckbx = $('#yb_no_threshold_checkbox input[type="checkbox"]');
-
-        $chckbx.on('change', function() {
-            $('.yb_threshold_only').toggle(!this.checked);
-        });
-
-        $chckbx.trigger("change");
     </script>
 {% endblock %}

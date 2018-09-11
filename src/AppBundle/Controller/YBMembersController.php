@@ -7,10 +7,13 @@ use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Form\YB\YBContractArtistType;
+use AppBundle\Services\StringHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -116,7 +119,7 @@ class YBMembersController extends Controller
     /**
      * @Route("/campaign/{id}/excel", name="yb_members_campaign_excel")
      */
-    public function excelAction(YBContractArtist $campaign, UserInterface $user) {
+    public function excelAction(YBContractArtist $campaign, UserInterface $user, StringHelper $strHelper) {
         $this->checkIfAuthorized($user, $campaign);
 
         // ask the service for a Excel5
@@ -194,7 +197,7 @@ class YBMembersController extends Controller
             $lettre = "A";
 
             foreach($colonnes as $colonne) {
-                $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre . '1', $colonne);
+                $phpExcelObject->setActiveSheetIndex(1)->setCellValue($lettre . '1', $colonne);
                 $lettre++;
             }
 
@@ -202,9 +205,10 @@ class YBMembersController extends Controller
 
             foreach($cfs as $cf) {
                 /** @var ContractFan $cf */
-                $lettre = "A";
 
                 foreach ($cf->getTickets() as $ticket) {
+                    $lettre = "A";
+
                     /** @var Ticket $ticket */
                     $colonnes = array(
                         $ticket->getBarcodeText(),
@@ -237,7 +241,7 @@ class YBMembersController extends Controller
         // adding headers
         $dispositionHeader = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'inscriptions.xls'
+            $strHelper->slugify($campaign->getTitle()) . '.xls'
         );
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
         $response->headers->set('Pragma', 'public');
@@ -245,6 +249,31 @@ class YBMembersController extends Controller
         $response->headers->set('Content-Disposition', $dispositionHeader);
 
         return $response;
+    }
+
+    /**
+     * @Route("/campaign/{id}/remove-photo", name="yb_members_campaign_remove_photo")
+     */
+    public function removePhotoAction(Request $request, UserInterface $user, YBContractArtist $campaign) {
+        $this->checkIfAuthorized($user, $campaign);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $filename = $request->get('filename');
+
+        $photo = $em->getRepository('AppBundle:Photo')->findOneBy(['filename' => $filename]);
+
+        $em->remove($photo);
+
+        $campaign->removeCampaignPhoto($photo);
+
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . YBContractArtist::getWebPath($photo));
+
+        $em->persist($campaign);
+        $em->flush();
+
+        return new Response();
     }
 
 }

@@ -264,11 +264,10 @@ class ContractFan
         $i = 1;
         foreach ($this->getPurchases() as $key => $val) {
             /** @var $val Artist */
-            $exportList[] = $i .
-                ') ' . $val->__toString();
+            $exportList[] = $val->__toString();
             $i++;
         }
-        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+        return join(', ', $exportList);
     }
 
     /**

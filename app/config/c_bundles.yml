@@ -42,6 +42,9 @@ oneup_uploader:
         hall_gallery:
             frontend: dropzone
             namer: AppBundle\Services\HallPhotoUploadNamer
+        yb_campaign:
+            frontend: dropzone
+            namer: AppBundle\Services\YBContractArtistPhotoUploadNamer
 
 vich_uploader:
     db_driver: orm
@@ -54,6 +57,15 @@ vich_uploader:
           inject_on_load:     false
           namer:
             service: AppBundle\Services\BySlugNamer
+      yb_campaign_header:
+          uri_prefix:         yb/images/campaigns
+          upload_destination: '%kernel.root_dir%/../web/yb/images/campaigns'
+          delete_on_update: true
+          delete_on_remove: true
+          inject_on_load: false
+          namer:
+            service: AppBundle\Services\BySlugNamer
+
 
 jmose_command_scheduler:
     log_path: '%kernel.root_dir%/../var/logs/commands/'

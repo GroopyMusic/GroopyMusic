@@ -5,6 +5,7 @@ namespace AppBundle\Form\YB;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Form\CounterPartType;
+use AppBundle\Form\PhotoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -73,6 +74,10 @@ class YBContractArtistType extends AbstractType
                 ],
                 'exclude_fields' => ['additional_info', 'slug']
             ])
+            ->add('photo', PhotoType::class, array(
+                'label' => 'Photo de couverture',
+                'required' => false,
+            ))
             ->add('counterParts',  CollectionType::class, array(
                 'label' => 'Articles/Tickets en vente',
                 'entry_type' => CounterPartType::class,
