@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Form\YB\YBContractArtistType;
@@ -9,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -102,12 +105,146 @@ class YBMembersController extends Controller
     public function ordersCampaignAction(YBContractArtist $campaign, UserInterface $user = null) {
         $this->checkIfAuthorized($user, $campaign);
 
-        $cfs = $campaign->getContractsFanPaid();
+        $cfs = array_reverse($campaign->getContractsFanPaid());
 
         return $this->render('@App/YB/Members/campaign_orders.html.twig', [
             'cfs' => $cfs,
             'campaign' => $campaign,
         ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/excel", name="yb_members_campaign_excel")
+     */
+    public function excelAction(YBContractArtist $campaign, UserInterface $user) {
+        $this->checkIfAuthorized($user, $campaign);
+
+        // ask the service for a Excel5
+        $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+
+        $phpExcelObject->getProperties()->setCreator("Ticked-it.be")
+            ->setLastModifiedBy("Ticked-it robot")
+            ->setTitle("Commandes et tickets")
+            ->setSubject("Commandes")
+            ->setDescription("Commandes et tickets")
+            ->setKeywords("commandes, tickets");
+
+        $cfs = array_reverse($campaign->getContractsFanPaid());
+
+        if(count($cfs) > 0) {
+
+            $colonnes = array(
+                'Numéro de commande',
+                'Date de commande',
+                'Acheteur',
+                'Adresse e-mail',
+                'Prix',
+                'Détail'
+            );
+
+            $lettre = "A";
+
+            foreach($colonnes as $colonne) {
+                $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre . '1', $colonne);
+                $lettre++;
+            }
+
+            $chiffre = 2;
+
+            foreach($cfs as $cf) {
+                /** @var ContractFan $cf */
+                $lettre = "A";
+                $colonnes = array(
+                    $cf->getId(),
+                    \PHPExcel_Shared_Date::PHPToExcel($cf->getDate()->getTimeStamp()),
+                    $cf->getDisplayName(),
+                    $cf->getEmail(),
+                    $cf->getAmount(),
+                    $cf->getPurchasesExport(),
+                );
+
+
+                foreach($colonnes as $key => $colonne) {
+                    $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre. "" . $chiffre, $colonne);
+
+                    // Date
+                    if($key == 1)
+                        $phpExcelObject->getActiveSheet()
+                            ->getStyle($lettre. "" . $chiffre)
+                            ->getNumberFormat()
+                            ->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_DATE_DATETIME);
+                    $lettre++;
+                }
+                $chiffre++;
+            }
+        }
+
+        $phpExcelObject->getActiveSheet()->setTitle('Commandes');
+
+        if($campaign->getTicketsSent()) {
+            $phpExcelObject->createSheet();
+            $colonnes = array(
+                'Identifiant du ticket',
+                'Numéro de la commande associée',
+                'Acheteur',
+                'Prix',
+                'Type de ticket',
+            );
+
+            $lettre = "A";
+
+            foreach($colonnes as $colonne) {
+                $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre . '1', $colonne);
+                $lettre++;
+            }
+
+            $chiffre = 2;
+
+            foreach($cfs as $cf) {
+                /** @var ContractFan $cf */
+                $lettre = "A";
+
+                foreach ($cf->getTickets() as $ticket) {
+                    /** @var Ticket $ticket */
+                    $colonnes = array(
+                        $ticket->getBarcodeText(),
+                        $ticket->getContractFan()->getId(),
+                        $ticket->getName(),
+                        $ticket->getPrice(),
+                        $ticket->getCounterPart()->__toString(),
+                    );
+
+                    foreach($colonnes as $key => $colonne) {
+                        $phpExcelObject->setActiveSheetIndex(1)->setCellValue($lettre. "" . $chiffre, $colonne);
+                        $lettre++;
+                    }
+                    $chiffre++;
+                }
+
+                $phpExcelObject->setActiveSheetIndex(1);
+                $phpExcelObject->getActiveSheet()->setTitle('Tickets');
+            }
+        }
+
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $phpExcelObject->setActiveSheetIndex(0);
+
+        // create the writer
+        $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
+        // create the response
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'inscriptions.xls'
+        );
+        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        return $response;
     }
 
 }

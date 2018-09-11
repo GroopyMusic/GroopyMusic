@@ -61,7 +61,8 @@
         "mossadal/math-parser": "^1.3",
         "tecnickcom/tcpdf": "6.2.17",
         "sonata-project/formatter-bundle": "^3.4",
-        "azine/email-bundle": "dev-master"
+        "azine/email-bundle": "dev-master",
+        "liuggio/ExcelBundle": "^2.1"
     },
     "scripts": {
         "post-install-cmd": [

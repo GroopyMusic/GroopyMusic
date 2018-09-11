@@ -259,6 +259,18 @@ class ContractFan
         }
     }
 
+    public function getPurchasesExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->getPurchases() as $key => $val) {
+            /** @var $val Artist */
+            $exportList[] = $i .
+                ') ' . $val->__toString();
+            $i++;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+    }
+
     /**
      * @var int
      *
