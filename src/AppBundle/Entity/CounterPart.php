@@ -22,6 +22,7 @@ class CounterPart implements TranslatableInterface
         $this->festivaldays = new \Doctrine\Common\Collections\ArrayCollection();
         $this->free_price = false;
         $this->minimum_price = 0;
+        $this->threshold_increase = 1;
     }
 
     public function __call($method, $arguments)

@@ -46,7 +46,7 @@ class CounterPartType extends AbstractType
             ))
             ->add('thresholdIncrease', NumberType::class, array(
                 'required' => true,
-                'label' => "Participation à l'augmentation du seuil",
+                'label' => "Participation à l'augmentation du seuil (si financement participatif - sinon laisser 1)",
             ))
         ;
     }

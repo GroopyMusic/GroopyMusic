@@ -62,10 +62,9 @@ vich_uploader:
           upload_destination: '%kernel.root_dir%/../web/yb/images/campaigns'
           delete_on_update: true
           delete_on_remove: true
-          inject_on_load: false
+          inject_on_load: true
           namer:
-            service: AppBundle\Services\BySlugNamer
-
+            service: AppBundle\Services\UniqIdNamer
 
 jmose_command_scheduler:
     log_path: '%kernel.root_dir%/../var/logs/commands/'

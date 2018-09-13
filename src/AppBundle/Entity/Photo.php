@@ -15,7 +15,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 class Photo
 {
-
     public function __toString()
     {
         return $this->filename;

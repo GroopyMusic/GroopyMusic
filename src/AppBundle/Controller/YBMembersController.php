@@ -254,7 +254,9 @@ class YBMembersController extends Controller
     /**
      * @Route("/campaign/{id}/remove-photo", name="yb_members_campaign_remove_photo")
      */
-    public function removePhotoAction(Request $request, UserInterface $user, YBContractArtist $campaign) {
+    public function removePhotoAction(Request $request, YBContractArtist $campaign) {
+        $user = $this->getUser();
+
         $this->checkIfAuthorized($user, $campaign);
 
         $em = $this->getDoctrine()->getManager();

@@ -70,6 +70,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->global_soldout = null;
         $this->threshold = 0;
         $this->counterparts_sold = 0;
+        $this->threshold = 0;
     }
 
     public function isInTestPeriod() {
@@ -433,19 +434,19 @@ class BaseContractArtist implements TranslatableInterface
     protected $global_soldout;
 
     /**
-     * @ORM\OneToOne(targetEntity="Photo")
+     * @ORM\OneToOne(targetEntity="Photo", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $photo;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Photo")
+     * @ORM\ManyToMany(targetEntity="Photo", cascade={"all"})
      */
     protected $campaign_photos;
 
     /**
      * @var int
-     * @ORM\Column(name="threshold", type="smallint")
+     * @ORM\Column(name="threshold", type="smallint", nullable=true)
      */
     protected $threshold;
 
