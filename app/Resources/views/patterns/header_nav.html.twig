@@ -41,7 +41,6 @@
                 <a class="nav-link" href="{{ path('tickets_marketplace') }}">{{ 'header.nav.tickets'|trans|raw }}</a>
             </li>
 
-
             {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <li class="nav-item inscription-link d-inline-block d-lg-none">
                     <a class="nav-link" href="{{ path('fos_user_registration_register') }}">{{ 'header.nav.sign_up'|trans|raw }}</a>
