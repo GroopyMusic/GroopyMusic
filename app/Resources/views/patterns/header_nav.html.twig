@@ -30,10 +30,6 @@
                 <a class="nav-link" href="{{ path('catalog_artists') }}">{{ 'header.nav.artists'|trans|raw }}</a>
             </li>
 
-            <li class="nav-item left-nav-item{% if not home_header %} stickytop{% endif %}">
-                <a class="nav-link" href="{{ path('catalog_sales') }}">Ventes</a>
-            </li>
-
             {{ nav_macros.menu_logo(home_header) }}
 
 
@@ -42,13 +38,8 @@
             </li>
 
             <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">
-                <a class="nav-link" href="{{ path('volunteering') }}">Bénévoles</a>
-            </li>
-
-            <li class="nav-item right-nav-item{% if not home_header %} stickytop{% endif %}">
                 <a class="nav-link" href="{{ path('tickets_marketplace') }}">{{ 'header.nav.tickets'|trans|raw }}</a>
             </li>
-
 
 
             {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
