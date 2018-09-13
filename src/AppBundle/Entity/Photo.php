@@ -22,6 +22,7 @@ class Photo
 
     public function __construct()
     {
+        $this->updatedAt = new \DateTime();
     }
 
     public function getUploadFileName() {
@@ -38,7 +39,7 @@ class Photo
     private $imageFile;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      *
      * @var integer
      */
@@ -135,5 +136,29 @@ class Photo
     public function getFilename()
     {
         return $this->filename;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Photo
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

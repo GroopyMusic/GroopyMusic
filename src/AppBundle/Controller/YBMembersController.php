@@ -37,6 +37,12 @@ class YBMembersController extends Controller
         }
     }
 
+    private function checkCampaignCode(YBContractArtist $campaign, $code) {
+        if($campaign->getCode() != $code) {
+            throw $this->createAccessDeniedException();
+        }
+    }
+
     /**
      * @Route("/dashboard", name="yb_members_dashboard")
      */
@@ -94,7 +100,7 @@ class YBMembersController extends Controller
             $em->flush();
 
             $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
-            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+            return $this->redirectToRoute('yb_members_campaign_edit', ['id' => $campaign->getId()]);
         }
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
             'form' => $form->createView(),
@@ -252,12 +258,11 @@ class YBMembersController extends Controller
     }
 
     /**
-     * @Route("/campaign/{id}/remove-photo", name="yb_members_campaign_remove_photo")
+     * @Route("/campaign/{id}/{code}remove-photo", name="yb_members_campaign_remove_photo")
      */
-    public function removePhotoAction(Request $request, YBContractArtist $campaign) {
-        $user = $this->getUser();
+    public function removePhotoAction(Request $request, YBContractArtist $campaign, $code) {
 
-        $this->checkIfAuthorized($user, $campaign);
+        $this->checkCampaignCode($campaign, $code);
 
         $em = $this->getDoctrine()->getManager();
 

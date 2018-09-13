@@ -45,6 +45,8 @@ oneup_uploader:
         yb_campaign:
             frontend: dropzone
             namer: AppBundle\Services\YBContractArtistPhotoUploadNamer
+            storage:
+              directory: "%kernel.root_dir%/../web/yb/images/campaigns/"
 
 vich_uploader:
     db_driver: orm

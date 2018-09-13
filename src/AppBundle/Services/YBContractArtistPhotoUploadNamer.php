@@ -49,13 +49,13 @@ class YBContractArtistPhotoUploadNamer implements NamerInterface
     public function name(FileInterface $file)
     {
         $request = $this->requestStack->getCurrentRequest();
-
-        $user = $this->token_storage->getToken()->getUser();
         
         $campaign = $this->em->getRepository('AppBundle:YB\YBContractArtist')->find($request->get('campaign'));
 
-        if(!$user->ownsYBCampaign($campaign)) {
-            $this->logger->critical("You (user $user->getId()) don't own this campaign ($campaign->getId().");
+        $code = $request->get('code');
+
+        if($campaign->getCode() != $code) {
+            $this->logger->critical("Invalid code for editing campaign ($campaign->getId().");
             throw new AccessDeniedException("You don't own this campaign.");
         }
 

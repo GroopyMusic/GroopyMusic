@@ -36,6 +36,7 @@ class YBContractArtist extends BaseContractArtist
         $this->tickets_sent = false;
         $this->date_closure = new \DateTime();
         $this->sold_counterparts = 0;
+        $this->code = uniqid();
     }
 
     public function isEvent() {
@@ -126,6 +127,12 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="yb_campaigns")
      */
     private $handlers;
+
+    /**
+     * @var string
+     * @ORM\Column(name="code", type="string", length=255)
+     */
+    private $code;
 
     /**
      * Set ticketsSent
@@ -303,5 +310,29 @@ class YBContractArtist extends BaseContractArtist
     public function getHandlers()
     {
         return $this->handlers;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return YBContractArtist
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 }

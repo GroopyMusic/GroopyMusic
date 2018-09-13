@@ -44,6 +44,14 @@ class UploadListener
             $hall->addPhoto($photo);
             $this->om->persist($hall);
         }
+
+        elseif($campaign_id = $request->get('campaign')) {
+            $campaign = $this->om->getRepository('AppBundle:YB\YBContractArtist')->find($campaign_id);
+            $campaign->addCampaignPhoto($photo);
+            $this->om->persist($campaign);
+        }
+
+
         $this->om->flush();
 
         $response = $event->getResponse();

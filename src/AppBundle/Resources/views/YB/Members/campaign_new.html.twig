@@ -133,7 +133,8 @@
                 maxFiles: 5,
                 addRemoveLinks: true,
                 params: {
-                    campaign: {{ campaign.id }}
+                    campaign: {{ campaign.id }},
+                    code: "{{ campaign.code }}"
                 },
                 accept: function (file, done) {
                     console.log(file);
@@ -151,7 +152,7 @@
                 removedfile: function(file) {
                     $.ajax({
                         method: 'get',
-                        url: "{{ path('yb_members_campaign_remove_photo', {'id': campaign.id}) }}",
+                        url: "{{ path('yb_members_campaign_remove_photo', {'id': campaign.id, 'code': campaign.code}) }}",
                         data: {
                             filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
                         },
