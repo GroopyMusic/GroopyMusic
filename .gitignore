@@ -32,6 +32,8 @@
 !web/uploads/artist_gallery
 !web/uploads/hall_gallery
 !web/uploads/hall_technicalspecs
+!web/festivals
+web/festivals/*
 web/uploads/artist_gallery/*
 web/uploads/hall_gallery/*
 web/uploads/hall_technicalspecs/*
