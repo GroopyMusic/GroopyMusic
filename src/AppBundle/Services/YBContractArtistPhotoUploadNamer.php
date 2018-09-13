@@ -51,8 +51,7 @@ class YBContractArtistPhotoUploadNamer implements NamerInterface
         $request = $this->requestStack->getCurrentRequest();
 
         $user = $this->token_storage->getToken()->getUser();
-
-
+        
         $campaign = $this->em->getRepository('AppBundle:YB\YBContractArtist')->find($request->get('campaign'));
 
         if(!$user->ownsYBCampaign($campaign)) {
