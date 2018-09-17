@@ -26,7 +26,7 @@ class YBContractArtist extends BaseContractArtist
     const STATE_PENDING = 'state.pending';
     const STATE_SOLD_OUT_PENDING = 'state.soldout.pending';
 
-    const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT, self::STATE_PENDING];
+    const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const PENDING_STATES = [self::STATE_SUCCESS_PENDING, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const SOLDOUT_STATES = [self::STATE_SOLD_OUT, self::STATE_SOLD_OUT];
     const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED];
@@ -129,9 +129,9 @@ class YBContractArtist extends BaseContractArtist
                     if($this->successful) {
                         return $this->state = self::STATE_SUCCESS_ONGOING;
                     }
-                    if($this->getNbCounterPartsPaid() >= $max_cp) {
-                        return $this->state = self::STATE_SOLD_OUT_PENDING;
-                    }
+                   // if($this->getNbCounterPartsPaid() >= $max_cp) {
+                   //     return $this->state = self::STATE_SOLD_OUT_PENDING;
+                   // }
                     return $this->state = self::STATE_PENDING;
                 }
             }
