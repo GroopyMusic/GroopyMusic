@@ -83,8 +83,9 @@ class YBContractArtist extends BaseContractArtist
         return min(floor(($this->getCounterpartsSold() / $this->getThreshold()) * 100), 100);
     }
 
-    public function getState() {
-        if($this->state != null) {
+    public function getState()
+    {
+        if ($this->state != null) {
             return $this->state;
         }
 
@@ -93,49 +94,44 @@ class YBContractArtist extends BaseContractArtist
         $max_cp = $this->getMaxCounterParts();
 
         // Failure & refunded
-        if($this->refunded)
+        if ($this->refunded)
             return $this->state = self::STATE_REFUNDED;
 
         // Marked as failure
-        if($this->failed)
+        if ($this->failed)
             return $this->state = self::STATE_FAILED;
 
-        if($this->no_threshold) {
-            if($this->getNbCounterPartsPaid() >= $max_cp) {
+        if ($this->no_threshold) {
+            if ($this->getNbCounterPartsPaid() >= $max_cp) {
                 return $this->state = self::STATE_SOLD_OUT;
             }
 
-            if($this->date_closure >= $today) {
+            if ($this->date_closure >= $today) {
                 return $this->state = self::STATE_ONGOING;
-            }
-            else {
+            } else {
                 return $this->state = self::STATE_PASSED;
             }
-        }
-
-        else {
-            if($this->date_closure >= $today) {
-                if ($this->sold_counterparts >= $this->threshold  && !$this->successful) {
-                    if($this->getNbCounterPartsPaid() >= $max_cp) {
+        } else {
+            if ($this->date_closure >= $today) {
+                if ($this->sold_counterparts >= $this->threshold && !$this->successful) {
+                    if ($this->getNbCounterPartsPaid() >= $max_cp) {
                         return $this->state = self::STATE_SOLD_OUT_PENDING;
                     }
 
                     return $this->state = self::STATE_SUCCESS_PENDING;
                 }
-                if($this->dateEnd >= $today) {
+                if ($this->dateEnd >= $today) {
                     return $this->state = self::STATE_ONGOING;
-                }
-                else {
-                    if($this->successful) {
+                } else {
+                    if ($this->successful) {
                         return $this->state = self::STATE_SUCCESS_ONGOING;
                     }
-                   // if($this->getNbCounterPartsPaid() >= $max_cp) {
-                   //     return $this->state = self::STATE_SOLD_OUT_PENDING;
-                   // }
+                    // if($this->getNbCounterPartsPaid() >= $max_cp) {
+                    //     return $this->state = self::STATE_SOLD_OUT_PENDING;
+                    // }
                     return $this->state = self::STATE_PENDING;
                 }
-            }
-            else {
+            } else {
                 return $this->state = self::STATE_PASSED;
             }
         }
