@@ -21,8 +21,16 @@ class YBContractArtist extends BaseContractArtist
     const STATE_SOLD_OUT = 'state.soldout';
     const STATE_ONGOING = 'state.ongoing';
     const STATE_PASSED = 'state.passed';
+    const STATE_SUCCESS_PENDING = 'state.success.pending';
+    const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
+    const STATE_PENDING = 'state.pending';
+    const STATE_SOLD_OUT_PENDING = 'state.soldout.pending';
 
-    const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT];
+    const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT, self::STATE_PENDING];
+    const PENDING_STATES = [self::STATE_SUCCESS_PENDING, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
+    const SOLDOUT_STATES = [self::STATE_SOLD_OUT, self::STATE_SOLD_OUT];
+    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED];
+    const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
 
     const PHOTOS_DIR = 'yb/images/campaigns/';
 
@@ -51,6 +59,30 @@ class YBContractArtist extends BaseContractArtist
         return !$this->isUncrowdable();
     }
 
+    public function isPending() {
+        return in_array($this->getState(), self::PENDING_STATES);
+    }
+
+    public function isSoldOut() {
+        return in_array($this->getState(), self::SOLDOUT_STATES);
+    }
+
+    public function isPassed() {
+        return in_array($this->getState(), self::PASSED_STATES);
+    }
+
+    public function isOngoing() {
+        return in_array($this->getState(), self::ONGOING_STATES);
+    }
+
+    public function isPendingSuccessful() {
+        return $this->getState() == self::STATE_SUCCESS_PENDING;
+    }
+
+    public function getPercentObjective() {
+        return min(floor(($this->getCounterpartsSold() / $this->getThreshold()) * 100), 100);
+    }
+
     public function getState() {
         if($this->state != null) {
             return $this->state;
@@ -68,11 +100,11 @@ class YBContractArtist extends BaseContractArtist
         if($this->failed)
             return $this->state = self::STATE_FAILED;
 
-        if($this->getNbCounterPartsPaid() >= $max_cp) {
-            return $this->state = self::STATE_SOLD_OUT;
-        }
-
         if($this->no_threshold) {
+            if($this->getNbCounterPartsPaid() >= $max_cp) {
+                return $this->state = self::STATE_SOLD_OUT;
+            }
+
             if($this->date_closure >= $today) {
                 return $this->state = self::STATE_ONGOING;
             }
@@ -82,7 +114,30 @@ class YBContractArtist extends BaseContractArtist
         }
 
         else {
-            // TODO !!!!
+            if($this->date_closure >= $today) {
+                if ($this->sold_counterparts >= $this->threshold  && !$this->successful) {
+                    if($this->getNbCounterPartsPaid() >= $max_cp) {
+                        return $this->state = self::STATE_SOLD_OUT_PENDING;
+                    }
+
+                    return $this->state = self::STATE_SUCCESS_PENDING;
+                }
+                if($this->dateEnd >= $today) {
+                    return $this->state = self::STATE_ONGOING;
+                }
+                else {
+                    if($this->successful) {
+                        return $this->state = self::STATE_SUCCESS_ONGOING;
+                    }
+                    if($this->getNbCounterPartsPaid() >= $max_cp) {
+                        return $this->state = self::STATE_SOLD_OUT_PENDING;
+                    }
+                    return $this->state = self::STATE_PENDING;
+                }
+            }
+            else {
+                return $this->state = self::STATE_PASSED;
+            }
         }
     }
 

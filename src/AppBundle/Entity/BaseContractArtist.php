@@ -349,7 +349,7 @@ class BaseContractArtist implements TranslatableInterface
     protected $reminders_artist;
 
     /**
-     * @ORM\Column(name="collected_amount", type="integer")
+     * @ORM\Column(name="collected_amount", type="float")
      */
     protected $collected_amount;
 

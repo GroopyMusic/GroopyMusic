@@ -6,6 +6,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
 use AppBundle\Services\StringHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -103,6 +104,35 @@ class YBMembersController extends Controller
             return $this->redirectToRoute('yb_members_campaign_edit', ['id' => $campaign->getId()]);
         }
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
+            'form' => $form->createView(),
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/crowdfunding", name="yb_members_campaign_crowdfunding")
+     */
+    public function crowdfundingCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+        $this->checkIfAuthorized($user, $campaign);
+
+        $form = $this->createForm(YBContractArtistCrowdType::class, $campaign);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+            if($form->get('refund')->isClicked()) {
+
+                $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
+                return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+            }
+
+            if($form->get('cancel')->isClicked()) {
+
+                $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
+                return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+            }
+        }
+        return $this->render('@App/YB/Members/campaign_crowdfunding.html.twig', [
             'form' => $form->createView(),
             'campaign' => $campaign,
         ]);

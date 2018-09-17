@@ -1,0 +1,91 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+            <li class="active"><span>Gestion du financement participatif</span></li>
+        </ol>
+    </section>
+
+    <section class="container py-4 py-md-5">
+        <h2>Etat du financement participatif</h2>
+        {% if campaign.noThreshold or campaign.threshold <= 0 %}
+            <p>
+                Le financement participatif ne s'applique pas à cette campagne.
+            </p>
+        {% else %}
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
+            </div>
+            <p class="mt-2 text-center"><i class="fas fa-info-circle"></i>
+                {% if campaign.refunded %}
+                    Cette campagne est déjà annulée et remboursée.
+                {% elseif campaign.failed %}
+                    Cette campagne est marquée comme étant annulée.
+                {% elseif campaign.successful %}
+                    Cette campagne a déjà été validée le {{ campaign.dateSuccess|date('d/m/Y') }}. Les tickets ont été envoyés aux acheteurs et les nouveaux acheteurs recevront les leurs directement lors du passage de commande.
+                {% elseif campaign.pending %}
+                    La campagne est en attente de confirmation.
+                {% elseif campaign.soldout %}
+                    La campagne est sold out.
+                {% elseif campaign.passed %}
+                    La campagne est passée.
+                {% elseif campaign.ongoing %}
+                    La campagne est en cours. Vous pourrez la valider ou l'annuler une fois la date de validation atteinte.
+                {% endif %}
+            </p>
+
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th scope="row">Places vendues</th>
+                        <td>{{ campaign.counterpartsSold }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Objectif</th>
+                        <td>{{ campaign.threshold }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Avancement</th>
+                        <td>{{ campaign.percentObjective }} %</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Montant récolté brut</th>
+                        <td>{{ campaign.collectedAmount }} €</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Nombre de commandes</th>
+                        <td>{{ campaign.contractsFanPaid|length }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Date de validation</th>
+                        <td>{{ campaign.dateEnd|date('d/m/Y') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class="container py-4">
+            {% if campaign.pending %}
+                <h2>Actions</h2>
+                <p><i class="fas fa-exclamation-circle"></i>
+                {% if campaign.pendingSuccessful -%}
+                    La campagne est un succès ; il vous faut donc la valider en cliquant sur le bouton ci-dessous qui enverra automatiquement les tickets à tous les acheteurs.
+                {%- else -%}
+                    La campagne n'est pas un succès ; le choix de la valider ou non vous appartient. Si vous décidez de la valider, les acheteurs en seront avertis et leurs tickets seront envoyés. Si vous décidez de l'annuler, ils seront remboursés. Quel que soit votre choix, <span class="text-danger">il ne sera plus possible de revenir en arrière</span>.
+                {%- endif -%}
+                </p>
+                {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+
+                {{ form_start(form) }}
+                {{ form_end(form) }}
+            {% endif %}
+        {% endif %}
+
+
+
+
+    </section>
+
+{% endblock  %}
