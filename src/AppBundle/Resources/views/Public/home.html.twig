@@ -21,6 +21,15 @@
 {% block body %}
     <section id="festivals" class="container-fluid position-relative bg-body-strong">
         <h3 class="alt-title text-center mt-2 mt-lg-0">{{ 'home.concerts.title'|trans|raw }}</h3>
+
+        <p>
+            Douze artistes émergents belges nageant dans la pop, le rock, l'électro et la musique du monde,
+            sont réunis derrière un même objectif : vous faire vivre deux week-end d'exception en novembre 2018.
+            C'est la toute première édition des <b>Festivals de la Découverte</b> !
+            Mais attention, pour qu'un Festival ait lieu, il faut que suffisamment de tickets soient vendus d'ici le 30 septembre à minuit.
+            C'est le principe du <b>crowdfunding</b> : c'est vous, le public, qui décidez des événements que vous désirez produire !
+        </p>
+
         <div class="row">
             {% for crowdfunding in crowdfundings %}
                 {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':6, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': true, 'card_classes': ['pb-3']} %}
