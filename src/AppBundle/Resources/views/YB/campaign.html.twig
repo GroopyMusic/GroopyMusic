@@ -30,7 +30,7 @@
                     </div>
                 {% endif %}
 
-                {{ campaign.getDescription|nl2br }}
+                {{ campaign.getDescription|raw|nl2br }}
 
                 {% if campaign.campaignPhotos is not empty %}
                     {% for photo in campaign.campaignPhotos %}
