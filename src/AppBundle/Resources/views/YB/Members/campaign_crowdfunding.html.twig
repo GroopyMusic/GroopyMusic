@@ -76,10 +76,68 @@
                     La campagne n'est pas un succès ; le choix de la valider ou non vous appartient. Si vous décidez de la valider, les acheteurs en seront avertis et leurs tickets seront envoyés. Si vous décidez de l'annuler, ils seront remboursés. Quel que soit votre choix, <span class="text-danger">il ne sera plus possible de revenir en arrière</span>.
                 {%- endif -%}
                 </p>
-                {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
-                {{ form_start(form) }}
-                {{ form_end(form) }}
+                <div class="text-center">
+                    {{ form_start(form) }}
+
+                    {% if form.validate is defined %}
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#validateModal">
+                           Confirmer l'événement
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="validateModal" tabindex="-1" role="dialog" aria-labelledby="validateModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="validateModalLabel">Valider l'événement</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Vous êtes sur le point de confirmer cet événement et donc d'expédier tous les tickets. Êtes-vous sûr de continuer ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        {{ form_widget(form.validate) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if form.refund is defined %}
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#refundModal">
+                            Annuler l'événement
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="refundModalLabel">Annuler l'événement</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Vous êtes sur le point d'annuler cet événement et donc de rembourser tous les éventuels acheteurs. Êtes-vous sûr de continuer ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        {{ form_widget(form.refund) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {{ form_end(form) }}
+                </div>
             {% endif %}
         {% endif %}
 

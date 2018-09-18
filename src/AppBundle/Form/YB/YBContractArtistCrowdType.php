@@ -17,14 +17,20 @@ class YBContractArtistCrowdType extends AbstractType
 
         if($campaign->isPending()) {
             $builder->add('validate', SubmitType::class, array(
-                'label' => "Valider l'événement"
+                'label' => "Valider l'événement",
+                'attr' => [
+                    'class' => 'btn btn-primary'
+                ]
             ));
 
             $state = $campaign->getState();
 
             if($state == $campaign::STATE_PENDING) {
                 $builder->add('refund', SubmitType::class, array(
-                    'label' => 'Annuler et rembourser tous les participants',
+                    'label' => 'Annuler l\'événement',
+                    'attr' => [
+                        'class' => 'btn btn-danger'
+                    ]
                 ));
             }
         }
