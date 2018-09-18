@@ -52,6 +52,10 @@
                         <td>{{ campaign.percentObjective }} %</td>
                     </tr>
                     <tr>
+                        <th scope="row">Tickets envoyés</th>
+                        <td>{{ campaign.ticketsSent ? 'Oui' : 'Non' }}</td>
+                    </tr>
+                    <tr>
                         <th scope="row">Montant récolté brut</th>
                         <td>{{ campaign.collectedAmount }} €</td>
                     </tr>
@@ -100,8 +104,8 @@
                                         Vous êtes sur le point de confirmer cet événement et donc d'expédier tous les tickets. Êtes-vous sûr de continuer ?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                                         {{ form_widget(form.validate) }}
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                                     </div>
                                 </div>
                             </div>
@@ -128,8 +132,8 @@
                                         Vous êtes sur le point d'annuler cet événement et donc de rembourser tous les éventuels acheteurs. Êtes-vous sûr de continuer ?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                                         {{ form_widget(form.refund) }}
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                                     </div>
                                 </div>
                             </div>

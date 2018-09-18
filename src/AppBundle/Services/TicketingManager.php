@@ -312,7 +312,7 @@ class TicketingManager
     }
 
     // YB
-    public function generateAndSendYBTickets(ContractFan $cf) {
+    public function generateAndSendYBTickets(ContractFan $cf, $newly_successful = false) {
 
         if (!$cf->getcounterpartsSent()) {
             $cf->generateBarCode();
@@ -340,7 +340,7 @@ class TicketingManager
 
             try {
                 $this->writer->writeYBTickets($cf->getTicketsPath(), $cf->getTickets(), []);
-                $this->mailDispatcher->sendYBTickets($cf);
+                $this->mailDispatcher->sendYBTickets($cf, $newly_successful);
                 $this->em->persist($cf);
                 $cf->setcounterpartsSent(true);
             } catch (\Exception $e) {

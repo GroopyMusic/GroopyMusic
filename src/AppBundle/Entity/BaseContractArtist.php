@@ -272,7 +272,7 @@ class BaseContractArtist implements TranslatableInterface
     }
 
     public function updateCounterPartsSold(ContractFan $cf) {
-        $this->addCounterPartsSold($cf->getTresholdIncrease());
+        $this->addCounterPartsSold($cf->getThresholdIncrease());
         foreach($cf->getPurchases() as $purchase) {
             /** @var Purchase $purchase */
             if($purchase->getCounterpart()->getFestivaldays() != null) {

@@ -10,11 +10,10 @@
                 '%order_url%': url('yb_order', {'code': cart.barcodeText})
     })|raw }}
 
-    {% set threshold_announced = false %}
-
     {% for contract in cart.contracts %}
+        {% set threshold_announced = contract.contractArtist.ticketsSent %}
         {% if not threshold_announced and not contract.contractArtist.noThreshold %}
-            {{ email_content('yb.order.recap.threshold') }}
+            {{ email_content('yb.order.recap.threshold', {'%threshold%':contract.contractArtist.threshold, '%date_end%':contract.contractArtist.dateEnd|date('d/m/Y')}) }}
             {% set threshold_announced = true %}
         {% endif %}
         {{ contract.contractArtist.getTitle|upper }}

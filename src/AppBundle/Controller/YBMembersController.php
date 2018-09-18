@@ -8,7 +8,9 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
+use AppBundle\Services\PaymentManager;
 use AppBundle\Services\StringHelper;
+use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -112,7 +114,7 @@ class YBMembersController extends Controller
     /**
      * @Route("/campaign/{id}/crowdfunding", name="yb_members_campaign_crowdfunding")
      */
-    public function crowdfundingCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+    public function crowdfundingCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em, TicketingManager $ticketingManager, PaymentManager $paymentManager) {
         $this->checkIfAuthorized($user, $campaign);
 
         $form = $this->createForm(YBContractArtistCrowdType::class, $campaign);
@@ -120,15 +122,24 @@ class YBMembersController extends Controller
         $form->handleRequest($request);
 
         if($form->isSubmitted()) {
-            if($form->get('refund')->isClicked()) {
+            if($form->get('refund')->isClicked() && !$campaign->getRefunded()) {
+                $paymentManager->refundStripeAndYBContractArtist($campaign);
+                $campaign->setFailed(true);
+                $em->flush();
 
-                $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
+                $this->addFlash('yb_notice', 'La campagne a bien été annulée. Les éventuels contributeurs ont été avertis et remboursés.');
                 return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
             }
 
-            if($form->get('cancel')->isClicked()) {
+            if($form->get('validate')->isClicked() && !$campaign->getTicketsSent()) {
+                foreach($campaign->getContractsFanPaid() as $cf) {
+                    $ticketingManager->generateAndSendYBTickets($cf, true);
+                }
 
-                $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
+                $campaign->setTicketsSent(true)->setSuccessful(true);
+                $em->flush();
+
+                $this->addFlash('yb_notice', "L'événement a bien été confirmé et les tickets envoyés aux différents acheteurs.");
                 return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
             }
         }
@@ -155,7 +166,7 @@ class YBMembersController extends Controller
     /**
      * @Route("/campaign/{id}/excel", name="yb_members_campaign_excel")
      */
-    public function excelAction(YBContractArtist $campaign, UserInterface $user, StringHelper $strHelper) {
+    public function excelAction(YBContractArtist $campaign, UserInterface $user = null, StringHelper $strHelper) {
         $this->checkIfAuthorized($user, $campaign);
 
         // ask the service for a Excel5

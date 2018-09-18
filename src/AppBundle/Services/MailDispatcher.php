@@ -589,9 +589,9 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::YB_ORDER_RECAP, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
     }
 
-    public function sendYBTickets(ContractFan $cf) {
+    public function sendYBTickets(ContractFan $cf, $newly_successful = false) {
         $subject = 'Vos tickets sont arrivés';
-        $params = ['cf' => $cf];
+        $params = ['cf' => $cf, 'newly_successful' => $newly_successful];
         $subject_params = [];
         $recipient = [$cf->getEmail() => $this->translator->getLocale()];
         $recipientName = '';
@@ -600,5 +600,20 @@ class MailDispatcher
         $attachments = ['ticked-it-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
 
         $this->sendEmail(MailTemplateProvider::YB_TICKETS, $subject, $params, $subject_params, [], $attachments, $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+    public function sendRefundedYBContractFan(ContractFan $cf) {
+        $params = [
+            'cf' => $cf,
+            'campaign' => $campaign = $cf->getContractArtist(),
+        ];
+
+        $to = [$cf->getUser()->getEmail() => $cf->getUser()->getPreferredLocale()];
+        $toName = [$cf->getUser()->getDisplayName()];
+
+        $subject = 'Remboursement - campagne "'. $campaign->getTitle() . '" annulée sur Ticked-it';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::YB_REFUNDED_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 }

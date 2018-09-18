@@ -63,10 +63,16 @@
         {% if campaign.id is null %}
             <p>
                 Dans le cas où vous souhaitez définir un nombre minimum d'articles à vendre avant la validation du financement participatif, il vous faut définir ce seuil ainsi qu'une date à laquelle les acheteurs seront avertis de la réussite ou non du financement participatif.<br />
-                <b>Attention</b> : vou ne pourrez plus modifier ce comportement (avec seuil ou non) une fois la campagne créée.
+                <b>Attention</b> : vous ne pourrez plus modifier ce comportement (avec seuil ou non) une fois la campagne créée.
             </p>
             <div class="col-12" id="yb_no_threshold_checkbox">
                 {{ form_widget(form.noThreshold) }}
+            </div>
+            <div class="col-12 col-md-6 yb_threshold_only">
+                {{ form_row(form.threshold) }}
+            </div>
+            <div class="col-12 col-md-6 yb_threshold_only">
+                {{ form_row(form.dateEnd) }}
             </div>
         {% elseif not campaign.noThreshold %}
             <div class="col-12 col-md-6 yb_threshold_only">
@@ -117,69 +123,71 @@
 
             $chckbx.trigger("change");
 
-            var $dropzone = $("div.dropzone");
-            var mocks = [];
-            {% for photo in campaign.campaignPhotos %}
-                mocks.push({
-                    name: "{{ photo.filename }}",
-                    url: "{{ absolute_url(asset(campaign.webPath(photo))) }}",
-                    size: 12345
-                });
-            {% endfor %}
-
-            $dropzone.dropzone({
-                url: "{{ oneup_uploader_endpoint('yb_campaign') }}",
-                resizeWidth: 1000,
-                maxFiles: 5,
-                addRemoveLinks: true,
-                params: {
-                    campaign: {{ campaign.id }},
-                    code: "{{ campaign.code }}"
-                },
-                accept: function (file, done) {
-                    console.log(file);
-                    if ((file.type).toLowerCase() != "image/jpg" &&
-                        (file.type).toLowerCase() != "image/gif" &&
-                        (file.type).toLowerCase() != "image/jpeg" &&
-                        (file.type).toLowerCase() != "image/png"
-                    ) {
-                        done("Invalid file");
-                    }
-                    else {
-                        done();
-                    }
-                },
-                removedfile: function(file) {
-                    $.ajax({
-                        method: 'get',
-                        url: "{{ path('yb_members_campaign_remove_photo', {'id': campaign.id, 'code': campaign.code}) }}",
-                        data: {
-                            filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
-                        },
-                        complete: function() {
-                            file.previewElement.remove();
-                        }
+            {% if campaign.id is not null %}
+                var $dropzone = $("div.dropzone");
+                var mocks = [];
+                {% for photo in campaign.campaignPhotos %}
+                    mocks.push({
+                        name: "{{ photo.filename }}",
+                        url: "{{ absolute_url(asset(campaign.webPath(photo))) }}",
+                        size: 12345
                     });
-                },
-                init: function() {
-                    var i = 0;
-                    while(i < mocks.length) {
-                        var mock = mocks[i];
-                        mock.accepted = true;
+                {% endfor %}
 
-                        this.files.push(mock);
-                        this.createThumbnailFromUrl(mock, mock.url);
-                        this.emit('addedfile', mock);
-                        this.emit("thumbnail", mock, mock.url);
-                        this.emit('complete', mock);
-                        i++;
+                $dropzone.dropzone({
+                    url: "{{ oneup_uploader_endpoint('yb_campaign') }}",
+                    resizeWidth: 1000,
+                    maxFiles: 5,
+                    addRemoveLinks: true,
+                    params: {
+                        campaign: {{ campaign.id }},
+                        code: "{{ campaign.code }}"
+                    },
+                    accept: function (file, done) {
+                        console.log(file);
+                        if ((file.type).toLowerCase() != "image/jpg" &&
+                            (file.type).toLowerCase() != "image/gif" &&
+                            (file.type).toLowerCase() != "image/jpeg" &&
+                            (file.type).toLowerCase() != "image/png"
+                        ) {
+                            done("Invalid file");
+                        }
+                        else {
+                            done();
+                        }
+                    },
+                    removedfile: function(file) {
+                        $.ajax({
+                            method: 'get',
+                            url: "{{ path('yb_members_campaign_remove_photo', {'id': campaign.id, 'code': campaign.code}) }}",
+                            data: {
+                                filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
+                            },
+                            complete: function() {
+                                file.previewElement.remove();
+                            }
+                        });
+                    },
+                    init: function() {
+                        var i = 0;
+                        while(i < mocks.length) {
+                            var mock = mocks[i];
+                            mock.accepted = true;
+
+                            this.files.push(mock);
+                            this.createThumbnailFromUrl(mock, mock.url);
+                            this.emit('addedfile', mock);
+                            this.emit("thumbnail", mock, mock.url);
+                            this.emit('complete', mock);
+                            i++;
+                        }
+                        $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
+                    },
+                    success: function(file, serverResponse) {
+                        file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;
                     }
-                    $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
-                },
-                success: function(file, serverResponse) {
-                    file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;
-                }
-            });
+                });
+            {% endif %}
         });
     </script>
 {% endblock %}

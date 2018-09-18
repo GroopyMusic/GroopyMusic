@@ -99,7 +99,7 @@ class ContractFan
         return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
     }
 
-    public function getTresholdIncrease() {
+    public function getThresholdIncrease() {
         return array_sum(array_map(function(Purchase $purchase) {
             return $purchase->getThresholdIncrease();
         }, $this->purchases->toArray()));
