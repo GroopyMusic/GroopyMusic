@@ -66,7 +66,7 @@ class TicketingManager
             $counterPart = $purchase->getCounterpart();
 
             for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice()));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $purchase->getUnitaryPrice()));
                 $j++;
             }
             for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
@@ -329,7 +329,7 @@ class TicketingManager
                 $counterPart = $purchase->getCounterpart();
 
                 for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
-                    $cf->addTicket(new Ticket($cf, $counterPart, $j, $counterPart->getPrice()));
+                    $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice()));
                     $j++;
                 }
                 for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {

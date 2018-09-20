@@ -1,0 +1,42 @@
+{% macro campaign_row(campaign) %}
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>{{ campaign.getTitle }}</h3>
+            {% if campaign.pending %}
+                <div><i class="fas fa-exclamation"></i>
+                    Cette campagne est en attente de validation ou d'annulation de votre part.
+                    Pour le bien de vos acheteurs et de vos ventes, il est essentiel de rapidement <a href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">examiner où en est le financement participatif.</a>
+                </div>
+            {% endif %}
+            <div>Fin des ventes le {{ campaign.dateClosure|date('d/m/Y \\à H:i') }}</div>
+            {% if campaign.hasThreshold %}
+                <div>Validation le {{ campaign.dateEnd|date('d/m/Y') }}</div>
+            {% endif %}
+        </div>
+        <div class="col-12 col-md-3">
+            {{ campaign.counterPartsSold }} ticket(s) vendu(s)<br />
+            {{ campaign.contractsFanPaid|length }} commande(s)
+        </div>
+        <div class="col-12 col-md-2">
+            <a class="link-secondary" href="{{ path('yb_campaign', {'id': campaign.id}) }}"><i class="fas fa-eye text-primary"></i> Voir la page de la campagne</a>
+        </div>
+        {% if not campaign.isPassed %}
+            <div class="col-12 col-md-2">
+                <a class="link-secondary" href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}"><i class="fas fa-edit text-primary"></i> Modifier les informations</a>
+            </div>
+        {% endif %}
+        <div class="col-12 col-md-2">
+            <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}"><i class="fas fa-list text-primary"></i> Accéder à la liste de commandes</a>
+        </div>
+        {% if campaign.hasThreshold %}
+            <div class="col-12 col-md-3">
+                <a class="link-secondary" href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}"><i class="fas fa-chart-bar text-primary"></i> Financement participatif</a>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endmacro %}

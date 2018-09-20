@@ -1,0 +1,41 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li class="active"><span>Facturation</span></li>
+        </ol>
+    </section>
+
+    <section class="container">
+
+        <h2>Fonctionnement de la facturation Ticked-it</h2>
+        <p>
+            Ticked-it joue le rôle d'intermédiaire commissionnaire dans vos campagnes. Nous vous facilitons la tâche en vendant vos tickets et en émettant des décomptes mensuels. Ainsi, vous suivez le chiffre d'affaires de chacune de vos campagnes de près.
+            Voici un guide expliquant plus en détails notre mode de fonctionnement pour la facturation :
+        </p>
+
+        <ol>
+            <li>Vous créez une campagne de vente en ligne sur Ticked-it. La création de campagne est une action entièrement gratuite.</li>
+            <li>Tout au long de la campagne, les paiements sont tous recueillis et recensés par Ticked-it.</li>
+            <li>Chaque mois (et uniquement à partir de la validation en cas de campagne par financement participatif), vous recevez un décompte de la part de Ticked-it. Ce décompte reprend en détails les recettes de votre campagne.</li>
+            <li>Vous émettez ensuite une facture qui reprend la part de recettes que Ticked-it doit vous reverser (cette part étant pré-calculée dans notre décompte).</li>
+            <li>Ticked-it vous verse la part ainsi calculée, à laquelle sont retranchés les frais administratifs de Ticked-it (le montant de ces frais correspond à ce qui est écrit dans votre contrat avec Ticked-it)). Vous recevez à ce moment la facture de la commission prise par Ticked-it.</li>
+            <li>S'il s'agit d'une campagne <b>avec financement participatif</b> et que vous avez décidé de l'annuler parce que l'objectif n'est pas atteint à la date de validation, alors Ticked-it remboursera intégralement tous les acheteurs, sans aucun frais pour vous ni pour eux. Dans ce cas, vous ne recevrez pas de décompte et ne devrez émettre aucune facture.</li>
+        </ol>
+    </section>
+
+    <section class="container">
+        <h2>Vos infos de paiement</h2>
+        <p class="text-muted">
+            Introduisez votre numéro de compte ci-dessous pour nous permettre de vous verser, en cas de réussite de campagne, le fruit de celle-ci.
+        </p>
+
+        {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+        {{ form(form) }}
+
+    </section>
+
+{% endblock body %}

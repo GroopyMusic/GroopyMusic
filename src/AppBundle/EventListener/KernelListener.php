@@ -3,6 +3,7 @@
 namespace AppBundle\EventListener;
 
 use AppBundle\Controller\ConditionsController;
+use AppBundle\Controller\YBMembersController;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Controller\SecurityController;
@@ -21,15 +22,17 @@ class KernelListener implements EventSubscriberInterface
     private $em;
     private $conditionsController;
     private $securityController;
+    private $YBMembersController;
     private $session_name;
     private $remember_me_name;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, $session_name, $remember_me_name)
+    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, YBMembersController $YBMembersController, $session_name, $remember_me_name)
     {
         $this->tokenStorage = $tokenStorage;
         $this->em = $em;
         $this->conditionsController = $conditionsController;
         $this->securityController = $securityController;
+        $this->YBMembersController = $YBMembersController;
         $this->session_name = $session_name;
         $this->remember_me_name = $remember_me_name;
     }
@@ -52,11 +55,10 @@ class KernelListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $session = $request->getSession();
         $session->set('requested_url', $request->getRequestUri());
-
-        $host = $request->getHttpHost();
+        $callable = $event->getController();
 
         $yb = false;
-        if(($host == 'localhost' && strpos($request->getRequestUri(), 'yb') !== false) || (strpos(strtoupper($host), 'TICKED-IT') !== false)) {
+        if(is_array($callable) && $callable[0] == $this->YBMembersController) {
             $this->em->getRepository('AppBundle:User')->yb = 1;
             $yb = true;
         }
@@ -85,7 +87,6 @@ class KernelListener implements EventSubscriberInterface
 
         if(!$yb) {
             $controller = $this->conditionsController;
-            $callable = $event->getController();
 
             if(is_array($callable) && $callable[0] == $controller)
                 return;

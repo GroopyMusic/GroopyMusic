@@ -298,6 +298,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     private $yb_campaigns;
 
     /**
+     * @ORM\Column(name="bank_account", type="string", length=50, nullable=true)
+     */
+    private $bank_account;
+
+    /**
      * @param mixed $salutation
      */
     public function setSalutation($salutation)
@@ -1069,5 +1074,29 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getYbCampaigns()
     {
         return $this->yb_campaigns;
+    }
+
+    /**
+     * Set bankAccount
+     *
+     * @param string $bankAccount
+     *
+     * @return User
+     */
+    public function setBankAccount($bankAccount)
+    {
+        $this->bank_account = $bankAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get bankAccount
+     *
+     * @return string
+     */
+    public function getBankAccount()
+    {
+        return $this->bank_account;
     }
 }

@@ -1,41 +1,28 @@
 {% extends "@App/YB/Members/base.html.twig" %}
 
-{% macro campaign_row(campaign) %}
-
-    <div class="row mt-4">
-        <div class="col-12">
-            <h3>{{ campaign.getTitle }}</h3>
-        </div>
-        <div class="col-12 col-md-3">
-            {{ campaign.soldCounterparts }} articles vendus
-        </div>
-        <div class="col-12 col-md-2">
-            <a href="{{ path('yb_campaign', {'id': campaign.id}) }}"><i class="fas fa-eye text-secondary"></i> Voir la page de la campagne</a>
-        </div>
-
-        <div class="col-12 col-md-2">
-            <a href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}"><i class="fas fa-edit text-secondary"></i> Modifier les informations</a>
-        </div>
-        <div class="col-12 col-md-2">
-            <a href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}"><i class="fas fa-list text-secondary"></i> Accéder à la liste de commandes</a>
-        </div>
-        {% if not campaign.hasNoThreshold %}
-            <div class="col-12 col-md-3">
-                <a href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}"><i class="fas fa-chart-bar text-secondary"></i> Financement participatif</a>
-            </div>
-        {% endif %}
-    </div>
-
-{% endmacro %}
-
 {% block body %}
 
-    {% import _self as macros %}
+    {% import '@App/YB/Macros/campaigns.html.twig' as macros %}
 
     <section class="container py-5">
-        <p>
-            <a href="{{ path('yb_members_campaign_new') }}"><i class="far fa-plus-square"></i> Nouvelle campagne</a>
-        </p>
+        <h2>Tableau de bord</h2>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{{ path('yb_members_campaign_new') }}"><i class="far fa-plus-square"></i> Nouvelle campagne</a>
+                <div class="text-muted">Créez une campagne de vente de tickets pour votre événement, avec de nombreuses options de configuration.</div>
+            </li>
+            <li class="list-group-item">
+                <a href="{{ path('yb_members_payment_options') }}"><i class="far fa-credit-card"></i> Facturation</a>
+                <div class="text-muted">Trouvez les infos concernant notre mode de facturation et configurez vos infos de paiement.</div>
+                {% if app.user.bankAccount is null %}
+                    <div><i class="fas fa-exclamation"></i> Vous n'avez pas encore renseigné vos infos de paiement. Nous vous conseillons de nous donner ces informations dès que possible.</div>
+                {% endif %}
+            </li>
+            <li class="list-group-item">
+                {% if passed_campaigns|length > 0 %}<a href="{{ path('yb_members_passed_campaigns') }}">{% endif %}<i class="far fa-clock"></i> Campagnes passées{% if passed_campaigns|length > 0 %}</a>{% endif %}
+                <div class="text-muted">Retrouvez les infos des campagnes que vous avez lancées par le passé et qui sont terminées.</div>
+            </li>
+        </ul>
     </section>
 
     {% if current_campaigns is not empty %}
@@ -46,14 +33,4 @@
             {% endfor %}
         </section>
     {% endif %}
-
-    {% if passed_campaigns is not empty %}
-        <section class="container pb-5">
-            <h2>Campagnes passées</h2>
-            {% for campaign in passed_campaigns %}
-                {{ macros.campaign_row(campaign) }}
-            {% endfor %}
-        </section>
-    {% endif %}
-
-{% endblock  %}
+{% endblock %}

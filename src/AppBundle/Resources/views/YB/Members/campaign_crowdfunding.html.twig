@@ -17,15 +17,15 @@
             </p>
         {% else %}
             <div class="progress">
-                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
+                <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100"><span>{{ campaign.percentObjective }}%</span></div>
             </div>
             <p class="mt-2 text-center"><i class="fas fa-info-circle"></i>
                 {% if campaign.refunded %}
-                    Cette campagne est déjà annulée et remboursée.
+                    Cette campagne est annulée et remboursée.
                 {% elseif campaign.failed %}
                     Cette campagne est marquée comme étant annulée.
                 {% elseif campaign.successful %}
-                    Cette campagne a déjà été validée le {{ campaign.dateSuccess|date('d/m/Y') }}. Les tickets ont été envoyés aux acheteurs et les nouveaux acheteurs recevront les leurs directement lors du passage de commande.
+                    Cette campagne a été validée le {{ campaign.dateSuccess|date('d/m/Y') }}. Les tickets ont été envoyés aux acheteurs et les nouveaux acheteurs recevront les leurs directement lors du passage de commande.
                 {% elseif campaign.pending %}
                     La campagne est en attente de confirmation.
                 {% elseif campaign.soldout %}

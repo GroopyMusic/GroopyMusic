@@ -6,6 +6,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
 use AppBundle\Services\PaymentManager;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -89,10 +91,15 @@ class YBMembersController extends Controller
     }
 
     /**
-     * @Route("/campaign/{id}/edit", name="yb_members_campaign_edit")
+     * @Route("/campaign/{id}/update", name="yb_members_campaign_edit")
      */
     public function editCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
         $this->checkIfAuthorized($user, $campaign);
+
+        if($campaign->isPassed()) {
+            $this->addFlash('yb_error', 'Cette campagne est passée. Il est donc impossible de la modifier.');
+            return $this->redirectToRoute('yb_members_passed_campaigns');
+        }
 
         $form = $this->createForm(YBContractArtistType::class, $campaign);
 
@@ -103,7 +110,7 @@ class YBMembersController extends Controller
             $em->flush();
 
             $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
-            return $this->redirectToRoute('yb_members_campaign_edit', ['id' => $campaign->getId()]);
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
             'form' => $form->createView(),
@@ -160,6 +167,39 @@ class YBMembersController extends Controller
         return $this->render('@App/YB/Members/campaign_orders.html.twig', [
             'cfs' => $cfs,
             'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * @Route("/facturation", name="yb_members_payment_options")
+     */
+    public function paymentOptionsAction(UserInterface $user = null, Request $request) {
+        $this->checkIfAuthorized($user, null);
+
+        $form = $this->createForm(UserBankAccountType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->addFlash('yb_notice', "Vos données de facturation ont bien été mises à jour.");
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/YB/Members/payment_options.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/passed-campaigns", name="yb_members_passed_campaigns")
+     */
+    public function passedCampaignsAction(EntityManagerInterface $em, UserInterface $user = null)
+    {
+        $this->checkIfAuthorized($user);
+
+        $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedYBCampaigns($user);
+
+        return $this->render('@App/YB/Members/passed_campaigns.html.twig', [
+            'campaigns' => $passed_campaigns,
         ]);
     }
 
@@ -276,7 +316,6 @@ class YBMembersController extends Controller
                 $phpExcelObject->getActiveSheet()->setTitle('Tickets');
             }
         }
-
 
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $phpExcelObject->setActiveSheetIndex(0);

@@ -155,6 +155,10 @@ class BaseContractArtist implements TranslatableInterface
         return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
     }
 
+    public function hasThreshold() {
+        return !$this->no_threshold;
+    }
+
     public function addAmount($amount) {
         $this->collected_amount += $amount;
     }

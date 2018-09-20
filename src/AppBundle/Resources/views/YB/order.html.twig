@@ -23,7 +23,7 @@
     <div class="container py-5">
         <h2>Votre commande</h2>
 
-        <p>
+        <p class="text-right">
             Numéro de commande: <span class="text-muted">{{ cart.barcodeText }}</span>
             <br />Date de la commande : {{ cart.date|fancy_date }}
             <br />Etat de la commande : {{ cart.state }}
@@ -31,9 +31,13 @@
 
         {% for contract in cart.contracts %}
             <h3>{{ contract.contractArtist.getTitle }}</h3>
+            <p>
+                {% if contract.contractArtist.dateEvent is not null %}<i class="far fa-calendar-alt"></i> {{ contract.contractArtist.dateEvent|fancy_date }}<br />{% endif %}
+                <a href="{{ path('yb_campaign', {'id': contract.contractArtist.id}) }}" target="_blank"><i class="fas fa-external-link-alt"></i> Voir les infos de cet événement</a>
+            </p>
             <ul class="list-group">
                 {% for purchase in contract.purchases %}
-                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} €</span></li>
+                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} € {% if purchase.freePriceValue is not null %}(prix unitaire de {{ purchase.freePriceValue }} € choisi librement){% endif %}</span></li>
                 {% endfor %}
             </ul>
             {% if not contract.refunded and contract.counterpartsSent %}
@@ -48,7 +52,7 @@
         <p>
             Cette page constitue une confirmation de commande mais n'est pas un droit d'entrée.
             Il vous faut présenter vos tickets sur un support lisible afin d'accéder aux événements auxquels ils donnent accès.
-            {% if cart.contracts|length == 1 and cart.first.contractArtist.isEvent and cart.first.counterpartsSent %}Ces tickets sont disponibles sur cette page et vous ont été envoyés par e-mail.{% endif %}
+            {% if cart.contracts|length == 1 and cart.first.contractArtist.isEvent and cart.first.counterPartsSent %}Ces tickets sont disponibles sur cette page et vous ont été envoyés par e-mail.{% endif %}
         </p>
     </div>
 {% endblock %}

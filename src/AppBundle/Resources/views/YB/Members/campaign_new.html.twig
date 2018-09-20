@@ -2,6 +2,7 @@
 
 {% block body %}
 
+    {{ app.user.id }}
     <section class="container px-0 mt-3">
         <ol class="breadcrumb-arrow">
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
@@ -39,7 +40,16 @@
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Images </h2>
         <div class="row">
-            <div class="col-12 col-md-6">{{ form_row(form.photo) }}</div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.photo) }}
+                <div class="text-text-muted font-italic pb-2">
+                    Cette photo sera utilisée comme bannière de l'événement. Il est essentiel qu'elle soit de bonne qualité.
+                    Sachez aussi que le titre de l'événement sera écrit par-dessus, en blanc.
+                </div>
+                {{ form_errors(form.photo) }}
+                {{ form_widget(form.photo) }}
+            </div>
+
             {% if campaign.id is not null and campaign.photo is not null %}
                 <div class="col-12 col-md-6"><img class="img-fluid" src="{{ absolute_url(asset(campaign.webPath(campaign.photo))) }}" /></div>
             {% endif %}
@@ -47,12 +57,15 @@
         <div class="row py-5">
             <div class="col-12">
                 <div class="form-row">
-                <label>Autres photos</label>
-                    {% if campaign.id is not null %}
-                        <div class="dropzone w-100" id="#campaign_edit_photos"></div>
-                    {% else %}
-                        <p>Une fois la campagne créée, vous pourrez ajouter d'autres images pour l'illustrer.</p>
-                    {% endif %}
+                    <div><label>Autres photos</label></div>
+                    <div class="text-muted font-italic pb-2">
+                        Les photos que vous ajoutez ici seront affichées sous la description de l'événement, les unes à la suite des autres. Nous vous conseillons de limiter le nombre de photos afin que la page ne soit pas trop longue pour vos visiteurs.
+                    </div>
+                        {% if campaign.id is not null %}
+                            <div class="dropzone w-100" id="#campaign_edit_photos"></div>
+                        {% else %}
+                            <p>Une fois la campagne créée, vous pourrez ajouter d'autres images pour l'illustrer.</p>
+                        {% endif %}
                 </div>
             </div>
         </div>
@@ -60,38 +73,58 @@
 
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Financement participatif</h2>
-        {% if campaign.id is null %}
-            <p>
-                Dans le cas où vous souhaitez définir un nombre minimum d'articles à vendre avant la validation du financement participatif, il vous faut définir ce seuil ainsi qu'une date à laquelle les acheteurs seront avertis de la réussite ou non du financement participatif.<br />
-                <b>Attention</b> : vous ne pourrez plus modifier ce comportement (avec seuil ou non) une fois la campagne créée.
-            </p>
-            <div class="col-12" id="yb_no_threshold_checkbox">
-                {{ form_widget(form.noThreshold) }}
-            </div>
-            <div class="col-12 col-md-6 yb_threshold_only">
-                {{ form_row(form.threshold) }}
-            </div>
-            <div class="col-12 col-md-6 yb_threshold_only">
-                {{ form_row(form.dateEnd) }}
-            </div>
-        {% elseif not campaign.noThreshold %}
-            <div class="col-12 col-md-6 yb_threshold_only">
-                {{ form_row(form.threshold) }}
-            </div>
-            <div class="col-12 col-md-6 yb_threshold_only">
-                {{ form_row(form.dateEnd) }}
-            </div>
-        {% else %}
-            <p>Pas applicable à cette campagne.</p>
-            {% do form.threshold.setRendered %}
-            {% do form.dateEnd.setRendered %}
-        {% endif %}
-        {% do form.noThreshold.setRendered %}
+        <div class="text-muted font-italic pb-2">
+            Le financement participatif, s'il est activé, vous permet de fixer un seuil qui correspond au nombre minimum de tickets à vendre pour valider un événement.
+            Cela vous permet, par exemple, de tester l'intérêt de votre public en n'organisant votre représentation que si au moins 20 personnes ont acheté leur ticket au bout d'une période donnée.
+        </div>
+            {% if campaign.id is null %}
+                <p>
+                    <b>Attention</b> : vous ne pourrez plus modifier ce comportement (avec seuil ou non) une fois la campagne créée.
+                </p>
+                <div class="row">
+                    <div class="col-12" id="yb_no_threshold_checkbox">
+                        {{ form_widget(form.noThreshold) }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if campaign.id is null or campaign.hasThreshold %}
+                <div class="row">
+                    <div class="col-12 col-md-6 yb_threshold_only">
+                        {{ form_label(form.threshold) }}
+                        <div class="text-muted font-italic pb-2">
+                            Détermine le seuil au-delà duquel le financement participatif sera un succès.
+                        </div>
+
+                        {{ form_errors(form.threshold) }}
+                        {{ form_widget(form.threshold) }}
+                    </div>
+                    <div class="col-12 col-md-6 yb_threshold_only">
+                        {{ form_label(form.dateEnd) }}
+                        <div class="text-muted font-italic pb-2">
+                            Détermine la date à laquelle vous déciderez de valider ou d'annuler l'évé.
+                            Dans le cas où l'objectif (le seuil) est atteint à cette date, vous ne pourrez plus annuler l'événement mais devrez acter sa validation.
+                        </div>
+
+                        {{ form_errors(form.dateEnd) }}
+                        {{ form_widget(form.dateEnd) }}
+                    </div>
+                </div>
+            {% else %}
+                <p>Pas applicable à cette campagne.</p>
+                {% do form.threshold.setRendered %}
+                {% do form.dateEnd.setRendered %}
+            {% endif %}
+            {% do form.noThreshold.setRendered %}
+        </div>
     </section>
 
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Tickets</h2>
-        {{ form_row(form.globalSoldout) }}
+        {{ form_label(form.globalSoldout) }}
+        <div class="text-muted font-italic pb-2">Nombre maximum de tickets pouvant être vendus, tous tickets confondus.</div>
+        {{ form_errors(form.globalSoldout) }}
+        {{ form_widget(form.globalSoldout) }}
+
         {{ form_widget(form.counterParts) }}
     </section>
 
@@ -106,13 +139,11 @@
 {% endblock  %}
 
 {% block additional_javascripts %}
-    {{ parent() }}
     <script type="text/javascript">
-
         $(function() {
             yb_collection({
-                add:'<a class="btn btn-outline-secondary" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un ticket</a>',
-                remove:'<div class="w-100 text-right"><a class="btn btn-danger" href="#">Supprimer</a></div>'
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un ticket</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer</a>'
             });
 
             var $chckbx = $('#yb_no_threshold_checkbox input[type="checkbox"]');
@@ -122,6 +153,12 @@
             });
 
             $chckbx.trigger("change");
+
+            $('.free-price-checkbox').on('change', function() {
+                $(this).closest('.counterpart-row').find('.free-price-minimum').toggle(this.checked);
+                $(this).closest('.counterpart-row').find('.counter-part-price').toggle(!this.checked);
+            });
+            $('.free-price-checkbox').trigger('change');
 
             {% if campaign.id is not null %}
                 var $dropzone = $("div.dropzone");

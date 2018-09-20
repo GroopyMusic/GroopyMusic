@@ -1,14 +1,19 @@
 .counterpart-row {
-  border: 2px solid rgba(134, 142, 150, 0.27);
-  @extend .my-3, .p-3;
+  @extend .my-3, .p-3, .pb-5;
 }
 
 .campaign-edit-section {
   @extend .border,
           .rounded;
-  background-color: rgba(233, 236, 239, 0.7);
+  background-color: rgba(233, 236, 239, 0.62);
 }
 
 .collection-actions {
   @extend .w-100;
+  @extend .position-relative;
+
+  .collection-remove {
+    @extend .position-absolute;
+    right:0;
+  }
 }

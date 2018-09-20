@@ -5,6 +5,7 @@ $theme-colors: (
 );
 $primary: $main-orange !default;
 $menu-color: #eadf0c;
+$link-secondary-color: #007ebb;
 
 $white: #fff !default;
 $gray-100: #f8f9fa !default;
@@ -64,4 +65,8 @@ h2 {
   -o-hyphens: auto;
   hyphens: auto;
   overflow-wrap: break-word;
+}
+
+.link-secondary {
+  color: $link-secondary-color !important;
 }

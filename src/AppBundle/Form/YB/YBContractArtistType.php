@@ -49,7 +49,7 @@ class YBContractArtistType extends AbstractType
             ))
             ->add('dateEvent', DateTimeType::class, array(
                 'required' => false,
-                'label' => "Date de l'événement (si applicable)"
+                'label' => "Date de l'événement"
             ))
             ->add('translations', TranslationsType::class, [
                 'locales' => ['fr'],
@@ -119,8 +119,10 @@ class YBContractArtistType extends AbstractType
             if($campaign->getThreshold() <= 0) {
                 $context->addViolation('Puisque la campagne a un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0.');
             }
-            if($campaign->getDateEnd() == null || $campaign->getDateEnd() < ($campaign->getDate()) || $campaign->getDateEnd() > $campaign->getDateClosure()) {
-                $context->addViolation('Puisque la campagne a un seuil de validation, il faut préciser une date de validation valide, antérieure à la date de fin des ventes.');
+            $today_90 = $campaign->getDate();
+            $today_90->modify('+90d');
+            if($campaign->getDateEnd() == null || $campaign->getDateEnd() < ($campaign->getDate()) || $campaign->getDateEnd() > $campaign->getDateClosure() || $campaign->getDateEnd() > $today_90) {
+                $context->addViolation('Puisque la campagne a un seuil de validation, il faut préciser une date de validation valide, antérieure à la date de fin des ventes et maximum 90 jours après la date de création de la campagne.');
             }
         }
 

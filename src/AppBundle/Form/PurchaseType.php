@@ -31,16 +31,9 @@ class PurchaseType extends AbstractType
             'label' => false,
         ));
 
-        if($contract_artist instanceof ContractArtistSales || $contract_artist instanceof ContractArtistPot) {
-            $builder->add('free_price_value', NumberType::class, array(
-                'attr' => [
-                    'class' => 'quantity',
-                ],
-                'label' => false,
-            ));
-        }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($contract_artist) {
             $purchase = $event->getData();
             if(!empty($purchase->getCounterPart()->getPotentialArtists())) {
                 $event->getForm()->add('artists', Select2EntityType::class, array(
@@ -51,6 +44,14 @@ class PurchaseType extends AbstractType
                     'remote_params' => ['counterpart' => $purchase->getCounterPart()->getId()],
                     'class' => 'AppBundle\Entity\Artist',
                     'primary_key' => 'id',
+                ));
+            }
+            if($contract_artist instanceof ContractArtistSales || $contract_artist instanceof ContractArtistPot || $purchase->getCounterPart()->getFreePrice()) {
+                $event->getForm()->add('free_price_value', NumberType::class, array(
+                    'attr' => [
+                        'class' => 'quantity',
+                    ],
+                    'label' => false,
                 ));
             }
         });

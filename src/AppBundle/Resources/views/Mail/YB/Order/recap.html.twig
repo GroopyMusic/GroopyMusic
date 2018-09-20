@@ -20,7 +20,7 @@
 
                 <ul>
                     {% for purchase in contract.purchases %}
-                        <li>{{ purchase }} - {{ purchase.amount }} €</li>
+                        <li>{{ purchase }} - {{ purchase.amount }} € {% if purchase.freePriceValue is not null %}(prix unitaire de {{ purchase.freePriceValue }} € choisi librement){% endif %}</li>
                     {% endfor %}
                 </ul>
             {% endfor %}
