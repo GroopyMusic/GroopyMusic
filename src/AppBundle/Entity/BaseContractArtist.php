@@ -78,10 +78,6 @@ class BaseContractArtist implements TranslatableInterface
         return self::PHOTOS_DIR . $photo->getFilename();
     }
 
-    public static function getWebPath(Photo $photo) {
-        return self::PHOTOS_DIR . $photo->getFilename();
-    }
-
     public function isInTestPeriod() {
         return $this->test_period;
     }
