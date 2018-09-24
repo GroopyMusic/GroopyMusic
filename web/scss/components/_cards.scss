@@ -139,14 +139,16 @@
 
   .tag {
     position: relative;
+    top: 20px;
     z-index: 1000;
     color: #fff;
     padding: 5px 10px;
+    margin-bottom: 15px;
     font-size: 1rem;
     border-radius: 2px;
     display: inline-block;
     text-transform: uppercase;
-    background-color: #34b16c;
+    background-color: #1b00ff;
     &:hover {
       text-decoration: none;
     }

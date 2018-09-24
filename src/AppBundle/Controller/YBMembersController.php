@@ -69,7 +69,6 @@ class YBMembersController extends Controller
      */
     public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em) {
         $this->checkIfAuthorized($user);
-
         $campaign = new YBContractArtist();
         $campaign->addHandler($user);
         $form = $this->createForm(YBContractArtistType::class, $campaign, ['creation' => true]);

@@ -40,11 +40,11 @@
                     </div>
                 {% endif %}
 
-                {{ campaign.getDescription|nl2br }}
+                {{ campaign.getDescription|raw|nl2br }}
 
                 {% if campaign.campaignPhotos is not empty %}
                     {% for photo in campaign.campaignPhotos %}
-                        <img class="img-fluid d-block py-3" src="{{ yb_asset(campaign.webPath(photo)) }}" />
+                        <img class="img-fluid d-block py-3 mx-auto" src="{{ yb_asset(campaign.webPath(photo)) }}" />
                     {% endfor %}
                 {% endif %}
             </div>

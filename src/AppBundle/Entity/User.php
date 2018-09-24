@@ -57,7 +57,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->setAddress(null);
         $this->setEmail($code);
         $this->setEmailCanonical($code);
-        $this->setEnabled(false);
+        $this->setEnabled(true); // Enabled by default for now
         $this->setLastLogin(null);
         $this->setConfirmationToken(null);
         $this->setPasswordRequestedAt(null);

@@ -21,6 +21,7 @@ class BaseContractArtist implements TranslatableInterface
     const VOTES_TO_REFUND = 2;
     const NB_PROMO_DAYS = 7;
     const NB_TEST_PERIOD_DAYS = 20;
+    const PHOTOS_DIR = 'images/festivals/';
 
     public function __call($method, $arguments)
     {
@@ -71,6 +72,14 @@ class BaseContractArtist implements TranslatableInterface
         $this->threshold = 0;
         $this->counterparts_sold = 0;
         $this->threshold = 0;
+    }
+
+    public static function getWebPath(Photo $photo) {
+        return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
+    public static function getWebPath(Photo $photo) {
+        return self::PHOTOS_DIR . $photo->getFilename();
     }
 
     public function isInTestPeriod() {
@@ -279,9 +288,15 @@ class BaseContractArtist implements TranslatableInterface
         $this->addCounterPartsSold($cf->getThresholdIncrease());
         foreach($cf->getPurchases() as $purchase) {
             /** @var Purchase $purchase */
-            if($purchase->getCounterpart()->getFestivaldays() != null) {
-                foreach($purchase->getCounterpart()->getFestivaldays() as $festivalday) {
-                    $festivalday->updateTicketsSold($purchase);
+            $festivaldays = $purchase->getCounterpart()->getFestivaldays();
+            if($festivaldays != null) {
+                if(count($festivaldays) > 1) {
+                    foreach ($festivaldays as $festivalday) {
+                        $festivalday->updateHalfTicketsSold($purchase);
+                    }
+                }
+                else {
+                    $festivaldays[0]->updateTicketsSold($purchase);
                 }
             }
         }
