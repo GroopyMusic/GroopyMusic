@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\YB;
 
 use AppBundle\Entity\BaseContractArtist;
+use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Photo;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,8 +21,16 @@ class YBContractArtist extends BaseContractArtist
     const STATE_SOLD_OUT = 'state.soldout';
     const STATE_ONGOING = 'state.ongoing';
     const STATE_PASSED = 'state.passed';
+    const STATE_SUCCESS_PENDING = 'state.success.pending';
+    const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
+    const STATE_PENDING = 'state.pending';
+    const STATE_SOLD_OUT_PENDING = 'state.soldout.pending';
 
-    const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT];
+    const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
+    const PENDING_STATES = [self::STATE_SUCCESS_PENDING, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
+    const SOLDOUT_STATES = [self::STATE_SOLD_OUT, self::STATE_SOLD_OUT];
+    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED];
+    const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
 
     const PHOTOS_DIR = 'yb/images/campaigns/';
 
@@ -33,6 +42,9 @@ class YBContractArtist extends BaseContractArtist
     {
         parent::__construct();
         $this->tickets_sent = false;
+        $this->date_closure = new \DateTime();
+        $this->sold_counterparts = 0;
+        $this->code = uniqid();
     }
 
     public function isEvent() {
@@ -47,8 +59,33 @@ class YBContractArtist extends BaseContractArtist
         return !$this->isUncrowdable();
     }
 
-    public function getState() {
-        if(isset($this->state)) {
+    public function isPending() {
+        return in_array($this->getState(), self::PENDING_STATES);
+    }
+
+    public function isSoldOut() {
+        return in_array($this->getState(), self::SOLDOUT_STATES);
+    }
+
+    public function isPassed() {
+        return in_array($this->getState(), self::PASSED_STATES);
+    }
+
+    public function isOngoing() {
+        return in_array($this->getState(), self::ONGOING_STATES);
+    }
+
+    public function isPendingSuccessful() {
+        return $this->getState() == self::STATE_SUCCESS_PENDING;
+    }
+
+    public function getPercentObjective() {
+        return min(floor(($this->getCounterpartsSold() / $this->getThreshold()) * 100), 100);
+    }
+
+    public function getState()
+    {
+        if ($this->state != null) {
             return $this->state;
         }
 
@@ -57,28 +94,46 @@ class YBContractArtist extends BaseContractArtist
         $max_cp = $this->getMaxCounterParts();
 
         // Failure & refunded
-        if($this->refunded)
-            return self::STATE_REFUNDED;
+        if ($this->refunded)
+            return $this->state = self::STATE_REFUNDED;
 
         // Marked as failure
-        if($this->failed)
-            return self::STATE_FAILED;
+        if ($this->failed)
+            return $this->state = self::STATE_FAILED;
 
-        if($this->getNbCounterPartsPaid() >= $max_cp) {
-            return self::STATE_SOLD_OUT;
-        }
-
-        if($this->no_threshold) {
-            if($this->date_closure >= $today) {
-                return self::STATE_ONGOING;
+        if ($this->no_threshold) {
+            if ($this->getNbCounterPartsPaid() >= $max_cp) {
+                return $this->state = self::STATE_SOLD_OUT;
             }
-            else {
-                return self::STATE_PASSED;
-            }
-        }
 
-        else {
-            // TODO !!!!
+            if ($this->date_closure >= $today) {
+                return $this->state = self::STATE_ONGOING;
+            } else {
+                return $this->state = self::STATE_PASSED;
+            }
+        } else {
+            if ($this->date_closure >= $today) {
+                if ($this->sold_counterparts >= $this->threshold && !$this->successful) {
+                    if ($this->getNbCounterPartsPaid() >= $max_cp) {
+                        return $this->state = self::STATE_SOLD_OUT_PENDING;
+                    }
+
+                    return $this->state = self::STATE_SUCCESS_PENDING;
+                }
+                if ($this->dateEnd >= $today) {
+                    return $this->state = self::STATE_ONGOING;
+                } else {
+                    if ($this->successful) {
+                        return $this->state = self::STATE_SUCCESS_ONGOING;
+                    }
+                    // if($this->getNbCounterPartsPaid() >= $max_cp) {
+                    //     return $this->state = self::STATE_SOLD_OUT_PENDING;
+                    // }
+                    return $this->state = self::STATE_PENDING;
+                }
+            } else {
+                return $this->state = self::STATE_PASSED;
+            }
         }
     }
 
@@ -97,7 +152,7 @@ class YBContractArtist extends BaseContractArtist
 
     /**
      * @var integer
-     * @ORM\Column(name="sold_counterparts", type="integer")
+     * @ORM\Column(name="sold_counterparts", type="float")
      */
     private $sold_counterparts;
 
@@ -118,6 +173,17 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="date_event", type="datetime", nullable=true)
      */
     private $date_event;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="yb_campaigns")
+     */
+    private $handlers;
+
+    /**
+     * @var string
+     * @ORM\Column(name="code", type="string", length=255)
+     */
+    private $code;
 
     /**
      * Set ticketsSent
@@ -261,5 +327,63 @@ class YBContractArtist extends BaseContractArtist
     public function getCounterpartsSold()
     {
         return $this->counterparts_sold;
+    }
+
+    /**
+     * Add handler
+     *
+     * @param \AppBundle\Entity\User $handler
+     *
+     * @return YBContractArtist
+     */
+    public function addHandler(\AppBundle\Entity\User $handler)
+    {
+        $this->handlers[] = $handler;
+
+        return $this;
+    }
+
+    /**
+     * Remove handler
+     *
+     * @param \AppBundle\Entity\User $handler
+     */
+    public function removeHandler(\AppBundle\Entity\User $handler)
+    {
+        $this->handlers->removeElement($handler);
+    }
+
+    /**
+     * Get handlers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHandlers()
+    {
+        return $this->handlers;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return YBContractArtist
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 }

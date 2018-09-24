@@ -8,6 +8,7 @@
     {{ email_content('yb.order.tickets', {
         '%name%': cf.physicalPerson.displayName,
         '%event%': cf.contractArtist.getTitle,
+        '%intro%': newly_successful ? 'Félicitations ! La campagne "' ~ cf.contractArtist.getTitle ~ '" à laquelle vous avez contribué a été validée par son organisateur.' : '',
     })|raw }}
 {% endblock %}
 

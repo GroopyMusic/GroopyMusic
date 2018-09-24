@@ -1,0 +1,74 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+            <li class="active"><span>Liste des commandes</span></li>
+        </ol>
+    </section>
+
+    <section class="container">
+        <ul class="nav nav-pills" id="orders-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="per-order-tab" data-toggle="pill" href="#per-order" role="tab" aria-controls="per-order" aria-selected="true">Par commande</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="per-ticket-tab" data-toggle="pill" href="#per-ticket" role="tab" aria-controls="per-ticket" aria-selected="false">Par ticket</a>
+            </li>
+            {% if cfs|length > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('yb_members_campaign_excel', {'id':campaign.id}) }}"  aria-selected="false"><i class="fas fa-arrow-alt-circle-down"></i> Télécharger tout en Excel</a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="tab-content" id="orders-tabs-content">
+            <div class="tab-pane fade show active" id="per-order" role="tabpanel" aria-labelledby="per-order-tab">
+                {% for cf in cfs %}
+                    <div class="cf-row border my-3 px-2">
+                        <div class="row">
+                            <div class="col-3 col-md-2 text-primary">#{{ cf.id }}</div>
+                            <div class="col-9 col-md-4">{{ cf.date|date('d/m/Y H:i') }}</div>
+                            <div class="col-4 col-md-2">{{ cf.amount }} €</div>
+                            <div class="col-8 col-md-4">{{ cf.displayName }}</div>
+                        </div>
+                        {#
+                        <div>
+                            <a data-toggle="collapse" href="#cf-details-{{ loop.index }}" role="button" aria-expanded="false" aria-controls="cf-details-{{ loop.index }}">
+                                <i class="fas fa-caret-square-down"></i> Voir plus
+                            </a>
+                        </div>
+                        #}
+                        <div id="cf-details-{{ loop.index }}">
+                            {% for purchase in cf.purchases %}
+                                <div class="pt-2">{{ purchase.displayWithAmount }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    Il n'y a eu aucune commande pour cet événement pour l'instant.
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="per-ticket" role="tabpanel" aria-labelledby="per-ticket-tab">
+                {% if not campaign.ticketsSent %}
+                    <p>Les tickets pour cette campagne n'ont pas encore été générés. Validez la campagne pour qu'ils soient automatiquement envoyés.</p>
+                {% else %}
+                    {% for cf in cfs %}
+                        <div class="cf-row border my-3 px-2">
+                        {% for ticket in cf.tickets %}
+                            <div class="row py-1">
+                                <div class="col-12 col-md-4 word-break-all text-primary">{{ ticket.barCodeText }}</div>
+                                <div class="col-12 col-md-4 word-break-all">{{ ticket.counterPart }} ({{ ticket.price }} €)</div>
+                                <div class="col-12 col-md-4 word-break-all">{{ ticket.name }}</div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+    </section>
+{% endblock  %}

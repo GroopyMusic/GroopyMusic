@@ -66,7 +66,7 @@ class TicketingManager
             $counterPart = $purchase->getCounterpart();
 
             for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
-                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $counterPart->getPrice()));
+                $contractFan->addTicket(new Ticket($contractFan, $counterPart, $j, $purchase->getUnitaryPrice()));
                 $j++;
             }
             for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
@@ -312,7 +312,7 @@ class TicketingManager
     }
 
     // YB
-    public function generateAndSendYBTickets(ContractFan $cf) {
+    public function generateAndSendYBTickets(ContractFan $cf, $newly_successful = false) {
 
         if (!$cf->getcounterpartsSent()) {
             $cf->generateBarCode();
@@ -329,7 +329,7 @@ class TicketingManager
                 $counterPart = $purchase->getCounterpart();
 
                 for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
-                    $cf->addTicket(new Ticket($cf, $counterPart, $j, $counterPart->getPrice()));
+                    $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice()));
                     $j++;
                 }
                 for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
@@ -340,7 +340,7 @@ class TicketingManager
 
             try {
                 $this->writer->writeYBTickets($cf->getTicketsPath(), $cf->getTickets(), []);
-                $this->mailDispatcher->sendYBTickets($cf);
+                $this->mailDispatcher->sendYBTickets($cf, $newly_successful);
                 $this->em->persist($cf);
                 $cf->setcounterpartsSent(true);
             } catch (\Exception $e) {

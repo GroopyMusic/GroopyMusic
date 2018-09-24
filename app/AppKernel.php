@@ -50,6 +50,7 @@ class AppKernel extends Kernel
             new Http\HttplugBundle\HttplugBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+            new Liuggio\ExcelBundle\LiuggioExcelBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

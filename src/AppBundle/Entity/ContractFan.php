@@ -99,7 +99,7 @@ class ContractFan
         return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
     }
 
-    public function getTresholdIncrease() {
+    public function getThresholdIncrease() {
         return array_sum(array_map(function(Purchase $purchase) {
             return $purchase->getThresholdIncrease();
         }, $this->purchases->toArray()));
@@ -123,6 +123,10 @@ class ContractFan
                 }
             }
         }
+    }
+
+    public function getDisplayName() {
+        return $this->getPhysicalPerson()->getDisplayName();
     }
 
     public function getEmail() {
@@ -253,6 +257,17 @@ class ContractFan
                 }
             }
         }
+    }
+
+    public function getPurchasesExport() {
+        $exportList = array();
+        $i = 1;
+        foreach ($this->getPurchases() as $key => $val) {
+            /** @var $val Artist */
+            $exportList[] = $val->__toString();
+            $i++;
+        }
+        return join(', ', $exportList);
     }
 
     /**

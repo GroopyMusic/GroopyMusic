@@ -5,6 +5,7 @@ namespace AppBundle\Services;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PaymentManager
@@ -86,7 +87,7 @@ class PaymentManager
             // Remove refunded tickets from sold tickets
             // Unless crodwfunding is failed
             if($ca instanceof ContractArtist && !$ca->getFailed()) {
-                $ca->removeTicketsSold($cf->getTresholdIncrease());
+                $ca->removeCounterPartsSold($cf->getThresholdIncrease());
                 $this->em->persist($ca);
             }
 
@@ -110,13 +111,14 @@ class PaymentManager
             $payment->setRefunded(true);
 
             foreach($payment->getContractsFan() as $cf) {
+                /** @var ContractFan $cf */
                 $cf->setRefunded(true);
                 $ca = $cf->getContractArtist();
 
                 // Remove refunded tickets from sold tickets
                 // Unless crodwfunding is failed
                 if($ca instanceof ContractArtist && !$ca->getFailed()) {
-                    $ca->removeTicketsSold($cf->getTresholdIncrease());
+                    $ca->removeCounterPartsSold($cf->getThresholdIncrease());
                     $this->em->persist($ca);
                 }
 
@@ -140,4 +142,52 @@ class PaymentManager
     {
         $this->mailer->sendRefundedPayment($payment);
     }
+
+    // ---------- YB
+    public function refundStripeAndYBContractArtist(YBContractArtist $campaign) {
+        $this->initStripe();
+
+        foreach($campaign->getContractsFanPaid() as $contractFan) {
+            /** @var ContractFan $contractFan */
+            $this->refundPartOfStripePayment($contractFan);
+            $this->refundYBContractFan($contractFan);
+        }
+
+        $campaign->setRefunded(true);
+        $this->em->persist($campaign);
+
+        $this->em->flush();
+    }
+
+    public function refundYBContractFan(ContractFan $cf) {
+        if(!$cf->getRefunded()) {
+            $cf->setRefunded(true);
+            $ca = $cf->getContractArtist();
+
+            // Remove refunded tickets from sold tickets
+            // Unless crodwfunding is failed
+            if(!$ca->getFailed()) {
+                $ca->removeCounterPartsSold($cf->getThresholdIncrease());
+                $this->em->persist($ca);
+            }
+
+            // $this->rewardSpendingService->refundReward($cf);
+
+            $this->em->persist($cf);
+
+            if(array_sum(array_map(function(ContractFan $contractFan) {
+                    return $contractFan->getRefunded() ? 0 : 1;
+                }, $cf->getCart()->getContracts()->toArray())) == 0) {
+                $cf->getPayment()->setRefunded(true);
+            }
+
+            $this->notifyUserRefundedYBContractFan($cf);
+        }
+    }
+
+
+    public function notifyUserRefundedYBContractFan(ContractFan $cf) {
+        $this->mailer->sendRefundedYBContractFan($cf);
+    }
+
 }

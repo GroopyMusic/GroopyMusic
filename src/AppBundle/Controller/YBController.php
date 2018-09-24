@@ -191,10 +191,6 @@ class YBController extends Controller
                     /** @var ContractFan $contract
                      * @var YBContractArtist $contract_artist */
                     $contract->calculatePromotions();
-                    $contract_artist = $contract->getContractArtist();
-
-                    $contract_artist->addAmount($contract->getAmount());
-                    $contract_artist->updateCounterPartsSold($contract);
                 }
 
                 $payment = new Payment();
@@ -284,10 +280,15 @@ class YBController extends Controller
             /** @var YBContractArtist $campaign */
             $campaign = $contract->getContractArtist();
 
+            $campaign->addAmount($contract->getAmount());
+            $campaign->updateCounterPartsSold($contract);
+
             // Need to also send tickets
             if($campaign->isEvent() && ($campaign->getSuccessful() || $campaign->getTicketsSent() || $campaign->hasNoThreshold())) {
                 $ticketingManager->generateAndSendYBTickets($contract);
             }
+
+            $em->persist($campaign);
         }
 
         $cart->setPaid(true);

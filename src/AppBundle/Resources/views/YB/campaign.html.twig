@@ -5,6 +5,16 @@
 {% block meta_description %}{{ campaign.getDescription|slice(0,100) }}{% endblock %}
 {% set photo = campaign.photo is not null ? campaign.photo : false %}
 
+{% block open_graph %}
+    {% set og_src = photo ? asset(campaign.webPath(photo)) : asset('yb/images/illustration-guitars.jpg') %}
+    <meta property="og:title"
+          content="{{ campaign.getTitle }}"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:url"
+          content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
+    <meta property="og:image" content="{{ absolute_url(og_src) }}"/>
+{% endblock %}
+
 {% block header_container %}
     <header class="masthead campaign-masthead text-white" {% if photo %}style="background-image: url('{{ yb_asset(campaign.webPath(photo)) }}');"{% endif %} >
         <div class="overlay"></div>
@@ -40,54 +50,85 @@
             </div>
 
             <div class="col-12 col-lg-5">
-                <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
+                {% if not campaign.noThreshold %}
+                    <div>
+                        <h3>Financement participatif</h3>
+                        {% if campaign.successful %}
+                            <p>Cet événement a fait l'objet d'une campagne de financement participatif et est <b>confirmé</b>. Si vous commandez des tickets, vous les recevrez immédiatement.</p>
+                        {% elseif campaign.pending %}
+                            <p>Le financement participatif a eu lieu et aujourd'hui est la <b>date de validation</b> de cet événement.</p>
+                            {% if campaign.pendingSuccessful %}
+                                <p>Si vous avez acheté vos tickets, ils vous seront très bientôt envoyés.</p>
+                            {% else %}
+                                <p>En fonction de la décision de l'organisateur, la campagne peut se poursuivre (vous recevrez alors vos tickets si vous en avez commandé, et vous pourrez à nouveau en commander) ou s'annuler (vous serez alors remboursé si vous avez acheté des tickets).</p>
+                            {% endif %}
+                        {% else %}
+                            <p>Cet événement ne sera confirmé que si son organisateur estime qu'il a atteint son objectif à la date de validation (le {{ campaign.dateEnd|date('d/m/Y') }})</p>
+                        {% endif %}
+                        <p>Avancement actuel par rapport à l'objectif initial :</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped{% if campaign.successful or campaign.pendingSuccessful %} bg-success{% endif   %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
+                        </div>
+                    </div>
+                {% endif %}
+                <div {% if not campaign.noThreshold %}class="mt-4"{% endif %}>
+                    <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
 
-                {% if campaign.isCrowdable %}
-                    {{ form_start(form) }}
+                    {% if campaign.isCrowdable %}
+                        {{ form_start(form) }}
 
-                    {% for purchase in form.purchases %}
-                        {% set counterpart = purchase.vars.value.counterpart %}
-                        <div class="counterpart-form p-3 my-2 border">
+                        {% for purchase in form.purchases %}
+                            {% set counterpart = purchase.vars.value.counterpart %}
+                            <div class="counterpart-form p-3 my-2 border">
 
-                            <div class="form-group form-row">
-                                {{ form_errors(purchase) }}
+                                <div class="form-group form-row">
+                                    {{ form_errors(purchase) }}
 
-                                <div class="col-8 col-sm-9 col-lg-8">
-                                    <label class="font-weight-bold">{{ counterpart.name }}</label>
-                                </div>
-                                <div class="col-4 col-sm-3 col-lg-4">
-                                    {{ counterpart.price }} €
-                                </div>
-                                <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
-                                <div class="col-4 col-sm-3 col-lg-4">
-                                    <div class="container px-0">
-                                        <div class="input-group">
-                                            <span class="input-group-btn">
-                                                <button type="button" class="quantity-left-minus btn btn-secondary btn-number"  data-type="minus" data-field="">
-                                                    <i class="text-white fas fa-minus"></i>
-                                                </button>
-                                            </span>
-                                            {{ form_widget(purchase.quantity) }}
-                                            <span class="input-group-btn">
-                                                <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-field="">
-                                                    <i class="text-white fas fa-plus"></i>
-                                                </button>
-                                            </span>
+                                    <div class="col-8 col-sm-9 col-lg-8">
+                                        <label class="font-weight-bold">{{ counterpart.name }}{% if counterpart.freePrice %} (prix libre){% endif %}</label>
+                                    </div>
+                                    {% if counterpart.freePrice %}
+                                        <div class="col-4 col-sm-3 col-lg-4">
+                                            <div class="w-90 position-relative mb-2">
+                                                {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice, 'value': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-4 col-sm-3 col-lg-4">
+                                            {{ counterpart.price }} €
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
+                                    <div class="col-4 col-sm-3 col-lg-4">
+                                        <div class="container px-0">
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="quantity-left-minus btn btn-secondary btn-number"  data-type="minus" data-field="">
+                                                        <i class="text-white fas fa-minus"></i>
+                                                    </button>
+                                                </span>
+                                                {{ form_widget(purchase.quantity) }}
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-field="">
+                                                        <i class="text-white fas fa-plus"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
 
-                    {{ form_widget(form.submit) }}
+                        {{ form_widget(form.submit) }}
 
-                    {{ form_end(form) }}
-                {% else %}
-                    <p>Il n'est plus possible de contribuer à cette campagne.</p>
-                {% endif %}
+                        {{ form_end(form) }}
+                    {% else %}
+                        <p>Il n'est plus possible de contribuer à cette campagne.</p>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
-
     </div>
 {% endblock %}

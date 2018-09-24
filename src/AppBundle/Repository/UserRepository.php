@@ -2,14 +2,18 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 
-class UserRepository extends \Doctrine\ORM\EntityRepository
+class UserRepository extends EntityRepository
 {
+    public $yb = 0;
 
     public function baseQueryBuilder()
     {
         return $this->createQueryBuilder('u')
+            ->where('u.yb = :yb')
             ->leftJoin('u.artists_user', 'au')
             ->leftJoin('u.genres', 'g')
             ->leftJoin('u.notifications', 'n')
@@ -19,7 +23,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('g')
             ->addSelect('n')
             ->addSelect('uc')
-            ->addSelect('conditions');
+            ->addSelect('conditions')
+            ->setParameter('yb', $this->yb)
+        ;
     }
 
     public function findWithPaymentLastXDays($X)
@@ -62,7 +68,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN co.purchases p
                   LEFT JOIN u.user_conditions uc
                   LEFT JOIN uc.conditions cond
-                  WHERE ca.successful = TRUE
+                  WHERE u.yb = FALSE 
+                  AND ca.successful = TRUE
                   AND u.deleted = FALSE
                   AND co.refunded = FALSE
                   AND c.paid = TRUE
@@ -86,6 +93,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN st.carts stc
                   LEFT JOIN stc.contracts stco
                   WHERE sca.successful = TRUE
+                  AND u.yb = FALSE
                   AND u.deleted = FALSE
                   AND st.deleted = FALSE
                   AND stco.refunded = FALSE
@@ -106,6 +114,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   FROM AppBundle:User u INDEX BY u.id
                   LEFT JOIN u.sponsorships s
                   WHERE s.target_invitation IS NOT NULL
+                  AND u.yb = FALSE
                   GROUP BY u.id
                   ')
             ->getResult(Query::HYDRATE_ARRAY);
@@ -120,6 +129,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         return $this->getEntityManager()->createQuery(
             'SELECT u.id, COUNT(si.id) as s
                   FROM AppBundle:User u INDEX BY u.id
+                  WHERE u.yb = FALSE
                   LEFT JOIN u.sponsorships si
                   GROUP BY u.id
                   ')
@@ -135,7 +145,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      */
     public function findUsersNotDeletedForSelect($q)
     {
-        $querry = 'SELECT u FROM AppBundle:User u WHERE u.deleted = 0';
+        $querry = 'SELECT u FROM AppBundle:User u WHERE u.yb = 0 AND u.deleted = 0';
         foreach ($q as $index => $string) {
             if ($index == 0) {
                 $querry = $querry . " AND (u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
@@ -159,7 +169,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      */
     public function findNewsletterUsersNotDeletedForSelect($q)
     {
-        $querry = 'SELECT u FROM AppBundle:User u WHERE u.deleted = 0 AND u.newsletter = 1';
+        $querry = 'SELECT u FROM AppBundle:User u WHERE u.yb = 0 AND u.deleted = 0 AND u.newsletter = 1';
         foreach ($q as $index => $string) {
             if ($index == 0) {
                 $querry = $querry . " AND (u.lastname LIKE '%" . $string . "%' OR u.firstname LIKE '%" . $string . "%'";
@@ -189,6 +199,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN u.category_statistics s
                   LEFT JOIN s.category c
                   WHERE u.deleted = 0
+                  AND u.yb = 0
                   ')
             ->getResult();
     }
@@ -207,7 +218,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   LEFT JOIN u.carts c
                   LEFT JOIN c.contracts cf
                   LEFT JOIN cf.contractArtist ca
-                  WHERE ca.id = ?1
+                  WHERE u.yb = 0 
+                  AND ca.id = ?1
+                
                   ')
             ->setParameter(1, $contract_artist_id)
             ->getResult();
@@ -228,7 +241,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                   JOIN u.carts c
                   JOIN c.contracts cf
                   LEFT JOIN cf.contractArtist ca
-                  WHERE ca.id = ?1
+                  WHERE u.yb = 0 
+                  AND ca.id = ?1
                   AND cf.refunded = 0
                   AND c.paid = 1
                   AND u.id = ?2
@@ -249,7 +263,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         return $this->getEntityManager()->createQuery(
             'SELECT u
                   FROM AppBundle:User u
-                  WHERE u.email = ?1
+                  WHERE u.yb = 0 
+                  AND u.email = ?1
                   ')
             ->setParameter(1, $email)
             ->getOneOrNullResult();

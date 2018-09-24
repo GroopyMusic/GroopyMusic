@@ -73,7 +73,7 @@
 </header>
 {% endblock %}
 
-<main id="main">
+<main id="main" {% block main_attributes %}{% endblock %}>
     {% set error_bag = app.request.session.flashbag.get('error') %}
 
     {% if error_bag is not empty
@@ -184,10 +184,23 @@
 
     {% javascripts filter='jsqueeze' output='js/compiled/yb/main.js'
     'yb/js/yb.js'
+    'yb/js/dropzone.js'
     %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
+    <script>
+        Dropzone.prototype.defaultOptions.dictDefaultMessage = "{{ 'dictDefaultMessage'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictFallbackMessage = "{{ 'dictFallbackMessage'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictFallbackText = "{{ 'dictFallbackText'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictFileTooBig = "{{ 'dictFileTooBig'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictInvalidFileType = "{{ 'dictInvalidFileType'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictResponseError = "{{ 'dictResponseError'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictCancelUpload = "{{ 'dictCancelUpload'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictCancelUploadConfirmation = "{{ 'dictCancelUploadConfirmation'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictRemoveFile = "{{ 'dictRemoveFile'|trans({}, 'dropzone') }}";
+        Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "{{ 'dictMaxFilesExceeded'|trans({}, 'dropzone') }}";
+    </script>
 
     {% if app.environment == 'prod' %}
 

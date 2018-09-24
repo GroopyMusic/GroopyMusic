@@ -1,6 +1,18 @@
 {% extends "yb/base.html.twig" %}
 {% trans_default_domain 'yb' %}
 
+{% block main_attributes %}class="home-main"{% endblock %}
+
+{% block open_graph %}
+    {% set og_src = asset('yb/images/illustration-guitars.jpg') %}
+    <meta property="og:title"
+          content="Ticked-it!"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:url"
+          content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
+    <meta property="og:image" content="{{ absolute_url(og_src) }}"/>
+{% endblock %}
+
 {% block nav_details_links %}
     <li class="nav-item">
         <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#services"}}">{{ 'menu.services'|trans }}</a>

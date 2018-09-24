@@ -1,0 +1,15 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.html.twig' %}
+
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('yb.order.refunded', {
+                '%name%': cf.physicalPerson.displayName,
+                '%event%': email_link(url('yb_campaign', {'id': campaign.id}), campaign.getTitle),
+                '%amount%': cf.amount,
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

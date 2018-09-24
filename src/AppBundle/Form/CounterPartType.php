@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CounterPartType extends AbstractType
 {
@@ -19,6 +21,7 @@ class CounterPartType extends AbstractType
     {
         $builder
             ->add('translations', TranslationsType::class, [
+                'label' => false,
                 'locales' => ['fr'],
                 'fields' => [
                     'name' => [
@@ -40,20 +43,48 @@ class CounterPartType extends AbstractType
                 'label' => 'Nombre en stock au total',
             ))
             ->add('price', NumberType::class, array(
-                'required' => true,
-                'label' => 'Prix',
+                'required' => false,
+                'label' => 'Prix (en euros) (4 € ou plus)',
             ))
             ->add('thresholdIncrease', NumberType::class, array(
                 'required' => true,
-                'label' => "Participation à l'augmentation du seuil",
+                'label' => "Poids (dans le sold out, mais aussi dans le seuil du financement participatif)",
+            ))
+            ->add('freePrice', CheckboxType::class, array(
+                'attr' => ['class' => 'free-price-checkbox'],
+                'required' => false,
+                'label' => "Le prix doit être librement choisi par les acheteurs"
+            ))
+            ->add('minimumPrice', NumberType::class, array(
+                'required' => false,
+                'label' => "Prix minimum (en euros) (4 € ou plus)",
             ))
         ;
+    }
+
+    public function validate(CounterPart $counterPart, ExecutionContextInterface $context)
+    {
+        if($counterPart->getFreePrice()) {
+            if($counterPart->getMinimumPrice() == null || $counterPart->getMinimumPrice() < 4) {
+                $context->addViolation('Les prix des tickets doivent être au minimum de 4 €.');
+            }
+            $counterPart->setPrice($counterPart->getMinimumPrice());
+        }
+        else {
+            if($counterPart->getPrice() == null || $counterPart->getPrice() < 4) {
+                $context->addViolation('Les prix des tickets doivent être au minimum de 4 €.');
+            }
+            $counterPart->setMinimumPrice($counterPart->getPrice());
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => CounterPart::class,
+            'constraints' => array(
+                new Assert\Callback(array($this, 'validate'))
+            ),
         ]);
     }
 

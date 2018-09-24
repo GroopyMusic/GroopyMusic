@@ -71,6 +71,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->global_soldout = null;
         $this->threshold = 0;
         $this->counterparts_sold = 0;
+        $this->threshold = 0;
     }
 
     public static function getWebPath(Photo $photo) {
@@ -161,6 +162,10 @@ class BaseContractArtist implements TranslatableInterface
 
     public function isOneStepFromBeingRefunded() {
         return self::VOTES_TO_REFUND - count($this->asking_refund) == 1;
+    }
+
+    public function hasThreshold() {
+        return !$this->no_threshold;
     }
 
     public function addAmount($amount) {
@@ -280,7 +285,7 @@ class BaseContractArtist implements TranslatableInterface
     }
 
     public function updateCounterPartsSold(ContractFan $cf) {
-        $this->addCounterPartsSold($cf->getTresholdIncrease());
+        $this->addCounterPartsSold($cf->getThresholdIncrease());
         foreach($cf->getPurchases() as $purchase) {
             /** @var Purchase $purchase */
             $festivaldays = $purchase->getCounterpart()->getFestivaldays();
@@ -340,7 +345,7 @@ class BaseContractArtist implements TranslatableInterface
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_end", type="datetime")
+     * @ORM\Column(name="date_end", type="datetime", nullable=true)
      */
     protected $dateEnd;
 
@@ -363,7 +368,7 @@ class BaseContractArtist implements TranslatableInterface
     protected $reminders_artist;
 
     /**
-     * @ORM\Column(name="collected_amount", type="integer")
+     * @ORM\Column(name="collected_amount", type="float")
      */
     protected $collected_amount;
 
@@ -438,7 +443,7 @@ class BaseContractArtist implements TranslatableInterface
     protected $no_threshold;
 
     /**
-     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="contractArtist")
+     * @ORM\OneToMany(targetEntity="CounterPart", mappedBy="contractArtist", cascade={"all"})
      */
     protected $counterParts;
 
@@ -448,19 +453,19 @@ class BaseContractArtist implements TranslatableInterface
     protected $global_soldout;
 
     /**
-     * @ORM\OneToOne(targetEntity="Photo")
+     * @ORM\OneToOne(targetEntity="Photo", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $photo;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Photo")
+     * @ORM\ManyToMany(targetEntity="Photo", cascade={"all"})
      */
     protected $campaign_photos;
 
     /**
      * @var int
-     * @ORM\Column(name="threshold", type="smallint")
+     * @ORM\Column(name="threshold", type="smallint", nullable=true)
      */
     protected $threshold;
 
@@ -947,7 +952,7 @@ class BaseContractArtist implements TranslatableInterface
 
     public function removeCounterPart(CounterPart $counterpart) {
         $this->counterParts->removeElement($counterpart);
-
+        $counterpart->setContractArtist(null);
         return $this;
     }
 
@@ -1012,6 +1017,7 @@ class BaseContractArtist implements TranslatableInterface
     public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
     {
         $this->counterParts[] = $counterPart;
+        $counterPart->setContractArtist($this);
 
         return $this;
     }
