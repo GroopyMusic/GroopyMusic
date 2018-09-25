@@ -10,7 +10,6 @@ use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\YB\YBContactType;
-use AppBundle\Form\YBOrderType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\TicketingManager;
@@ -28,6 +27,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class YBController extends Controller
@@ -433,12 +433,13 @@ class YBController extends Controller
     }
 
     /**
-     * @Route("/signin", name="yb_logout")
+     * @Route("/signout", name="yb_logout")
      */
-    public function logoutAction(Request $request) {
+    public function logoutAction(Request $request, TokenStorageInterface $tokenStorage) {
+        $tokenStorage->setToken(null);
         $session = $request->getSession();
         $session->invalidate();
-        $session->getFlashBag()->add('yb_notice', "Vous êtes bien déconnecté.");
+        $this->addFlash('yb_notice', "Vous êtes bien déconnecté.");
         return $this->redirectToRoute('yb_index');
     }
 

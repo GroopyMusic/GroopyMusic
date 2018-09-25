@@ -55,11 +55,11 @@
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#home"}}">{{ 'menu.home'|trans }}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#about"}}">{{ 'menu.about'|trans }}</a>
-                    </li>
                     {% block nav_details_links %}
                     {% endblock %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="{{ path('yb_index') ~ "#contact"}}">{{ 'menu.contact'|trans }}</a>
+                    </li>
                 </ul>
             </div>
         </div>
