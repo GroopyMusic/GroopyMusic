@@ -22,6 +22,10 @@
                 {% if passed_campaigns|length > 0 %}<a href="{{ path('yb_members_passed_campaigns') }}">{% endif %}<i class="far fa-clock"></i> Campagnes passées{% if passed_campaigns|length > 0 %}</a>{% endif %}
                 <div class="text-muted">Retrouvez les infos des campagnes que vous avez lancées par le passé et qui sont terminées.</div>
             </li>
+            <li class="list-group-item">
+                <a class="text-danger" href="{{ path('yb_logout') }}">Déconnexion</a>
+                <div class="text-muted">Arrêtez votre session sur Ticked-it ; votre mot de passe sera demandé à votre prochaine connexion.</div>
+            </li>
         </ul>
     </section>
 

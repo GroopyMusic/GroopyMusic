@@ -1,0 +1,48 @@
+{% extends '@App/YB/Members/base.html.twig' %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+  <div class="container py-5">
+        <div class="yb-login-content">
+            {% if error is defined and error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <!-- content of the yb-login itself ➡️ in this case the form -->
+            <div class="yb-login-body">
+                <div class="container">
+                    <!-- design of the yb-login header -->
+                    <div class="login-header">
+                        <!-- titre de la section -->
+                        <h5>Connexion</h5>
+                    </div>
+                    <form action="{{ path("fos_user_security_check") }}" method="post">
+                        <div class="form-group">
+                            {#<label for="username">{{ 'security.login.username'|trans }}</label>#}
+                            <input type="text" class="form-control" id="username" name="_um_username" {% if last_username is defined %}value="{{ last_username }}"{% endif %} placeholder="{{ 'security.login.username'|trans }}" required="required" />
+                        </div>
+                        <div class="form-group">
+                            {#<label for="password">{{ 'security.login.password'|trans }}</label>#}
+                            <input type="password" class="form-control" id="password" name="_um_password" required="required" placeholder="{{ 'security.login.password'|trans }}" />
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-control custom-checkbox pr-3" for="remember_me">
+                                <input type="checkbox" id="remember_me" name="_remember_me" value="on" class="form-check-input custom-control-input" />
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{ 'security.login.remember_me'|trans }}</span>
+                            </label>
+                        </div>
+
+
+                        <div class="text-center">
+                            <button class="btn btn-primary text-uppercase position-relative um-login-button text-center" type="submit" id="_submit_um_connection" name="_submit"><!--
+                                -->Connexion<!--
+                            --></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

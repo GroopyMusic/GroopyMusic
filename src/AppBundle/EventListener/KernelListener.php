@@ -3,16 +3,21 @@
 namespace AppBundle\EventListener;
 
 use AppBundle\Controller\ConditionsController;
+use AppBundle\Controller\YBController;
 use AppBundle\Controller\YBMembersController;
 use AppBundle\Entity\User;
+use AppBundle\Exception\YBAuthenticationException;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Controller\SecurityController;
 use FOS\UserBundle\FOSUserBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
@@ -23,25 +28,48 @@ class KernelListener implements EventSubscriberInterface
     private $conditionsController;
     private $securityController;
     private $YBMembersController;
+    private $YBController;
     private $session_name;
     private $remember_me_name;
+    private $router;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, YBMembersController $YBMembersController, $session_name, $remember_me_name)
+    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, YBMembersController $YBMembersController, YBController $YBController, RouterInterface $router, $session_name, $remember_me_name)
     {
         $this->tokenStorage = $tokenStorage;
         $this->em = $em;
         $this->conditionsController = $conditionsController;
         $this->securityController = $securityController;
+        $this->YBController = $YBController;
         $this->YBMembersController = $YBMembersController;
         $this->session_name = $session_name;
         $this->remember_me_name = $remember_me_name;
+        $this->router = $router;
     }
 
     public static function getSubscribedEvents() {
         return [
             KernelEvents::CONTROLLER => 'onController',
             KernelEvents::RESPONSE => 'onResponse',
+            KernelEvents::EXCEPTION => 'onException',
         ];
+    }
+
+    public function onException(GetResponseForExceptionEvent $event) {
+        $exception = $event->getException();
+        $request = $event->getRequest();
+        $session = $request->getSession();
+        $response = $event->getResponse();
+
+        if($exception instanceof YBAuthenticationException) {
+            // Logging user out.
+            $this->tokenStorage->setToken(null);
+
+            // Invalidating the session.
+            $session->invalidate();
+            $session->getFlashBag()->add('yb_error', "Votre compte n'est pas autorisé pour Ticked-it ; il faut qu'un administrateur Un-Mute vous donne les privilèges nécessaires.");
+            $response = new RedirectResponse($this->router->generate('yb_login'));
+            $event->setResponse($response);
+        }
     }
 
     /**
@@ -72,18 +100,6 @@ class KernelListener implements EventSubscriberInterface
         if(!$user instanceof User) {
             return;
         }
-
-        if($yb > $user->isYB()) {
-            // Logging user out.
-            $this->tokenStorage->setToken(null);
-
-            // Invalidating the session.
-            $session->invalidate();
-            $controller = $this->securityController;
-            $session->getFlashBag()->add('error', "Votre compte n'est pas autorisé pour Ticked-it ; il faut qu'un administrateur Un-Mute vous donne les privilèges nécessaires.");
-            $event->setController(array($controller, 'loginAction'));
-        }
-
 
         if(!$yb) {
             $controller = $this->conditionsController;

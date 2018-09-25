@@ -6,6 +6,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
@@ -35,10 +36,10 @@ class YBMembersController extends Controller
 
     public function checkIfAuthorized($user, YBContractArtist $campaign = null) {
         if(!$user || !$user instanceof User) {
-            throw $this->createAccessDeniedException();
+            throw new YBAuthenticationException();
         }
         if($campaign != null && !$user->ownsYBCampaign($campaign)) {
-            throw $this->createAccessDeniedException();
+            throw new YBAuthenticationException();
         }
     }
 
