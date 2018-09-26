@@ -13,5 +13,6 @@ yb_members_controller:
 fos_user_security_check_yb:
   path: "/login_check"
   methods: ["POST"]
+  host: "%yb_host%"
   defaults:
     _controller: fos_user.security.controller:checkAction

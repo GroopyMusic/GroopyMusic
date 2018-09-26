@@ -28,7 +28,7 @@ security:
             provider: fos_userbundle
             failure_path: yb_login
             always_use_default_target_path: false
-            default_target_path: homepage
+            default_target_path: yb_members_dashboard
             use_referer: true
             username_parameter: _um_username
             password_parameter: _um_password
