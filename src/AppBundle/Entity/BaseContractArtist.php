@@ -982,7 +982,7 @@ class BaseContractArtist implements TranslatableInterface
     /**
      * @return bool
      */
-    public function isNoThreshold(): bool
+    public function isNoThreshold()
     {
         return $this->no_threshold;
     }
@@ -991,7 +991,7 @@ class BaseContractArtist implements TranslatableInterface
     /**
      * @param bool $no_threshold
      */
-    public function setNoThreshold(bool $no_threshold)
+    public function setNoThreshold($no_threshold)
     {
         $this->no_threshold = $no_threshold;
     }

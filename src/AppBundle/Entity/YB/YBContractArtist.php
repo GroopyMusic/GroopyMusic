@@ -80,7 +80,7 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function getPercentObjective() {
-        return min(floor(($this->getCounterpartsSold() / $this->getThreshold()) * 100), 100);
+        return min(floor(($this->getCounterpartsSold() / max(1, $this->getThreshold())) * 100), 100);
     }
 
     public function getState()

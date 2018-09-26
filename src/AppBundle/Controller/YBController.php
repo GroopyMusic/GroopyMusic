@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -438,8 +439,16 @@ class YBController extends Controller
         $tokenStorage->setToken(null);
         $session = $request->getSession();
         $session->invalidate();
+        $response = new RedirectResponse($this->generateUrl('yb_index'));
+        $cookieNames = [
+            $this->getParameter('session_name'),
+            $this->getParameter('remember_me_name'),
+        ];
+        foreach ($cookieNames as $cookieName) {
+            $response->headers->clearCookie($cookieName);
+        }
         $this->addFlash('yb_notice', "Vous êtes bien déconnecté.");
-        return $this->redirectToRoute('yb_index');
+        return $response;
     }
 
 }

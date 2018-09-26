@@ -36,10 +36,13 @@ class YBMembersController extends Controller
 
     public function checkIfAuthorized($user, YBContractArtist $campaign = null) {
         if(!$user || !$user instanceof User) {
+            echo 'ok1';
             throw new YBAuthenticationException();
         }
         if($campaign != null && !$user->ownsYBCampaign($campaign)) {
+            echo 'ok2';
             throw new YBAuthenticationException();
+
         }
     }
 
@@ -112,6 +115,8 @@ class YBMembersController extends Controller
             $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
+
+
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
             'form' => $form->createView(),
             'campaign' => $campaign,

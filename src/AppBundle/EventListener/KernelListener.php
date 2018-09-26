@@ -66,6 +66,15 @@ class KernelListener implements EventSubscriberInterface
 
             // Invalidating the session.
             $session->invalidate();
+
+            $cookieNames = [
+                $this->session_name,
+                $this->remember_me_name,
+            ];
+            foreach ($cookieNames as $cookieName) {
+                $response->headers->clearCookie($cookieName);
+            }
+
             $session->getFlashBag()->add('yb_error', "Votre compte n'est pas autorisé pour Ticked-it ; il faut qu'un administrateur Un-Mute vous donne les privilèges nécessaires.");
             $response = new RedirectResponse($this->router->generate('yb_login'));
             $event->setResponse($response);
@@ -91,17 +100,19 @@ class KernelListener implements EventSubscriberInterface
             $yb = true;
         }
 
-        $token = $this->tokenStorage->getToken();
-        if($token == null) {
-            return;
-        }
-        $user = $token->getUser();
-
-        if(!$user instanceof User) {
-            return;
-        }
-
         if(!$yb) {
+            $token = $this->tokenStorage->getToken();
+
+            if($token == null) {
+                return;
+            }
+            $user = $token->getUser();
+
+            if(!$user instanceof User) {
+                return;
+            }
+
+
             $controller = $this->conditionsController;
 
             if(is_array($callable) && $callable[0] == $controller)
@@ -127,7 +138,7 @@ class KernelListener implements EventSubscriberInterface
     {
         $response = $event->getResponse();
 
-        if($this->tokenStorage->getToken() == null) {
+        /*if($this->tokenStorage->getToken() == null) {
             // Clearing the cookies.
             $cookieNames = [
                 $this->session_name,
@@ -136,7 +147,7 @@ class KernelListener implements EventSubscriberInterface
             foreach ($cookieNames as $cookieName) {
                 $response->headers->clearCookie($cookieName);
             }
-        }
+        }*/
 
         $this->em->flush();
     }

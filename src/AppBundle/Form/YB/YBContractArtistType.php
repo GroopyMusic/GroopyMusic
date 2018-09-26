@@ -25,10 +25,6 @@ class YBContractArtistType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('noThreshold', CheckboxType::class, array(
-                'label' => "N'a pas de seuil de validation",
-                'required' => false,
-            ))
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
@@ -100,11 +96,16 @@ class YBContractArtistType extends AbstractType
         ;
 
         if($options['creation']) {
-            $builder->add('acceptConditions', CheckboxType::class, array(
-                'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Ticked-it!",
-                'required' => true,
-                'constraints' => array(
-                    new Assert\NotBlank(),
+            $builder
+                ->add('noThreshold', CheckboxType::class, array(
+                    'label' => "N'a pas de seuil de validation",
+                    'required' => false,
+                ))
+                ->add('acceptConditions', CheckboxType::class, array(
+                    'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Ticked-it!",
+                    'required' => true,
+                    'constraints' => array(
+                        new Assert\NotBlank(),
                 )
             ));
         }
@@ -119,11 +120,14 @@ class YBContractArtistType extends AbstractType
             if($campaign->getThreshold() <= 0) {
                 $context->addViolation('Puisque la campagne a un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0.');
             }
-            $today_90 = $campaign->getDate();
-            $today_90->modify('+90d');
+            $today_90 = clone $campaign->getDate();
+            $today_90->modify('+ 90 days');
             if($campaign->getDateEnd() == null || $campaign->getDateEnd() < ($campaign->getDate()) || $campaign->getDateEnd() > $campaign->getDateClosure() || $campaign->getDateEnd() > $today_90) {
                 $context->addViolation('Puisque la campagne a un seuil de validation, il faut préciser une date de validation valide, antérieure à la date de fin des ventes et maximum 90 jours après la date de création de la campagne.');
             }
+        }
+        else {
+            $campaign->setTicketsSent(true);
         }
 
         if($campaign->getDateEvent() != null) {

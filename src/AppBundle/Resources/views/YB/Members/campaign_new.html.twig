@@ -8,7 +8,7 @@
             {% if campaign.id is null %}
                 <li class="active"><span>Nouvelle campagne</span></li>
             {% else %}
-                <li><a href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+                <li><a target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
                 <li class="active"><span>Edition</span></li>
             {% endif %}
         </ol>
@@ -112,7 +112,6 @@
                 {% do form.threshold.setRendered %}
                 {% do form.dateEnd.setRendered %}
             {% endif %}
-            {% do form.noThreshold.setRendered %}
         </div>
     </section>
 
@@ -147,11 +146,13 @@
 
             var $chckbx = $('#yb_no_threshold_checkbox input[type="checkbox"]');
 
-            $chckbx.on('change', function() {
-                $('.yb_threshold_only').toggle(!this.checked);
-            });
+            {% if campaign.id is null %}
+                $chckbx.on('change', function() {
+                    $('.yb_threshold_only').toggle(!this.checked);
+                });
 
-            $chckbx.trigger("change");
+                $chckbx.trigger("change");
+            {% endif %}
 
             $('.free-price-checkbox').on('change', function() {
                 $(this).closest('.counterpart-row').find('.free-price-minimum').toggle(this.checked);
