@@ -608,8 +608,8 @@ class MailDispatcher
             'campaign' => $campaign = $cf->getContractArtist(),
         ];
 
-        $to = [$cf->getUser()->getEmail() => $cf->getUser()->getPreferredLocale()];
-        $toName = [$cf->getUser()->getDisplayName()];
+        $to = [$cf->getEmail() => 'fr'];
+        $toName = [$cf->getDisplayName()];
 
         $subject = 'Remboursement - campagne "'. $campaign->getTitle() . '" annulée sur Ticked-it';
         $subject_params = [];

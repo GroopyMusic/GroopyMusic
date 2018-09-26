@@ -44,7 +44,7 @@ class CounterPartType extends AbstractType
             ))
             ->add('price', NumberType::class, array(
                 'required' => false,
-                'label' => 'Prix (en euros) (4 € ou plus)',
+                'label' => 'Prix (en euros) (1 € ou plus)',
             ))
             ->add('thresholdIncrease', NumberType::class, array(
                 'required' => true,
@@ -57,7 +57,7 @@ class CounterPartType extends AbstractType
             ))
             ->add('minimumPrice', NumberType::class, array(
                 'required' => false,
-                'label' => "Prix minimum (en euros) (4 € ou plus)",
+                'label' => "Prix minimum (en euros) (1 € ou plus)",
             ))
         ;
     }
@@ -65,14 +65,14 @@ class CounterPartType extends AbstractType
     public function validate(CounterPart $counterPart, ExecutionContextInterface $context)
     {
         if($counterPart->getFreePrice()) {
-            if($counterPart->getMinimumPrice() == null || $counterPart->getMinimumPrice() < 4) {
-                $context->addViolation('Les prix des tickets doivent être au minimum de 4 €.');
+            if($counterPart->getMinimumPrice() == null || $counterPart->getMinimumPrice() < 1) {
+                $context->addViolation('Les prix des tickets doivent être au minimum de 1 €.');
             }
             $counterPart->setPrice($counterPart->getMinimumPrice());
         }
         else {
-            if($counterPart->getPrice() == null || $counterPart->getPrice() < 4) {
-                $context->addViolation('Les prix des tickets doivent être au minimum de 4 €.');
+            if($counterPart->getPrice() == null || $counterPart->getPrice() < 1) {
+                $context->addViolation('Les prix des tickets doivent être au minimum de 1 €.');
             }
             $counterPart->setMinimumPrice($counterPart->getPrice());
         }

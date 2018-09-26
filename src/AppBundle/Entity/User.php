@@ -303,6 +303,16 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     private $bank_account;
 
     /**
+     * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
+     */
+    private $vat_number;
+
+    /**
+     * @ORM\Column(name="organization_name", type="string", length=50, nullable=true)
+     */
+    private $organization_name;
+
+    /**
      * @param mixed $salutation
      */
     public function setSalutation($salutation)
@@ -1098,5 +1108,53 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getBankAccount()
     {
         return $this->bank_account;
+    }
+
+    /**
+     * Set vatNumber
+     *
+     * @param string $vatNumber
+     *
+     * @return User
+     */
+    public function setVatNumber($vatNumber)
+    {
+        $this->vat_number = $vatNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get vatNumber
+     *
+     * @return string
+     */
+    public function getVatNumber()
+    {
+        return $this->vat_number;
+    }
+
+    /**
+     * Set organizationName
+     *
+     * @param string $organizationName
+     *
+     * @return User
+     */
+    public function setOrganizationName($organizationName)
+    {
+        $this->organization_name = $organizationName;
+
+        return $this;
+    }
+
+    /**
+     * Get organizationName
+     *
+     * @return string
+     */
+    public function getOrganizationName()
+    {
+        return $this->organization_name;
     }
 }

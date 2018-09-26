@@ -393,9 +393,8 @@ class YBController extends Controller
     public function loginAction(Request $request, CsrfTokenManagerInterface $tokenManager = null, UserInterface $user = null)
     {
         if($user != null) {
-            $this->addFlash('yb_notice', "Vous êtes bien connecté !");
+            //$this->addFlash('yb_notice', "Vous êtes bien connecté !");
             return $this->redirectToRoute('yb_members_dashboard');
-
         }
 
         /** @var $session Session */

@@ -285,14 +285,17 @@ class BaseContractArtist implements TranslatableInterface
         foreach($cf->getPurchases() as $purchase) {
             /** @var Purchase $purchase */
             $festivaldays = $purchase->getCounterpart()->getFestivaldays();
-            if($festivaldays != null) {
+            if($festivaldays != null && !empty($festivaldays)) {
                 if(count($festivaldays) > 1) {
                     foreach ($festivaldays as $festivalday) {
                         $festivalday->updateHalfTicketsSold($purchase);
                     }
                 }
                 else {
-                    $festivaldays[0]->updateTicketsSold($purchase);
+                    if($festivaldays[0] != null) {
+                        $festivaldays[0]->updateTicketsSold($purchase);
+                    }
+
                 }
             }
         }
