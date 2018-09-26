@@ -33,7 +33,7 @@
             <div class="col-12 col-md-3">
                 <a class="link-secondary" href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}"><i class="fas fa-chart-bar text-primary"></i> Financement participatif</a>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
+                    <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% elseif campaign.failed %} bg-danger{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
                 </div>
             </div>
         {% endif %}

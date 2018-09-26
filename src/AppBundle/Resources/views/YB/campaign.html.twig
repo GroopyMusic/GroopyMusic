@@ -55,6 +55,8 @@
                         <h3>Financement participatif</h3>
                         {% if campaign.successful %}
                             <p>Cet événement a fait l'objet d'une campagne de financement participatif et est <b>confirmé</b>. Si vous commandez des tickets, vous les recevrez immédiatement.</p>
+                        {% elseif campaign.failed %}
+                            <p>Cet événement a fait l'objet d'une campagne de financement participatif et est <b>annulé</b> parce que l'objectif de la campagne n'a pas été atteint. Les acheteurs ont été intégralement remboursés.</p>
                         {% elseif campaign.pending %}
                             <p>Le financement participatif a eu lieu et aujourd'hui est la <b>date de validation</b> de cet événement.</p>
                             {% if campaign.pendingSuccessful %}
@@ -67,7 +69,7 @@
                         {% endif %}
                         <p>Avancement actuel par rapport à l'objectif initial :</p>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped{% if campaign.successful or campaign.pendingSuccessful %} bg-success{% endif   %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
+                            <div class="progress-bar progress-bar-striped{% if campaign.successful or campaign.pendingSuccessful %} bg-success{% elseif campaign.failed %} bg-danger{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
                         </div>
                     </div>
                 {% endif %}
@@ -124,7 +126,13 @@
 
                         {{ form_end(form) }}
                     {% else %}
-                        <p>Il n'est plus possible de contribuer à cette campagne.</p>
+                        {% if campaign.passed %}
+                            <p>Cette campagne est terminée et il n'est donc plus possible d'acheter des tickets.</p>
+                        {% elseif campaign.pending %}
+                            <p>Il n'est actuellement pas possible de contribuer à cette campagne car elle est en cours d'examination par son organisateur. Vous saurez bientôt si elle est validée ou non.</p>
+                        {% else %}
+                            <p>Il n'est actuellement pas possible d'acheter des tickets.</p>
+                        {% endif %}
                     {% endif %}
                 </div>
 

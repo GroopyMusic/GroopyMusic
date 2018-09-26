@@ -17,7 +17,7 @@
             </p>
         {% else %}
             <div class="progress">
-                <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100"><span>{{ campaign.percentObjective }}%</span></div>
+                <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% elseif campaign.failed %} bg-danger{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100"><span>{{ campaign.percentObjective }}%</span></div>
             </div>
             <p class="mt-2 text-center"><i class="fas fa-info-circle"></i>
                 {% if campaign.refunded %}
