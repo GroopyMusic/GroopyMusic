@@ -17,7 +17,7 @@
                         <!-- titre de la section -->
                         <h5>Connexion</h5>
                     </div>
-                    <form action="{{ path("fos_user_security_check") }}" method="post">
+                    <form action="{{ path("fos_user_security_check_yb") }}" method="post">
                         <div class="form-group">
                             {#<label for="username">{{ 'security.login.username'|trans }}</label>#}
                             <input type="text" class="form-control" id="username" name="_um_username" {% if last_username is defined %}value="{{ last_username }}"{% endif %} placeholder="{{ 'security.login.username'|trans }}" required="required" />

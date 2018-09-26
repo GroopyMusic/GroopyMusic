@@ -9,3 +9,9 @@ yb_members_controller:
   type: annotation
   schemes: ['%http_protocol%']
   prefix: /edit
+
+fos_user_security_check_yb:
+  path: "/login_check"
+  methods: ["POST"]
+  defaults:
+    _controller: fos_user.security.controller:checkAction
