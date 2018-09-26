@@ -18,6 +18,14 @@ class UserBankAccountType extends AbstractType
             'required' => true,
             'label' => 'Numéro de compte en banque IBAN',
         ))
+            ->add('vatNumber', TextType::class, array(
+                'required' => true,
+                'label' => 'Numéro de TVA',
+            ))
+            ->add('organizationName', TextType::class, array(
+                'required' => true,
+                'label' => "Nom de l'organisation",
+            ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'Mettre à jour',
             ))

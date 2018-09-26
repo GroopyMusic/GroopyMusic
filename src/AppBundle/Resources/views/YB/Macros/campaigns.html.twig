@@ -4,14 +4,14 @@
         <div class="col-12">
             <h3>{{ campaign.getTitle }}</h3>
             {% if campaign.pending %}
-                <div><i class="fas fa-exclamation"></i>
+                <div class="mt-2"><i class="fas fa-exclamation"></i>
                     Cette campagne est en attente de validation ou d'annulation de votre part.
                     Pour le bien de vos acheteurs et de vos ventes, il est essentiel de rapidement <a href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">examiner où en est le financement participatif.</a>
                 </div>
             {% endif %}
-            <div>Fin des ventes le {{ campaign.dateClosure|date('d/m/Y \\à H:i') }}</div>
+            <div class="mt-2">Fin des ventes le {{ campaign.dateClosure|date('d/m/Y \\à H:i') }}</div>
             {% if campaign.hasThreshold %}
-                <div>Validation le {{ campaign.dateEnd|date('d/m/Y') }}</div>
+                <div class="mb-2">Validation le {{ campaign.dateEnd|date('d/m/Y') }}</div>
             {% endif %}
         </div>
         <div class="col-12 col-md-3">
@@ -19,7 +19,7 @@
             {{ campaign.contractsFanPaid|length }} commande(s)
         </div>
         <div class="col-12 col-md-2">
-            <a class="link-secondary" href="{{ path('yb_campaign', {'id': campaign.id}) }}"><i class="fas fa-eye text-primary"></i> Voir la page de la campagne</a>
+            <a class="link-secondary" target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}"><i class="fas fa-eye text-primary"></i> Voir la page de la campagne</a>
         </div>
         {% if not campaign.isPassed %}
             <div class="col-12 col-md-2">

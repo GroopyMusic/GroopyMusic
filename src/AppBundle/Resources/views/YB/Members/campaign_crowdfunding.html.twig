@@ -4,7 +4,7 @@
     <section class="container px-0 mt-3">
         <ol class="breadcrumb-arrow">
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
-            <li><a href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+            <li><a target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
             <li class="active"><span>Gestion du financement participatif</span></li>
         </ol>
     </section>

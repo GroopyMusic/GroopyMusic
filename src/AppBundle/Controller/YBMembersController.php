@@ -130,8 +130,9 @@ class YBMembersController extends Controller
 
         if($form->isSubmitted()) {
             if($form->get('refund')->isClicked() && !$campaign->getRefunded()) {
-                $paymentManager->refundStripeAndYBContractArtist($campaign);
                 $campaign->setFailed(true);
+                $paymentManager->refundStripeAndYBContractArtist($campaign);
+
                 $em->flush();
 
                 $this->addFlash('yb_notice', 'La campagne a bien été annulée. Les éventuels contributeurs ont été avertis et remboursés.');
