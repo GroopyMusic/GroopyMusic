@@ -137,6 +137,7 @@
 {% endblock  %}
 
 {% block additional_javascripts %}
+    {{ parent() }}
     <script type="text/javascript">
         $(function() {
             yb_collection({
