@@ -35,8 +35,10 @@ sonata_admin:
                   - AppBundle\Admin\SuggestionBoxAdmin
                   - AppBundle\Admin\SuggestionTypeEnumAdmin
                   - AppBundle\Admin\VIPInscriptionAdmin
+                  - AppBundle\Admin\VolunteerProposalAdmin
                   - AppBundle\Admin\PropositionContractArtistAdmin
                   - AppBundle\Admin\MailAdmin
+
 
            app.admin.group.content:
                 label: app.admin.group.content
@@ -70,7 +72,8 @@ sonata_admin:
                label_catalogue: SonataAdminBundle
                items:
                    - AppBundle\Admin\ContractArtistAdmin
-                   - AppBundle\Admin\StepAdmin
+                   - AppBundle\Admin\FestivalDayAdmin
+                   - AppBundle\Admin\ArtistPerformanceAdmin
                    - AppBundle\Admin\CounterPartAdmin
 
            app.admin.group.orders:
@@ -369,4 +372,22 @@ services:
         arguments: [~, AppBundle\Entity\SponsorshipInvitation, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.sponsorshipInvitation }
+        public: true
+
+    AppBundle\Admin\VolunteerProposalAdmin:
+        arguments: [~, AppBundle\Entity\VolunteerProposal, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.volunteerProposal }
+        public: true
+
+    AppBundle\Admin\FestivalDayAdmin:
+        arguments: [~, AppBundle\Entity\FestivalDay, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.festivalDay }
+        public: true
+
+    AppBundle\Admin\ArtistPerformanceAdmin:
+        arguments: [~, AppBundle\Entity\ArtistPerformance, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.artistPerformance }
         public: true

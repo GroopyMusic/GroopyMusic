@@ -9,6 +9,13 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class VIPInscriptionAdmin extends BaseAdmin
 {
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->remove('create')
+        ;
+    }
+
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper

@@ -31,6 +31,21 @@ class Payment
         $this->asking_refund = new ArrayCollection();
     }
 
+    public function getContractArtists() {
+        return join(',', array_unique(array_map(function(ContractFan $cf) {
+            return $cf->getContractArtist();
+        }, $this->getContractsFan())));
+    }
+    
+    public function getDisplayName() {
+        if($this->cart != null) {
+            return $this->cart->getDisplayName();
+        }
+        else {
+            return $this->contractFan->getDisplayName(); 
+        }
+    }
+
     public function getContractsFan() {
         if($this->cart != null) {
             return $this->cart->getContracts()->toArray();
@@ -70,6 +85,21 @@ class Payment
         return array_sum(array_map(function(ContractFan $contractFan) {
             return $contractFan->getCounterPartsQuantityPromotional();
         }, $this->getContractsFan()));
+    }
+
+    private $purchases = null;
+
+    public function getPurchases() {
+        if($this->purchases != null) {
+            return $this->purchases;
+        }
+        $this->purchases = [];
+        foreach($this->getContractsFan() as $cf) {
+            foreach($cf->getPurchases() as $purchase) {
+                $this->purchases[] = $purchase;
+            }
+        }
+        return $this->purchases;
     }
 
     /**

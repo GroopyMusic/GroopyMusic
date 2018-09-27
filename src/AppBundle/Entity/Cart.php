@@ -18,14 +18,8 @@ class Cart
 
     public function __toString()
     {
-        $str = 'Panier ';
+        $str = 'Panier de ' . $this->getDisplayName();
 
-        if($this->user != null) {
-            $str .= 'de ' . $this->user;
-        }
-        else {
-            $str .= 'anonyme ';
-        }
         if($this->paid) {
             $str .= ' payé le ' . $this->date_creation->format('d/m/Y');
         }
@@ -40,6 +34,10 @@ class Cart
         $this->paid = false;
         $this->date_creation = new \Datetime();
         $this->um = $um;
+    }
+
+    public function getDisplayName() {
+        return $this->getFirst()->getDisplayName();
     }
 
     private $um = true;

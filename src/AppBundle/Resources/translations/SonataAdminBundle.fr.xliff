@@ -34,7 +34,7 @@
 
             <trans-unit id="app.admin.group.events">
                 <source>app.admin.group.events</source>
-                <target>Événements et paliers</target>
+                <target>Événements</target>
             </trans-unit>
 
             <trans-unit id="app.admin.group.orders">
@@ -139,7 +139,7 @@
 
             <trans-unit id="app.admin.counterpart">
                 <source>app.admin.counterpart</source>
-                <target>Contrepartie</target>
+                <target>Ticket</target>
             </trans-unit>
 
             <trans-unit id="app.admin.suggestiontypeenum">
@@ -206,6 +206,21 @@
                 <source>app.admin.sponsorshipInvitation</source>
                 <target>Parrainage</target>
              </trans-unit>
+
+             <trans-unit id="app.admin.volunteerProposal">
+                 <source>app.admin.volunteerProposal</source>
+                 <target>Proposition de bénévolat</target>
+              </trans-unit>
+
+            <trans-unit id="app.admin.festivalDay">
+               <source>app.admin.festivalDay</source>
+               <target>Jour de festival</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.artistPerformance">
+               <source>app.admin.artistPerformance</source>
+               <target>Performance</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

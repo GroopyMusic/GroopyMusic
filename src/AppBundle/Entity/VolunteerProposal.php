@@ -36,7 +36,7 @@ class VolunteerProposal implements PhysicalPersonInterface
 
     /**
      * @var ContractArtist
-     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="vip_inscriptions")
+     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="volunteer_proposals")
      */
     private $contract_artist;
 

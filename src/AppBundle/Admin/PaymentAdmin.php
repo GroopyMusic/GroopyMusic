@@ -23,13 +23,15 @@ class PaymentAdmin extends BaseAdmin
     public function configureListFields(ListMapper $list)
     {
         $list
+            ->add('displayName', null, array(
+                'label' => 'Acheteur',
+            ))
             ->add('user', null, array(
                 'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
-            ->add('contractArtist', null, array(
-                'label' => 'Crowdfunding',
-                'route' => array('name' => 'show'),
+            ->add('contractArtists', null, array(
+                'label' => 'Evenements',
             ))
             ->add('date', null, array(
                 'format' => 'd/m/y H:i:s',
@@ -55,16 +57,15 @@ class PaymentAdmin extends BaseAdmin
 
     public function configureShowFields(ShowMapper $showMapper) {
         $showMapper
+            ->add('displayName', null, array(
+                'label' => 'Acheteur',
+            ))
             ->add('user', null, array(
                 'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
-            ->add('contractArtist', 'url', array(
-                'label' => 'Event',
-                'route' => [
-                    'name' => 'artist_contract',
-                    'parameters' => ['id' => $this->getSubject()->getContractArtist()->getId()]
-                ],
+            ->add('contractArtists', null, array(
+                'label' => 'Evenements',
             ))
             ->add('date', null, array(
                 'format' => 'd/m/y H:i:s',
@@ -75,15 +76,8 @@ class PaymentAdmin extends BaseAdmin
             ->add('amount', null, array(
                 'label' => 'Montant',
             ))
-            ->add('contractFan', null, array(
-                'label' => 'Contreparties achetées',
-                'route' => array('name' => 'show'),
-            ))
-            ->add('contractFan.ticket_sent', 'boolean', array(
-                'label' => 'Tickets envoyés',
-            ))
             ->add('refunded', null, array(
-                'label' => 'Remboursé',
+                'label' => 'Remboursé'
             ))
             ->add('asking_refund', null, array(
                 'label' => 'Demandes de remboursement',
@@ -95,11 +89,10 @@ class PaymentAdmin extends BaseAdmin
         return [
             '#' => 'id',
             'Date' => 'date',
+            'Ticked-it' => 'YB',
             'Stripe ID' => 'chargeId',
             'Remboursé' => 'refunded',
-            '# Utilisateur' => 'user.id',
-            'Nom utilisateur' => 'user.displayName',
-            '# Evénement' => 'contractArtist.id',
+            'Nom acheteur' => 'displayName',
             'Evénement' => 'contractArtist',
             'Montant' => 'amount',
             'Nombre de tickets obtenus' => 'counterPartsQuantity',

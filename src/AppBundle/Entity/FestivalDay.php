@@ -13,7 +13,17 @@ class FestivalDay
 {
     public function __construct()
     {
-        $this->performances = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->performances = new ArrayCollection();
+        $this->festivals = new ArrayCollection();
+        $this->tickets_sold = 0;
+    }
+
+    public function __toString()
+    {
+        if($this->getFestival() == null) {
+            return 'Nouveau jour de festival';
+        }
+        return $this->getFestival()->__toString() . ' (jour : ' . $this->date->format('d/m/Y') . ')';
     }
 
     public function getArtistPerformances() {
@@ -21,7 +31,10 @@ class FestivalDay
     }
 
     public function getFestival() {
-        return $this->festivals->first();
+        if(!empty($this->festivals))
+            return $this->festivals->first();
+
+        return null;
     }
 
     public function getMaxTickets() {
@@ -93,7 +106,7 @@ class FestivalDay
     private $counterparts;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ContractArtist", mappedBy="festivaldays")
+     * @ORM\ManyToMany(targetEntity="ContractArtist", mappedBy="festivaldays", cascade={"persist"})
      */
     private $festivals;
 
@@ -243,6 +256,7 @@ class FestivalDay
     public function addFestival(\AppBundle\Entity\ContractArtist $festival)
     {
         $this->festivals[] = $festival;
+        $festival->addFestivalday($this);
 
         return $this;
     }
@@ -255,6 +269,7 @@ class FestivalDay
     public function removeFestival(\AppBundle\Entity\ContractArtist $festival)
     {
         $this->festivals->removeElement($festival);
+        $festival->removeFestivalday($this);
     }
 
     /**

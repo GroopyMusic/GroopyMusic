@@ -10,6 +10,20 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class ArtistPerformance
 {
+    public function __toString() {
+        if($this->artist == null) {
+            return 'Nouvelle performance';
+        }
+
+        $str = $this->artist->getArtistName();
+
+        if($this->time != null) {
+            $str .=  ' à ' . $this->time->format('H:i');
+        }
+
+        return $str;
+    }
+
     public function getTimeEnd() {
         $time2 = clone $this->time;
         $time2->modify('+'.$this->duration.'minutes');

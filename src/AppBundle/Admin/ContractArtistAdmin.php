@@ -21,7 +21,6 @@ class ContractArtistAdmin extends BaseAdmin
     {
         $collection
             ->remove('delete')
-            ->remove('create')
             ->add('refund', $this->getRouterIdParameter() . '/refund')
             ->add('validate', $this->getRouterIdParameter() . '/validate')
             ->add('prevalidate', $this->getRouterIdParameter() . '/prevalidate')
@@ -32,6 +31,9 @@ class ContractArtistAdmin extends BaseAdmin
     {
         $list
             ->add('id')
+            ->add('getTitle', null, array(
+                'label' => 'Titre',
+            ))
             ->add('date', 'date', array(
                 'label' => 'Date de création',
                 'format' => 'd/m/Y',
@@ -43,14 +45,6 @@ class ContractArtistAdmin extends BaseAdmin
             ->add('date_end', 'date', array(
                 'label' => 'Échéance',
                 'format' => 'd/m/Y',
-            ))
-            ->add('artist', null, array(
-                'label' => 'Artiste',
-                'route' => array('name' => 'show'),
-            ))
-            ->add('step', null, array(
-                'label' => 'Palier',
-                'route' => array('name' => 'show'),
             ))
             ->add('totalBookedTickets', null, array(
                 'label' => 'Tickets bookés',
@@ -77,9 +71,9 @@ class ContractArtistAdmin extends BaseAdmin
                     'validate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_validate.html.twig',
                     ),
-                    'prevalidate' => array(
+                   /* 'prevalidate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_prevalidate.html.twig',
-                    ),
+                    ),*/
                     'tickets' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_tickets.html.twig',
                     )
@@ -98,34 +92,14 @@ class ContractArtistAdmin extends BaseAdmin
                     'locale' => 'fr',
                     'timezone' => 'Europe/Paris',
                 ))
-                ->add('start_date', 'date', array(
-                    'label' => 'Début des ventes',
-                    'format' => 'd/m/Y',
-                    'locale' => 'fr',
-                    'timezone' => 'Europe/Paris',
-                ))
                 ->add('dateEnd', 'date', array(
                     'label' => 'Échéance',
                     'format' => 'd/m/Y',
                     'locale' => 'fr',
                     'timezone' => 'Europe/Paris',
                 ))
-                ->add('step', null, array(
-                    'label' => 'Palier',
-                    'route' => array('name' => 'show'),
-                ))
-                ->add('artist', null, array(
-                    'label' => 'Artiste',
-                    'route' => array('name' => 'show'),
-                ))
-                ->add('province', null, array(
-                    'label' => 'Province',
-                ))
                 ->add('motivations', null, array(
                     'label' => 'Motivations',
-                ))
-                ->add('preferences.additional_info', null, array(
-                    'label' => 'Infos pour les organisateurs',
                 ))
                 ->add('promotions', null, array(
                     'label' => 'Promotions appliquées',
@@ -167,6 +141,9 @@ class ContractArtistAdmin extends BaseAdmin
                 ->add('refunded', null, array(
                     'label' => 'Remboursé',
                 ))
+                ->add('known_lineup', null, array(
+                    'label' => 'Line-up connue'
+                ))
             ->end()
             ->with('Autres')
                 ->add('asking_refund', null, array(
@@ -179,34 +156,39 @@ class ContractArtistAdmin extends BaseAdmin
                     'label' => "Rappels envoyés aux admins",
                 ))
             ->end()
-            ->with('Concrétisation')
-                ->add('preferences', null, array(
-                    'label' => 'Préférences',
-                ))
-                ->add('reality', null, array(
-                    'label' => 'Réalité associée'
-                ))
-                ->add('coartists_list', null, array(
-                    'associated_property' => 'artist',
-                    'label' => 'Premières parties',
+            ->with('Tickets')
+                ->add('counterParts', null, array(
+                    'label' => 'Tickets',
+                    'route' => array('name' => 'show'),
                 ))
                 ->add('getAdditionalInfo', null, array(
                     'label' => 'Informations additionnelles qui doivent figurer dans le mail avec les tickets (note sur le lieu, la bouffe, le timing, ...)',
                 ))
             ->end()
             ->with('Soutien')
-                ->add('payments', null, array(
-                    'label' => 'Paiements',
+                ->add('contractsFanPaid', 'array', array(
+                    'label' => 'Commandes payées',
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('vip_inscriptions', null, array(
+                    'label' => "Demandes d'accréditations",
+                    'route' => array('name' => 'show'),
+                ))
+                ->add('volunteer_proposals', null, array(
+                    'label' => "Propositions de bénévolat",
                     'route' => array('name' => 'show'),
                 ))
             ->end()
+            /*
             ->with('Parrainage')
-            ->add('sponsorship_reward', null, array(
-                'label' => 'Récompense de parrainage',
-                'route' => array('name' => 'show'),
-                'required' => false
-            ))
-            ->end();
+                ->add('sponsorship_reward', null, array(
+                    'label' => 'Récompense de parrainage',
+                    'route' => array('name' => 'show'),
+                    'required' => false
+                ))
+            ->end()
+            */
+        ;
     }
 
     public function configureFormFields(FormMapper $form)
@@ -222,17 +204,19 @@ class ContractArtistAdmin extends BaseAdmin
                     'format' => 'MM/dd/yyyy',
                     'attr' => ['class' => 'datePicker'],
                 ))
+                ->add('start_date', 'date', array(
+                    'label' => 'Début des ventes',
+                ))
                 ->add('motivations', null, array(
                     'required' => false,
                     'label' => 'Motivations du groupe',
                 ))
-                ->add('province', null, array(
-                    'required' => true,
-                    'label' => 'Province',
-                ))
                 ->add('tickets_reserved', null, array(
                     'required' => true,
                     'label' => 'Tickets réservés',
+                ))
+                ->add('known_lineup', null, array(
+                    'label' => 'Line-up annoncée'
                 ))
                 ->add('translations', TranslationsType::class, array(
                     'required' => false,
@@ -243,41 +227,35 @@ class ContractArtistAdmin extends BaseAdmin
                         ],
                     ],
                 ))
+            ->add('nb_closing_days', null, array(
+                'label' => 'Nombre de jours sans vente avant le jour J',
+            ))
+            ->add('global_soldout', null, array(
+                'label' => 'Sold out global',
+            ))
+            ->add('threshold', null, array(
+                'label' => 'Seuil',
+            ))
+            ->add('festivaldays', null, array(
+                'label' => 'Jours de festival'
+            ))
             ->end()
         ;
 
-        $form
-            ->with('Détails connus')
-                ->add('reality', ConcertPossibilityType::class, array(
-                    'label' => false,
-                    'required' => false,
-                    'required_reality' => false,
-                    'is_reality' => true,
-                ))
-            ->end();
-
-        $form
-            ->with('Autres')
-                ->add( 'coartists_list_plain', EntityType::class, array(
-                    'label' => 'Artistes invités',
-                    'multiple' => true,
-                    'class' => Artist::class,
-                ))
-            ->end()
+       /* $form
             ->with('Parrainage')
             ->add('sponsorship_reward', EntityType::class, array(
                 'class' => Reward::class,
                 'choices' => $em->getRepository('AppBundle:Reward')->findNotDeletedRewards($request->getLocale()),
                 'label' => 'Récompense de parrainage'
             ))
-            ->end();
+            ->end();*/
 
 
     }
 
     public function getExportFields()
     {
-
         return [
             '#' => 'id',
             'Date de création' => 'date',
@@ -286,11 +264,6 @@ class ContractArtistAdmin extends BaseAdmin
             'Artiste' => 'artist.artistname',
             '# Artiste' => 'artist.id',
             'Motivations' => 'motivations',
-            'Date souhaitée' => 'preferences.date',
-            'Infos additionnelles' => 'preferences.additional_info',
-            'Date réelle' => 'reality.date',
-            '# Salle réelle' => 'reality.hall.id',
-            'Salle réelle' => 'reality.hall.name',
             'Amassé brut' => 'collected_amount',
             'Réussi' => 'successful',
             'Raté' => 'failed',

@@ -21,12 +21,15 @@ class ContractFanAdmin extends BaseAdmin
     {
         $list
             ->add('id')
+            ->add('displayName', null, array(
+                'label' => 'Acheteur',
+            ))
             ->add('cart.user', null, array(
                 'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
             ->add('contractArtist', null, array(
-                'label' => 'Crowdfunding',
+                'label' => 'Evenement',
                 'route' => array('name' => 'show'),
             ))
             ->add('paid', 'boolean', array(
@@ -49,7 +52,13 @@ class ContractFanAdmin extends BaseAdmin
     {
         $show
             ->with('Infos')
-                    ->add('id')
+                ->add('id')
+                ->add('displayName', null, array(
+                    'label' => 'Acheteur',
+                ))
+                ->add('email', null, array(
+                    'label' => 'Email',
+                ))
                 ->add('cart.user', null, array(
                     'label' => 'Membre',
                     'route' => array('name' => 'show'),

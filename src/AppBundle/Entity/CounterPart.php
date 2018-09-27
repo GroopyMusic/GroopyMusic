@@ -71,6 +71,15 @@ class CounterPart implements TranslatableInterface
         }
         return $this->potential_artists;
     }
+    
+    public function getSemanticPrice() {
+        if($this->free_price) {
+            return $this->getMinimumPrice();
+        }
+        else {
+            return $this->getPrice();
+        }
+    }
 
     /**
      * @var int

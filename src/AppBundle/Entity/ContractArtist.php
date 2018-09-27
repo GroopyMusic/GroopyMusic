@@ -36,13 +36,14 @@ class ContractArtist extends BaseContractArtist
 
     public function __construct()
     {
-        parent::_construct();
+        parent::__construct();
         $this->tickets_sold = 0;
         $this->tickets_reserved = 0;
         $this->tickets_sent = false;
         $this->nb_closing_days = self::NB_DAYS_OF_CLOSING;
         $this->min_tickets = 0;
         $this->festivaldays = new ArrayCollection();
+        $this->known_lineup = false;
     }
 
     public function isUncrowdable() {
@@ -215,7 +216,7 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getMinTickets() {
-        if(!$this->hasNoThreshold() && $this->threshold <= 0) {
+        if(!$this->hasNoThreshold() && $this->threshold <= 0 && $this->getStep() != null) {
             return $this->getStep()->getMinTickets();
         }
         else {
@@ -461,7 +462,7 @@ class ContractArtist extends BaseContractArtist
      * @var Step
      *
      * @ORM\ManyToOne(targetEntity="Step")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     protected $step;
 
@@ -504,7 +505,7 @@ class ContractArtist extends BaseContractArtist
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\FestivalDay", inversedBy="festivals")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\FestivalDay", inversedBy="festivals", cascade={"all"})
      */
     private $festivaldays;
 
@@ -887,5 +888,39 @@ class ContractArtist extends BaseContractArtist
         $this->tickets_sold = $ticketsSold;
 
         return $this;
+    }
+
+    /**
+     * Add volunteerProposal
+     *
+     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
+     *
+     * @return ContractArtist
+     */
+    public function addVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
+    {
+        $this->volunteer_proposals[] = $volunteerProposal;
+
+        return $this;
+    }
+
+    /**
+     * Remove volunteerProposal
+     *
+     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
+     */
+    public function removeVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
+    {
+        $this->volunteer_proposals->removeElement($volunteerProposal);
+    }
+
+    /**
+     * Get volunteerProposals
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVolunteerProposals()
+    {
+        return $this->volunteer_proposals;
     }
 }

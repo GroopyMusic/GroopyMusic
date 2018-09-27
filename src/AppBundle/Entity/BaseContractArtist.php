@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
+use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -50,7 +51,20 @@ class BaseContractArtist implements TranslatableInterface
 
     public function __toString()
     {
-        return '' . $this->getTitle();
+        $str ='';
+
+        if($this->isYB()) {
+            $str .= '[Ticked-it] ';
+        }
+
+        $str .= $this->getTitle();
+
+
+        return $str;
+    }
+
+    public function isYB() {
+        return $this instanceof YBContractArtist;
     }
 
     public function __construct() {
@@ -64,7 +78,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->cart_reminder_sent = false;
         $this->refunded = false;
         $this->asking_refund = new ArrayCollection();
-        $this->test_period = true;
+        $this->test_period = false;
         $this->promotions = new ArrayCollection();
         $this->no_threshold = false;
         $this->counterParts = new ArrayCollection();
@@ -428,6 +442,12 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="VIPInscription", mappedBy="contract_artist")
      */
     protected $vip_inscriptions;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="VolunteerProposal", mappedBy="contract_artist")
+     */
+    protected $volunteer_proposals;
 
     /**
      * @var \DateTime
@@ -1149,5 +1169,39 @@ class BaseContractArtist implements TranslatableInterface
     public function getCounterpartsSold()
     {
         return $this->counterparts_sold;
+    }
+
+    /**
+     * Add volunteerProposal
+     *
+     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
+     *
+     * @return BaseContractArtist
+     */
+    public function addVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
+    {
+        $this->volunteer_proposals[] = $volunteerProposal;
+
+        return $this;
+    }
+
+    /**
+     * Remove volunteerProposal
+     *
+     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
+     */
+    public function removeVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
+    {
+        $this->volunteer_proposals->removeElement($volunteerProposal);
+    }
+
+    /**
+     * Get volunteerProposals
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVolunteerProposals()
+    {
+        return $this->volunteer_proposals;
     }
 }

@@ -17,11 +17,18 @@ class CounterPartAdmin extends BaseAdmin
             ->add('getName', null, array(
                 'label' => 'Nom'
             ))
-            ->add('price', null, array(
+
+            ->add('contractArtist', null, array(
+                'label' => 'Evenement',
+            ))
+            ->add('free_price', null, array(
+                'label' => 'Prix libre'
+            ))
+            ->add('semanticPrice', null, array(
                 'label' => 'Prix'
             ))
-            ->add('step', null, array(
-                'label' => 'Palier'
+            ->add('festivaldays', null, array(
+                'label' => 'Jours de festival',
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(
@@ -40,8 +47,8 @@ class CounterPartAdmin extends BaseAdmin
             ->add('price', null, array(
                 'label' => 'Prix'
             ))
-            ->add('step', null, array(
-                'label' => 'Palier'
+            ->add('contractArtist', null, array(
+                'label' => 'Evenement',
             ))
             ->add('maximum_amount', null, array(
                 'label' => 'Nombre max de ventes'
@@ -62,13 +69,31 @@ class CounterPartAdmin extends BaseAdmin
                 ))
             ->end()
             ->with('Autres')
+                ->add('free_price', null, array(
+                    'label' => 'Prix libre ?',
+                    'required' => false,
+                ))
                 ->add('price', null, array(
                     'label' => 'Prix',
                     'required' => true,
                 ))
-                ->add('step', null, array(
-                    'label' => 'Palier',
+                ->add('minimum_price', null, array(
+                    'label' => 'Prix minimum',
                     'required' => true,
+                ))
+                ->add('threshold_increase', null, array(
+                    'label' => 'Contribution au crowdfunding & au soldout',
+                ))
+                ->add('contractArtist', null, array(
+                    'label' => 'Event',
+                    'required' => true,
+                ))
+                ->add('festivaldays', null, array(
+                    'label' => 'Jours de festival auxquels ce ticket donne accès',
+                ))
+                ->add('is_child_entry', null, array(
+                    'label' => 'Ticket enfant',
+                    'required' => false,
                 ))
                 ->add('maximum_amount', null, array(
                     'label' => 'Nombre max de ventes',

@@ -239,4 +239,38 @@ class ContractArtistSales extends BaseContractArtist {
     {
         return $this->counterparts_sold;
     }
+
+    /**
+     * Add volunteerProposal
+     *
+     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
+     *
+     * @return ContractArtistSales
+     */
+    public function addVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
+    {
+        $this->volunteer_proposals[] = $volunteerProposal;
+
+        return $this;
+    }
+
+    /**
+     * Remove volunteerProposal
+     *
+     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
+     */
+    public function removeVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
+    {
+        $this->volunteer_proposals->removeElement($volunteerProposal);
+    }
+
+    /**
+     * Get volunteerProposals
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVolunteerProposals()
+    {
+        return $this->volunteer_proposals;
+    }
 }

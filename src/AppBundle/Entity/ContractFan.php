@@ -126,10 +126,16 @@ class ContractFan
     }
 
     public function getDisplayName() {
+        if($this->getPhysicalPerson() == null) {
+            return 'anonyme' ;
+        }
         return $this->getPhysicalPerson()->getDisplayName();
     }
 
     public function getEmail() {
+        if($this->getPhysicalPerson() == null) {
+            return 'anonyme' ;
+        }
         return $this->getPhysicalPerson()->getEmail();
     }
 
