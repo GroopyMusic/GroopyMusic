@@ -17,7 +17,6 @@
         {% if app.user %}
             <p>{{ 'registration.already_logged.message'|trans({
                     '%eventsUrl%': url('catalog_crowdfundings'),
-                    '%hallsUrl%': url('catalog_halls'),
                     '%artistsUrl%': url('catalog_artists'),
                     '%profileUrl%': url('fos_user_profile_show'),
                 })|raw }}</p>

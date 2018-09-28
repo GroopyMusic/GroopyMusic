@@ -35,7 +35,6 @@ registration:
       <div class="list-group">
         <a class="list-group-item list-group-item-action" href="%eventsUrl%">Onze aankomende festivals</a>
         <a class="list-group-item list-group-item-action" href="%artistsUrl%">Onze artiesten</a>
-        <a class="list-group-item list-group-item-action" href="%hallsUrl%">Onze partnerzalen</a>
         <a class="list-group-item list-group-item-action" href="%profileUrl%">Je account</a>
       </div>
     back: Terug tot homepage

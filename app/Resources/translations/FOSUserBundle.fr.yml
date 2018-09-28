@@ -36,7 +36,6 @@ registration:
       <div class="list-group">
         <a class="list-group-item list-group-item-action" href="%eventsUrl%">Nos festivals à venir</a>
         <a class="list-group-item list-group-item-action" href="%artistsUrl%">Nos artistes</a>
-        <a class="list-group-item list-group-item-action" href="%hallsUrl%">Nos salles partenaires</a>
         <a class="list-group-item list-group-item-action" href="%profileUrl%">Votre compte</a>
       </div>
     back: Retour à l'accueil

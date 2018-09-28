@@ -36,7 +36,6 @@ registration:
       <div class="list-group">
         <a class="list-group-item list-group-item-action" href="%eventsUrl%">Upcoming events</a>
         <a class="list-group-item list-group-item-action" href="%artistsUrl%">Un-Mute artists</a>
-        <a class="list-group-item list-group-item-action" href="%hallsUrl%">Un-Mute concert halls</a>
         <a class="list-group-item list-group-item-action" href="%profileUrl%">Your account</a>
       </div>
     back: Back to homepage
