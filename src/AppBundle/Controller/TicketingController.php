@@ -37,7 +37,7 @@ class TicketingController extends Controller
     {
         $scan_events = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
         $scan_events = array_filter($scan_events, function(ContractArtist $contractArtist) {
-            return $contractArtist->getDateConcert()->diff((new \DateTime()))->days <= 1;
+            return $contractArtist->getLastFestivalDate() >= ((new \DateTime())->modify('+1day'));
         });
 
         $generate_events = $em->getRepository('AppBundle:ContractArtist')->findEligibleForTicketGeneration();
@@ -114,7 +114,7 @@ class TicketingController extends Controller
             $ticket_array = ['error' => 'Cet événement n\'existe pas.'];
         }
 
-        elseif($contractArtist->getDateConcert()->diff((new \DateTime()))->days > 1) {
+        elseif($contractArtist->getLastFestivalDate() < (new \DateTime())->modify('+1day')) {
             $ticket_array = ['error' => "Cet événement n'a pas lieu aujourd'hui."];
         }
 

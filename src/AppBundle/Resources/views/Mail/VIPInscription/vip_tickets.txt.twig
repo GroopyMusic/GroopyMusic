@@ -4,8 +4,6 @@
 
 {% block content %}
     {{ email_content('vip_inscription.copy', {
-        '%host%': contract.artist.artistName,
-        '%hall%': contract.hallConcert.name,
         '%additional_info%': contract.additionalInfo,
     })|raw }}
 {% endblock %}

@@ -336,6 +336,10 @@ class PublicController extends Controller
             return $this->redirectToRoute('tickets_marketplace');
         }
 
+        if($cart->getFinalized() || $cart->getConfirmed() || $cart->getPaid()) {
+            throw $this->createNotFoundException();
+        }
+
         foreach($cart->getContracts() as $contract) {
             $em->persist($contract);
             $rewardSpendingService->setBaseAmount($contract);

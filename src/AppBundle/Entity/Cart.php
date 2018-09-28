@@ -34,6 +34,7 @@ class Cart
         $this->paid = false;
         $this->date_creation = new \Datetime();
         $this->um = $um;
+        $this->finalized = false;
     }
 
     public function getDisplayName() {
@@ -166,6 +167,13 @@ class Cart
      * @ORM\Column(name="paid", type="boolean")
      */
     private $paid;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="finalized", type="boolean")
+     */
+    private $finalized;
 
     /**
      * @var ArrayCollection
@@ -415,5 +423,29 @@ class Cart
     public function getYbOrder()
     {
         return $this->yb_order;
+    }
+
+    /**
+     * Set finalized
+     *
+     * @param boolean $finalized
+     *
+     * @return Cart
+     */
+    public function setFinalized($finalized)
+    {
+        $this->finalized = $finalized;
+
+        return $this;
+    }
+
+    /**
+     * Get finalized
+     *
+     * @return boolean
+     */
+    public function getFinalized()
+    {
+        return $this->finalized;
     }
 }

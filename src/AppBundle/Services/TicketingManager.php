@@ -98,17 +98,21 @@ class TicketingManager
             $directory = self::PH_DIRECTORY;
         }
 
-        $slug = StringHelper::slugify($physicalPerson->getDisplayName()) . (new \DateTime())->format('ymdHis');
+        try {
+            $slug = StringHelper::slugify($physicalPerson->getDisplayName()) . (new \DateTime())->format('ymdHis');
 
-        $path = $directory . $prefix . $slug . '.pdf';
+            $path = $directory . $prefix . $slug . '.pdf';
 
 
-        if(!empty($tickets)) {
-            $agenda = $this->getAgenda($tickets[0]);
-            // Write PDF file
-            $this->writer->writeTickets($path, $tickets, $agenda);
-            // And send it
-            $this->mailDispatcher->sendTicketsForPhysicalPerson($physicalPerson, $contractArtist, $path);
+            if (!empty($tickets)) {
+                $agenda = $this->getAgenda($tickets[0]);
+                // Write PDF file
+                $this->writer->writeTickets($path, $tickets, $agenda);
+                // And send it
+                $this->mailDispatcher->sendTicketsForPhysicalPerson($physicalPerson, $contractArtist, $path);
+            }
+        } catch(\Exception $e) {
+            $this->logger->error('ERREUR !!! ' . $e->getMessage());
         }
 
         // could be one final flush
@@ -256,7 +260,13 @@ class TicketingManager
      */
     public function getTicketsInfoArray(Ticket $ticket)
     {
-        $arr = [
+        $arr = [];
+
+        if ($ticket->getCounterPart() != null) {
+            $arr['Type de ticket'] = $ticket->getCounterPart()->__toString();
+        }
+
+        $arr = array_merge($arr, [
             'Identifiant du ticket' => $ticket->getId(),
             'Acheteur' => $ticket->getName(),
             'Prix' => $ticket->getPrice() . ' €',
@@ -264,14 +274,10 @@ class TicketingManager
             'validated' => $ticket->getValidated(),
             'refunded' => $ticket->isRefunded(),
             'rewards' => $ticket->getRewards()
-        ];
+        ]);
 
         if($ticket->getDateValidated() != null) {
             $arr['Heure du scan'] = $ticket->getDateValidated()->format('d/m/Y H:i');
-        }
-
-        if ($ticket->getCounterPart() != null) {
-            $arr['Type de ticket'] = $ticket->getCounterPart()->__toString();
         }
 
         if ($ticket->getContractFan() != null) {

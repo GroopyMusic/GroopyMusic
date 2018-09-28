@@ -24,9 +24,9 @@ subjects:
       details: Les détails de votre festival
     fan:
       known_outcome: "Festival de %artist% : résultat des courses"
-      tickets: Vos tickets Un-Mute pour %artist%
+      tickets: Vos tickets Un-Mute sont arrivés
       # TODO add pluralization
-      viptickets: Vos tickets Un-Mute pour %artist% 
+      viptickets: Vos tickets Un-Mute
   refunded_payment: Nous avons remboursé vos tickets 
   artist_validated: Votre artiste sur Un-Mute a été vérifié 
   reward_attribution: Nouvelle récompense 
@@ -78,16 +78,15 @@ concert:
     tickets: |
       Bonjour %username%,
 
-      Nous voici à quelques jours du festival du %date% dans la salle "%hall%" dont la tête d'affiche est %host%. %invited%
+      Nous voici à quelques jours de l'événement "%festival_title%".
 
       Vous trouverez votre ou vos ticket(s) en pièce jointe (format PDF).
 
-      Nous vous demandons de bien vouloir le(s) présenter le soir du festival car il s'agira de votre laissez-passer.
+      Nous vous demandons de bien vouloir le(s) présenter le jour du festival car il s'agira de votre laissez-passer.
 
       %additional_info%
 
       Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
-
     
     vip_tickets: |
       Bonjour,

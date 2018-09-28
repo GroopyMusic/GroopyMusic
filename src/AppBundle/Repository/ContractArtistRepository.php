@@ -140,7 +140,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         return $this->queryVisible()
             ->leftJoin('c.contractsFan', 'cf')
             ->addSelect('cf')
-            ->andWhere('c.successful = 1 OR c.tickets_sold >= c.min_tickets')
+            ->andWhere('c.successful = 1 OR c.tickets_sold >= c.threshold')
             ->andWhere('c.failed = 0')
             ->getQuery()
             ->getResult();

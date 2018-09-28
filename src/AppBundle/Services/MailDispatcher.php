@@ -316,30 +316,15 @@ class MailDispatcher
         $to = [$physicalPerson->getEmail()];
 
         $subject = 'subjects.concert.fan.viptickets';
-        $subject_params = ['%artist%' => $contractArtist->getArtist()->getArtistname()];
+        $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::VIP_TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }
 
     public function sendTicketsForContractFan(ContractFan $cf, ContractArtist $ca)
     {
-        $firstParts = $ca->getCoartists();
-
-        $first = null;
-        $second = null;
-
-        if (!empty($firstParts)) {
-            if (isset($firstParts[0]))
-                $first = $firstParts[0];
-            if (isset($firstParts[1]))
-                $second = $firstParts[1];
-        }
-
         $params = [
-            'artist' => $ca->getArtist(),
             'contract' => $ca,
-            'first' => $first,
-            'second' => $second,
             'username' => $cf->getFan()->getFirstname(),
         ];
 
@@ -349,7 +334,7 @@ class MailDispatcher
         $toName = [$cf->getFan()->getDisplayName()];
 
         $subject = 'subjects.concert.fan.tickets';
-        $subject_params = ['%artist%' => $ca->getArtist()->getArtistname()];
+        $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
     }

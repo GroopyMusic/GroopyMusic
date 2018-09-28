@@ -48,7 +48,7 @@ class PaymentController extends Controller
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
         /** @var Cart $cart */
-        if ($cart == null || count($cart->getContracts()) == 0) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->isPaid()) {
             throw $this->createAccessDeniedException("Pas de panier, pas de paiement !");
         }
 
@@ -120,7 +120,7 @@ class PaymentController extends Controller
                 $payment->setChargeId($charge->id);
                 $em->persist($payment);
 
-                $cart->setConfirmed(true)->setPaid(true);
+                $cart->setPaid(true);
 
                 /* foreach($cart->getContracts() as $contract) {
                      $contract_artist = $contract->getContractArtist();
@@ -173,12 +173,18 @@ class PaymentController extends Controller
 
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
 
+        if(!$cart->isPaid() || $cart->getConfirmed()) {
+            throw $this->createNotFoundException();
+        }
+
         $this->addFlash('notice', $translator->trans('notices.payment'));
         if ($request->get('sponsorship')) {
             $this->addFlash('notice', $translator->trans('notices.sponsorship.cart_success', []));
         }
 
         $writer->writeOrder($cart);
+
+        $cart->setConfirmed(true);
 
         $em->flush();
 
@@ -193,12 +199,19 @@ class PaymentController extends Controller
         $em = $this->getDoctrine()->getManager();
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
 
+        if(!$cart->isPaid() || !$cart->getConfirmed() || $cart->getFinalized()) {
+            throw $this->createNotFoundException();
+        }
+
         $dispatcher->sendOrderRecap($cart);
         foreach($cart->getContracts() as $cf) {
             if ($cf->getContractArtist() instanceof ContractArtist && $cf->getContractArtist()->getCounterPartsSent()) {
                 $ticketingManager->sendUnSentTicketsForContractFan($cf);
             }
         }
+
+        $cart->setFinalized(true);
+        $em->flush();
 
         return $this->redirectToRoute('user_paid_carts',['is_payment' => false]); // $request->get('is_payment')]);
     }

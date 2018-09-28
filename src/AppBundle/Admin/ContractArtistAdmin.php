@@ -113,7 +113,7 @@ class ContractArtistAdmin extends BaseAdmin
                     'label' => 'Tickets bookés (total)',
                 ))
                 ->add('nbCounterPartsSoldOrganic', null, array(
-                    'label' => '# tickets payés',
+                    'label' => 'Dont tickets payés',
                 ))
                 ->add('nbCounterPartsObtainedByPromotion', null, array(
                     'label' => 'Dont tickets obtenus par promotion',

@@ -271,7 +271,6 @@ class UserController extends Controller
      */
     public function changeEmailAction(Request $request, UserInterface $user, TokenGeneratorInterface $token_gen)
     {
-
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm(UserEmailType::class, $user);
