@@ -520,13 +520,14 @@ class ContractArtist extends BaseContractArtist
         }
 
         foreach($this->getPurchases() as $purchase) {
+            /** @var Purchase $purchase */
             if(!empty($purchase->getArtists()) && count($purchase->getArtists()) > 0) {
                 foreach($purchase->getArtists() as $artist) {
-                    $scoresList[$artist->getId()]++;
+                    $scoresList[$artist->getId()] = $scoresList[$artist->getId()] + $purchase->getThresholdIncrease();
                 }
             }
             else {
-                $scoresList['all']++;
+                $scoresList['all'] = $scoresList['all'] + $purchase->getThresholdIncrease();
             }
         }
 

@@ -25,9 +25,12 @@ class ArtistPerformance
     }
 
     public function getTimeEnd() {
-        $time2 = clone $this->time;
-        $time2->modify('+'.$this->duration.'minutes');
-        return $time2;
+        if($this->time != null) {
+            $time2 = clone $this->time;
+            $time2->modify('+'.$this->duration.'minutes');
+            return $time2;
+        }
+        return $this->time;
     }
 
     /**

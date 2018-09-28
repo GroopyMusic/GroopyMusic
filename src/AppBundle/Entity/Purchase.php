@@ -32,7 +32,7 @@ class Purchase
         $str .= $this->counterpart . ' (x' . $this->quantity . ')';
 
         if(!empty($this->getArtists() && count($this->getArtists()) > 0)) {
-            $str .= 'pour ';
+            $str .= ' pour ';
             $i = 0;
             foreach($this->getArtists() as $artist) {
                 if($i > 0) {
