@@ -116,6 +116,9 @@
 {% endblock %}
 
 {% block side_bar_after_nav %}
+    <p class="text-center" style="border-top: 1px solid #444444; padding-top: 10px">
+        <a href="{{url('yb_members_dashboard') }}">Tableau de bord Ticked-it</a>
+    </p>
     {% if app.environment == 'dev' %}
         <p class="text-center" style="border-top: 1px solid #444444; padding-top: 10px">
             <a href="{{ path('jms_translation_index') }}">Traductions</a>

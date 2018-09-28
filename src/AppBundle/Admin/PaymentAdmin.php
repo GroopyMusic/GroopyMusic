@@ -30,7 +30,7 @@ class PaymentAdmin extends BaseAdmin
                 'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
-            ->add('contractArtists', null, array(
+            ->add('contractArtistsText', null, array(
                 'label' => 'Evenements',
             ))
             ->add('date', null, array(
@@ -64,7 +64,7 @@ class PaymentAdmin extends BaseAdmin
                 'label' => 'Membre',
                 'route' => array('name' => 'show'),
             ))
-            ->add('contractArtists', null, array(
+            ->add('contractArtistsText', null, array(
                 'label' => 'Evenements',
             ))
             ->add('date', null, array(
@@ -93,12 +93,12 @@ class PaymentAdmin extends BaseAdmin
             'Stripe ID' => 'chargeId',
             'Remboursé' => 'refunded',
             'Nom acheteur' => 'displayName',
-            'Evénement' => 'contractArtist',
+            'Evénement(s)' => 'contractArtistsText',
+            'Achats' => 'purchasesText',
             'Montant' => 'amount',
             'Nombre de tickets obtenus' => 'counterPartsQuantity',
             'dont payés' => 'counterPartsQuantityOrganic',
             'dont promotion' => 'counterPartsQuantityPromotional'
         ];
-
     }
 }

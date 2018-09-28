@@ -20,7 +20,7 @@ class Cart
     {
         $str = 'Panier de ' . $this->getDisplayName();
 
-        if($this->paid) {
+        if($this->getFirst() != null && $this->getFirst()->getPaid()) {
             $str .= ' payé le ' . $this->date_creation->format('d/m/Y');
         }
 
@@ -105,7 +105,7 @@ class Cart
 
     // Unmapped
     private $amount = null;
-    public function getAmount() : int {
+    public function getAmount()  {
         if($this->amount == null) {
             $this->amount = array_sum(array_map(function($contract) {
                 /** @var ContractFan $contract */

@@ -31,10 +31,23 @@ class Payment
         $this->asking_refund = new ArrayCollection();
     }
 
+    public function isYB() {
+        return $this->getContractsFan()[0]->getContractArtist()->isYB();
+    }
+
+    private $contractArtists = null;
     public function getContractArtists() {
-        return join(',', array_unique(array_map(function(ContractFan $cf) {
-            return $cf->getContractArtist();
-        }, $this->getContractsFan())));
+        if($this->contractArtists == null) {
+            $this->contractArtists = array_unique(array_map(function(ContractFan $cf) {
+                return $cf->getContractArtist();
+            }, $this->getContractsFan()));
+        }
+
+        return $this->contractArtists;
+    }
+    
+    public function getContractArtistsText() {
+        return join(', ', $this->getContractArtists());
     }
     
     public function getDisplayName() {
@@ -100,6 +113,10 @@ class Payment
             }
         }
         return $this->purchases;
+    }
+
+    public function getPurchasesText() {
+        return join(', ', $this->getPurchases());
     }
 
     /**

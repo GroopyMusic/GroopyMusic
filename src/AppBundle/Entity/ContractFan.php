@@ -184,6 +184,13 @@ class ContractFan
         return $this->cart->getPaid() && !$this->refunded;
     }
 
+    public function getUserExport() {
+        if($this->getUser() != null) {
+            return $this->getUser()->getDisplayName() . ' (#' . $this->getUser()->getId() . ')';
+        }
+        return '';
+    }
+
     public function getCounterPartsQuantity()
     {
         return array_sum(array_map(function (Purchase $purchase) {
@@ -274,6 +281,18 @@ class ContractFan
             $i++;
         }
         return join(', ', $exportList);
+    }
+
+    public function getTicketsExport() {
+        return join(', ', array_map(function(Ticket $ticket) { return $ticket->getBarcodeText(); }, $this->tickets->toArray()));
+    }
+
+    public function getPaymentExport() {
+        return $this->getPayment()->getChargeId();
+    }
+
+    public function getContractArtistExport() {
+        return $this->getContractArtist()->__toString();
     }
 
     /**
@@ -383,7 +402,7 @@ class ContractFan
     /**
      * Get contractArtist
      *
-     * @return \AppBundle\Entity\ContractArtist
+     * @return \AppBundle\Entity\BaseContractArtist
      */
     public function getContractArtist()
     {
@@ -660,7 +679,12 @@ class ContractFan
      */
     public function getAmount()
     {
-        return $this->amount;
+        if($this->amount > 0)
+            return $this->amount;
+
+        return array_sum(array_map(function(Purchase $purchase) {
+            return $purchase->getAmount();
+        }, $this->purchases->toArray()));
     }
 
     /**

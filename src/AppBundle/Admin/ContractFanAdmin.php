@@ -21,6 +21,7 @@ class ContractFanAdmin extends BaseAdmin
     {
         $list
             ->add('id')
+            ->add('date')
             ->add('displayName', null, array(
                 'label' => 'Acheteur',
             ))
@@ -35,9 +36,14 @@ class ContractFanAdmin extends BaseAdmin
             ->add('paid', 'boolean', array(
                 'label' => 'Payé'
             ))
-            ->add('cart', null, array(
-                'label' => 'Panier correspondant',
-                'route' => array('name' => 'show'),
+            ->add('amount', null, array(
+                'label' => 'Montant'
+            ))
+            ->add('purchasesExport', null, array(
+                'label' => 'Achats',
+            ))
+            ->add('ticketsExport', null, array(
+                'label' => 'Tickets',
             ))
             ->add('_action', 'actions', array(
                     'actions' => array(
@@ -98,6 +104,11 @@ class ContractFanAdmin extends BaseAdmin
                     'label' => 'Tickets envoyés',
                 ))
             ->end()
+            ->with('Tickets')
+                ->add('ticketsExport', null, array(
+                    'label' => 'Tickets',
+                ))
+            ->end()
             ->with('Récompenses')
             ->add('user_rewards', null, array(
                 'label' => 'Récompenses utilisées',
@@ -109,5 +120,17 @@ class ContractFanAdmin extends BaseAdmin
             ))
             ->end()
         ;
+    }
+
+    public function getExportFields()
+    {
+        return array_merge(parent::getExportFields(), [
+            'id paiement' => 'paymentExport',
+            'Evenement' => 'contractArtistExport',
+            'Achats' => 'purchasesExport',
+            'Acheteur' => 'displayName',
+            'Membre' => 'userExport',
+            'Tickets' => 'ticketsExport',
+        ]);
     }
 }
