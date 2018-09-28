@@ -107,10 +107,13 @@ class ContractArtistAdmin extends BaseAdmin
             ->end()
             ->with('Statistiques de vente')
                 ->add('totalBookedTickets', null, array(
+                    'label' => 'Tickets bookés (pondéré)',
+                ))
+                ->add('totalBookedTicketsRaw', null, array(
                     'label' => 'Tickets bookés (total)',
                 ))
                 ->add('nbCounterPartsSoldOrganic', null, array(
-                    'label' => 'Dont tickets payés',
+                    'label' => '# tickets payés',
                 ))
                 ->add('nbCounterPartsObtainedByPromotion', null, array(
                     'label' => 'Dont tickets obtenus par promotion',
@@ -166,9 +169,14 @@ class ContractArtistAdmin extends BaseAdmin
                 ))
             ->end()
             ->with('Soutien')
-                ->add('contractsFanPaid', 'array', array(
+                ->add('artistScoresExport', null, array(
+                    'label' => 'Scores des artistes',
+                ))
+                ->add('nbOrdersPaid', null, array(
+                    'label' => 'Nombre de commandes payées',
+                ))
+                ->add('contractsFanExport', null, array(
                     'label' => 'Commandes payées',
-                    'route' => array('name' => 'show'),
                 ))
                 ->add('vip_inscriptions', null, array(
                     'label' => "Demandes d'accréditations",
@@ -261,8 +269,7 @@ class ContractArtistAdmin extends BaseAdmin
             'Date de création' => 'date',
             'Date de début des ventes officielles' => 'start_date',
             'Date limite pour objectif' => 'dateEnd',
-            'Artiste' => 'artist.artistname',
-            '# Artiste' => 'artist.id',
+            'Jours de festival' => 'festivalDaysExport',
             'Motivations' => 'motivations',
             'Amassé brut' => 'collected_amount',
             'Réussi' => 'successful',
@@ -277,9 +284,9 @@ class ContractArtistAdmin extends BaseAdmin
             'Seuil' => 'min_tickets',
             'Tickets pour sold out' => 'maxTickets',
             'Tickets encore en vente' => 'crowdable',
-            'Artistes invités' => 'coartistsExport',
-            'Nombre de paiements (non remboursés)' => 'nbPayments',
-            'Paiements (non remboursés)' => 'paymentsExport',
+            'Nombre de commandes validées' => 'nbOrdersPaid',
+            'Commandes validées' => 'contractsFanExport',
+            'Scores des artistes' => 'artistScoresExport',
             'Promotions' => 'promotionsExport',
         ];
     }

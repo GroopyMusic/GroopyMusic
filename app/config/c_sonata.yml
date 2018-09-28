@@ -13,12 +13,12 @@ sonata_admin:
              position: left
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.user, app.admin.group.contact, app.admin.group.content]
+               groups: [app.admin.group.user, app.admin.group.contact, app.admin.group.conditions, app.admin.group.content]
            -
              position: right
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.user_management, app.admin.group.conditions, app.admin.group.events, app.admin.group.orders]
+               groups: [app.admin.group.events, app.admin.group.orders, app.admin.group.user_management]
 
        groups:
            app.admin.group.user:

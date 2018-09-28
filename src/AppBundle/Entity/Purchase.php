@@ -27,7 +27,25 @@ class Purchase
 
     public function __toString()
     {
-        return $this->counterpart . ' (x' . $this->quantity . ')' . $this->getActuallyAppliedPromotionsString();
+        $str = '';
+
+        $str .= $this->counterpart . ' (x' . $this->quantity . ')';
+
+        if(!empty($this->getArtists() && count($this->getArtists()) > 0)) {
+            $str .= 'pour ';
+            $i = 0;
+            foreach($this->getArtists() as $artist) {
+                if($i > 0) {
+                    $str .= ', ';
+                }
+                $str .= $artist->getArtistname();
+                $i++;
+            }
+        }
+
+        $str .= $this->getActuallyAppliedPromotionsString();
+
+        return $str;
     }
 
     public function getDisplayWithAmount() {
@@ -61,6 +79,8 @@ class Purchase
         foreach ($this->getActuallyAppliedPromotions() as $promotion) {
             $string .= ' - ' . $promotion;
         }
+
+        return $string;
     }
 
     public function addQuantity($q)

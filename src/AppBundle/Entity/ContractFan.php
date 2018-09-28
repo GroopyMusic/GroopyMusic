@@ -272,12 +272,18 @@ class ContractFan
         }
     }
 
-    public function getPurchasesExport() {
+    public function getPurchasesExport($details = false) {
         $exportList = array();
         $i = 1;
         foreach ($this->getPurchases() as $key => $val) {
-            /** @var $val Artist */
-            $exportList[] = $val->__toString();
+            /** @var $val Purchase */
+
+            $str = '';
+            if($details) {
+                $str .= $this->getDisplayName() . ' - ' . $val->getAmount() . '€ - ';
+            }
+            $str .= $val->__toString();
+            $exportList[] = $str;
             $i++;
         }
         return join(', ', $exportList);
@@ -313,7 +319,7 @@ class ContractFan
     private $cart;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="contractsFan")
+     * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="contractsFan", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $contractArtist;

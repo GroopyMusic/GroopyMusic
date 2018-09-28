@@ -21,6 +21,9 @@ class CounterPartAdmin extends BaseAdmin
             ->add('contractArtist', null, array(
                 'label' => 'Evenement',
             ))
+            ->add('is_child_entry', null, array(
+                'label' => 'Ticket enfant'
+            ))
             ->add('free_price', null, array(
                 'label' => 'Prix libre'
             ))
@@ -30,9 +33,14 @@ class CounterPartAdmin extends BaseAdmin
             ->add('festivaldays', null, array(
                 'label' => 'Jours de festival',
             ))
+            ->add('maximum_amount', null, array(
+                'label' => 'Sold out',
+            ))
+            ->add('threshold_increase', null, array(
+                'label' => 'Poids',
+            ))
             ->add('_action', 'actions', array(
                 'actions' => array(
-                    'show' => array(),
                     'edit' => array(),
                 )))
         ;

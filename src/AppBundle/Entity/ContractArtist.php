@@ -165,6 +165,10 @@ class ContractArtist extends BaseContractArtist
         return $this->tickets_reserved + $this->getCounterpartsSold();
     }
 
+    public function getTotalBookedTicketsRaw() {
+        return $this->tickets_reserved + $this->getNbCounterPartsPaid();
+    }
+
     public function getTotalBookedTicketsMajored() {
         return min($this->getTotalBookedTickets(), $this->getMaxTickets());
     }
@@ -397,10 +401,8 @@ class ContractArtist extends BaseContractArtist
         return $this->getTicketsSent();
     }
 
-    public function getNbPayments() {
-        return count(array_filter($this->payments->toArray(), function($elem) {
-            return !$elem->getRefunded();
-        }));
+    public function getNbOrdersPaid() {
+        return count($this->getContractsFanPaid());
     }
 
     // unmapped, memoized
@@ -456,6 +458,89 @@ class ContractArtist extends BaseContractArtist
         }
         $this->genres = array_unique($genres);
         return $this->genres;
+    }
+
+    public function getFestivalDaysExport() {
+        $i = 1;
+        $exportList = [];
+        foreach($this->getFestivaldays() as $festivalday) {
+            /** @var FestivalDay $festivalday */
+            $str = 'JOUR ' . $i . ' (' . $festivalday->getDate()->format('d/m/Y H:i') . ')  : ';
+
+            $j = 0;
+            foreach($festivalday->getArtistPerformances() as $performance) {
+                if($j > 0)
+                    $str .= ', ';
+
+                $str .= $performance->__toString();
+
+                $j++;
+            }
+
+            $i++;
+            $exportList[] = $str;
+        }
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
+    }
+
+    public function getContractsFanExport() {
+        $cfs = $this->getContractsFanPaid();
+
+        $cfs = array_map(function(ContractFan $cf) {
+            return $cf->getPurchasesExport(true);
+        }, $cfs);
+
+        return '<pre>' . join(PHP_EOL, $cfs) . '</pre>';
+    }
+
+    protected $purchases = null;
+    public function getPurchases() {
+        if($this->purchases == null) {
+            $cfs = $this->getContractsFanPaid();
+            $purchases = [];
+            foreach($cfs as $cf) {
+                /** @var ContractFan $cf */
+                foreach($cf->getPurchases() as $purchase) {
+                    $purchases[] = $purchase;
+                }
+            }
+            $this->purchases = $purchases;
+        }
+       return $this->purchases;
+    }
+
+    public function getArtistScoresExport() {
+        $scoresList = [];
+        $artists = [];
+
+        $scoresList['all'] = 0;
+        foreach($this->getAllArtists() as $artist) {
+            $scoresList[$artist->getId()] = 0;
+            $artists[$artist->getId()] = $artist->getArtistname();
+        }
+
+        foreach($this->getPurchases() as $purchase) {
+            if(!empty($purchase->getArtists()) && count($purchase->getArtists()) > 0) {
+                foreach($purchase->getArtists() as $artist) {
+                    $scoresList[$artist->getId()]++;
+                }
+            }
+            else {
+                $scoresList['all']++;
+            }
+        }
+
+        $exportList = [];
+        foreach($scoresList as $key => $value) {
+            if($key != 'all') {
+                $exportList[] = $artists[$key] . '  : ' . $value;
+            }
+            else {
+                $exportList[] = 'Sans artiste particulier : ' . $value;
+            }
+        }
+
+        return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
     /**
@@ -689,16 +774,6 @@ class ContractArtist extends BaseContractArtist
     }
 
     /**
-     * Get noThreshold
-     *
-     * @return boolean
-     */
-    public function getNoThreshold()
-    {
-        return $this->no_threshold;
-    }
-
-    /**
      * Add festivalday
      *
      * @param \AppBundle\Entity\FestivalDay $festivalday
@@ -733,150 +808,6 @@ class ContractArtist extends BaseContractArtist
     }
 
     /**
-     * Add counterPart
-     *
-     * @param \AppBundle\Entity\CounterPart $counterPart
-     *
-     * @return ContractArtist
-     */
-    public function addCounterPart(\AppBundle\Entity\CounterPart $counterPart)
-    {
-        $this->counterParts[] = $counterPart;
-
-        return $this;
-    }
-
-    /**
-     * Set globalSoldout
-     *
-     * @param integer $globalSoldout
-     *
-     * @return ContractArtist
-     */
-    public function setGlobalSoldout($globalSoldout)
-    {
-        $this->global_soldout = $globalSoldout;
-
-        return $this;
-    }
-
-    /**
-     * Get globalSoldout
-     *
-     * @return integer
-     */
-    public function getGlobalSoldout()
-    {
-        return $this->global_soldout;
-    }
-
-    /**
-     * Set photo
-     *
-     * @param \AppBundle\Entity\Photo $photo
-     *
-     * @return ContractArtist
-     */
-    public function setPhoto(\AppBundle\Entity\Photo $photo = null)
-    {
-        $this->photo = $photo;
-
-        return $this;
-    }
-
-    /**
-     * Get photo
-     *
-     * @return \AppBundle\Entity\Photo
-     */
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    /**
-     * Add campaignPhoto
-     *
-     * @param \AppBundle\Entity\Photo $campaignPhoto
-     *
-     * @return ContractArtist
-     */
-    public function addCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
-    {
-        $this->campaign_photos[] = $campaignPhoto;
-
-        return $this;
-    }
-
-    /**
-     * Remove campaignPhoto
-     *
-     * @param \AppBundle\Entity\Photo $campaignPhoto
-     */
-    public function removeCampaignPhoto(\AppBundle\Entity\Photo $campaignPhoto)
-    {
-        $this->campaign_photos->removeElement($campaignPhoto);
-    }
-
-    /**
-     * Get campaignPhotos
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCampaignPhotos()
-    {
-        return $this->campaign_photos;
-    }
-
-    /**
-     * Set threshold
-     *
-     * @param integer $threshold
-     *
-     * @return ContractArtist
-     */
-    public function setThreshold($threshold)
-    {
-        $this->threshold = $threshold;
-
-        return $this;
-    }
-
-    /**
-     * Get threshold
-     *
-     * @return integer
-     */
-    public function getThreshold()
-    {
-        return $this->threshold;
-    }
-
-    /**
-     * Set counterpartsSold
-     *
-     * @param float $counterpartsSold
-     *
-     * @return ContractArtist
-     */
-    public function setCounterpartsSold($counterpartsSold)
-    {
-        $this->counterparts_sold = $counterpartsSold;
-
-        return $this;
-    }
-
-    /**
-     * Get counterpartsSold
-     *
-     * @return float
-     */
-    public function getCounterpartsSold()
-    {
-        return $this->counterparts_sold;
-    }
-
-    /**
      * Set ticketsSold
      *
      * @param integer $ticketsSold
@@ -890,37 +821,4 @@ class ContractArtist extends BaseContractArtist
         return $this;
     }
 
-    /**
-     * Add volunteerProposal
-     *
-     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
-     *
-     * @return ContractArtist
-     */
-    public function addVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
-    {
-        $this->volunteer_proposals[] = $volunteerProposal;
-
-        return $this;
-    }
-
-    /**
-     * Remove volunteerProposal
-     *
-     * @param \AppBundle\Entity\VolunteerProposal $volunteerProposal
-     */
-    public function removeVolunteerProposal(\AppBundle\Entity\VolunteerProposal $volunteerProposal)
-    {
-        $this->volunteer_proposals->removeElement($volunteerProposal);
-    }
-
-    /**
-     * Get volunteerProposals
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getVolunteerProposals()
-    {
-        return $this->volunteer_proposals;
-    }
 }
