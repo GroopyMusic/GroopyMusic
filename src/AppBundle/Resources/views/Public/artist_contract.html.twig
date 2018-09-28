@@ -53,12 +53,33 @@
     {% set tickets_left = contract.totalNbAvailable %}
     {% if contract.festivalHalls is not empty and contract.festivalDays is not empty %}
     <section class="container-fluid position-relative" style="padding-top: 1.2rem !important;">
+
         <div class="row mt-4">
+
+            <div class="col-12">
+                {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
+                    <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block"
+                                           src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.tickets'|trans|raw }}
+                    </p>
+                {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
+                    <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
+                                           src="{{ asset('images/icons/artist.png') }}"/> C'est le dernier jour de campagne ! C'est le moment de soutenir les artistes de ce Festival !
+                    </p>
+                {% endif %}
+
+                {% for promo in contract.currentPromotions if not contract.inTestPeriod %}
+                    <p class="p-promo mt-3">{{ 'event.promo'|trans({'%end_date%': promo.endDate|date('d/m/Y'), '%nb_organic_needed%': promo.nbOrganicNeeded, '%nb_promotional%': promo.nbPromotional})|raw }}</p>
+                {% endfor %}
+            </div>
+
             <div class="col-12 col-lg-8">
                 <div class="col-12 content-box">
 
                     <h3 class="text-primary text-center alt-title"><i class="fas fa-music"></i> {{ 'event.lineup.title'|trans|raw }}</h3>
                     <div class="content-box-content">
+
+
+
                         {% for day in contract.festivalDays %}
                             <h4{% if not loop.first %} class="pt-3"{% endif %}>{{ ('Days ' ~ day.date|date('w'))|trans }} {{ day.date|date('j') }} {{ ('months.' ~ day.date|date('m'))|trans }} {{ day.date|date('Y') }}</h4>
                             <table class="table">
@@ -98,19 +119,6 @@
                 </div>
             </div>
 
-            {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
-                <p class="p-info"><img width="70" class="um-icon float-left float-md-none d-none d-sm-inline-block"
-                                       src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.tickets'|trans|raw }}
-                </p>
-            {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-                <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
-                                       src="{{ asset('images/icons/artist.png') }}"/>{{ 'event.lastday.deadline'|trans({'%artist%': artist.artistname})|raw }}
-                </p>
-            {% endif %}
-
-            {% for promo in contract.currentPromotions if not contract.inTestPeriod %}
-                <p class="p-promo mt-3">{{ 'event.promo'|trans({'%end_date%': promo.endDate|date('d/m/Y'), '%nb_organic_needed%': promo.nbOrganicNeeded, '%nb_promotional%': promo.nbPromotional})|raw }}</p>
-            {% endfor %}
 
             {% if not contract.hasNoDefinedHall %}
                 <div class="col-12 col-lg-4 content-box">

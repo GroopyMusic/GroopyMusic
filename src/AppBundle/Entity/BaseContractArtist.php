@@ -183,7 +183,7 @@ class BaseContractArtist implements TranslatableInterface
     }
 
     public function getFirstCounterPart() {
-        foreach($this->getStep()->getCounterParts() as $cp) {
+        foreach($this->getCounterParts() as $cp) {
             return $cp;
         }
         return null;
