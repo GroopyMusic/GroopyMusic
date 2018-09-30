@@ -103,7 +103,6 @@ class TicketingManager
 
             $path = $directory . $prefix . $slug . '.pdf';
 
-
             if (!empty($tickets)) {
                 $agenda = $this->getAgenda($tickets[0]);
                 // Write PDF file

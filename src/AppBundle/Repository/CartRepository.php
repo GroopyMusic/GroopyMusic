@@ -25,12 +25,32 @@ class CartRepository extends \Doctrine\ORM\EntityRepository
     }
 
     public function findCurrentForUser(User $user) {
+        $result = $this->createQueryBuilder('c')
+            ->where('c.user = :user')
+            ->andWhere('c.confirmed = 0')
+            ->orderBy('c.id', 'desc')
+            ->setMaxResults(1)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+
+        if(is_array($result) && isset($result[0])) {
+            return $result[0];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public function findCurrentsForUser(User $user) {
         return $this->createQueryBuilder('c')
             ->where('c.user = :user')
             ->andWhere('c.confirmed = 0')
+            ->orderBy('c.id', 'desc')
+            ->setMaxResults(1)
             ->setParameter('user', $user)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
             ;
     }
 

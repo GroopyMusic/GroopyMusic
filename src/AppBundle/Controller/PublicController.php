@@ -71,12 +71,12 @@ class PublicController extends Controller
 
     private function cleanCart(Cart $cart, $em)
     {
-        if ($cart->getPaid() && $cart->getConfirmed()) {
+       if ($cart->getPaid() && $cart->getConfirmed()) {
             return $this->createCartForUser($cart->getUser());
         } else {
             foreach ($cart->getContracts() as $contract) {
                 $cart->removeContract($contract);
-                $em->remove($contract);
+                $this->getDoctrine()->getManager()->remove($contract);
             }
             return $cart;
         }
@@ -84,15 +84,12 @@ class PublicController extends Controller
 
     private function handleCheckout($cfs, $user, EntityManagerInterface $em, Request $request) {
         /** @var Cart $cart */
+        $cart = null;
         if ($user != null) {
             $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
         }
 
-        if (!isset($cart) || $cart == null) {
             $cart = $this->createCartForUser($user);
-        } else {
-            $cart = $this->cleanCart($cart, $em);
-        }
 
         foreach($cfs as $cf) {
             /** @var ContractFan $cf */
@@ -344,7 +341,6 @@ class PublicController extends Controller
             $em->persist($contract);
             $rewardSpendingService->setBaseAmount($contract);
             foreach($contract->getPurchases() as $purchase) {
-                echo($purchase->getAmount());
                 if($purchase->getAmount() == 0) {
                     $contract->removePurchase($purchase);
                 }
