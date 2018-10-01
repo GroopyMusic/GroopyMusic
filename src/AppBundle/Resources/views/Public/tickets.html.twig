@@ -9,6 +9,7 @@
         {% if form.contracts is not empty %}
         {{ form_start(form) }}
 
+            {% set nb_contracts_ok = 0 %}
         {% for contract in form.contracts %}
             <section class="position-relative rounded{% if not loop.first %} mt-5{% endif %}">
                 {% set contractArtist = contract.vars.data.contractArtist %}
@@ -26,72 +27,80 @@
                 </div>
 
                 <div class="position-relative px-3">
-
-                    <div class="row d-none d-md-flex p-3 counterparts-header">
-                        <div class="col-md-3 um-label-bold">
-                            Ticket
-                        </div>
-                        <div class="col-6 col-md-4 my-auto um-label-bold">
-                            Description
-                        </div>
-                        <div class="col-6 col-md-2 my-auto um-label-bold">
-                            Prix
-                        </div>
-                        <div class="col-6 col-md-3 my-auto um-label-bold">
-                            Quantité
-                        </div>
-                    </div>
-
-                    {% for purchase in contract.children.purchases %}
-                        <div class="row counterpart-form border">
-                            
-                        {% set counterpart = purchase.vars.value.counterpart %}
-                            <div class="col-6 col-md-3 py-2 my-auto">
-                                <div>{{ form_errors(purchase) }}</div>
-                                <label class="counterpart-label"><i class="fas fa-ticket-alt"></i> {{ counterpart.name }}</label>
+                    {% if contractArtist.crowdable %}
+                        {% set nb_contracts_ok = nb_contracts_ok + 1 %}
+                        <div class="row d-none d-md-flex p-3 counterparts-header">
+                            <div class="col-md-3 um-label-bold">
+                                Ticket
                             </div>
-
-                            <div class="col-6 col-md-4 py-2 my-auto">
-                                {{ counterpart.getDescription|raw }}
+                            <div class="col-6 col-md-4 my-auto um-label-bold">
+                                Description
                             </div>
-
-                            <div class="col-6 col-md-2 py-2 my-auto">
-                                {{ counterpart.price }} €
+                            <div class="col-6 col-md-2 my-auto um-label-bold">
+                                Prix
                             </div>
+                            <div class="col-6 col-md-3 my-auto um-label-bold">
+                                Quantité
+                            </div>
+                        </div>
 
-                            <div class="col-6 col-md-3 py-2 my-auto">
-                                <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
-                                    <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                    {{ form_widget(purchase.quantity) }}
-                                    <a class="incr-btn" data-action="increase"
-                                       data-max="{{ contractArtist.nbAvailable(counterpart) }}"
-                                       href="#">&plus;</a>
+                        {% for purchase in contract.children.purchases %}
+                            <div class="row counterpart-form border">
+
+                            {% set counterpart = purchase.vars.value.counterpart %}
+                                <div class="col-6 col-md-3 py-2 my-auto">
+                                    <div>{{ form_errors(purchase) }}</div>
+                                    <label class="counterpart-label"><i class="fas fa-ticket-alt"></i> {{ counterpart.name }}</label>
                                 </div>
-                                {% if counterpart.potentialArtists is not empty %}
-                                    <div class="select2-artists">
-                                        Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
-                                        {{ form_widget(purchase.artists) }}
+
+                                <div class="col-6 col-md-4 py-2 my-auto">
+                                    {{ counterpart.getDescription|raw }}
+                                </div>
+
+                                <div class="col-6 col-md-2 py-2 my-auto">
+                                    {{ counterpart.price }} €
+                                </div>
+
+                                <div class="col-6 col-md-3 py-2 my-auto">
+                                    <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
+                                        <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                        {{ form_widget(purchase.quantity) }}
+                                        <a class="incr-btn" data-action="increase"
+                                           data-max="{{ contractArtist.nbAvailable(counterpart) }}"
+                                           href="#">&plus;</a>
                                     </div>
-                                {% endif %}
+                                    {% if counterpart.potentialArtists is not empty %}
+                                        <div class="select2-artists">
+                                            Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
+                                            {{ form_widget(purchase.artists) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+
+                    {% else %}
+                        <p>Il n'est pas possible à l'heure actuelle d'acheter de tickets pour ce festival.</p>
+                    {% endif %}
                     {% do contract.setRendered %}
                 </div>
             </section>
         {% endfor %}
 
-
-        <div class="text-right mt-4">
-            <div>TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</div>
-            {{ form_widget(form.submit) }}
-        </div>
+        {% if nb_contracts_ok > 0 %}
+            <div class="text-right mt-4">
+                <div>TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</div>
+                {{ form_widget(form.submit) }}
+            </div>
+        {% else %}
+            {{ do form.submit.setRendered }}
+        {% endif %}
 
         {{ form_end(form) }}
 
         {% else %}
             <p class="text-center">
-                Soyez prêts, les ventes de tickets pour nos premiers festivals commencent à la fin du mois d'août !
+                Soyez prêts, de nouveaux festivals seront annoncés prochainement - et les tickets seront alors mis en vente !
             </p>
         {% endif %}
     </div>
