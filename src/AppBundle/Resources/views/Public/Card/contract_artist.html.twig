@@ -19,10 +19,12 @@
                 <a class="thumbnail-link" href="{{ url_contract }}"></a>
             {% endif %}
             <div class="overlay"></div>
-            <a class="tag success" href="{{ url_contract }}">{% if is_event and contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
-                    {% elseif is_event %}{{ 'stillselling'|trans }}{% else %}En vente
+            {% if contract.crowdable %}
+                <a class="tag success" href="{{ url_contract }}">{% if is_event and contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
+                    {% elseif is_event  %}{{ 'stillselling'|trans }}{% else %}En vente
                     {% endif %}
-            </a>
+                </a>
+            {% endif %}
             <div class="caption{% if is_sales %} mt-4 pt-5{% endif %}">
                 <h5 class="title"><a href="{{ url_contract }}">{{ contract.getTitle }}</a></h5>
                 <div class="clearfix">

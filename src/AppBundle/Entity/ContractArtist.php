@@ -279,7 +279,8 @@ class ContractArtist extends BaseContractArtist
         }
 
         // Crowdfunding is not over yet
-        if($this->dateEnd->diff($today)->days > 0) {
+        $interval = $today->diff($this->dateEnd);
+        if($interval->d > 0 && !$interval->invert) {
             // But already sold out
             if ($this->getTotalBookedTickets() >= $max_tickets)
                 return self::STATE_SUCCESS_SOLDOUT_PENDING;

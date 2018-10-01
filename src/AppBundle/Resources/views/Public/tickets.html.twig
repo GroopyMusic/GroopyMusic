@@ -93,7 +93,7 @@
                 {{ form_widget(form.submit) }}
             </div>
         {% else %}
-            {{ do form.submit.setRendered }}
+            {% do form.submit.setRendered %}
         {% endif %}
 
         {{ form_end(form) }}
