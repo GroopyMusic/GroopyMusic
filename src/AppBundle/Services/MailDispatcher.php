@@ -222,28 +222,28 @@ class MailDispatcher
 
     public function sendKnownOutcomeContract(ContractArtist $contract, $success)
     {
-        $artist_users = $contract->getArtistProfiles();
+        // $artist_users = $contract->getArtistProfiles();
         $fan_users = $contract->getFanProfiles();
 
         $params = ['contract' => $contract, 'artist' => $contract->getArtist()];
 
         if ($success) {
-            $template_artist = MailTemplateProvider::SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE;
+          //  $template_artist = MailTemplateProvider::SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE;
             $template_fan = MailTemplateProvider::SUCCESSFUL_CONTRACT_FAN_TEMPLATE;
         } else {
-            $template_artist = MailTemplateProvider::FAILED_CONTRACT_ARTIST_TEMPLATE;
+           // $template_artist = MailTemplateProvider::FAILED_CONTRACT_ARTIST_TEMPLATE;
             $template_fan = MailTemplateProvider::FAILED_CONTRACT_FAN_TEMPLATE;
         }
 
         // mail to artists
         $bcc = [];
-        foreach ($artist_users as $au) {
-            /** @var User $au */
-            $bcc[$au->getEmail()] = $au->getPreferredLocale();
-        }
+       // foreach ($artist_users as $au) {
+       //     /** @var User $au */
+        //     $bcc[$au->getEmail()] = $au->getPreferredLocale();
+       //  }
 
         $subject_params = [];
-        $this->sendEmail($template_artist, 'subjects.concert.artist.known_outcome', $params, $subject_params, $bcc);
+        // $this->sendEmail($template_artist, 'subjects.concert.artist.known_outcome', $params, $subject_params, $bcc);
 
         // mail to fans
         if (!empty($fan_users)) {
@@ -254,12 +254,12 @@ class MailDispatcher
                 $bcc[$fu->getEmail()] = $fu->getPreferredLocale();
             }
 
-            $subject_params = ['%artist%' => $contract->getArtist()->getArtistname()];
+            //$subject_params = ['%artist%' => $contract->getArtist()->getArtistname()];
             $this->sendEmail($template_fan, 'subjects.concert.fan.known_outcome', $params, $subject_params, $bcc);
         }
 
-        $this->notification_dispatcher->notifyKnownOutcomeContract($artist_users, $contract, true, $success);
-        $this->notification_dispatcher->notifyKnownOutcomeContract($fan_users, $contract, false, $success);
+        //$this->notification_dispatcher->notifyKnownOutcomeContract($artist_users, $contract, true, $success);
+        //$this->notification_dispatcher->notifyKnownOutcomeContract($fan_users, $contract, false, $success);
     }
 
     /*

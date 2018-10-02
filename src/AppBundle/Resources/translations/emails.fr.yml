@@ -23,7 +23,7 @@ subjects:
       reminder: "Rappel : votre événement sur Un-Mute.be"
       details: Les détails de votre festival
     fan:
-      known_outcome: "Festival de %artist% : résultat des courses"
+      known_outcome: "Festival Un-Mute : résultat des courses"
       tickets: Vos tickets Un-Mute sont arrivés
       # TODO add pluralization
       viptickets: Vos tickets Un-Mute
@@ -104,13 +104,12 @@ concert:
     failure: |
       Cher producteur,
 
-      L'artiste %artist% que vous aviez décidé de soutenir n'a pas pu récolter assez de fonds pour permettre l'organisation de son festival.
+      L'événement "%title%" n'a malheureusement pas atteint son objectif ; il est donc annulé par l'équipe Un-Mute.
 
       Vous serez remboursé(e) de l'entièreté du prix des places achetées dans les dix jours ouvrables.
 
-      Envie de voir %artist% en concert malgré tout ? Soutenez-le à nouveau lors d'un prochain évènement !
-
-      Envie de soutenir d'autres artistes ? Rendez-vous sur %artistCatalogUrl% !
+      C'est le principe du financement participatif : si trop peu de producteurs se réveillent dans un temps imparti, tout le monde est remboursé !
+      Ne vous en faites cependant pas : Un-Mute revient très bientôt avec d'autres événements inédits !
     
     details:
       invited2: Les artistes invités au festival sont %invited1% et %invited2%.

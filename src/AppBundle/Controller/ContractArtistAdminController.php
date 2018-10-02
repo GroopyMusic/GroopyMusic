@@ -178,7 +178,7 @@ class ContractArtistAdminController extends Controller
                 return new RedirectResponse($this->admin->generateUrl('list'));
             } elseif ($form->get('markfailed')->isClicked()) {
 
-                $contract->setSuccessful(false)->setFailed(true)->setReality(null)->setDateSuccess(null);
+                $contract->setSuccessful(false)->setFailed(true)->setDateSuccess(null);
 
                 $this->get(MailDispatcher::class)->sendKnownOutcomeContract($contract, false);
 

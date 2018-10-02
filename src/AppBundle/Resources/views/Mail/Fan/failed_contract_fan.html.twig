@@ -5,8 +5,7 @@
 
         {% block content %}
             {{ email_content('concert.fan.failure', {
-                '%artist%': artist.artistName,
-                '%artistCatalogUrl%': email_link(absolute_url(path('catalog_artists')), 'Un-Mute')
+                '%title%': contract.getTitle
             })|raw }}
         {% endblock %}
     {% endspaceless %}
