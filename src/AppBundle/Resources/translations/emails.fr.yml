@@ -27,7 +27,8 @@ subjects:
       tickets: Vos tickets Un-Mute sont arrivés
       # TODO add pluralization
       viptickets: Vos tickets Un-Mute
-  refunded_payment: Nous avons remboursé vos tickets 
+  refunded_payment: Nous avons remboursé vos tickets
+  refunded_contract_fan: Remboursement de votre commande
   artist_validated: Votre artiste sur Un-Mute a été vérifié 
   reward_attribution: Nouvelle récompense 
   sponsorship_invitation: Invitation à être parrainé 
