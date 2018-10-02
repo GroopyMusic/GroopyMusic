@@ -30,7 +30,7 @@ class MailDispatcher
     const DEFAULT_LOCALE = 'fr';
     const MAX_BCC = 100;
 
-    const TO = ["no-reply@un-mute.be" => self::DEFAULT_LOCALE];
+    const TO = ["festivals@un-mute.be" => self::DEFAULT_LOCALE];
 
     const REPLY_TO = ["contact@un-mute.be"];
     const REPLY_TO_NAME = "Un-Mute ASBL";
