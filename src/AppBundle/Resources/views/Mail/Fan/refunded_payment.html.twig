@@ -6,7 +6,7 @@
         {% block content %}
             {{ email_content('payment.refunded', {
                 'amount': payment.amount,
-                'date': payment.date('d/m/Y H:i:s')
+                'date': payment.date|date('d/m/Y H:i:s')
             })|raw }}
         {% endblock %}
     {% endspaceless %}

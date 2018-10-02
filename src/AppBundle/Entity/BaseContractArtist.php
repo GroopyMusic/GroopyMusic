@@ -19,7 +19,7 @@ class BaseContractArtist implements TranslatableInterface
 {
     use ORMBehaviors\Translatable\Translatable;
 
-    const VOTES_TO_REFUND = 2;
+    const VOTES_TO_REFUND = 1;
     const NB_PROMO_DAYS = 7;
     const NB_TEST_PERIOD_DAYS = 20;
     const PHOTOS_DIR = 'images/festivals/';

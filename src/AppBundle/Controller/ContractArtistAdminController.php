@@ -72,8 +72,7 @@ class ContractArtistAdminController extends Controller
 
                 if ($contract->isRefundReady()) {
                     $contract->setRefunded(true)->setFailed(true);
-                    $payments = $contract->getPaymentsArray();
-                    $this->get(PaymentManager::class)->refundStripeAndUMPayments($payments);
+                    $this->get(PaymentManager::class)->refundStripeAndUMContractArtist($contract);
 
                     $message = 'Les paiements ont été remboursés !';
                 }

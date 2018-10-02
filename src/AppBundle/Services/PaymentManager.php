@@ -49,6 +49,15 @@ class PaymentManager
 
         $this->em->flush();
     }
+    
+    public function refundStripeAndUMContractArtist(ContractArtist $contractArtist) {
+        $this->initStripe();
+        foreach($contractArtist->getContractsFanPaid() as $cf) {
+            $this->refundPartOfStripePayment($cf);
+            $this->refundUMContractFan($cf);
+        }
+        $this->em->flush();
+    }
 
     public function refundStripeAndUMContractFan(ContractFan $contractFan) {
         $this->initStripe();
