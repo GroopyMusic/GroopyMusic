@@ -302,12 +302,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
      */
     public function findContractArtistsForSelect($q)
     {
-        $querry = 'SELECT ca,a FROM AppBundle:ContractArtist ca LEFT JOIN ca.artist a ';
+        $querry = 'SELECT ca FROM AppBundle:ContractArtist ca LEFT JOIN ca.translations t';
         foreach ($q as $index => $string) {
             if ($index == 0) {
-                $querry = $querry . " WHERE a.artistname LIKE '%" . $string . "%' ";
+                $querry = $querry . " WHERE t.title LIKE '%" . $string . "%' ";
             } else {
-                $querry = $querry . " OR a.artistname LIKE '% " . $string . " %' ";
+                $querry = $querry . " WHERE t.title LIKE '% " . $string . " %' ";
             }
         }
         return $this->getEntityManager()

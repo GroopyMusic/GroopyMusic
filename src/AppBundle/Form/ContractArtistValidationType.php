@@ -16,12 +16,6 @@ class ContractArtistValidationType extends AbstractType
     {
         // Admin only so no translation needed
         $builder
-            ->add('reality', ConcertPossibilityType::class, array(
-                'label' => 'Réalité associée',
-                'required' => false,
-                'is_reality' => true,
-                'date_value' => $builder->getData()->getPreferences()->getDate(),
-            ))
             ->add('acceptConditions', CheckboxType::class, array(
                 'required' => true,
                 'label' => "J'ai bien relu les infos avant de valider.",
