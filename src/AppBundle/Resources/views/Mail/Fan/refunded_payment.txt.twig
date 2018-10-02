@@ -5,10 +5,10 @@
 {% autoescape false %}
 
 {% block content %}
-    {{ email_content('payment.refunded', {
-        'amount': payment.amount,
-        'date': payment.date|date('d/m/Y H:i:s')
-    })|raw }}
+     {{ email_content('payment.refunded', {
+                '%amount%': payment.amount,
+                '%date%': payment.date|date('d/m/Y \\à H:i')
+            })|raw }}
 {% endblock %}
 
 {% endautoescape %}

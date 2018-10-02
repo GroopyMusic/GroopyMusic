@@ -6,7 +6,7 @@
         {% block content %}
             {{ email_content('contract_fan.refunded', {
                 '%amount%': cf.amount,
-                '%date%': cf.payment.date|date('d/m/Y \\à H:i:s'),
+                '%date%': cf.payment.date|date('d/m/Y \\à H:i'),
                 '%event%': cf.contractArtist.getTitle(),
                 '%cf_id%': cf.barcodeText
             })|raw }}
