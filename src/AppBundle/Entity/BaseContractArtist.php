@@ -258,9 +258,9 @@ class BaseContractArtist implements TranslatableInterface
     public function getFanProfiles() {
         $fans = [];
 
-        foreach($this->contractsFan as $cf) {
+        foreach($this->getContractsFanPaid() as $cf) {
             /** @var ContractFan $cf */
-            if($cf->getPaid() && !$cf->getRefunded() && !in_array($cf->getUser(), $fans))
+            if(!in_array($cf->getUser(), $fans))
                 $fans[] = $cf->getUser();
         }
         return $fans;
@@ -278,6 +278,16 @@ class BaseContractArtist implements TranslatableInterface
         return $fans;
     }
 
+    public function getPhysicalPersons() {
+        $ph = [];
+
+        foreach($this->getContractsFanPaid() as $cf) {
+            if(!in_array($cf->getPhysicalPerson(), $ph)) {
+                $ph[] = $cf->getPhysicalPerson();
+            }
+        }
+        return $ph;
+    }
 
     public function getCounterParts() {
         if($this->counterParts->count() == 0 && $this->step != null) {

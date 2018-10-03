@@ -223,9 +223,9 @@ class MailDispatcher
     public function sendKnownOutcomeContract(ContractArtist $contract, $success)
     {
         // $artist_users = $contract->getArtistProfiles();
-        $fan_users = $contract->getFanProfiles();
+        $fan_users = $contract->getPhysicalPersons();
 
-        $params = ['contract' => $contract, 'artist' => $contract->getArtist()];
+        $params = ['contract' => $contract];
 
         if ($success) {
           //  $template_artist = MailTemplateProvider::SUCCESSFUL_CONTRACT_ARTIST_TEMPLATE;
@@ -250,8 +250,11 @@ class MailDispatcher
 
             $bcc = [];
             foreach ($fan_users as $fu) {
-                /** @var User $fu */
-                $bcc[$fu->getEmail()] = $fu->getPreferredLocale();
+                if($fu instanceof User) {
+                    /** @var User $fu */
+                    // should be user locale of course
+                    $bcc[$fu->getEmail()] = $this->translator->getLocale();
+                }
             }
 
             //$subject_params = ['%artist%' => $contract->getArtist()->getArtistname()];

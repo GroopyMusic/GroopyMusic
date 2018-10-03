@@ -73,9 +73,11 @@ concert:
     confirmation: |
       Félicitations !
 
-      L'artiste %artist% vient d'obtenir l'organisation de son festival par Un-Mute ASBL grâce à vous ! Ce festival se tiendra le %date% dans la salle "%hall%". Vous recevrez très prochainement vos tickets ainsi que toutes les informations pratiques par e-mail.
+      L'événement "%title%" est confirmé ! Ce festival a en effet obtenu le soutien d'assez de producteurs qui, comme vous, croyaient en l'affiche et en la scène belge !
 
-      Envie de soutenir/découvrir d'autres artistes ? Rendez-vous sur %events_link% !
+      Vous recevrez vos tickets dans les quelques jours qui viennent.
+
+      Envie de soutenir/découvrir d'autres artistes ? Rendez-vous sur Un-Mute.be !
     tickets: |
       Bonjour %username%,
 
