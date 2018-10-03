@@ -13,6 +13,7 @@ use FOS\UserBundle\FOSUserBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -58,7 +59,6 @@ class KernelListener implements EventSubscriberInterface
         $exception = $event->getException();
         $request = $event->getRequest();
         $session = $request->getSession();
-        $response = $event->getResponse();
 
         if($exception instanceof YBAuthenticationException) {
             // Logging user out.
@@ -71,12 +71,15 @@ class KernelListener implements EventSubscriberInterface
                 $this->session_name,
                 $this->remember_me_name,
             ];
+            
+            $response = new RedirectResponse($this->router->generate('yb_login'));
+            
             foreach ($cookieNames as $cookieName) {
                 $response->headers->clearCookie($cookieName);
             }
 
             $session->getFlashBag()->add('yb_error', "Votre compte n'est pas autorisé pour Ticked-it ; il faut qu'un administrateur Un-Mute vous donne les privilèges nécessaires.");
-            $response = new RedirectResponse($this->router->generate('yb_login'));
+            
             $event->setResponse($response);
         }
     }
