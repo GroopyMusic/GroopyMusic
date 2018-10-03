@@ -321,50 +321,59 @@
 {% endblock %}
 
     {% block additional_javascripts %}
-        <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "Event",
-      "name": "Un-Mute Festival",
-      {% set firstdate = contract.festivalDates|first %}
-      {% set lastdate = contract.festivalDates|last %}
-      "startDate": "{{ firstdate|date('Y-m-d\\TH:i') }}",
-      "endDate": "{{ lastdate|date('Y-m-d') }}T23:59",
-      {% if not contract.hasNoDefinedHall %}
-        {% set firsthall = contract.firstHall %}
-      "location": {
-        "@type": "Place",
-        "name": "{{ firsthall.name }}",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "{{ firsthall.address.naturalStreet }}",
-          "addressLocality": "{{ firsthall.address.city }}",
-          "postalCode": "{{ firsthall.address.zipcode }}",
-          "addressCountry": "{{ firsthall.address.country }}"
-        }
-      },
-      {% endif %}
-      "image": [
-          "{{ absolute_url(asset(image_url)) }}"
-       ],
-      "description": "{{ contract.getDescription() }}",
-      "offers": {
-        "@type": "Offer",
-        "url": "{{ url('artist_contract', {'id': contract.id}) }}",
-        "price": "{{ first_counterpart.price }}",
-        "priceCurrency": "EUR",
-        "availability": "{{ contract.soldOut ? "http://schema.org/OutOfStock" : "http://schema.org/InStock" }}",
-        "validFrom": "{{ contract.startDate|date('Y-m-d') }}"
-      },
-      "performer": {
-        "@type": "PerformingGroup",
-        "name": "{{ artist }}"
-      }
-    }
-
-
-
+        {% if (contract.crowdable or contract.pending) and contract.festivalDates is not empty %}
+            <script type="application/ld+json">
+            {
+              "@context": "http://schema.org",
+              "@type": "Event",
+              "name": "Un-Mute Festival",
+              {% set firstdate = contract.festivalDates|first %}
+              {% set lastdate = contract.festivalDates|last %}
+              "startDate": "{{ firstdate|date('Y-m-d\\TH:i') }}",
+              "endDate": "{{ lastdate|date('Y-m-d') }}T23:59",
+              {% if not contract.hasNoDefinedHall %}
+                {% set firsthall = contract.firstHall %}
+              "location": {
+                "@type": "Place",
+                "name": "{{ firsthall.name }}",
+                "address": {
+                  "@type": "PostalAddress",
+                  "streetAddress": "{{ firsthall.address.naturalStreet }}",
+                  "addressLocality": "{{ firsthall.address.city }}",
+                  "postalCode": "{{ firsthall.address.zipcode }}",
+                  "addressCountry": "{{ firsthall.address.country }}"
+                }
+              },
+              {% endif %}
+              "image": [
+                  "{{ absolute_url(asset(image_url)) }}"
+               ],
+              "description": "{{ contract.getDescription() }}",
+              "offers": {
+                "@type": "Offer",
+                "url": "{{ url('artist_contract', {'id': contract.id}) }}",
+                "price": "{{ first_counterpart.price }}",
+                "priceCurrency": "EUR",
+                "availability": "{{ contract.soldOut ? "http://schema.org/OutOfStock" : "http://schema.org/InStock" }}",
+                "validFrom": "{{ contract.startDate|date('Y-m-d') }}"
+              },
+              "performer": [
+                {% for artist in contract.allArtists %}
+                {
+                  "@type": "MusicGroup",
+                  "name": "{{ artist.artistname }}"
+                  {% set artist_link = artist.website is not null ? artist.website : artist.facebook is not null ? artist.facebook : artist.bandcamp is not null ? artist.bandcamp : null %}
+                  {% if  artist_link is not null%}
+                      ,"sameAs": [
+                        "{{ artist_link }}"
+                      ]
+                  {% endif %}
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+               ],
+            }
         </script>
+    {% endif %}
         <script type="text/javascript">
             $(document).ready(function () {
                 var errorDiv = $('#user_reward-error');
