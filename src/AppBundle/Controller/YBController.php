@@ -313,7 +313,8 @@ class YBController extends Controller
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
 
         foreach($cart->getContracts() as $cf) {
-            $ticketingManager->generateAndSendYBTickets($cf);
+            if(!$cf->getcounterpartsSent())
+                $ticketingManager->generateAndSendYBTickets($cf);
         }
 
         return $this->render('AppBundle:YB:order.html.twig', [
