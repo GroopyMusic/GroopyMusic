@@ -308,9 +308,13 @@ class YBController extends Controller
     /**
      * @Route("/ticked-it-order/{code}", name="yb_order")
      */
-    public function orderAction(EntityManagerInterface $em, $code) {
+    public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager) {
 
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+
+        foreach($cart->getContracts() as $cf) {
+            $ticketingManager->generateAndSendYBTickets($cf);
+        }
 
         return $this->render('AppBundle:YB:order.html.twig', [
             'cart' => $cart,
