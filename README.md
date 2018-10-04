@@ -1,14 +1,8 @@
-<img src="https://img4.hostingpics.net/pics/435885UnMutelogo.png" align="right">
-
 [https://github.com/GroopyMusic/GroopyMusic](https://github.com/GroopyMusic/GroopyMusic)
 
 # Un-Mute asbl
 
 ###### *Étapes importantes pour la collaboration au développement de la plateforme*
-
-### Rejoindre le Slack du projet
-
-Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
 ### GitHub
 
@@ -77,7 +71,8 @@ Pour mettre en place la base de données, il faut d’abord exécuter
 
 Puis, pour créer la structure de la base de données au fur et à mesure des mises-à-jour, la commande est `doctrine:schema:update --dump-sql` (pour voir le SQL qui va être exécuté) et `doctrine:schema:update –force` (pour effectivement exécuter le SQL).
 
-La commande suivante vide d’abord l’entièreté de la base de données (!!!) puis la remplit avec des données définies dans des fichiers de « fixtures ».
-`doctrine:fixtures:load` puis répondre `y` à la question posée.
+Si c'est la première fois, il faut également ajouter toutes les "migrations" Doctrine avec la commande `doctrine:migrations:version --add --all` 
 
-Les fixtures actuels insèrent deux utilisateurs de test dans la base de données : artist@un-mute.be (mdp: test) et fan@un-mute.be (mdp: test). Des phases et paliers de test sont également insérés.
+Pour toute modification d'entité entraînant une modification de la base de données, il faut exécuter `doctrine:migrations:diff` qui créera un fichier de migrations dans le répertoire app/DoctrineMigrations/
+
+Pour mettre à jour la base de données lors d'un pull de la branche master par exemple, il faut exécuter `doctrine:migrations:migrate`
