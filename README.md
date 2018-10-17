@@ -1,5 +1,3 @@
-<img src="https://img4.hostingpics.net/pics/435885UnMutelogo.png" align="right">
-
 [https://github.com/GroopyMusic/GroopyMusic](https://github.com/GroopyMusic/GroopyMusic)
 
 # Un-Mute asbl
@@ -58,9 +56,9 @@ Dès lors, pour tout changement dans une entité ayant un impact sur la base de 
 `php bin/console doctrine:migrations:diff`
 qui créera un fichier de migrations dans le dossier `app/DoctrineMigrations/{annee-courante}/{mois-courant}`. 
 Pour exécuter ce fichier de migrations et donc mettre à jour la structure de la base de données en correspondance avec son contenu, il faut utiliser la commande
-`php bin/console doctrine:migrations:migrate` et répondre `y` à la question posée. 
+`php bin/console doctrine:migrations:migrate` et répondre `y` à la question posée. C'est également cette commande qui permet de mettre à jour sa base de données lors d'un pull de la branche master par exemple.
 
-Enfin, il est possible de dire à Doctrine de considérer toutes les migrations comme acquises avec la commande `php bin/console doctrine:migrations:version --add --all`. Cela peut s'avérer utile dans certaines situations. 
+Enfin, il est possible de dire à Doctrine de considérer toutes les migrations comme acquises avec la commande `php bin/console doctrine:migrations:version --add --all`. Cela peut s'avérer utile dans certaines situations - notamment lors de la première installation de la plateforme, où la commande `php bin/console doctrine:schema:update --force` construira la structure de l'ensemble de la base de données, sans passer par les migrations. 
 
 ### Les assets
 
