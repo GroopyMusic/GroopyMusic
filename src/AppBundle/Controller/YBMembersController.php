@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -40,7 +41,6 @@ class YBMembersController extends Controller
         }
         if($campaign != null && !$user->ownsYBCampaign($campaign)) {
             throw new YBAuthenticationException();
-
         }
     }
 
@@ -229,11 +229,13 @@ class YBMembersController extends Controller
 
             $colonnes = array(
                 'Numéro de commande',
+                'Code de confirmation',
                 'Date de commande',
                 'Acheteur',
                 'Adresse e-mail',
                 'Prix',
-                'Détail'
+                'Détail',
+                'URL de confirmation'
             );
 
             $lettre = "A";
@@ -250,11 +252,13 @@ class YBMembersController extends Controller
                 $lettre = "A";
                 $colonnes = array(
                     $cf->getId(),
+                    $cf->getCart()->getBarcodeText(),
                     \PHPExcel_Shared_Date::PHPToExcel($cf->getDate()->getTimeStamp()),
                     $cf->getDisplayName(),
                     $cf->getEmail(),
                     $cf->getAmount(),
                     $cf->getPurchasesExport(),
+                    $this->generateUrl('yb_order', ['code' => $cf->getCart()->getBarcodeText()], UrlGeneratorInterface::ABSOLUTE_URL),
                 );
 
 
@@ -262,7 +266,7 @@ class YBMembersController extends Controller
                     $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre. "" . $chiffre, $colonne);
 
                     // Date
-                    if($key == 1)
+                    if($key == 2)
                         $phpExcelObject->getActiveSheet()
                             ->getStyle($lettre. "" . $chiffre)
                             ->getNumberFormat()
@@ -280,6 +284,7 @@ class YBMembersController extends Controller
             $colonnes = array(
                 'Identifiant du ticket',
                 'Numéro de la commande associée',
+                'Code de confirmation',
                 'Acheteur',
                 'Prix',
                 'Type de ticket',
@@ -304,6 +309,7 @@ class YBMembersController extends Controller
                     $colonnes = array(
                         $ticket->getBarcodeText(),
                         $ticket->getContractFan()->getId(),
+                        $ticket->getContractFan()->getCart()->getBarcodeText(),
                         $ticket->getName(),
                         $ticket->getPrice(),
                         $ticket->getCounterPart()->__toString(),

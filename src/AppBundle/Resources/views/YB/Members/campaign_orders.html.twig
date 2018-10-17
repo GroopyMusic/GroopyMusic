@@ -46,6 +46,7 @@
                                 <div class="pt-2">{{ purchase.displayWithAmount }}</div>
                             {% endfor %}
                         </div>
+                        <div class="w-100 text-right"><a class="text-secondary font-italic" href="{{ path('yb_order', {code: cf.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir la confirmation de commande (num. confirmation : {{ cf.cart.barcodeText }})</a></div>
                     </div>
                 {% else %}
                     Il n'y a eu aucune commande pour cet événement pour l'instant.
