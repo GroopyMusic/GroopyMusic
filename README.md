@@ -45,39 +45,28 @@ Pour mettre à jour Composer, exécuter
 
 ### Définir les paramètres locaux dans `parameters.yml`
 
-Le fichier `app/config/parameters.yml` n’est pas partagé parce qu’il contient des données « secrètes ». Voici ce qu’il faut en faire :
-
-```yaml
-parameters:
-   # Vos données de base de données locale
-    database_host: 127.0.0.1
-    database_port: null
-    database_name: unmute
-    database_user: root
-    database_password: null
-
-    # Les paramètres de transport mail, à copier
-    mailer_transport: smtp
-    mailer_host: smtp.un-mute.be
-    mailer_user: no-reply@un-mute.be
-    mailer_password: mot_de_passe_recu_de_gonzague
-
-    # Mettre n’importe quoi
-    secret: mdrmdrmdrmdrmdr
-
-    # L'adresse de livraison des e-mails en développement, mettez la vôtre
-    dev_delivery_address: gonzyer@gmail.com
-
-```
+Le fichier `app/config/parameters.yml` n’est pas partagé parce qu’il contient des données « secrètes ».
+Lorsque vous rejoignez le projet, Gonzague vous enverra la version de ce fichier qui correspondra à votre environnement local.
 
 ### Mettre en place la base de données
 
 Pour mettre en place la base de données, il faut d’abord exécuter
 `php bin/console doctrine:database:create`
 
-Puis, pour créer la structure de la base de données au fur et à mesure des mises-à-jour, la commande est `doctrine:schema:update --dump-sql` (pour voir le SQL qui va être exécuté) et `doctrine:schema:update –force` (pour effectivement exécuter le SQL).
+Nous utilisons les *migrations* Doctrine pour les mises-à-jour de la base de données.
+Dès lors, pour tout changement dans une entité ayant un impact sur la base de données, il s'agit d'exécuter la commande 
+`php bin/console doctrine:migrations:diff`
+qui créera un fichier de migrations dans le dossier `app/DoctrineMigrations/{annee-courante}/{mois-courant}`. 
+Pour exécuter ce fichier de migrations et donc mettre à jour la structure de la base de données en correspondance avec son contenu, il faut utiliser la commande
+`php bin/console doctrine:migrations:migrate` et répondre `y` à la question posée. 
 
-La commande suivante vide d’abord l’entièreté de la base de données (!!!) puis la remplit avec des données définies dans des fichiers de « fixtures ».
-`doctrine:fixtures:load` puis répondre `y` à la question posée.
+Enfin, il est possible de dire à Doctrine de considérer toutes les migrations comme acquises avec la commande `php bin/console doctrine:migrations:version --add --all`. Cela peut s'avérer utile dans certaines situations. 
 
-Les fixtures actuels insèrent deux utilisateurs de test dans la base de données : artist@un-mute.be (mdp: test) et fan@un-mute.be (mdp: test). Des phases et paliers de test sont également insérés.
+### Les assets
+
+Les fichiers .scss sont compilés ; et, tout comme les fichiers .js, ils sont minifiés lors de la génération des assets.
+
+Il vous faut donc : 
+- installer `uglifycss` et `uglifyjs`
+- renseigner dans le fichier `parameters.yml` le lien d'accès sur votre machine vers ces deux minifieurs
+- à chaque modification des assets, et lors de l'installation de la plateforme sur votre machine, utiliser la commande `php bin/console assetic:dump --env=dev` pour générer les assets compilés (et minifiés le cas échéant)

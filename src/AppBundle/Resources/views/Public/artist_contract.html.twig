@@ -326,7 +326,7 @@
             {
               "@context": "http://schema.org",
               "@type": "Event",
-              "name": "Un-Mute Festival",
+              "name": "{{ contract.getTitle }}",
               {% set firstdate = contract.festivalDates|first %}
               {% set lastdate = contract.festivalDates|last %}
               "startDate": "{{ firstdate|date('Y-m-d\\TH:i') }}",

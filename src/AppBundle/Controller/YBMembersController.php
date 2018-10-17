@@ -36,11 +36,9 @@ class YBMembersController extends Controller
 
     public function checkIfAuthorized($user, YBContractArtist $campaign = null) {
         if(!$user || !$user instanceof User) {
-            echo 'ok1';
             throw new YBAuthenticationException();
         }
         if($campaign != null && !$user->ownsYBCampaign($campaign)) {
-            echo 'ok2';
             throw new YBAuthenticationException();
 
         }
