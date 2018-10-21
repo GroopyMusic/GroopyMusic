@@ -1,17 +1,27 @@
 .p-info {
-  background-color: rgba(245, 191, 70, 0.16);
-  color: #925200;
+  background-color: #6087e1;
   padding: 10px;
 
   a {
-      color: $secondary-link-color;
+      color: $main-yellow;
   }
+
+  @extend .px-3;
+  @extend .px-md-5;
+
+  @extend .rounded;
+  @extend .text-white, .text-center;
 }
 
 .p-promo {
   background-color: rgba(253, 248, 98, 0.21);
   color: #000000;
   padding: 10px;
+
+  @extend .rounded;
+  @extend .px-3;
+  @extend .px-md-5;
+  @extend .text-center;
 }
 
 .green-check {

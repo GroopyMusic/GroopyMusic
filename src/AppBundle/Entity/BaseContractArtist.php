@@ -951,6 +951,20 @@ class BaseContractArtist implements TranslatableInterface
         return $this->promotions;
     }
 
+    public function getPromotionsDecr() {
+        $promotions = $this->promotions->toArray();
+        usort($promotions, function(Promotion $a, Promotion $b) {
+            if($a->getNbOrganicNeeded() > $b->getNbOrganicNeeded()) {
+                return -1;
+            }
+            elseif($a->getNbOrganicNeeded() == $b->getNbOrganicNeeded()) {
+                return 0;
+            }
+            return 1;
+        });
+        return $promotions;
+    }
+
     /**
      * Add vipInscription
      *

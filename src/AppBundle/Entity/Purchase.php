@@ -115,14 +115,22 @@ class Purchase
 
     public function calculatePromotions()
     {
-        foreach ($this->getContractArtist()->getPromotions() as $promotion) {
+        $organicsLeft = $this->getQuantityOrganic();
+
+        foreach($this->getActuallyAppliedPromotions() as $promo) {
+            $organicsLeft -= $promo->getNbOrganicNeeded();
+        }
+
+        foreach ($this->getContractArtist()->getPromotionsDecr() as $promotion) {
             /** @var Promotion $promotion */
-            if ($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getActuallyAppliedPromotions())) {
-                $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($this->getQuantityOrganic() / $promotion->getNbOrganicNeeded()));
+            if ($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getPromotions())) {
+                $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($organicsLeft / $promotion->getNbOrganicNeeded()));
                 $this->nb_free_counterparts += $new_promotional_counterparts;
                 $this->addQuantity($new_promotional_counterparts);
                 $pp = new Purchase_Promotion($this, $promotion, $new_promotional_counterparts);
                 $this->addPurchasePromotion($pp);
+
+                $organicsLeft %= $promotion->getNbOrganicNeeded();
             }
         }
     }

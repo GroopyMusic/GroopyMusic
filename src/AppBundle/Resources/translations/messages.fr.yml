@@ -304,7 +304,7 @@ event:
   lastday:
     tickets: C'est le dernier jour de vente de tickets pour cet événement !
     deadline: C'est le dernier jour où vous pouvez aider %artist% à atteindre son objectif en achetant des tickets. Demain, vous saurez si ce festival est confirmé ou non.
-  promo: "Lors de la première semaine de ventes, c'est-à-dire jusqu'au %end_date% à minuit, cet événement est en promotion : pour %nb_organic_needed% tickets achetés, vous en recevrez %nb_promotional% !"
+  promo: "%nb_organic_needed% tickets achetés <i class='fas fa-long-arrow-alt-right'></i> %nb_promotional% tickets offert(s)"
   prevalidation: "Cet événement est en pré-validation. Sa page ne sera rendue publique que lorsque 10% de tickets auront été vendus, et il y aura alors encore un mois pour obtenir les 100% requis à la concrétisation du Festival. Pendant la pré-validation, les tickets sont en promotion 3 + 1."
   dday: C'est aujourd'hui le concert ! Vous pouvez encore acheter des tickets en ligne ou, dans la mesure des places disponibles, les acheter sur place (cash ou application Bancontact).
   infos:
@@ -662,7 +662,7 @@ order_pdf:
   intro: Merci d'avoir passé une commande de tickets de festival avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
   sales:
     intro: Merci d'avoir passé commandé avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
-  promo: "Note : pour toute commande passée lors de la première semaine de ventes de tickets pour cet événement (c'est-à-dire jusqu'au %end_date%), par %nb_organic_needed% tickets achetés, vous en recevez %nb_promotional%."
+  promo: "Note : pour toute commande passée avant le %end_date%, par %nb_organic_needed% tickets achetés, vous en recevez %nb_promotional%."
   labels:
     order_date: Date de la commande
     event: Evénement soutenu

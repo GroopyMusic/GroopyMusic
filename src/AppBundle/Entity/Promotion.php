@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Promotion
 {
     const TYPE_THREE_PLUS_ONE = 'three_plus_one';
+    const TYPE_SIX_PLUS_ONE = 'six_plus_one';
+    const TYPE_TEN_PLUS_TWO = 'ten_plus_two';
 
     public function __construct($type)
     {
@@ -29,7 +31,13 @@ class Promotion
         switch($this->type) {
             case self::TYPE_THREE_PLUS_ONE:
                 return "3 + 1";
-                break;
+            break;
+            case self::TYPE_SIX_PLUS_ONE:
+                return "6 + 1";
+            break;
+            case self::TYPE_TEN_PLUS_TWO:
+                return "10 + 2";
+            break;
         }
     }
 
@@ -38,6 +46,12 @@ class Promotion
             case self::TYPE_THREE_PLUS_ONE:
                 return 3;
             break;
+            case self::TYPE_SIX_PLUS_ONE:
+                return 6;
+            break;
+            case self::TYPE_TEN_PLUS_TWO:
+                return 10;
+            break;
         }
     }
 
@@ -45,6 +59,12 @@ class Promotion
         switch($this->type) {
             case self::TYPE_THREE_PLUS_ONE:
                 return 1;
+            break;
+            case self::TYPE_SIX_PLUS_ONE:
+                return 1;
+            break;
+            case self::TYPE_TEN_PLUS_TWO:
+                return 2;
             break;
         }
     }
