@@ -661,6 +661,7 @@ class PublicController extends Controller
      */
     public function sponsorshipLinkAction(Request $request, UserInterface $current_user = null, LoggerInterface $logger, TranslatorInterface $translator, TokenStorageInterface $tokenStorage)
     {
+        try {
             if ($current_user != null) {
                 $tokenStorage->setToken(null);
                 $session = $request->getSession();
@@ -683,7 +684,7 @@ class PublicController extends Controller
 
                 $response = new RedirectResponse($this->generateUrl('sponsorship_link_valid', array("id" => $sponsorship->getContractArtist()->getId())));
 
-                if(isset($cookieNames)) {
+                if (isset($cookieNames)) {
                     foreach ($cookieNames as $cookieName) {
                         $response->headers->clearCookie($cookieName);
                     }
@@ -691,6 +692,10 @@ class PublicController extends Controller
                 return $response;
             }
 
+        } catch (\Throwable $th) {
+            $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     /** @Route("/on-sponsorship-link-valid-{id}", name="sponsorship_link_valid") */
