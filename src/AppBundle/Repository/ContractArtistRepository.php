@@ -323,7 +323,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
      */
     public function isValidForSponsorship($contract_id)
     {
-        return $this->queryVisible()
+        return $this->queryVisible(true, false)
             ->andWhere('c.failed = 0')
             ->andWhere('c.refunded = 0')
             ->andWhere('c.id = :cid')
