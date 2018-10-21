@@ -39,6 +39,11 @@ sonata_admin:
                   - AppBundle\Admin\PropositionContractArtistAdmin
                   - AppBundle\Admin\MailAdmin
 
+           app.admin.group.conditions:
+              label: app.admin.group.conditions
+              label_catalogue: SonataAdminBundle
+              items:
+                - AppBundle\Admin\ConditionsAdmin
 
            app.admin.group.content:
                 label: app.admin.group.content
@@ -48,24 +53,6 @@ sonata_admin:
                   - AppBundle\Admin\ProvinceAdmin
                   - AppBundle\Admin\ContactPersonAdmin
                   - AppBundle\Admin\HallAdmin
-
-           app.admin.group.user_management:
-              label: app.admin.group.user_management
-              label_catalogue: SonataAdminBundle
-              items:
-                - AppBundle\Admin\RankingAdmin
-                - AppBundle\Admin\CategoryAdmin
-                - AppBundle\Admin\LevelAdmin
-                - AppBundle\Admin\RewardAdmin
-                - AppBundle\Admin\User_RewardAdmin
-                - AppBundle\Admin\RewardRestrictionAdmin
-                - AppBundle\Admin\ConsomableTypeAdmin
-
-           app.admin.group.conditions:
-              label: app.admin.group.conditions
-              label_catalogue: SonataAdminBundle
-              items:
-                - AppBundle\Admin\ConditionsAdmin
 
            app.admin.group.events:
                label: app.admin.group.events
@@ -83,6 +70,18 @@ sonata_admin:
                    - AppBundle\Admin\ContractFanAdmin
                    - AppBundle\Admin\PaymentAdmin
                roles: [ROLE_PAYMENTS_ADMIN]
+
+           app.admin.group.user_management:
+              label: app.admin.group.user_management
+              label_catalogue: SonataAdminBundle
+              items:
+                - AppBundle\Admin\RankingAdmin
+                - AppBundle\Admin\CategoryAdmin
+                - AppBundle\Admin\LevelAdmin
+                - AppBundle\Admin\RewardAdmin
+                - AppBundle\Admin\User_RewardAdmin
+                - AppBundle\Admin\RewardRestrictionAdmin
+                - AppBundle\Admin\ConsomableTypeAdmin
 
    assets:
       extra_javascripts:
