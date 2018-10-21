@@ -33,6 +33,9 @@ class SponsorshipInvitationAdmin extends BaseAdmin
             ->add('email_invitation', null, array(
                 'label' => 'Email invité',
             ))
+            ->add('confirmed', 'boolean', array(
+                'label' => 'Confirmé',
+            ))
             ->add('_action', 'actions', array(
                     'actions' => array(
                         'show' => array(),
@@ -62,6 +65,9 @@ class SponsorshipInvitationAdmin extends BaseAdmin
             ))
             ->add('contract_artist', null, array(
                 'label' => 'Evénement lié',
+            ))
+            ->add('confirmed', 'boolean', array(
+                'label' => 'Confirmé',
             ))
             ->add('reward_sent', null, array(
                 'label' => 'Récompenses de parrainage attribuée',

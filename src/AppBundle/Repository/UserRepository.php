@@ -129,8 +129,8 @@ class UserRepository extends EntityRepository
         return $this->getEntityManager()->createQuery(
             'SELECT u.id, COUNT(si.id) as s
                   FROM AppBundle:User u INDEX BY u.id
-                  WHERE u.yb = FALSE
                   LEFT JOIN u.sponsorships si
+                  WHERE u.yb = FALSE
                   GROUP BY u.id
                   ')
             ->getResult(Query::HYDRATE_ARRAY);

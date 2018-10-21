@@ -51,6 +51,15 @@ class SponsorshipInvitation
         return "Invitation de " . $this->host_invitation->getDisplayName() . " à " . $this->email_invitation;
     }
 
+    /** @return bool */
+    public function isConfirmed() {
+        if ($this->getTargetInvitation() == null) {
+            return false;
+        } else {
+            return $this->getTargetInvitation()->getDeleted() === false;
+        }
+    }
+
     /**
      * @var int
      *
