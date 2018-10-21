@@ -449,7 +449,7 @@ class BaseContractArtist implements TranslatableInterface
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Promotion", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="Promotion", cascade={"all"}, inversedBy="contracts")
      */
     protected $promotions;
 

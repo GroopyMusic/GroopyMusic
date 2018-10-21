@@ -221,6 +221,11 @@
                <source>app.admin.artistPerformance</source>
                <target>Performance</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.promotion">
+               <source>app.admin.promotion</source>
+               <target>Promotion</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -34,17 +34,12 @@ class ContractArtistAdmin extends BaseAdmin
             ->add('getTitle', null, array(
                 'label' => 'Titre',
             ))
-            ->add('date', 'date', array(
-                'label' => 'Date de création',
-                'format' => 'd/m/Y',
-            ))
-            ->add('start_date', 'date', array(
-                'label' => 'Début des ventes',
-                'format' => 'd/m/Y',
-            ))
             ->add('date_end', 'date', array(
-                'label' => 'Échéance',
+                'label' => 'Date de validation',
                 'format' => 'd/m/Y',
+            ))
+            ->add('threshold', null, array(
+                'label' => 'seuil',
             ))
             ->add('totalBookedTickets', null, array(
                 'label' => 'Tickets bookés',
@@ -57,6 +52,9 @@ class ContractArtistAdmin extends BaseAdmin
             ))
             ->add('refunded', null, array(
                 'label' => 'Remboursé',
+            ))
+            ->add('test_period', null, array(
+                'label' => 'Est en période de test',
             ))
             ->add('state', null, array(
                 'label' => 'Etat',
@@ -71,9 +69,9 @@ class ContractArtistAdmin extends BaseAdmin
                     'validate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_validate.html.twig',
                     ),
-                   /* 'prevalidate' => array(
+                    'prevalidate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_prevalidate.html.twig',
-                    ),*/
+                    ),
                     'tickets' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_tickets.html.twig',
                     )
@@ -201,8 +199,6 @@ class ContractArtistAdmin extends BaseAdmin
 
     public function configureFormFields(FormMapper $form)
     {
-        $em = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager();
-        $request = $this->getConfigurationPool()->getContainer()->get('request_stack')->getCurrentRequest();
         $form
                 ->add('dateEnd', 'date', array(
                     'required' => true,
@@ -246,6 +242,9 @@ class ContractArtistAdmin extends BaseAdmin
             ))
             ->add('festivaldays', null, array(
                 'label' => 'Jours de festival'
+            ))
+            ->add('promotions', null, array(
+                'label' => 'Promotions applicables'
             ))
             ->end()
         ;

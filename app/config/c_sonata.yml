@@ -62,6 +62,7 @@ sonata_admin:
                    - AppBundle\Admin\FestivalDayAdmin
                    - AppBundle\Admin\ArtistPerformanceAdmin
                    - AppBundle\Admin\CounterPartAdmin
+                   - AppBundle\Admin\PromotionAdmin
 
            app.admin.group.orders:
                label: app.admin.group.orders
@@ -389,4 +390,10 @@ services:
         arguments: [~, AppBundle\Entity\ArtistPerformance, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.artistPerformance }
+        public: true
+
+    AppBundle\Admin\PromotionAdmin:
+        arguments: [~, AppBundle\Entity\Promotion, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.promotion }
         public: true

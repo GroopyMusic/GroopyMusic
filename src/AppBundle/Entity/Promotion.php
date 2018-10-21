@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,14 +18,18 @@ class Promotion
     const TYPE_SIX_PLUS_ONE = 'six_plus_one';
     const TYPE_TEN_PLUS_TWO = 'ten_plus_two';
 
-    public function __construct($type)
+    public function __construct($type = null)
     {
         $this->type = $type;
     }
 
     public function __toString()
     {
-        return 'Promotion ' . $this->getMathematicString() . ' du ' . $this->start_date->format('d/m/Y') . ' au ' . $this->end_date->format('d/m/Y');
+        return $this->type != null ?
+            'Promotion ' . $this->getMathematicString() . ' du ' . $this->start_date->format('d/m/Y') . ' au ' . $this->end_date->format('d/m/Y')
+            :
+            'Nouvelle promotion'
+        ;
     }
 
     public function getMathematicString() {
@@ -92,6 +97,12 @@ class Promotion
      * @ORM\Column(name="end_date", type="date")
      */
     private $end_date;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="BaseContractArtist", cascade={"all"}, mappedBy="promotions")
+     */
+    protected $contracts;
 
     /**
      * Get id
@@ -173,5 +184,39 @@ class Promotion
     public function getEndDate()
     {
         return $this->end_date;
+    }
+
+    /**
+     * Add contract
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $contract
+     *
+     * @return Promotion
+     */
+    public function addContract(\AppBundle\Entity\BaseContractArtist $contract)
+    {
+        $this->contracts[] = $contract;
+
+        return $this;
+    }
+
+    /**
+     * Remove contract
+     *
+     * @param \AppBundle\Entity\BaseContractArtist $contract
+     */
+    public function removeContract(\AppBundle\Entity\BaseContractArtist $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }
