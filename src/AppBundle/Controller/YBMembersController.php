@@ -73,6 +73,13 @@ class YBMembersController extends Controller
         $this->checkIfAuthorized($user);
         $campaign = new YBContractArtist();
         $campaign->addHandler($user);
+
+        $adminUsers = $em->getRepository('AppBundle:User')->getYBAdmins();
+
+        foreach($adminUsers as $au) {
+            $campaign->addHandler($au);
+        }
+
         $form = $this->createForm(YBContractArtistType::class, $campaign, ['creation' => true]);
 
         $form->handleRequest($request);

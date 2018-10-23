@@ -4,6 +4,7 @@ namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Form\AddressType;
 use AppBundle\Form\CounterPartType;
 use AppBundle\Form\PhotoType;
 use Symfony\Component\Form\AbstractType;
@@ -46,6 +47,10 @@ class YBContractArtistType extends AbstractType
             ->add('dateEvent', DateTimeType::class, array(
                 'required' => false,
                 'label' => "Date de l'événement"
+            ))
+            ->add('address', AddressType::class, array(
+                'required' => false,
+                'label' => "Lieu de l'événement",
             ))
             ->add('translations', TranslationsType::class, [
                 'locales' => ['fr'],

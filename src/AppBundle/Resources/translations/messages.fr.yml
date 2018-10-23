@@ -793,6 +793,7 @@ labels:
     number: Numéro
     street: Rue
     zipcode: Code postal
+    name: Nom du lieu/de la salle/lieu dit
 
   artist:
     accept_conditions: J'ai lu et j'accepte les conditions générales d'utilisation de la plateforme Un-Mute

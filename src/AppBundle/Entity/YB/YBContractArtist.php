@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\YB;
 
+use AppBundle\Entity\Address;
 use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
@@ -184,6 +185,12 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="code", type="string", length=255)
      */
     private $code;
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Address", cascade={"all"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $address;
 
     /**
      * Set ticketsSent
@@ -385,5 +392,21 @@ class YBContractArtist extends BaseContractArtist
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
     }
 }

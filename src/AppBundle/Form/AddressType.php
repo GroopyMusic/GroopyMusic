@@ -60,7 +60,13 @@ class AddressType extends AbstractType
                     new Country()
                 ]
             ))
-
+            ->add('name', TextType::class, array(
+                'label' => 'labels.address.name',
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                ]
+            ))
         ;
     }
     

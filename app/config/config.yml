@@ -16,6 +16,7 @@ parameters:
     mailer_from_name: "no-reply"
     locales: [fr]
     facebook_page_url: https://www.facebook.com/UnMuteasbl/
+    instagram_page_url: https://www.instagram.com/unmutelive/
     expanded_locales: {fr: fr_FR, en: en_US, nl: nl_NL}
 
 framework:
@@ -60,6 +61,7 @@ twig:
       facebook_api_id: "%facebook_api_id%"
       enabled_locales: "%locales%"
       facebook_page_url: "%facebook_page_url%"
+      instagram_page_url: "%instagram_page_url%"
       expanded_locales: "%expanded_locales%"
 
 # Swiftmailer Configuration

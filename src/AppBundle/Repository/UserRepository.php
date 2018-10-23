@@ -269,4 +269,13 @@ class UserRepository extends EntityRepository
             ->setParameter(1, $email)
             ->getOneOrNullResult();
     }
+
+    public function getYBAdmins() {
+        return $this->baseQueryBuilder()
+            ->andWhere("u.roles LIKE '%ROLE_ADMIN%'")
+            ->andWhere('u.yb = 1')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

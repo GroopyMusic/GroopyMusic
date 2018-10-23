@@ -136,6 +136,14 @@
                     {% endif %}
                 </div>
 
+                {% if campaign.address is not null %}
+                    <div class="mt-4">
+                        <h3>Lieu</h3>
+
+                        <p>Adresse : {{ campaign.address }}</p>
+                    </div>
+
+                {% endif %}
             </div>
         </div>
     </div>

@@ -73,6 +73,10 @@ class Address
      */
     private $city;
 
+    /**
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     */
+    private $name;
 
     /**
      * Get id
@@ -202,5 +206,21 @@ class Address
     public function getCity()
     {
         return $this->city;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 }
