@@ -53,6 +53,7 @@ class PDFWriter
         }*/
 
         $html2pdf->writeHTML($html);
+
         $html2pdf->output($path, $dest);
     }
 

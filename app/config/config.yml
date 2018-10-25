@@ -18,6 +18,7 @@ parameters:
     facebook_page_url: https://www.facebook.com/UnMuteasbl/
     instagram_page_url: https://www.instagram.com/unmutelive/
     expanded_locales: {fr: fr_FR, en: en_US, nl: nl_NL}
+    maps_api_key: AIzaSyAjWpC8y-sy07JHTBAexmdCT4cQaC84y8U
 
 framework:
     #esi:             ~
@@ -63,6 +64,7 @@ twig:
       facebook_page_url: "%facebook_page_url%"
       instagram_page_url: "%instagram_page_url%"
       expanded_locales: "%expanded_locales%"
+      maps_api_key: "%maps_api_key%"
 
 # Swiftmailer Configuration
 swiftmailer:

@@ -141,6 +141,13 @@
                         <h3>Lieu</h3>
 
                         <p>Adresse : {{ campaign.address }}</p>
+                        <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe
+                                            class="embed-responsive-item"
+                                            frameborder="0" style="border:0"
+                                            src="https://www.google.com/maps/embed/v1/place?key={{ maps_api_key }}&q={{ campaign.address|url_encode }}" allowfullscreen>
+                        </iframe>
+                        </div>
                     </div>
 
                 {% endif %}

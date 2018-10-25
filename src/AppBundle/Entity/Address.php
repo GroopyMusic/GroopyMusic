@@ -26,7 +26,8 @@ class Address
 
     public function __toString()
     {
-        return $this->street . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city; // . ' (' . $this->country . ')';
+        $name = $this->name != null ? $this->name . ', ' : '';
+        return $name . '' . $this->street . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city; // . ' (' . $this->country . ')';
     }
 
     /**

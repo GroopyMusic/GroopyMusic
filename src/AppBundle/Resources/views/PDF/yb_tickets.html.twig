@@ -31,6 +31,14 @@
 
             <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }}</p>
 
+            {% if campaign.address is not null %}
+                <p>Adresse de l'événement : {{ campaign.address }}</p>
+                {% set base64 = base64("https://maps.googleapis.com/maps/api/staticmap?center=" ~ campaign.address|url_encode ~ "&zoom=13&size=600x300&maptype=roadmap&key=AIzaSyAjWpC8y-sy07JHTBAexmdCT4cQaC84y8U") %}
+
+                {% if base64 is not same as(false) %}
+                    <img style="height:300px;" src="{{ base64 }}" />
+                {% endif %}
+            {% endif %}
         </page>
     {% endfor %}
 {% endblock %}
