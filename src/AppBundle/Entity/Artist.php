@@ -56,6 +56,7 @@ class Artist implements TranslatableInterface
         $this->accept_conditions = false;
         $this->visible = false;
         $this->validated = false;
+        $this->information_session = null;
     }
 
     public function getSluggableFields() {
@@ -327,6 +328,12 @@ class Artist implements TranslatableInterface
      * @ORM\OneToMany(targetEntity="ArtistPerformance", mappedBy="artist")
      */
     private $performances;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\InformationSession", inversedBy="artists")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $information_session;
 
     // Form only
     /** @var ArrayCollection */
@@ -1031,4 +1038,22 @@ class Artist implements TranslatableInterface
     {
         return $this->performances;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getInformationSession()
+    {
+        return $this->information_session;
+    }
+
+    /**
+     * @param mixed $information_session
+     */
+    public function setInformationSession($information_session)
+    {
+        $this->information_session = $information_session;
+    }
+
+
 }
