@@ -67,4 +67,5 @@ Les fichiers .scss sont compilés ; et, tout comme les fichiers .js, ils sont mi
 Il vous faut donc : 
 - installer `uglifycss` et `uglifyjs`
 - renseigner dans le fichier `parameters.yml` le lien d'accès sur votre machine vers ces deux minifieurs
+- lors de l'installation de la plateforme, exécuter la commande `php bin/console assets:install` afin d'installer les assets des vendors. Cette commande est normalement exécutée automatiquement par Composer lors de chaque update
 - à chaque modification des assets, et lors de l'installation de la plateforme sur votre machine, utiliser la commande `php bin/console assetic:dump --env=dev` pour générer les assets compilés (et minifiés le cas échéant)
