@@ -1,0 +1,19 @@
+x_projects_add:
+    path:   /projects/add
+    defaults:
+        _controller: XBundle:Projects:add
+        
+x_projects_home:
+    path:   /projects
+    defaults:
+        _controller: XBundle:Projects:indexAction
+
+x_projects_delete:
+    path:   /projects/delete
+    defaults:
+        _controller: XBundle:Projects:delete
+        
+x_projects_edit:
+    path:   /projects/edit
+    defaults:
+        _controller: XBundle:Projects:edit

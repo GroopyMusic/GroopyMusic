@@ -62,7 +62,8 @@
         "tecnickcom/tcpdf": "6.2.17",
         "sonata-project/formatter-bundle": "^3.4",
         "azine/email-bundle": "dev-master",
-        "liuggio/ExcelBundle": "^2.1"
+        "liuggio/ExcelBundle": "^2.1",
+		"sensio/generator-bundle": "2.3.*"
     },
     "scripts": {
         "post-install-cmd": [

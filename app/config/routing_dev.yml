@@ -20,6 +20,10 @@ yb:
 um:
   resource: "routing_um.yml"
   prefix: /
+ 
+x:
+    resource: "routing_x.yml"
+    prefix: /x/
 
 JMSTranslationBundle_ui:
     resource: "@JMSTranslationBundle/Controller/"

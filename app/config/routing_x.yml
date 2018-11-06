@@ -1,0 +1,26 @@
+x_projects_add:
+    path:   /projects/add
+    defaults:
+        _controller: XBundle:Projects:add
+        
+x_projects_home:
+    path:   /projects
+    defaults:
+        _controller: XBundle:Projects:index
+
+x_projects_delete:
+    path:   /projects/delete/{id}
+    defaults:
+        _controller: XBundle:Projects:delete
+    requirements:
+        id: \d+
+        
+x_projects_edit:
+    path:   /projects/edit/{id}
+    defaults:
+        _controller: XBundle:Projects:edit
+        
+    requirements:
+        id: \d+
+
+    
