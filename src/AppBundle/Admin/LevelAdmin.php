@@ -1,13 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jean-François Cochar
- * Date: 12/03/2018
- * Time: 14:18
- */
-
-namespace AppBundle\Admin;
-
 
 namespace AppBundle\Admin;
 

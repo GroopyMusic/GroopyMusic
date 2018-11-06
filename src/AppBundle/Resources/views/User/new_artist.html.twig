@@ -30,6 +30,14 @@
 
                 {{ form_row(form.translations) }}
 
+                {% if iss %}
+                    <div class="form-group">
+                        <p>Choisissez une session d'information à laquelle vous assisterez. La présence à une telle session est requise
+                        pour valider l'inscription de votre artiste sur la plateforme. Une session dure environ 1h et vous permettra de rencontrer notre équipe, qui vous détaillera le fonctionnement d'Un-Mute et votre rôle sur la plateforme en tant qu'artiste.</p>
+                        {{ form_row(form.informationSession) }}
+                    </div>
+                {% endif %}
+
                 <div class="col-0 col-md-2"></div>
                 <div class="col-12 col-md-10">
                     <p>{{ 'new_artist.phone_explanation'|trans|raw }}</p>

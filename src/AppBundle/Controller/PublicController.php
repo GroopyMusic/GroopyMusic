@@ -154,9 +154,12 @@ class PublicController extends Controller
     /**
      * @Route("/suggestions", name="suggestionBox")
      */
-    public function suggestionBoxAction()
+    public function suggestionBoxAction(EntityManagerInterface $em)
     {
-        return $this->render('AppBundle:Public:suggestionBox.html.twig');
+        $sessions = $em->getRepository('AppBundle:InformationSession')->findVisible();
+        return $this->render('AppBundle:Public:suggestionBox.html.twig', array(
+            'sessions' => $sessions,
+        ));
     }
 
     /**

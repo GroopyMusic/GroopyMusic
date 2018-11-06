@@ -718,7 +718,7 @@ tickets_pdf:
 notices:
   edition: Les modifications ont été enregistrées.
   event_create: Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans son organisation !
-  artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; vous allez être contacté(e) par l'équipe Un-Mute dans les jours qui viennent.
+  artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; ce n'est qu'après avoir assisté à votre séance d'infromation qu'il sera validé par notre équipe.
   artist_role: Votre rôle a bien été enregistré.
   # Next line: invitation to become administrator of a specific artist on Un-Mute
   artist_ownership_requests: Les invitations ont été envoyées.

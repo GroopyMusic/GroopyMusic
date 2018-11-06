@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Address
 {
+    public function __construct()
+    {
+        $this->country = 'BE';
+    }
+
     public function getNaturalStreet() {
         return $this->number . ' ' . $this->street;
     }

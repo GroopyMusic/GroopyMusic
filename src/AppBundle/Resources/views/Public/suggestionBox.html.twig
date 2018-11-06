@@ -5,9 +5,10 @@
     <section id="contact" class="container pb-2 position-relative">
         <div class="row">
             <div class="col-12 col-md-4">
-                <h3 class="text-center mb-4  text-primary"><i class="fas fa-address-card"></i> Nos coordonnées</h3>
                 <div class="content-box">
                     <div class="content-box-content">
+                        <h3 class="text-center mb-4  text-primary"><i class="fas fa-address-card"></i> Nos coordonnées</h3>
+
                         <p>
                             Un-Mute ASBL<br />
                             0664.782.372<br />
@@ -26,10 +27,12 @@
                 </div>
             </div>
             <div class="col-12 col-md-8">
-                <h3 class="text-center mb-4 text-primary"><i class="fas fa-comment"></i> {{ 'contact.title'|trans|raw }}</h3>
 
                 <div class="content-box">
+
                     <div class="content-box-content">
+                        <h3 class="text-center mb-4 text-primary"><i class="fas fa-comment"></i> {{ 'contact.title'|trans|raw }}</h3>
+
                         {{ hidden_loader() }}
                         <div id="suggestionbox_form">
                             {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
@@ -61,7 +64,31 @@
         </div>
     </section>
 
-    <section id="equipe" class="container px-4 pt-2 position-relative">
+    <section id="sessions" class="container px-4 pt-2 position-relative">
+        <div class="content-box-content">
+            <h3 class="text-center mb-2  text-primary"><i class="fas fa-calendar-alt"></i> Sessions d'information</h3>
+
+            <p>Nous organisons régulièrement des séances d'information qui vous permettent d'en savoir plus sur le fonctionnement d'Un-Mute.
+                Ces séances sont obligatoires pour tout artiste qui souhaite créer sa fiche sur Un-Mute, mais sont aussi ouvertes à toute personne
+                intéressée par le concept.
+
+                {% if sessions is not empty %}Voici le calendrier des prochaines séances :</p>
+
+            <ul>
+                {% for session in sessions %}
+                    <li>{{ session.getName() }} (date : {{ session.date|date('d/m/Y \à H\hi') }}, lieu : {{ session.address }})</li>
+                {% endfor %}
+            </ul>
+            <p>Pour vous inscrire à une session, merci de soit vous créer un profil artiste (auquel cas vous devrez choisir une date de session à laquelle vous devrez participer),
+                soit remplir le formulaire de contact ci-dessus (auquel cas vous serez automatiquement inscrit(e)).
+                {% else %}
+                    Il n'y a pas de séance prévue pour l'instant ; bientôt de nouvelles dates !
+                {% endif %}
+            </p>
+        </div>
+    </section>
+
+    <section id="equipe" class="container px-4 pt-2 mt-2 position-relative">
         <div class="content-box">
             <div class="content-box-content">
                 <h3 class="text-center text-primary mb-2"><i class="fas fa-user-friends"></i> L'équipe</h3>

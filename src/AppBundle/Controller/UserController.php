@@ -164,7 +164,9 @@ class UserController extends Controller
 
         $artist = new Artist($phase);
 
-        $form = $this->createForm(ArtistType::class, $artist, ['edit' => false]);
+        $iss = count($em->getRepository('AppBundle:InformationSession')->findVisible()) > 0;
+
+        $form = $this->createForm(ArtistType::class, $artist, ['edit' => false, 'iss' => $iss]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -186,6 +188,7 @@ class UserController extends Controller
 
         return $this->render('@App/User/new_artist.html.twig', array(
             'form' => $form->createView(),
+            'iss' => $iss,
         ));
     }
 

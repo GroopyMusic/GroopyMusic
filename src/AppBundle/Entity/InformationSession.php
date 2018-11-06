@@ -23,6 +23,15 @@ class InformationSession implements TranslatableInterface {
         $this->artists = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+       return '' . $this->getName();
+    }
+
+    public function getNameWithDate() {
+        return $this->getName() . ' (le ' . $this->date->format('d/m/Y \à H\hi') . ')';
+    }
+
     public function __call($method, $arguments)
     {
         try {
@@ -69,7 +78,7 @@ class InformationSession implements TranslatableInterface {
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Address")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Address", cascade={"all"})
      */
     private $address;
 
