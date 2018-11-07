@@ -181,7 +181,7 @@ class ContractFan
 
     public function getPaid()
     {
-        return $this->cart->getPaid() && !$this->refunded;
+        return $this->cart->getPaid();
     }
 
     public function getUserExport() {
