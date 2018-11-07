@@ -89,7 +89,7 @@ concert:
 
       %additional_info%
 
-      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : festivals@un-mute.be
     
     vip_tickets: |
       Bonjour,
@@ -102,7 +102,7 @@ concert:
 
       %additional_info%
 
-      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : festivals@un-mute.be
 
     failure: |
       Cher producteur,
@@ -189,7 +189,7 @@ vip_inscription:
     --> Fonction : %function%
     --> Commentaire : %commentary%
 
-    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse contact@un-mute.be
+    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse festivals@un-mute.be
 
 volunteer_proposal:
   copy: |
@@ -200,7 +200,7 @@ volunteer_proposal:
     --> Adresse e-mail : %email%
     --> Commentaire : %commentary%
 
-    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse contact@un-mute.be
+    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse festivals@un-mute.be
 
 payment:
   refunded: |

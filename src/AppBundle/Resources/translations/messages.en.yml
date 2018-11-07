@@ -701,9 +701,9 @@ new_event:
 
 order_pdf:
   title: Order overview
-  intro: Thanks for ordering festival tickets with Un-Mute. You will find below all information about your order. If there is anything else that you would like to know, please contact us at contact@un-mute.be
+  intro: Thanks for ordering festival tickets with Un-Mute. You will find below all information about your order. If there is anything else that you would like to know, please contact us at festivals@un-mute.be
   sales:
-    intro: Thanks for ordering albums with Un-Mute. You will find below all information about your order.  If there is anything else that you would like to know, please contact us at contact@un-mute.be
+    intro: Thanks for ordering albums with Un-Mute. You will find below all information about your order.  If there is anything else that you would like to know, please contact us at festivals@un-mute.be
   promo: "Note: for any order passed during the first week of tickets sales for this event, you will receive %nb_promotional% ticket for each pack of %nb_organic_needed% tickets bought."
   labels:
     order_date: Order date

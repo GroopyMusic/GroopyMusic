@@ -32,7 +32,7 @@ class MailDispatcher
 
     const TO = ["festivals@un-mute.be" => self::DEFAULT_LOCALE];
 
-    const REPLY_TO = ["contact@un-mute.be"];
+    const REPLY_TO = ["festivals@un-mute.be"];
     const REPLY_TO_NAME = "Un-Mute ASBL";
 
     const YB_REPLY_TO = ["info@ticked-it.be"];
