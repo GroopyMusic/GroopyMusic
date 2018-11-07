@@ -36,7 +36,7 @@ class ArtistAdmin extends BaseAdmin
             ->add('isActive', 'boolean', array(
                 'label' => 'Actif',
             ))
-            ->add('informationSession', null, array(
+            ->add('informationSessionWithDate', null, array(
                 'label' => "Session d'information"
             ))
             ->add('_action', 'actions', array(
@@ -58,7 +58,7 @@ class ArtistAdmin extends BaseAdmin
                 ->add('artistname', null, array(
                     'label' => "Nom de l'artiste",
                 ))
-                ->add('informationSession', null, array(
+                ->add('informationSessionWithDate', null, array(
                     'label' => "Session d'information"
                 ))
                 ->add('genres', null, array(

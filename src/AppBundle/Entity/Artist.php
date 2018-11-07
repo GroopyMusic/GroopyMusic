@@ -176,6 +176,12 @@ class Artist implements TranslatableInterface
         return $contracts;
     }
 
+    public function getInformationSessionWithDate() {
+        if($this->information_session)
+            return $this->information_session->getNameWithDate();
+        return '';
+    }
+
     // Form only
 
     private $accept_conditions;
