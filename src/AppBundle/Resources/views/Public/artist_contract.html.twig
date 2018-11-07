@@ -219,7 +219,7 @@
                 <ul>
                     {% for artist in contract.allArtists %}
                         {% set percentage = contract.artistPercentage(artist) %}
-                        <li>{{ percentage }} % - <a href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
+                        <li>{{ percentage }} % - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
                     {% endfor %}
                     <li>{{ contract.noArtistPercentage() }} % - pas d'artiste mentionné</li>
                 </ul>
