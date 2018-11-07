@@ -211,7 +211,7 @@ class BaseContractArtist implements TranslatableInterface
     public function getContractsFanPaid() {
         if($this->contractsFanPaid == null) {
             $this->contractsFanPaid = array_filter($this->contractsFan->toArray(), function(ContractFan $contractFan) {
-                return $contractFan->isPaid() && ($this->failed || !$$contractFan->isRefunded());
+                return $contractFan->isPaid() && ($this->failed || !$contractFan->isRefunded());
             });
         }
 
