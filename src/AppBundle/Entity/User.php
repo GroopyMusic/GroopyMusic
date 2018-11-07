@@ -49,6 +49,16 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return false;
     }
 
+    public function hasArtistPerformingIn(ContractArtist $contractArtist) {
+        $artists = $contractArtist->getAllArtists();
+        foreach($this->artists_user as $au) {
+            if(in_array($au->getArtist(), $artists)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function anonymize()
     {
         $code = substr(str_shuffle(date('Ymd') . md5($this->getPassword())), 0, 200) . '@un-mute.be';

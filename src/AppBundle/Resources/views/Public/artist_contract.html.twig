@@ -202,50 +202,30 @@
                                 {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
                             </div>
                         </div>
-                        {#
-                        <div class="col-12 col-md-4 content-box-col">
-                            <div class="contract-info-title">
-                                {{ 'event.infos.tickets_sold'|trans|raw }}
-                            </div>
-                            <div class="contract-info-content">
-                                {{ contract.totalBookedTicketsMajored|round(0,'floor') }}
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-4 content-box-col">
-                            <div class="contract-info-title">
-                                {{ 'event.infos.tickets_left'|trans|raw }}
-
-                            </div>
-                            <div class="contract-info-content">
-                                {{ max(0, tickets_left)|round(0,'ceil') }}
-                            </div>
-                        </div>
-                        #}
                     </div>
-
-                    {#
-                    <div class="col-12 content-box-col">
-                        {% if not contract.isValidatedBelowObjective %}
-                            <span class="contract-info-title pr-2">
-                                     {{ 'event.infos.tickets_objective'|trans|raw }}
-                                </span>
-                            <span class="contract-info-content">
-                                    {{ contract.minTickets }}
-                                </span>
-                        {% endif %}
-                        {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
-                        <div class="progress">
-                            <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
-                                 style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
-                        </div>
-                        <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                            {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
-                        </div>
-                    </div>
-                    #}
                 {% endif %}
             </div>
+
+            {% if app.user and (app.user.hasArtistPerformingIn(contract) or is_granted('ROLE_ADMIN')) %}
+
+                {% set total_sales = contract.counterpartsSold %}
+                <h4>Distribution des ventes</h4>
+                <p>
+                    Puisque vous êtes propriétaire d'un artiste participant à ce festival, vous avez accès à vos performances.
+                    Les pourcentages représentent le taux de mentions de chaque artiste lors des achats de tickets.
+                    Il est possible que la somme des pourcentages dépasse 100 %, chaque ticket pouvant faire mention de plusieurs artistes.
+                    Notez qu'il y a à l'heure actuelle eu <strong>{{ contract.totalScores|round }}</strong> ticket{% if contract.totalScores > 1 %}s{% endif %} vendu{% if contract.totalScores > 1 %}s{%endif%}.
+                </p>
+                <ul>
+                    {% for artist in contract.allArtists %}
+                        {% set percentage = contract.artistPercentage(artist) %}
+                        <li>{{ percentage }} % - <a href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
+                    {% endfor %}
+                    <li>{{ contract.noArtistPercentage() }} % - pas d'artiste mentionné</li>
+                </ul>
+
+            {% endif %}
+
         </div>
         <div class="separating-waves colored big low prior"></div>
         <div class="separating-waves high prior"></div>
