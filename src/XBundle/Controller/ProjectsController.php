@@ -31,16 +31,7 @@ class ProjectsController extends Controller
   }
   public function viewAction($id)
   {
-    $advert = array(
-      'title'   => 'Recherche développpeur Symfony',
-      'id'      => $id,
-      'author'  => 'Alexandre',
-      'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-      'date'    => new \Datetime()
-    );
-    return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-      'advert' => $advert
-    ));
+    
   }
   public function addAction(Request $request)
   {
@@ -74,13 +65,12 @@ class ProjectsController extends Controller
     $project = $em->getRepository('XBundle:Projects')->find($id);
 
     if (null === $project) {
-      throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+      throw new NotFoundHttpException("Le projet d'id ".$id." n'existe pas.");
     }
 
     $form = $this->get('form.factory')->create(ProjectsEditType::class, $project);
 
     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-      // Inutile de persister ici, Doctrine connait déjà notre annonce
       $em->flush();
 
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');

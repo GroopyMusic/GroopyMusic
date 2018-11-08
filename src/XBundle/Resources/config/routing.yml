@@ -1,3 +1,8 @@
+x_payment:
+    path:  /payment
+    defaults:
+        _controller: XBundle:Payment:payment
+        
 x_projects_add:
     path:   /projects/add
     defaults:

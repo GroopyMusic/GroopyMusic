@@ -7,9 +7,6 @@
 {% endblock %}
 
 {% block x_body %}
-
-  <h2>Liste des annonces</h2>
-
   <div class="container-fluid" style = "padding-top: 5%; width : 100%; margin-left : 10%">
   <div class="row">
   {% for project in listProjects %}
@@ -20,12 +17,15 @@
         <p class="card-text">{{ project.description }}</p>
 		<img class ="card-img-top" />
 		<div class="progress" style = "margin-bottom : 4%">
-  <div class="progress-bar bg-success" role="progressbar" style="width: {{ project.fund }}%;" aria-valuenow="{{ project.fund }}" aria-valuemin="0" aria-valuemax="100">{{ project.fund }}/100€</div>
-</div>
-        <a href="#" class="btn btn-primary">Soutenez-le</a>
+		<div class="progress-bar bg-success" role="progressbar" style="width: {{ project.fund }}%;" aria-valuenow="{{ project.fund }}" aria-valuemin="0" aria-valuemax="100">{{ project.fund }}/100€</div>
+		</div>
+        <a href="{{ path('x_payment') }}" class="btn btn-primary">Soutenez-le</a>
       </div>
     </div>
   </div>
+  {% if loop.index is divisible by(3) %}
+  </div><div class = "row" style = "margin-top : 3em" >
+  {% endif %}
   {% else %}
   <p> Pas (encore!) de projets </p>
   {% endfor %}
