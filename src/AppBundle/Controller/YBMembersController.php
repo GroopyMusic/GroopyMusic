@@ -67,6 +67,14 @@ class YBMembersController extends Controller
     }
 
     /**
+     * @Route("/organizations/list", name="yb_members_orgs_list")
+     */
+    public function listOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+        return $this->render('@App/YB/Members/orgs_list.html.twig');
+    }
+
+    /**
      * @Route("/campaign/new", name="yb_members_campaign_new")
      */
     public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em) {

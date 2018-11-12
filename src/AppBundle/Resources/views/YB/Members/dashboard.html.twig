@@ -8,6 +8,10 @@
         <h2>Tableau de bord</h2>
         <ul class="list-group">
             <li class="list-group-item">
+                <a href="{{ path('yb_members_orgs_list') }}"><i class="fas fa-users"></i> Mes organisations</a>
+                <div class="text-muted">Voyez et gérez les organisations dont vous faites partie.</div>
+            </li>
+            <li class="list-group-item">
                 <a href="{{ path('yb_members_campaign_new') }}"><i class="far fa-plus-square"></i> Nouvelle campagne</a>
                 <div class="text-muted">Créez une campagne de vente de tickets pour votre événement, avec de nombreuses options de configuration.</div>
             </li>
@@ -19,7 +23,9 @@
                 {% endif %}
             </li>
             <li class="list-group-item">
-                {% if passed_campaigns|length > 0 %}<a href="{{ path('yb_members_passed_campaigns') }}">{% endif %}<i class="far fa-clock"></i> Campagnes passées{% if passed_campaigns|length > 0 %}</a>{% endif %}
+                {% if passed_campaigns|length > 0 %}<a href="{{ path('yb_members_passed_campaigns') }}">{% endif %}
+                    <i class="far fa-clock"></i> Campagnes passées
+                {% if passed_campaigns|length > 0 %}</a>{% endif %}
                 <div class="text-muted">Retrouvez les infos des campagnes que vous avez lancées par le passé et qui sont terminées.</div>
             </li>
             <li class="list-group-item">
