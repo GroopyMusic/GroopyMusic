@@ -251,6 +251,15 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->getResult();
     }
 
+    public function findPassed() {
+        return $this->createQueryBuilder('ca')
+            ->where('ca.failed = 1 OR ca.successful = 1')
+            ->andWhere('ca.main_artist is null')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 
     /**
      * get all sucessful contract artists

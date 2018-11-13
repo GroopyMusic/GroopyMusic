@@ -211,17 +211,18 @@
                 {% set total_sales = contract.counterpartsSold %}
                 <h4>Distribution des ventes</h4>
                 <p>
-                    Puisque vous êtes propriétaire d'un artiste participant à ce festival, vous avez accès à vos performances.
-                    Les pourcentages représentent le taux de mentions de chaque artiste lors des achats de tickets.
-                    Il est possible que la somme des pourcentages dépasse 100 %, chaque ticket pouvant faire mention de plusieurs artistes.
+                    Puisque vous êtes propriétaire d'un artiste participant à ce festival, vous avez accès à vos performances, c'est-à-dire au nombre de tickets dont les acheteurs vous ont mentionné comme motivation de leur achat.
                     Notez qu'il y a à l'heure actuelle eu <strong>{{ contract.totalScores|round }}</strong> ticket{% if contract.totalScores > 1 %}s{% endif %} vendu{% if contract.totalScores > 1 %}s{%endif%}.
+                    Notez également que les acheteurs peuvent mentionner plusieurs artistes lors de leur passage de commande.
                 </p>
                 <ul>
                     {% for artist in contract.allArtists %}
-                        {% set percentage = contract.artistPercentage(artist) %}
-                        <li>{{ percentage }} % - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
+                        {% set perf = contract.artistScore(artist) %}
+                        {% set s = perf > 1 ? 's' : '' %}
+                        <li>{{ perf }} ticket{{ s }} - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
                     {% endfor %}
-                    <li>{{ contract.noArtistPercentage() }} % - pas d'artiste mentionné</li>
+                    {% set s = contract.noArtistScore > 1 ? 's' : '' %}
+                    <li>{{ contract.noArtistScore }} ticket{{ s }} - pas d'artiste mentionné</li>
                 </ul>
 
             {% endif %}

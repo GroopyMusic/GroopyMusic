@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block headtitle %}Festivals | Un-Mute{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <h2 class="text-center text-primary">Festivals passés</h2>
+        <p class="my-4 d-none d-md-block text-center">
+            Retrouvez nos campagnes de financement participatif passées pour les Festivals de la Découverte.
+        </p>
+
+        <div class="content-box">
+            <div class="content-box-content">
+                {% for contract in contracts %}
+                    {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': contract, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': true, 'card_classes': ['pb-3']} %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="separating-waves colored high prior"></div>
+{% endblock %}

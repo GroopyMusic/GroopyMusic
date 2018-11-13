@@ -244,6 +244,17 @@ class PublicController extends Controller
     }
 
     /**
+     * @Route("/passed-festivals", name="passed_festivals")
+     */
+    public function passedFestivalsAction(EntityManagerInterface $em) {
+        $contracts = $em->getRepository('AppBundle:ContractArtist')->findPassed();
+
+        return $this->render('@App/Public/passed_festivals.html.twig', [
+            'contracts' => $contracts,
+        ]);
+    }
+
+    /**
      * @Route("/events/{id}-{slug}", name="artist_contract")
      */
     public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null)
