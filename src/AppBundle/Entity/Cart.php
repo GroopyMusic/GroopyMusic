@@ -52,12 +52,22 @@ class Cart
     }
 
     public function getState() {
-        if($this->getPayment()->getRefunded()) {
-            return 'Remboursé';
+
+        if($this->isFree() && $this->getPaid()) {
+            return 'Commande gratuite - validée';
         }
 
+        if($this->getPaid()) {
+            if($this->getPayment()->getRefunded()) {
+                return 'Remboursé';
+            }
+
+            else {
+                return 'Payé';
+            }
+        }
         else {
-            return 'Payé';
+            return 'Non finalisé';
         }
     }
 
@@ -143,6 +153,10 @@ class Cart
 
     public function getDate() {
         return $this->yb_order != null ? $this->yb_order->getDate() : $this->date_creation;
+    }
+
+    public function isFree() {
+        return $this->getAmount() == 0;
     }
 
     /**
@@ -374,7 +388,7 @@ class Cart
      */
     public function getPayment()
     {
-        return $this->payment != null ? $this->payment : $this->getFirst()->getPayment();
+        return $this->isFree() ? null : $this->payment != null ? $this->payment : $this->getFirst()->getPayment();
     }
 
     /**

@@ -97,7 +97,7 @@
                                         </div>
                                     {% else %}
                                         <div class="col-4 col-sm-3 col-lg-4">
-                                            {{ counterpart.price }} €
+                                        {% if counterpart.isFree %}Gratuit{% else %}{{ counterpart.price }} €{% endif %}
                                         </div>
                                     {% endif %}
                                     <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>

@@ -365,7 +365,7 @@ class YBController extends Controller
     /**
      * @Route("/api/submit-order-coordinates", name="yb_ajax_post_order")
      */
-    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator) {
+    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator, MailDispatcher $mailDispatcher) {
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
@@ -387,7 +387,8 @@ class YBController extends Controller
         }
 
         if($cart->isFree()) {
-            $cart->setPaid(true); 
+            $cart->setPaid(true);
+            $mailDispatcher->sendYBOrderRecap($cart);
         }
 
         $em->persist($order);

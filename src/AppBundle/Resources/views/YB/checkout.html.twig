@@ -72,7 +72,23 @@
                         <div class="card-header">
                             Validation
                         </div>
-                        <input type="submit" class="btn btn-primary" id="free-order-submit" value="Valider la commande (gratuite)"/>
+                        <div class="card-body">
+                            <p>{{ 'pay_cart.conditions.intro_free'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>
+                            <div class="form-row">
+                                {% if error_conditions %}
+                                    <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
+                                {% endif %}
+                                <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
+                                    <input type="checkbox" id="accept_conditions" name="accept_conditions"
+                                           class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
+                                </label>
+                            </div>
+                            <div class="form-row" id="card-form-row">
+                                <input type="submit" class="btn btn-primary" id="free-order-submit" value="Valider la commande (gratuite)"/>
+                            </div>
+                        </div>
                     </div>
 
                 {% else %}
@@ -191,13 +207,13 @@
                                         <h4 class="my-0">{{ purchase }}</h4>
                                         <small class="text-muted">{{ purchase.counterPart.getDescription }}</small>
                                     </div>
-                                    <span class="text-muted">{{ purchase.amount }} €</span>
+                                    <span class="text-muted">{{ purchase.amount > 0 ? purchase.amount ~ ' €' : 'Gratuit' }}</span>
                                 </li>
                             {% endfor %}
                         {% endfor %}
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Total (EUR)</span>
-                            <strong>{{ cart.amount }} €</strong>
+                            <strong>{{ cart.amount > 0 ? cart.amount ~ ' €' : 'Gratuit' }}</strong>
                         </li>
                     </ul>
                 </div>
@@ -228,134 +244,75 @@
             $('.error-notice').alert('close');
         });
 
-        $('input[type=radio]').change(function () {
-            hideError();
-            if ($(this).val() == 'debit-card') {
-                $('.payment-method').hide();
-                $('#debit-card').show();
-            }
-            else if ($(this).val() == 'credit-card') {
-                $('.payment-method').hide();
-                $('#credit-card').show();
-            }
-        });
-
-        var stripe = Stripe('{{ stripe_api_public }}');
-        var elements = stripe.elements();
-
-        var style = {
-            base: {
-                color: '#32325D',
-                fontWeight: 500,
-                fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
-                fontSize: '16px',
-                fontSmoothing: 'antialiased'
-            },
-            invalid: {
-                color: '#E25950',
-
-                '::placeholder': {
-                    color: '#ffa65d'
+        if($('input[type=radio]').length > 0)
+        {
+            $('input[type=radio]').change(function () {
+                hideError();
+                if ($(this).val() == 'debit-card') {
+                    $('.payment-method').hide();
+                    $('#debit-card').show();
                 }
-            }
-        };
-
-        var elementClasses = {
-            focus: 'focused',
-            empty: 'empty',
-            invalid: 'invalid'
-        };
-
-        // set publishable key for V2
-        Stripe.setPublishableKey('{{ stripe_api_public }}');
-
-
-        var cardNumberElement = elements.create('cardNumber', {
-            style: style,
-            classes: elementClasses,
-            placeholder: 'Numéro de carte'
-        });
-        cardNumberElement.mount('#card-number-element');
-
-        var cardExpiryElement = elements.create('cardExpiry', {
-            style: style,
-            classes: elementClasses,
-            placeholder: 'MM/AA'
-        });
-        cardExpiryElement.mount('#card-expiry-element');
-
-        var cardCvcElement = elements.create('cardCvc', {
-            style: style,
-            classes: elementClasses,
-            placeholder: 'CVC'
-        });
-        cardCvcElement.mount('#card-cvc-element');
-
-        $('#choose-bancontact').click(function (e) {
-            e.preventDefault();
-
-            displayLoader("");
-            scrollToLoader();
-
-            var $first_name = $('#first_name');
-            var $last_name = $('#last_name');
-            var $email = $('#email');
-
-            $.post('{{ url('yb_ajax_post_order') }}', {
-                'first_name': $first_name.val(),
-                'last_name': $last_name.val(),
-                'email': $email.val(),
-                'cart_code': "{{ cart.barcodeText }}"
-            }, function() {
-                displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
-                scrollToLoader();
-
-                stripe.createSource({
-                    type: 'bancontact',
-                    amount: amount,
-                    currency: 'eur',
-                    bancontact: {
-                        preferred_language: 'fr'
-                    },
-                    owner: {
-                        name: $first_name.val() + ' ' + $last_name.val(),
-                        email: $email.val()
-                    },
-                    redirect: {
-                        return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'code': cart.barcodeText})) }}'
-                    },
-                    statement_descriptor: 'Ticked-it.be - cart {{ cart.id }}'
-                }).then(function (result) {
-                    on3DSSource(result);
-                });
-            })
-            .fail(function() {
-                displayForm();
-                displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+                else if ($(this).val() == 'credit-card') {
+                    $('.payment-method').hide();
+                    $('#credit-card').show();
+                }
             });
-        });
 
-        function onToken(result) {
-            if (result.token) {
-                Stripe.source.create({
-                    type: 'card',
-                    token: result.token.id
-                }, onCardSource);
-            } else if (result.error) {
-                displayForm();
-                displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
-            }
-        }
+            var stripe = Stripe('{{ stripe_api_public }}');
+            var elements = stripe.elements();
 
-        function onCardSource(status, result) {
-            if (result.error) {
-                displayForm();
-                displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
-            }
+            var style = {
+                base: {
+                    color: '#32325D',
+                    fontWeight: 500,
+                    fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
+                    fontSize: '16px',
+                    fontSmoothing: 'antialiased'
+                },
+                invalid: {
+                    color: '#E25950',
 
-            if (result.card.three_d_secure == 'required') {
+                    '::placeholder': {
+                        color: '#ffa65d'
+                    }
+                }
+            };
 
-                displayLoader("", false);
+            var elementClasses = {
+                focus: 'focused',
+                empty: 'empty',
+                invalid: 'invalid'
+            };
+
+            // set publishable key for V2
+            Stripe.setPublishableKey('{{ stripe_api_public }}');
+
+
+            var cardNumberElement = elements.create('cardNumber', {
+                style: style,
+                classes: elementClasses,
+                placeholder: 'Numéro de carte'
+            });
+            cardNumberElement.mount('#card-number-element');
+
+            var cardExpiryElement = elements.create('cardExpiry', {
+                style: style,
+                classes: elementClasses,
+                placeholder: 'MM/AA'
+            });
+            cardExpiryElement.mount('#card-expiry-element');
+
+            var cardCvcElement = elements.create('cardCvc', {
+                style: style,
+                classes: elementClasses,
+                placeholder: 'CVC'
+            });
+            cardCvcElement.mount('#card-cvc-element');
+
+            $('#choose-bancontact').click(function (e) {
+                e.preventDefault();
+
+                displayLoader("");
                 scrollToLoader();
 
                 var $first_name = $('#first_name');
@@ -367,71 +324,156 @@
                     'last_name': $last_name.val(),
                     'email': $email.val(),
                     'cart_code': "{{ cart.barcodeText }}"
-                }, function() {
+                }, function () {
                     displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+                    scrollToLoader();
+
                     stripe.createSource({
-                        type: 'three_d_secure',
+                        type: 'bancontact',
                         amount: amount,
-                        currency: "eur",
-                        three_d_secure: {
-                            card: result.id
+                        currency: 'eur',
+                        bancontact: {
+                            preferred_language: 'fr'
+                        },
+                        owner: {
+                            name: $first_name.val() + ' ' + $last_name.val(),
+                            email: $email.val()
                         },
                         redirect: {
                             return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'code': cart.barcodeText})) }}'
-                        }
+                        },
+                        statement_descriptor: 'Ticked-it.be - cart {{ cart.id }}'
                     }).then(function (result) {
-                        on3DSSource(result)
+                        on3DSSource(result);
                     });
                 })
-                .fail(function() {
-                    displayForm();
-                    displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
-                });
-            }
-            else {
-                stripeTokenHandler(result);
-            }
-        }
+                    .fail(function () {
+                        displayForm();
+                        displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+                    });
+            });
 
-        function on3DSSource(result) {
-            if (result.error) {
-                displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
+            function onToken(result) {
+                if (result.token) {
+                    Stripe.source.create({
+                        type: 'card',
+                        token: result.token.id
+                    }, onCardSource);
+                } else if (result.error) {
+                    displayForm();
+                    displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
+                }
             }
-            else {
-                hideError();
-                displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
-                window.location.replace(result.source.redirect.url);
+
+            function onCardSource(status, result) {
+                if (result.error) {
+                    displayForm();
+                    displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
+                }
+
+                if (result.card.three_d_secure == 'required') {
+
+                    displayLoader("", false);
+                    scrollToLoader();
+
+                    var $first_name = $('#first_name');
+                    var $last_name = $('#last_name');
+                    var $email = $('#email');
+
+                    $.post('{{ url('yb_ajax_post_order') }}', {
+                        'first_name': $first_name.val(),
+                        'last_name': $last_name.val(),
+                        'email': $email.val(),
+                        'cart_code': "{{ cart.barcodeText }}"
+                    }, function () {
+                        displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+                        stripe.createSource({
+                            type: 'three_d_secure',
+                            amount: amount,
+                            currency: "eur",
+                            three_d_secure: {
+                                card: result.id
+                            },
+                            redirect: {
+                                return_url: '{{ absolute_url(path('yb_cart_payment_pending', {'code': cart.barcodeText})) }}'
+                            }
+                        }).then(function (result) {
+                            on3DSSource(result)
+                        });
+                    })
+                        .fail(function () {
+                            displayForm();
+                            displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+                        });
+                }
+                else {
+                    stripeTokenHandler(result);
+                }
+            }
+
+            function on3DSSource(result) {
+                if (result.error) {
+                    displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
+                }
+                else {
+                    hideError();
+                    displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
+                    window.location.replace(result.source.redirect.url);
+
+                    $('#payment-intro').hide();
+                }
+            }
+
+            function onChargeable3DS(status, source) {
+                if (source.status == 'chargeable') {
+                    stripeTokenHandler(source);
+                }
+                else if (source.status == 'failed') {
+                    displayError("{{ 'threeds.error'|trans({'%backUrl%': url('yb_index')})|raw }}");
+                }
+                {#else if (source.status != 'pending') {
+                    displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+                }#}
+            }
+
+            $('#payment-form').submit(function (e) {
+                e.preventDefault();
+                // Disable the submit button to prevent repeat
+                $('input[type="submit"]').prop('disabled', true);
+
+                displayLoader();
+                scrollToLoader();
+                var extraDetails = {
+                    name: $('#first_name').val + ' ' + $('#last_name').val(),
+                    email: $('#email').val()
+                };
+                stripe.createToken(cardNumberElement, extraDetails).then(onToken);
+            });
+
+            function stripeTokenHandler(source) {
 
                 $('#payment-intro').hide();
+                displayLoader("{{ 'threeds.pending'|trans|raw }}");
+
+                // Insert the token ID into the form so it gets submitted to the server
+                var form = document.getElementById('payment-form');
+                var hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeSource');
+                hiddenInput.setAttribute('value', source.id);
+
+                var hiddenInput3 = document.createElement('input');
+                hiddenInput3.setAttribute('type', 'hidden');
+                hiddenInput3.setAttribute('name', 'amount');
+                hiddenInput3.setAttribute('value', '' + amount);
+
+                form.appendChild(hiddenInput);
+                form.appendChild(hiddenInput3);
+                // Submit the form
+                form.submit();
             }
+
         }
-
-        function onChargeable3DS(status, source) {
-            if (source.status == 'chargeable') {
-                stripeTokenHandler(source);
-            }
-            else if (source.status == 'failed') {
-                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('yb_index')})|raw }}");
-            }
-            {#else if (source.status != 'pending') {
-                displayError("{{ 'threeds.unknown_error'|trans|raw }}");
-            }#}
-        }
-
-        $('#payment-form').submit(function (e) {
-            e.preventDefault();
-            // Disable the submit button to prevent repeat
-            $('input[type="submit"]').prop('disabled', true);
-
-            displayLoader();
-            scrollToLoader();
-            var extraDetails = {
-                name: $('#first_name').val + ' ' + $('#last_name').val(),
-                email: $('#email').val()
-            };
-            stripe.createToken(cardNumberElement, extraDetails).then(onToken);
-        });
-
         function scrollToLoader() {
             $('html, body').animate({
                 scrollTop: $("#stripe-loader").offset().top - 300
@@ -444,7 +486,11 @@
             }, 500);
         }
 
-        function displayLoader(html, hideform = true) {
+        function displayLoader(html, hideform) {
+
+            if(typeof(hideform) == "undefined") {
+                hideform = true;
+            }
             $loader.show();
 
             if(hideform)
@@ -483,29 +529,6 @@
             $('.stripe-error').hide();
         }
 
-        function stripeTokenHandler(source) {
-
-            $('#payment-intro').hide();
-            displayLoader("{{ 'threeds.pending'|trans|raw }}");
-
-            // Insert the token ID into the form so it gets submitted to the server
-            var form = document.getElementById('payment-form');
-            var hiddenInput = document.createElement('input');
-            hiddenInput.setAttribute('type', 'hidden');
-            hiddenInput.setAttribute('name', 'stripeSource');
-            hiddenInput.setAttribute('value', source.id);
-
-            var hiddenInput3 = document.createElement('input');
-            hiddenInput3.setAttribute('type', 'hidden');
-            hiddenInput3.setAttribute('name', 'amount');
-            hiddenInput3.setAttribute('value', '' + amount);
-
-            form.appendChild(hiddenInput);
-            form.appendChild(hiddenInput3);
-            // Submit the form
-            form.submit();
-        }
-
         $('#free-order-submit').click(function(e) {
             e.preventDefault();
 
@@ -522,8 +545,12 @@
                 'email': $email.val(),
                 'cart_code': "{{ cart.barcodeText }}"
             }, function() {
-                window.location.assign("{{ url('yb_order', {'code': cart.barcodeText}) }}"); 
-            }
-        }):
+                window.location.assign("{{ url('yb_order', {'code': cart.barcodeText}) }}" ~ "#order-recapitulation");
+            }).fail(function () {
+                displayForm();
+                displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+            });
+
+        });
     </script>
 {% endblock %}
