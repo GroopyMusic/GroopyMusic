@@ -67,9 +67,9 @@ class YBMembersController extends Controller
     }
 
     /**
-     * @Route("/organizations/list", name="yb_members_orgs_list")
+     * @Route("/organizations", name="yb_members_orgs")
      */
-    public function listOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null){
+    public function viewOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null){
         $this->checkIfAuthorized($user);
         return $this->render('@App/YB/Members/orgs_list.html.twig');
     }
@@ -190,7 +190,109 @@ class YBMembersController extends Controller
     }
 
     /**
-     * @Route("/facturation", name="yb_members_payment_options")
+     * @Route("/factures", name="yb_members_invoices")
+     */
+    public function invoicesViewAction(UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+
+        $campaignsByOrg = array(
+            "Organisation A" => array(
+                "Campagne A" => array(
+                    "2018-10-01" => array(
+                        "validated" => false
+                    ),
+                    "2018-09-01" => array(
+                        "validated" => true
+                    ),
+                    "2018-08-01" => array(
+                        "validated" => true
+                    )
+                ),
+                "Campagne B" => array(
+                    "2018-10-01" => array(
+                        "validated" => false
+                    ),
+                    "2018-09-01" => array(
+                        "validated" => true
+                    ),
+                    "2018-08-01" => array(
+                        "validated" => true
+                    )
+                )
+            ),
+            "Organisation B" => array(
+                "Campagne A" => array(
+                    "2018-10-01" => array(
+                        "validated" => false
+                    ),
+                    "2018-09-01" => array(
+                        "validated" => true
+                    ),
+                    "2018-08-01" => array(
+                        "validated" => true
+                    )
+                ),
+                "Campagne B" => array(
+                    "2018-10-01" => array(
+                        "validated" => false
+                    ),
+                    "2018-09-01" => array(
+                        "validated" => true
+                    ),
+                    "2018-08-01" => array(
+                        "validated" => true
+                    )
+                )
+            )
+        );
+
+        $campaignsByDate = array(
+            "2018-10-01" => array(
+                "Organisation A" => array(
+                    "Campagne A" => array(
+                        "validated" => false
+                    ),
+                    "Campagne B" => array(
+                        "validated" => false
+                    )
+                ),
+                "Organisation B" => array(
+                    "Campagne A" => array(
+                        "validated" => false
+                    ),
+                    "Campagne B" => array(
+                        "validated" => false
+                    )
+                )
+            ),
+            "2018-09-01" => array(
+                "Organisation A" => array(
+                    "Campagne A" => array(
+                        "validated" => true
+                    ),
+                    "Campagne B" => array(
+                        "validated" => true
+                    )
+                ),
+                "Organisation B" => array(
+                    "Campagne A" => array(
+                        "validated" => true
+                    ),
+                    "Campagne B" => array(
+                        "validated" => true
+                    )
+                )
+            )
+        );
+
+        return $this->render('@App/YB/Members/invoices.html.twig', [
+            'campaignsOrg' => $campaignsByOrg,
+            'campaignsDate' => $campaignsByDate
+        ]);
+    }
+
+    /**
+     * @Route("/aide-facturation", name="yb_members_payment_options")
      */
     public function paymentOptionsAction(UserInterface $user = null, Request $request) {
         $this->checkIfAuthorized($user, null);
