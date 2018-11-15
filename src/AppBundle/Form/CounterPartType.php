@@ -44,7 +44,7 @@ class CounterPartType extends AbstractType
             ))
             ->add('price', NumberType::class, array(
                 'required' => false,
-                'label' => 'Prix (en euros) (1 € ou plus)',
+                'label' => 'Prix (en euros) (soit 0 €, soit 1 € ou plus)',
             ))
             ->add('thresholdIncrease', NumberType::class, array(
                 'required' => true,
@@ -57,7 +57,7 @@ class CounterPartType extends AbstractType
             ))
             ->add('minimumPrice', NumberType::class, array(
                 'required' => false,
-                'label' => "Prix minimum (en euros) (soit 0 €, soit 1 € ou plus)",
+                'label' => "Prix minimum (en euros) (& € ou plus)",
             ))
         ;
     }
