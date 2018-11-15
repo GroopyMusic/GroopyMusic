@@ -71,8 +71,8 @@ class CounterPartType extends AbstractType
             $counterPart->setPrice($counterPart->getMinimumPrice());
         }
         else {
-            if($counterPart->getPrice() == null || $counterPart->getPrice() < 1) {
-                $context->addViolation('Les prix des tickets doivent être au minimum de 1 €.');
+            if($counterPart->getPrice() == null || $counterPart->getPrice() < 0 || ($counterPart->getPrice() > 0 && $counterPart->getPrice() < 1) {
+                $context->addViolation('Les prix des tickets doivent être au minimum de 1 €, ou alors de 0 € (pour tickets gratuits).');
             }
             $counterPart->setMinimumPrice($counterPart->getPrice());
         }

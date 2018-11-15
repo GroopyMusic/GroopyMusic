@@ -310,7 +310,7 @@ class YBController extends Controller
      */
     public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager) {
 
-        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
 
         foreach($cart->getContracts() as $cf) {
             if(!$cf->getcounterpartsSent())
@@ -384,6 +384,10 @@ class YBController extends Controller
         $errors = $validator->validate($order);
         if($errors->count() > 0) {
             throw new \Exception($errors->offsetGet(0));
+        }
+
+        if($cart->isFree()) {
+            $cart->setPaid(true); 
         }
 
         $em->persist($order);

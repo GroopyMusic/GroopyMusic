@@ -81,6 +81,10 @@ class CounterPart implements TranslatableInterface
         }
     }
 
+    public function isFree() {
+        return (!$this->free_price && $this->price == 0); 
+    }
+
     /**
      * @var int
      *

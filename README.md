@@ -6,7 +6,7 @@
 
 ### Rejoindre le Slack du projet
 
-Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
+Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
 ### GitHub
 
