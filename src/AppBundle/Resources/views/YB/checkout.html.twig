@@ -545,7 +545,7 @@
                 'email': $email.val(),
                 'cart_code': "{{ cart.barcodeText }}"
             }, function() {
-                window.location.assign("{{ url('yb_order', {'code': cart.barcodeText}) }}" ~ "#order-recapitulation");
+                window.location.assign("{{ url('yb_order', {'code': cart.barcodeText}) ~ '#order-recapitulation'}}");
             }).fail(function () {
                 displayForm();
                 displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
