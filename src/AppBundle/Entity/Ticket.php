@@ -30,7 +30,7 @@ class Ticket
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
-            $this->name = $cf->getPhysicalPerson()->getDisplayName();
+            $this->name = $cf->getDisplayName();
         } else {
             $this->barcode_text = $this->generateBarCode($num);
             $this->contractArtist = $contractArtist;

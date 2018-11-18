@@ -328,7 +328,6 @@ class MailDispatcher
     {
         $params = [
             'contract' => $ca,
-            'username' => $cf->getFan()->getFirstname(),
         ];
 
         $attachments = ['um-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];

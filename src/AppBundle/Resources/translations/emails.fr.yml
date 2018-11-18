@@ -79,8 +79,6 @@ concert:
 
       Envie de soutenir/découvrir d'autres artistes ? Rendez-vous sur Un-Mute.be !
     tickets: |
-      Bonjour %username%,
-
       Nous voici à quelques jours de l'événement "%festival_title%".
 
       Vous trouverez votre ou vos ticket(s) en pièce jointe (format PDF).

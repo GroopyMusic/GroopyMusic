@@ -113,7 +113,7 @@ class BaseContractArtist implements TranslatableInterface
 
     public function generateDateEnd() {
         $deadline = clone $this->start_date;
-        $deadline->modify('+ ' . $this->getStep()->getDeadlineDuration() . ' days')->setTime(23, 59, 59);
+        $deadline->modify('+30 days')->setTime(23, 59, 59);
         $this->dateEnd = $deadline;
     }
 
