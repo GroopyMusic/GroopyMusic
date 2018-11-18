@@ -102,22 +102,28 @@
                                         {% if counterpart.isFree %}Gratuit{% else %}{{ counterpart.price }} €{% endif %}
                                         </div>
                                     {% endif %}
+                                    {% set max_cp = campaign.nbPurchasable(counterpart) %}
                                     <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
                                     <div class="col-4 col-sm-3 col-lg-4">
                                         <div class="container px-0">
-                                            <div class="input-group">
-                                                <span class="input-group-btn">
-                                                    <button type="button" class="quantity-left-minus btn btn-secondary btn-number"  data-type="minus" data-field="">
-                                                        <i class="text-white fas fa-minus"></i>
-                                                    </button>
-                                                </span>
-                                                {{ form_widget(purchase.quantity) }}
-                                                <span class="input-group-btn">
-                                                    <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-max="{{ campaign.nbPurchasable(counterpart) }}" data-field="">
-                                                        <i class="text-white fas fa-plus"></i>
-                                                    </button>
-                                                </span>
-                                            </div>
+                                            {% if max_cp == 0 %}
+                                                <p>Il n'y a plus de tickets de ce type disponibles. (SOLD OUT)</p>
+                                                {% do purchase.setRendered(purchase.quantity) %}
+                                            {% else %}
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="quantity-left-minus btn btn-secondary btn-number"  data-type="minus" data-field="">
+                                                            <i class="text-white fas fa-minus"></i>
+                                                        </button>
+                                                    </span>
+                                                    {{ form_widget(purchase.quantity) }}
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-max="{{ max_cp }}" data-field="">
+                                                            <i class="text-white fas fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
