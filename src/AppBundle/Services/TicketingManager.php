@@ -185,15 +185,14 @@ class TicketingManager
         foreach ($contractArtist->getContractsFanPaid() as $cf) {
             /** @var ContractFan $cf */
             if (!$cf->getcounterpartsSent()) {
-                //try {
+                try {
                     $this->sendTicketsForContractFan($cf);
                     $cf->setcounterpartsSent(true);
                     $users[] = $cf->getUser();
-               // } catch (\Exception $e) {
-                //    $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage() . ' \n ' . $e->getTraceAsString());
-               //     return $e;
-                //}
-
+                } catch (\Exception $e) {
+                    $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage() . ' \n ' . $e->getTraceAsString());
+                    return $e;
+                }
             }
         }
 
