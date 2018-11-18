@@ -83,6 +83,8 @@
                             {% set counterpart = purchase.vars.value.counterpart %}
                             <div class="counterpart-form p-3 my-2 border">
 
+                                <div class="quantity-error-display" style="display:none;"></div>
+
                                 <div class="form-group form-row">
                                     {{ form_errors(purchase) }}
 
@@ -111,7 +113,7 @@
                                                 </span>
                                                 {{ form_widget(purchase.quantity) }}
                                                 <span class="input-group-btn">
-                                                    <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-field="">
+                                                    <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-max="{{ campaign.nbPurchasable(counterpart) }}" data-field="">
                                                         <i class="text-white fas fa-plus"></i>
                                                     </button>
                                                 </span>

@@ -189,6 +189,10 @@ class BaseContractArtist implements TranslatableInterface
         return null;
     }
 
+    public function getNbPurchasable(CounterPart $cp) {
+        return min($this->getNbAvailable($cp), $cp->getMaximumAmountPerPurchase());
+    }
+    
     public function getNbAvailable(CounterPart $cp) {
         $nb = $cp->getMaximumAmount();
 

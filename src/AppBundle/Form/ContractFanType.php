@@ -81,11 +81,11 @@ class ContractFanType extends AbstractType
             if($purchase->getCounterPart()->getFreePrice() && $purchase->getFreePriceValue() < $purchase->getCounterpart()->getMinimumPrice()) {
                 $context->addViolation('contractfan.free_price_min');
             }
-            if($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
-                $context->addViolation('contractfan.quantity_max');
+            $purchasable = $contract_artist->getNbPurchasable($purchase->getCounterpart());
+            if($purchasable < $purchase->getQuantityOrganic()) {
+                $context->addViolation("Vous ne pouvez pas commander plus de " . $purchasable . " exemplaires de \"" . $purchase->getCounterpart()->getName() . "\".");
             }
         }
-
     }
 
     public function configureOptions(OptionsResolver $resolver)

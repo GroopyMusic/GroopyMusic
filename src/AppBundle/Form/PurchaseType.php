@@ -31,8 +31,6 @@ class PurchaseType extends AbstractType
             'label' => false,
         ));
 
-
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($contract_artist) {
             $purchase = $event->getData();
             if(!empty($purchase->getCounterPart()->getPotentialArtists())) {
