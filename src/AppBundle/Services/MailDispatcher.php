@@ -17,6 +17,7 @@ use AppBundle\Entity\User_Category;
 use AppBundle\Entity\VIPInscription;
 use AppBundle\Entity\VolunteerProposal;
 use AppBundle\Entity\YB\YBContact;
+use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -543,7 +544,7 @@ class MailDispatcher
     // ------------------------ YB
 
     public function sendAdminYBContact(YBContact $contact) {
-        $subject = 'YB contact form';
+        $subject = 'Nouveau message sur Ticked-it!';
         $params = ['contact' => $contact];
         $subject_params = [];
         $reply_to = $contact->getEmail();
@@ -602,5 +603,23 @@ class MailDispatcher
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::YB_REFUNDED_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    public function sendYBReminderUpcomingEventBuyers(YBContractArtist $campaign) {
+        $users = $campaign->getBuyers();
+        $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $users));
+
+        $to = [];
+        foreach($emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['campaign' => $campaign];
+        $subject = 'subjects.yb.reminders.buyers.upcoming_event';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::YB_REMINDER_UPCOMING_EVENT_BUYERS, $subject, $params, $subject_params, $to);
     }
 }

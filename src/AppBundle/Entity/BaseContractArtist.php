@@ -24,6 +24,28 @@ class BaseContractArtist implements TranslatableInterface
     const NB_TEST_PERIOD_DAYS = 20;
     const PHOTOS_DIR = 'images/festivals/';
 
+    public function __construct() {
+        $this->accept_conditions = false;
+        $this->reminders_artist = 0;
+        $this->reminders_admin = 0;
+        $this->date = new \DateTime();
+        $this->collected_amount = 0;
+        $this->failed = false;
+        $this->successful = false;
+        $this->cart_reminder_sent = false;
+        $this->refunded = false;
+        $this->asking_refund = new ArrayCollection();
+        $this->test_period = false;
+        $this->promotions = new ArrayCollection();
+        $this->no_threshold = false;
+        $this->counterParts = new ArrayCollection();
+        $this->global_soldout = null;
+        $this->threshold = 0;
+        $this->counterparts_sold = 0;
+        $this->threshold = 0;
+        $this->reminders = [];
+    }
+
     public function __call($method, $arguments)
     {
         try {
@@ -65,27 +87,6 @@ class BaseContractArtist implements TranslatableInterface
 
     public function isYB() {
         return $this instanceof YBContractArtist;
-    }
-
-    public function __construct() {
-        $this->accept_conditions = false;
-        $this->reminders_artist = 0;
-        $this->reminders_admin = 0;
-        $this->date = new \DateTime();
-        $this->collected_amount = 0;
-        $this->failed = false;
-        $this->successful = false;
-        $this->cart_reminder_sent = false;
-        $this->refunded = false;
-        $this->asking_refund = new ArrayCollection();
-        $this->test_period = false;
-        $this->promotions = new ArrayCollection();
-        $this->no_threshold = false;
-        $this->counterParts = new ArrayCollection();
-        $this->global_soldout = null;
-        $this->threshold = 0;
-        $this->counterparts_sold = 0;
-        $this->threshold = 0;
     }
 
     public static function getWebPath(Photo $photo) {
@@ -509,9 +510,16 @@ class BaseContractArtist implements TranslatableInterface
     protected $threshold;
 
     /**
+     * @var float
      * @ORM\Column(name="counterparts_sold", type="float")
      */
     protected $counterparts_sold;
+
+    /**
+     * @var array
+     * @ORM\Column(name="reminders", type="array")
+     */
+    protected $reminders;
 
     /**
      * Get id
@@ -1237,5 +1245,32 @@ class BaseContractArtist implements TranslatableInterface
     public function getVolunteerProposals()
     {
         return $this->volunteer_proposals;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReminders() {
+        return $this->reminders;
+    }
+
+    /**
+     * @param array $reminders
+     * @return $this
+     */
+    public function setReminders($reminders){
+        $this->reminders = $reminders;
+        return $this;
+    }
+
+    /**
+     * @param string $reminder
+     * @return $this
+     */
+    public function addReminder($reminder) {
+        if(!in_array($reminder, $this->reminders)) {
+            $this->reminders[] = $reminder;
+        }
+        return $this;
     }
 }

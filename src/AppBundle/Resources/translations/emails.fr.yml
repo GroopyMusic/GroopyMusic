@@ -31,7 +31,11 @@ subjects:
   refunded_contract_fan: Remboursement de votre commande
   artist_validated: Votre artiste sur Un-Mute a été vérifié 
   reward_attribution: Nouvelle récompense 
-  sponsorship_invitation: Invitation à être parrainé 
+  sponsorship_invitation: Invitation à être parrainé
+  yb:
+    reminders:
+      buyers:
+        upcoming_event: Votre événement approche !
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -264,3 +268,15 @@ yb:
       La campagne "%event%" n'a pas pu être confirmée par son organisateur car trop peu de tickets ont été vendus.
 
       Vous allez être remboursé(e) de votre commande de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
+  reminders:
+    buyers:
+      upcoming_event: |
+        Bonjour,
+
+        Ce petit mail pour vous rappeler que vous avez commandé un ou plusieurs ticket(s) pour l'événement "%event%" via la plateforme de ticketing Ticked-it.
+
+        Cet événement a lieu le %date%, soit dans quelques jours !
+
+        N'oubliez pas, le jour J, de vous équiper de votre/vos ticket(s) sur un support lisible !
+
+        Passez une excellente journée,

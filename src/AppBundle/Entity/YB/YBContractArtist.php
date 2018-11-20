@@ -48,6 +48,15 @@ class YBContractArtist extends BaseContractArtist
         $this->code = uniqid();
     }
 
+    public function getBuyers() {
+        if($this->getContractsFanPaid() == null || empty($this->getContractsFanPaid())) {
+            return [];
+        }
+        return array_map(function(ContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getContractsFanPaid());
+    }
+
     public function isEvent() {
         return $this->getDateEvent() != null;
     }
@@ -191,6 +200,8 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
+
+
 
     /**
      * Set ticketsSent
