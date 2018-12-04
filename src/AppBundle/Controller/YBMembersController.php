@@ -10,6 +10,7 @@ use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
+use AppBundle\Services\MailDispatcher; 
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\StringHelper;
 use AppBundle\Services\TicketingManager;
@@ -69,7 +70,7 @@ class YBMembersController extends Controller
     /**
      * @Route("/campaign/new", name="yb_members_campaign_new")
      */
-    public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+    public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher) {
         $this->checkIfAuthorized($user);
         $campaign = new YBContractArtist();
         $campaign->addHandler($user);
@@ -89,6 +90,14 @@ class YBMembersController extends Controller
             $em->flush();
 
             $this->addFlash('yb_notice', 'La campagne a bien été créée.');
+
+            try { 
+            	$mailDispatcher->sendYBReminderEventCreated($campaign); 
+            }
+            catch(\Exception $e) {
+
+            }
+
             return $this->redirectToRoute('yb_members_dashboard');
         }
 
