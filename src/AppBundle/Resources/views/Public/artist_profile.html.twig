@@ -217,7 +217,7 @@
       {% if artist.website is not empty %}
         "sameAs": "{{ artist.website }}",
       {% endif %}
-      "description": "{{ artist.shortDescription }}"
+      "description": "{{ artist.getShortDescription }}"
     }
     </script>
 

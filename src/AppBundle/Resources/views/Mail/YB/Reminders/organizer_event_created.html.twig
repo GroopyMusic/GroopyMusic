@@ -7,8 +7,8 @@
         {% block content %}
 		    {{ email_content('yb.reminders.organizers.event_created', {
 		        '%event%': campaign.getTitle,
-		        '%url%': url('yb_campaign', {'id': campaign.id}), 
-		        '%url_long%': url('yb_campaign', {'id': campaign.id, 'slug': campaign.getSlug()}), 
+		        '%url%': email_link(url('yb_campaign', {'id': campaign.id})), 
+		        '%url_long%': email_link(url('yb_campaign', {'id': campaign.id, 'slug': campaign.getSlug()})), 
 		    })|raw }}
 		{% endblock %}
     {% endspaceless %}
