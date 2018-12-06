@@ -624,10 +624,10 @@ class MailDispatcher
     }
 
     public function sendYBReminderEventCreated(YBContractArtist $campaign) {
-        $organizers = $campaign->getOwners(); 
+        $organizers = $campaign->getHandlers();
         $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
             return $person->getEmail();
-        }), $organizers->toArray());
+        }, $organizers->toArray()));
 
         $to = self::ADMIN_TO; 
 
@@ -636,7 +636,7 @@ class MailDispatcher
         }
 
         $params = ['campaign' => $campaign]; 
-        $subjet = 'subjects.yb.reminders.organizers.created_event'; 
+        $subject = 'subjects.yb.reminders.organizers.event_created';
 
         $subject_params = ['%event%' => $campaign->getTitle()];
 
