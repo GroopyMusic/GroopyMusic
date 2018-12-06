@@ -36,6 +36,8 @@ subjects:
     reminders:
       buyers:
         upcoming_event: Votre événement approche !
+      organizers:
+        event_created: Votre campagne "%event%" est en ligne !
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -280,3 +282,16 @@ yb:
         N'oubliez pas, le jour J, de vous équiper de votre/vos ticket(s) sur un support lisible !
 
         Passez une excellente journée,
+    organizers:
+      event_created: |
+        Bonjour,
+
+        Votre événement "%event%" a bien été créé sur Ticked-it. Dès à présent, les tickets sont en vente.
+
+        Voici les liens vers votre campagne de vente de tickets.  
+        Version courte : %url%
+        Version longue : %url_long%
+
+        Vous pouvez diffuser ces liens auprès de vos réseaux, ou le placer sur votre site Web, en fonction de votre stratégie de communication. 
+
+        A bientôt, et merci de faire confiance à Ticked-it!

@@ -622,4 +622,24 @@ class MailDispatcher
 
         $this->sendEmail(MailTemplateProvider::YB_REMINDER_UPCOMING_EVENT_BUYERS, $subject, $params, $subject_params, $to);
     }
+
+    public function sendYBReminderEventCreated(YBContractArtist $campaign) {
+        $organizers = $campaign->getOwners(); 
+        $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }), $organizers->toArray());
+
+        $to = self::ADMIN_TO; 
+
+        foreach($emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['campaign' => $campaign]; 
+        $subjet = 'subjects.yb.reminders.organizers.created_event'; 
+
+        $subject_params = ['%event%' => $campaign->getTitle()];
+
+        $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
+    }
 }
