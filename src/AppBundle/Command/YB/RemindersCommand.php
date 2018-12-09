@@ -42,7 +42,7 @@ class RemindersCommand extends ContainerAwareCommand
 
             // -------------- Upcoming event 1
             if(!in_array(self::REMINDER_BUYER_UPCOMING_EVENT_1, $reminders)) {
-                if($campaign->isEvent() && !$campaign->isPassed() && $campaign->getDateEvent()->diff(new \DateTime())->d < 7) {
+                if($campaign->isEvent() && !$campaign->isPassed() && $campaign->getDateEvent()->diff(new \DateTime())->days < 7) {
                     $mailer->sendYBReminderUpcomingEventBuyers($campaign);
 
                     $campaign->addReminder(self::REMINDER_BUYER_UPCOMING_EVENT_1);
