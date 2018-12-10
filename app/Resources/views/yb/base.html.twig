@@ -20,9 +20,14 @@
         {% endstylesheets %}
     {% endblock %}
 
-    <link rel="icon" type="image/png" href="{{ yb_asset('yb/favicon.png') }}" />
-    <link rel="icon" type="image/x-icon" href="{{ yb_asset('yb/favicon.ico') }}" />
-</head>
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ yb_asset('apple-touch-icon.png') }}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ yb_asset('favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ yb_asset('favicon-16x16.png') }}">
+	<link rel="manifest" href="{{ yb_asset('site.webmanifest') }}">
+	<link rel="mask-icon" href="{{ yb_asset('safari-pinned-tab.svg" color="#f17f38') }}">
+	<meta name="apple-mobile-web-app-title" content="Ticked-it!">
+	<meta name="application-name" content="Ticked-it!">
+	<meta name="msapplication-TileColor" content="#da532c">
 <body>
 {% if app.environment == 'prod' %}
     <!-- Google Tag Manager (noscript) -->
