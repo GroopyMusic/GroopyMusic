@@ -190,9 +190,9 @@ class YBMembersController extends Controller
     }
 
     /**
-     * @Route("/factures", name="yb_members_invoices")
+     * @Route("/invoices", name="yb_members_invoices")
      */
-    public function invoicesViewAction(UserInterface $user = null){
+    public function invoicesViewListAction(UserInterface $user = null){
         $this->checkIfAuthorized($user);
 
         $campaignsByOrg = array(
@@ -289,6 +289,24 @@ class YBMembersController extends Controller
             'campaignsOrg' => $campaignsByOrg,
             'campaignsDate' => $campaignsByDate
         ]);
+    }
+
+    /**
+     * @Route("/invoice/{id}/sold", name="yb_members_invoice_sold")
+     */
+    public function invoiceSoldDetailsAction(UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+
+        return $this->render('@App/PDF/yb_invoice_sold.html.twig');
+    }
+
+    /**
+     * @Route("/invoice/{id}/fee", name="yb_members_invoice_fee")
+     */
+    public function invoiceFeeDetailsAction(UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+
+        return $this->render('@App/PDF/yb_invoice_fee.html.twig');
     }
 
     /**
