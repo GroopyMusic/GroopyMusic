@@ -32,9 +32,8 @@
             <tr>
                 <th>Description</th>
                 <th>Prix unitaire</th>
-                <th>Quantité/Taux</th>
+                <th>Quantité</th>
                 <th>Commission</th>
-                <th>Sous-total</th>
             </tr>
             {% for i in 1..3 %}
                 {% set unitPrice = 5*i %}
@@ -56,33 +55,21 @@
                 <tr>
                     <td>Ticket {{ i }}</td>
                     <td>{{ unitPrice|round(2) }}</td>
-                    {% if unitPrice * comVar < comMini %}
-                        <td>{{ comMini }}</td>
-                    {% else %}
-                        <td>{{ comVar*100 }} %</td>
-                    {% endif %}
-                    <td>{{ (fee)|round(2) }}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Ticket {{ i }} - Commission</td>
-                    <td>{{ fee|round(3) }}</td>
                     <td>{{ quantity }}</td>
-                    <td></td>
                     <td>{{ fee * quantity|round(2) }}</td>
 
                 </tr>
             {% endfor %}
             <tr class="text-bold">
-                <td colspan="4">Total HTVA</td>
+                <td colspan="3">Total HTVA</td>
                 <td>000.00€</td>
             </tr>
             <tr class="text-bold">
-                <td colspan="4">TVA</td>
+                <td colspan="3">TVA</td>
                 <td>000.00€</td>
             </tr>
             <tr class="text-bold">
-                <td colspan="4">Total TVAC</td>
+                <td colspan="3">Total TVAC</td>
                 <td>000.00€</td>
             </tr>
         </table>
