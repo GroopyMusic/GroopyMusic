@@ -1,11 +1,12 @@
-$main-orange: #ea900c;
+$main-orange: #f39200;
+$main-green: #66ad61;
 $theme-colors: (
         "primary": $main-orange,
-        "secondary": #607D8B
+        "secondary": $main-green,
 );
 $primary: $main-orange !default;
-$menu-color: #eadf0c;
-$link-secondary-color: #007ebb;
+$menu-color: #fbd060;
+$link-secondary-color: $main-green;
 
 $white: #fff !default;
 $gray-100: #f8f9fa !default;

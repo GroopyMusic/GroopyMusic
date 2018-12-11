@@ -19,19 +19,19 @@
             {{ campaign.contractsFanPaid|length }} commande(s)
         </div>
         <div class="col-12 col-md-2">
-            <a class="link-secondary" target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}"><i class="fas fa-eye text-primary"></i> Voir la page de la campagne</a>
+            <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">Voir la page de la campagne</a>
         </div>
         {% if not campaign.isPassed %}
             <div class="col-12 col-md-2">
-                <a class="link-secondary" href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}"><i class="fas fa-edit text-primary"></i> Modifier les informations</a>
+                <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les informations</a>
             </div>
         {% endif %}
         <div class="col-12 col-md-2">
-            <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}"><i class="fas fa-list text-primary"></i> Accéder à la liste de commandes</a>
+            <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}">Accéder à la liste de commandes</a>
         </div>
         {% if campaign.hasThreshold %}
             <div class="col-12 col-md-3">
-                <a class="link-secondary" href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}"><i class="fas fa-chart-bar text-primary"></i> Financement participatif</a>
+                <i class="fas fa-chart-bar text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">Financement participatif</a>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% elseif campaign.failed %} bg-danger{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
                 </div>

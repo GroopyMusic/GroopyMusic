@@ -49,49 +49,40 @@
 
     <section id="about">
         <div class="container p-5">
-            <h2>{{ 'home.about.title'|trans }}</h2>
-            <p class="big">
-                {{ 'home.about.content'|trans|nl2br }}
-            </p>
+            <div class="row">
+                <div class="col-lg-3 my-auto text-uppercase"><h2>{{ 'home.about.title'|trans|raw|nl2br }}</h2></div>
+                <div class="col-lg-9 my-auto big">{{ 'home.about.content'|trans|raw|nl2br }}</div>
+            </div>
         </div>
     </section>
 
     <!-- Icons Grid -->
     <section class="features-icons bg-light p-3 p-md-5" id="services">
         <div class="container">
-            <h2>{{ 'home.services.title'|trans }}</h2>
+            <h2 class="text-uppercase">{{ 'home.services.title'|trans }}</h2>
             <div class="row text-center">
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
-                        <div class="features-icons-icon d-flex">
-                            <i class="fas fa-ticket-alt mx-auto"></i>
+                        <div class="p-3">
+                            <img class="img-fluid home-icon" src="{{ yb_asset('images/icons/icon-ticketing.png') }}" />
                         </div>
                         <h3>{{ 'home.services.ticketing.title'|trans }}</h3>
                         <p class="lead mb-0">{{ 'home.services.ticketing.content'|trans }}</p>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
-                        <div class="features-icons-icon d-flex">
-                            <i class="fas fa-bullseye mx-auto"></i>
+                        <div class="p-3">
+                            <img class="img-fluid home-icon" src="{{ yb_asset('images/icons/icon-options-2.png') }}" />
                         </div>
                         <h3>{{ 'home.services.flexibility.title'|trans }}</h3>
                         <p class="lead mb-0">{{ 'home.services.flexibility.content'|trans }}</p>
                     </div>
                 </div>
-                <div class="col-lg-3">
-                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
-                        <div class="features-icons-icon d-flex">
-                            <i class="fas fa-hand-holding-usd mx-auto"></i>
-                        </div>
-                        <h3>{{ 'home.services.no_risk.title'|trans }}</h3>
-                        <p class="lead mb-0">{{ 'home.services.no_risk.content'|trans }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-0 mb-lg-3">
-                        <div class="features-icons-icon d-flex">
-                            <i class="fas fa-lock mx-auto"></i>
+                        <div class="p-3">
+                            <img class="img-fluid home-icon" src="{{ yb_asset('images/icons/icon-secure.png') }}" />
                         </div>
                         <h3>{{ 'home.services.security.title'|trans }}</h3>
                         <p class="lead mb-0">{{ 'home.services.security.content'|trans }}</p>
@@ -108,65 +99,44 @@
             <div class="row no-gutters" id="services-step-1">
                 <div class="col-lg-6 order-lg-2 text-white showcase-img"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text">
-                    <h3>{{ 'home.examples.example_1.title'|trans }}</h3>
+                    <h3 class="font-weight-bold">{{ 'home.examples.example_1.title'|trans }}</h3>
                     <p class="lead mb-0">{{ 'home.examples.example_1.content'|trans }}</p>
                 </div>
             </div>
-            <div class="row no-gutters" id="services-step-2">
+            <div class="row no-gutters" id="services-step-3">
                 <div class="col-lg-6 text-white showcase-img"></div>
                 <div class="col-lg-6 my-auto showcase-text">
-                    <h3>{{ 'home.examples.example_2.title'|trans }}</h3>
-                    <p class="lead mb-0">{{ 'home.examples.example_2.content'|trans }}</p>
-                </div>
-            </div>
-            <div class="row no-gutters" id="services-step-3">
-                <div class="col-lg-6 order-lg-2 text-white showcase-img"></div>
-                <div class="col-lg-6 order-lg-1 my-auto showcase-text">
-                    <h3>{{ 'home.examples.example_3.title'|trans }}</h3>
+                    <h3 class="font-weight-bold">{{ 'home.examples.example_3.title'|trans }}</h3>
                     <p class="lead mb-0">{{ 'home.examples.example_3.content'|trans }}</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="pricing" class="p-3 p-md-5">
+    <section id="friends-examples" class="p-3 p-md-5">
         <div class="container">
-            <h2>{{ 'home.pricing.title'|trans }}</h2>
-            <div class="card-deck mb-3 text-center">
-                <div class="card mb-4 box-shadow my-auto">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">{{ 'home.pricing.campaign_1.title'|trans }}</h4>
+            <h2>{{ 'home.friends-examples.title'|trans }}</h2>
+            <p>
+                {{ 'home.friends-examples.content'|trans|raw }}
+            </p>
+            <div class="text-right">
+               <a class="js-scroll-trigger btn btn-secondary" href="#contact">
+                   {{ 'home.friends-examples.contact_us'|trans }}
+               </a>
+            </div>
+            {#
+            <div>
+                <h3 class="font-weight-bold">{{ 'home.friends-examples.friends_title'|trans }}</h3>
+                <div class="row">
+                    <div class="col-lg-3 my-auto">
+                        <a href="http://spacium.be"><img class="img-fluid" src="{{ yb_asset('images/friends/spacium.png') }}"/></a>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled mt-3 mb-4">
-                            {{ 'home.pricing.campaign_1.list'|trans|raw }}
-                        </ul>
-                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">{{ 'home.pricing.contact_us'|trans }}</a>
-                    </div>
-                </div>
-                <div class="card mb-4 box-shadow my-auto">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">{{ 'home.pricing.campaign_2.title'|trans }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled mt-3 mb-4">
-                            {{ 'home.pricing.campaign_2.list'|trans|raw }}
-                        </ul>
-                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">{{ 'home.pricing.contact_us'|trans }}</a>
-                    </div>
-                </div>
-                <div class="card mb-4 box-shadow my-auto">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">{{ 'home.pricing.campaign_custom.title'|trans }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled mt-3 mb-4">
-                            {{ 'home.pricing.campaign_custom.list'|trans|raw }}
-                        </ul>
-                        <a class="js-scroll-trigger btn btn-lg btn-block btn-secondary" href="#contact">{{ 'home.pricing.contact_us'|trans }}</a>
+                    <div class="col-lg-3 my-auto">
+                        <a href="https://un-mute.be"><img class="img-fluid" src="{{ yb_asset('images/friends/un-mute.png') }}"/></a>
                     </div>
                 </div>
             </div>
+            #}
         </div>
     </section>
 

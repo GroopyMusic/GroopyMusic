@@ -18,10 +18,11 @@
             padding: 5px 10px;
         }
         .footer {
-            background-color: #607D8B;
+            background-color: #a2d1e6;
+            border-top: 3px solid black;
             width: 100%;
             padding: 20px 20px;
-            color: white;
+            color: black;
         }
         .footer p {
             margin: 0 auto;
@@ -64,7 +65,7 @@
             <page_header>
                 <div class="header">
                     {% block header_content %}
-                        <h1>Ticked-it!</h1>
+                        <img src="{{ absolute_url(asset('yb/images/logo/logo-short.png')) }}" height="100" alt="Ticked-it!" />
                     {% endblock %}
                 </div>
             </page_header>
@@ -74,7 +75,7 @@
                 <div class="footer">
                     {% block footer_content %}
                         <p>
-                            https://ticked-it.be - Ticked-it! - info@ticked-it.be
+                            https://ticked-it.be - <img src="{{ absolute_url(asset('yb/images/logo.png')) }}" height="35" /> - info@ticked-it.be
                         </p>
                     {% endblock %}
                 </div>

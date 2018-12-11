@@ -19,35 +19,38 @@ home:
   headline: À la recherche d'une billetterie simple et flexible ?
   cta: Découvrez ce que nous offrons
   about:
-    title: À propos
-    content: Vous souhaitez lancer une campagne de vente de tickets en ligne ? Ticked-it.be propose une solution 100 % belge, qui permet l'utilisation d'un système de crowdfunding si vous le désirez. Déterminez l'objectif de votre campagne et remboursez, sans aucun frais, tous les participants si nécessaire. L'équipe du projet, jeune et installée à Bruxelles, vous accompagne tout au long de l'implantation de votre campagne, avec des prix imbattables sur le marché du ticketing.
+    title: Notre mission
+    content: Ticked-it! cherche à <b>renforcer la relation client pour les spectacles du vivant par la digitalisation</b>. Nous proposons des solutions de ticketing <b>durables</b> et <b>innovantes</b>. Vous créez des événements, décidez de nombreuses options qui peuvent s'y appliquer, et la campagne de ticketing peut commencer.
+
   services:
     title: Nos services
     ticketing:
       title: Ticketing
-      content: Vendez des tickets ou d'autres articles à l'aide de campagnes en ligne.
+      content: "Vendez des tickets pour tout type d'événement ; vous ne payez que ce que vous utilisez : pas de ticket vendu, pas de facture !"
     flexibility:
-      title: Objectifs flexibles
-      content: Vous décidez du seuil de réussite de vos campagnes.
-    no_risk:
-      title: Aucun risque
-      content: Si la campagne se solde en échec, vous remboursez tout le monde sans frais.
+      title: Full options
+      content: Votre espace organisateur vous permet une personnalisation poussée de vos campagnes de vente
     security:
       title: Sécurité
-      content: Tous les paiements et remboursements sont parfaitement sécurisés.
+      content: Tous nos paiements sont parfaitement sécurisés et nous traitons vos données et celles de vos acheteurs en parfait accord avec les règles en vigueur
   examples:
     example_1:
-      title: Un événement privé à organiser ?
-      content: Faites-le sans ne prendre aucun risque !
+      title: L'événementiel au sens large
+      content: Que ce soit pour un concert, un événement privé, une représentation théâtrale, ou toute autre forme d'événementiel, Ticked-it! s'occupe de votre ticketing. Votre événement est gratuit ? ça marche aussi. Vous souhaitez que votre événement soit conditionné à un crowdfunding ? vous êtes chez vous.
     example_2:
       title: Vous souhaitez faire venir un artiste dans votre salle de concert ?
       content: C'est facile. Lancez une campagne en ligne pour tester l'intérêt de votre public !
     example_3:
-      title: Besoin de vendre des articles pour votre projet ?
-      content: Contactez-nous et nous verrons ce que nous pouvons faire pour vous.
+      title: Des options à n'en plus finir
+      content: Activez le financement participatif si vous souhaitez fonctionner sur base d'un crowdfunding ; les remboursements sont alors 100 % gratuits. Customisez vos tickets et leur prix (tickets gratuits, pour enfants, à prix libre, ...). Envoyez des e-mails aux acheteurs qui vous autorisent à le faire. Voilà déjà un avant-goût de ce que Ticked-it! vous propose.
+  friends-examples:
+    title: Faites partie des early birds
+    content: Ticked-it! comporte déjà beaucoup d'options, mais nous ne voulons pas nous en arrêter là. Rejoignez-nous pour, en tant que clients lanceurs du projet, pouvoir décider préférentiellement des prochaines options qui sortiront. Vous bénéficiez alors de <b>tarifs imbattables</b> et d'un support continu par mail et téléphone.
+    contact_us: Contactez-nous pour lancer votre première campagne
+    friends_title: Ils nous font déjà confiance
   pricing:
     title: Campagnes & prix
-    contact_us: Contactez-nous
+    contact_us: Contactez-nous pour lancer votre première campagne
     campaign_1:
        title: Campagne de ticketing
        list: |
