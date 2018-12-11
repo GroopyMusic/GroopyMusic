@@ -4,6 +4,10 @@
 {% block additional_styles %}
 {% endblock %}
 
+{% block header_content %}
+    <h3 class="green">Ne m'imprimez pas, je me porte bien mieux en milieu virtuel !</h3>
+{% endblock %}
+
 {% block page %}
     {% for ticket in tickets %}
         {% set campaign = ticket.contractArtist %}
@@ -11,10 +15,10 @@
             {{ block('header') }}
             {{ block('footer') }}
 
-            <h2>Ceci est votre ticket Ticked-it!</h2>
+            <h2>Je suis votre ticket <img src="{{ absolute_url(asset('yb/images/logo/logo-short.png')) }}" height="30" alt="Ticked-it!" /></h2>
 
             <p>
-                Il donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
+                Je donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
             {% if campaign.isEvent %}
                 <br />Date de l'événement : {{ campaign.dateEvent|fancy_date }}
             {% endif %}

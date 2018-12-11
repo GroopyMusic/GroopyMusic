@@ -23,7 +23,7 @@ class Ticket
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;
-        $this->price = $price;
+        $this->setPrice($price);
         $this->validated = false;
         $this->rewards = new ArrayCollection();
 
@@ -224,6 +224,9 @@ class Ticket
      */
     public function setPrice($price)
     {
+        if($price == null) {
+            $price = 0;
+        }
         $this->price = $price;
 
         return $this;

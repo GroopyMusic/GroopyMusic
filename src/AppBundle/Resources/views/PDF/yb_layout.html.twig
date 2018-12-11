@@ -18,7 +18,6 @@
             padding: 5px 10px;
         }
         .footer {
-            background-color: #a2d1e6;
             border-top: 3px solid black;
             width: 100%;
             padding: 20px 20px;
@@ -27,7 +26,13 @@
         .footer p {
             margin: 0 auto;
             text-align:center;
-            color: white;
+            color: black;
+        }
+
+        .footer img {
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-bottom: -7px;
         }
 
         a, a:visited {
@@ -46,8 +51,8 @@
             color: white;
         }
 
-        .text-secondary {
-            color: #4a4b4d;
+        .text-secondary, .green {
+            color: #66ad61;
         }
 
         .text-bold {
@@ -65,7 +70,7 @@
             <page_header>
                 <div class="header">
                     {% block header_content %}
-                        <img src="{{ absolute_url(asset('yb/images/logo/logo-short.png')) }}" height="100" alt="Ticked-it!" />
+                        <img src="{{ absolute_url(asset('yb/images/logo/logo-short.png')) }}" height="55" alt="Ticked-it!" />
                     {% endblock %}
                 </div>
             </page_header>
@@ -75,7 +80,7 @@
                 <div class="footer">
                     {% block footer_content %}
                         <p>
-                            https://ticked-it.be - <img src="{{ absolute_url(asset('yb/images/logo.png')) }}" height="35" /> - info@ticked-it.be
+                            https://ticked-it.be <img src="{{ absolute_url(asset('yb/images/logo.png')) }}" height="35" /> info@ticked-it.be
                         </p>
                     {% endblock %}
                 </div>
