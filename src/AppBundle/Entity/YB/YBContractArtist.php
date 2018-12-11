@@ -33,7 +33,7 @@ class YBContractArtist extends BaseContractArtist
     const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED];
     const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
 
-    const PHOTOS_DIR = 'yb/images/campaigns/';
+    const PHOTOS_DIR = 'images/campaigns/';
 
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
