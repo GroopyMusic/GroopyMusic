@@ -6,13 +6,13 @@
 {% set photo = campaign.photo is not null ? campaign.photo : false %}
 
 {% block open_graph %}
-    {% set og_src = photo ? asset(campaign.webPath(photo)) : asset('yb/images/illustration-guitars.jpg') %}
+    {% set og_src = photo ? campaign.webPath(photo) : 'images/illustration-guitars.jpg' %}
     <meta property="og:title"
           content="{{ campaign.getTitle }}"/>
     <meta property="og:type" content="article"/>
     <meta property="og:url"
           content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
-    <meta property="og:image" content="{{ absolute_url(og_src) }}"/>
+    <meta property="og:image" content="{{ yb_asset(og_src) }}"/>
 {% endblock %}
 
 {% block header_container %}
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 {% endif %}
-                <div {% if not campaign.noThreshold %}class="mt-4"{% endif %}>
+                <div class="mt-5{% if campaign.noThreshold %} mt-lg-3{% endif %}">
                     <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
 
                     {% if campaign.isCrowdable %}
@@ -112,13 +112,13 @@
                                             {% else %}
                                                 <div class="input-group">
                                                     <span class="input-group-btn">
-                                                        <button type="button" class="quantity-left-minus btn btn-secondary btn-number"  data-type="minus" data-field="">
+                                                        <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
                                                             <i class="text-white fas fa-minus"></i>
                                                         </button>
                                                     </span>
                                                     {{ form_widget(purchase.quantity) }}
                                                     <span class="input-group-btn">
-                                                        <button type="button" class="quantity-right-plus btn btn-secondary btn-number" data-type="plus" data-max="{{ max_cp }}" data-field="">
+                                                        <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max_cp }}" data-field="">
                                                             <i class="text-white fas fa-plus"></i>
                                                         </button>
                                                     </span>
@@ -145,7 +145,7 @@
                 </div>
 
                 {% if campaign.address is not null %}
-                    <div class="mt-4">
+                    <div class="mt-5">
                         <h3>Lieu</h3>
 
                         <p>Adresse : {{ campaign.address }}</p>

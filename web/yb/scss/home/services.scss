@@ -17,16 +17,17 @@
 }
 
 #services-step-1 {
-  background: -webkit-linear-gradient(to left, #e36437, rgba(251, 208, 96, 0.35));
-  background: linear-gradient(to left, #e36437, rgba(251, 208, 96, 0.35));
+  background: -webkit-linear-gradient(to left, rgba(102, 173, 97, 0.63), rgba(102, 173, 97, 0.35));
+  background: linear-gradient(to left, rgba(102, 173, 97, 0.63), rgba(102, 173, 97, 0.35));
   .showcase-img {
     background-image: url('images/illustration-event.jpg');
   }
 }
 
 #services-step-3 {
-  background: -webkit-linear-gradient(to right, #41832f, rgba(102, 173, 97, 0.35));
-  background: linear-gradient(to right, #41832f, rgba(102, 173, 97, 0.35));
+  background: -webkit-linear-gradient(to right, rgba(251, 208, 96, 0.75), rgba(251, 208, 96, 0.35));
+  background: linear-gradient(to right, rgba(251, 208, 96, 0.75), rgba(251, 208, 96, 0.35));
+
   .showcase-img {
     background-image: url('images/step-3.jpg');
   }

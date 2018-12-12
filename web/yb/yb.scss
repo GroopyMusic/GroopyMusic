@@ -3,6 +3,7 @@ $main-green: #66ad61;
 $theme-colors: (
         "primary": $main-orange,
         "secondary": $main-green,
+        "dark": #607D8B,
 );
 $primary: $main-orange !default;
 $menu-color: #fbd060;
@@ -52,6 +53,7 @@ h2 {
 
 .btn, button, a {
   cursor: pointer;
+  white-space: inherit;
 }
 
 .btn-primary {
