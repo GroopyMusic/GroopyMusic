@@ -13,6 +13,7 @@
     <meta property="og:url"
           content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
     <meta property="og:image" content="{{ yb_asset(og_src) }}"/>
+    <meta property="og:description" content="{{ campaign.getDescription|slice(0,100) }}"/>
 {% endblock %}
 
 {% block header_container %}
