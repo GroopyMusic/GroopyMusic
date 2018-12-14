@@ -45,6 +45,7 @@ Pour mettre à jour Composer, exécuter
 
 Le fichier `app/config/parameters.yml` n’est pas partagé parce qu’il contient des données « secrètes ».
 Lorsque vous rejoignez le projet, Gonzague vous enverra la version de ce fichier qui correspondra à votre environnement local.
+S'il vous manque un paramètre après une mise-à-jour, demandez également à Gonzague.
 
 ### Mettre en place la base de données
 
