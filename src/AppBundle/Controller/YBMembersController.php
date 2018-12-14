@@ -248,7 +248,6 @@ class YBMembersController extends Controller
                 'Code de confirmation',
                 'Date de commande',
                 'Acheteur',
-                'Adresse e-mail',
                 'Prix',
                 'Détail',
                 'URL de confirmation'
@@ -271,7 +270,6 @@ class YBMembersController extends Controller
                     $cf->getCart()->getBarcodeText(),
                     \PHPExcel_Shared_Date::PHPToExcel($cf->getDate()->getTimeStamp()),
                     $cf->getDisplayName(),
-                    $cf->getEmail(),
                     $cf->getAmount(),
                     $cf->getPurchasesExport(),
                     $this->generateUrl('yb_order', ['code' => $cf->getCart()->getBarcodeText()], UrlGeneratorInterface::ABSOLUTE_URL),

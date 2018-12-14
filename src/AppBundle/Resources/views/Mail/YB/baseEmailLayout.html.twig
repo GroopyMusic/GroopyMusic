@@ -45,7 +45,7 @@
                 <td width="{{ shadowWidth }}">&nbsp;</td>
                 <td class="contentWidth" width="{{ contentWidth }}" bgcolor="{{ contentBackgroundColor }}" style="padding: 20px; text-align: center;">
                     {% block logo %}
-                        <a href="{{ url('yb_index') }}" target="_blank" style="color: #607D8B; font-size: 72px; font-weight: bold; text-decoration: none; text-align:center;">
+                        <a href="{{ url('yb_index') }}" target="_blank" style="color: #E36437; font-size: 72px; font-weight: bold; text-decoration: none; text-align:center;">
                             <img src="{{ absolute_url(asset('yb/images/logo/logo.png')) }}" alt="Ticked-it!" height="70" />
                         </a>
                     {% endblock %}{# end block logo #}
@@ -58,7 +58,7 @@
         <td class="contentWidth" width="{{ contentWidth }}" bgcolor="white"  style="padding:10px 20px 20px 20px; border-top: 1px solid #EEEEEE;">
             <a name="top" ></a>
 
-            <h2 style="color: #E36437; text-align:center;">{{ subject }}</h2>
+            <h2 style="color: #E36437; text-align:center; text-transform: uppercase;">{{ subject }}</h2>
 
             {% block content %}
                 {% block contentHead %}
