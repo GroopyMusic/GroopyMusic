@@ -10,6 +10,7 @@ use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\YB\YBContactType;
+use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\TicketingManager;
@@ -17,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +45,7 @@ class YBController extends Controller
     /**
      * @Route("/", name="yb_index")
      */
-    public function indexAction(Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher)
+    public function indexAction(Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher, CaptchaManager $captchaManager)
     {
         $contact = new YBContact();
         $form = $this->createForm(YBContactType::class, $contact, ['action' => $this->generateUrl('yb_index') . '#contact']);
@@ -51,6 +53,14 @@ class YBController extends Controller
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+           if(!$captchaManager->verify()) {
+               $this->addFlash('error', 'Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !');
+                return $this->render('@App/YB/home.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+           }
+
+            // DB save
             $em->persist($contact);
             $em->flush();
 
@@ -58,7 +68,7 @@ class YBController extends Controller
             $mailDispatcher->sendYBContactCopy($contact);
             $mailDispatcher->sendAdminYBContact($contact);
 
-            $this->addFlash('yb_notice', 'Thank you for your message. We will come back to you soon.');
+            $this->addFlash('yb_notice', 'Merci pour votre message. Nous vous recontacterons aussi vite que possible.');
             return $this->redirectToRoute('yb_index');
         }
 

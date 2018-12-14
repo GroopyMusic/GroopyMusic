@@ -16,6 +16,11 @@ notice:
   title: Merci !
   back: Retour
 
+error:
+  title: Une erreur est surenue
+  back: Retour
+  form_error: Le formulaire contient une ou plusieurs erreurs.
+
 home:
   headline: À la recherche d'une billetterie simple et flexible ?
   cta: Découvrez ce que nous offrons

@@ -1,0 +1,20 @@
+{% trans_default_domain 'yb' %}
+<div class="modal-error modal fade in">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon-box">
+                    <i class="fas fa-exclamation-circle text-white"></i>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+                <h4>{{ 'error.title'|trans }}</h4>
+                <p>{{ message|raw }}</p>
+                <button class="btn btn-primary" data-dismiss="modal">
+                    <span>{{ 'error.back'|trans }}</span><i class="far fa-arrow-alt-circle-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

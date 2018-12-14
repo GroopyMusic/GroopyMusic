@@ -82,41 +82,22 @@
 {% endblock %}
 
 <main id="main" {% block main_attributes %}{% endblock %}>
-    {% set error_bag = app.request.session.flashbag.get('error') %}
-
-    {% if error_bag is not empty
-    or ((errors is defined and errors|length > 0) or (form is defined and form is not null and not form.vars.valid))%}
-
-        <div class="container">
+    {% block error_modals %}
+        {% set error_bag = app.request.session.flashbag.get('error') %}
+        {% if error_bag is not empty %}
             {% for message in error_bag %}
-                {{ error(message)|raw }}
-            {% endfor%}
-
-            {% spaceless %}
-                {% if (errors is defined and errors|length > 0) or ((form is defined and form is not null and not form.vars.valid) or (form1 is defined and form1 is not null and not form1.vars.valid) or (form2 is defined and form2 is not null and not form2.vars.valid)) %}
-                    <div id="errors" class="my-3">
-                        {% if (form is defined and form is not null and not form.vars.valid) %}
-                            {{ form_errors(form) }}
-                        {% endif %}
-                        {% if (form1 is defined and form1 is not null and not form1.vars.valid) %}
-                            {{ form_errors(form1) }}
-                        {% endif %}
-                        {% if (form2 is defined and form2 is not null and not form2.vars.valid) %}
-                            {{ form_errors(form2) }}
-                        {% endif %}
-
-                        {% if errors is defined and errors|length > 0 %}
-                            <ul>
-                                {% for error in errors %}
-                                    <li class="error">{{ error }}</li><br/>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            {% endspaceless %}
-        </div>
-    {% endif %}
+                {{ yb_error(message)|raw }}
+            {% endfor %}
+        {% endif %}
+        {% if (form is defined and form is not null and not form.vars.valid) %}
+            {{ yb_error('<p>'~ 'error.form_error'|trans ~ '</p>' ~ form_errors(form))|raw }}
+        {% endif %}
+        {% if (errors is defined and errors|length > 0) %}
+            {% for error in errors %}
+                {{ yb_error(error)|raw }}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
     {% block notices %}
         {% set notice_bag = app.request.session.flashbag.get('yb_notice') %}
         {% if notice_bag is not empty %}

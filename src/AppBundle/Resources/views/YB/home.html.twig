@@ -30,7 +30,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xl-9 mx-auto">
-                <h1 class="mb-5">{{ 'home.headline'|trans }}</h1>
+                <h1 class="mb-5 mt-5 mt-md-0">{{ 'home.headline'|trans }}</h1>
             </div>
             <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                 <form>
@@ -146,7 +146,8 @@
             <h3>{{ 'home.contact.subtitle'|trans }}</h3>
         </div>
         <div class="contact-section">
-            <div class="container">
+            {{ hidden_loader(true, false) }}
+            <div class="container" id="contact-form-container">
                 {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
                 {{ form_start(form) }}
                     <div class="row">
@@ -163,11 +164,29 @@
                                 {{ form_row(form.message) }}
                             </div>
                             <div>
-                                <button type="submit" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> {{ 'home.contact.send'|trans }}</button>
+                                <button type="submit"  name="g-recaptcha-response"
+                                        class="g-recaptcha btn btn-default submit"
+                                        data-sitekey="6LfklYEUAAAAAMj_B1O7c8RvimKn5GFunxRPyiBz" data-callback="onrecaptcha"><i class="fa fa-paper-plane" aria-hidden="true"></i> {{ 'home.contact.send'|trans }}</button>
                             </div>
                         </div>
                     </div>
                 {{ form_end(form) }}
             </div>
+        </div>
     </section>
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script async defer>
+        $('button.submit').click(function() {
+            $('#contact-form-container').hide();
+            $('.loader').show();
+        });
+        function onrecaptcha() {
+            $('form').submit();
+        }
+    </script>
+    <script src='https://www.google.com/recaptcha/api.js' async defer></script>
+
 {% endblock %}

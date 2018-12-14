@@ -96,6 +96,10 @@ services:
       arguments:
         $stripe_api_secret: "%stripe_api_secret%"
 
+    AppBundle\Services\CaptchaManager:
+      arguments:
+        $google_captcha_api_secret: "%google_captcha_api_secret%"
+
     AppBundle\Form\ContractArtistFlow:
       parent: craue.form.flow
       autowire: true

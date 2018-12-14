@@ -41,6 +41,7 @@ $('document').ready(function() {
     $(window).scroll(navbarCollapse);
 
     $('.modal-notice').modal('show');
+    $('.modal-error').modal('show');
 
     function rectifyQuantities($q) {
         var $displayer = $q.closest('.counterpart-form').find('.quantity-error-display');

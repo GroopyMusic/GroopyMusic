@@ -1,3 +1,14 @@
+.modal-notice {
+  .modal-confirm .modal-header {
+    background: #47c9a2;
+  }
+}
+
+.modal-error {
+  .modal-confirm .modal-header {
+    background: #c9380b;
+  }
+}
 
 .modal-confirm {
   color: #434e65;
@@ -10,7 +21,6 @@
   border: none;
 }
 .modal-confirm .modal-header {
-  background: #47c9a2;
   border-bottom: none;
   position: relative;
   text-align: center;
@@ -80,3 +90,4 @@
   font-size: 20px;
   float: right;
 }
+
