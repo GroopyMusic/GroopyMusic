@@ -1,35 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jean-François Cochar
- * Date: 12/04/2018
- * Time: 10:47
- */
 
 namespace AppBundle\Controller;
 
 use AppBundle\Form\MailFormType;
 use AppBundle\Services\MailAdminService;
-use Psr\Log\LoggerInterface;
-use Sonata\AdminBundle\Controller\CRUDController as Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class MailAdminController extends Controller
+class MailAdminController extends BaseAdminController
 {
-    protected $container;
-
-    private $logger;
-
-    public function __construct(ContainerInterface $container, LoggerInterface $logger)
-    {
-        $this->container = $container;
-        $this->configure();
-        $this->logger = $logger;
-    }
-
     public function listAction()
     {
         $form = $this->createForm(MailFormType::class);

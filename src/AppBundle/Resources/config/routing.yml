@@ -10,10 +10,6 @@ app_sponsorshop:
     resource: "@AppBundle/Controller/SponsorshipController.php"
     type: annotation
 
-app_temp:
-    resource: "@AppBundle/Controller/TempShitController.php"
-    type: annotation
-
 app_user:
     resource: "@AppBundle/Controller/UserController.php"
     type:     annotation
@@ -39,18 +35,7 @@ app_conditions:
     type:     annotation
     prefix:   /conditions
 
-admin_ajax:
-    resource: "@AppBundle/Controller/AdminAjaxController.php"
-    type:     annotation
-    prefix: /admin/ajax/
-
 app_webhooks:
     resource: "@AppBundle/Controller/WebHooksController.php"
     type:     annotation
     prefix: /wh/
-
-app_pots:
-  resource: "@AppBundle/Controller/PotController.php"
-  type: annotation
-  prefix: /chapots/
-  # prod = other domain ?

@@ -7,21 +7,20 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\SuggestionBox;
+use AppBundle\Entity\VIPInscription;
+use AppBundle\Entity\VolunteerProposal;
 use AppBundle\Form\CartType;
 use AppBundle\Form\ContractFanType;
-use AppBundle\Services\MailDispatcher;
-use AppBundle\Services\NotificationDispatcher;
+use AppBundle\Form\VIPInscriptionType;
+use AppBundle\Form\VolunteerProposalType;
 use AppBundle\Services\RewardSpendingService;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,94 +32,8 @@ use AppBundle\Form\UserSuggestionBoxType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
-class PublicController extends Controller
+class PublicController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-	///////////////////////////////////////////////
-    ///Private, checkout-specific methods//////////
-    ///////////////////////////////////////////////
-
-    /**
-     * Returns $cart cleaned, i.e. emptied of all contracts; except if $cart is paid, then creates a new one and returns it
-     */
-    private function cleanCart(Cart $cart, $em)
-    {
-       if ($cart->getPaid() && $cart->getConfirmed()) {
-            return $this->createCartForUser($cart->getUser());
-        } else {
-            foreach ($cart->getContracts() as $contract) {
-                $cart->removeContract($contract);
-                $this->getDoctrine()->getManager()->remove($contract);
-            }
-            return $cart;
-        }
-    }
-
-	# Duplicated from UserController
-    private function createCartForUser($user)
-    {
-        $cart = new Cart();
-        $cart->setUser($user);
-        $cart->generateBarCode();
-        $this->getDoctrine()->getManager()->persist($cart);
-        return $cart;
-    }
-
-    # Pupulates cart with empty orders, one for each given $artistContracts
-    private function populateCart(Cart $cart, $artistContracts) {
-        foreach($artistContracts as $artistContract) {
-            $fanContract = new ContractFan($artistContract);
-            $cart->addContract($fanContract);
-        }
-        return $cart;
-    }
-
-    /**
-     * Creates a new Cart filled with $cfs
-     */
-    private function handleCheckout($cfs, $user, EntityManagerInterface $em, Request $request) {
-        /** @var Cart $cart */
-        $cart = null;
-        if ($user != null) {
-            $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-        }
-
-        $cart = $this->createCartForUser($user);
-
-        foreach($cfs as $cf) {
-            /** @var ContractFan $cf */
-            $qty = 0;
-            foreach ($cf->getPurchases() as $purchase) {
-                $pqty = $purchase->getQuantity();
-                if ($pqty == 0 || $pqty == null) {
-                    $cf->removePurchase($purchase);
-                }
-                $qty += $pqty;
-            }
-            if($qty == 0) {
-                if ($cart->hasContract($cf)) {
-                    $cart->removeContract($cf);
-                }
-            }
-            else {
-                if(!$cart->hasContract($cf)) {
-                    $cart->addContract($cf);
-                }
-            }
-        }
-
-        $em->persist($cart);
-        $em->flush();
-        return $cart;
-    }
-
-
 	///////////////////////////////////////////////
     ///Quasi-static pages ////////////////////////
     ///////////////////////////////////////////////
@@ -129,11 +42,9 @@ class PublicController extends Controller
 	 * Homepage: fetches current festivals and their artists 
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request, UserInterface $user = null)
+    public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+        $crowdfundings = $this->em->getRepository('AppBundle:ContractArtist')->findVisible();
 
         $news = [];
 
@@ -164,9 +75,9 @@ class PublicController extends Controller
      * The contact form itself is handled by contactFormAction() controller and is submitted using AJAX
      * @Route("/suggestions", name="suggestionBox")
      */
-    public function contactAction(EntityManagerInterface $em)
+    public function contactAction()
     {
-        $sessions = $em->getRepository('AppBundle:InformationSession')->findVisible();
+        $sessions = $this->em->getRepository('AppBundle:InformationSession')->findVisible();
         return $this->render('AppBundle:Public:suggestionBox.html.twig', array(
             'sessions' => $sessions,
         ));
@@ -191,18 +102,14 @@ class PublicController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($suggestionBox);
-            $em->flush();
+            $this->em->persist($suggestionBox);
+            $this->em->flush();
 
-            $mailDispatcher = $this->get(MailDispatcher::class);
             if ($suggestionBox->getMailCopy() && !empty($suggestionBox->getEmail())) {
-                $mailDispatcher->sendSuggestionBoxCopy($suggestionBox);
+                $this->mailDispatcher->sendSuggestionBoxCopy($suggestionBox);
             }
 
-            $mailDispatcher->sendAdminContact($suggestionBox);
-            $notifDispatcher = $this->get(NotificationDispatcher::class);
-            $notifDispatcher->notifyAdminContact($suggestionBox);
+            $this->mailDispatcher->sendAdminContact($suggestionBox);
 
             return new Response($this->renderView('AppBundle:Public/Form:suggestionBox_ok.html.twig'));
         }
@@ -212,11 +119,77 @@ class PublicController extends Controller
     }
 
     /**
+     * VIP Inscription: form to register as member of press
+     * @Route("/presse", name="press")
+     */
+    public function VIPInscriptionAction(Request $request) {
+
+        $inscription = new VIPInscription();
+
+        $form = $this->createForm(VIPInscriptionType::class, $inscription);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($inscription);
+            $this->em->flush();
+            $this->addFlash('notice', "Votre demande d'accréditation a bien été enregistrée. Nous vous contacterons sous peu !");
+
+            try {
+                $this->mailDispatcher->sendAdminVIPInscription($inscription);
+                $this->mailDispatcher->sendVIPInscriptionCopy($inscription);
+            } catch(\Exception $e) {
+
+            }
+
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/Public/Temp/vip_inscription.html.twig', array(
+            'form' => $form->createView(),
+            'inscription' => $inscription,
+        ));
+    }
+
+    /**
+     * Volunteer Proposal: form to register as volunteer
+     * @Route("/benevoles", name="volunteering")
+     */
+    public function VolunteerProposalAction(Request $request) {
+
+        $inscription = new VolunteerProposal();
+
+        $form = $this->createForm(VolunteerProposalType::class, $inscription);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($inscription);
+            $this->em->flush();
+            $this->addFlash('notice', "Votre proposision de bénévolat a bien été enregistrée. Nous vous contacterons sous peu !");
+
+            try {
+                $this->mailDispatcher->sendAdminVolunteerProposal($inscription);
+                $this->mailDispatcher->sendVolunteerProposalCopy($inscription);
+            } catch(\Exception $e) {
+
+            }
+
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/Public/Temp/volunteer_proposal.html.twig', array(
+            'form' => $form->createView(),
+            'inscription' => $inscription,
+        ));
+    }
+
+    /**
      * Passed festivals page: fetches passed (successful AND failed) festivals
      * @Route("/passed-festivals", name="passed_festivals")
      */
-    public function passedFestivalsAction(EntityManagerInterface $em) {
-        $contracts = $em->getRepository('AppBundle:ContractArtist')->findPassed();
+    public function passedFestivalsAction() {
+        $contracts = $this->em->getRepository('AppBundle:ContractArtist')->findPassed();
 
         return $this->render('@App/Public/passed_festivals.html.twig', [
             'contracts' => $contracts,
@@ -233,15 +206,13 @@ class PublicController extends Controller
             return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getSlug()]);
         }
 
-        $em = $this->getDoctrine()->getManager();
-
         $cf = new ContractFan($contract);
         $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => []]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $cart = $this->handleCheckout([$cf], $user, $em, $request);
+            $cart = $this->handleCheckout([$cf], $user, $request);
 
             return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
         }
@@ -256,8 +227,8 @@ class PublicController extends Controller
      * Tickets marketplace: lists all available tickets with order form
      * @Route("/tickets", name="tickets_marketplace")
      */
-    public function ticketsAction(Request $request, EntityManagerInterface $em, UserInterface $user = null) {
-        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+    public function ticketsAction(Request $request, UserInterface $user = null) {
+        $current_contracts = $this->em->getRepository('AppBundle:ContractArtist')->findVisible();
 
         $cart = new Cart();
 
@@ -268,7 +239,7 @@ class PublicController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cart = $this->handleCheckout($cart->getContracts()->toArray(), $user, $em, $request);
+            $cart = $this->handleCheckout($cart->getContracts()->toArray(), $user, $request);
 
             return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
         }
@@ -284,11 +255,9 @@ class PublicController extends Controller
      */
     public function artistsAction(Request $request, UserInterface $user = null)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $artists = $em->getRepository('AppBundle:Artist')->findVisible();
-        $genres = $em->getRepository('AppBundle:Genre')->findAll();
-        $provinces = $em->getRepository('AppBundle:Province')->findAll();
+        $artists = $this->em->getRepository('AppBundle:Artist')->findVisible();
+        $genres = $this->em->getRepository('AppBundle:Genre')->findAll();
+        $provinces = $this->em->getRepository('AppBundle:Province')->findAll();
 
         if ($user != null && count($user->getGenres()) > 0) {
             usort($artists, function (Artist $a, Artist $b) use ($user) {
@@ -312,9 +281,9 @@ class PublicController extends Controller
      * Artist profile: fetches artist info & his potential current festivals
      * @Route("/artists/{id}-{slug}", name="artist_profile")
      */
-    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null, EntityManagerInterface $em)
+    public function artistProfileAction(Artist $artist, $slug = null)
     {
-        $current_sales = $em->getRepository('AppBundle:ContractArtistSales')->findCurrentsForArtist($artist);
+        $current_sales = $this->em->getRepository('AppBundle:ContractArtistSales')->findCurrentsForArtist($artist);
 
         if ($slug !== null && $slug != $artist->getSlug()) {
             return $this->redirectToRoute('artist_profile', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
@@ -339,9 +308,8 @@ class PublicController extends Controller
      */
     public function checkoutAction(Request $request, UserInterface $user = null, RewardSpendingService $rewardSpendingService, $cart_code)
     {
-        $em = $this->getDoctrine()->getManager();
         /** @var $cart Cart */
-        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
+        $cart = $this->em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
 
         # No cart corresponding to request
         if ($cart == null) {
@@ -356,7 +324,7 @@ class PublicController extends Controller
 
         # First, only keep relevant items in cart
         foreach($cart->getContracts() as $contract) {
-            $em->persist($contract);
+            $this->em->persist($contract);
             $rewardSpendingService->setBaseAmount($contract);
             foreach($contract->getPurchases() as $purchase) {
                 if($purchase->getAmount() == 0) {
@@ -372,10 +340,10 @@ class PublicController extends Controller
         # When user logs in at this point, we could find another cart already related to him
         # -> that potential cart must be removed from DB as we should only use the $cart instance
         if ($user != null) {
-            $other_potential_cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+            $other_potential_cart = $this->em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
             if ($other_potential_cart != null && $other_potential_cart->getId() != $cart->getId()) {
-                $em->remove($other_potential_cart);
+                $this->em->remove($other_potential_cart);
             }
         }
 
@@ -387,11 +355,11 @@ class PublicController extends Controller
             }
 
             $cart->setUser($user);
-            $em->persist($cart);
+            $this->em->persist($cart);
             
         }
 
-        $em->flush();
+        $this->em->flush();
         
         $form_view = null;
         

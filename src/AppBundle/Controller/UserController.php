@@ -2,15 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ConsomableReward;
-use AppBundle\Entity\ContractArtist;
-use AppBundle\Entity\ContractArtistSales;
-use AppBundle\Entity\InvitationReward;
-use AppBundle\Entity\Notification;
-use AppBundle\Entity\ReductionReward;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Reward;
-use AppBundle\Form\ProfilePreferencesType;
 use AppBundle\Form\ProfileType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\NotificationDispatcher;
@@ -20,98 +13,30 @@ use AppBundle\Services\TicketingManager;
 use AppBundle\Services\UserRolesManager;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\Cart;
-use AppBundle\Entity\Purchase;
 use AppBundle\Form\ArtistType;
 use AppBundle\Form\UserEmailType;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\ContractFan;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
-class UserController extends Controller
+class UserController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    private function createCartForUser($user)
-    {
-        $cart = new Cart();
-        $cart->setUser($user);
-        $this->getDoctrine()->getManager()->persist($cart);
-        return $cart;
-    }
-
     /**
-     * @Route("/inbox", name="user_notifications")
-     */
-    public function notifsAction(Request $request, UserInterface $user)
-    {
-        $firstResult = $request->get('first_result', 0);
-        $nbPerPage = $request->get('nb_per_page', 5);
-        $notifs = $this->getDoctrine()->getRepository('AppBundle:Notification')->paginateForUser($user, $firstResult, $nbPerPage);
-
-        $got_to_max = $firstResult + $nbPerPage >= count($notifs);
-        $max = count($notifs);
-
-        if ($request->getMethod() == 'POST') {
-            $template = '@App/User/render_notifications_previews.html.twig';
-        } else {
-            $template = '@App/User/notifications.html.twig';
-        }
-
-        return $this->render($template, array(
-            'notifs' => $notifs,
-            'got_to_max' => $got_to_max,
-            'max' => $max,
-        ));
-    }
-
-    /**
-     * @Route("/inbox/notifications/{id}", name="user_notification")
-     */
-    public function notifAction(Notification $notif, Request $request, UserInterface $user)
-    {
-        if ($notif->getUser() != $user) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $em = $this->getDoctrine()->getManager();
-
-        $notif->setSeen(true);
-        $em->persist($notif);
-        $em->flush();
-
-        return new Response($this->renderView('@App/User/notification.html.twig', array(
-            'notif' => $notif,
-        )));
-    }
-
-    /**
+     * Paid carts : lists all past orders for user (based on "confirmed" carts)
      * @Route("/paid-carts", name="user_paid_carts")
      */
     public function paidCartsAction(Request $request, UserInterface $user)
@@ -120,50 +45,38 @@ class UserController extends Controller
         $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
         $sponsorship_event = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
 
-        $is_payment = (!empty($carts) && $carts[0]->getFirst()->getContractArtist() instanceof ContractArtist) ? $request->get('is_payment') : false;
-
         return $this->render('@App/User/paid_carts.html.twig', array(
             'carts' => $carts,
             'possible_sponsorship_event' => $sponsorship_event,
-            'is_payment' => $is_payment,
         ));
     }
 
     /**
+     * My artists: shows user artists + link to create one
      * @Route("/my-artists", name="user_my_artists")
      */
     public function myArtistsAction(UserInterface $user, EntityManagerInterface $em)
     {
-
         $artists = $em->getRepository('AppBundle:Artist')->findForUser($user);
-
-        $available_artist = false;
-
-        foreach ($artists as $artist) {
-            if ($artist->isAvailable()) {
-                $available_artist = true;
-                break;
-            }
-        }
 
         return $this->render('@App/User/my_artists.html.twig', array(
             'artists' => $artists,
-            'available_artist' => $available_artist,
         ));
     }
 
     /**
+     * New artist: creation of a new artist
      * @Route("/new-artist", name="user_new_artist")
      */
     public function newArtistAction(Request $request, UserInterface $user, TranslatorInterface $translator, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher)
     {
-
         $em = $this->getDoctrine()->getManager();
 
+        // This is needed due to legacy "phase" class
         $phase = $em->getRepository('AppBundle:Phase')->findOneBy(array('num' => 1));
-
         $artist = new Artist($phase);
 
+        // Fetching potential information sessions - new artists must subscribe to one
         $iss = count($em->getRepository('AppBundle:InformationSession')->findVisible()) > 0;
 
         $form = $this->createForm(ArtistType::class, $artist, ['edit' => false, 'iss' => $iss]);
@@ -178,8 +91,8 @@ class UserController extends Controller
 
             $em->flush();
 
+            // Mails
             $mailDispatcher->sendAdminNewArtist($artist);
-            $notificationDispatcher->notifyAdminNewArtist($artist);
 
             $this->addFlash('notice', $translator->trans('notices.artist_create', ['%artist%' => $artist->getArtistname()]));
 
@@ -193,83 +106,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/new-crowdfunding-contact-us", name="user_new_contract_artist_temp")
-     */
-    public function newContractTempAction()
-    {
-        $this->addFlash('info', 'infos.new_event_temp');
-
-        return $this->redirectToRoute('suggestionBox');
-    }
-
-    /**
-     * @Route("/new-crowdfunding", name="user_new_contract_artist")
-     */
-    public function newContractAction(UserInterface $user, Request $request)
-    {
-
-        $em = $this->getDoctrine()->getManager();
-
-        $av_artists = $em->getRepository('AppBundle:Artist')->findAvailableForNewContract($user, $this->get(UserRolesManager::class));
-
-        if (count($av_artists) == 0) {
-            return $this->render('@App/User/Artist/new_contract.html.twig', array(
-                'no_artist' => true,
-            ));
-        }
-
-        // New contract creation
-        $contract = new ContractArtist();
-
-        $flow = $this->get('AppBundle\Form\ContractArtistFlow');
-        $flow->bind($contract);
-
-        $form = $flow->createForm();
-
-        if ($flow->isValid($form)) {
-            $flow->saveCurrentStepData($form);
-
-            if ($flow->nextStep()) {
-                $form = $flow->createForm();
-            } else {
-                // flow finished
-
-                if (!in_array($contract->getArtist()->getId(),
-                    array_map(function (Artist $artist) {
-                        return $artist->getId();
-                    }, $av_artists))) {
-                    throw $this->createAccessDeniedException("Cet artiste ne vous appartient pas...");
-                }
-
-                // We check that there doesn't exist another contract for that artist before DB insertion
-                $currentContract = $em->getRepository('AppBundle:ContractArtist')->findCurrentForArtist($contract->getArtist());
-                if ($currentContract != null) {
-                    throw $this->createAccessDeniedException("Interdit de s'inscrire à deux paliers en même temps !");
-                }
-
-                // "start date" calculation based on test period or not
-                $contract->generateTestPeriodAndPromotion();
-                $contract->generateDateEnd();
-
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($contract);
-                $em->flush();
-
-                $flow->reset(); // remove step data from the session
-
-                $this->addFlash('notice', 'notices.event_create');
-                return $this->redirectToRoute('artist_contract', ['id' => $contract->getId()]); // redirect when done
-            }
-        }
-
-        return $this->render('@App/User/Artist/new_contract.html.twig', array(
-            'form' => $form->createView(),
-            'flow' => $flow,
-            'contract' => $contract,
-        ));
-    }
-
-    /**
+     * Change Email: allows users to define a new email address that will need to be confirmed
      * @Route("/change-email", name="user_change_email")
      */
     public function changeEmailAction(Request $request, UserInterface $user, TokenGeneratorInterface $token_gen)
@@ -282,6 +119,7 @@ class UserController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Manual verification of email availability
             $email = $user->getAskedEmail();
 
             $error_detect = $em->getRepository('AppBundle:User')->findOneBy(['email' => $email]);
@@ -305,6 +143,7 @@ class UserController extends Controller
     }
 
     /**
+     * Advanced options: at the moment, only allows to delete user account, which actually anonymizes account instead of deleting it from DB
      * @Route("/advanced-options", name="user_advanced_options")
      */
     public function advancedAction(Request $request, UserInterface $user)
@@ -329,15 +168,10 @@ class UserController extends Controller
             foreach ($em->getRepository('AppBundle:Artist_User')->findBy(['user' => $user]) as $a_u) {
                 $artist = $a_u->getArtist();
 
-                // Duplicated in ArtistController->Leave
-                if ($artist->isAvailable() && count($artist->getArtistsUser()) == 1) {
-                    $artist->setDeleted(true);
-                    foreach ($em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist]) as $o_request) {
-                        $em->remove($o_request);
-                    }
-                    $em->persist($artist);
+                # If user was the last owner of the artist, we delete said artist
+                if (count($artist->getArtistsUser()) == 1) {
+                    $this->suppressArtist($artist);
                 }
-                // End duplicated
 
                 $em->remove($a_u);
             }
@@ -345,6 +179,7 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
 
+            // Logging out
             $session = $request->getSession();
             $session->clear();
 
@@ -371,6 +206,7 @@ class UserController extends Controller
     }
 
     /**
+     * Disconnect FB: removes link between FB api & UM account
      * @Route("/disconnect-fb", name="user_disconnect_fb")
      */
     public function disconnectFBAction(Request $request, UserInterface $user)
@@ -379,7 +215,7 @@ class UserController extends Controller
         $form = $this->createFormBuilder(['submit' => false])
             ->setAction($this->generateUrl('user_disconnect_fb'))
             ->add('submit', SubmitType::class, array(
-                'label' => 'profile.show.facebook.disconnect_submit', // Supprimer mon compte
+                'label' => 'profile.show.facebook.disconnect_submit',
                 'translation_domain' => 'FOSUserBundle',
                 'attr' => ['class' => 'btn btn-danger'],
             ))->getForm();
@@ -402,11 +238,11 @@ class UserController extends Controller
     }
 
     /**
+     * Edit Profile: profile information form
      * @Route("/edit-profile", name="user_profile_edit")
      */
     public function editProfileAction(Request $request, UserInterface $user)
     {
-
         $form = $this->createForm(ProfileType::class, $user);
 
         $form->handleRequest($request);
@@ -427,22 +263,27 @@ class UserController extends Controller
     }
 
     /**
+     * get Order: return the order with given id as a PDF attachment
      * @Route("/user/orders/{id}", name="user_get_order")
      */
-    public function getOrderAction(Request $request, UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em, UserRolesManager $rolesManager)
+    public function getOrderAction(UserInterface $user, Cart $cart, PDFWriter $writer, EntityManagerInterface $em, UserRolesManager $rolesManager)
     {
+        # Order must exist, not be refunded, and user must have access
         if ($cart->isRefunded() || ($cart->getUser() != $user && !$rolesManager->userHasRole($user, 'ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException();
         }
 
+        # If the order doesn't have a barcode id yet, create one
         if (empty($cart->getBarcodeText())) {
             $cart->generateBarCode();
         }
 
+        # We try finding the document in file system
         $finder = new Finder();
         $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $cart->getPdfPath();
         $finder->files()->name($cart->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $cart::ORDERS_DIRECTORY);
 
+        # If it doesn't exist, we create it
         if (count($finder) == 0) {
             $writer->writeOrder($cart);
             $em->persist($cart);
@@ -452,6 +293,7 @@ class UserController extends Controller
             $finder->files()->name($cart->getOrderFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $cart::ORDERS_DIRECTORY);
         }
 
+        # This foreach loop actually serves to make sure that we found a file. Variable $file is not used.
         foreach ($finder as $file) {
             $response = new BinaryFileResponse($filePath);
             // Set headers
@@ -467,6 +309,7 @@ class UserController extends Controller
     }
 
     /**
+     * get Tickets: same process as getOrder above, but with tickets
      * @Route("/user/tickets/{id}", name="user_get_tickets")
      */
     public function getTicketsAction(Request $request, UserInterface $user, ContractFan $contract, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em, UserRolesManager $rolesManager)
@@ -505,9 +348,10 @@ class UserController extends Controller
     }
 
     /**
+     * Rewards: displays all rewards that a user has in his possession
      * @Route("/rewards", name="user_rewards")
      */
-    public function rewardsAction(Request $request, UserInterface $user)
+    public function rewardsAction(UserInterface $user)
     {
         $em = $this->getDoctrine()->getManager();
         $rewards = $em->getRepository("AppBundle:User_Reward")->getActiveUserRewards($user);
@@ -518,9 +362,10 @@ class UserController extends Controller
     }
 
     /**
+     * Reward: displays one particular reward
      * @Route("/rewards/{id}", name="user_reward")
      */
-    public function rewardAction(User_Reward $user_reward, Request $request, UserInterface $user)
+    public function rewardAction(User_Reward $user_reward, UserInterface $user)
     {
         if ($user_reward->getUser() !== $user) {
             throw $this->createAccessDeniedException();
@@ -533,36 +378,17 @@ class UserController extends Controller
     // AJAX ----------------------------------------------------------------------------------------------------------------------
 
     /**
-     * @Route("/api/update-motivations/{id}", name="user_ajax_update_motivations")
-     */
-    public function updateMotivations(Request $request, UserInterface $user, ContractArtist $contract)
-    {
-        $artist = $contract->getArtist();
-        if (!$user->owns($artist)) {
-            throw $this->createAccessDeniedException("You don't own this artist!");
-        }
-
-        $em = $this->getDoctrine()->getManager();
-
-        $motivations = $request->request->get('motivations');
-
-        $contract->setMotivations($motivations);
-        $em->persist($contract);
-        $em->flush();
-
-        return new Response($motivations);
-    }
-
-    /**
+     * Send Sponsorship Invitation: to be used with AJAX / Sends an invitation to recipients
      * @Route("/api/send-sponsorship-invitation", name="user_ajax_send_sponsorship_invitation")
      */
-    public function sendSponsorshipInvitation(Request $request, LoggerInterface $logger, UserInterface $user, SponsorshipService $sponsorshipService, TranslatorInterface $translator)
+    public function sendSponsorshipInvitation(Request $request, UserInterface $user, SponsorshipService $sponsorshipService, TranslatorInterface $translator)
     {
         $em = $this->getDoctrine()->getManager();
         try {
             if ($user == null) {
                 return new Response($translator->trans('notices.sponsorship.send_sponsorship.not_connected', []), 500);
             }
+            // Assert that the event is valid
             $contract = $em->getRepository('AppBundle:ContractArtist')->find(intval($request->get('contractArtist')));
             if ($contract == null
                 || $contract->isSoldOut()
@@ -570,6 +396,7 @@ class UserController extends Controller
                 || $em->getRepository('AppBundle:ContractArtist')->isValidForSponsorship($contract->getId()) == null) {
                 return new Response($translator->trans('notices.sponsorship.send_sponsorship.event_not_valid', []), 500);
             }
+            // Create Response based on service answer to our POST parameters
             $response = $sponsorshipService->sendSponsorshipInvitation($request->get('emails'), $request->get('content'), $contract, $user);
             return $this->redirectToRoute('user_ajax_display_sponsorship_invitation_modal', array(
                 'success' => $response[0],
@@ -585,9 +412,10 @@ class UserController extends Controller
     }
 
     /**
+     * Display Sponorship Modal: depending on user, displays possible invitations for friends to join event
      * @Route("/api/display-sponsorship-invitation-modal", name="user_ajax_display_sponsorship_invitation_modal")
      */
-    public function displaySponsorshipModalAction(Request $request, UserInterface $user, SponsorshipService $sponsorshipService, LoggerInterface $logger, TranslatorInterface $translator)
+    public function displaySponsorshipModalAction(Request $request, UserInterface $user, SponsorshipService $sponsorshipService, TranslatorInterface $translator)
     {
         $em = $this->getDoctrine()->getManager();
         $result = [[], []];

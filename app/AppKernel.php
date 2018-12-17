@@ -43,7 +43,6 @@ class AppKernel extends Kernel
             new A2lix\TranslationFormBundle\A2lixTranslationFormBundle(),
             new Oneup\UploaderBundle\OneupUploaderBundle(),
             new Vich\UploaderBundle\VichUploaderBundle(),
-            new Craue\FormFlowBundle\CraueFormFlowBundle(),
             new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new cspoo\Swiftmailer\MailgunBundle\cspooSwiftmailerMailgunBundle(),

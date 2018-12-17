@@ -13,15 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class PaymentAdminController extends Controller
+class PaymentAdminController extends BaseAdminController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->configure();
-    }
-
     public function refundAction(Request $request, UserInterface $user) {
 
         /** @var Payment $payment */

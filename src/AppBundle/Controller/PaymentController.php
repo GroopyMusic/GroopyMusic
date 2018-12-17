@@ -28,22 +28,13 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
-class PaymentController extends Controller
+class PaymentController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
-    public function cartAction(Request $request, UserInterface $user, RewardSpendingService $rewardSpendingService, SponsorshipService $sponsorshipService, LoggerInterface $logger)
+    public function cartAction(Request $request, UserInterface $user)
     {
-        // $kernel = $this->get('kernel');
-
         $em = $this->getDoctrine()->getManager();
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 

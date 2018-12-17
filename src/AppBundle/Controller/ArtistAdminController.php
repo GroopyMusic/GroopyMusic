@@ -4,22 +4,13 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Artist;
 use AppBundle\Services\MailDispatcher;
-use Sonata\AdminBundle\Controller\CRUDController as Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ArtistAdminController extends Controller
+class ArtistAdminController extends BaseAdminController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->configure();
-    }
-
     public function validateAction(Request $request) {
 
         /** @var Artist $artist */
