@@ -1,3 +1,7 @@
+# allows backwards compatibility; otherwise, we get an error when running assetic:dump
+parameters:
+  azine_email_update_confirmation.template: 'debug'
+
 ############################################################ Config
 azine_email:
     # the class of your implementation of the RecipientInterface

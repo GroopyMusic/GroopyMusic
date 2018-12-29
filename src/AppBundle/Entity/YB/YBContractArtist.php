@@ -26,14 +26,18 @@ class YBContractArtist extends BaseContractArtist
     const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
     const STATE_PENDING = 'state.pending';
     const STATE_SOLD_OUT_PENDING = 'state.soldout.pending';
+    const STATE_WAY_PASSED = 'state.way_passed';
 
     const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const PENDING_STATES = [self::STATE_SUCCESS_PENDING, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const SOLDOUT_STATES = [self::STATE_SOLD_OUT, self::STATE_SOLD_OUT];
-    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED];
+    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_WAY_PASSED];
     const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
+    const WAY_PASSED_STATES = [self::STATE_WAY_PASSED];
 
     const PHOTOS_DIR = 'images/campaigns/';
+
+    const DAYS_BEFORE_WAY_PASSED = 60;
 
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
@@ -79,6 +83,10 @@ class YBContractArtist extends BaseContractArtist
 
     public function isPassed() {
         return in_array($this->getState(), self::PASSED_STATES);
+    }
+
+    public function isWayPassed() {
+        return in_array($this->getState(), self::WAY_PASSED_STATES);
     }
 
     public function isOngoing() {
@@ -142,6 +150,8 @@ class YBContractArtist extends BaseContractArtist
                     return $this->state = self::STATE_PENDING;
                 }
             } else {
+                if($this->date_event != null && $this->date_event < $today && $this->date_event->diff($today)->days > self::DAYS_BEFORE_WAY_PASSED)
+                    return $this->state = self::STATE_WAY_PASSED;
                 return $this->state = self::STATE_PASSED;
             }
         }
