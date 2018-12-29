@@ -3,20 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\SuggestionBox;
-use Sonata\AdminBundle\Controller\CRUDController as Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class SuggestionBoxAdminController extends Controller
+class SuggestionBoxAdminController extends BaseAdminController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->configure();
-    }
-
     public function handleAction(UserInterface $user)
     {
         /** @var SuggestionBox $contactform */

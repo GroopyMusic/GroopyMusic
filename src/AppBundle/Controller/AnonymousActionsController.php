@@ -4,8 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Artist_User;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -13,15 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class AnonymousActionsController extends Controller
+class AnonymousActionsController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * Ownership request validation by (possibly newly subscribed) user
      * @Route("/validate-ownership-{id}/{code}", name="artist_validate_ownership")
@@ -29,9 +20,7 @@ class AnonymousActionsController extends Controller
      */
     public function validateOwnershipAction(Request $request, UserInterface $user = null, Artist $artist, $code, TranslatorInterface $translator)
     {
-
-        $em = $this->getDoctrine()->getManager();
-        $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
+        $req = $this->em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
 
         if ($req == null) {
             throw $this->createNotFoundException('There is no request with such code');
@@ -41,7 +30,7 @@ class AnonymousActionsController extends Controller
             throw $this->createNotFoundException('Request is already accepted or refused');
         }
 
-        $mailUser = $em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
+        $mailUser = $this->em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
         if ($user != null) {
             # Manually log out if another user is logged in, then redirect to here
             # see https://stackoverflow.com/questions/28827418/log-user-out-in-symfony-2-application-when-remember-me-is-enabled/28828377#28828377
@@ -90,12 +79,12 @@ class AnonymousActionsController extends Controller
                 $artist_user
                     ->setArtist($artist)
                     ->setUser($user);
-                $em->persist($artist_user);
-                $em->flush();
+                $this->em->persist($artist_user);
+                $this->em->flush();
                 $this->addFlash('notice', $translator->trans('notices.artist_ownership_request_accepted', ['%artist%' => $artist->getArtistname()]));
             } elseif ($form->get('refuse')->isClicked()) {
                 $req->setRefused(true);
-                $em->flush();
+                $this->em->flush();
                 $this->addFlash('notice', 'notices.artist_ownership_request_refused');
             }
 
@@ -113,9 +102,7 @@ class AnonymousActionsController extends Controller
      */
     public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token)
     {
-
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
+        $user = $this->em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
 
         if (!$user) {
             $this->addFlash('error', 'errors.change_email_token_expired');
@@ -124,7 +111,7 @@ class AnonymousActionsController extends Controller
 
         $asked_email = $user->getAskedEmail();
 
-        $error_detector = $em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
+        $error_detector = $this->em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
         if ($error_detector != null) {
             $this->addFlash('error', 'errors.change_email_used_since');
             return $this->redirectToRoute('homepage');
@@ -150,8 +137,8 @@ class AnonymousActionsController extends Controller
             $this->addFlash('notice', 'notices.change_email');
         }
 
-        $em->persist($user);
-        $em->flush();
+        $this->em->persist($user);
+        $this->em->flush();
 
         return $this->redirectToRoute('homepage');
     }

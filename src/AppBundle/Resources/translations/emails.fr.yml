@@ -38,6 +38,8 @@ subjects:
         upcoming_event: Votre événement approche !
       organizers:
         event_created: Votre campagne "%event%" est en ligne !
+    transactional_message: Nouveau message pour l'événement "%event%"
+    transactional_message_copy: Votre message pour l'événement "%event%"
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -295,3 +297,31 @@ yb:
         Vous pouvez diffuser un de ces liens auprès de vos réseaux, ou le placer sur votre site Web, en fonction de votre stratégie de communication.
 
         A bientôt, et merci de faire confiance à Ticked-it!
+  transactional_message: |
+    Vous avez reçu un nouveau message concernant l'événement "%event%" pour lequel vous avez acheté un ou plusieurs ticket(s) sur Ticked-it!
+    Ce message a été envoyé par l'organisateur le %date%.
+
+    Titre :
+    ------------------------------
+      %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+      %content%
+    ------------------------------
+  transactional_message_copy: |
+    Votre message concernant l'événement "%event%" a bien été transmis aux acheteurs de tickets.
+    Ce message a été envoyé le %date%.
+
+    Titre :
+    ------------------------------
+       %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+       %content%
+    ------------------------------

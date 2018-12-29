@@ -18,6 +18,7 @@ use AppBundle\Entity\VIPInscription;
 use AppBundle\Entity\VolunteerProposal;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -641,5 +642,54 @@ class MailDispatcher
         $subject_params = ['%event%' => $campaign->getTitle()];
 
         $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
+    }
+
+    public function sendYBTransactionalMessageWithCopy(YBTransactionalMessage $message) {
+        $this->sendYBTransactionalMessage($message);
+        $this->sendYBTransactionalMessageCopy($message);
+    }
+
+    public function sendYBTransactionalMessage(YBTransactionalMessage $message) {
+        $campaign = $message->getCampaign();
+        $buyers = $campaign->getBuyers();
+
+        $buyers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $buyers));
+
+        $to = [];
+
+        foreach($buyers_emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['campaign' => $campaign, 'message' => $message];
+        $subject = 'subjects.yb.transactional_message';
+
+        $subject_params = ['%event%' => $campaign->getTitle()];
+
+        $this->sendEmail(MailTemplateProvider::YB_TRANSACTIONAL_MESSAGE, $subject, $params, $subject_params, $to);
+    }
+
+    public function sendYBTransactionalMessageCopy(YBTransactionalMessage $message) {
+        $campaign = $message->getCampaign();
+        $organizers = $campaign->getHandlers();
+
+        $organizers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $organizers->toArray()));
+
+        $to = self::ADMIN_TO;
+
+        foreach($organizers_emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['campaign' => $campaign, 'message' => $message];
+        $subject = 'subjects.yb.transactional_message_copy';
+
+        $subject_params = ['%event%' => $campaign->getTitle()];
+
+        $this->sendEmail(MailTemplateProvider::YB_TRANSACTIONAL_MESSAGE_COPY, $subject, $params, $subject_params, $to);
     }
 }

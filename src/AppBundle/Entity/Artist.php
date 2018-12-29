@@ -43,7 +43,7 @@ class Artist implements TranslatableInterface
         return '' . $this->artistname;
     }
 
-    public function __construct(Phase $phase)
+    public function __construct(Phase $phase = null)
     {
         $this->phase = $phase;
         $this->deleted = false;
@@ -202,7 +202,7 @@ class Artist implements TranslatableInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="Phase")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $phase;
 

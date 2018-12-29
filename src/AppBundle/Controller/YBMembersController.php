@@ -4,53 +4,27 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Ticket;
-use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
-use AppBundle\Exception\YBAuthenticationException;
+use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
-use AppBundle\Services\MailDispatcher; 
+use AppBundle\Form\YB\YBTransactionalMessageType;
+use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\StringHelper;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-class YBMembersController extends Controller
+class YBMembersController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    public function checkIfAuthorized($user, YBContractArtist $campaign = null) {
-        if(!$user || !$user instanceof User) {
-            throw new YBAuthenticationException();
-        }
-        if($campaign != null && !$user->ownsYBCampaign($campaign)) {
-            throw new YBAuthenticationException();
-        }
-    }
-
-    private function checkCampaignCode(YBContractArtist $campaign, $code) {
-        if($campaign->getCode() != $code) {
-            throw $this->createAccessDeniedException();
-        }
-    }
-
     /**
      * @Route("/dashboard", name="yb_members_dashboard")
      */
@@ -187,6 +161,37 @@ class YBMembersController extends Controller
         return $this->render('@App/YB/Members/campaign_orders.html.twig', [
             'cfs' => $cfs,
             'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/transactional-message", name="yb_members_campaign_transactional_message")
+     */
+    public function transactionalMessageCampaignAction(YBContractArtist $campaign, Request $request, UserInterface $user = null) {
+        $this->checkIfAuthorized($user, $campaign);
+
+        $message = new YBTransactionalMessage($campaign);
+        $old_messages = $campaign->getTransactionalMessages();
+
+        $form = $this->createForm(YBTransactionalMessageType::class, $message);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($message);
+            $this->em->flush();
+
+            $this->mailDispatcher->sendYBTransactionalMessageWithCopy($message);
+
+            $this->addFlash('yb_notice', 'Votre message a bien été envoyé.');
+
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/YB/Members/campaign_transactional_message.html.twig', [
+            'form' => $form->createView(),
+            'campaign' => $campaign,
+            'old_messages' => $old_messages,
         ]);
     }
 

@@ -2,26 +2,12 @@
 
 namespace AppBundle\Controller;
 
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Select2Controller extends Controller
+class Select2Controller extends BaseController
 {
-    protected $container;
-
-    private $logger;
-
-    public function __construct(ContainerInterface $container, LoggerInterface $logger)
-    {
-        $this->container = $container;
-        $this->logger = $logger;
-    }
-
     /**
      * @Route("/genres", name="select2_genres")
      */

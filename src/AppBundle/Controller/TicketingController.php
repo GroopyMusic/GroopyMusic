@@ -4,16 +4,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\PhysicalPerson;
-use AppBundle\Entity\Ticket;
 use AppBundle\Form\PhysicalPersonTicketType;
-use AppBundle\Form\PhysicalPersonType;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,14 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketingController
  * @Security("is_granted('ROLE_TICKETING')")
  */
-class TicketingController extends Controller
+class TicketingController extends BaseController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @Route("/", name="ticketing_index")
      */

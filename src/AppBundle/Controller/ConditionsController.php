@@ -4,8 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User_Conditions;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,15 +11,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class ConditionsController extends Controller
+class ConditionsController extends BaseController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
+     * Conditions: displays last version of terms of use
      * @Route("/", name="conditions")
      */
     public function conditionsAction() {
@@ -32,12 +25,8 @@ class ConditionsController extends Controller
     }
 
     /**
+     * Accept Last: legally mandatory page to accept terms of use after these have received a change
      * @Route("/accept-new-conditions", name="conditions_accept_last")
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $em
-     * @param UserInterface $user
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function acceptLastAction(Request $request, UserInterface $user)
     {

@@ -1,10 +1,12 @@
 $main-orange: #f39200;
 $main-green: #66ad61;
+$dark-orange: #e15b34;
 $theme-colors: (
         "primary": $main-orange,
         "secondary": $main-green,
         "dark": #607D8B,
         "very-dark": #343a40,
+        "secondary-strong": $dark-orange,
 );
 $primary: $main-orange !default;
 $menu-color: #fbd060;

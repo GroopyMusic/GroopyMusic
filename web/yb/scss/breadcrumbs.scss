@@ -35,8 +35,8 @@
   position: relative;
   color: #fff;
   text-decoration: none;
-  background-color: #e15b34;
-  border: 1px solid #e15b34;
+  background-color: $dark-orange;
+  border: 1px solid $dark-orange;
 }
 .breadcrumb-arrow li:first-child a {
   padding-left: 10px
@@ -53,7 +53,7 @@
 .breadcrumb-arrow li a:before {
   right: -10px;
   z-index: 3;
-  border-left-color: #e15b34;
+  border-left-color: $dark-orange;
   border-left-style: solid;
   border-left-width: 11px
 }

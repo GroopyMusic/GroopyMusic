@@ -1,51 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jean-François Cochar
- * Date: 13/03/2018
- * Time: 12:10
- */
 
 namespace AppBundle\Controller;
 
-use AppBundle\AppBundle;
-use AppBundle\Entity\ConsomableReward;
-use AppBundle\Entity\InvitationReward;
-use AppBundle\Entity\Reward;
-use AppBundle\Entity\User;
-use AppBundle\Entity\User_Category;
-use AppBundle\Entity\User_Reward;
 use AppBundle\Services\MailDispatcher;
-use AppBundle\Services\NotificationDispatcher;
 use AppBundle\Services\RankingService;
 use AppBundle\Services\RewardAttributionService;
-use Psr\Log\LoggerInterface;
-use Sonata\AdminBundle\Controller\CRUDController as Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-class RankingAdminController extends Controller
+class RankingAdminController extends BaseAdminController
 {
-    protected $container;
-    private $rankingervice;
-    private $logger;
-
-    /**
-     * RankingAdminController constructor.
-     * @param ContainerInterface $container
-     * @param RankingService $rankingService
-     * @param LoggerInterface $logger
-     */
-    public function __construct(ContainerInterface $container, RankingService $rankingService, LoggerInterface $logger)
-    {
-        $this->container = $container;
-        $this->configure();
-        $this->rankingervice = $rankingService;
-        $this->logger = $logger;
-    }
-
     /**
      * list all ranking
      *
@@ -53,6 +17,7 @@ class RankingAdminController extends Controller
      */
     public function listAction()
     {
+        $rankingservice = $this->container->get('AppBundle\Services\RankingService');
         $categories = [];
         $maximums = [];
         $rewardAttributionService = $this->container->get('AppBundle\Services\RewardAttributionService');
@@ -62,7 +27,7 @@ class RankingAdminController extends Controller
             $categories = $em->getRepository('AppBundle:Category')->findForRaking();
             $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
             $rewardAttributionService->limitStatistics($categories);
-            $formula_descriptions = $this->rankingervice->buildFormulaDescription($categories);
+            $formula_descriptions = $rankingservice->buildFormulaDescription($categories);
         } catch (\Exception $ex) {
             $this->addFlash('notice', 'Exception :' . $ex->getMessage());
             $this->logger->warning("Exception listAction", [$ex->getMessage()]);
@@ -81,10 +46,10 @@ class RankingAdminController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function computeAction(Request $request, RewardAttributionService $rewardAttributionService)
+    public function computeAction(Request $request, RewardAttributionService $rewardAttributionService, RankingService $rankingService)
     {
         try {
-            $this->rankingervice->computeAllStatistic();
+            $rankingService->computeAllStatistic();
         } catch (\Exception $ex) {
             $this->addFlash('notice', 'Exception : ' . $ex->getMessage());
             $this->logger->warning("Exception computeAction", [$ex->getMessage()]);
@@ -93,7 +58,7 @@ class RankingAdminController extends Controller
             $categories = $em->getRepository('AppBundle:Category')->findForRaking();
             $maximums = $em->getRepository('AppBundle:Level')->countMaximums();
             $rewardAttributionService->limitStatistics($categories);
-            $formula_descriptions = $this->rankingervice->buildFormulaDescription($categories);
+            $formula_descriptions = $rankingService->buildFormulaDescription($categories);
         }
         return $this->render('@App/Admin/Ranking/ranking_view.html.twig', array(
             'categories' => $categories,
@@ -112,7 +77,6 @@ class RankingAdminController extends Controller
     public function displayMoreAction(Request $request)
     {
         try {
-            $statistics = [];
             $em = $this->getDoctrine()->getManager();
             $statistics = $em->getRepository('AppBundle:User_Category')->findStatLimit($request->get('level_id'), $request->get('limit'));
         } catch (\Throwable $th) {
@@ -144,7 +108,6 @@ class RankingAdminController extends Controller
 
     public function sendEmailAction(Request $request, MailDispatcher $mailDispatcher, RewardAttributionService $rewardAttributionService)
     {
-        $template = '@App/Admin/ranking/send_email_preview.html.twig';
         try {
             $em = $this->getDoctrine()->getManager();
             $checkedStatistics = $request->get('stats');
@@ -159,7 +122,6 @@ class RankingAdminController extends Controller
 
     public function giveRewardAction(Request $request, RewardAttributionService $rewardAttributionService)
     {
-        $template = '@App/Admin/ranking/give_reward_preview.html.twig';
         try {
             $em = $this->getDoctrine()->getManager();
             $checkedStatistics = $request->get('stats');

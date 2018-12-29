@@ -2,36 +2,23 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ConcertPossibility;
 use AppBundle\Entity\ContractArtist;
-use AppBundle\Entity\Payment;
 use AppBundle\Form\ContractArtistPreValidationType;
-use AppBundle\Form\ContractArtistSendTicketsType;
 use AppBundle\Form\ContractArtistValidationType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
-use AppBundle\Services\PDFWriter;
 use AppBundle\Services\TicketingManager;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use AppBundle\Entity\ContractFan;
 
-class ContractArtistAdminController extends Controller
+class ContractArtistAdminController extends BaseAdminController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->configure();
-    }
-
     public function refundAction(Request $request, UserInterface $user) {
         $em = $this->getDoctrine()->getManager();
         $contract = $this->admin->getSubject();
