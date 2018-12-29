@@ -171,6 +171,7 @@ class YBMembersController extends BaseController
         $this->checkIfAuthorized($user, $campaign);
 
         $message = new YBTransactionalMessage($campaign);
+        $old_messages = $campaign->getTransactionalMessages();
 
         $form = $this->createForm(YBTransactionalMessageType::class, $message);
 
@@ -190,6 +191,7 @@ class YBMembersController extends BaseController
         return $this->render('@App/YB/Members/campaign_transactional_message.html.twig', [
             'form' => $form->createView(),
             'campaign' => $campaign,
+            'old_messages' => $old_messages,
         ]);
     }
 

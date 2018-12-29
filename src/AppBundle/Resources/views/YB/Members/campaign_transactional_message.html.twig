@@ -11,7 +11,7 @@
 
     <section class="container p-5">
         <p>
-            Vous pouvez ici envoyer un message transactionnel aux acheteurs de tickets pour l'événement {{ campaign.getTitle }}.
+            Vous pouvez ici envoyer un message transactionnel aux acheteurs de tickets pour l'événement "{{ campaign.getTitle }}".
             Attention : un message <b>transactionnel</b> ne peut pas être à vocation commerciale. Il doit s'agit d'informations organisationnelles uniquement, dont les consommateurs ont réellement besoin
             (par exemple : changement d'heure du début de l'événement).
         </p>
@@ -46,7 +46,7 @@
                                 Vous êtes sur le point d'envoyer un mail transactionnel à tous les acheteurs de tickets pour cet événement. Êtes vous sûr ?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary-strong" data-dismiss="modal">Revenir à l'édition du message</button>
+                                <button type="button" class="btn" data-dismiss="modal">Revenir à l'édition du message</button>
                                 {{ form_widget(form.submit) }}
                             </div>
                         </div>
@@ -55,5 +55,24 @@
             {{ form_end(form) }}
         {% endif %}
     </section>
+
+    {% if old_messages is not empty %}
+        <section class="container px-5 mb-3">
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#oldMessagesCollapse" aria-expanded="false" aria-controls="oldMessagesCollapse">
+                <i class="fas fa-arrows-alt-v"></i> Afficher les messages transactionnels envoyés par le passé
+            </button>
+            <div class="collapse" id="oldMessagesCollapse">
+                {% for message in old_messages %}
+                    <div class="card card-body my-3 py-2">
+                        <h4>{{ message.title }}</h4>
+                        <p class="small text-secondary">Envoyé le {{ message.date|date('d/m/Y \\à H:i') }}</p>
+                        <p>
+                            {{ message.content }}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
 
 {% endblock body %}

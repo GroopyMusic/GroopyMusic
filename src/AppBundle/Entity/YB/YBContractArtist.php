@@ -7,6 +7,7 @@ use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Photo;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -50,6 +51,7 @@ class YBContractArtist extends BaseContractArtist
         $this->date_closure = new \DateTime();
         $this->sold_counterparts = 0;
         $this->code = uniqid();
+        $this->transactional_messages = new ArrayCollection();
     }
 
     public function getBuyers() {
@@ -211,7 +213,10 @@ class YBContractArtist extends BaseContractArtist
      */
     private $address;
 
-
+    /**
+     * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
+     */
+    private $transactional_messages;
 
     /**
      * Set ticketsSent
@@ -429,5 +434,21 @@ class YBContractArtist extends BaseContractArtist
     public function setAddress($address)
     {
         $this->address = $address;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTransactionalMessages()
+    {
+        return $this->transactional_messages;
+    }
+
+    /**
+     * @param mixed $transactional_messages
+     */
+    public function setTransactionalMessages($transactional_messages)
+    {
+        $this->transactional_messages = $transactional_messages;
     }
 }

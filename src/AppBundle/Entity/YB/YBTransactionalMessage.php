@@ -24,7 +24,7 @@ class YBTransactionalMessage
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\YBContractArtist")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\YBContractArtist", inversedBy="transactional_messages")
      */
     private $campaign;
 
