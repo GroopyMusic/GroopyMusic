@@ -116,4 +116,16 @@
             {% endif %}
         </page>
     {% endfor %}
+
+    {% for topping in cf.toppings %}
+        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+        {{ block('header') }}
+        {{ block('footer') }}
+
+            <h2>{{ topping }}</h2>
+
+            <qrcode value="{{ topping.barCodeText }}" ec="H"
+                    style="position:absolute; left: -40px; top: 50px; width: 30mm; background-color: white; color: black;"></qrcode>
+        </page>
+    {% endfor %}
 {% endblock %}

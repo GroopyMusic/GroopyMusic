@@ -17,6 +17,7 @@ class Promotion
     const TYPE_THREE_PLUS_ONE = 'three_plus_one';
     const TYPE_SIX_PLUS_ONE = 'six_plus_one';
     const TYPE_TEN_PLUS_TWO = 'ten_plus_two';
+    const TYPE_TWO_TWO_DRINKS = 'two_two_drinks';
 
     public function __construct($type = null)
     {
@@ -32,6 +33,39 @@ class Promotion
         ;
     }
 
+    public function getLeft() {
+        switch($this->type) {
+            case self::TYPE_THREE_PLUS_ONE:
+                return "3 tickets identiques achetés";
+                break;
+            case self::TYPE_SIX_PLUS_ONE:
+                return "6 tickets identiques achetés";
+                break;
+            case self::TYPE_TEN_PLUS_TWO:
+                return "10 tickets identiques achetés";
+                break;
+            case self::TYPE_TWO_TWO_DRINKS:
+                return "2 tickets identiques achetés";
+        }
+    }
+
+    public function getRight()
+    {
+        switch ($this->type) {
+            case self::TYPE_THREE_PLUS_ONE:
+                return "1 ticket du même type offert";
+                break;
+            case self::TYPE_SIX_PLUS_ONE:
+                return "1 ticket du même type offert";
+                break;
+            case self::TYPE_TEN_PLUS_TWO:
+                return "2 tickets du même type offerts";
+                break;
+            case self::TYPE_TWO_TWO_DRINKS:
+                return "2 tickets boissons offerts";
+        }
+    }
+
     public function getMathematicString() {
         switch($this->type) {
             case self::TYPE_THREE_PLUS_ONE:
@@ -43,6 +77,8 @@ class Promotion
             case self::TYPE_TEN_PLUS_TWO:
                 return "10 + 2";
             break;
+            case self::TYPE_TWO_TWO_DRINKS:
+                return "+ 2 tickets boissons par lot de 2 tickets achetés";
         }
     }
 
@@ -57,6 +93,10 @@ class Promotion
             case self::TYPE_TEN_PLUS_TWO:
                 return 10;
             break;
+            default:
+                // Other promos don't offer free tickets !
+                return PHP_INT_MAX;
+            break;
         }
     }
 
@@ -70,6 +110,33 @@ class Promotion
             break;
             case self::TYPE_TEN_PLUS_TWO:
                 return 2;
+            break;
+            default:
+                return 0;
+            break;
+        }
+    }
+
+    public function getNbNeededTopping() {
+        switch($this->type) {
+            case self::TYPE_TWO_TWO_DRINKS:
+                return 2;
+            break;
+            default:
+                return PHP_INT_MAX;
+            break;
+        }
+    }
+
+    public function getTopping() {
+        switch($this->type) {
+            case self::TYPE_TWO_TWO_DRINKS:
+                $tts = new ToppingString();
+                $tts->setContent('2 tickets boissons');
+                return $tts;
+            break;
+            default:
+                return null;
             break;
         }
     }

@@ -70,7 +70,8 @@ class PDFWriter
     public function writeTickets($path, $tickets, $agenda = []) {
         if(!empty($tickets)) {
             // We know all tickets are for same event
-            $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
+            $cf = $tickets[0]->getContractFan();
+            $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'cf' => $cf]);
         }
     }
 

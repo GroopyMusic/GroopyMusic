@@ -301,6 +301,20 @@ class ContractFan
         return $this->getContractArtist()->__toString();
     }
 
+    public function getToppings() {
+        $toppings = [];
+        foreach($this->purchases as $purchase) {
+            /** @var Purchase $purchase */
+            $pps = $purchase->getPurchasePromotions();
+            foreach($pps as $pp) {
+                /** @var Purchase_Promotion $pp */
+                $t = $pp->getToppings()->toArray();
+                $toppings = array_merge($toppings, $t);
+            }
+        }
+        return $toppings;
+    }
+
     /**
      * @var int
      *

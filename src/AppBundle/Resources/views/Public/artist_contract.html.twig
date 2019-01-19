@@ -73,7 +73,7 @@
                 {% if contract.currentPromotions is not empty %}
                     <p class="p-promo">Pendant la prévalidation, vous bénéficiez des promotions suivantes :
                     {% for promo in contract.currentPromotions %}
-                            <br />{{ 'event.promo'|trans({'%end_date%': promo.endDate|date('d/m/Y'), '%nb_organic_needed%': promo.nbOrganicNeeded, '%nb_promotional%': promo.nbPromotional})|raw }}
+                            <br />{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> {{ promo.right }}
                     {% endfor %}
                     </p>
                 {% endif %}
