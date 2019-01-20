@@ -28,6 +28,13 @@ Et voici quelques étapes pour le workflow à adopter :
   - pusher la branche sur github : `git push origin NOM_DE_LA_BRANCHE`
 
 
+### Créer l'arborescence
+Il se peut que vous deviez créer des fichiers dans lesquels seront stockés vos fichiers créés localement (PDF des tickets, commandes ou autres, par exemple). 
+Voici les dossiers à créer :
+- web/pdf/orders/festivals/
+- web/pdf/tickets/
+- (à compléter)
+
 ### Installer les dépendances avec Composer
 
 Nous utilisons Composer pour gérer les dépendances *third-party* du projet. Il faut avant toutes choses l’installer : <https://getcomposer.org/download/>
