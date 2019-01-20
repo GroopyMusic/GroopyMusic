@@ -15,7 +15,7 @@
             {% set i = 0 %}
             {% for t in toppings %}
                 {% if t == topping.getContent %}
-                    {% set topping_occurrences['_'~i] = topping_occurrences['_'~i] + 1 %}
+                    {% set topping_occurrences = topping_occurrences|merge({('_'~i): topping_occurrences[('_'~i)] + 1}) %}
                 {% endif %}
                 {% set i = i + 1 %}
             {% endfor %}
@@ -28,11 +28,11 @@
                 <tbody>
                     <tr>
                         <td class="contract-info-title">Promotion</td>
-                        <td>{{ toppings[i] }}</td>
+                        <td>{{ toppings['_'~i] }}</td>
                     </tr>
                     <tr>
                         <td class="contract-info-title">Quantité</td>
-                        <td>{{ topping_occurrences[i] }}</td>
+                        <td>{{ topping_occurrences['_'~i] }}</td>
                     </tr>
                     <tr>
                         <td class="contract-info-title">Prix</td>
@@ -41,6 +41,7 @@
                 </tbody>
             </table>
         </div>
+    {% endfor %}
 {% endmacro %}
 
 {% macro recap_zone(purchase, contract, promotional = false) %}
@@ -319,6 +320,8 @@
                                             {{ macros.recap_zone(purchase, fan_contract, true) }}
                                         {% endif %}
                                         {% if purchase.toppings is not null and purchase.toppings is not empty %}
+                                            </li>
+                                            <li class="list-group-item">
                                             {{ macros.recap_toppings(purchase) }}
                                         {% endif %}
                                         </li>

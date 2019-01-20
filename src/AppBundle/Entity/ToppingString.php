@@ -8,7 +8,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
 * @ORM\Table(name="topping_string")
-* @ORM\Entity(repositoryClass="AppBundle\Repository\TicketToppingStringRepository")
+* @ORM\Entity(repositoryClass="AppBundle\Repository\ToppingStringRepository")
 */
 class ToppingString extends Topping implements TranslatableInterface
 {

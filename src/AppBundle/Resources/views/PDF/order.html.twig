@@ -147,17 +147,18 @@
                     {% endif %}
                 {% endfor %}
 
-                {% set toppings = [] %}
-                {% set topping_occurrences = [] %}
+                {% set toppings = {} %}
+                {% set topping_occurrences = {} %}
+
                 {% for topping in cf.toppings %}
                     {% if topping.getContent not in toppings %}
-                        {% set toppings = toppings|merge([topping.getContent]) %}
-                        {% set topping_occurrences = topping_occurrences|(merge[1]) %}
+                        {% set toppings = toppings|merge({('_'~loop.index0):topping.getContent}) %}
+                        {% set topping_occurrences = topping_occurrences|merge({('_'~loop.index0):1}) %}
                     {% else %}
                         {% set i = 0 %}
                         {% for t in toppings %}
                             {% if t == topping.getContent %}
-                                {% set topping_occurrences[i] = topping_occurrences[i] + 1 %}
+                                {% set topping_occurrences = topping_occurrences|merge({('_'~i): topping_occurrences[('_'~i)] + 1}) %}
                             {% endif %}
                             {% set i = i + 1 %}
                         {% endfor %}
@@ -167,10 +168,10 @@
                 {% for i in 0..toppings|length - 1 %}
                     <tr>
                         <td>
-                            {{ toppings[i] }}
+                            {{ toppings['_'~i] }}
                         </td>
                         <td>
-                            {{ topping_occurrences[i] }}
+                            {{ topping_occurrences['_'~i] }}
                         </td>
                         <td>0 €</td>
                         <td>0 €</td>

@@ -147,9 +147,10 @@ class UtilitiesExtension extends \Twig_Extension
         return $this->stringHelper->slugify($str);
     }
 
-    public function fancy_date($date) {
+    public function fancy_date($date, $strip_year = false) {
         return $this->twig->render(':patterns/utils:fancy_date.html.twig', array(
             'date' => $date,
+            'strip_year' => $strip_year,
         ));
     }
 

@@ -65,15 +65,12 @@
                     <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
                                            src="{{ asset('images/icons/artist.png') }}"/> C'est le dernier jour de campagne ! C'est le moment de soutenir les artistes de ce Festival !
                     </p>
-                {% elseif state not in contract.successfulStates and contract.inTestPeriod %}
-                    <p class="p-info">Cette campagne est <b>en prévalidation</b>. Seuls les utilisateurs qui disposent du lien peuvent y accéder.
-                        Elle sera affichée au public au bout de la période de prévalidation si l'objectif de prévalidation est atteint.</p>
                 {% endif %}
 
                 {% if contract.currentPromotions is not empty %}
-                    <p class="p-promo">Pendant la prévalidation, vous bénéficiez des promotions suivantes :
+                    <p class="p-info">Pendant les premiers jours de vente, vous bénéficiez des promotions suivantes :
                     {% for promo in contract.currentPromotions %}
-                            <br />{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> {{ promo.right }}
+                            <br />{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> {{ promo.right }} (jusqu'au {{ promo.endDate|fancy_date(true) }})
                     {% endfor %}
                     </p>
                 {% endif %}
@@ -178,32 +175,31 @@
                             </span>
                 </div>
 
-                {% if not contract.inTestPeriod %}
-                    <div class="col-12 row equal content-box-row">
-                        <div class="col-12 col-md-6 content-box-col">
-                            <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                {{ 'event.infos.validation_date'|trans|raw }}
-                            </div>
-                            <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                {{ contract.dateEnd|date('d/m/Y') }}
-                            </div>
-                        </div>
 
-                        <div class="col-12 col-md-6 content-box-col">
-                            <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                Avancement
-                            </div>
-                            {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
-                            <div class="progress">
-                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
-                                     style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
-                            </div>
-                            <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                                {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
-                            </div>
+                <div class="col-12 row equal content-box-row">
+                    <div class="col-12 col-md-6 content-box-col">
+                        <div class="contract-info-title">
+                            {{ 'event.infos.validation_date'|trans|raw }}
+                        </div>
+                        <div class="contract-info-content">
+                            {{ contract.dateEnd|date('d/m/Y') }}
                         </div>
                     </div>
-                {% endif %}
+
+                    <div class="col-12 col-md-6 content-box-col">
+                        <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
+                            Avancement
+                        </div>
+                        {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
+                        <div class="progress">
+                            <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
+                                 style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
+                        </div>
+                        <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
+                            {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {% if app.user and (app.user.hasArtistPerformingIn(contract) or is_granted('ROLE_ADMIN')) %}
