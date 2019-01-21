@@ -2,22 +2,19 @@
 
 namespace AppBundle\Entity;
 
-use Sonata\TranslationBundle\Model\TranslatableInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
 * @ORM\Table(name="topping_string")
 * @ORM\Entity(repositoryClass="AppBundle\Repository\ToppingStringRepository")
 */
-class ToppingString extends Topping implements TranslatableInterface
+class ToppingString extends Topping
 {
-    use ORMBehaviors\Translatable\Translatable;
-
-    public function __construct()
+    public function __construct($content)
     {
         $this->type = 'string';
         $this->barCodeText = 'ST' . uniqid();
+        $this->setContent($content);
     }
 
     public function __toString()
@@ -25,29 +22,21 @@ class ToppingString extends Topping implements TranslatableInterface
         return '' . $this->getContent();
     }
 
-    public function __call($method, $arguments)
-    {
-        try {
-            return $this->proxyCurrentLocaleTranslation($method, $arguments);
-        } catch(\Exception $e) {
-            $method = 'get' . ucfirst($method);
-            return $this->proxyCurrentLocaleTranslation($method, $arguments);
-        }
+    /**
+     * @var string
+     * @ORM\Column(name="content", type="string")
+     */
+    private $content;
+
+    public function getContent() {
+        return $this->content;
     }
 
-    public function getDefaultLocale() {
-        return 'fr';
+    /**
+     * @param $content
+     * @return ToppingString
+     */
+    public function setContent($content) {
+        $this->content = $content;
     }
-
-    public function setLocale($locale)
-    {
-        $this->setCurrentLocale($locale);
-        return $this;
-    }
-
-    public function getLocale()
-    {
-        return $this->getCurrentLocale();
-    }
-
 }

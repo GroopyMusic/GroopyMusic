@@ -6,6 +6,7 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\Topping;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\RewardSpendingService;
@@ -89,6 +90,7 @@ class PaymentController extends BaseController
                     /** @var ContractFan $contract
                      * @var ContractArtist $contract_artist */
                     $contract->calculatePromotions();
+
                     $contract_artist = $contract->getContractArtist();
 
                     $contract_artist->addAmount($contract->getAmount());

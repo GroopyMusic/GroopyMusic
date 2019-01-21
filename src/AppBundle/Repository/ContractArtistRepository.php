@@ -74,7 +74,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->leftJoin('fd.hall', 'h')
             ->leftJoin('fd.performances', 'perf')
             ->leftJoin('perf.artist', 'a')
-            ->join('c.step', 's')
+            ->leftJoin('c.step', 's')
             ->leftJoin('s.counterParts', 'cp')
             ->leftJoin('a.genres', 'ag')
             ->leftJoin('a.photos', 'ap')

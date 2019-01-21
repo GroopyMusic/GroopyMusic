@@ -298,15 +298,14 @@
                     {% endif %}
                 </div>
 
-                {% if (not contract_fan) or  contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
-                    <div class="col-12 col-md-4 order-1 order-md-2">
-                        <div class="card card-info">
-                            <div class="card-header">
-                                <h3 class="text-primary text-center">{{ 'pay_cart.recap.title'|trans|raw }}</h3>
-                            </div>
+                <div class="col-12 col-md-4 order-1 order-md-2">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="text-primary text-center">{{ 'pay_cart.recap.title'|trans|raw }}</h3>
+                        </div>
 
-                            <div class="card-content">
-                                <ul class="list-group">
+                        <div class="card-content">
+                            <ul class="list-group">
                                 {% set sum_tickets = 0 %}
                                 {% set amoutWithoutReduction = 0 %}
                                 {% set hasReduction = false %}
@@ -347,38 +346,11 @@
                                     </table>
                                 </li>
                             </ul>
-                            </div>
-                            </div>
-                    </div>
-                {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales')
-                    or contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
-                    <div class="col-12 col-md-4 order-1 order-md-2 mb-2 mb-md-0">
-                        <div class="content-box">
-                            <div class="content-box-header">
-                                <h3>{{ 'pay_cart.sales.recap.title'|trans|raw }}</h3>
-                            </div>
-                            <div class="content-box-content-zones content-box-content">
-                                {% set nb_articles = 0 %}
-                                {% for purchase in contract_fan.purchases %}
-                                    {{ macros.recap_zone_sales(purchase, contract_fan) }}
-                                    {% set nb_articles = nb_articles + purchase.quantity %}
-                                {% endfor %}
-
-                                <div class="content-box-content-zone no-border">
-                                <table class="content-box-table">
-                                    <tr class="no-border">
-                                        <td class="contract-info-title big">{{ 'pay_cart.sales.recap.total'|transchoice(nb_articles)|raw }}</td>
-                                        <td class="big font-weight-bold">{{ cart.amount }} €</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            </div>
                         </div>
                     </div>
-                {% endif %}
-             </div>
+                </div>
+            </div>
         </div>
-
     {% endblock %}
 
         {% block javascripts %}

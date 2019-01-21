@@ -131,9 +131,7 @@ class Promotion
     public function getTopping() {
         switch($this->type) {
             case self::TYPE_TWO_TWO_DRINKS:
-                $tts = new ToppingString();
-                $tts->setContent('2 tickets boissons');
-                return $tts;
+                return new ToppingString('2 tickets boissons');
             break;
             default:
                 return null;

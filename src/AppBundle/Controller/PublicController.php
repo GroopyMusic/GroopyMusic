@@ -7,6 +7,7 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\SuggestionBox;
+use AppBundle\Entity\Topping;
 use AppBundle\Entity\VIPInscription;
 use AppBundle\Entity\VolunteerProposal;
 use AppBundle\Form\CartType;
@@ -329,6 +330,9 @@ class PublicController extends BaseController
             foreach($contract->getPurchases() as $purchase) {
                 if($purchase->getAmount() == 0) {
                     $contract->removePurchase($purchase);
+                }
+                else {
+                    $purchase->calculatePromotions();
                 }
             }
 
