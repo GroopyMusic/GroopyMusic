@@ -29,11 +29,18 @@ Et voici quelques étapes pour le workflow à adopter :
 
 
 ### Créer l'arborescence
-Il se peut que vous deviez créer des fichiers dans lesquels seront stockés vos fichiers créés localement (PDF des tickets, commandes ou autres, par exemple). 
+Il se peut que vous deviez créer des dossiers dans lesquels seront stockés vos fichiers créés localement (PDF des tickets, commandes ou autres, par exemple). 
 Voici les dossiers à créer :
 - web/pdf/orders/festivals/
 - web/pdf/tickets/
-- (à compléter)
+- web/pdf/phtickets/
+- web/pdf/viptickets/
+- web/uploads/artist_gallery/
+- web/uploads/hall_gallery/
+- web/uploads/hall_technicalspecs/
+- web/images/festivals/
+- web/yb/images/campaigns/
+- web/yb/tickets/
 
 ### Installer les dépendances avec Composer
 
