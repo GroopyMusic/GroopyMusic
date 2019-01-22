@@ -19,6 +19,7 @@ class Promotion
     const TYPE_EIGHT_PLUS_TWO = 'eight_plus_two';
     const TYPE_TEN_PLUS_TWO = 'ten_plus_two';
     const TYPE_TWO_TWO_DRINKS = 'two_two_drinks';
+    const TYPE_THREE_THREE_DRINKS = 'three_three_drinks';
 
     public function __construct($type = null)
     {
@@ -36,7 +37,11 @@ class Promotion
 
     public function getLeft() {
         switch($this->type) {
+            case self::TYPE_TWO_TWO_DRINKS:
+                return "2 tickets identiques achetés";
+                break;
             case self::TYPE_THREE_PLUS_ONE:
+            case self::TYPE_THREE_THREE_DRINKS:
                 return "3 tickets identiques achetés";
                 break;
             case self::TYPE_SIX_PLUS_ONE:
@@ -48,9 +53,6 @@ class Promotion
             case self::TYPE_TEN_PLUS_TWO:
                 return "10 tickets identiques achetés";
             break;
-            case self::TYPE_TWO_TWO_DRINKS:
-                return "2 tickets identiques achetés";
-            break;
         }
     }
 
@@ -60,13 +62,17 @@ class Promotion
             case self::TYPE_THREE_PLUS_ONE:
             case self::TYPE_SIX_PLUS_ONE:
                 return "1 ticket du même type offert";
-                break;
+            break;
             case self::TYPE_TEN_PLUS_TWO:
             case self::TYPE_EIGHT_PLUS_TWO:
                 return "2 tickets du même type offerts";
-                break;
+            break;
             case self::TYPE_TWO_TWO_DRINKS:
                 return "2 tickets boissons offerts";
+            break;
+            case self::TYPE_THREE_THREE_DRINKS:
+                return "3 tickets boissons offerts";
+            break;
         }
     }
 
@@ -86,6 +92,10 @@ class Promotion
             break;
             case self::TYPE_TWO_TWO_DRINKS:
                 return "+ 2 tickets boissons par lot de 2 tickets achetés";
+            break;
+            case self::TYPE_THREE_THREE_DRINKS:
+                return "+ 3 tickets boissons par lot de 3 tickets achetés";
+            break;
         }
     }
 
@@ -131,6 +141,9 @@ class Promotion
             case self::TYPE_TWO_TWO_DRINKS:
                 return 2;
             break;
+            case self::TYPE_THREE_THREE_DRINKS:
+                return 3;
+            break;
             default:
                 return PHP_INT_MAX;
             break;
@@ -141,6 +154,9 @@ class Promotion
         switch($this->type) {
             case self::TYPE_TWO_TWO_DRINKS:
                 return new ToppingString('2 tickets boissons');
+            break;
+            case self::TYPE_THREE_THREE_DRINKS:
+                return new ToppingString('3 tickets boissons');
             break;
             default:
                 return null;
