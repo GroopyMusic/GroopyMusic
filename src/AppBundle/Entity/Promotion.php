@@ -16,6 +16,7 @@ class Promotion
 {
     const TYPE_THREE_PLUS_ONE = 'three_plus_one';
     const TYPE_SIX_PLUS_ONE = 'six_plus_one';
+    const TYPE_EIGHT_PLUS_TWO = 'eight_plus_two';
     const TYPE_TEN_PLUS_TWO = 'ten_plus_two';
     const TYPE_TWO_TWO_DRINKS = 'two_two_drinks';
 
@@ -27,7 +28,7 @@ class Promotion
     public function __toString()
     {
         return $this->type != null ?
-            'Promotion ' . $this->getMathematicString() . ' du ' . $this->start_date->format('d/m/Y') . ' au ' . $this->end_date->format('d/m/Y')
+            'Promotion "' . $this->getMathematicString() . '"" du ' . $this->start_date->format('d/m/Y') . ' au ' . $this->end_date->format('d/m/Y')
             :
             'Nouvelle promotion'
         ;
@@ -41,11 +42,15 @@ class Promotion
             case self::TYPE_SIX_PLUS_ONE:
                 return "6 tickets identiques achetés";
                 break;
+            case self::TYPE_EIGHT_PLUS_TWO:
+                return "8 tickets identiques achetés";
+            break;
             case self::TYPE_TEN_PLUS_TWO:
                 return "10 tickets identiques achetés";
-                break;
+            break;
             case self::TYPE_TWO_TWO_DRINKS:
                 return "2 tickets identiques achetés";
+            break;
         }
     }
 
@@ -53,12 +58,11 @@ class Promotion
     {
         switch ($this->type) {
             case self::TYPE_THREE_PLUS_ONE:
-                return "1 ticket du même type offert";
-                break;
             case self::TYPE_SIX_PLUS_ONE:
                 return "1 ticket du même type offert";
                 break;
             case self::TYPE_TEN_PLUS_TWO:
+            case self::TYPE_EIGHT_PLUS_TWO:
                 return "2 tickets du même type offerts";
                 break;
             case self::TYPE_TWO_TWO_DRINKS:
@@ -73,6 +77,9 @@ class Promotion
             break;
             case self::TYPE_SIX_PLUS_ONE:
                 return "6 + 1";
+            break;
+            case self::TYPE_EIGHT_PLUS_TWO:
+                return "8 + 2";
             break;
             case self::TYPE_TEN_PLUS_TWO:
                 return "10 + 2";
@@ -90,6 +97,9 @@ class Promotion
             case self::TYPE_SIX_PLUS_ONE:
                 return 6;
             break;
+            case self::TYPE_EIGHT_PLUS_TWO:
+                return 6;
+            break;
             case self::TYPE_TEN_PLUS_TWO:
                 return 10;
             break;
@@ -103,12 +113,11 @@ class Promotion
     public function getNbPromotional() {
         switch($this->type) {
             case self::TYPE_THREE_PLUS_ONE:
-                return 1;
-            break;
             case self::TYPE_SIX_PLUS_ONE:
                 return 1;
             break;
             case self::TYPE_TEN_PLUS_TWO:
+            case self::TYPE_EIGHT_PLUS_TWO:
                 return 2;
             break;
             default:
