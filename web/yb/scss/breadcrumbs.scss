@@ -35,8 +35,8 @@
   position: relative;
   color: #fff;
   text-decoration: none;
-  background-color: #024862;
-  border: 1px solid #024862;
+  background-color: $dark-orange;
+  border: 1px solid $dark-orange;
 }
 .breadcrumb-arrow li:first-child a {
   padding-left: 10px
@@ -53,28 +53,28 @@
 .breadcrumb-arrow li a:before {
   right: -10px;
   z-index: 3;
-  border-left-color: #024862;
+  border-left-color: $dark-orange;
   border-left-style: solid;
   border-left-width: 11px
 }
 .breadcrumb-arrow li a:after {
   right: -11px;
   z-index: 2;
-  border-left: 11px solid #2494be
+  border-left: 11px solid #eb8744
 }
 .breadcrumb-arrow li a:focus, .breadcrumb-arrow li a:hover {
-  background-color: #2494be;
-  border: 1px solid #2494be
+  background-color: #eb8744;
+  border: 1px solid #eb8744
 }
 .breadcrumb-arrow li a:focus:before, .breadcrumb-arrow li a:hover:before {
-  border-left-color: #2494be
+  border-left-color: #eb8744
 }
 .breadcrumb-arrow li a:active {
-  background-color: #4fc1e9;
-  border: 1px solid #4fc1e9
+  background-color: #f9c55b;
+  border: 1px solid #f9c55b
 }
 .breadcrumb-arrow li a:active:after, .breadcrumb-arrow li a:active:before {
-  border-left-color: #4fc1e9
+  border-left-color: #f9c55b
 }
 .breadcrumb-arrow li span {
   color: #434a54

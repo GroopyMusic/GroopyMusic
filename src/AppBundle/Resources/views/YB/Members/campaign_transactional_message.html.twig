@@ -1,0 +1,78 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+            <li class="active"><span>Envoi d'un message transactionnel</span></li>
+        </ol>
+    </section>
+
+    <section class="container p-5">
+        <p>
+            Vous pouvez ici envoyer un message transactionnel aux acheteurs de tickets pour l'événement "{{ campaign.getTitle }}".
+            Attention : un message <b>transactionnel</b> ne peut pas être à vocation commerciale. Il doit s'agit d'informations organisationnelles uniquement, dont les consommateurs ont réellement besoin
+            (par exemple : changement d'heure du début de l'événement).
+        </p>
+
+        {% if campaign.buyers is empty %}
+            <p>
+                Vous ne pouvez pas envoyer de message pour cette campagne à l'heure actuelle car il n'y a aucun acheteur à contacter...
+            </p>
+        {% elseif campaign.isWayPassed %}
+            <p>
+                Vous ne pouvez plus envoyer de message pour cette campagne car elle date d'il y a trop longtemps...
+            </p>
+        {% else %}
+            {{ form_start(form) }}
+                {{ form_row(form.title) }}
+                {{ form_row(form.content) }}
+
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">
+                    Envoyer
+                </button>
+
+                <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Vous êtes sur le point d'envoyer un mail transactionnel à tous les acheteurs de tickets pour cet événement. Êtes vous sûr ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn" data-dismiss="modal">Revenir à l'édition du message</button>
+                                {{ form_widget(form.submit) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        {% endif %}
+    </section>
+
+    {% if old_messages is not empty %}
+        <section class="container px-5 mb-3">
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#oldMessagesCollapse" aria-expanded="false" aria-controls="oldMessagesCollapse">
+                <i class="fas fa-arrows-alt-v"></i> Afficher les messages transactionnels envoyés par le passé
+            </button>
+            <div class="collapse" id="oldMessagesCollapse">
+                {% for message in old_messages %}
+                    <div class="card card-body my-3 py-2">
+                        <h4>{{ message.title }}</h4>
+                        <p class="small text-secondary">Envoyé le {{ message.date|date('d/m/Y \\à H:i') }}</p>
+                        <p>
+                            {{ message.content }}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+{% endblock body %}

@@ -2,21 +2,12 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ContractArtist;
 use AppBundle\Services\PaymentManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class WebHooksController extends Controller
+class WebHooksController extends BaseController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @Route("/stripe-refund", name="wh_stripe_refund")
      */

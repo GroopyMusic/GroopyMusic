@@ -4,6 +4,7 @@ menu:
   services: Services
   pricing: Prix
   contact: Contact
+  friends: Early birds
 
 footer:
   about: À propos
@@ -15,39 +16,47 @@ notice:
   title: Merci !
   back: Retour
 
+error:
+  title: Une erreur est surenue
+  back: Retour
+  form_error: Le formulaire contient une ou plusieurs erreurs.
+
 home:
   headline: À la recherche d'une billetterie simple et flexible ?
   cta: Découvrez ce que nous offrons
   about:
-    title: À propos
-    content: Vous souhaitez lancer une campagne de vente de tickets en ligne ? Ticked-it.be propose une solution 100 % belge, qui permet l'utilisation d'un système de crowdfunding si vous le désirez. Déterminez l'objectif de votre campagne et remboursez, sans aucun frais, tous les participants si nécessaire. L'équipe du projet, jeune et installée à Bruxelles, vous accompagne tout au long de l'implantation de votre campagne, avec des prix imbattables sur le marché du ticketing.
+    title: Notre mission
+    content: Ticked-it! cherche à <b>renforcer la relation client pour les spectacles du vivant par la digitalisation</b>. Nous proposons des solutions de ticketing <b>durables</b> et <b>innovantes</b>. Vous créez des événements, décidez de nombreuses options qui peuvent s'y appliquer, et la campagne de ticketing peut commencer.
+
   services:
     title: Nos services
     ticketing:
       title: Ticketing
-      content: Vendez des tickets ou d'autres articles à l'aide de campagnes en ligne.
+      content: "Vendez des tickets pour tout type d'événement ; vous ne payez que ce que vous utilisez : pas de ticket vendu, pas de facture !"
     flexibility:
-      title: Objectifs flexibles
-      content: Vous décidez du seuil de réussite de vos campagnes.
-    no_risk:
-      title: Aucun risque
-      content: Si la campagne se solde en échec, vous remboursez tout le monde sans frais.
+      title: Full options
+      content: Votre espace organisateur vous permet une personnalisation poussée de vos campagnes de vente
     security:
       title: Sécurité
-      content: Tous les paiements et remboursements sont parfaitement sécurisés.
+      content: Tous nos paiements sont parfaitement sécurisés et nous traitons vos données et celles de vos acheteurs en parfait accord avec les règles en vigueur
   examples:
     example_1:
-      title: Un événement privé à organiser ?
-      content: Faites-le sans ne prendre aucun risque !
+      title: L'événementiel au sens large
+      content: Que ce soit pour un concert, un événement privé, une représentation théâtrale, ou toute autre forme d'événementiel, Ticked-it! s'occupe de votre ticketing. Votre événement est gratuit ? ça marche aussi. Vous souhaitez que votre événement soit conditionné à un crowdfunding ? vous êtes chez vous.
     example_2:
       title: Vous souhaitez faire venir un artiste dans votre salle de concert ?
       content: C'est facile. Lancez une campagne en ligne pour tester l'intérêt de votre public !
     example_3:
-      title: Besoin de vendre des articles pour votre projet ?
-      content: Contactez-nous et nous verrons ce que nous pouvons faire pour vous.
+      title: Des options à n'en plus finir
+      content: Activez le financement participatif si vous souhaitez fonctionner sur base d'un crowdfunding ; les remboursements sont alors 100 % gratuits. Customisez vos tickets et leur prix (tickets gratuits, pour enfants, à prix libre, ...). Envoyez des e-mails aux acheteurs qui vous autorisent à le faire. Voilà déjà un avant-goût de ce que Ticked-it! vous propose.
+  friends-examples:
+    title: Faites partie des early birds
+    content: Ticked-it! comporte déjà beaucoup d'options, mais nous ne voulons pas nous en arrêter là. Rejoignez-nous pour, en tant que clients lanceurs du projet, pouvoir décider préférentiellement des prochaines options qui sortiront. Vous bénéficiez alors de <b>tarifs imbattables</b> et d'un support continu par mail et téléphone.
+    contact_us: Contactez-nous pour lancer votre première campagne
+    friends_title: Ils nous font déjà confiance
   pricing:
     title: Campagnes & prix
-    contact_us: Contactez-nous
+    contact_us: Contactez-nous pour lancer votre première campagne
     campaign_1:
        title: Campagne de ticketing
        list: |
@@ -81,6 +90,8 @@ pay_cart:
     label: J'accepte les conditions générales et je souhaite procéder au paiement
     intro: |
         En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales d'utilisation et de vente</a>.
+    intro_free: |
+        En procédant à la validation de cette commande gratuite, vous assurez avoir lu les <a target="_blank" href="%conditionsUrl%">conditions générales d'utilisation et de vente</a>.
   methods:
     creditcard: Carte de crédit
     bancontact: Bancontact
@@ -111,8 +122,8 @@ threeds:
 
 tickets_pdf:
   conditions: |
-    -	Le titre d'entrée est uniquement valable pour le lieu et la date précisée sur le billet et fera l'objet d'une vérification.
-    -	Veuillez présenter le QR code du ticket de manière visible (imprimé ou sur smartphone) pour faciliter le scanning le soir de l'évènement. Un ticket n'est pas valable sans son code-barres.
+    -	Ce titre d'entrée est uniquement valable pour le lieu et la date précisée sur le billet et fera l'objet d'une vérification.
+    -	Veuillez présenter le QR code du ticket de manière visible (sur smartphone de préférence) pour faciliter le scanning le soir de l'évènement. Un ticket n'est pas valable sans son code-barres.
     -	Chaque titre d'entrée ne pourra être utilisé qu'une seule fois et ne donnera lieu qu'à un seul accès à l'événement. Si le même QR code est présenté plusieurs fois, seule la première personne à présenter le billet sera admise.
     -	Toute tentative de réutilisation ou de copie d'un ticket sera considérée comme une fraude. Tout abus ou contrefaçon sera poursuivi. Les mentions sur les billets ne peuvent pas être modifiées. Les titulaires de billets modifiés pourront se voir refuser l'accès.
     -	Une pièce d'identité officielle en cours de validité avec photo pourra être demandée pour identifier le détenteur du billet.

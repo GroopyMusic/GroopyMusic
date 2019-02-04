@@ -49,43 +49,43 @@
   0%{
     height: 10px;
     transform: translateY(0px);
-    background: #ffa65d;
+    background: #ff8034;
   }
   25%{
     height: 60px;
     transform: translateY(15px);
-    background: #f7af09;
+    background: $main-orange;
   }
   50%{
     height: 10px;
     transform: translateY(-10px);
-    background: #83a615;
+    background: $menu-color;
   }
   100%{
     height: 10px;
     transform: translateY(0px);
-    background: #e5ddad;
+    background: #e53e11;
   }
 }
 @keyframes loading-1{
   0%{
     height: 10px;
     transform: translateY(0px);
-    background: #ff5735;
+    background: #ff8034;
   }
   25%{
     height: 60px;
     transform: translateY(15px);
-    background: #e2831b;
+    background: $main-orange;
   }
   50%{
     height: 10px;
     transform: translateY(-10px);
-    background: #e2e01c;
+    background: $menu-color;
   }
   100%{
     height: 10px;
     transform: translateY(0px);
-    background: #e50926;
+    background: #e53e11;
   }
 }

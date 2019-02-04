@@ -23,6 +23,7 @@ class CounterPart implements TranslatableInterface
         $this->free_price = false;
         $this->minimum_price = 0;
         $this->threshold_increase = 1;
+        $this->maximum_amount_per_purchase = 1000;
     }
 
     public function __call($method, $arguments)
@@ -79,6 +80,10 @@ class CounterPart implements TranslatableInterface
         else {
             return $this->getPrice();
         }
+    }
+
+    public function isFree() {
+        return (!$this->free_price && $this->price == 0); 
     }
 
     /**
@@ -138,6 +143,12 @@ class CounterPart implements TranslatableInterface
      * @ORM\Column(name="is_child_entry", type="boolean")
      */
     private $is_child_entry;
+
+    /**
+     * @var int
+     * @ORM\Column(name="maximum_amount_per_purchase", type="smallint", )
+     */
+    private $maximum_amount_per_purchase;
 
     /**
      * Get id
@@ -348,5 +359,21 @@ class CounterPart implements TranslatableInterface
     public function getIsChildEntry()
     {
         return $this->is_child_entry;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaximumAmountPerPurchase()
+    {
+        return $this->maximum_amount_per_purchase;
+    }
+
+    /**
+     * @param int $maximum_amount_per_purchase
+     */
+    public function setMaximumAmountPerPurchase($maximum_amount_per_purchase)
+    {
+        $this->maximum_amount_per_purchase = $maximum_amount_per_purchase;
     }
 }

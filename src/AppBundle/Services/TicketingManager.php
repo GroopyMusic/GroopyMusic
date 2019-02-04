@@ -193,7 +193,6 @@ class TicketingManager
                     $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage() . ' \n ' . $e->getTraceAsString());
                     return $e;
                 }
-
             }
         }
 
@@ -230,8 +229,8 @@ class TicketingManager
     {
         $this->generateTicketsForContractFan($cf);
         $tickets = $cf->getTickets()->toArray();
-        if(!empty($tickets)) {
-            $agenda = $this->getAgenda($tickets[0]);
+        if(count($tickets) > 0) {
+            $agenda = $this->getAgenda(current($tickets));
             $this->writer->writeTickets($cf->getTicketsPath(), $tickets, $agenda);
             $this->mailDispatcher->sendTicketsForContractFan($cf, $cf->getContractArtist());
             $this->em->persist($cf);

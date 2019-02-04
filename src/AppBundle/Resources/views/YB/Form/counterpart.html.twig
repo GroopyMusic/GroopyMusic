@@ -1,12 +1,22 @@
 {% block app_bundle_counter_part_type_row %}
     <div class="row counterpart-row">
-        <h3><i class="fas fa-ticket-alt text-secondary"></i> Ticket</h3>
+        <h3><img src="{{ yb_asset('images/icons/icon-orange.png') }}" width="30" /> Ticket</h3>
 
         <div class="col-12">
             {{ form_widget(form.translations) }}
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 row">
+            <div class="col-12">
             {{ form_row(form.maximumAmount) }}
+            </div>
+            <div class="col-12">
+                {{ form_label(form.maximumAmountPerPurchase) }}
+                <div class="text-muted font-italic pb-2">
+                    Les acheteurs ne pourront pas dépasser cette quantité dans une seule commande. Mettre minimum à 1, maximum à 1000.
+                </div>
+                {{ form_errors(form.maximumAmountPerPurchase) }}
+                {{ form_widget(form.maximumAmountPerPurchase) }}
+            </div>
         </div>
         <div class="col-12 col-md-6">
             {{ form_label(form.thresholdIncrease) }}
@@ -16,7 +26,7 @@
             {{ form_errors(form.thresholdIncrease) }}
             {{ form_widget(form.thresholdIncrease) }}
         </div>
-        <div class="col-12">
+        <div class="col-12 mt-4">
             {{ form_widget(form.isChildEntry) }}
             <div class="text-muted font-italic pb-2">
                 Si cette case est cochée, des mentions supplémentaires pour les enfants apparaîtront sur le ticket. Elles vous permettront de vérifier si la personne qui le présente est bel et bien un enfant.

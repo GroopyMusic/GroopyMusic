@@ -74,7 +74,7 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->leftJoin('fd.hall', 'h')
             ->leftJoin('fd.performances', 'perf')
             ->leftJoin('perf.artist', 'a')
-            ->join('c.step', 's')
+            ->leftJoin('c.step', 's')
             ->leftJoin('s.counterParts', 'cp')
             ->leftJoin('a.genres', 'ag')
             ->leftJoin('a.photos', 'ap')
@@ -249,6 +249,15 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->andWhere('c.tickets_sold >= s.min_tickets')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findPassed() {
+        return $this->createQueryBuilder('ca')
+            ->where('ca.failed = 1 OR ca.successful = 1')
+            ->andWhere('ca.main_artist is null')
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
 

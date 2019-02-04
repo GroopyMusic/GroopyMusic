@@ -17,13 +17,6 @@
                     Cet événement est marqué comme réussi. Tu peux donc expédier les tickets. Ils seront envoyés par mail.
                 </p>
 
-                {% if contract.coartists|length < 2 %}
-                    <p class="alert alert-warning">
-                        Attention, tu n'as pas renseigné 2 premières parties pour ce concert.
-                        Le ticket contiendra donc un trou dans le timing. <a target="_blank" href="{{ admin.generateObjectUrl('edit', contract) }}">Editer l'événement</a>
-                    </p>
-                {% endif %}
-
                 <div>
                     {{ form_errors(form) }}
                     {{ form_start(form) }}

@@ -44,7 +44,7 @@ class CounterPartType extends AbstractType
             ))
             ->add('price', NumberType::class, array(
                 'required' => false,
-                'label' => 'Prix (en euros) (1 € ou plus)',
+                'label' => 'Prix (en euros) (soit 0 €, soit 1 € ou plus)',
             ))
             ->add('thresholdIncrease', NumberType::class, array(
                 'required' => true,
@@ -59,6 +59,10 @@ class CounterPartType extends AbstractType
                 'required' => false,
                 'label' => "Prix minimum (en euros) (1 € ou plus)",
             ))
+            ->add('maximumAmountPerPurchase', NumberType::class, array(
+                'required' => true,
+                'label' => "Nombre max par commande",
+            ))
         ;
     }
 
@@ -71,10 +75,15 @@ class CounterPartType extends AbstractType
             $counterPart->setPrice($counterPart->getMinimumPrice());
         }
         else {
-            if($counterPart->getPrice() == null || $counterPart->getPrice() < 1) {
-                $context->addViolation('Les prix des tickets doivent être au minimum de 1 €.');
+            if(!$counterPart->isFree() && $counterPart->getPrice() == null || $counterPart->getPrice() < 0 || ($counterPart->getPrice() > 0 && $counterPart->getPrice() < 1)) {
+                $context->addViolation('Les prix des tickets doivent être au minimum de 1 €, ou alors de 0 € (pour tickets gratuits).');
             }
             $counterPart->setMinimumPrice($counterPart->getPrice());
+        }
+        $absolute_max_amount = 1000;
+        if($counterPart->getMaximumAmountPerPurchase() < 1 || $counterPart->getMaximumAmountPerPurchase() > $absolute_max_amount) {
+            $context->addViolation('La quantité max de chaque type de ticket par commande doit être minimum de 1, maximum de ' . $absolute_max_amount . '.');
+            $counterPart->setMaximumAmountPerPurchase($absolute_max_amount);
         }
     }
 

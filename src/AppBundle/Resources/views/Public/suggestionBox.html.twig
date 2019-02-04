@@ -35,7 +35,7 @@
 
                         {{ hidden_loader() }}
                         <div id="suggestionbox_form">
-                            {{ render(controller('AppBundle:Public:suggestionBoxForm')) }}
+                            {{ render(controller('AppBundle:Public:contactForm')) }}
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
 
             <ul>
                 {% for session in sessions %}
-                    <li>{{ session.getName() }} (date : {{ session.date|date('d/m/Y \à H\hi') }}, lieu : {{ session.address }})</li>
+                    <li>{{ session.getName() }} (date : {{ session.date|date('d/m/Y \à H\\hi') }}, lieu : {{ session.address }})</li>
                 {% endfor %}
             </ul>
             <p>Pour vous inscrire à une session, merci de soit vous créer un profil artiste (auquel cas vous devrez choisir une date de session à laquelle vous devrez participer),

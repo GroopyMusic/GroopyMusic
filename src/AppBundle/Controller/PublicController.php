@@ -3,130 +3,49 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Artist;
-use AppBundle\Entity\Artist_User;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
-use AppBundle\Entity\ContractArtistSales;
 use AppBundle\Entity\ContractFan;
-use AppBundle\Entity\Hall;
-use AppBundle\Entity\PropositionContractArtist;
-use AppBundle\Entity\User;
 use AppBundle\Entity\SuggestionBox;
+use AppBundle\Entity\Topping;
+use AppBundle\Entity\VIPInscription;
+use AppBundle\Entity\VolunteerProposal;
 use AppBundle\Form\CartType;
 use AppBundle\Form\ContractFanType;
-use AppBundle\Form\PropositionContractArtistType;
-use AppBundle\Services\MailDispatcher;
-use AppBundle\Services\NotificationDispatcher;
+use AppBundle\Form\VIPInscriptionType;
+use AppBundle\Form\VolunteerProposalType;
 use AppBundle\Services\RewardSpendingService;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Mailgun\Mailgun;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Form\SuggestionBoxType;
 use AppBundle\Form\UserSuggestionBoxType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Translation\TranslatorInterface;
-use AppBundle\Services\ArrayHelper;
 
-class PublicController extends Controller
+class PublicController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    // Duplicated from UserController
-    private function createCartForUser($user)
-    {
-        $cart = new Cart();
-        $cart->setUser($user);
-        $cart->generateBarCode();
-        $this->getDoctrine()->getManager()->persist($cart);
-        return $cart;
-    }
-
-    private function cleanCart(Cart $cart, $em)
-    {
-       if ($cart->getPaid() && $cart->getConfirmed()) {
-            return $this->createCartForUser($cart->getUser());
-        } else {
-            foreach ($cart->getContracts() as $contract) {
-                $cart->removeContract($contract);
-                $this->getDoctrine()->getManager()->remove($contract);
-            }
-            return $cart;
-        }
-    }
-
-    private function handleCheckout($cfs, $user, EntityManagerInterface $em, Request $request) {
-        /** @var Cart $cart */
-        $cart = null;
-        if ($user != null) {
-            $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-        }
-
-            $cart = $this->createCartForUser($user);
-
-        foreach($cfs as $cf) {
-            /** @var ContractFan $cf */
-            $qty = 0;
-            foreach ($cf->getPurchases() as $purchase) {
-                $pqty = $purchase->getQuantity();
-                if ($pqty == 0 || $pqty == null) {
-                    $cf->removePurchase($purchase);
-                }
-                $qty += $pqty;
-            }
-            if($qty == 0) {
-                if ($cart->hasContract($cf)) {
-                    $cart->removeContract($cf);
-                }
-            }
-            else {
-                if(!$cart->hasContract($cf)) {
-                    $cart->addContract($cf);
-                }
-            }
-        }
-
-        $em->persist($cart);
-        $em->flush();
-        return $cart;
-    }
+	///////////////////////////////////////////////
+    ///Quasi-static pages ////////////////////////
+    ///////////////////////////////////////////////
 
     /**
+	 * Homepage: fetches current festivals and their artists 
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request, UserInterface $user = null)
+    public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $crowdfundings = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+        $crowdfundings = $this->em->getRepository('AppBundle:ContractArtist')->findVisible();
 
         $news = [];
 
@@ -144,6 +63,7 @@ class PublicController extends Controller
     }
 
     /**
+     * About page: purely static
      * @Route("/about", name="about")
      */
     public function aboutAction()
@@ -152,23 +72,27 @@ class PublicController extends Controller
     }
 
     /**
+     * Contact page: fetches information sessions info to display them
+     * The contact form itself is handled by contactFormAction() controller and is submitted using AJAX
      * @Route("/suggestions", name="suggestionBox")
      */
-    public function suggestionBoxAction(EntityManagerInterface $em)
+    public function contactAction()
     {
-        $sessions = $em->getRepository('AppBundle:InformationSession')->findVisible();
+        $sessions = $this->em->getRepository('AppBundle:InformationSession')->findVisible();
         return $this->render('AppBundle:Public:suggestionBox.html.twig', array(
             'sessions' => $sessions,
         ));
     }
 
     /**
+     * Contact form: creates form and, if valid, sends email notifications
      * @Route("/suggestions/post", name="suggestionBox_form")
      */
-    public function suggestionBoxFormAction(Request $request, UserInterface $user = null)
+    public function contactFormAction(Request $request, UserInterface $user = null)
     {
         $suggestionBox = new SuggestionBox();
 
+       	# Some fields will be pre-filled if user is logged in
         if ($user != null) {
             $suggestionBox->setUser($user);
             $form = $this->createForm(UserSuggestionBoxType::class, $suggestionBox, ['attr' => ['class' => 'suggestionBoxForm'], 'action' => $this->generateUrl('suggestionBox_form')]);
@@ -179,18 +103,14 @@ class PublicController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($suggestionBox);
-            $em->flush();
+            $this->em->persist($suggestionBox);
+            $this->em->flush();
 
-            $mailDispatcher = $this->get(MailDispatcher::class);
             if ($suggestionBox->getMailCopy() && !empty($suggestionBox->getEmail())) {
-                $mailDispatcher->sendSuggestionBoxCopy($suggestionBox);
+                $this->mailDispatcher->sendSuggestionBoxCopy($suggestionBox);
             }
 
-            $mailDispatcher->sendAdminContact($suggestionBox);
-            $notifDispatcher = $this->get(NotificationDispatcher::class);
-            $notifDispatcher->notifyAdminContact($suggestionBox);
+            $this->mailDispatcher->sendAdminContact($suggestionBox);
 
             return new Response($this->renderView('AppBundle:Public/Form:suggestionBox_ok.html.twig'));
         }
@@ -200,50 +120,85 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/sales", name="catalog_sales")
+     * VIP Inscription: form to register as member of press
+     * @Route("/presse", name="press")
      */
-    public function salesAction(EntityManagerInterface $em) {
-        $sales = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
+    public function VIPInscriptionAction(Request $request) {
 
-        return $this->render('@App/Public/sales.html.twig', array(
-            'sales' => $sales, 
+        $inscription = new VIPInscription();
+
+        $form = $this->createForm(VIPInscriptionType::class, $inscription);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($inscription);
+            $this->em->flush();
+            $this->addFlash('notice', "Votre demande d'accréditation a bien été enregistrée. Nous vous contacterons sous peu !");
+
+            try {
+                $this->mailDispatcher->sendAdminVIPInscription($inscription);
+                $this->mailDispatcher->sendVIPInscriptionCopy($inscription);
+            } catch(\Exception $e) {
+
+            }
+
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/Public/Temp/vip_inscription.html.twig', array(
+            'form' => $form->createView(),
+            'inscription' => $inscription,
         ));
     }
 
     /**
-     * @Route("/crowdfundings", name="catalog_crowdfundings")
+     * Volunteer Proposal: form to register as volunteer
+     * @Route("/benevoles", name="volunteering")
      */
-    public function artistContractsAction(UserInterface $user = null)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
-        $prevalidation_contracts = $em->getRepository('AppBundle:ContractArtist')->findInPreValidationContracts($user, $this->get('user_roles_manager'));
+    public function VolunteerProposalAction(Request $request) {
 
-        $sales_contracts = $em->getRepository('AppBundle:ContractArtistSales')->findVisible();
+        $inscription = new VolunteerProposal();
 
-        /*$provinces = array_unique(array_map(function(ContractArtist $elem) {
-            return $elem->getFestival();
-        }, $current_contracts));
-*/
-        $genres = array_unique(ArrayHelper::flattenArray(array_map(function(ContractArtist $elem) {
-            return $elem->getGenres();
-        }, $current_contracts)));
+        $form = $this->createForm(VolunteerProposalType::class, $inscription);
 
-        $steps = array_unique(array_map(function(ContractArtist $elem) {
-            return $elem->getStep();
-        }, $current_contracts));
+        $form->handleRequest($request);
 
-        return $this->render('@App/Public/catalog_artist_contracts.html.twig', array(
-            'current_contracts' => $current_contracts,
-            'prevalidation_contracts' => $prevalidation_contracts,
-            'sales_contracts' => $sales_contracts,
-            //'provinces' => $provinces,
-            'genres' => $genres,
-            'steps' => $steps,
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($inscription);
+            $this->em->flush();
+            $this->addFlash('notice', "Votre proposision de bénévolat a bien été enregistrée. Nous vous contacterons sous peu !");
+
+            try {
+                $this->mailDispatcher->sendAdminVolunteerProposal($inscription);
+                $this->mailDispatcher->sendVolunteerProposalCopy($inscription);
+            } catch(\Exception $e) {
+
+            }
+
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@App/Public/Temp/volunteer_proposal.html.twig', array(
+            'form' => $form->createView(),
+            'inscription' => $inscription,
         ));
     }
 
     /**
+     * Passed festivals page: fetches passed (successful AND failed) festivals
+     * @Route("/passed-festivals", name="passed_festivals")
+     */
+    public function passedFestivalsAction() {
+        $contracts = $this->em->getRepository('AppBundle:ContractArtist')->findPassed();
+
+        return $this->render('@App/Public/passed_festivals.html.twig', [
+            'contracts' => $contracts,
+        ]);
+    }
+
+    /**
+     * Festival page with info & tickets: fetches festival info + handles order form
      * @Route("/events/{id}-{slug}", name="artist_contract")
      */
     public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null)
@@ -252,15 +207,13 @@ class PublicController extends Controller
             return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getSlug()]);
         }
 
-        $em = $this->getDoctrine()->getManager();
-
         $cf = new ContractFan($contract);
         $form = $this->createForm(ContractFanType::class, $cf, ['user_rewards' => []]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $cart = $this->handleCheckout([$cf], $user, $em, $request);
+            $cart = $this->handleCheckout([$cf], $user, $request);
 
             return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
         }
@@ -272,81 +225,114 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/sales/{id}-{slug}", name="artist_contract_sales")
+     * Tickets marketplace: lists all available tickets with order form
+     * @Route("/tickets", name="tickets_marketplace")
      */
-    public function artistContractSalesAction(Request $request, UserInterface $user = null, ContractArtistSales $contract, $slug = null)
-    {
-        if ($contract->getArtist()->getSlug() != $slug) {
-            return $this->redirectToRoute('artist_contract_sales', ['id' => $contract->getId(), 'slug' => $contract->getArtist()->getSlug()]);
-        }
+    public function ticketsAction(Request $request, UserInterface $user = null) {
+        $current_contracts = $this->em->getRepository('AppBundle:ContractArtist')->findVisible();
 
-        $em = $this->getDoctrine()->getManager();
+        $cart = new Cart();
 
-        $cf = new ContractFan($contract);
-        $form = $this->createForm(ContractFanType::class, $cf);
+        $cart = $this->populateCart($cart, $current_contracts);
+
+        $form = $this->createForm(CartType::class, $cart);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $cart = $this->handleCheckout($cart->getContracts()->toArray(), $user, $request);
 
-            if ($contract->isUncrowdable()) {
-                $this->addFlash('error', 'errors.sales.uncrowdable'); // TODO
-            } elseif ($cf->getCounterPartsQuantityOrganic() > $contract->getTotalNbAvailable()) {
-                $this->addFlash('error', 'errors.order_max');
-            } else {
-                /** @var Cart $cart */
-                if ($user != null) {
-                    $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
-                }
-
-                if (!isset($cart) || $cart == null) {
-                    $cart = $this->createCartForUser($user);
-                } else {
-                    $cart = $this->cleanCart($cart, $em);
-                }
-
-                foreach ($cf->getPurchases() as $purchase) {
-                    if ($purchase->getQuantity() == 0) {
-                        $cf->removePurchase($purchase);
-                    }
-                }
-                $cart->addContract($cf);
-
-                $em->flush();
-                $request->getSession()->set('cart_id', $cart->getId());
-                return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
-            }
+            return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
         }
 
-        return $this->render('@App/Public/artist_contract_sales.html.twig', array(
-            'contract' => $contract,
+        return $this->render('@App/Public/tickets.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+	
+    /**
+     * Artists catalog: lists all artists with filtering possibilities (by genre/province/...)
+     * @Route("/artists", name="catalog_artists")
+     */
+    public function artistsAction(Request $request, UserInterface $user = null)
+    {
+        $artists = $this->em->getRepository('AppBundle:Artist')->findVisible();
+        $genres = $this->em->getRepository('AppBundle:Genre')->findAll();
+        $provinces = $this->em->getRepository('AppBundle:Province')->findAll();
+
+        if ($user != null && count($user->getGenres()) > 0) {
+            usort($artists, function (Artist $a, Artist $b) use ($user) {
+                if ($a->getScore($user) == $b->getScore($user))
+                    return 0;
+                if ($a->getScore($user) > $b->getScore($user))
+                    return 1;
+                return -1;
+            });
+        }
+
+        return $this->render('@App/Public/catalog_artists.html.twig', array(
+            'artists' => $artists,
+            'genres' => $genres,
+            'provinces' => $provinces,
+            'affiche_checked' => $request->get('affiche', false),
         ));
     }
 
     /**
+     * Artist profile: fetches artist info & his potential current festivals
+     * @Route("/artists/{id}-{slug}", name="artist_profile")
+     */
+    public function artistProfileAction(Artist $artist, $slug = null)
+    {
+        $current_sales = $this->em->getRepository('AppBundle:ContractArtistSales')->findCurrentsForArtist($artist);
+
+        if ($slug !== null && $slug != $artist->getSlug()) {
+            return $this->redirectToRoute('artist_profile', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
+        }
+
+        return $this->render('@App/Public/artist_profile.html.twig', array(
+            'artist' => $artist,
+            'current_sales' => $current_sales,
+        ));
+    }
+
+
+	///////////////////////////////////////////////
+    ///Checkout related pages//////////////////////
+    ///////////////////////////////////////////////
+
+    /**
+     * Checkout: displays checkout page, and checks if access to this page is allowed in current conditions, + allows user to sign up or log in
+     * Actual checkout & payment are triggered through Stripe's JavaScript and detailed in PaymentController
+     *
      * @Route("/checkout/{cart_code}", name="checkout")
      */
     public function checkoutAction(Request $request, UserInterface $user = null, RewardSpendingService $rewardSpendingService, $cart_code)
     {
-        $em = $this->getDoctrine()->getManager();
         /** @var $cart Cart */
-        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
+        $cart = $this->em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
 
+        # No cart corresponding to request
         if ($cart == null) {
             $this->addFlash('error', 'errors.order_changed');
             return $this->redirectToRoute('tickets_marketplace');
         }
 
+        # Cart not to be processed anymore
         if($cart->getFinalized() || $cart->getConfirmed() || $cart->getPaid()) {
             throw $this->createNotFoundException();
         }
 
+        # First, only keep relevant items in cart
         foreach($cart->getContracts() as $contract) {
-            $em->persist($contract);
+            $this->em->persist($contract);
             $rewardSpendingService->setBaseAmount($contract);
             foreach($contract->getPurchases() as $purchase) {
                 if($purchase->getAmount() == 0) {
                     $contract->removePurchase($purchase);
+                }
+                else {
+                    $purchase->calculatePromotions();
                 }
             }
 
@@ -355,38 +341,36 @@ class PublicController extends Controller
             }
         }
 
-        if ($cart->getAmount() == 0) {
-            // $this->addFlash('error', 'errors.order_changed');
-            // return $this->redirectToRoute('tickets_marketplace');
-        }
-        // When user logs in at this point, we could find another cart already related to him
-        // -> that potential cart must be removed from DB as we should only use the $cart instance
+        # When user logs in at this point, we could find another cart already related to him
+        # -> that potential cart must be removed from DB as we should only use the $cart instance
         if ($user != null) {
-            $other_potential_cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
+            $other_potential_cart = $this->em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
             if ($other_potential_cart != null && $other_potential_cart->getId() != $cart->getId()) {
-                $em->remove($other_potential_cart);
+                $this->em->remove($other_potential_cart);
             }
         }
 
         if($user != null) {
-            ##reward consume
-
+            # Reward consumption
             foreach($cart->getContracts() as $cf) {
                 $cf->setUserRewards(new arrayCollection($rewardSpendingService->getApplicableReward($cf)));
                 $rewardSpendingService->applyReward($cf);
             }
 
             $cart->setUser($user);
-            $em->persist($cart);
+            $this->em->persist($cart);
             
         }
 
-        $em->flush();
+        $this->em->flush();
         
         $form_view = null;
-
-        // Registration form
+        
+        /**
+        	Registration form
+         	@see FOSUserBundle 
+         */ 
         if (!$user) {
             /** @var $formFactory FactoryInterface */
             $formFactory = $this->get('fos_user.registration.form.factory');
@@ -449,295 +433,5 @@ class PublicController extends Controller
             'error_conditions' => false,
             'form' => $form_view,
         ));
-    }
-
-
-    /**
-     * @Route("/artists", name="catalog_artists")
-     */
-    public function artistsAction(Request $request, UserInterface $user = null)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $artists = $em->getRepository('AppBundle:Artist')->findVisible();
-        $genres = $em->getRepository('AppBundle:Genre')->findAll();
-        $provinces = $em->getRepository('AppBundle:Province')->findAll();
-
-        if ($user != null && count($user->getGenres()) > 0) {
-            usort($artists, function (Artist $a, Artist $b) use ($user) {
-                if ($a->getScore($user) == $b->getScore($user))
-                    return 0;
-                if ($a->getScore($user) > $b->getScore($user))
-                    return 1;
-                return -1;
-            });
-        }
-
-        return $this->render('@App/Public/catalog_artists.html.twig', array(
-            'artists' => $artists,
-            'genres' => $genres,
-            'provinces' => $provinces,
-            'affiche_checked' => $request->get('affiche', false),
-        ));
-    }
-
-    /**
-     * @Route("/artists/{id}-{slug}", name="artist_profile")
-     */
-    public function artistProfileAction(Request $request, UserInterface $user = null, Artist $artist, $slug = null, EntityManagerInterface $em)
-    {
-        $current_sales = $em->getRepository('AppBundle:ContractArtistSales')->findCurrentsForArtist($artist);
-
-        if ($slug !== null && $slug != $artist->getSlug()) {
-            return $this->redirectToRoute('artist_profile', ['id' => $artist->getId(), 'slug' => $artist->getSlug()]);
-        }
-
-        return $this->render('@App/Public/artist_profile.html.twig', array(
-            'artist' => $artist,
-            'current_sales' => $current_sales,
-        ));
-    }
-
-    /**
-     * @Route("/validate-ownership-{id}/{code}", name="artist_validate_ownership")
-     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
-     */
-    public function validateOwnershipAction(Request $request, UserInterface $user = null, Artist $artist, $code, TranslatorInterface $translator)
-    {
-
-        $em = $this->getDoctrine()->getManager();
-        $req = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findOneBy(['code' => $code]);
-
-        if ($req == null) {
-            throw $this->createNotFoundException('There is no request with such code');
-        }
-
-        if ($req->getAccepted() || $req->getRefused()) {
-            throw $this->createAccessDeniedException('Request is already accepted or refused');
-        }
-
-        $mailUser = $em->getRepository('AppBundle:User')->findOneBy(['email' => $req->getEmail()]);
-        if ($user != null) {
-            // Manually log out if another user is logged in, then redirect to here
-            // see https://stackoverflow.com/questions/28827418/log-user-out-in-symfony-2-application-when-remember-me-is-enabled/28828377#28828377
-            if ($mailUser == null || $mailUser->getId() != $user->getId()) {
-                // Logging user out.
-                $this->get('security.token_storage')->setToken(null);
-
-                // Invalidating the session.
-                $session = $request->getSession();
-                $session->invalidate();
-
-                // Redirecting user to login page in the end.
-                $response = $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
-
-                // Clearing the cookies.
-                $cookieNames = [
-                    $this->container->getParameter('session.name'),
-                    $this->container->getParameter('session.remember_me.name'),
-                ];
-                foreach ($cookieNames as $cookieName) {
-                    $response->headers->clearCookie($cookieName);
-                }
-
-                return $response;
-            }
-        }
-
-        $form = $this->createFormBuilder()
-            ->add('accept', SubmitType::class, array(
-                'attr' => ['class' => 'btn btn-primary'],
-                'label' => 'labels.ownershiprequest.accept',
-            ))
-            ->add('refuse', SubmitType::class, array(
-                'attr' => ['class' => 'btn btn-secondary'],
-                'label' => 'labels.ownershiprequest.refuse',
-            ))
-            ->getForm();
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && !$req->getCancelled()) {
-            if ($form->get('accept')->isClicked()) {
-                $req->setAccepted(true);
-
-                $artist_user = new Artist_User();
-                $artist_user
-                    ->setArtist($artist)
-                    ->setUser($user);
-                $em->persist($artist_user);
-                $em->flush();
-                $this->addFlash('notice', $translator->trans('notices.artist_ownership_request_accepted', ['%artist%' => $artist->getArtistname()]));
-            } elseif ($form->get('refuse')->isClicked()) {
-                $req->setRefused(true);
-                $em->flush();
-                $this->addFlash('notice', 'notices.artist_ownership_request_refused');
-            }
-
-            return $this->redirectToRoute('homepage');
-        }
-        return $this->render('@App/User/Artist/validate_ownership.html.twig', array(
-            'form' => $form->createView(),
-            'request' => $req,
-        ));
-    }
-
-    /**
-     * @Route("/change-email-token-{token}", name="user_change_email_check")
-     */
-    public function changeEmailCheckAction(Request $request, UserInterface $current_user = null, $token)
-    {
-
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')->findOneBy(['asked_email_token' => $token]);
-
-        if (!$user) {
-            $this->addFlash('error', 'errors.change_email_token_expired');
-            return $this->redirectToRoute('homepage');
-        }
-
-        $asked_email = $user->getAskedEmail();
-
-        $error_detector = $em->getRepository('AppBundle:User')->findOneBy(['email' => $asked_email]);
-        if ($error_detector != null) {
-            $this->addFlash('error', 'errors.change_email_used_since');
-            return $this->redirectToRoute('homepage');
-        }
-
-        // Everything ok -> let's change email
-        $user->setEmail($asked_email);
-        $user->setEmailCanonical($asked_email);
-
-        $user->setAskedEmail(null);
-        $user->setAskedEmailToken(null);
-
-        // Logout (in case another user was logged in)
-        if ($current_user != null && $current_user->getId() != $user->getId()) {
-            $this->get('security.token_storage')->setToken(null);
-
-            // Invalidating the session.
-            $session = $request->getSession();
-            $session->invalidate();
-
-            $this->addFlash('notice', 'notices.change_email_logged_out');
-        } else {
-            $this->addFlash('notice', 'notices.change_email');
-        }
-
-        $em->persist($user);
-        $em->flush();
-
-        return $this->redirectToRoute('homepage');
-    }
-
-    /**
-     * @Route("/proposition", name="proposition")
-     */
-    public function propositionAction(Request $request, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher)
-    {
-        $propositionContractArtist = new PropositionContractArtist();
-        $form = $this->createForm(PropositionContractArtistType::class, $propositionContractArtist);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($propositionContractArtist);
-            $em->flush();
-
-            try {
-                $mailDispatcher->sendAdminProposition($propositionContractArtist);
-                $notificationDispatcher->notifyAdminProposition($propositionContractArtist);
-            } catch (\Exception $e) {
-
-            }
-            $this->addFlash('notice', 'notices.proposition');
-            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
-        }
-        return $this->render('AppBundle:Public:proposition.html.twig', array(
-            'form' => $form->createView(),
-        ));
-    }
-
-    /**
-     * @Route("/sponsorship-link-token-{token}", name="sponsorship_link")
-     */
-    public function sponsorshipLinkAction(Request $request, UserInterface $current_user = null, LoggerInterface $logger, TranslatorInterface $translator, TokenStorageInterface $tokenStorage)
-    {
-        try {
-            if ($current_user != null) {
-                $tokenStorage->setToken(null);
-                $session = $request->getSession();
-                $session->invalidate();
-
-                $cookieNames = [
-                    $this->getParameter('session.name'),
-                    $this->getParameter('session.remember_me.name'),
-                ];
-            }
-            $em = $this->getDoctrine()->getManager();
-            $token = $request->get('token');
-            $sponsorship = $em->getRepository('AppBundle:SponsorshipInvitation')->getSponsorshipInvitationByToken($token);
-            if ($sponsorship == null) {
-                $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
-                return $this->redirectToRoute('homepage');
-            } else {
-                $em->persist($sponsorship);
-                $sponsorship->setLastDateAcceptation(new \DateTime());
-
-                $response = new RedirectResponse($this->generateUrl('sponsorship_link_valid', array("id" => $sponsorship->getContractArtist()->getId())));
-
-                if (isset($cookieNames)) {
-                    foreach ($cookieNames as $cookieName) {
-                        $response->headers->clearCookie($cookieName);
-                    }
-                }
-                return $response;
-            }
-
-        } catch (\Throwable $th) {
-            $this->addFlash('error', $translator->trans('notices.sponsorship.link.error', []));
-            return $this->redirectToRoute('homepage');
-        }
-    }
-
-    /** @Route("/on-sponsorship-link-valid-{id}", name="sponsorship_link_valid") */
-    public function onSponsorshipLinkValidAction(TranslatorInterface $translator, $id) {
-        $this->addFlash('notice', $translator->trans('notices.sponsorship.link.success', []));
-        return $this->redirectToRoute('artist_contract', array("id" => $id));
-
-    }
-
-    private function populateCart(Cart $cart, $artistContracts) {
-        foreach($artistContracts as $artistContract) {
-            $fanContract = new ContractFan($artistContract);
-            $cart->addContract($fanContract);
-        }
-        return $cart;
-    }
-
-    /**
-     * @Route("/tickets", name="tickets_marketplace")
-     */
-    public function ticketsAction(Request $request, EntityManagerInterface $em, UserInterface $user = null) {
-        $current_contracts = $em->getRepository('AppBundle:ContractArtist')->findVisible();
-
-        $cart = new Cart();
-
-        $cart = $this->populateCart($cart, $current_contracts);
-
-        $form = $this->createForm(CartType::class, $cart);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $cart = $this->handleCheckout($cart->getContracts()->toArray(), $user, $em, $request);
-
-            return $this->redirectToRoute('checkout', ['cart_code' => $cart->getBarcodeText()]);
-        }
-
-        return $this->render('@App/Public/tickets.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
 }

@@ -11,12 +11,6 @@
                 <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">{{ 'my_artists.new_artist'|trans|raw }}</a>
             </div>
 
-            {% if not available_artist and artists is not empty %}
-                <p class="p-info mt-3">
-                    {{ 'my_artists.no_available_artist'|trans|raw }}
-                </p>
-            {% endif %}
-
             {% if artists is not empty %}
                 <div class="row">
                     {% for artist in artists %}

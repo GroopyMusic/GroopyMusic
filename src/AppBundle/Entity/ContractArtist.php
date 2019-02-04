@@ -510,6 +510,26 @@ class ContractArtist extends BaseContractArtist
        return $this->purchases;
     }
 
+    public function getArtistScore(Artist $artist) {
+        if(!in_array($artist, $this->getAllArtists())) {
+            return 0;
+        }
+        $this->calculateScores();
+        if($this->totalScores == 0) {
+            return 0;
+        }
+
+        return ceil($this->scoresList[$artist->getId()]);
+    }
+
+    public function getNoArtistScore() {
+        $this->calculateScores();
+        if($this->totalScores == 0) {
+            return 0;
+        }
+        return ceil($this->scoresList['all']);
+    }
+
     public function getArtistPercentage(Artist $artist) {
         if(!in_array($artist, $this->getAllArtists())) {
             return 0;

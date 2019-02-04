@@ -20,9 +20,15 @@
         {% endstylesheets %}
     {% endblock %}
 
-    <link rel="icon" type="image/png" href="{{ yb_asset('yb/favicon.png') }}" />
-    <link rel="icon" type="image/x-icon" href="{{ yb_asset('yb/favicon.ico') }}" />
-</head>
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ yb_asset('images/favicon/apple-touch-icon.png') }}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ yb_asset('images/favicon/favicon-flat-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ yb_asset('images/favicon/favicon-flat-16x16.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ yb_asset('images/favicon/favicon-flat.ico') }}">
+	<link rel="manifest" href="{{ yb_asset('images/favicon/site.webmanifest') }}">
+	<link rel="mask-icon" href="{{ yb_asset('images/favicon/safari-pinned-tab.svg') }}" color="#df790e">
+	<meta name="apple-mobile-web-app-title" content="Ticked-it!">
+	<meta name="application-name" content="Ticked-it!">
+	<meta name="msapplication-TileColor" content="#da532c">
 <body>
 {% if app.environment == 'prod' %}
     <!-- Google Tag Manager (noscript) -->
@@ -44,9 +50,11 @@
 
 {% block nav %}
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top {% block navbar_additional_classes %}{% endblock %}" id="mainNav">
         <div class="container">
-            <a class="navbar-brand js-scroll-trigger font-weight-bold" href="{{ path('yb_index') ~ "#home"}}">Ticked-it!</a>
+            <a class="navbar-brand js-scroll-trigger font-weight-bold" href="{{ path('yb_index') ~ "#home"}}">
+                <img src="{{ yb_asset('images/logo.svg') }}" alt="Ticked-it!" class="img-fluid">
+            </a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa fa-bars"></i>
             </button>
@@ -74,41 +82,22 @@
 {% endblock %}
 
 <main id="main" {% block main_attributes %}{% endblock %}>
-    {% set error_bag = app.request.session.flashbag.get('error') %}
-
-    {% if error_bag is not empty
-    or ((errors is defined and errors|length > 0) or (form is defined and form is not null and not form.vars.valid))%}
-
-        <div class="container">
+    {% block error_modals %}
+        {% set error_bag = app.request.session.flashbag.get('error') %}
+        {% if error_bag is not empty %}
             {% for message in error_bag %}
-                {{ error(message)|raw }}
-            {% endfor%}
-
-            {% spaceless %}
-                {% if (errors is defined and errors|length > 0) or ((form is defined and form is not null and not form.vars.valid) or (form1 is defined and form1 is not null and not form1.vars.valid) or (form2 is defined and form2 is not null and not form2.vars.valid)) %}
-                    <div id="errors" class="my-3">
-                        {% if (form is defined and form is not null and not form.vars.valid) %}
-                            {{ form_errors(form) }}
-                        {% endif %}
-                        {% if (form1 is defined and form1 is not null and not form1.vars.valid) %}
-                            {{ form_errors(form1) }}
-                        {% endif %}
-                        {% if (form2 is defined and form2 is not null and not form2.vars.valid) %}
-                            {{ form_errors(form2) }}
-                        {% endif %}
-
-                        {% if errors is defined and errors|length > 0 %}
-                            <ul>
-                                {% for error in errors %}
-                                    <li class="error">{{ error }}</li><br/>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            {% endspaceless %}
-        </div>
-    {% endif %}
+                {{ yb_error(message)|raw }}
+            {% endfor %}
+        {% endif %}
+        {% if (form is defined and form is not null and not form.vars.valid) %}
+            {{ yb_error('<p>'~ 'error.form_error'|trans ~ '</p>' ~ form_errors(form))|raw }}
+        {% endif %}
+        {% if (errors is defined and errors|length > 0) %}
+            {% for error in errors %}
+                {{ yb_error(error)|raw }}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
     {% block notices %}
         {% set notice_bag = app.request.session.flashbag.get('yb_notice') %}
         {% if notice_bag is not empty %}
