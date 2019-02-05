@@ -1,0 +1,24 @@
+{# src/XBundle/Resources/views/User/Profile/myprojects.html.twig #}
+
+{% extends "XBundle::layout.html.twig" %}
+
+{% block x_body %}
+
+<h2 style = "text-align:center; padding-top: 1%">Mes projets</h2>
+  
+{% for project in listProjects %}
+  
+<ul class="list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+  {{ project.name }}
+    <button type = "button" class="btn btn-primary">Modifier</button>
+  </li>
+  
+{% endfor %}
+
+</ul>
+
+<a href = "{{ path('x_projects_add') }}" class = "btn btn-success" role="button" aria-pressed = "true" style = "margin-top: 2%; width: 50%"> Ajouter un projet </a>
+
+{% endblock %}
+

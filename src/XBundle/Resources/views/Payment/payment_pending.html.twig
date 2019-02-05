@@ -1,0 +1,99 @@
+{# src/XBundle/Resources/views/Payment/payment.html.twig #}
+
+{% extends "XBundle::layout.html.twig" %}
+
+{% block title %}
+  Accueil - {{ parent() }}
+ {% endblock %}
+{% block head %}
+{{ parent() }}
+
+{% endblock %}
+{% block body %}
+    <div class="container py-3">
+        <h3>{{ 'threeds.title'|trans|raw }}</h3>
+
+        <form method="post" action="{{ path('yb_checkout', {'code': cart.barcodeText}) }}" id="payment-form">
+        </form>
+
+        <div class="stripe-error alert alert-danger" role="alert"></div>
+        <div id="stripe-loader">
+            {{ hidden_loader(false, false) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        hideError();
+        var $loader = $('#stripe-loader .loader');
+        var $loaderexplanation = $('#stripe-loader .loader-explanation');
+        var amount = 100;
+        var stripe = Stripe('{{ stripe_api_public }}');
+        var elements = stripe.elements();
+        // set publishable key for V2
+        Stripe.setPublishableKey('{{ stripe_api_public }}');
+        Stripe.source.poll(
+            '{{ source }}',
+            '{{ client_secret }}',
+            onChargeable3DS);
+        displayLoader("{{ 'threeds.pending_stripe'|trans|raw }}");
+        function onChargeable3DS(status, source) {
+            if (source.status == 'chargeable') {
+                stripeTokenHandler(source);
+            }
+            else if (source.status == 'failed') {
+                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('x_projects_home')})|raw }}");
+            }
+            /*else if (source.status != 'pending') {
+                displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+             }*/
+        }
+        function displayLoader(html) {
+            $loader.show();
+            $('form').hide();
+            hideError();
+            if(html) {
+                $loaderexplanation.html(html);
+                $loaderexplanation.show();
+            }
+            else {
+                $loaderexplanation.hide();
+            }
+        }
+        function displayError(html) {
+            $('.stripe-error').html(html);
+            $('.stripe-error').show();
+            $loader.hide();
+            $loaderexplanation.hide();
+        }
+        function hideError() {
+            $('.stripe-error').hide();
+        }
+        function stripeTokenHandler(source) {
+            $('#payment-intro').hide();
+            displayLoader("{{ 'threeds.pending'|trans|raw }}");
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeSource');
+            hiddenInput.setAttribute('value', source.id);
+            var hiddenInput3 = document.createElement('input');
+            hiddenInput3.setAttribute('type', 'hidden');
+            hiddenInput3.setAttribute('name', 'amount');
+            hiddenInput3.setAttribute('value', '' + amount);
+            var hiddenInput4 = document.createElement('input');
+            hiddenInput4.setAttribute('type', 'hidden');
+            hiddenInput4.setAttribute('name', 'accept_conditions');
+            hiddenInput4.setAttribute('value', 'true');
+            form.appendChild(hiddenInput);
+            form.appendChild(hiddenInput3);
+            form.appendChild(hiddenInput4);
+            // Submit the form
+            form.submit();
+        }
+    </script>
+{% endblock %}

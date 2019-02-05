@@ -3,12 +3,14 @@
 namespace XBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Projects
  *
  * @ORM\Table(name="projects")
  * @ORM\Entity(repositoryClass="XBundle\Repository\ProjectsRepository")
+ * @Vich\Uploadable
  */
 class Projects
 {
@@ -36,7 +38,7 @@ class Projects
     private $description;
 
     /**
-     * @ORM\OneToOne(targetEntity="\AppBundle\Entity\Photo", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="\XBundle\Entity\Image", cascade={"persist"})
      */
     private $photo;
 

@@ -31,6 +31,10 @@ class ProjectsController extends Controller
   }
   public function viewAction($id)
   {
+	  $project = $this->getDoctrine()->getManager()->getRepository('XBundle:Projects')->find($id);
+	  
+	  return $this->render('XBundle:Projects:view.html.twig', array(
+	    'project' => $project ));
     
   }
   public function addAction(Request $request)

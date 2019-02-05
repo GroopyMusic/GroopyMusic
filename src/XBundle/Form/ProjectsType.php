@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use AppBundle\Form\PhotoType;
+use XBundle\Form\ImageType;
 
 class ProjectsType extends AbstractType
 {
@@ -20,7 +20,7 @@ class ProjectsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name',	TextType::class)->add('description', 	TextType::class)->add('artistName', 	TextType::class)->add('fund', 	IntegerType::class)->add('photo', 	PhotoType::class)->add('submit', 	SubmitType::class);
+        $builder->add('name',	TextType::class)->add('description', 	TextType::class)->add('artistName', 	TextType::class)->add('fund', 	IntegerType::class)->add('photo', 	ImageType::class)->add('submit', 	SubmitType::class);
     }/**
      * {@inheritdoc}
      */

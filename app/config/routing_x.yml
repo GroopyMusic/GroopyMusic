@@ -1,7 +1,15 @@
 x_payment:
-    path:  /payment
+    path:  /payment/
     defaults:
         _controller: XBundle:Payment:payment
+
+x_projects_view:
+    path:   /projects/{id}
+    defaults:
+        _controller: XBundle:Projects:view
+        
+    requirements:
+        id: \d+
         
 x_projects_add:
     path:   /projects/add
@@ -27,5 +35,19 @@ x_projects_edit:
         
     requirements:
         id: \d+
+        
+x_user_viewProjects:
+    path:   /mes-projets
+    defaults:
+        _controller: XBundle:User:viewProjects
 
+x_ajax_post_order:
+    path:   /api/submit-order-coordinates
+    defaults:
+        _controller: XBundle:Payment:orderAjax
+        
+x_cart_payment_pending:
+    path:   /payment/pending
+    defaults:
+        _controller: XBundle:Payment:paymentPending
     

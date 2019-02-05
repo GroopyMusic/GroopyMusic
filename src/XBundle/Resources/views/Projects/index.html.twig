@@ -7,21 +7,31 @@
 {% endblock %}
 
 {% block x_body %}
+<style>
+a.custom-card,
+a.custom-card:hover {
+  color: inherit;
+}
+</style>
   <div class="container-fluid" style = "padding-top: 5%; width : 100%; margin-left : 10%">
   <div class="row">
   {% for project in listProjects %}
   <div class="col-sm-3">
-    <div class="card">
-      <div class="card-body">
+    <a href = " {{ path('x_projects_view', { 'id' : project.id}) }} " class="custom-card">
+      <div class="card" style="width: 15rem; display: inline-block">
+	  <img class ="card-img-top" src = "{{ asset(project.photo.webPath(project.photo)) }}"/>
+	  <div class = "card-body">
         <h5 class="card-title">{{ project.name }}</h5>
         <p class="card-text">{{ project.description }}</p>
-		<img class ="card-img-top" />
-		<div class="progress" style = "margin-bottom : 4%">
+		
+		<div class="progress" style = "margin-bottom : 4%; margin-top:2em;">
 		<div class="progress-bar bg-success" role="progressbar" style="width: {{ project.fund }}%;" aria-valuenow="{{ project.fund }}" aria-valuemin="0" aria-valuemax="100">{{ project.fund }}/100€</div>
 		</div>
         <a href="{{ path('x_payment') }}" class="btn btn-primary">Soutenez-le</a>
       </div>
-    </div>
+	  </div>
+    </a>
+
   </div>
   {% if loop.index is divisible by(3) %}
   </div><div class = "row" style = "margin-top : 3em" >
@@ -30,6 +40,7 @@
   <p> Pas (encore!) de projets </p>
   {% endfor %}
   </div>
+  
   </div>
 
 {% endblock %}

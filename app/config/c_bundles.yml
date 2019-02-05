@@ -67,6 +67,15 @@ vich_uploader:
           inject_on_load: true
           namer:
             service: AppBundle\Services\UniqIdNamer
+            
+      x_projects_images:
+          uri_prefix:         x/images/projects
+          upload_destination: '%kernel.root_dir%/../web/x/images/projects'
+          delete_on_update: true
+          delete_on_remove: true
+          inject_on_load: true
+          namer:
+            service: AppBundle\Services\UniqIdNamer
 
 jmose_command_scheduler:
     log_path: '%kernel.root_dir%/../var/logs/commands/'
