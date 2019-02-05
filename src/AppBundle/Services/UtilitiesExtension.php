@@ -49,6 +49,7 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('fancy_date', array($this, 'fancy_date', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('yb_asset', array($this, 'yb_asset', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('base64', array($this, 'base64')),
+            new \Twig_SimpleFunction('yb_error', array($this, 'yb_error', array('is_safe' => array('html'))))
         );
     }
 
@@ -146,9 +147,10 @@ class UtilitiesExtension extends \Twig_Extension
         return $this->stringHelper->slugify($str);
     }
 
-    public function fancy_date($date) {
+    public function fancy_date($date, $strip_year = false) {
         return $this->twig->render(':patterns/utils:fancy_date.html.twig', array(
             'date' => $date,
+            'strip_year' => $strip_year,
         ));
     }
 
@@ -162,4 +164,9 @@ class UtilitiesExtension extends \Twig_Extension
         return ImageHelper::base64($url);
     }
 
+    public function yb_error($message) {
+        return $this->twig->render(':patterns/utils:yb_error.html.twig', array(
+            'message' => $message,
+        ));
+    }
 }

@@ -45,8 +45,8 @@
                 <td width="{{ shadowWidth }}">&nbsp;</td>
                 <td class="contentWidth" width="{{ contentWidth }}" bgcolor="{{ contentBackgroundColor }}" style="padding: 20px; text-align: center;">
                     {% block logo %}
-                        <a href="{{ url('yb_index') }}" target="_blank" style="color: #607D8B; font-size: 72px; font-weight: bold; text-decoration: none; text-align:center;">
-                            Ticked-it!
+                        <a href="{{ url('yb_index') }}" target="_blank" style="color: #E36437; font-size: 72px; font-weight: bold; text-decoration: none; text-align:center;">
+                            <img src="{{ absolute_url(asset('yb/images/logo/logo.png')) }}" alt="Ticked-it!" height="70" />
                         </a>
                     {% endblock %}{# end block logo #}
                 </td>
@@ -58,7 +58,7 @@
         <td class="contentWidth" width="{{ contentWidth }}" bgcolor="white"  style="padding:10px 20px 20px 20px; border-top: 1px solid #EEEEEE;">
             <a name="top" ></a>
 
-            <h2 style="color: #607D8B; tex-align:center;">{{ subject }}</h2>
+            <h2 style="color: #E36437; text-align:center; text-transform: uppercase;">{{ subject }}</h2>
 
             {% block content %}
                 {% block contentHead %}
@@ -91,7 +91,7 @@
         </td>
         {{ rightShadow}}
         {{ leftShadow}}
-        <td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#607D8B" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
+        <td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#E36437" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
             {% block footerInfoText %}
                 <p style="color:white;">
                     {{ 'add_to_contacts'|trans({'%address%': '<a href="mailto:'~sendMailAccountName~'&lt;'~sendMailAccountAddress~'&gt;" style="color:white;">'~sendMailAccountAddress~'</a>'})|raw }}

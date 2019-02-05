@@ -6,7 +6,7 @@
 
 ### Rejoindre le Slack du projet
 
-Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponnible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
+Pour communiquer facilement et efficacement au sein du projet nous utiliserons Slack. L'espace de communication est disponible [ici](https://un-mute.slack.com/). Une demande d'ajout peut être envoyée à gonzyer@gmail.com
 
 ### GitHub
 
@@ -28,6 +28,20 @@ Et voici quelques étapes pour le workflow à adopter :
   - pusher la branche sur github : `git push origin NOM_DE_LA_BRANCHE`
 
 
+### Créer l'arborescence
+Il se peut que vous deviez créer des dossiers dans lesquels seront stockés vos fichiers créés localement (PDF des tickets, commandes ou autres, par exemple). 
+Voici les dossiers à créer :
+- web/pdf/orders/festivals/
+- web/pdf/tickets/
+- web/pdf/phtickets/
+- web/pdf/viptickets/
+- web/uploads/artist_gallery/
+- web/uploads/hall_gallery/
+- web/uploads/hall_technicalspecs/
+- web/images/festivals/
+- web/yb/images/campaigns/
+- web/yb/tickets/
+
 ### Installer les dépendances avec Composer
 
 Nous utilisons Composer pour gérer les dépendances *third-party* du projet. Il faut avant toutes choses l’installer : <https://getcomposer.org/download/>
@@ -45,6 +59,7 @@ Pour mettre à jour Composer, exécuter
 
 Le fichier `app/config/parameters.yml` n’est pas partagé parce qu’il contient des données « secrètes ».
 Lorsque vous rejoignez le projet, Gonzague vous enverra la version de ce fichier qui correspondra à votre environnement local.
+S'il vous manque un paramètre après une mise-à-jour, demandez également à Gonzague.
 
 ### Mettre en place la base de données
 

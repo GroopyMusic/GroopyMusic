@@ -5,7 +5,9 @@ namespace AppBundle\Form;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\Genre;
+use AppBundle\Entity\InformationSession;
 use AppBundle\Entity\Province;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -126,6 +128,18 @@ class ArtistType extends AbstractType
             ))
         ;
         if(!$options['edit']) {
+            if($options['iss']) {
+                $builder->add('informationSession', EntityType::class, array(
+                    'required' => true,
+                    'label' => 'Session d\'information',
+                    'class' => InformationSession::class,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->queryBuilderVisible();
+                    },
+                    'choice_label' => 'nameWithDate' ,
+                ))
+                ;
+            }
             $builder->add('accept_conditions', CheckboxType::class, array(
                 'required' => true,
                 'label' => 'labels.artist.accept_conditions',
@@ -141,6 +155,7 @@ class ArtistType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => Artist::class,
             'edit' => false,
+            'iss' => false,
         ));
     }
 

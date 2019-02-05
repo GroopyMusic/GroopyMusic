@@ -6,6 +6,7 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\Topping;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\RewardSpendingService;
@@ -28,22 +29,13 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
-class PaymentController extends Controller
+class PaymentController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @Route("/cart/payment", name="user_cart_payment_stripe")
      */
-    public function cartAction(Request $request, UserInterface $user, RewardSpendingService $rewardSpendingService, SponsorshipService $sponsorshipService, LoggerInterface $logger)
+    public function cartAction(Request $request, UserInterface $user)
     {
-        // $kernel = $this->get('kernel');
-
         $em = $this->getDoctrine()->getManager();
         $cart = $em->getRepository('AppBundle:Cart')->findCurrentForUser($user);
 
@@ -98,6 +90,7 @@ class PaymentController extends Controller
                     /** @var ContractFan $contract
                      * @var ContractArtist $contract_artist */
                     $contract->calculatePromotions();
+
                     $contract_artist = $contract->getContractArtist();
 
                     $contract_artist->addAmount($contract->getAmount());

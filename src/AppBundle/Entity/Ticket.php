@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Gonzague
- * Date: 30-11-17
- * Time: 15:51
- */
 
 namespace AppBundle\Entity;
 
@@ -23,14 +17,14 @@ class Ticket
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;
-        $this->price = $price;
+        $this->setPrice($price);
         $this->validated = false;
         $this->rewards = new ArrayCollection();
 
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
-            $this->name = $cf->getPhysicalPerson()->getDisplayName();
+            $this->name = $cf->getDisplayName();
         } else {
             $this->barcode_text = $this->generateBarCode($num);
             $this->contractArtist = $contractArtist;
@@ -224,6 +218,9 @@ class Ticket
      */
     public function setPrice($price)
     {
+        if($price == null) {
+            $price = 0;
+        }
         $this->price = $price;
 
         return $this;

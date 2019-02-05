@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('yb.reminders.buyers.upcoming_event', {
+        '%event%': campaign.getTitle,
+        '%date%': campaign.getDateEvent|fancy_date
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include '@App/Mail/YB/Reminders/buyers_upcoming_event.html.twig' %}
+{% endblock %}

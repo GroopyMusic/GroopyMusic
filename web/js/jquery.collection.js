@@ -73,7 +73,7 @@
             prefix: 'collection',
             prototype_name: '__name__',
             name_prefix: null,
-            elements_selector: '> div',
+            elements_selector: '> div, > fieldset',
             elements_parent_selector: '%id%',
             children: null,
             init_with_n_elements: 0,
@@ -89,6 +89,7 @@
                 return true;
             },
             custom_add_location: false,
+            action_container_tag: 'div',
             fade_in: true,
             fade_out: true,
             position_field_selector: null,
@@ -363,7 +364,7 @@
                     var element = elements.length > 0 ? elements.last() : undefined;
                     var index = elements.length - 1;
                     elements = doAdd(container, button, collection, settings, elements, element, index, false);
-                    if(secure > settings.init_with_n_elements) {
+                    if (secure > settings.init_with_n_elements) {
                         console.error('Infinite loop, element selector (' + settings.elements_selector + ') not found !');
                         break;
                     }
@@ -384,7 +385,8 @@
 
                 var actions = element.find('.' + settings.prefix + '-actions').addBack().filter('.' + settings.prefix + '-actions');
                 if (actions.length === 0) {
-                    actions = $('<div class="' + settings.prefix + '-actions"></div>');
+                    actions = $('<' + settings.action_container_tag + ' class="' + settings.prefix + '-actions"></' + settings.action_container_tag + '>');
+
                     element.append(actions);
                 }
 
@@ -808,6 +810,11 @@
             }
             if (settings.min && (!settings.init_with_n_elements || settings.init_with_n_elements < settings.min)) {
                 settings.init_with_n_elements = settings.min;
+            }
+
+            if (!settings.action_container_tag) {
+                console.log("jquery.collection.js: action_container_tag needs to be set.");
+                return true;
             }
 
             // user callback

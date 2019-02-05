@@ -56,13 +56,7 @@
                                     {% if not loop.first %}<br/><br/>{% endif %}
                                     {{ purchase.counterpart.name }}
                                     <br/>
-                                    {% if contract.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
-                                        <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">{{ contract.contractArtist.getTitle }}</a>
-                                    {% elseif contract.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
-                                        <a href="{{ path('artist_contract_sales', {'id':contract.contractArtist.id }) }}">{{ contract.contractArtist.getTitle }}</a>
-                                    {% elseif contract.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
-                                        <a href="{{ path('pot_pot', {'id':contract.contractArtist.id }) }}">{{ contract.contractArtist.getTitle }}</a>
-                                    {% endif %}
+                                    <a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">{{ contract.contractArtist.getTitle }}</a>
                                 {% endfor %}
                             </td>
                             <td class="text-center">
@@ -111,11 +105,4 @@
             'defined' : false
         } )) }}
     </div>
-{% endblock %}
-{% block additional_javascripts %}
-    <script type="text/javascript">
-        {% if is_payment %}
-        displaySponsorshipInvitationModal(null, true);
-        {% endif %}
-    </script>
 {% endblock %}

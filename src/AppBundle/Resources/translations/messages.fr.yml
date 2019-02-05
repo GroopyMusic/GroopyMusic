@@ -337,7 +337,7 @@ event:
     failed: Objectif non atteint
     ongoing: En cours
     pending: En cours d'examination par l'équipe Un-Mute
-    test_period: En pré-validation
+    test_period: Pré-ventes en cours (avec promotions)
   stillselling: Places en vente
   lineup:
     title: Line-up
@@ -659,9 +659,9 @@ leave_artist:
 
 order_pdf:
   title: Récapitulatif de votre commande
-  intro: Merci d'avoir passé une commande de tickets de festival avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
+  intro: Merci d'avoir passé une commande de tickets de festival avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à festivals@un-mute.be
   sales:
-    intro: Merci d'avoir passé commandé avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à contact@un-mute.be
+    intro: Merci d'avoir passé commandé avec Un-Mute. Vous trouverez ci-dessous toutes les informations au sujet de votre commande. Pour toute information supplémentaire, vous pouvez nous contacter en envoyant un e-mail à festivals@un-mute.be
   promo: "Note : pour toute commande passée avant le %end_date%, par %nb_organic_needed% tickets achetés, vous en recevez %nb_promotional%."
   labels:
     order_date: Date de la commande
@@ -718,7 +718,7 @@ tickets_pdf:
 notices:
   edition: Les modifications ont été enregistrées.
   event_create: Votre événement a bien été créé. Rassemblez dès maintenant des producteurs qui pourront vous soutenir dans son organisation !
-  artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; vous allez être contacté(e) par l'équipe Un-Mute dans les jours qui viennent.
+  artist_create: L'artiste %artist% a bien été créé. Il n'est pas visible pour l'instant sur la plateforme mis à part par vous ; ce n'est qu'après avoir assisté à votre séance d'infromation qu'il sera validé par notre équipe.
   artist_role: Votre rôle a bien été enregistré.
   # Next line: invitation to become administrator of a specific artist on Un-Mute
   artist_ownership_requests: Les invitations ont été envoyées.
@@ -775,7 +775,7 @@ errors:
     other: Une erreur inconnue est survenue ; veuillez réessayer (nous avons alerté l'équipe de cette erreur, elle se penche dessus au plus tôt).
 
 infos:
-  new_event_temp: Cher artiste, merci d'avoir montré votre intérêt pour Un-Mute. Pour organiser votre premier festival par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, ou d'envoyer un e-mail à contact@un-mute.be.
+  new_event_temp: Cher artiste, merci d'avoir montré votre intérêt pour Un-Mute. Pour organiser votre premier festival par notre biais, nous vous proposons de remplir le formulaire suivant auquel nous répondrons dans les plus brefs délais, ou d'envoyer un e-mail à festivals@un-mute.be.
 
 html.email.head.link.to.web.view.text.%url%: Voir dans le navigateur
 txt.email.head.link.to.web.view.text.%url%: Voir dans le navigateur

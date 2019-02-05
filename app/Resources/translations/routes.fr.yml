@@ -105,6 +105,8 @@ check_unique_entity: /fp_js_form_validator/check_unique_entity
 # Desc: /
 homepage: /
 
+passed_festivals: /festivals-passes
+
 # Desc: /select2/genres
 select2_genres: /select2/genres
 

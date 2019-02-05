@@ -3,15 +3,10 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ArtistOwnershipRequest;
-use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\Artist_User;
-use AppBundle\Form\Artist_UserType;
 use AppBundle\Form\ArtistMediasType;
 use AppBundle\Form\ArtistOwnershipsType;
 use AppBundle\Form\ArtistType;
-use AppBundle\Services\UserRolesManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
@@ -27,23 +22,10 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
-class ArtistController extends Controller
+class ArtistController extends BaseController
 {
-    protected $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    private function assertOwns(UserInterface $user, Artist $artist) {
-        $userRolesManager = $this->get(UserRolesManager::class);
-
-        if(!$user->owns($artist) && !$userRolesManager->userHasRole($user, 'ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException("You don't own this artist!");
-        }
-    }
-
     /**
+     * Edit profile: form to change artist general info
      * @Route("/edit", name="artist_profile_edit")
      */
     public function editProfileAction(Request $request, UserInterface $user, Artist $artist) {
@@ -71,21 +53,7 @@ class ArtistController extends Controller
     }
 
     /**
-     * @Route("/all-contracts", name="artist_contracts")
-     */
-    public function contractsAction(UserInterface $user, Artist $artist) {
-        $this->assertOwns($user, $artist);
-
-        $em = $this->getDoctrine()->getManager();
-        $contracts = $em->getRepository('AppBundle:ContractArtist')->findBy(array('artist' => $artist), array('dateEnd' => 'DESC'));
-
-        return $this->render('@App/User/Artist/all_contracts.html.twig', array(
-            'contracts' => $contracts,
-            'artist' => $artist,
-        ));
-    }
-
-    /**
+     * Owners: lists artist owners and offers possibility to add one
      * @Route("/owners", name="artist_owners")
      */
     public function ownersAction(UserInterface $user, Artist $artist, Request $HTTPRequest) {
@@ -93,88 +61,74 @@ class ArtistController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $currentOwner = $em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]);
+        // Get all owwners and ownership requests
         $owners = $artist->getArtistsUser();
         $requests = $em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist, 'cancelled' => false, 'refused' => false, 'accepted' => false]);
 
-        $form1 = $this->createForm(Artist_UserType::class, $currentOwner);
-        $form2 = $this->createForm(ArtistOwnershipsType::class, $artist);
+        // Form to create additional requests
+        $form = $this->createForm(ArtistOwnershipsType::class, $artist);
 
-        $form2->handleRequest($HTTPRequest);
+        $form->handleRequest($HTTPRequest);
 
-        if($HTTPRequest->getMethod() == 'POST') {
+        if($form->isSubmitted() && $form->isValid()) {
 
-            /*if ($HTTPRequest->request->has($form1->getName())) {
-                $form1->handleRequest($HTTPRequest);
+            $reqs = array();
 
-                if ($form1->isValid()) {
-                    $em->persist($currentOwner);
-                    $em->flush();
+            $haystack = array_map(function (Artist_User $elem) {
+                return $elem->getUser()->getEmail();
+            }, $owners->toArray());
 
-                    $this->addFlash('notice', 'notices.artist_role');
-                }
-            }*/
-            if ($HTTPRequest->request->has($form2->getName())) {
+            $haystack = array_merge($haystack, array_map(function (ArtistOwnershipRequest $elem) {
+                return $elem->getEmail();
+            }, $requests));
 
-                if ($form2->isValid()) {
-                    $reqs = array();
-
-                    $haystack = array_map(function (Artist_User $elem) {
-                        return $elem->getUser()->getEmail();
-                    }, $owners->toArray());
-
-                    $haystack = array_merge($haystack, array_map(function (ArtistOwnershipRequest $elem) {
-                        return $elem->getEmail();
-                    }, $requests));
-
-                    foreach ($form2->getData()->ownership_requests_form as $request) {
-                        /** @var ArtistOwnershipRequest $request */
-                        if (!(in_array($request->getEmail(), $haystack))) {
-                            $request->setDemander($user);
-                            $request->setArtist($artist);
-                            $em->persist($request);
-                            $reqs[] = $request;
-                            $haystack[] = $request->getEmail();
-                        }
-                    }
-
-                    $em->flush();
-
-                    $mailer = $this->get('AppBundle\Services\MailDispatcher');
-
-                    // Unique code is based on the id so we need this loop
-                    foreach ($reqs as $req) {
-                        $req->generateUniqueCode();
-                        $mailer->sendNewOwnershipRequest($artist, $req);
-                    }
-
-                    $em->flush(); // For unique code !!
-
-                    $this->addFlash('notice', 'notices.artist_ownership_requests');
-
-                    return $this->redirectToRoute($HTTPRequest->get('_route'), $HTTPRequest->get('_route_params'));
+            # Check if submitted requests are not for already artist-related emails
+            foreach ($form->getData()->ownership_requests_form as $request) {
+                /** @var ArtistOwnershipRequest $request */
+                if (!(in_array($request->getEmail(), $haystack))) {
+                    $request->setDemander($user);
+                    $request->setArtist($artist);
+                    $em->persist($request);
+                    $reqs[] = $request;
+                    $haystack[] = $request->getEmail();
                 }
             }
+
+            // Flush to save requests
+            $em->flush();
+
+            // Unique code is based on the id so we need this loop
+            foreach ($reqs as $req) {
+                $req->generateUniqueCode();
+                $this->mailDispatcher->sendNewOwnershipRequest($artist, $req);
+            }
+
+            // Second flush for unique codes
+            $em->flush();
+
+            $this->addFlash('notice', 'notices.artist_ownership_requests');
+
+            return $this->redirectToRoute($HTTPRequest->get('_route'), $HTTPRequest->get('_route_params'));
         }
 
         return $this->render('@App/User/Artist/owners.html.twig', array(
-            'currentOwner' => $currentOwner,
             'artist' => $artist,
             'owners' => $owners,
             'requests' => $requests,
-            'form1' => $form1->createView(),
-            'form2' => $form2->createView(),
+            'form' => $form->createView(),
         ));
     }
 
 
     /**
+     * Cancel Ownership Request: Deletes given request, actually marking it as "cancelled"
      * @Route("/cancel-request/{request_id}", name="artist_cancel_ownership_request")
      * @ParamConverter("o_request", class="AppBundle:ArtistOwnershipRequest", options={"id" = "request_id"})
      */
     public function cancelOwnershipRequestAction(UserInterface $user, Artist $artist, ArtistOwnershipRequest $o_request) {
         $this->assertOwns($user, $artist);
 
+        # Canceler must be demander
         if($o_request->getDemander() != $user) {
             throw $this->createAccessDeniedException("You didn't emit this ownership request.");
         }
@@ -191,6 +145,9 @@ class ArtistController extends Controller
     }
 
     /**
+     * Leave: displays a confirmation window before allowing user to leave his artist
+     * and marks artist as deleted if he was the last one
+     * This action doesn't do anything (except showing an error message) if artist is currently selling tickets and user is its last owner
      * @Route("/leave", name="artist_leave")
      */
     public function leaveAction(Request $request, UserInterface $user, Artist $artist, TranslatorInterface $translator) {
@@ -212,6 +169,7 @@ class ArtistController extends Controller
             if($form->get('confirm')->isClicked()) {
 
                 if($lastOne && !$artist->canBeLeft()) {
+                    // TODO translate
                     $form->addError(new FormError('Vous ne pouvez pas quitter un artiste lorsqu\'un événement de récolte de tickets est en cours pour cet artiste.'));
                 }
 
@@ -220,15 +178,7 @@ class ArtistController extends Controller
                     $em->remove($em->getRepository('AppBundle:Artist_User')->findOneBy(['user' => $user, 'artist' => $artist]));
 
                     if($lastOne) {
-                        // Duplicated in UserController->advanced
-                        $artist->setDeleted(true);
-
-                        foreach($em->getRepository('AppBundle:ArtistOwnershipRequest')->findBy(['artist' => $artist]) as $o_request) {
-                            $em->remove($o_request);
-                        }
-                        // End Duplicated
-
-                        $em->persist($artist);
+                        $this->suppressArtist($artist);
                     }
                     $em->flush();
 
@@ -255,6 +205,7 @@ class ArtistController extends Controller
     }
 
     /**
+     * Edit Profile Pic: form to add one primary picture
      * @Route("/edit-profile-picture", name="artist_edit_profilepic")
      */
     public function editProfilepicAction(UserInterface $user, Artist $artist) {
@@ -266,6 +217,7 @@ class ArtistController extends Controller
     }
 
     /**
+     * Edit photos: form to add/remove photos
      * @Route("/edit-photos", name="artist_edit_photos")
      */
     public function editPhotosAction(UserInterface $user, Artist $artist) {
@@ -277,6 +229,7 @@ class ArtistController extends Controller
     }
 
     /**
+     * Edit medias: form to add/remove/edit videos
      * @Route("/edit-medias", name="artist_edit_medias")
      */
     public function editMediasAction(Request $request, UserInterface $user, Artist $artist) {
@@ -304,6 +257,7 @@ class ArtistController extends Controller
     // AJAX ------------------------------------------------------------------------------------------------
 
     /**
+     * Remove Photo: removes photo of given filename
      * @Route("/api/remove-photo", name="artist_ajax_remove_photo")
      */
     public function removePhotoAction(Request $request, UserInterface $user, Artist $artist) {

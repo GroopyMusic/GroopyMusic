@@ -40,7 +40,7 @@
         <p class="big p-3 p-md-5">{{ contract.getDescription }}</p>
     </div>
     <div class="text-center">
-        <a class="scroll btn btn-outline-primary" href="#tickets">Tickets</a>
+        <a class="scroll btn btn-secondary" href="#tickets">Tickets</a>
     </div>
     <div class="separating-waves high prior"></div>
     <div class="separating-waves colored big low prior"></div>
@@ -65,15 +65,12 @@
                     <p class="p-info"><img width="70" class="um-icon float-left d-none d-sm-inline-block"
                                            src="{{ asset('images/icons/artist.png') }}"/> C'est le dernier jour de campagne ! C'est le moment de soutenir les artistes de ce Festival !
                     </p>
-                {% elseif state not in contract.successfulStates and contract.inTestPeriod %}
-                    <p class="p-info">Cette campagne est <b>en prévalidation</b>. Seuls les utilisateurs qui disposent du lien peuvent y accéder.
-                        Elle sera affichée au public au bout de la période de prévalidation si l'objectif de prévalidation est atteint.</p>
                 {% endif %}
 
                 {% if contract.currentPromotions is not empty %}
-                    <p class="p-promo">Pendant la prévalidation, vous bénéficiez des promotions suivantes :
+                    <p class="p-info">Pendant les premiers jours de vente, vous bénéficiez des promotions suivantes :
                     {% for promo in contract.currentPromotions %}
-                            <br />{{ 'event.promo'|trans({'%end_date%': promo.endDate|date('d/m/Y'), '%nb_organic_needed%': promo.nbOrganicNeeded, '%nb_promotional%': promo.nbPromotional})|raw }}
+                            <br />{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> {{ promo.right }} (jusqu'au {{ promo.endDate|fancy_date(true) }})
                     {% endfor %}
                     </p>
                 {% endif %}
@@ -170,70 +167,29 @@
         <div class="content-box solid-borders">
             <div class="content-box-content no-border text-center bg-transparent">
                 <div class="col-12 content-box-col">
-                            <span class="contract-info-title pr-2">
-                                {{ 'event.infos.state'|trans|raw }}
-                            </span>
+                    <span class="contract-info-title pr-2">
+                        {{ 'event.infos.state'|trans|raw }}
+                    </span>
                     <span class="contract-info-content pr-1">
-                                {{ ('event.'~state)|trans|raw }}
-                            </span>
+                        {{ ('event.'~state)|trans|raw }}
+                    </span>
                 </div>
 
-                {% if not contract.inTestPeriod %}
-                    <div class="col-12 row equal content-box-row">
-                        <div class="col-12 col-md-6 content-box-col">
-                            <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                {{ 'event.infos.validation_date'|trans|raw }}
-                            </div>
-                            <div class="contract-info-content{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                {{ contract.dateEnd|date('d/m/Y') }}
-                            </div>
-                        </div>
 
-                        <div class="col-12 col-md-6 content-box-col">
-                            <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                                Avancement
-                            </div>
-                            {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
-                            <div class="progress">
-                                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
-                                     style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
-                            </div>
-                            <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                                {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
-                            </div>
+                <div class="col-12 row equal content-box-row">
+                    <div class="col-12 col-md-6 content-box-col">
+                        <div class="contract-info-title">
+                            {{ 'event.infos.validation_date'|trans|raw }}
                         </div>
-                        {#
-                        <div class="col-12 col-md-4 content-box-col">
-                            <div class="contract-info-title">
-                                {{ 'event.infos.tickets_sold'|trans|raw }}
-                            </div>
-                            <div class="contract-info-content">
-                                {{ contract.totalBookedTicketsMajored|round(0,'floor') }}
-                            </div>
+                        <div class="contract-info-content">
+                            {{ contract.dateEnd|date('d/m/Y') }}
                         </div>
-
-                        <div class="col-12 col-md-4 content-box-col">
-                            <div class="contract-info-title">
-                                {{ 'event.infos.tickets_left'|trans|raw }}
-
-                            </div>
-                            <div class="contract-info-content">
-                                {{ max(0, tickets_left)|round(0,'ceil') }}
-                            </div>
-                        </div>
-                        #}
                     </div>
 
-                    {#
-                    <div class="col-12 content-box-col">
-                        {% if not contract.isValidatedBelowObjective %}
-                            <span class="contract-info-title pr-2">
-                                     {{ 'event.infos.tickets_objective'|trans|raw }}
-                                </span>
-                            <span class="contract-info-content">
-                                    {{ contract.minTickets }}
-                                </span>
-                        {% endif %}
+                    <div class="col-12 col-md-6 content-box-col">
+                        <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
+                            Avancement
+                        </div>
                         {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
                         <div class="progress">
                             <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
@@ -243,9 +199,30 @@
                             {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
                         </div>
                     </div>
-                    #}
-                {% endif %}
+                </div>
             </div>
+
+            {% if app.user and (app.user.hasArtistPerformingIn(contract) or is_granted('ROLE_ADMIN')) %}
+
+                {% set total_sales = contract.counterpartsSold %}
+                <h4>Distribution des ventes</h4>
+                <p>
+                    Puisque vous êtes propriétaire d'un artiste participant à ce festival, vous avez accès à vos performances, c'est-à-dire au nombre de tickets dont les acheteurs vous ont mentionné comme motivation de leur achat.
+                    Notez qu'il y a à l'heure actuelle eu <strong>{{ contract.totalScores|round }}</strong> ticket{% if contract.totalScores > 1 %}s{% endif %} vendu{% if contract.totalScores > 1 %}s{%endif%}.
+                    Notez également que les acheteurs peuvent mentionner plusieurs artistes lors de leur passage de commande.
+                </p>
+                <ul>
+                    {% for artist in contract.allArtists %}
+                        {% set perf = contract.artistScore(artist) %}
+                        {% set s = perf > 1 ? 's' : '' %}
+                        <li>{{ perf }} ticket{{ s }} - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
+                    {% endfor %}
+                    {% set s = contract.noArtistScore > 1 ? 's' : '' %}
+                    <li>{{ contract.noArtistScore }} ticket{{ s }} - pas d'artiste mentionné</li>
+                </ul>
+
+            {% endif %}
+
         </div>
         <div class="separating-waves colored big low prior"></div>
         <div class="separating-waves high prior"></div>

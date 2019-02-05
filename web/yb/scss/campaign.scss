@@ -14,3 +14,8 @@
   top: 6px;
   right: 10px;
 }
+
+.quantity-error-display {
+  @extend .text-danger;
+  @extend .pb-2;
+}

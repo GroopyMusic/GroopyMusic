@@ -31,7 +31,15 @@ subjects:
   refunded_contract_fan: Remboursement de votre commande
   artist_validated: Votre artiste sur Un-Mute a été vérifié 
   reward_attribution: Nouvelle récompense 
-  sponsorship_invitation: Invitation à être parrainé 
+  sponsorship_invitation: Invitation à être parrainé
+  yb:
+    reminders:
+      buyers:
+        upcoming_event: Votre événement approche !
+      organizers:
+        event_created: Votre campagne "%event%" est en ligne !
+    transactional_message: Nouveau message pour l'événement "%event%"
+    transactional_message_copy: Votre message pour l'événement "%event%"
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -79,8 +87,6 @@ concert:
 
       Envie de soutenir/découvrir d'autres artistes ? Rendez-vous sur Un-Mute.be !
     tickets: |
-      Bonjour %username%,
-
       Nous voici à quelques jours de l'événement "%festival_title%".
 
       Vous trouverez votre ou vos ticket(s) en pièce jointe (format PDF).
@@ -89,7 +95,7 @@ concert:
 
       %additional_info%
 
-      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : festivals@un-mute.be
     
     vip_tickets: |
       Bonjour,
@@ -102,7 +108,7 @@ concert:
 
       %additional_info%
 
-      Si vous avez des questions, n'hésitez pas à nous joindre par mail : contact@un-mute.be
+      Si vous avez des questions, n'hésitez pas à nous joindre par mail : festivals@un-mute.be
 
     failure: |
       Cher producteur,
@@ -189,7 +195,7 @@ vip_inscription:
     --> Fonction : %function%
     --> Commentaire : %commentary%
 
-    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse contact@un-mute.be
+    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse festivals@un-mute.be
 
 volunteer_proposal:
   copy: |
@@ -200,7 +206,7 @@ volunteer_proposal:
     --> Adresse e-mail : %email%
     --> Commentaire : %commentary%
 
-    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse contact@un-mute.be
+    Nous vous recontacterons dans les jours qui viennent. Pour toute question, n'hésitez pas à nous contacter par mail à l'adresse festivals@un-mute.be
 
 payment:
   refunded: |
@@ -266,3 +272,56 @@ yb:
       La campagne "%event%" n'a pas pu être confirmée par son organisateur car trop peu de tickets ont été vendus.
 
       Vous allez être remboursé(e) de votre commande de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
+  reminders:
+    buyers:
+      upcoming_event: |
+        Bonjour,
+
+        Ce petit mail pour vous rappeler que vous avez commandé un ou plusieurs ticket(s) pour l'événement "%event%" via la plateforme de ticketing Ticked-it.
+
+        Cet événement a lieu le %date%, soit dans quelques jours !
+
+        N'oubliez pas, le jour J, de vous équiper de votre/vos ticket(s) sur un support lisible !
+
+        Passez une excellente journée,
+    organizers:
+      event_created: |
+        Bonjour,
+
+        Votre événement "%event%" a bien été créé sur Ticked-it. Dès à présent, les tickets sont en vente.
+
+        Voici les liens vers votre campagne de vente de tickets.  
+        Version courte : %url%
+        Version longue : %url_long%
+
+        Vous pouvez diffuser un de ces liens auprès de vos réseaux, ou le placer sur votre site Web, en fonction de votre stratégie de communication.
+
+        A bientôt, et merci de faire confiance à Ticked-it!
+  transactional_message: |
+    Vous avez reçu un nouveau message concernant l'événement "%event%" pour lequel vous avez acheté un ou plusieurs ticket(s) sur Ticked-it!
+    Ce message a été envoyé par l'organisateur le %date%.
+
+    Titre :
+    ------------------------------
+      %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+      %content%
+    ------------------------------
+  transactional_message_copy: |
+    Votre message concernant l'événement "%event%" a bien été transmis aux acheteurs de tickets.
+    Ce message a été envoyé le %date%.
+
+    Titre :
+    ------------------------------
+       %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+       %content%
+    ------------------------------

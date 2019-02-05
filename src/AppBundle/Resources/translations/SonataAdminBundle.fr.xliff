@@ -226,6 +226,11 @@
                <source>app.admin.promotion</source>
                <target>Promotion</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.informationSession">
+               <source>app.admin.informationSession</source>
+               <target>Session d'information</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

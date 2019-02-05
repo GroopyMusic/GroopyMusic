@@ -510,32 +510,89 @@ class ContractArtist extends BaseContractArtist
        return $this->purchases;
     }
 
-    public function getArtistScoresExport() {
-        $scoresList = [];
-        $artists = [];
-
-        $scoresList['all'] = 0;
-        foreach($this->getAllArtists() as $artist) {
-            $scoresList[$artist->getId()] = 0;
-            $artists[$artist->getId()] = $artist->getArtistname();
+    public function getArtistScore(Artist $artist) {
+        if(!in_array($artist, $this->getAllArtists())) {
+            return 0;
+        }
+        $this->calculateScores();
+        if($this->totalScores == 0) {
+            return 0;
         }
 
-        foreach($this->getPurchases() as $purchase) {
-            /** @var Purchase $purchase */
-            if(!empty($purchase->getArtists()) && count($purchase->getArtists()) > 0) {
-                foreach($purchase->getArtists() as $artist) {
-                    $scoresList[$artist->getId()] = $scoresList[$artist->getId()] + $purchase->getThresholdIncrease();
+        return ceil($this->scoresList[$artist->getId()]);
+    }
+
+    public function getNoArtistScore() {
+        $this->calculateScores();
+        if($this->totalScores == 0) {
+            return 0;
+        }
+        return ceil($this->scoresList['all']);
+    }
+
+    public function getArtistPercentage(Artist $artist) {
+        if(!in_array($artist, $this->getAllArtists())) {
+            return 0;
+        }
+        $this->calculateScores();
+        if($this->totalScores == 0) {
+            return 0;
+        }
+        return round(($this->scoresList[$artist->getId()] / $this->totalScores) * 100, 2);
+    }
+
+    public function getNoArtistPercentage() {
+        $this->calculateScores();
+        if($this->totalScores == 0) {
+            return 0;
+        }
+        return round(($this->scoresList['all'] / $this->totalScores) * 100, 2);
+    }
+
+    public function getTotalScores() {
+        $this->calculateScores();
+        return $this->totalScores;
+    }
+
+    private $scoresList = null;
+    private $scoresArtistList = null;
+    private $totalScores;
+
+    private function calculateScores() {
+        if($this->scoresList == null) {
+            $this->scoresList = [];
+            $this->scoresArtistList = [];
+            $this->totalScores = 0;
+
+            $this->scoresList['all'] = 0;
+            foreach($this->getAllArtists() as $artist) {
+                $this->scoresList[$artist->getId()] = 0;
+                $this->scoresArtistList[$artist->getId()] = $artist->getArtistname();
+            }
+
+            foreach($this->getPurchases() as $purchase) {
+                $this->totalScores += $purchase->getThresholdIncrease();
+                /** @var Purchase $purchase */
+                if(!empty($purchase->getArtists()) && count($purchase->getArtists()) > 0) {
+                    foreach($purchase->getArtists() as $artist) {
+                        $this->scoresList[$artist->getId()] += $purchase->getThresholdIncrease();
+                    }
+                }
+                else {
+                    $this->scoresList['all'] = $this->scoresList['all'] + $purchase->getThresholdIncrease();
                 }
             }
-            else {
-                $scoresList['all'] = $scoresList['all'] + $purchase->getThresholdIncrease();
-            }
         }
 
+    }
+
+    public function getArtistScoresExport() {
+        $this->calculateScores();
+
         $exportList = [];
-        foreach($scoresList as $key => $value) {
+        foreach($this->scoresList as $key => $value) {
             if($key != 'all') {
-                $exportList[] = $artists[$key] . '  : ' . $value;
+                $exportList[] = $this->scoresArtistList[$key] . '  : ' . $value;
             }
             else {
                 $exportList[] = 'Sans artiste particulier : ' . $value;

@@ -10,12 +10,10 @@ use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\YB\YBContactType;
+use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\MailDispatcher;
-use AppBundle\Services\PDFWriter;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,19 +29,12 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class YBController extends Controller
+class YBController extends BaseController
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @Route("/", name="yb_index")
      */
-    public function indexAction(Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher)
+    public function indexAction(Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher, CaptchaManager $captchaManager)
     {
         $contact = new YBContact();
         $form = $this->createForm(YBContactType::class, $contact, ['action' => $this->generateUrl('yb_index') . '#contact']);
@@ -51,6 +42,14 @@ class YBController extends Controller
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+           if(!$captchaManager->verify()) {
+               $this->addFlash('error', 'Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !');
+                return $this->render('@App/YB/home.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+           }
+
+            // DB save
             $em->persist($contact);
             $em->flush();
 
@@ -58,7 +57,7 @@ class YBController extends Controller
             $mailDispatcher->sendYBContactCopy($contact);
             $mailDispatcher->sendAdminYBContact($contact);
 
-            $this->addFlash('yb_notice', 'Thank you for your message. We will come back to you soon.');
+            $this->addFlash('yb_notice', 'Merci pour votre message. Nous vous recontacterons aussi vite que possible.');
             return $this->redirectToRoute('yb_index');
         }
 
@@ -310,7 +309,7 @@ class YBController extends Controller
      */
     public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager) {
 
-        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
 
         foreach($cart->getContracts() as $cf) {
             if(!$cf->getcounterpartsSent())
@@ -365,7 +364,7 @@ class YBController extends Controller
     /**
      * @Route("/api/submit-order-coordinates", name="yb_ajax_post_order")
      */
-    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator) {
+    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator, MailDispatcher $mailDispatcher) {
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
@@ -384,6 +383,11 @@ class YBController extends Controller
         $errors = $validator->validate($order);
         if($errors->count() > 0) {
             throw new \Exception($errors->offsetGet(0));
+        }
+
+        if($cart->isFree()) {
+            $cart->setPaid(true);
+            $mailDispatcher->sendYBOrderRecap($cart);
         }
 
         $em->persist($order);

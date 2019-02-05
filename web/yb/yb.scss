@@ -1,11 +1,16 @@
-$main-orange: #ea900c;
+$main-orange: #f39200;
+$main-green: #66ad61;
+$dark-orange: #e15b34;
 $theme-colors: (
         "primary": $main-orange,
-        "secondary": #607D8B
+        "secondary": $main-green,
+        "dark": #607D8B,
+        "very-dark": #343a40,
+        "secondary-strong": $dark-orange,
 );
 $primary: $main-orange !default;
-$menu-color: #eadf0c;
-$link-secondary-color: #007ebb;
+$menu-color: #fbd060;
+$link-secondary-color: $main-green;
 
 $white: #fff !default;
 $gray-100: #f8f9fa !default;
@@ -51,6 +56,7 @@ h2 {
 
 .btn, button, a {
   cursor: pointer;
+  white-space: inherit;
 }
 
 .btn-primary {

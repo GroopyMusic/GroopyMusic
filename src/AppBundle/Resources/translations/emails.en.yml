@@ -78,7 +78,7 @@ concert:
 
       We ask you to print this ticket(s) and present it the night of the concert.
 
-      If you have any questions, contact us at contact@un-mute.be
+      If you have any questions, contact us at festivals@un-mute.be
     vip_tickets: |
       Hello,
 
@@ -90,7 +90,7 @@ concert:
 
       %additional_info%
 
-      If you have questions, please contact us at contact@un-mute.be
+      If you have questions, please contact us at festivals@un-mute.be
     failure: |
       Dear producer,
 
@@ -155,7 +155,7 @@ vip_inscription:
 
     We will await you at 18h on %date% for the %event%.
 
-    For questions, please contact us at contact@un-mute.be
+    For questions, please contact us at festivals@un-mute.be
 
 payment:
   refunded: |

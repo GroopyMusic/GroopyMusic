@@ -12,45 +12,22 @@
   }
 }
 
-.features-icons {
-  .features-icons-item {
-    max-width: 20rem;
-
-    .features-icons-icon {
-      height: 7rem;
-
-      i {
-        font-size: 4.5rem;
-      }
-    }
-
-    &:hover {
-      .features-icons-icon i {
-        font-size: 5rem;
-      }
-    }
-  }
+.home-icon {
+  max-width: 100px;
 }
 
 #services-step-1 {
-  background: -webkit-linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
-  background: linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
+  background: -webkit-linear-gradient(to left, rgba(102, 173, 97, 0.63), rgba(102, 173, 97, 0.35));
+  background: linear-gradient(to left, rgba(102, 173, 97, 0.63), rgba(102, 173, 97, 0.35));
   .showcase-img {
     background-image: url('images/illustration-event.jpg');
   }
 }
 
-#services-step-2 {
-  background: -webkit-linear-gradient(to right, #ea900c, rgba(255, 193, 7, 0.35));
-  background: linear-gradient(to right, #ea900c, rgba(255, 193, 7, 0.35));
-  .showcase-img {
-    background-image: url('images/illustration-guitar.jpg');
-  }
-}
-
 #services-step-3 {
-  background: -webkit-linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
-  background: linear-gradient(to left, #ea900c, rgba(255, 193, 7, 0.35));
+  background: -webkit-linear-gradient(to right, rgba(251, 208, 96, 0.75), rgba(251, 208, 96, 0.35));
+  background: linear-gradient(to right, rgba(251, 208, 96, 0.75), rgba(251, 208, 96, 0.35));
+
   .showcase-img {
     background-image: url('images/step-3.jpg');
   }

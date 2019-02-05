@@ -2,32 +2,47 @@
 
 {% set contract_fan = cart.first %}
 
-{% macro recap_zone_sales(purchase, contract) %}
+{% macro recap_toppings(purchase) %}
 
-    <div class="content-box-content-zone">
-        <table class="content-box-table">
-            <tbody>
-            <tr>
-                <td class="contract-info-title">{{ 'pay_cart.recap.labels.artist'|trans|raw }}</td>
-                <td>{{ contract.contractArtist.artist }}</td>
-            </tr>
-            <tr>
-                <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
-                <td>{{ purchase.counterpart.name }}</td>
-            </tr>
-            <tr>
-                <td class="contract-info-title">{{ 'pay_cart.recap.labels.quantity'|trans|raw }}</td>
-                <td>{{ purchase.quantityOrganic }}</td>
-            </tr>
-            <tr>
-                <td class="contract-info-title">{{ 'pay_cart.recap.labels.unitprice'|trans|raw }}{% if purchase.counterpart.freePrice %} ({{ 'freely_chosen'|trans|raw }}){% endif %}</td>
-                <td>{{ purchase.unitaryPrice }} €</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    {% set toppings = {} %}
+    {% set topping_occurrences = {} %}
 
-{% endmacro%}
+    {% for topping in purchase.toppings %}
+        {% if topping.getContent not in toppings %}
+            {% set toppings = toppings|merge({('_'~loop.index0):topping.getContent}) %}
+            {% set topping_occurrences = topping_occurrences|merge({('_'~loop.index0):1}) %}
+        {% else %}
+            {% set i = 0 %}
+            {% for t in toppings %}
+                {% if t == topping.getContent %}
+                    {% set topping_occurrences = topping_occurrences|merge({('_'~i): topping_occurrences[('_'~i)] + 1}) %}
+                {% endif %}
+                {% set i = i + 1 %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    {% for i in 0..toppings|length - 1 %}
+        <div class="content-box-content-zone">
+            <table class="table recap-table">
+                <tbody>
+                    <tr>
+                        <td class="contract-info-title">Promotion</td>
+                        <td>{{ toppings['_'~i] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="contract-info-title">Quantité</td>
+                        <td>{{ topping_occurrences['_'~i] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="contract-info-title">Prix</td>
+                        <td>0 €</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% endmacro %}
 
 {% macro recap_zone(purchase, contract, promotional = false) %}
     <div class="content-box-content-zone">
@@ -96,23 +111,9 @@
                 <div class="col-12 col-md-8 order-2 order-md-1">
                     {% if app.user %}
                         <div id="payment-intro">
-                            {% if (not contract_fan) or contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
-                                {{ 'pay_cart.intro'|trans({
-                                    '%conditionsUrl%': path('conditions') ~ '#cgv'
-                                })|raw }}
-                            {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales') %}
-                                {{ 'pay_cart.sales.intro'|trans({
-                                    '%artist%': contract_fan.contractArtist.artist,
-                                    '%firstName%': app.user.firstname,
-                                    '%conditionsUrl%': path('conditions') ~ '#cgv'
-                                })|raw }}
-                            {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
-                                {{ 'pay_cart.pot.intro'|trans({
-                                    '%artist%': contract_fan.contractArtist.artist,
-                                    '%firstName%': app.user.firstname,
-                                    '%conditionsUrl%': path('conditions') ~ '#cgv'
-                                })|raw }}
-                            {% endif %}
+                            {{ 'pay_cart.intro'|trans({
+                                '%conditionsUrl%': path('conditions') ~ '#cgv'
+                            })|raw }}
                         </div>
                         {% for fan_contract in cart.contracts %}
                             {% if fan_contract.userRewards is not empty %}
@@ -297,15 +298,14 @@
                     {% endif %}
                 </div>
 
-                {% if (not contract_fan) or  contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
-                    <div class="col-12 col-md-4 order-1 order-md-2">
-                        <div class="card card-info">
-                            <div class="card-header">
-                                <h3 class="text-primary text-center">{{ 'pay_cart.recap.title'|trans|raw }}</h3>
-                            </div>
+                <div class="col-12 col-md-4 order-1 order-md-2">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="text-primary text-center">{{ 'pay_cart.recap.title'|trans|raw }}</h3>
+                        </div>
 
-                            <div class="card-content">
-                                <ul class="list-group">
+                        <div class="card-content">
+                            <ul class="list-group">
                                 {% set sum_tickets = 0 %}
                                 {% set amoutWithoutReduction = 0 %}
                                 {% set hasReduction = false %}
@@ -317,6 +317,11 @@
                                         {% set freeTickets = purchase.quantityPromotional %}
                                         {% if freeTickets > 0 %}
                                             {{ macros.recap_zone(purchase, fan_contract, true) }}
+                                        {% endif %}
+                                        {% if purchase.toppings is not null and purchase.toppings is not empty %}
+                                            </li>
+                                            <li class="list-group-item">
+                                            {{ macros.recap_toppings(purchase) }}
                                         {% endif %}
                                         </li>
                                     {% endfor %}
@@ -341,38 +346,11 @@
                                     </table>
                                 </li>
                             </ul>
-                            </div>
-                            </div>
-                    </div>
-                {% elseif contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistSales')
-                    or contract_fan.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
-                    <div class="col-12 col-md-4 order-1 order-md-2 mb-2 mb-md-0">
-                        <div class="content-box">
-                            <div class="content-box-header">
-                                <h3>{{ 'pay_cart.sales.recap.title'|trans|raw }}</h3>
-                            </div>
-                            <div class="content-box-content-zones content-box-content">
-                                {% set nb_articles = 0 %}
-                                {% for purchase in contract_fan.purchases %}
-                                    {{ macros.recap_zone_sales(purchase, contract_fan) }}
-                                    {% set nb_articles = nb_articles + purchase.quantity %}
-                                {% endfor %}
-
-                                <div class="content-box-content-zone no-border">
-                                <table class="content-box-table">
-                                    <tr class="no-border">
-                                        <td class="contract-info-title big">{{ 'pay_cart.sales.recap.total'|transchoice(nb_articles)|raw }}</td>
-                                        <td class="big font-weight-bold">{{ cart.amount }} €</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            </div>
                         </div>
                     </div>
-                {% endif %}
-             </div>
+                </div>
+            </div>
         </div>
-
     {% endblock %}
 
         {% block javascripts %}

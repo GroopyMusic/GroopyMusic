@@ -115,7 +115,9 @@ class Purchase
 
     public function calculatePromotions()
     {
-        $organicsLeft = $this->getQuantityOrganic();
+        $organicsTotal = $this->getQuantityOrganic();
+
+        $organicsLeft = $organicsTotal;
 
         foreach($this->getActuallyAppliedPromotions() as $promo) {
             $organicsLeft -= $promo->getNbOrganicNeeded();
@@ -124,13 +126,27 @@ class Purchase
         foreach ($this->getContractArtist()->getPromotionsDecr() as $promotion) {
             /** @var Promotion $promotion */
             if ($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getPromotions())) {
+                // Additional tickets
                 $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($organicsLeft / $promotion->getNbOrganicNeeded()));
                 $this->nb_free_counterparts += $new_promotional_counterparts;
                 $this->addQuantity($new_promotional_counterparts);
-                $pp = new Purchase_Promotion($this, $promotion, $new_promotional_counterparts);
-                $this->addPurchasePromotion($pp);
-
                 $organicsLeft %= $promotion->getNbOrganicNeeded();
+                // End additional tickets
+
+                // Tickets toppings
+                $organics = $organicsTotal;
+                $toppings = [];
+                while($organics >= $promotion->getNbNeededTopping()) {
+                    $organics -= $promotion->getNbNeededTopping();
+                    $topping = $promotion->getTopping();
+                    if($topping != null) {
+                        $toppings[] = $topping;
+                    }
+                }
+                // End tickets toppings
+
+                $pp = new Purchase_Promotion($this, $promotion, $new_promotional_counterparts, $toppings);
+                $this->addPurchasePromotion($pp);
             }
         }
     }
@@ -157,6 +173,16 @@ class Purchase
         } else {
             return ($this->reducedPrice * $this->nb_reduced_counterparts) + (($this->getQuantityOrganic() - $this->nb_reduced_counterparts) * $this->counterpart->getPrice());
         }
+    }
+
+    public function getToppings() {
+        $toppings = [];
+        foreach($this->purchase_promotions as $pp) {
+            foreach($pp->getToppings() as $topping) {
+                $toppings[] = $topping;
+            }
+        }
+        return $toppings;
     }
 
     /**

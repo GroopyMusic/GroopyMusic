@@ -635,9 +635,9 @@ leave_artist:
 
 order_pdf:
   title: Samenvatting van uw bestelling
-  intro: Bedankt voor het plaatsen van een bestelling voor festivaltickets met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar contact@un-mute.be
+  intro: Bedankt voor het plaatsen van een bestelling voor festivaltickets met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar festivals@un-mute.be
   sales:
-    intro: Bedankt voor het plaatsen van een bestelling voor albums met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar contact@un-mute.be
+    intro: Bedankt voor het plaatsen van een bestelling voor albums met Un-Mute. U vindt hieronder alle informatie over uw bestelling. Neem voor meer informatie contact met ons op door een e-mail te sturen naar festivals@un-mute.be
   promo: "Opmerking: voor elke bestelling geplaatst tijdens de eerste week van kaartverkoop voor dit evenement (dwz tot %end_date%), met %nb_organic_needed% gekochte tickets, ontvangt u er %nb_promotional%."
   labels:
     order_date: Bestelling datum
@@ -742,7 +742,7 @@ errors:
     other: Er is een onbekende fout opgetreden; probeer het opnieuw (we hebben het team op de hoogte gebracht van deze fout).
 
 infos:
-  new_event_temp: Beste artiest, bedankt voor het tonen van uw interesse in Un-Mute. Om je eerste festival bij ons te organiseren, nodigen we je uit om het volgende formulier in te vullen, dat we zo snel mogelijk zullen beantwoorden, of een e-mail sturen naar contact@un-mute.be.
+  new_event_temp: Beste artiest, bedankt voor het tonen van uw interesse in Un-Mute. Om je eerste festival bij ons te organiseren, nodigen we je uit om het volgende formulier in te vullen, dat we zo snel mogelijk zullen beantwoorden, of een e-mail sturen naar festivals@un-mute.be.
 
 html.email.head.link.to.web.view.text.%url%: Zie in de browser
 txt.email.head.link.to.web.view.text.%url%: Zie in de browser

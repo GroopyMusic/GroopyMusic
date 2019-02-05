@@ -4,16 +4,6 @@
 
 {% block artist_edit_profile_content %}
 
-    {#<h3>{{ 'owners.my_role.title'|trans|raw }}</h3>
-    <div>
-        {{ form_start(form1) }}
-           {{ 'owners.my_role.label'|trans({'%artist%': artist.artistname})|raw }} :
-            <div class="form-group">
-             {{ form_widget(form1.role) }}
-            </div>
-        {{ form_rest(form1) }}
-    </div>#}
-
     {% if owners|length > 1 or requests|length > 0 %}
     <h4>{{ 'owners.others.title'|trans|raw }}</h4>
     <ul>
@@ -40,12 +30,12 @@
         <li>{{ 'owners.add.case_2'|trans|raw }}</li>
     </ul>
 
-    {% form_theme form2 'AppBundle:Themes:ownerships_collection.html.twig' 'jquery.collection.html.twig' %}
-    {{ form_start(form2) }}
+    {% form_theme form 'AppBundle:Themes:ownerships_collection.html.twig' 'jquery.collection.html.twig' %}
+    {{ form_start(form) }}
         <div class="form_group mb-3">
-            {{ form_widget(form2.ownership_requests_form) }}
+            {{ form_widget(form.ownership_requests_form) }}
         </div>
-    {{ form_rest(form2) }}
+    {{ form_rest(form) }}
 
 {% endblock %}
 

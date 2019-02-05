@@ -7,6 +7,7 @@ use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Photo;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,14 +27,18 @@ class YBContractArtist extends BaseContractArtist
     const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
     const STATE_PENDING = 'state.pending';
     const STATE_SOLD_OUT_PENDING = 'state.soldout.pending';
+    const STATE_WAY_PASSED = 'state.way_passed';
 
     const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const PENDING_STATES = [self::STATE_SUCCESS_PENDING, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const SOLDOUT_STATES = [self::STATE_SOLD_OUT, self::STATE_SOLD_OUT];
-    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED];
+    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_WAY_PASSED];
     const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
+    const WAY_PASSED_STATES = [self::STATE_WAY_PASSED];
 
-    const PHOTOS_DIR = 'yb/images/campaigns/';
+    const PHOTOS_DIR = 'images/campaigns/';
+
+    const DAYS_BEFORE_WAY_PASSED = 60;
 
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
@@ -46,6 +51,16 @@ class YBContractArtist extends BaseContractArtist
         $this->date_closure = new \DateTime();
         $this->sold_counterparts = 0;
         $this->code = uniqid();
+        $this->transactional_messages = new ArrayCollection();
+    }
+
+    public function getBuyers() {
+        if($this->getContractsFanPaid() == null || empty($this->getContractsFanPaid())) {
+            return [];
+        }
+        return array_map(function(ContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getContractsFanPaid());
     }
 
     public function isEvent() {
@@ -70,6 +85,10 @@ class YBContractArtist extends BaseContractArtist
 
     public function isPassed() {
         return in_array($this->getState(), self::PASSED_STATES);
+    }
+
+    public function isWayPassed() {
+        return in_array($this->getState(), self::WAY_PASSED_STATES);
     }
 
     public function isOngoing() {
@@ -133,6 +152,8 @@ class YBContractArtist extends BaseContractArtist
                     return $this->state = self::STATE_PENDING;
                 }
             } else {
+                if($this->date_event != null && $this->date_event < $today && $this->date_event->diff($today)->days > self::DAYS_BEFORE_WAY_PASSED)
+                    return $this->state = self::STATE_WAY_PASSED;
                 return $this->state = self::STATE_PASSED;
             }
         }
@@ -191,6 +212,11 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
+
+    /**
+     * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
+     */
+    private $transactional_messages;
 
     /**
      * Set ticketsSent
@@ -408,5 +434,21 @@ class YBContractArtist extends BaseContractArtist
     public function setAddress($address)
     {
         $this->address = $address;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTransactionalMessages()
+    {
+        return $this->transactional_messages;
+    }
+
+    /**
+     * @param mixed $transactional_messages
+     */
+    public function setTransactionalMessages($transactional_messages)
+    {
+        $this->transactional_messages = $transactional_messages;
     }
 }

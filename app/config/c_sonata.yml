@@ -32,6 +32,7 @@ sonata_admin:
            app.admin.group.contact:
                 label_catalogue: SonataAdminBundle
                 items:
+                  - AppBundle\Admin\InformationSessionAdmin
                   - AppBundle\Admin\SuggestionBoxAdmin
                   - AppBundle\Admin\SuggestionTypeEnumAdmin
                   - AppBundle\Admin\VIPInscriptionAdmin
@@ -396,4 +397,10 @@ services:
         arguments: [~, AppBundle\Entity\Promotion, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.promotion }
+        public: true
+
+    AppBundle\Admin\InformationSessionAdmin:
+        arguments: [~, AppBundle\Entity\InformationSession, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.informationSession }
         public: true

@@ -1,0 +1,14 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.html.twig' %}
+
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('yb.reminders.buyers.upcoming_event', {
+                '%event%': campaign.getTitle,
+                '%date%': campaign.getDateEvent|fancy_date
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

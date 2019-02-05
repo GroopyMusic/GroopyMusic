@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.html.twig' %}
+
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('yb.transactional_message_copy', {
+                '%date%': message.date|fancy_date,
+                '%event%': email_link(url('yb_campaign', {'id': campaign.id}), campaign.getTitle),
+                '%title%': message.title,
+                '%content%': message.content|nl2br,
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

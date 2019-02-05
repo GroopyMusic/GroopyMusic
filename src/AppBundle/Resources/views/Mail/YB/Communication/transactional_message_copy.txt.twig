@@ -1,0 +1,20 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('yb.transactional_message_copy', {
+        '%date%': message.date|fancy_date,
+        '%event%': campaign.getTitle,
+        '%title%': message.title,
+        '%content%': message.content|nl2br,
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/YB/Communication:transactional_message_copy.html.twig' %}
+{% endblock %}
