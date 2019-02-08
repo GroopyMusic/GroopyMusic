@@ -519,7 +519,7 @@ class ContractArtist extends BaseContractArtist
             return 0;
         }
 
-        return ceil($this->scoresList[$artist->getId()]);
+        return array_map('ceil', $this->scoresList[$artist->getId()]);
     }
 
     public function getNoArtistScore() {
@@ -527,7 +527,7 @@ class ContractArtist extends BaseContractArtist
         if($this->totalScores == 0) {
             return 0;
         }
-        return ceil($this->scoresList['all']);
+        return array_map('ceil', $this->scoresList['all']);
     }
 
     public function getArtistPercentage(Artist $artist) {
@@ -538,7 +538,7 @@ class ContractArtist extends BaseContractArtist
         if($this->totalScores == 0) {
             return 0;
         }
-        return round(($this->scoresList[$artist->getId()] / $this->totalScores) * 100, 2);
+        return round(($this->scoresList[$artist->getId()][0] / $this->totalScores) * 100, 2);
     }
 
     public function getNoArtistPercentage() {
@@ -546,7 +546,7 @@ class ContractArtist extends BaseContractArtist
         if($this->totalScores == 0) {
             return 0;
         }
-        return round(($this->scoresList['all'] / $this->totalScores) * 100, 2);
+        return round(($this->scoresList['all'][0] / $this->totalScores) * 100, 2);
     }
 
     public function getTotalScores() {
@@ -564,9 +564,9 @@ class ContractArtist extends BaseContractArtist
             $this->scoresArtistList = [];
             $this->totalScores = 0;
 
-            $this->scoresList['all'] = 0;
+            $this->scoresList['all'] = [0,0];
             foreach($this->getAllArtists() as $artist) {
-                $this->scoresList[$artist->getId()] = 0;
+                $this->scoresList[$artist->getId()] = [0, 0];
                 $this->scoresArtistList[$artist->getId()] = $artist->getArtistname();
             }
 
@@ -575,11 +575,13 @@ class ContractArtist extends BaseContractArtist
                 /** @var Purchase $purchase */
                 if(!empty($purchase->getArtists()) && count($purchase->getArtists()) > 0) {
                     foreach($purchase->getArtists() as $artist) {
-                        $this->scoresList[$artist->getId()] += $purchase->getThresholdIncrease();
+                        $this->scoresList[$artist->getId()][0] += $purchase->getOrganicThresholdIncrease();
+                        $this->scoresList[$artist->getId()][1] += $purchase->getPromotionalThresholdIncrease();
                     }
                 }
                 else {
-                    $this->scoresList['all'] = $this->scoresList['all'] + $purchase->getThresholdIncrease();
+                    $this->scoresList['all'][0] = $this->scoresList['all'][0] + $purchase->getOrganicThresholdIncrease();
+                    $this->scoresList['all'][1] = $this->scoresList['all'][1] + $purchase->getPromotionalThresholdIncrease();
                 }
             }
         }
@@ -592,10 +594,10 @@ class ContractArtist extends BaseContractArtist
         $exportList = [];
         foreach($this->scoresList as $key => $value) {
             if($key != 'all') {
-                $exportList[] = $this->scoresArtistList[$key] . '  : ' . $value;
+                $exportList[] = $this->scoresArtistList[$key] . '  : ' . $value[0] . ' organiques et ' .  $value[1] . ' promotionnels';
             }
             else {
-                $exportList[] = 'Sans artiste particulier : ' . $value;
+                $exportList[] = 'Sans artiste particulier : ' . $value[0] . ' organiques et ' .  $value[1] . ' promotionnels';
             }
         }
 

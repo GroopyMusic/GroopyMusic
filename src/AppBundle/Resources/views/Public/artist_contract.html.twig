@@ -216,12 +216,15 @@
                 </p>
                 <ul>
                     {% for artist in contract.allArtists %}
-                        {% set perf = contract.artistScore(artist) %}
+                        {% set perf = contract.artistScore(artist)[0] %}
+                        {% set promo_perf = contract.artistScore(artist)[1] %}
                         {% set s = perf > 1 ? 's' : '' %}
-                        <li>{{ perf }} ticket{{ s }} - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
+                        <li>{{ perf }} ticket{{ s }}{% if promo_perf > 0 %} (+ {{ promo_perf }} par promotion){% endif %} - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
                     {% endfor %}
-                    {% set s = contract.noArtistScore > 1 ? 's' : '' %}
-                    <li>{{ contract.noArtistScore }} ticket{{ s }} - pas d'artiste mentionné</li>
+                    {% set s = contract.noArtistScore[0] > 1 ? 's' : '' %}
+                    {% set perf = contract.noArtistScore()[0] %}
+                    {% set promo_perf = contract.noArtistScore()[1] %}
+                    <li>{{ perf }} ticket{{ s }}{% if promo_perf > 0 %} (+ {{ promo_perf }} par promotion){% endif %} - pas d'artiste mentionné</li>
                 </ul>
 
             {% endif %}
