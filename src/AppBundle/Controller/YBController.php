@@ -205,7 +205,7 @@ class YBController extends BaseController
                 $charge = \Stripe\Charge::create(array(
                     "amount" => $amount,
                     "currency" => "eur",
-                    "description" => "Un-Mute - payment " . $cart->getId(),
+                    "description" => "Ticked-it - payment " . $cart->getId(),
                     "source" => $source,
                 ));
 
