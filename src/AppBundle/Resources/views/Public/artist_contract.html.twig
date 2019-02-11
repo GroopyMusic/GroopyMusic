@@ -114,9 +114,9 @@
                 <div class="col-12 content-box mt-5">
                     <h3 class="text-primary text-center alt-title"><i class="fas fa-money-bill"></i> Promotions</h3>
                     <div class="content-box-content" style="border-top: 2px solid #becdf1;border-left: 2px solid #becdf1;">
-                        <p class="text-center">Pendant les premiers jours de vente, vous bénéficiez des promotions suivantes :</p>
+                        <p class="text-center">Tout au long de la campagne, profitez de la promotion suivante :</p>
                         {% for promo in contract.currentPromotions %}
-                            <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span> (jusqu'au {{ promo.endDate|fancy_date(true) }})</p>
+                            <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span>{# (jusqu'au {{ promo.endDate|fancy_date(true) }})#}</p>
                         {% endfor %}
                     </div>
                 </div>
