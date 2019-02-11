@@ -30,7 +30,7 @@
             <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}">Accéder à la liste de commandes</a>
         </div>
         <div class="col-12 col-md-3">
-            <i class="fas fa-comment"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_transactional_message', {'id': campaign.id}) }}">Envoyer un message transactionnel</a>
+            <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_transactional_message', {'id': campaign.id}) }}">Envoyer un message transactionnel</a>
         </div>
         {% if campaign.hasThreshold %}
             <div class="col-12 col-md-3">
