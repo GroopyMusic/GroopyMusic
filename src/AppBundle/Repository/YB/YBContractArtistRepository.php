@@ -24,6 +24,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
         return $qb
             ->andWhere('c.date_closure >= :now')
             ->andWhere('c.failed = 0')
+            ->orderBy('c.date_event', 'ASC')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
@@ -33,6 +34,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function getPassedYBCampaigns(User $user) {
         return $this->createQueryBuilder('c')
             ->join('c.handlers', 'u')
+            ->orderBy('c.date_event', 'DESC')
             ->where('u.id = :id')
             ->andWhere('c.date_closure < :now OR c.failed = 1')
             ->setParameters([
