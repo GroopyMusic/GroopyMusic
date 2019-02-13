@@ -75,16 +75,17 @@ class ConnectListener implements EventSubscriberInterface
     }
 
     // Registration with Facebook
-    public function onSocialRegistrationSuccess(Event $event, \HWI\Bundle\OAuthBundle\Event\FormEvent $formEvent)
+    // Bug with type-hinting of second argument
+    public function onSocialRegistrationSuccess(Event $event, $formEvent)
     {
         $this->addSessionMessage('notices.social.registration_success');
-        try {
+        /*try {
             if ($this->sponsorshipService->checkIfSponsorshipedAtInscription($formEvent->getForm()->getData())) {
                 $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.success', []));
             }
         } catch (\Throwable $th) {
             $this->addSessionMessage($this->translator->trans('notices.sponsorship.inscription.error', []));
-        }
+        }*/
 
     }
 
