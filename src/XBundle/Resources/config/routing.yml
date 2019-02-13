@@ -1,3 +1,0 @@
-x_homepage:
-    path:     /
-    defaults: { _controller: XBundle:Funder:index }
