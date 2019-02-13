@@ -1,0 +1,4 @@
+services:
+#    x.example:
+#        class: XBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
