@@ -110,16 +110,22 @@
                         {% endfor %}
                     </div>
                 </div>
-                {% if contract.currentPromotions is not empty %}
-                <div class="col-12 content-box mt-5">
-                    <h3 class="text-primary text-center alt-title"><i class="fas fa-money-bill"></i> Promotions</h3>
-                    <div class="content-box-content" style="border-top: 2px solid #becdf1;border-left: 2px solid #becdf1;">
-                        <p class="text-center">Tout au long de la campagne, profitez de la promotion suivante :</p>
-                        {% for promo in contract.currentPromotions %}
-                            <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span>{# (jusqu'au {{ promo.endDate|fancy_date(true) }})#}</p>
-                        {% endfor %}
+                {% set visiblePromos = contract.currentPromotionsVisible %}
+                {% if visiblePromos is not empty %}
+                    {% set endSentence = visiblePromos|length > 1 ? "des promotions suivantes" : "de la promotion suivante" %}
+                    <div class="col-12 content-box mt-5">
+                        <h3 class="text-primary text-center alt-title"><i class="fas fa-money-bill"></i> Promotions</h3>
+                        <div class="content-box-content" style="border-top: 2px solid #becdf1;border-left: 2px solid #becdf1;">
+                            {% if not contract.inTestPeriod %}
+                                <p class="text-center">Tout au long de la campagne, profitez {{ endSentence }} :</p>
+                            {% else %}
+                                <p class="text-center">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
+                            {% endif %}
+                            {% for promo in visiblePromos %}
+                                <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span>{# (jusqu'au {{ promo.endDate|fancy_date(true) }})#}</p>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
                 {% endif %}
             </div>
 
