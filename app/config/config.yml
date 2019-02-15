@@ -8,6 +8,7 @@ imports:
     - { resource: c_fos.yml }
     - { resource: c_jms.yml }
     - { resource: c_bundles.yml }
+    - { resource: "@XBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
