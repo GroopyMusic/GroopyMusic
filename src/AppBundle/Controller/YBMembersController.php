@@ -2,13 +2,17 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
+use AppBundle\Entity\YB\YBCommission;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
+use AppBundle\Services\AdminExcelCreator;
 use AppBundle\Form\YB\YBTransactionalMessageType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
@@ -308,19 +312,180 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/sold", name="yb_members_invoice_sold")
      */
-    public function invoiceSoldDetailsAction(UserInterface $user = null){
-        $this->checkIfAuthorized($user);
+    public function invoiceSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
+        $this->checkIfAuthorized($user, $campaign);
 
-        return $this->render('@App/PDF/yb_invoice_sold.html.twig');
+        $commissions = $campaign->getCommissions();
+        //$contracts = $campaign->getContractsFanPaid();
+        $contracts = $campaign->getContractsFan();
+        $tickets = $campaign->getTicketsSent();
+        $carts = $campaign->getContractsFan();
+        /** @var ContractFan $contract */
+        $tickets = array();
+        foreach ($contracts as $contract){
+            /** @var Ticket $ticket */
+            foreach ($contract->getTickets() as $ticket){
+                $tickets[] = $ticket;
+            }
+        }
+        $cfs = array_reverse($campaign->getContractsFanPaid());
+
+        $colonnes = array();
+        if($campaign->getTicketsSent()) {
+
+            $ticketData = array();
+            foreach($cfs as $cf) {
+                /** @var ContractFan $cf */
+
+                $purchases = $cf->getPurchases();
+                /** @var Purchase $purchase */
+                foreach ($purchases as $purchase){
+                    $qty = $purchase->getQuantity();
+                    $unitPrice = $purchase->getUnitaryPrice();
+                    $unitPriceRaw = $unitPrice/(1+$campaign->getVat());
+                    $counterPart = $purchase->getCounterpart();
+                    $counterPartId = $counterPart->getId();
+                    if (!isset($ticketData[$counterPartId])){
+                        $unitPriceNoCom = $unitPriceRaw;
+                        $commission = 0;
+                        $comThreshold = 0;
+                        /** @var YBCommission $com */
+                        foreach ($commissions as $com){
+                            if ($unitPrice >= $com->getMinimumThreshold()
+                                && $com->getMinimumThreshold() >= $comThreshold){
+                                /*$commission = $unitPriceRaw * $com->getPercentageAmount()
+                                    + $com->getFixedAmount();*/
+                                $unitPriceNoCom = $unitPriceRaw/(1+$com->getPercentageAmount())
+                                    - $com->getFixedAmount();
+                                $commission = $unitPriceRaw - $unitPriceNoCom;
+                                $comThreshold = $com->getMinimumThreshold();
+                            }
+                        }
+                        $ticketData[$counterPartId] = array(
+                            'unitPrice' => $unitPrice,
+                            'unitPriceRaw' => $unitPriceRaw,
+                            'unitPriceNoCom' => $unitPriceNoCom,
+                            'commission' => $commission,
+                            'name' => 'Ticket (counterpartID '.$counterPartId.')', //$purchase->getCounterpart()->getLocale(),
+                            'qty' => 0
+                        );
+                    }
+
+                    $ticketData[$counterPartId]['qty'] += $qty;
+                }
+                foreach ($cf->getTickets() as $ticket) {
+
+                    /** @var Ticket $ticket */
+                    $colonnes[] = array(
+                        $ticket->getBarcodeText(),
+                        $ticket->getContractFan()->getId(),
+                        $ticket->getContractFan()->getCart()->getBarcodeText(),
+                        $ticket->getName(),
+                        $ticket->getPrice(),
+                        $ticket->getCounterPart()->__toString(),
+                    );
+
+                }
+
+            }
+        }
+
+        return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+            'ticketData' => $ticketData,
+            'campaign' => $campaign,
+            'counterparts' => $campaign->getCounterparts()->toArray(),
+            'cfs' => $cfs,
+            'tickets' => $colonnes
+        ]);
     }
 
     /**
      * @Route("/invoice/{id}/fee", name="yb_members_invoice_fee")
      */
-    public function invoiceFeeDetailsAction(UserInterface $user = null){
-        $this->checkIfAuthorized($user);
+    public function invoiceFeeDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
+        $this->checkIfAuthorized($user, $campaign);
 
-        return $this->render('@App/PDF/yb_invoice_fee.html.twig');
+        $commissions = $campaign->getCommissions();
+        //$contracts = $campaign->getContractsFanPaid();
+        $contracts = $campaign->getContractsFan();
+        $tickets = $campaign->getTicketsSent();
+        $carts = $campaign->getContractsFan();
+        /** @var ContractFan $contract */
+        $tickets = array();
+        foreach ($contracts as $contract){
+            /** @var Ticket $ticket */
+            foreach ($contract->getTickets() as $ticket){
+                $tickets[] = $ticket;
+            }
+        }
+        $cfs = array_reverse($campaign->getContractsFanPaid());
+
+        $colonnes = array();
+        if($campaign->getTicketsSent()) {
+
+            $ticketData = array();
+            foreach($cfs as $cf) {
+                /** @var ContractFan $cf */
+
+                $purchases = $cf->getPurchases();
+                /** @var Purchase $purchase */
+                foreach ($purchases as $purchase){
+                    $qty = $purchase->getQuantity();
+                    $unitPrice = $purchase->getUnitaryPrice();
+                    $unitPriceRaw = $unitPrice/(1+$campaign->getVat());
+                    $counterPart = $purchase->getCounterpart();
+                    $counterPartId = $counterPart->getId();
+                    if (!isset($ticketData[$counterPartId])){
+                        $unitPriceNoCom = $unitPriceRaw;
+                        $commission = 0;
+                        $comThreshold = 0;
+                        /** @var YBCommission $com */
+                        foreach ($commissions as $com){
+                            if ($unitPrice >= $com->getMinimumThreshold()
+                                && $com->getMinimumThreshold() >= $comThreshold){
+                                /*$commission = $unitPriceRaw * $com->getPercentageAmount()
+                                    + $com->getFixedAmount();*/
+                                $unitPriceNoCom = $unitPriceRaw/(1+$com->getPercentageAmount())
+                                    - $com->getFixedAmount();
+                                $commission = $unitPriceRaw - $unitPriceNoCom;
+                                $comThreshold = $com->getMinimumThreshold();
+                            }
+                        }
+                        $ticketData[$counterPartId] = array(
+                            'unitPrice' => $unitPrice,
+                            'unitPriceRaw' => $unitPriceRaw,
+                            'unitPriceNoCom' => $unitPriceNoCom,
+                            'commission' => $commission,
+                            'name' => 'Ticket (counterpartID '.$counterPartId.')', //$purchase->getCounterpart()->getLocale(),
+                            'qty' => 0
+                        );
+                    }
+
+                    $ticketData[$counterPartId]['qty'] += $qty;
+                }
+                foreach ($cf->getTickets() as $ticket) {
+
+                    /** @var Ticket $ticket */
+                    $colonnes[] = array(
+                        $ticket->getBarcodeText(),
+                        $ticket->getContractFan()->getId(),
+                        $ticket->getContractFan()->getCart()->getBarcodeText(),
+                        $ticket->getName(),
+                        $ticket->getPrice(),
+                        $ticket->getCounterPart()->__toString(),
+                    );
+
+                }
+
+            }
+        }
+
+        return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
+            'ticketData' => $ticketData,
+            'campaign' => $campaign,
+            'counterparts' => $campaign->getCounterparts()->toArray(),
+            'cfs' => $cfs,
+        ]);
     }
 
     /**
@@ -520,4 +685,30 @@ class YBMembersController extends BaseController
         return new Response();
     }
 
+    /**
+     * @Route("admin/campaigns/excel", name="yb_admin_excel_all_campaigns")
+     */
+    public function adminExcelAllCampaigns(UserInterface $user = null){
+        //$this->checkIfAuthorized($user);
+
+        // ask the service for a Excel5
+        $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+        $adminExcelCreator = new AdminExcelCreator($phpExcelObject);
+
+        // create the writer
+        $writer = $this->get('phpexcel')->createWriter($adminExcelCreator->renderExcel(), 'Excel5');
+        // create the response
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'commissions.xls'
+        );
+        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        return $response;
+    }
 }

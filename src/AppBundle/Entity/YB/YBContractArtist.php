@@ -51,6 +51,7 @@ class YBContractArtist extends BaseContractArtist
         $this->date_closure = new \DateTime();
         $this->sold_counterparts = 0;
         $this->code = uniqid();
+        $this->commissions = new ArrayCollection();
         $this->transactional_messages = new ArrayCollection();
     }
 
@@ -212,6 +213,16 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
+
+    /**
+     * @ORM\Column(name="vat", type="float")
+     */
+    private $vat;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign")
+     */
+    private $commissions;
 
     /**
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
@@ -434,6 +445,43 @@ class YBContractArtist extends BaseContractArtist
     public function setAddress($address)
     {
         $this->address = $address;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * @param mixed $vat
+     * @return YBContractArtist
+     */
+    public function setVat($vat)
+    {
+        $this->vat = $vat;
+        return $this;
+    }
+
+    /**
+     * @param $commissions
+     * @return YBContractArtist
+     */
+    public function setCommissions($commissions)
+    {
+        $this->commissions = $commissions;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommissions()
+    {
+        return $this->commissions;
     }
 
     /**

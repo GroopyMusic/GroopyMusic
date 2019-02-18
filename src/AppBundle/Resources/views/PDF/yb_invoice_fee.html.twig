@@ -13,64 +13,46 @@
         {{ block('header') }}
         {{ block('footer') }}
         <p>
-            Un-mute <br />
-            --adresse-- <br />
-            --codepostal-- <br />
+            Ticked-it <br />
+            3, Place Saint-Antoine <br />
+            1040 Bruxelles <br />
+            0497/21.26.54
         </p>
         <p align="right">
-            Organisation <br />
-            --adresse-- <br />
-            --codepostal-- <br />
+            {{ campaign.address.name }} <br />
+            {{ campaign.address.street }}
+            {{ campaign.address.number }} <br />
+            {{ campaign.address.zipcode }}
+            {{ campaign.address.city }} <br />
+            {{ campaign.address.country }}
         </p>
         <p>
-            Namur, le --/--/20-- <br />
+            Namur, le 13/02/2019 <br />
         </p>
 
-        <h2>Campagne AAA - Facture de commission du 10/2018</h2>
+        <h2>{{ campaign }} - Facture de commission du 02/2019</h2>
 
-        <table border="1" style="width: 100%;">
+        <table border="1" style="width: 100%; border-collapse: collapse;">
             <tr>
                 <th>Description</th>
-                <th>Prix unitaire</th>
+                <th>Commission unitaire</th>
                 <th>Quantité</th>
-                <th>Commission</th>
+                <th>Montant</th>
             </tr>
-            {% for i in 1..3 %}
-                {% set unitPrice = 5*i %}
-                {% set quantity = 10 + 5*i %}
-                {% set total = unitPrice * quantity %}
-
-                {% set tva = 0.06 %}
-
-                {% set comMini = 0.4 %}
-                {% set comVar = 0.05 %}
-
-                {% set totalhtva = total / (1+tva) %}
-
-                {% if unitPrice * comVar < comMini %}
-                    {% set fee = comMini %}
-                {% else %}
-                    {% set fee = unitPrice * comVar %}
-                {% endif %}
+            {% set total = 0 %}
+            {% for item in ticketData %}
                 <tr>
-                    <td>Ticket {{ i }}</td>
-                    <td>{{ unitPrice|round(2) }}</td>
-                    <td>{{ quantity }}</td>
-                    <td>{{ fee * quantity|round(2) }}</td>
-
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.commission|round(2) }}</td>
+                    <td>{{ item.qty }}</td>
+                    {% set subtotal = item.commission * item.qty %}
+                    <td>{{ subtotal|round(2) }}</td>
                 </tr>
+                {% set total = total + subtotal %}
             {% endfor %}
             <tr class="text-bold">
-                <td colspan="3">Total HTVA</td>
-                <td>000.00€</td>
-            </tr>
-            <tr class="text-bold">
-                <td colspan="3">TVA</td>
-                <td>000.00€</td>
-            </tr>
-            <tr class="text-bold">
-                <td colspan="3">Total TVAC</td>
-                <td>000.00€</td>
+                <td colspan="3">Grand Total</td>
+                <td>{{ total|round(2) }}€</td>
             </tr>
         </table>
     </page>

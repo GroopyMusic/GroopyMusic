@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,6 +27,27 @@ class YBContractArtistType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('commissions', CollectionType::class, array(
+                'label' => 'Commissions',
+                'entry_type' => YBCommissionType::class,
+                'entry_options' => array(
+                    'label' => false,
+                ),
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'attr' => ['class' => 'collection']
+                //'required' => false,
+                //'label' => 'Montant fixe minimum',
+            ))
+            ->add('vat', PercentType::class, array(
+                'required' => false,
+                'label' => 'Taux de TVA',
+                'constraints' => [
+                    new Assert\GreaterThanOrEqual(['value' => 0]),
+                ]
+            ))
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
