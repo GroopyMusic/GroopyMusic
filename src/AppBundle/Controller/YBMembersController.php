@@ -323,8 +323,7 @@ class YBMembersController extends BaseController
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
             'counterparts' => $campaign->getCounterparts()->toArray(),
-            'cfs' => $cfs,
-            'tickets' => $financialDataService->getTicketList()
+            'cfs' => $cfs
         ]);
     }
 

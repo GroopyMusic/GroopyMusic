@@ -13,14 +13,11 @@ class FinancialDataGenerator{
     private $campaign;
     /** @var $ticketData array */
     private $ticketData;
-    /** @var $ticketList array */
-    private $ticketList;
 
     public function __construct(YBContractArtist $campaign)
     {
         $this->campaign = $campaign;
         $this->ticketData = array();
-        $this->ticketList = array();
         $this->buildCampaignData();
     }
 
@@ -29,14 +26,11 @@ class FinancialDataGenerator{
         return $this->ticketData;
     }
 
-    public function getTicketList(){
-        return $this->ticketList;
-    }
-
     private function buildCampaignData(){
         $cfs = array_reverse($this->campaign->getContractsFanPaid());
+        $this->ticketData = array();
 
-        //if($this->campaign->getTicketsSent()) {
+        if($this->campaign->getTicketsSent()) {
 
             foreach($cfs as $cf) {
                 /** @var ContractFan $cf */
@@ -46,22 +40,9 @@ class FinancialDataGenerator{
                 foreach ($purchases as $purchase){
                     $this->processPurchase($purchase);
                 }
-                foreach ($cf->getTickets() as $ticket) {
-
-                    /** @var Ticket $ticket */
-                    $this->ticketList[] = array(
-                        $ticket->getBarcodeText(),
-                        $ticket->getContractFan()->getId(),
-                        $ticket->getContractFan()->getCart()->getBarcodeText(),
-                        $ticket->getName(),
-                        $ticket->getPrice(),
-                        $ticket->getCounterPart()->__toString(),
-                    );
-
-                }
 
             }
-        //}
+        }
     }
 
     /**
@@ -73,30 +54,31 @@ class FinancialDataGenerator{
         $counterPart = $purchase->getCounterpart();
         $counterPartId = $counterPart->getId();
 
-        /* if data is not yet built */
+        /* if common ticket data is not yet built, based on counterpart IDs.
+        This needs to be done only once per ticket type */
         if (!isset($this->ticketData[$counterPartId])){
             $this->ticketData[$counterPartId] = $this->dataFromPurchase($purchase);
         }
 
+        /* Add ticket quantity to total */
         $this->ticketData[$counterPartId]['qty'] += $qty;
     }
 
     /**
+     * Builds an array containing the informations needed for the invoice
      * @param $purchase Purchase
      * @return array
      *
      */
     private function dataFromPurchase($purchase){
         $purchaseUnitPrice = $purchase->getUnitaryPrice();
-        $commission = $this->getRelevantCommission($purchaseUnitPrice);
 
         /* IMPORTANT */
         $purchaseUnitPriceNoVAT = $this->calculateNoVATPrice($purchaseUnitPrice);
-        $purchaseUnitPriceNoCom = $this->calculateNoCommissionPrice($purchaseUnitPriceNoVAT, $commission);
+        $purchaseUnitPriceNoCom = $this->calculateNoCommissionPrice($purchaseUnitPriceNoVAT);
         $commissionValue = $purchaseUnitPriceNoVAT - $purchaseUnitPriceNoCom;
 
         $counterPart = $purchase->getCounterpart();
-        $counterPartId = $counterPart->getId();
 
         return array(
             'unitPrice' => $purchaseUnitPrice,
@@ -111,10 +93,12 @@ class FinancialDataGenerator{
     /**
      * Loop through all commissions to find and keep the relevant one
      *
+     * Conditions for relevance:
      * Unit price is above the commission threshold
      * Commission threshold is the highest valid value found
      *     If 2 commission thresholds are equal, the last one is kept
      *
+     * If no commission bracket can be found, null is returned instead
      * @param $price
      * @return YBCommission|null
      */
@@ -134,15 +118,27 @@ class FinancialDataGenerator{
         return $currentCom;
     }
 
+    /**
+     * Removes the VAT from the given price, based on the campaign's provided VAT
+     * @param $price float|double
+     * @return float|double
+     */
     private function calculateNoVATPrice($price){
         return $price/(1+$this->campaign->getVat());
     }
 
     /**
-     * @param $price
-     * @param $commission YBCommission
+     * Removes the commission value from the given price, based on the campaign's commission brackets
+     * Note: This method is separate from the VAT calculation,
+     * if you want to remove the commission on the no-VAT price, please use calculateNoVATPrice first
+     * @param $price float|double
+     * @param $commission YBCommission Optional: force a specific commission bracket to be used
+     * @return float|double
      */
-    private function calculateNoCommissionPrice($price, $commission){
+    private function calculateNoCommissionPrice($price, $commission = null){
+        if ($commission == null){
+            $commission = $this->getRelevantCommission($price);
+        }
         return $price/(1+$commission->getPercentageAmount())
             - $commission->getFixedAmount();
     }
