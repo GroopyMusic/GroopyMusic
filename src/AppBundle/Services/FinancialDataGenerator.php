@@ -103,7 +103,7 @@ class FinancialDataGenerator{
             'unitPriceRaw' => $purchaseUnitPriceNoVAT,
             'unitPriceNoCom' => $purchaseUnitPriceNoCom,
             'commission' => $commissionValue,
-            'name' => 'Ticket (counterpartID '.$counterPartId.')', //$purchase->getCounterpart()->getLocale(),
+            'name' => $counterPart,
             'qty' => 0
         );
     }
