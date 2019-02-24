@@ -66,14 +66,6 @@
                                            src="{{ asset('images/icons/artist.png') }}"/> C'est le dernier jour de campagne ! C'est le moment de soutenir les artistes de ce Festival !
                     </p>
                 {% endif %}
-
-                {% if contract.currentPromotions is not empty %}
-                    <p class="p-info">Pendant les premiers jours de vente, vous bénéficiez des promotions suivantes :
-                    {% for promo in contract.currentPromotions %}
-                            <br />{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> {{ promo.right }} (jusqu'au {{ promo.endDate|fancy_date(true) }})
-                    {% endfor %}
-                    </p>
-                {% endif %}
             </div>
 
             <div class="col-12 col-lg-8">
@@ -118,6 +110,23 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% set visiblePromos = contract.currentPromotionsVisible %}
+                {% if visiblePromos is not empty %}
+                    {% set endSentence = visiblePromos|length > 1 ? "des promotions suivantes" : "de la promotion suivante" %}
+                    <div class="col-12 content-box mt-5">
+                        <h3 class="text-primary text-center alt-title"><i class="fas fa-money-bill"></i> Promotions</h3>
+                        <div class="content-box-content" style="border-top: 2px solid #becdf1;border-left: 2px solid #becdf1;">
+                            {% if not contract.inTestPeriod %}
+                                <p class="text-center">Tout au long de la campagne, profitez {{ endSentence }} :</p>
+                            {% else %}
+                                <p class="text-center">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
+                            {% endif %}
+                            {% for promo in visiblePromos %}
+                                <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span>{# (jusqu'au {{ promo.endDate|fancy_date(true) }})#}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
 
@@ -213,12 +222,15 @@
                 </p>
                 <ul>
                     {% for artist in contract.allArtists %}
-                        {% set perf = contract.artistScore(artist) %}
+                        {% set perf = contract.artistScore(artist)[0] %}
+                        {% set promo_perf = contract.artistScore(artist)[1] %}
                         {% set s = perf > 1 ? 's' : '' %}
-                        <li>{{ perf }} ticket{{ s }} - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
+                        <li>{{ perf }} ticket{{ s }}{% if promo_perf > 0 %} (+ {{ promo_perf }} par promotion){% endif %} - <a class="text-secondary" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a></li>
                     {% endfor %}
-                    {% set s = contract.noArtistScore > 1 ? 's' : '' %}
-                    <li>{{ contract.noArtistScore }} ticket{{ s }} - pas d'artiste mentionné</li>
+                    {% set s = contract.noArtistScore[0] > 1 ? 's' : '' %}
+                    {% set perf = contract.noArtistScore()[0] %}
+                    {% set promo_perf = contract.noArtistScore()[1] %}
+                    <li>{{ perf }} ticket{{ s }}{% if promo_perf > 0 %} (+ {{ promo_perf }} par promotion){% endif %} - pas d'artiste mentionné</li>
                 </ul>
 
             {% endif %}

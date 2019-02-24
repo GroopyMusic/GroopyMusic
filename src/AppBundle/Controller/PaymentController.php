@@ -103,6 +103,8 @@ class PaymentController extends BaseController
                 $payment->setDate(new \DateTime())->setUser($user)
                     ->setCart($cart)->setRefunded(false)->setAmount($cart->getAmount());
 
+               // $em->detach($cart); // Otherwise a payment error would still let the tickets be considered as paid in crowdfunding advancement
+
                 $charge = \Stripe\Charge::create(array(
                     "amount" => $amount,
                     "currency" => "eur",
@@ -124,6 +126,8 @@ class PaymentController extends BaseController
                  }*/
 
                 $em->persist($cart);
+
+                $em->flush();
 
                 return $this->redirectToRoute('user_cart_payment_stripe_success', array('cart_code' => $cart->getBarcodeText())); //, 'sponsorship' => $sponsorship));
 

@@ -57,6 +57,15 @@ class Purchase
         return $this->getQuantity() * $this->getCounterpart()->getThresholdIncrease();
     }
 
+    public function getOrganicThresholdIncrease() {
+        return $this->getQuantityOrganic() * $this->getCounterpart()->getThresholdIncrease();
+    }
+
+    public function getPromotionalThresholdIncrease() {
+        return $this->getQuantityPromotional() * $this->getCounterpart()->getThresholdIncrease();
+
+    }
+
     public function getPromotions()
     {
         return array_map(function (Purchase_Promotion $p_promotion) {

@@ -138,17 +138,21 @@
   }
 
   .tag {
+    width: 100%;
+    text-align: center;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
     position: relative;
     top: 20px;
     z-index: 1000;
     color: #fff;
-    padding: 5px 10px;
+    padding: 10px 10px;
     margin-bottom: 15px;
     font-size: 1rem;
     border-radius: 2px;
     display: inline-block;
     text-transform: uppercase;
-    background-color: #1b00ff;
+    background-color: #64b066;
     &:hover {
       text-decoration: none;
     }
