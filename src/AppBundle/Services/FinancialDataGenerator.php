@@ -7,8 +7,11 @@ use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\YBCommission;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 
 class FinancialDataGenerator{
+    const STRIPE_FIXED_AMOUNT = 0.25;
+    const STRIPE_PERCENTAGE = 1.4/100;
     /** @var $campaign YBContractArtist */
     private $campaign;
     /** @var $ticketData array */
@@ -18,7 +21,7 @@ class FinancialDataGenerator{
     {
         $this->campaign = $campaign;
         $this->ticketData = array();
-        $this->buildCampaignData();
+        //$this->buildCampaignData();
     }
 
     public function getTicketData()
@@ -26,7 +29,7 @@ class FinancialDataGenerator{
         return $this->ticketData;
     }
 
-    private function buildCampaignData(){
+    public function buildAllCampaignData(){
         $cfs = array_reverse($this->campaign->getContractsFanPaid());
         $this->ticketData = array();
 
@@ -42,6 +45,18 @@ class FinancialDataGenerator{
                 }
 
             }
+        }
+
+    }
+
+    /**
+     * @var YBInvoice $invoice
+     */
+    public function buildFromInvoice($invoice){
+        $purchases = $invoice->getPurchases();
+        $this->ticketData = array();
+        foreach ($purchases as $purchase){
+            $this->processPurchase($purchase);
         }
     }
 
@@ -141,5 +156,9 @@ class FinancialDataGenerator{
         }
         return $price/(1+$commission->getPercentageAmount())
             - $commission->getFixedAmount();
+    }
+
+    private function calculateStripeCommission($price){
+        return $price * self::STRIPE_PERCENTAGE + self::STRIPE_FIXED_AMOUNT;
     }
 }

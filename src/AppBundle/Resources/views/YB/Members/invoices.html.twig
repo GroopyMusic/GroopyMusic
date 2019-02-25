@@ -32,79 +32,55 @@
         </div>
 
 
-
-        <div class="row mt-4">
-            {% for invoiceDate, orgs in campaignsDate %}
-                <div class="row col-12">
-                    <h3> {{ invoiceDate }} </h3>
-                    <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                       href="{{ url('yb_members_invoice_sold', {'id': 1}) }}">
-                        <i class="fas fa-download text-primary"></i> Tout télécharger
-                    </a>
-                    {% for orgName, orgCampaigns in orgs %}
-
-                        {% for campaignName, invoiceData in orgCampaigns %}
-                            <div class="row col-12 col-md-12 {% if not invoiceData.validated %} bg-warning {% endif %}">
-                                <div class="col-12 col-md-3">
-                                    {{ orgName }} - {{ campaignName }}
-                                </div>
+        {% if campaigns|length > 0 %}
+            <div class="container row mt-4">
+                {% for campaign in campaigns %}
+                    <div class="row col-12">
+                        <h3><a class="link-secondary" target="_blank"
+                               href="{{ path('yb_campaign', {'id': campaign.id}) }}">
+                                {{ campaign.getTitle }}
+                            </a></h3>
+                        <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
+                           href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
+                            <i class="fas fa-download text-primary"></i> Ventes (Apercu)
+                        </a>
+                        <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
+                           href="{{ url('yb_members_campaign_fee', {'id': campaign.id}) }}">
+                            <i class="fas fa-download text-primary"></i> Commissions (Apercu)
+                        </a>
+                        {% if not 0 %}
+                            <a class="btn btn-sm btn-secondary col-12 col-md-2" target="_blank"
+                               href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
+                                Générer
+                            </a>
+                        {% endif %}
+                        {% for invoice in campaign.getInvoices %}
+                            <div class="row col-12 {% if not invoice.userValidated %} bg-warning {% endif %}">
+                                <h4>Facture du {{ invoice.getDateGenerated|date("d/m/Y") }}</h4>
                                 <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                                   href="{{ url('yb_members_invoice_sold', {'id': 1}) }}">
-                                    <i class="fas fa-download text-primary"></i> Télécharger
+                                   href="{{ url('yb_members_invoice_sold', {'id': invoice.id}) }}">
+                                    <i class="fas fa-download text-primary"></i> Ventes
                                 </a>
-
-                                {% if not invoiceData.validated %}
-                                    <a class="btn btn-sm btn-secondary col-12 col-md-2" target="_blank"
-                                       href="{{ url('yb_members_invoice_sold', {'id': 1}) }}">
+                                <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
+                                   href="{{ url('yb_members_invoice_fee', {'id': invoice.id}) }}">
+                                    <i class="fas fa-download text-primary"></i> Commissions
+                                </a>
+                                {% if not invoice.userValidated %}
+                                    <a class="btn btn-sm btn-secondary col-12 col-md-2"
+                                       href="{{ url('yb_members_invoice_validate', {'id': invoice.id}) }}">
                                         Valider
                                     </a>
                                 {% endif %}
                             </div>
                         {% endfor %}
-                    {% endfor %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="row mt-4">
-            {% for orgName, campaigns in campaignsOrg %}
-            <div class="row col-12">
-                <h3> {{ orgName }} </h3>
-                <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                   href="{{ url('yb_members_invoice_sold', {'id': 1}) }}">
-                    <i class="fas fa-download text-primary"></i> Tout télécharger
-                </a>
-                {% for campaignName, invoices in campaigns %}
-                <div class="row col-12">
-                    <h5>{{ campaignName }}</h5>
-                    <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                       href="{{ url('yb_members_invoice_sold', {'id': 1}) }}">
-                        <i class="fas fa-download text-primary"></i> Tout télécharger
-                    </a>
-                </div>
-                    {% for invoiceDate, invoiceData in invoices %}
-                        <div class="row col-12 col-md-12
-                        {% if not invoiceData.validated %} bg-warning {% endif %}">
-                            <div class="col-12 col-md-3">
-                                {{ invoiceDate|date('m/Y') }}
-                            </div>
-                            <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                               href="{{ url('yb_members_invoice_sold', {'id': 1}) }}">
-                                <i class="fas fa-download text-primary"></i> Télécharger
-                            </a>
-
-                            {% if not invoiceData.validated %}
-                                <a class="btn btn-sm btn-secondary col-12 col-md-2" target="_blank"
-                                   href="{{ url('yb_members_invoice_sold', {'id': 1}) }}">
-                                    Valider
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+                    </div>
                 {% endfor %}
             </div>
-            {% endfor %}
-        </div>
+        {% else %}
+            <div class="row mt-4">
+                Vous n'avez aucune campagne
+            </div>
+        {% endif %}
 
     </section>
 {% endblock %}

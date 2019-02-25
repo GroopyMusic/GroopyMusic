@@ -45,4 +45,14 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getResult()
             ;
     }
+
+    public function getAllYBCampaigns(User $user){
+        return $this->createQueryBuilder('c')
+            ->join('c.handlers', 'u')
+            ->orderBy('c.date_event', 'DESC')
+            ->where('u.id = :id')
+            ->setParameter('id', $user->getId())
+            ->getQuery()
+            ->getResult();
+    }
 }

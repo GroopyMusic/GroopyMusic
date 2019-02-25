@@ -4,10 +4,12 @@ namespace AppBundle\Controller;
 
 use AppBundle\AppBundle;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\YBCommission;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
@@ -211,113 +213,124 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoices", name="yb_members_invoices")
      */
-    public function invoicesViewListAction(UserInterface $user = null){
+    public function invoicesViewListAction(EntityManagerInterface $em,UserInterface $user = null){
         $this->checkIfAuthorized($user);
 
-        $campaignsByOrg = array(
-            "Organisation A" => array(
-                "Campagne A" => array(
-                    "2018-10-01" => array(
-                        "validated" => false
-                    ),
-                    "2018-09-01" => array(
-                        "validated" => true
-                    ),
-                    "2018-08-01" => array(
-                        "validated" => true
-                    )
-                ),
-                "Campagne B" => array(
-                    "2018-10-01" => array(
-                        "validated" => false
-                    ),
-                    "2018-09-01" => array(
-                        "validated" => true
-                    ),
-                    "2018-08-01" => array(
-                        "validated" => true
-                    )
-                )
-            ),
-            "Organisation B" => array(
-                "Campagne A" => array(
-                    "2018-10-01" => array(
-                        "validated" => false
-                    ),
-                    "2018-09-01" => array(
-                        "validated" => true
-                    ),
-                    "2018-08-01" => array(
-                        "validated" => true
-                    )
-                ),
-                "Campagne B" => array(
-                    "2018-10-01" => array(
-                        "validated" => false
-                    ),
-                    "2018-09-01" => array(
-                        "validated" => true
-                    ),
-                    "2018-08-01" => array(
-                        "validated" => true
-                    )
-                )
-            )
-        );
-
-        $campaignsByDate = array(
-            "2018-10-01" => array(
-                "Organisation A" => array(
-                    "Campagne A" => array(
-                        "validated" => false
-                    ),
-                    "Campagne B" => array(
-                        "validated" => false
-                    )
-                ),
-                "Organisation B" => array(
-                    "Campagne A" => array(
-                        "validated" => false
-                    ),
-                    "Campagne B" => array(
-                        "validated" => false
-                    )
-                )
-            ),
-            "2018-09-01" => array(
-                "Organisation A" => array(
-                    "Campagne A" => array(
-                        "validated" => true
-                    ),
-                    "Campagne B" => array(
-                        "validated" => true
-                    )
-                ),
-                "Organisation B" => array(
-                    "Campagne A" => array(
-                        "validated" => true
-                    ),
-                    "Campagne B" => array(
-                        "validated" => true
-                    )
-                )
-            )
-        );
+        /** @var \AppBundle\Repository\YB\YBContractArtistRepository $YBCARepository */
+        $YBCARepository = $em->getRepository('AppBundle:YB\YBContractArtist');
+        $all_campaigns = $YBCARepository->getAllYBCampaigns($user);
 
         return $this->render('@App/YB/Members/invoices.html.twig', [
-            'campaignsOrg' => $campaignsByOrg,
-            'campaignsDate' => $campaignsByDate
+            'campaigns' => $all_campaigns,
         ]);
+    }
+
+    /**
+     * @Route("/invoice/{id}/generate", name="yb_members_invoice_generate")
+     */
+    public function invoiceGenerateAction(YBContractArtist $campaign, EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+
+        $invoice = new YBInvoice();
+        $invoice->setCampaign($campaign);
+        $em->persist($invoice);
+
+        $cfs = $campaign->getContractsFanPaid();
+        /** @var ContractFan $cf */
+        foreach ($cfs as $cf){
+            if ($campaign->isPassed() || $cf->getDate() < new \DateTime("first day of this month midnight")) {
+                /** @var Purchase $purchase */
+                foreach ($cf->getPurchases() as $purchase){
+                    if ($purchase->getInvoice() === null){
+                        $purchase->setInvoice($invoice);
+                    }
+                }
+            }
+        }
+
+
+        return $this->invoicesViewListAction($em, $user);
+    }
+
+    /**
+     * @Route("/invoice/{id}/validate", name="yb_members_invoice_validate")
+     */
+    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user, $invoice->getCampaign());
+
+        $invoice->validate();
+        $em->persist($invoice);
+
+        return $this->invoicesViewListAction($em, $user);
     }
 
     /**
      * @Route("/invoice/{id}/sold", name="yb_members_invoice_sold")
      */
-    public function invoiceSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
+    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
+        $campaign = $invoice->getCampaign();
+        $this->checkIfAuthorized($user, $campaign);
+
+        //$purchases = $invoice->getPurchases();
+        $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildFromInvoice($invoice);
+
+        $counterparts = array_map(function ($purchase){
+            /** @var Purchase $purchase */
+            return $purchase->getCounterpart();
+        }, $invoice->getPurchases()->toArray());
+
+        $cfs = array_map(function ($purchase){
+            /** @var Purchase $purchase */
+            return $purchase->getContractFan();
+        }, $invoice->getPurchases()->toArray());
+
+        return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+            'ticketData' => $financialDataService->getTicketData(),
+            'campaign' => $campaign,
+            'counterparts' => $counterparts,
+            'cfs' => $cfs
+        ]);
+    }
+
+    /**
+     * @Route("/invoice/{id}/fee", name="yb_members_invoice_fee")
+     */
+    public function invoiceFeeDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
+        $campaign = $invoice->getCampaign();
+        $this->checkIfAuthorized($user, $campaign);
+
+        //$purchases = $invoice->getPurchases();
+        $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildFromInvoice($invoice);
+
+        $counterparts = array_map(function ($purchase){
+            /** @var Purchase $purchase */
+            return $purchase->getCounterpart();
+        }, $invoice->getPurchases()->toArray());
+
+        $cfs = array_map(function ($purchase){
+            /** @var Purchase $purchase */
+            return $purchase->getContractFan();
+        }, $invoice->getPurchases()->toArray());
+
+        return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
+            'ticketData' => $financialDataService->getTicketData(),
+            'campaign' => $campaign,
+            'counterparts' => $counterparts,
+            'cfs' => $cfs
+        ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/sold", name="yb_members_campaign_sold")
+     */
+    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
         $this->checkIfAuthorized($user, $campaign);
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
         $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildAllCampaignData();
 
         return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
             'ticketData' => $financialDataService->getTicketData(),
@@ -328,13 +341,14 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/invoice/{id}/fee", name="yb_members_invoice_fee")
+     * @Route("/campaign/{id}/fee", name="yb_members_campaign_fee")
      */
-    public function invoiceFeeDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
+    public function campaignFeeDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
         $this->checkIfAuthorized($user, $campaign);
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
         $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildAllCampaignData();
 
         return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
             'ticketData' => $financialDataService->getTicketData(),

@@ -225,6 +225,11 @@ class YBContractArtist extends BaseContractArtist
     private $commissions;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBInvoice", cascade={"all"}, mappedBy="campaign")
+     */
+    private $invoices;
+
+    /**
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
      */
     private $transactional_messages;
@@ -482,6 +487,14 @@ class YBContractArtist extends BaseContractArtist
     public function getCommissions()
     {
         return $this->commissions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInvoices()
+    {
+        return $this->invoices;
     }
 
     /**
