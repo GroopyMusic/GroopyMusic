@@ -388,7 +388,7 @@ class Cart
      */
     public function getPayment()
     {
-        return $this->isFree() ? null : $this->payment != null ? $this->payment : $this->getFirst()->getPayment();
+        return $this->isFree() ? null : $this->payment;
     }
 
     /**
