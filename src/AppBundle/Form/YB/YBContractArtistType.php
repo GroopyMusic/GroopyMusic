@@ -9,6 +9,7 @@ use AppBundle\Form\CounterPartType;
 use AppBundle\Form\PhotoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -41,11 +42,17 @@ class YBContractArtistType extends AbstractType
                 //'required' => false,
                 //'label' => 'Montant fixe minimum',
             ))
-            ->add('vat', PercentType::class, array(
+            ->add('vat', ChoiceType::class, array(
                 'required' => false,
                 'label' => 'Taux de TVA',
+                'choices' => array(
+                    "0%" => 0,
+                    "6%" => 0.06,
+                    "12%" => 0.12,
+                    "21%" => 0.21),
                 'constraints' => [
                     new Assert\GreaterThanOrEqual(['value' => 0]),
+                    new Assert\LessThanOrEqual(['value' => 1])
                 ]
             ))
             ->add('threshold', IntegerType::class, array(

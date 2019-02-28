@@ -215,7 +215,7 @@ class YBContractArtist extends BaseContractArtist
     private $address;
 
     /**
-     * @ORM\Column(name="vat", type="float")
+     * @ORM\Column(name="vat", type="float", nullable=true)
      */
     private $vat;
 
