@@ -27,34 +27,39 @@ class YBContractArtistType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if($options['admin']){
+            $builder
+                ->add('commissions', CollectionType::class, array(
+                    'label' => 'Commissions',
+                    'entry_type' => YBCommissionType::class,
+                    'entry_options' => array(
+                        'label' => false,
+                    ),
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'prototype' => true,
+                    'attr' => ['class' => 'second-collection']
+                    //'required' => false,
+                    //'label' => 'Montant fixe minimum',
+                ))
+                ->add('vat', ChoiceType::class, array(
+                    'required' => false,
+                    'label' => 'Taux de TVA',
+                    'choices' => array(
+                        "0%" => 0,
+                        "6%" => 0.06,
+                        "12%" => 0.12,
+                        "21%" => 0.21),
+                    'constraints' => [
+                        new Assert\GreaterThanOrEqual(['value' => 0]),
+                        new Assert\LessThanOrEqual(['value' => 1])
+                    ]
+                ))
+            ;
+        }
+
         $builder
-            ->add('commissions', CollectionType::class, array(
-                'label' => 'Commissions',
-                'entry_type' => YBCommissionType::class,
-                'entry_options' => array(
-                    'label' => false,
-                ),
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'prototype' => true,
-                'attr' => ['class' => 'collection']
-                //'required' => false,
-                //'label' => 'Montant fixe minimum',
-            ))
-            ->add('vat', ChoiceType::class, array(
-                'required' => false,
-                'label' => 'Taux de TVA',
-                'choices' => array(
-                    "0%" => 0,
-                    "6%" => 0.06,
-                    "12%" => 0.12,
-                    "21%" => 0.21),
-                'constraints' => [
-                    new Assert\GreaterThanOrEqual(['value' => 0]),
-                    new Assert\LessThanOrEqual(['value' => 1])
-                ]
-            ))
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
@@ -146,19 +151,20 @@ class YBContractArtistType extends AbstractType
         } else {
             $builder
                 ->add('bankAccount', TextType::class, array(
-                    'required' => true,
                     'label' => 'Numéro de compte en banque IBAN',
+                    'required' => false
                 ))
                 ->add('vatNumber', TextType::class, array(
-                    'required' => true,
                     'label' => 'Numéro de TVA',
+                    'required' => false
                 ))
                 ->add('organizationName', TextType::class, array(
-                    'required' => true,
                     'label' => "Nom de l'organisation",
+                    'required' => false
                 ))
                 ;
         }
+
     }
 
     public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
@@ -198,6 +204,7 @@ class YBContractArtistType extends AbstractType
                 new Assert\Callback(array($this, 'validate'))
             ),
             'creation' => false,
+            'admin' => false
         ]);
     }
 

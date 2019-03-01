@@ -14,9 +14,10 @@
         </ol>
     </section>
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/counterpart.html.twig'  ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/counterpart.html.twig' '@App/YB/Form/commission.html.twig'  ':Form:jquery.collection.html.twig' %}
 
     {{ form_start(form) }}
+    {% if admin %}
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Commissions et TVA</h2>
         <div class="row">
@@ -30,7 +31,11 @@
             la commission sera la somme de ces 2 éléments
         </p>
         <p>Pour avoir une tranche par défaut, laisser le montant minimum à 0</p>
-        {% for commission in form.commissions %}
+        <div class="col-12">
+            {{ form_widget(form.commissions) }}
+        </div>
+
+        {#{% for commission in form.commissions %}
         <div class="row">
             <div class="col-4">
                 {{ form_row(commission.minimumThreshold) }}
@@ -42,9 +47,10 @@
                 {{ form_row(commission.percentageAmount) }}
             </div>
         </div>
-        {% endfor %}
+        {% endfor %} #}
         <!--div id="add-commission" class="btn btn-primary">Ajouter</div-->
     </section>
+    {% endif %}
 
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Infos générales </h2>
@@ -211,6 +217,12 @@
     {{ parent() }}
     <script type="text/javascript">
         $(function() {
+
+            yb_second_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une commission</a>',
+                remove:'<div class="input-group"><a class="btn btn-danger" href="#">Supprimer</a></div>'
+            });
+
             yb_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un ticket</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer</a>'

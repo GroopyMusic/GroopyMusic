@@ -25,6 +25,7 @@
                                href="{{ path('yb_campaign', {'id': campaign.id}) }}">
                                 {{ campaign.getTitle }}
                             </a></h3>
+                        {% if admin %}
                         <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
                            href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
                             <i class="fas fa-download text-primary"></i> Ventes (Apercu)
@@ -33,11 +34,10 @@
                            href="{{ url('yb_members_campaign_fee', {'id': campaign.id}) }}">
                             <i class="fas fa-download text-primary"></i> Commissions (Apercu)
                         </a>
-                        {% if not 0 %}
-                            <a class="btn btn-sm btn-secondary col-12 col-md-2" target="_blank"
-                               href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
-                                Générer
-                            </a>
+                        <a class="btn btn-sm btn-secondary col-12 col-md-2" target="_blank"
+                           href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
+                            Générer
+                        </a>
                         {% endif %}
                         {% for invoice in campaign.getInvoices %}
                             <div class="row col-12 {% if not invoice.userValidated %} bg-warning {% endif %}">

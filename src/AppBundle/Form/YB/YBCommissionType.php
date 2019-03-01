@@ -55,4 +55,9 @@ class YBCommissionType extends AbstractType
     {
 
     }
+
+    public function getBlockPrefix()
+    {
+        return 'app_bundle_commission_type';
+    }
 }

@@ -88,11 +88,11 @@
             </tr>
             <tr class="text-bold">
                 <td colspan="4">Commission Ticked-it</td>
-                <td>{{ commission|round(2) }}€</td>
+                <td>-{{ commission|round(2) }}€</td>
             </tr>
             <tr class="text-bold">
                 <td colspan="4">Total</td>
-                <td>{{ totalRaw + totalVat + commission|round(2) }}€</td>
+                <td>{{ totalRaw + totalVat - commission|round(2) }}€</td>
             </tr>
         </table>
 

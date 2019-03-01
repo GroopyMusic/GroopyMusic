@@ -1,0 +1,13 @@
+{% block app_bundle_commission_type_row %}
+    <div class="row commission-row">
+        <div class="col-3">
+            {{ form_row(form.minimumThreshold) }}
+        </div>
+        <div class="col-3">
+            {{ form_row(form.fixedAmount) }}
+        </div>
+        <div class="col-4">
+            {{ form_row(form.percentageAmount) }}
+        </div>
+    </div>
+{% endblock %}
