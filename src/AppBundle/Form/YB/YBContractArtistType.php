@@ -124,6 +124,7 @@ class YBContractArtistType extends AbstractType
                 'label' => 'Sold out global (si applicable)',
                 'required' => false,
             ))
+
             ->add('submit', SubmitType::class, array(
                 'label' => 'Enregistrer',
             ))
@@ -142,6 +143,21 @@ class YBContractArtistType extends AbstractType
                         new Assert\NotBlank(),
                 )
             ));
+        } else {
+            $builder
+                ->add('bankAccount', TextType::class, array(
+                    'required' => true,
+                    'label' => 'Numéro de compte en banque IBAN',
+                ))
+                ->add('vatNumber', TextType::class, array(
+                    'required' => true,
+                    'label' => 'Numéro de TVA',
+                ))
+                ->add('organizationName', TextType::class, array(
+                    'required' => true,
+                    'label' => "Nom de l'organisation",
+                ))
+                ;
         }
     }
 

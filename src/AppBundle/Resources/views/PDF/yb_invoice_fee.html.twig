@@ -12,6 +12,19 @@
         {% endblock %}
         {{ block('header') }}
         {{ block('footer') }}
+        {% if invoice is not null %}
+            {% if invoice.userValidated %}
+                <p>
+                    Numéro de facture: FC-{{ invoice.invoiceIdentifier }}
+                </p>
+            {% else %}
+                <h3> IMPORTANT: Ce document ne constitue pas une facture valable
+                    tant que vous ne la validez pas.
+                </h3>
+            {% endif %}
+        {% else %}
+            <p>Aperçu de facture</p>
+        {% endif %}
         <p>
             Ticked-it <br />
             3, Place Saint-Antoine <br />
@@ -19,18 +32,22 @@
             0497/21.26.54
         </p>
         <p align="right">
-            {{ campaign.address.name }} <br />
+            {{ campaign.organizationName }} <br />
+            <!-- {{ campaign.address.name }} <br /> -->
             {{ campaign.address.street }}
             {{ campaign.address.number }} <br />
             {{ campaign.address.zipcode }}
             {{ campaign.address.city }} <br />
-            {{ campaign.address.country }}
-        </p>
-        <p>
-            Namur, le 13/02/2019 <br />
+            {{ campaign.address.country }} <br />
+            Num&eacute;ro de TVA: {{ campaign.vatNumber }} <br />
+            IBAN: {{ campaign.bankAccount }}
         </p>
 
-        <h2>{{ campaign }} - Facture de commission du 02/2019</h2>
+        {% if invoice is null %}
+            <h2>{{ campaign }} - Facture de commission</h2>
+        {% else %}
+            <h2>{{ campaign }} - Facture de commission du {{ invoice.dateValidated|date("d/m/Y") }}</h2>
+        {% endif %}
 
         <table border="1" style="width: 100%; border-collapse: collapse;">
             <tr>
@@ -43,10 +60,10 @@
             {% for item in ticketData %}
                 <tr>
                     <td>{{ item.name }}</td>
-                    <td>{{ item.commission|round(2) }}</td>
+                    <td>{{ item.commission|round(2) }}€</td>
                     <td>{{ item.qty }}</td>
                     {% set subtotal = item.commission * item.qty %}
-                    <td>{{ subtotal|round(2) }}</td>
+                    <td>{{ subtotal|round(2) }}€</td>
                 </tr>
                 {% set total = total + subtotal %}
             {% endfor %}
@@ -55,5 +72,9 @@
                 <td>{{ total|round(2) }}€</td>
             </tr>
         </table>
+        <p>Le montant de cette facture sera directement déduit
+            des montants récoltés par Ticked-it dans le cadre de cette campagne
+            de vente de tickets
+        </p>
     </page>
 {% endblock %}

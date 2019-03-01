@@ -60,9 +60,14 @@ class YBMembersController extends BaseController
      * @Route("/campaign/new", name="yb_members_campaign_new")
      */
     public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher) {
+        /** @var \AppBundle\Entity\User $user */
         $this->checkIfAuthorized($user);
         $campaign = new YBContractArtist();
         $campaign->addHandler($user);
+
+        $campaign->setBankAccount($user->getBankAccount());
+        $campaign->setVatNumber($user->getVatNumber());
+        $campaign->setOrganizationName($user->getOrganizationName());
 
         $adminUsers = $em->getRepository('AppBundle:User')->getYBAdmins();
 
@@ -238,7 +243,7 @@ class YBMembersController extends BaseController
         $cfs = $campaign->getContractsFanPaid();
         /** @var ContractFan $cf */
         foreach ($cfs as $cf){
-            if ($campaign->isPassed() || $cf->getDate() < new \DateTime("first day of this month midnight")) {
+            if ($campaign->isPassed()) {
                 /** @var Purchase $purchase */
                 foreach ($cf->getPurchases() as $purchase){
                     if ($purchase->getInvoice() === null){
@@ -248,8 +253,7 @@ class YBMembersController extends BaseController
             }
         }
 
-
-        return $this->invoicesViewListAction($em, $user);
+        return $this->redirectToRoute("yb_members_invoices");
     }
 
     /**
@@ -261,7 +265,7 @@ class YBMembersController extends BaseController
         $invoice->validate();
         $em->persist($invoice);
 
-        return $this->invoicesViewListAction($em, $user);
+        return $this->redirectToRoute("yb_members_invoices");
     }
 
     /**
@@ -286,6 +290,7 @@ class YBMembersController extends BaseController
         }, $invoice->getPurchases()->toArray());
 
         return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+            'invoice' => $invoice,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
             'counterparts' => $counterparts,
@@ -315,6 +320,7 @@ class YBMembersController extends BaseController
         }, $invoice->getPurchases()->toArray());
 
         return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
+            'invoice' => $invoice,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
             'counterparts' => $counterparts,
@@ -333,6 +339,7 @@ class YBMembersController extends BaseController
         $financialDataService->buildAllCampaignData();
 
         return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+            'invoice' => null,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
             'counterparts' => $campaign->getCounterparts()->toArray(),
@@ -351,6 +358,7 @@ class YBMembersController extends BaseController
         $financialDataService->buildAllCampaignData();
 
         return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
+            'invoice' => null,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
             'counterparts' => $campaign->getCounterparts()->toArray(),

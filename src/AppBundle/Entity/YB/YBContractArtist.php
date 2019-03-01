@@ -225,6 +225,7 @@ class YBContractArtist extends BaseContractArtist
     private $commissions;
 
     /**
+     * @var YBInvoice[]
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBInvoice", cascade={"all"}, mappedBy="campaign")
      */
     private $invoices;
@@ -233,6 +234,21 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
      */
     private $transactional_messages;
+
+    /**
+     * @ORM\Column(name="bank_account", type="string", length=50, nullable=true)
+     */
+    private $bank_account;
+
+    /**
+     * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
+     */
+    private $vat_number;
+
+    /**
+     * @ORM\Column(name="organization_name", type="string", length=50, nullable=true)
+     */
+    private $organization_name;
 
     /**
      * Set ticketsSent
@@ -490,7 +506,7 @@ class YBContractArtist extends BaseContractArtist
     }
 
     /**
-     * @return mixed
+     * @return YBInvoice[]
      */
     public function getInvoices()
     {
@@ -511,5 +527,77 @@ class YBContractArtist extends BaseContractArtist
     public function setTransactionalMessages($transactional_messages)
     {
         $this->transactional_messages = $transactional_messages;
+    }
+
+    /**
+     * Set bankAccount
+     *
+     * @param string $bankAccount
+     *
+     * @return YBContractArtist
+     */
+    public function setBankAccount($bankAccount)
+    {
+        $this->bank_account = $bankAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get bankAccount
+     *
+     * @return string
+     */
+    public function getBankAccount()
+    {
+        return $this->bank_account;
+    }
+
+    /**
+     * Set vatNumber
+     *
+     * @param string $vatNumber
+     *
+     * @return YBContractArtist
+     */
+    public function setVatNumber($vatNumber)
+    {
+        $this->vat_number = $vatNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get vatNumber
+     *
+     * @return string
+     */
+    public function getVatNumber()
+    {
+        return $this->vat_number;
+    }
+
+    /**
+     * Set organizationName
+     *
+     * @param string $organizationName
+     *
+     * @return YBContractArtist
+     */
+    public function setOrganizationName($organizationName)
+    {
+        $this->organization_name = $organizationName;
+
+        return $this;
+    }
+
+    /**
+     * Get organizationName
+     *
+     * @return string
+     */
+    public function getOrganizationName()
+    {
+        return $this->organization_name;
     }
 }

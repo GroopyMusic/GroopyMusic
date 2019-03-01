@@ -10,27 +10,12 @@
 
     <section class="container py-5">
         <h2>Factures</h2>
-        <div class="row col-12 justify-content-between">
-            <div>
-                <form>
-                    <label>Affichage par:
-                        <select>
-                            <option value="date">Date</option>
-                            <option value="org">Organisation</option>
-                        </select>
-                        <!--noscript-->
-                        <input type="submit" value="OK" />
-                        <!--/noscript-->
-                    </label>
-                </form>
-            </div>
-            <div>
-                <a href="{{ path('yb_members_payment_options') }}">
-                    <div class="btn btn-info"><i class="fa fa-info-circle"></i> Aide</div>
-                </a>
-            </div>
-        </div>
 
+        <div class="row col-12 justify-content-between">
+            <a href="{{ path('yb_members_payment_options') }}">
+                <div class="btn btn-info"><i class="fa fa-info-circle"></i> Aide</div>
+            </a>
+        </div>
 
         {% if campaigns|length > 0 %}
             <div class="container row mt-4">
@@ -56,7 +41,12 @@
                         {% endif %}
                         {% for invoice in campaign.getInvoices %}
                             <div class="row col-12 {% if not invoice.userValidated %} bg-warning {% endif %}">
-                                <h4>Facture du {{ invoice.getDateGenerated|date("d/m/Y") }}</h4>
+                                <h4>
+                                    Facture du {{ invoice.getDateGenerated|date("d/m/Y") }}
+                                    {% if invoice.userValidated %}
+                                        <small>{{ invoice.invoiceIdentifier }}</small>
+                                    {% endif %}
+                                </h4>
                                 <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
                                    href="{{ url('yb_members_invoice_sold', {'id': invoice.id}) }}">
                                     <i class="fas fa-download text-primary"></i> Ventes
