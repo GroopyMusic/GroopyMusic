@@ -257,16 +257,16 @@ class YBMembersController extends BaseController
         $cfs = $campaign->getContractsFanPaid();
         /** @var ContractFan $cf */
         foreach ($cfs as $cf){
-            if ($campaign->isPassed()) {
-                /** @var Purchase $purchase */
-                foreach ($cf->getPurchases() as $purchase){
-                    if ($purchase->getInvoice() === null){
-                        $purchase->setInvoice($invoice);
-                    }
+            /** @var Purchase $purchase */
+            foreach ($cf->getPurchases() as $purchase){
+                if ($purchase->getInvoice() === null){
+                    $purchase->setInvoice($invoice);
+                    $em->persist($purchase);
                 }
             }
         }
 
+        $em->flush();
         return $this->redirectToRoute("yb_members_invoices");
     }
 
@@ -287,9 +287,21 @@ class YBMembersController extends BaseController
      */
     public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
         $campaign = $invoice->getCampaign();
-        $this->checkIfAuthorized($user, $campaign);
+        if (!$user->isSuperAdmin()){
+            $this->checkIfAuthorized($user, $campaign);
+        }
+        $cfs = array_reverse($campaign->getContractsFanPaid());
+        $purchases = $invoice->getPurchases();
 
-        //$purchases = $invoice->getPurchases();
+        $tickets = array();
+
+        foreach ($cfs as $cf){
+            /** @var ContractFan $cf */
+            if ($cf->getPurchases()->first()->getInvoice() == $invoice){
+                $tickets = array_merge($tickets, $cf->getTickets()->toArray());
+            }
+        }
+
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildFromInvoice($invoice);
 
@@ -298,17 +310,12 @@ class YBMembersController extends BaseController
             return $purchase->getCounterpart();
         }, $invoice->getPurchases()->toArray());
 
-        $cfs = array_map(function ($purchase){
-            /** @var Purchase $purchase */
-            return $purchase->getContractFan();
-        }, $invoice->getPurchases()->toArray());
-
         return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
             'invoice' => $invoice,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
-            'counterparts' => $counterparts,
-            'cfs' => $cfs
+            //'counterparts' => $counterparts,
+            'tickets' => $tickets
         ]);
     }
 
@@ -317,7 +324,9 @@ class YBMembersController extends BaseController
      */
     public function invoiceFeeDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
         $campaign = $invoice->getCampaign();
-        $this->checkIfAuthorized($user, $campaign);
+        if (!$user->isSuperAdmin()){
+            $this->checkIfAuthorized($user, $campaign);
+        }
 
         //$purchases = $invoice->getPurchases();
         $financialDataService = new FinancialDataGenerator($campaign);
@@ -337,8 +346,8 @@ class YBMembersController extends BaseController
             'invoice' => $invoice,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
-            'counterparts' => $counterparts,
-            'cfs' => $cfs
+            //'counterparts' => $counterparts,
+            //'cfs' => $cfs
         ]);
     }
 
@@ -352,15 +361,30 @@ class YBMembersController extends BaseController
         //$this->checkIfAuthorized($user, $campaign);
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
+        $cfs = array_filter($cfs, function($cf){
+            /** @var ContractFan $cf */
+            /** @var Purchase $purchase */
+            $purchase = $cf->getPurchases()->first();
+            return $purchase->getInvoice() == null;
+        });
+        $tickets = array();
+
+        foreach ($cfs as $cf){
+            /** @var ContractFan $cf */
+            $tickets = array_merge($tickets, $cf->getTickets()->toArray());
+        }
+
+
         $financialDataService = new FinancialDataGenerator($campaign);
-        $financialDataService->buildAllCampaignData();
+        $financialDataService->buildInvoicelessCampaignData();
 
         return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
             'invoice' => null,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
-            'counterparts' => $campaign->getCounterparts()->toArray(),
-            'cfs' => $cfs
+            //'counterparts' => $campaign->getCounterparts()->toArray(),
+            //'cfs' => $cfs,
+            'tickets' => $tickets
         ]);
     }
 
@@ -375,14 +399,14 @@ class YBMembersController extends BaseController
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
         $financialDataService = new FinancialDataGenerator($campaign);
-        $financialDataService->buildAllCampaignData();
+        $financialDataService->buildInvoicelessCampaignData();
 
         return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
             'invoice' => null,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
-            'counterparts' => $campaign->getCounterparts()->toArray(),
-            'cfs' => $cfs,
+            //'counterparts' => $campaign->getCounterparts()->toArray(),
+            //'cfs' => $cfs,
         ]);
     }
 

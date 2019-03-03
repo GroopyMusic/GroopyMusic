@@ -79,7 +79,7 @@ class YBInvoice
     }
 
     /**
-     * @return mixed
+     * @return YBContractArtist
      */
     public function getCampaign()
     {

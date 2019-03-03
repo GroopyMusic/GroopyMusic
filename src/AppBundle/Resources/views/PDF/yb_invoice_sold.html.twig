@@ -40,7 +40,8 @@
             Ticked-it <br />
             3, Place Saint-Antoine <br />
             1040 Bruxelles <br />
-            0497/21.26.54
+            0497/21.26.54 <br />
+            Num&eacute;ro de TVA: BE 06 64 782 372
         </p>
 
         {% if invoice is null %}
@@ -97,20 +98,34 @@
         </table>
 
     </page>
-    <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
-        <h2>Liste des tickets vendus</h2>
-        {% for cf in cfs %}
-        <table>
-        {% for ticket in cf.tickets %}
 
+    {% set ticketCount = 0 %}
+    {% set ticketsPerPage = 5 %}
+    {% for ticket in tickets %}
+        {% if ticketCount % ticketsPerPage == 0 %}
+            <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            <h2>Liste des tickets vendus</h2>
+            <table border="1" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <th>Identifiant du ticket</th>
+                    <th>Type de ticket et prix</th>
+                    <th>Acheteur</th>
+                </tr>
+        {% endif %}
+            {% set ticketCount = ticketCount + 1 %}
                 <tr>
                     <td>{{ ticket.barCodeText }}</td>
                     <td>{{ ticket.counterPart }} ({{ ticket.price }} €)</td>
                     <td>{{ ticket.name }}</td>
                 </tr>
-
-        {% endfor %}
+        {% if ticketCount % ticketsPerPage == 0 %}
+            </table>
+            </page>
+        {% endif %}
+    {% endfor %}
+    {% if ticketCount % ticketsPerPage != 0 %}
         </table>
-        {% endfor %}
-    </page>
+        </page>
+    {% endif %}
+
 {% endblock %}

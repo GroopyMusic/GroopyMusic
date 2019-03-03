@@ -51,9 +51,9 @@ class YBCommissionType extends AbstractType
         ]);
     }
 
-    public function validate(YBCommission $counterPart, ExecutionContextInterface $context)
+    public function validate(YBCommission $commission, ExecutionContextInterface $context)
     {
-
+        return true;
     }
 
     public function getBlockPrefix()

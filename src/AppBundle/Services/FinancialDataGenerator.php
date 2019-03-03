@@ -29,7 +29,7 @@ class FinancialDataGenerator{
         return $this->ticketData;
     }
 
-    public function buildAllCampaignData(){
+    public function buildInvoicelessCampaignData(){
         $cfs = array_reverse($this->campaign->getContractsFanPaid());
         $this->ticketData = array();
 
@@ -41,7 +41,10 @@ class FinancialDataGenerator{
                 $purchases = $cf->getPurchases();
                 /** @var Purchase $purchase */
                 foreach ($purchases as $purchase){
-                    $this->processPurchase($purchase);
+                    if ($purchase->getInvoice() == null){
+                        $this->processPurchase($purchase);
+                    }
+
                 }
 
             }
@@ -50,7 +53,7 @@ class FinancialDataGenerator{
     }
 
     /**
-     * @var YBInvoice $invoice
+     * @var $invoice YBInvoice
      */
     public function buildFromInvoice($invoice){
         $purchases = $invoice->getPurchases();
@@ -58,6 +61,8 @@ class FinancialDataGenerator{
         foreach ($purchases as $purchase){
             $this->processPurchase($purchase);
         }
+        //Sort by ticket type
+        ksort($this->ticketData);
     }
 
     /**
@@ -67,16 +72,18 @@ class FinancialDataGenerator{
         $qty = $purchase->getQuantity();
 
         $counterPart = $purchase->getCounterpart();
-        $counterPartId = $counterPart->getId();
-
+        $ticketRow = $counterPart->getId();
+        if ($purchase->getFreePriceValue() != null){
+            $ticketRow = "{$ticketRow}-{$purchase->getFreePriceValue()}";
+        }
         /* if common ticket data is not yet built, based on counterpart IDs.
         This needs to be done only once per ticket type */
-        if (!isset($this->ticketData[$counterPartId])){
-            $this->ticketData[$counterPartId] = $this->dataFromPurchase($purchase);
+        if (!isset($this->ticketData[$ticketRow])){
+            $this->ticketData[$ticketRow] = $this->dataFromPurchase($purchase);
         }
 
         /* Add ticket quantity to total */
-        $this->ticketData[$counterPartId]['qty'] += $qty;
+        $this->ticketData[$ticketRow]['qty'] += $qty;
     }
 
     /**
@@ -93,7 +100,10 @@ class FinancialDataGenerator{
         $purchaseUnitPriceNoCom = $this->calculateNoCommissionPrice($purchaseUnitPriceNoVAT);
         $commissionValue = $purchaseUnitPriceNoVAT - $purchaseUnitPriceNoCom;
 
-        $counterPart = $purchase->getCounterpart();
+        $counterPart = "" . $purchase->getCounterpart();
+        if ($purchase->getFreePriceValue() != null){
+            $counterPart .= " ({$purchase->getFreePriceValue()} €)";
+        }
 
         return array(
             'unitPrice' => $purchaseUnitPrice,
