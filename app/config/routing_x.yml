@@ -1,5 +1,9 @@
+x_home:
+    path:  /
+    defaults:
+        _controller: XBundle:Projects:home
 x_payment:
-    path:  /payment/
+    path:  /payment/{code}
     defaults:
         _controller: XBundle:Payment:payment
 
@@ -15,6 +19,14 @@ x_projects_add:
     path:   /projects/add
     defaults:
         _controller: XBundle:Projects:add
+
+x_product_add:
+    path:   mes-projets/product/add/{projectId}
+    defaults:
+        _controller: XBundle:Product:add
+
+    requirements:
+        projectId: \d*
         
 x_projects_home:
     path:   /projects
@@ -35,6 +47,12 @@ x_projects_edit:
         
     requirements:
         id: \d+
+
+x_projects_ajax_points:
+    path:  /projects/ajax-points
+    defaults:
+        _controller: XBundle:Projects:ajax
+    methods: [post]
         
 x_user_viewProjects:
     path:   /mes-projets
@@ -42,12 +60,24 @@ x_user_viewProjects:
         _controller: XBundle:User:viewProjects
 
 x_ajax_post_order:
-    path:   /api/submit-order-coordinates
+    path:   /api/submit-order-coordinates/{code}
     defaults:
         _controller: XBundle:Payment:orderAjax
         
 x_cart_payment_pending:
-    path:   /payment/pending
+    path:   /payment/pending/{code}
     defaults:
         _controller: XBundle:Payment:paymentPending
+
+x_payment_success:
+    path:   /payment/success/{code}
+    defaults:
+        _controller: XBundle:Payment:paymentSuccess
+
+x_ajax_post_order_product:
+    path:  /api/submit-order-product-coordinates/{id}
+    defaults:
+        _controller: XBundle:Projects:orderProductAjax
+    requirements:
+        id: \d+
     

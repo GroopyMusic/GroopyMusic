@@ -2,16 +2,16 @@
 
 namespace XBundle\Entity;
 
-use AppBundle\Entity\Cart;
+use XBundle\Entity\XCart;
 use AppBundle\Entity\PhysicalPersonInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="x_order")
+ * @ORM\Table(name="x_pay_user_info")
  **/
-class XOrder implements PhysicalPersonInterface
+class XPayUserInfo implements PhysicalPersonInterface
 {
     public function __construct()
     {
@@ -36,10 +36,10 @@ class XOrder implements PhysicalPersonInterface
     protected $id;
 
     /**
-     * @var Cart
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Cart", inversedBy="x_order")
+     * @ORM\ManyToOne(targetEntity="XCart", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $cart;
+    private $cart; 
 
     /**
      * @ORM\Column(name="last_name", type="string", length=50)
@@ -71,7 +71,7 @@ class XOrder implements PhysicalPersonInterface
      *
      * @param string $lastName
      *
-     * @return XOrder
+     * @return XPayUserInfo
      */
     public function setLastName($lastName)
     {
@@ -95,7 +95,7 @@ class XOrder implements PhysicalPersonInterface
      *
      * @param string $firstName
      *
-     * @return XOrder
+     * @return XPayUserInfo
      */
     public function setFirstName($firstName)
     {
@@ -119,7 +119,7 @@ class XOrder implements PhysicalPersonInterface
      *
      * @param string $email
      *
-     * @return XOrder
+     * @return XPayUserInfo
      */
     public function setEmail($email)
     {
@@ -128,29 +128,6 @@ class XOrder implements PhysicalPersonInterface
         return $this;
     }
 
-    /**
-     * Set cart
-     *
-     * @param \AppBundle\Entity\Cart $cart
-     *
-     * @return XOrder
-     */
-    public function setCart(\AppBundle\Entity\Cart $cart = null)
-    {
-        $this->cart = $cart;
-
-        return $this;
-    }
-
-    /**
-     * Get cart
-     *
-     * @return \AppBundle\Entity\Cart
-     */
-    public function getCart()
-    {
-        return $this->cart;
-    }
 
     /**
      * Get id
@@ -167,7 +144,7 @@ class XOrder implements PhysicalPersonInterface
      *
      * @param \DateTime $date
      *
-     * @return XOrder
+     * @return XPayUserInfo
      */
     public function setDate($date)
     {
@@ -184,5 +161,29 @@ class XOrder implements PhysicalPersonInterface
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * Set cart
+     *
+     * @param \XBundle\Entity\XCart $cart
+     *
+     * @return XPayUserInfo
+     */
+    public function setCart(\XBundle\Entity\XCart $cart)
+    {
+        $this->cart = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Get cart
+     *
+     * @return \XBundle\Entity\XCart
+     */
+    public function getCart()
+    {
+        return $this->cart;
     }
 }

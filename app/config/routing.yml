@@ -1,6 +1,6 @@
 x:
-    resource: "@XBundle/Resources/config/routing.yml"
-    prefix:   /
+  resource: "@XBundle/Resources/config/routing.yml"
+  prefix:   /
 
 
 yb:

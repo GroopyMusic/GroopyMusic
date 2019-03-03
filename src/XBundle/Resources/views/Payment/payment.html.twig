@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template -->
     <link href="form-validation.css" rel="stylesheet">
+    <link href = "{{ asset('x/css/payment.css') }}" rel = "stylesheet">
  {% endblock %}
 {% block x_body %}
 
@@ -49,52 +50,44 @@
 		<div class="col-md-4 order-md-2 mb-4">
           <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Your cart</span>
-            <span class="badge badge-secondary badge-pill">3</span>
           </h4>
           <ul class="list-group mb-3">
+            {%if amount is defined %}
             <li class="list-group-item d-flex justify-content-between lh-condensed">
               <div>
-                <h6 class="my-0">Product name</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <span class="text-muted">$12</span>
+                {%if is_donation %}
+                <h6 class="my-0">Donation</h6>
+                <small class="text-muted">en faveur de </small>
+                </div>
+              <span class="text-muted">{{ amount }}€</span>
+              
             </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">Second product</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <span class="text-muted">$8</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">Third item</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <span class="text-muted">$5</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between bg-light">
-              <div class="text-success">
-                <h6 class="my-0">Promo code</h6>
-                <small>EXAMPLECODE</small>
-              </div>
-              <span class="text-success">-$5</span>
-            </li>
+            
+
             <li class="list-group-item d-flex justify-content-between">
               <span>Total (USD)</span>
-              <strong>$20</strong>
+              <strong>{{ amount }}€</strong>
             </li>
           </ul>
-
-          <form class="card p-2">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Promo code">
-              <div class="input-group-append">
-                <button type="submit" class="btn btn-secondary">Redeem</button>
-              </div>
-            </div>
-          </form>
         </div>
+                {%else %}
+                <h6 class="my-0">Produit</h6>
+                <small class="text-muted">Nom: {{ product.name }}</small></br>
+                <small class="text-muted">Quantité : {{ cart.productQuantity }}</small>
+                
+                
+              <span class="text-muted">{{ product.price }}€</span>
+              
+            </li>
+            
+
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total (USD)</span>
+              <strong>{{ amount }}€</strong>
+            </li>
+          </ul>
+        {%endif%}
+        {%endif%}
         <div class="col-md-8 order-md-1">
           <h4 class="mb-3">Billing address</h4>
           <form id= "payment-form" class="needs-validation" novalidate>
@@ -122,47 +115,51 @@
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
               </div>
+
             </div>
 
        
             <hr class="mb-4">
+                <h4 class="mb-3">Payment</h4>
 
-            <h4 class="mb-3">Payment</h4>
+                <div class="d-block my-3">
+                  <div class="custom-control custom-radio">
+                    <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+                    <label class="custom-control-label" for="credit">Credit card</label>
+                  </div>
+                  <div class="custom-control custom-radio">
+                    <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+                    <label class="custom-control-label" for="debit">Bancontact</label>
+                  </div>
+                    <div id="card-element">
+                      <!-- A Stripe Element will be inserted here. -->
+                    </div>
+                </div>
 
-            <div class="d-block my-3">
-              <div class="custom-control custom-radio">
-                <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                <label class="custom-control-label" for="credit">Credit card</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="debit">Bancontact</label>
-              </div>
-            </div>
-            <div id="card-element">
-			  <!-- A Stripe Element will be inserted here. -->
-			</div>
-			<div id = "bancontact-form">
-			<img src = "{{ asset('images/bancontact_logo.png') }}" >
-			<p><button id="bancontact-b" class = "btn btn-success mt-3" style = "margin-top: 2%">Payer avec Bancontact</button></p>
-			</div>
-            <hr class="mb-4">
-            <button id = "credit-c" class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+
+    			<div id = "bancontact-form">
+    			<img src = "{{ asset('images/bancontact_logo.png') }}" >
+    			<p><button id="bancontact-b" class = "btn btn-success mt-3" style = "margin-top: 2%">Payer avec Bancontact</button></p>
+    			</div>
+                <hr class="mb-4">
+                <button id = "credit-c" class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
           </form>
 		  </div>
       </div>
-    </div>
+  </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
 
+    {% block javascript %}
+
     <script>
       // Example starter JavaScript for disabling form submissions if there are invalid fields
 	  var $loader = $('#stripe-loader .loader');
       var $loaderexplanation = $('#stripe-loader .loader-explanation');
-	  var amount = 100;
+	  var amount = ({{ amount }} * 100);
 	  $('.stripe-error').hide();
 	  
 	  var stripe = Stripe('{{ stripe_api_public }}');
@@ -241,7 +238,7 @@
             var $last_name = $('#last_name');
             var $email = $('#email');
 
-            $.post('{{ url('x_ajax_post_order') }}', {
+            $.post('{{ url('x_ajax_post_order', {'code': cart.barcodeText}) }}', {
                 'first_name': $first_name.val(),
                 'last_name': $last_name.val(),
                 'email': $email.val()
@@ -261,7 +258,7 @@
                         email: $email.val()
                     },
                     redirect: {
-                        return_url: '{{ absolute_url(path('x_cart_payment_pending')) }}'
+                        return_url: '{{ absolute_url(path('x_cart_payment_pending', {'code': cart.barcodeText})) }}'
                     },
                     statement_descriptor: 'Ticked-it.be'
                 }).then(function (result) {
@@ -289,7 +286,7 @@
 				var $last_name = $('#last_name');
 				var $email = $('#email');
 
-				$.post('{{ url('x_ajax_post_order') }}', {
+				$.post('{{ url('x_ajax_post_order', {'code': cart.barcodeText}) }}', {
 					'first_name': $first_name.val(),
 					'last_name': $last_name.val(),
 					'email': $email.val()
@@ -304,7 +301,7 @@
 							card: result.source.id
 						},
 						redirect: {
-							return_url: '{{ absolute_url(path('x_cart_payment_pending')) }}'
+							return_url: '{{ absolute_url(path('x_cart_payment_pending', {'code': cart.barcodeText})) }}'
 						}
 					}).then(function (result) {
 						console.log(result);
@@ -433,6 +430,7 @@
 		
 	  
     </script>
+{% endblock %}
   </body>
   {% endblock %}
 

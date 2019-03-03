@@ -1,6 +1,6 @@
 <?php
 
-namespace XBundle\Form;
+namespace XBundle\Form\Type;
 
 use XBundle\Entity\Image;
 use Symfony\Component\Form\AbstractType;

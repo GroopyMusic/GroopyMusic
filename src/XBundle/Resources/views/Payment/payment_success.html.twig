@@ -1,0 +1,22 @@
+{# src/XBundle/Resources/views/Projects/index.html.twig #}
+
+{% extends "XBundle::layout.html.twig" %}
+
+{% block title %}
+  Accueil - {{ parent() }}
+{% endblock %}
+
+{% block x_body %}
+<div class="container">
+	<div class="row text-center">
+        <div class="col-sm-6 col-sm-offset-3">
+        <br><br> <h2 style="color:#0fad00">Success</h2>
+        <p style="font-size:20px;color:#5C5C5C;">Votre paiement a bien été effectué.</p>
+        <a href="{{ path('x_projects_home') }}" class="btn btn-success">     Retour à la liste des projets      </a>
+    <br><br>
+        </div>
+        
+	</div>
+</div>
+
+{% endblock %}

@@ -1,51 +1,60 @@
-{# src/XBundle/Resources/views/Payment/payment.html.twig #}
+{# src/XBundle/Resources/views/Payment/payment_pending.html.twig #}
 
 {% extends "XBundle::layout.html.twig" %}
 
 {% block title %}
   Accueil - {{ parent() }}
  {% endblock %}
-{% block head %}
-{{ parent() }}
+{% block x_body %}
+    <div class="container">
+        <h3 class="text-center">HI</h3>
 
-{% endblock %}
-{% block body %}
-    <div class="container py-3">
-        <h3>{{ 'threeds.title'|trans|raw }}</h3>
-
-        <form method="post" action="{{ path('yb_checkout', {'code': cart.barcodeText}) }}" id="payment-form">
+        <form method="post" action="{{ path('x_payment', {'code' : cart.barcodeText}) }}" id="payment-form">
         </form>
 
         <div class="stripe-error alert alert-danger" role="alert"></div>
         <div id="stripe-loader">
-            {{ hidden_loader(false, false) }}
+            {{ hidden_loader(false) }}
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
 
     <script>
         hideError();
         var $loader = $('#stripe-loader .loader');
         var $loaderexplanation = $('#stripe-loader .loader-explanation');
-        var amount = 100;
+        var amount = {{ amount }} * 100;
         var stripe = Stripe('{{ stripe_api_public }}');
         var elements = stripe.elements();
-        // set publishable key for V2
-        Stripe.setPublishableKey('{{ stripe_api_public }}');
-        Stripe.source.poll(
-            '{{ source }}',
-            '{{ client_secret }}',
-            onChargeable3DS);
+        // After some amount of time, we should stop trying to resolve the order synchronously:
+		var MAX_POLL_COUNT = 10;
+		var pollCount = 0;
+
+		function pollForSourceStatus() {
+		  stripe.retrieveSource({id: '{{ source }}', client_secret: '{{ client_secret }}'}).then(function(result) {
+		    var source = result.source;
+		    if (source.status === 'chargeable') {
+		    	console.log("coucou");
+		      onChargeable3DS(source.status, source);
+		    } else if (source.status === 'pending' && pollCount < MAX_POLL_COUNT) {
+		      // Try again in a second, if the Source is still `pending`:
+		      pollCount += 1;
+		      setTimeout(pollForSourceStatus, 1000);
+		    } else {
+		      // Depending on the Source status, show your customer the relevant message.
+		    }
+		  });
+		}
+
+		pollForSourceStatus();
+
         displayLoader("{{ 'threeds.pending_stripe'|trans|raw }}");
         function onChargeable3DS(status, source) {
             if (source.status == 'chargeable') {
+            	console.log("coucou2");
                 stripeTokenHandler(source);
             }
             else if (source.status == 'failed') {
-                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('x_projects_home')})|raw }}");
+                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('yb_index')})|raw }}");
             }
             /*else if (source.status != 'pending') {
                 displayError("{{ 'threeds.unknown_error'|trans|raw }}");
@@ -96,4 +105,5 @@
             form.submit();
         }
     </script>
+  
 {% endblock %}

@@ -1,0 +1,123 @@
+h1{
+  text-shadow: #525252 0px 0px 20px;
+  font-weight: bold;
+}
+
+h4{
+  font-weight: bold;
+}
+
+pre {
+  border: 0;
+  background-color: transparent;
+  white-space:nowrap;
+}
+
+.col-md-4 p{
+  color: #555;
+}
+
+.credits p{
+  color: #555;
+}
+
+.row li{
+  color: #555;
+}
+
+.key_features{
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.tagline{
+  text-shadow: #525252 0px 0px 20px;
+}
+
+.center{
+    width:300px;
+    margin:0 auto;
+    text-align:left;
+}
+
+.custom-image{
+  position: relative;
+  bottom: -110px;
+  padding: 40px;
+  margin: 0 auto;
+  margin-top: -120px;
+  width: 900px;
+  height: auto;
+}
+
+.logo-image{
+  width: 150px;
+  height: auto;
+  display: initial;
+}
+
+.navbar-fixed-bottom, .navbar-fixed-top {
+    position: inherit;
+}
+
+.navbar-fixed-bottom, .navbar-fixed-top {
+    position: inherit;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.navbar-inverse {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #ffffff;
+}
+
+.navbar-header{
+  width: 100%;
+}
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 70px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 2px;
+  border-radius: 50%;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+.fa-instagram {
+  background: #dd4b39;
+  color: white;
+}
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+}
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+.card-body span
+{
+  font-size: 20px;
+  position:relative;
+  display:inline;
+  padding: 3px;
+
+}
+.buy-pr span
+{
+  font-size: 20px;
+  position:relative;
+  display:inline;
+  padding: 3px;
+
+}

@@ -1,0 +1,18 @@
+h2
+{
+	text-align:center; 
+	padding-top: 1%
+}
+.add-project
+{
+	margin: 2%;
+}
+.btn.btn-primary.update
+{
+	float: right; 
+	height: 90%;
+}
+.btn.btn-success.add
+{
+	float: right;
+}

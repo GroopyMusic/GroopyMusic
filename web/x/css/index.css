@@ -1,0 +1,67 @@
+a.custom-card,
+a.custom-card:hover {
+  color: inherit;
+}
+
+.close{margin: 0; padding: 0;}
+.model-title{text-align:left;}
+.login_modal_header, .login_modal_footer {background: #ededed;}
+.facebook, .twitter, .google, .linkedin {width:100%;height:40px; padding-top:2%; margin-top:2%;}
+.google, .google:hover{background-color:#dd4b39;border:2px solid #dd4b39;color:#fff;}
+.twitter, .twitter:hover{ background-color: #00aced; border:2px solid #00aced;color: #fff;}
+.facebook, .facebook:hover{background-color: #3b5999; border:2px solid #3b5999;color:#fff;}
+.linkedin, .linkedin:hover{background-color: #007bb6; border: 2px solid #007bb6; color:#fff;}
+
+.jplist-first,.jplist-prev,.jplist-next, .jplist-last {
+  display: none;
+}
+.jplist-panel {
+  display: inline-block !important;
+  width: 50% !important;
+  clear: both !important;
+  position: relative;
+  left: 35% ;
+  margin-top: 2em;
+  &:after {
+    display: inline-block;
+    content: "";
+    clear: both;
+  }
+}
+
+.jp-list-item {
+  margin-left: 5em;
+}
+
+.jplist-select{
+  margin : 0;
+}
+
+.container-fluid.jp-list
+{
+  padding-top: 3%; 
+  width : 80%;
+}
+
+.card.jp-list-item
+{
+  width: 15rem; 
+  height: 25rem; 
+  display: inline-block;
+}
+
+.progress
+{
+  margin-bottom : 4%; 
+  margin-top:2em;
+}
+
+.btn.btn-primary
+{
+  text-align: center;
+  margin-top: 12px;
+}
+#points
+{
+  font-size: 12px;
+}

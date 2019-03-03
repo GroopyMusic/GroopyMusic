@@ -80,3 +80,4 @@ security:
         - { path: /admin/, role: ROLE_ADMIN }
         - { path: ^/command-scheduler/, role: ROLE_ADMIN }
         - { path: ^/connect, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: x/mes-projets, roles: ROLE_USER }

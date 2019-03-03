@@ -7,34 +7,95 @@
 {% endblock %}
 
 {% block x_body %}
-<style>
-a.custom-card,
-a.custom-card:hover {
-  color: inherit;
-}
-</style>
-  <div class="container-fluid" style = "padding-top: 5%; width : 100%; margin-left : 10%">
-  <div class="row">
-  {% for project in listProjects %}
-  <div class="col-sm-3">
-    <a href = " {{ path('x_projects_view', { 'id' : project.id}) }} " class="custom-card">
-      <div class="card" style="width: 15rem; display: inline-block">
-	  <img class ="card-img-top" src = "{{ asset(project.photo.webPath(project.photo)) }}"/>
-	  <div class = "card-body">
-        <h5 class="card-title">{{ project.name }}</h5>
-        <p class="card-text">{{ project.description }}</p>
-		
-		<div class="progress" style = "margin-bottom : 4%; margin-top:2em;">
-		<div class="progress-bar bg-success" role="progressbar" style="width: {{ project.fund }}%;" aria-valuenow="{{ project.fund }}" aria-valuemin="0" aria-valuemax="100">{{ project.fund }}/100€</div>
-		</div>
-        <a href="{{ path('x_payment') }}" class="btn btn-primary">Soutenez-le</a>
-      </div>
-	  </div>
-    </a>
+<link href = "{{ asset('x/css/index.css') }}" rel = "stylesheet">
+
+<div id="demo">
+  <div class="jplist-panel">
+     <!-- ios button: show/hide panel -->
+       <div class="jplist-ios-button">
+         <i class="fa fa-sort"></i>
+           jPList Actions
+       </div>
+      
+     
+    
+      <select 
+         class="jplist-select" 
+         data-control-type="sort-select" 
+         data-control-name="sort" 
+         data-control-action="sort">
+         
+           <option data-path="default">Sort by</option>
+           <option data-path=".card-title" data-order="asc" data-type="text">Title A-Z</option>
+           <option data-path=".card-title" data-order="desc" data-type="text">Title Z-A</option>
+           <option data-path=".card-funds" data-order="asc" data-type="number">Funds asc</option>
+           <option data-path=".card-funds" data-order="desc" data-type="number">Funds desc</option>
+           <option data-path=".date" data-order="asc" data-type="datetime">Date asc</option>
+           <option data-path=".date" data-order="desc" data-type="datetime">Date desc</option>                
+      </select>   
+
+        <div class="text-filter-box">
+          <i class="fa fa-search jplist-icon"></i>
+
+          <input 
+            data-path=".card-title"
+            type="text"
+            value=""
+            placeholder="Filter by Title"
+            data-control-type="textbox"
+            data-control-name="title-filter"
+            data-control-action="filter"
+            />
+          </div>
+          <div class="text-filter-box">
+          <i class="fa fa-search jplist-icon"></i>
+
+          <input 
+            data-path=".badge"
+            type="text"
+            value=""
+            placeholder="Filter by Tag"
+            data-control-type="textbox"
+            data-control-name="tag-filter"
+            data-control-action="filter"
+            />
+          </div>
 
   </div>
+
+  <div class="container-fluid jp-list">
+    <div class="row jp-list-item">
+    {% for project in listProjects %}
+      <div class="col-sm-3">
+        <a href = " {{ path('x_projects_view', { 'id' : project.id}) }} " class="custom-card">
+          <div class="card jp-list-item">
+    	        <img class ="card-img-top" src = "{{ asset(project.photo.webPath(project.photo)) }}" height="170"/>
+          	  <div class = "card-body">
+                    <h5 class="card-title">{{ project.name }}</h5>
+                    <p class="card-text">{{ project.description|length > 25 ? project.description|slice(0,25) ~ '...': project.description }}</p>
+            		
+            		<div class="progress">
+            		<div class="progress-bar bg-success" role="progressbar" style="width: {{ project.totalAmount }}%;" aria-valuenow="{{ project.totalAmount }}" aria-valuemin="{{ project.fund }}" aria-valuemax="{{ project.fund }}"><div class="card-funds" >{{ project.totalAmount }}€/{{project.fund}}</div></div>
+            		</div>
+                
+                  <div id = "bt{{loop.index}}">
+                    <a href="{{ path('x_projects_view', {'id' : project.id}) }}" class="btn btn-primary">Soutenez-le</a>
+                    <button type="button" id = "{{loop.index}}" style = "float:right; background-color: #ff3333; border-color: #ff3333; width: 45px; height: 45px;text-align: center; padding: 6px 0; margin-top: 10px; font-size: 20px; line-height: 1.428571429; border-radius: 22.5px;"class="btn btn-primary btn-circle points-given" {%if not app.user %}data-toggle="modal" data-target="#login-modal" {%endif%}><span class="fa fa-caret-up"></span> <span id = "points">{{ project.points }}</span></a>
+                    <input type = "hidden" value = "{{ project.id }}" id = "projectId"/>
+                    </button>
+                  </div>
+                  <span class = "badge badge-warning"></span>
+                  {% for tag in project.tags %}
+                    <span class = "badge badge-warning">{{tag.name}}</span>
+                  {% endfor %}
+              </div>
+	        </div>
+        </a>
+      </div>
+
+
   {% if loop.index is divisible by(3) %}
-  </div><div class = "row" style = "margin-top : 3em" >
+  </div><div class = "row jp-list-item" style = "margin-top : 3em" >
   {% endif %}
   {% else %}
   <p> Pas (encore!) de projets </p>
@@ -43,4 +104,80 @@ a.custom-card:hover {
   
   </div>
 
-{% endblock %}
+        <div class="jplist-no-results">
+        <p>Pas de projets trouvés</p>
+      </div>
+</div>
+
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header login_modal_header">
+            <h2>Connexion requise</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+          <div class="modal-body login-modal">
+            <p>Vous devez vous connecter pour accéder à cette fonction.</p>
+            <div class="clearfix"></div>
+            <div id='social-icons-conatainer'>
+
+              <div class='modal-body'>
+                <div class="modal-social-icons">
+                  <a href="{{ path('hwi_oauth_service_redirect', {'service':'facebook'}) }}" class="btn btn-default facebook"> <i class="fa fa-facebook modal-icons"></i> Sign In with Facebook </a>
+                </div> 
+              </div>  
+            </div>                                                        
+            <div class="clearfix"></div>
+          </div>
+          <div class="clearfix"></div>
+      </div>
+    </div>
+</div>
+
+ <script>
+  {%if app.user %}
+  $('.btn.btn-primary.btn-circle.points-given').click(function(){
+    var btnId = this.id;
+    var points = parseInt($('#bt'+btnId).find('#points').text()); 
+    var projectId = parseInt($('#bt'+btnId).find('input').val());
+    
+
+    $.ajax({
+      url:"{{ path('x_projects_ajax_points') }}",
+      type: 'POST',
+      dataType:"JSON",
+      data:{
+        "points" : points,
+        "projectId" : projectId,
+      },
+      async:true,
+
+      success:function(data)
+      {
+        console.log(data);
+        console.log($('#bt'+btnId).find('#points'));
+        $('#bt'+btnId).find('#points').text(data.points);
+      },
+      error:function(xhr, textStatus, errorThrown){
+        alert(xhr.status);
+        alert(xhr.responseText);
+      }
+    });
+  });
+  {%endif%}
+
+  $('document').ready(function(){
+  //check all jPList javascript options
+  $('#demo').jplist({
+    itemsBox: '.jp-list'
+    ,itemPath: '.jp-list-item'
+    ,panelPath: '.jplist-panel'
+  });
+});
+  
+  </script>
+
+
+ {% endblock %}
+  
+ 

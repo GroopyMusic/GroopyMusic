@@ -1,0 +1,89 @@
+#featured{
+  width: 100%;
+  background:#fcfcfc;
+  position:relative;
+  margin:0;
+  padding:0;
+}
+
+.row,.row-fluid {
+  margin-bottom:30px;
+}
+
+.row .row,.row-fluid .row-fluid{
+  margin-bottom:30px;
+}
+
+.row.nomargin,.row-fluid.nomargin {
+  margin-bottom:0;
+}
+  .section.callaction{
+    background: #fafafa;
+    padding: 30px 0 0 0;
+  }
+
+section.callaction {
+  background:#fafafa;
+  padding:30px 0 0 0;
+}
+  .cta-text {
+    margin:0 auto;
+    text-align:center;  
+  }
+.cta-text h2 span {
+  color: #d9232d;
+}
+
+.cta-text {
+  margin-top:10px;
+  text-align: left;
+}
+.cta-text h2 {
+  font-weight:900;
+  line-height:1.1em;
+}
+.cta-btn {
+  float:right;
+  padding:20px;
+  margin-top:10px;
+}
+  .jumbotron .flex-caption {
+    bottom: 0;
+    text-align: center;
+  }
+.jumbotron .flex-caption {background:none; -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000); filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000); zoom: 1;}
+.jumbotron .flex-caption { background-color: rgba(0, 0, 0, 0.6); color: #fff;   }
+.jumbotron .flex-caption h3 {color: #fff; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase;}
+.jumbotron .flex-caption p {margin: 0 0 15px;}
+
+.jumbotron  .flex-direction-nav a:before  { 
+  font-family: "flexslider-icon"; 
+  font-size: 20px; 
+  display: inline-block; 
+  content: '\f001'; 
+}
+.jumbotron  .flex-direction-nav a.flex-next:before  { content: '\f002'; }
+
+a.btn.btn-box {
+  border-radius: 0;
+  background: #fff;
+  font-weight: 600;
+  color: #666;
+  border: 1px solid #ddd;
+
+}
+.btn-dark:hover,.btn-dark:focus,.btn-dark:active  {
+  background: #d9232d;
+  border:1px solid #d9232d;
+}
+
+.btn-theme {
+  border:1px solid #d9232d;
+  background: #d9232d;
+}
+.btn-theme {
+  color: #fff;
+}
+.btn-theme:hover {
+  color: #eee;
+}

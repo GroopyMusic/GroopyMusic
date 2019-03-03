@@ -7,97 +7,17 @@
 {% endblock %}
 
 {% block x_body %}
+<link href = "{{ asset('x/css/view.css') }}" rel = "stylesheet">
 <style>
-h1{
-  text-shadow: #525252 0px 0px 20px;
-  font-weight: bold;
-}
-
-h4{
-  font-weight: bold;
-}
-
-pre {
-  border: 0;
-  background-color: transparent;
-  white-space:nowrap;
-}
-
-.col-md-4 p{
-  color: #555;
-}
-
-.credits p{
-  color: #555;
-}
-
-.row li{
-  color: #555;
-}
-
-.key_features{
-  text-shadow: none;
-  font-weight: bold;
-}
-
-.tagline{
-  text-shadow: #525252 0px 0px 20px;
-}
-
-.center{
-    width:300px;
-    margin:0 auto;
-    text-align:left;
-}
-
-.custom-image{
-  position: relative;
-  bottom: -110px;
-  padding: 40px;
-  margin: 0 auto;
-  margin-top: -120px;
-  width: 900px;
-  height: auto;
-}
-
-.logo-image{
-  width: 150px;
-  height: auto;
-  display: initial;
-}
-
 .jumbotron {
    padding-top: 3;
-   background-color: #4CAF50;
-   color: #ffffff;
-}
-
-.navbar-fixed-bottom, .navbar-fixed-top {
-    position: inherit;
-}
-
-.navbar-fixed-bottom, .navbar-fixed-top {
-    position: inherit;
-}
-
-.navbar {
-    margin-bottom: 0;
-}
-
-.navbar-inverse {
-    background-color: #4CAF50;
-    border-color: #4CAF50;
-}
-
-.navbar-inverse .navbar-brand {
-    color: #ffffff;
-}
-
-.navbar-header{
-  width: 100%;
+   background-image: url("{{ asset(project.photo.webPath(project.photo)) }}");
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: 50% 50%;
+   /*filter: blur(5px);*/
 }
 </style>
-
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container text-center">
@@ -108,45 +28,41 @@ pre {
           </p>
         </div>
         <div>
-          <a href="https://github.com/amitmerchant1990/electron-markdownify/releases/tag/v1.2.0" class="btn btn-primary btn-lg">Download</a>
-          <a href="https://github.com/amitmerchant1990/electron-markdownify/" class="btn btn-danger btn-lg">GitHub</a>
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-twitter"></a>
+          <a href="#" class="fa fa-instagram"></a>
         </div>
       </div>
     </div>
 
+
     <div class="container">
       <div class="row text-center">
-        <h2 class="key_features">Images & Vidéos</h2>
+        <h2 class="key_features">Gallerie</h2>
       </div>
       <div class="row">
         <div class="col-md-4">
-          <h3>LivePreview</h3>
-          <p> <b>Make changes, See changes</b>. Instantly see what your Markdown documents look like in HTML as you create them. </p>
+          {% for video in project.video %}
+              {{ video.embedVideo|raw }}
+          {% endfor %}
+        </div> 
+        <div class= "col-md-4">
         </div>
-        <div class="col-md-4">
-          <h3>Sync Scrolling</h3>
-          <p>While you type, <b>LivePreview</b> will automatically scroll to the current location you're editing. </p>
-       </div>
-        <div class="col-md-4">
-          <h3>GFM</h3>
-          <p>The good old <b>GitHub Flavored-style</b> Markdown. So, you don't feel out of the place.</p>
-        </div>
+        <div class = "col-md-4">
+
+      <div class="card">
+  <div class="card-header">
+    Faire une donation
+  </div>
+  <div class="card-body">
+    {{ form(formDonation) }}
+  </form>
+  </div>
+</div>
       </div>
-      <div class="row">
-        <div class="col-md-4">
-          <h3>Syntax highlighting</h3>
-          <p> Syntax highlighting in fenced code blocks with language identifiers and Markup languages  </p>
-        </div>
-        <div class="col-md-4">
-          <h3>Dark/Light mode</h3>
-          <p>Change the color scheme of the editor based on your preferences. i.e to choose between Dark mode/Light mode </p>
-       </div>
-        <div class="col-md-4">
-          <h3>Emoji support</h3>
-          <p>Supports emojis in the preview mode for when you need to express yourself via one</p>
-        </div>
-      </div>
+
     </div>
+  </div>
 	
 	<hr>
 
@@ -154,18 +70,45 @@ pre {
           <div class="text-center">
             <h2 class="key_features">Produits</h2>
           </div>
-          <div>
-              <p>Install it using : <code>npm install electron-markdownify</code></p>
-              <p>And then run:</p>
-          </div>
-          <div>
-            <pre>
-              <code class="bash">
-$> cd PATH-TO-MARKDOWNIFY-DESKTOP-APP
-$> npm install && npm start
-              </code>
-            </pre>
-          </div>
+          <ul class="list-unstyled">
+    {% for product in listProduct %}
+    {% if product.project.id == project.id %}
+    <li class="media">
+      <img class="mr-3" src="{{ asset(product.photo.webPath(product.photo)) }}" width = "64" height = "64" alt="Generic placeholder image">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">{{ product.name }}</h5>
+        {{ product.description }}
+        <p>{{ product.price }} €</p>
+      </div>
+      <div style = "float: right; margin-right: 2em">Quantité :</div>
+      <div style = "float: right; margin-right: 2em">
+        <div class="input-group{{loop.index}}">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
+                                          -
+                                        </button>
+                                    </span>
+                                    <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="2" max="100">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                            +
+                                        </button>
+                                    </span>
+                                    <input type = "hidden" value = "{{ product.id }}" id = "productId"/>
+                                </div>
+                              </div>
+      <div class="buy-pr" style = "float: right"> 
+        <a class="btn btn-primary btn-info buy-product" id="{{loop.index}}"><span class="fa fa-shopping-cart"></span> Acheter</a>
+                                        
+      </div>
+
+
+
+    </li>
+  {% endif %}
+{% endfor %}
+    
+  </ul>
     </div>
 
     <hr>
@@ -175,17 +118,8 @@ $> npm install && npm start
         <div>
           <h4>Plus d'informations</h4>
           <ul class="center" type="square">
-            <li>Toolbar for basic Markdown formatting</li>
-            <li>Save the Markdown preview as PDF</li>
-            <li>App will keep alive in tray for quick usage</li>
-            <li>Full screen mode</li>
-            <ul>
-              <li>Write distraction free.</li>
-            </ul>
-            <li>Cross platform</li>
-            <ul>
-              <li>Windows, Mac and Linux ready.</li>
-            </ul>
+            <li>...</li>
+
           </ul>
         </div>
 
@@ -193,5 +127,77 @@ $> npm install && npm start
     </div>
 
     <hr>
+
+<script>
+$('.btn.btn-primary.btn-info.buy-product').click(function(e){
+      var btnId = this.id;
+      var quantity = parseInt($('.input-group'+btnId).find('#quantity').val()); 
+      var productId = parseInt($('.input-group'+btnId).find('#productId').val());
+
+      console.log(quantity);
+      console.log(productId);
+
+      var QPdata= {
+        'quantity' : quantity,
+        'productId' : productId
+      };
+
+      $.ajax({
+        type:'POST',
+        url: '{{ absolute_url(path('x_ajax_post_order_product', {'id' : project.id})) }}',
+        dataType: "JSON",
+        data: {
+          "redirect" : "",
+          "quantity" : quantity,
+          "productId" : productId
+        },
+        success: function(data, textStatus){
+          if(data.redirect)
+          {
+            window.location.href = data.redirect; 
+          }
+          else{
+
+          }
+        }
+      });
+});
+
+
+$(document).ready(function(){
+
+var quantitiy=0;
+   $('.quantity-right-plus').click(function(e){
+        
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        var quantity = parseInt($('#quantity').val());
+        
+        // If is not undefined
+            
+            $('#quantity').val(quantity + 1);
+
+          
+            // Increment
+        
+    });
+
+     $('.quantity-left-minus').click(function(e){
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        var quantity = parseInt($('#quantity').val());
+        
+        // If is not undefined
+      
+            // Increment
+            if(quantity>0){
+            $('#quantity').val(quantity - 1);
+            }
+    });
+    
+});
+</script>
 
 {% endblock %}

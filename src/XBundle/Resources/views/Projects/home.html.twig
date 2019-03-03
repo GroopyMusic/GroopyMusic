@@ -1,0 +1,58 @@
+{# src/XBundle/Resources/views/Projects/index.html.twig #}
+
+{% extends "XBundle::layout.html.twig" %}
+
+{% block title %}
+  Accueil - {{ parent() }}
+{% endblock %}
+
+
+{% block x_body %}
+
+<link href = "{{ asset('x/css/home.css') }}" rel = "stylesheet">
+<style>
+.jumbotron {
+   padding-top: 3;
+   background-image: url("{{ asset(project.photo.webPath(project.photo)) }}");
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: 50% 50%;
+   /*filter: blur(5px);*/
+}
+</style>
+
+<section id="featured" class="bg">
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-lg-12">
+        <div class="jumbotron">
+              <div class = "flex-caption">
+                <h3> {{ project.name }} </h3>
+                <p> {{ project.description }} </p>
+                <a href = "{{ path('x_projects_view', {'id' : project.id}) }}" class = "btn btn-theme">Learn More</a>
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class = "callaction">
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-lg-8">
+        <div class = "cta-text">
+          <h2>Phrase d'accroche site X</h2>
+          <p>Description plus complète du site X</p>
+        </div>
+      </div>
+      <div class = "col-lg-4">
+        <div class = "cta-btn">
+          <a href = "{{ path('x_projects_home') }}" class = "btn btn-theme btn-lg">Voir les projets <i class = "fa fa-angle-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+   
+{% endblock %}

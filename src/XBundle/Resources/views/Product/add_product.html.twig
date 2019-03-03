@@ -1,0 +1,13 @@
+{# src/XBundle/Resources/views/Projects/add_product.html.twig #}
+
+{% extends "XBundle::layout.html.twig" %}
+
+{% block x_body %}
+
+  <h2>Ajouter un produit au projet : {{ project.name }}</h2>
+
+  {{ include("XBundle:Product:form.html.twig") }}
+
+
+
+{% endblock %}

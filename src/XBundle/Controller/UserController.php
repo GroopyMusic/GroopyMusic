@@ -12,11 +12,14 @@ class UserController extends Controller
 {
 	public function viewProjectsAction(Request $request){
 		$listProjects = $this->getDoctrine()->getManager()->getRepository('XBundle:Projects')->findAll();
-		//$listProducts = $this->getDoctrine()->getManager()->getRepository('XBundle:Products')->findAll();
+		$listProducts = $this->getDoctrine()->getManager()->getRepository('XBundle:Product')->findAll();
 		
 		return $this->render('XBundle:User:myprojects.html.twig', array(
-			'listProjects' => $listProjects ));
+			'listProjects' => $listProjects,
+			'listProducts' => $listProducts,
+			 ));
+
+
 	}
-	
 }
 		

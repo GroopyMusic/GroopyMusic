@@ -3,22 +3,45 @@
 {% extends "XBundle::layout.html.twig" %}
 
 {% block x_body %}
+<link href = "{{ asset('x/css/myprojects.css') }}" rel = "stylesheet">
 
-<h2 style = "text-align:center; padding-top: 1%">Mes projets</h2>
+<h2>Mes projets</h2>
+<hr>
+<div class = "add-project" >
+  <a href = "{{ path('x_projects_add') }}" class = "btn btn-success" role="button" aria-pressed = "true"> Ajouter un projet </a>
+</div>
   
 {% for project in listProjects %}
+{% if project.user == app.user %}
   
 <ul class="list-group">
-  <li class="list-group-item d-flex justify-content-between align-items-center">
+  <li class="list-group-item">
   {{ project.name }}
-    <button type = "button" class="btn btn-primary">Modifier</button>
+    <button type = "button" class="btn btn-primary update">Modifier</button>
+    <a href = "{{ path('x_product_add', {'projectId' : project.id }) }}" class = "btn btn-success add" role = "button">Ajouter un produit</a>
   </li>
-  
+  <ul class = "list-group">
+  	<li class = "list-group-item"> 
+  		<h3>Produits : </h3>
+  	</li>
+  {% for product in listProducts %}
+  {% if product.project.id == project.id %}
+  	<li class = "list-group-item"> 
+  		<div style = "float: left;">{{ product.name }}</div>
+  		<div style = "float: right;"><img src = "{{ asset('images/delete.png') }}" width = "16" height = "16"> </div>
+  		<div style = "float: right;"><img src = "{{ asset('images/edit.png') }}" width = "16" height = "16"> </div>
+  		<div style = "float: none; clear: both;"></div>
+  	</li>
+  	
+  {% endif %}
+  {% endfor %}
+  </ul>
+</br>
+{% endif %}
 {% endfor %}
 
 </ul>
 
-<a href = "{{ path('x_projects_add') }}" class = "btn btn-success" role="button" aria-pressed = "true" style = "margin-top: 2%; width: 50%"> Ajouter un projet </a>
 
 {% endblock %}
 
