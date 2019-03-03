@@ -51,7 +51,7 @@
         {% endif %}
 
         <table border="1" style="width: 100%; border-collapse: collapse;">
-            <tr>
+            <tr class="bg-gray">
                 <th>Description</th>
                 <th>Commission unitaire</th>
                 <th>Quantité</th>
@@ -61,15 +61,16 @@
             {% for item in ticketData %}
                 <tr>
                     <td>{{ item.name }}</td>
-                    <td>{{ item.commission|round(2) }}€</td>
-                    <td>{{ item.qty }}</td>
+                    <td class="text-center">{{ item.commission|round(2) }}€</td>
+                    <td class="text-center">{{ item.qty }}</td>
                     {% set subtotal = item.commission * item.qty %}
-                    <td>{{ subtotal|round(2) }}€</td>
+                    <td class="text-right">{{ subtotal|round(2) }}€</td>
                 </tr>
                 {% set total = total + subtotal %}
             {% endfor %}
-            <tr class="text-bold">
-                <td colspan="3">Grand Total</td>
+            <tr class="text-bold text-right bg-gray">
+                <td colspan="2" class="bg-white"></td>
+                <td colspan="1" class="text-italic">Grand Total</td>
                 <td>{{ total|round(2) }}€</td>
             </tr>
         </table>
