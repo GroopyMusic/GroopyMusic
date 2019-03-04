@@ -5,61 +5,70 @@
 
   <head>
     <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% block title %}X{%endblock %}</title>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.core.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.pagination-bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.filter-toggle-bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.textbox-filter.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.sort-bundle.min.js"></script>
+    <title>{% block title %}X{%endblock %}</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.pagination-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.filter-toggle-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.textbox-filter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.sort-bundle.min.js"></script>
 
-  
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.core.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.filter-toggle-bundle.min.css">
-  <link rel="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.textbox-filter.min.css">
-	
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="{{path('x_home')}}">NanoPlatforme</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.core.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.filter-toggle-bundle.min.css">
+    <link rel="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.textbox-filter.min.css">
 
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<ul class="navbar-nav mr-auto">
-		  <li class="nav-item">
-			<a class="nav-link" href="{{ path('x_projects_home') }}">Projets</a>
-		  </li>
-		  <li class="nav-item">
-		  	<a class="nav-link" href="#">Mes projets favoris</a>
-		  </li>
-		</ul>
-		<div class = "dropdown">
-			  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle = "dropdown"> Mon compte </button>
-			  <div class = "dropdown-menu" >
-				<a class = "dropdown-item" href = "#"> Mon profil </a>
-				{%if app.user %}<a class = "dropdown-item" href = "{{ path('x_user_viewProjects') }}"> Mes projets </a>
-        <a class = "dropdown-item" href = "{{ path('yb_logout') }}">Déconnexion</a>{%endif%}
-				</div>
-				
-		</div>
-	  </div>
-	 
-	</nav>
+    <!-- Navbar -->
+  	
+  	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  		<a class="navbar-brand" href="{{path('x_home')}}">NanoPlatforme</a>
+  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  			<span class="navbar-toggler-icon"></span>
+  		</button>
+
+  	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    		<ul class="navbar-nav mr-auto">
+    		  <li class="nav-item">
+    			<a class="nav-link" href="{{ path('x_projects_home') }}">Projets</a>
+    		  </li>
+    		  <li class="nav-item">
+    		  	<a class="nav-link" href="#">Mes projets favoris</a>
+    		  </li>
+    		</ul>
+        {% if app.user %}
+      		<div class = "dropdown">
+      			  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle = "dropdown"> Mon compte </button>
+      			  <div class = "dropdown-menu" >
+        				<a class = "dropdown-item" href = "#"> Mon profil </a>
+        				{%if app.user %}<a class = "dropdown-item" href = "{{ path('x_user_viewProjects') }}"> Mes projets </a>
+                <a class = "dropdown-item" href = "{{ path('fos_user_security_logout') }}">Déconnexion</a>{%endif%}
+      				</div>
+      				
+      		</div>
+        {% else %}
+              <a href = "{{ path('fos_user_security_login') }}" class="btn btn-primary"> Se connecter </a>
+        {% endif %}
+  	  </div>
+  	 
+  	</nav>
   </head>
   <body>
 
     {% block x_body %}
 
     {% endblock %}
+
+  <!-- Footer -->
+
 	<footer class="my-5 pt-5 text-muted text-center text-small">
         <p class="mb-1">&copy; 2017-2018 Company Name</p>
         <ul class="list-inline">

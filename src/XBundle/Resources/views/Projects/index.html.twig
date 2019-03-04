@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block x_body %}
+
 <link href = "{{ asset('x/css/index.css') }}" rel = "stylesheet">
 
 <div id="demo">
@@ -18,7 +19,7 @@
        </div>
       
      
-    
+      <!-- Filtre par titre, fonds récoltés -->
       <select 
          class="jplist-select" 
          data-control-type="sort-select" 
@@ -30,9 +31,10 @@
            <option data-path=".card-title" data-order="desc" data-type="text">Title Z-A</option>
            <option data-path=".card-funds" data-order="asc" data-type="number">Funds asc</option>
            <option data-path=".card-funds" data-order="desc" data-type="number">Funds desc</option>
-           <option data-path=".date" data-order="asc" data-type="datetime">Date asc</option>
-           <option data-path=".date" data-order="desc" data-type="datetime">Date desc</option>                
-      </select>   
+
+      </select>  
+
+      <!-- Filtre par nom de projet --> 
 
         <div class="text-filter-box">
           <i class="fa fa-search jplist-icon"></i>
@@ -47,7 +49,9 @@
             data-control-action="filter"
             />
           </div>
-          <div class="text-filter-box">
+      
+      <!-- Filtre par tag -->
+        <div class="text-filter-box">
           <i class="fa fa-search jplist-icon"></i>
 
           <input 
@@ -59,57 +63,77 @@
             data-control-name="tag-filter"
             data-control-action="filter"
             />
-          </div>
+        </div>
 
   </div>
 
   <div class="container-fluid jp-list">
-    <div class="row jp-list-item">
+
+    <div class="row jp-list-item"> 
+
     {% for project in listProjects %}
+
+      {% set progress = (project.TotalAmount / project.fund) * 100 %}
+
       <div class="col-sm-3">
+
         <a href = " {{ path('x_projects_view', { 'id' : project.id}) }} " class="custom-card">
+
           <div class="card jp-list-item">
+
     	        <img class ="card-img-top" src = "{{ asset(project.photo.webPath(project.photo)) }}" height="170"/>
           	  <div class = "card-body">
-                    <h5 class="card-title">{{ project.name }}</h5>
-                    <p class="card-text">{{ project.description|length > 25 ? project.description|slice(0,25) ~ '...': project.description }}</p>
-            		
+                <h5 class="card-title">{{ project.name }}</h5>
+                <p class="card-text">{{ project.description|length > 25 ? project.description|slice(0,25) ~ '...': project.description }}</p>
+
+
+            		<!-- Avancée de la récolte -->
             		<div class="progress">
-            		<div class="progress-bar bg-success" role="progressbar" style="width: {{ project.totalAmount }}%;" aria-valuenow="{{ project.totalAmount }}" aria-valuemin="{{ project.fund }}" aria-valuemax="{{ project.fund }}"><div class="card-funds" >{{ project.totalAmount }}€/{{project.fund}}</div></div>
-            		</div>
-                
-                  <div id = "bt{{loop.index}}">
-                    <a href="{{ path('x_projects_view', {'id' : project.id}) }}" class="btn btn-primary">Soutenez-le</a>
-                    <button type="button" id = "{{loop.index}}" style = "float:right; background-color: #ff3333; border-color: #ff3333; width: 45px; height: 45px;text-align: center; padding: 6px 0; margin-top: 10px; font-size: 20px; line-height: 1.428571429; border-radius: 22.5px;"class="btn btn-primary btn-circle points-given" {%if not app.user %}data-toggle="modal" data-target="#login-modal" {%endif%}><span class="fa fa-caret-up"></span> <span id = "points">{{ project.points }}</span></a>
-                    <input type = "hidden" value = "{{ project.id }}" id = "projectId"/>
-                    </button>
+              		<div class="progress-bar bg-success" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ progress|number_format }}/100 %</div>
                   </div>
-                  <span class = "badge badge-warning"></span>
-                  {% for tag in project.tags %}
-                    <span class = "badge badge-warning">{{tag.name}}</span>
-                  {% endfor %}
+            		</div>
+
+                <!-- Affichage du bouton rouge "Reddit" -->
+                <div id = "bt{{loop.index}}">
+                  <a href="{{ path('x_projects_view', {'id' : project.id}) }}" class="btn btn-primary">Soutenez-le</a>
+
+                  <button type="button" id = "{{loop.index}}" style = "float:right; background-color: #ff3333; border-color: #ff3333; width: 45px; height: 45px;text-align: center; padding: 6px 0; margin-top: 10px; font-size: 20px; line-height: 1.428571429; border-radius: 22.5px;"class="btn btn-primary btn-circle points-given" {%if not app.user %}data-toggle="modal" data-target="#login-modal" {%endif%}><span class="fa fa-caret-up"></span> <span id = "points">{{ project.points }}</span></a>
+                  <input type = "hidden" value = "{{ project.id }}" id = "projectId"/>
+                  </button>
+
+                </div>
+                <!-- Affichage des tags -->
+                <span class = "badge badge-warning"></span>
+                {% for tag in project.tags %}
+                  <span class = "badge badge-warning">{{tag.name}}</span>
+                {% endfor %}
+
               </div>
 	        </div>
         </a>
       </div>
 
 
-  {% if loop.index is divisible by(3) %}
-  </div><div class = "row jp-list-item" style = "margin-top : 3em" >
-  {% endif %}
-  {% else %}
-  <p> Pas (encore!) de projets </p>
-  {% endfor %}
-  </div>
+    <!-- Si le nombre de projets > 3 -> On passe à la ligne suivante -->
+    {% if loop.index is divisible by(3) %}
+      </div><div class = "row jp-list-item" style = "margin-top : 3em" >
+    {% endif %}
+    {% else %}
+      <p> Pas (encore!) de projets </p>
+    {% endfor %}
+    </div>
   
   </div>
 
-        <div class="jplist-no-results">
-        <p>Pas de projets trouvés</p>
-      </div>
+  <div class="jplist-no-results">
+    <p>Pas de projets trouvés</p>
+  </div>
+
 </div>
 
-    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Pop-up si jamais l'utilisateur n'est pas connecté, pour se connecter. La fonctionnalité Reddit n'est faites que pour les utilisateurs connectés -->
+
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header login_modal_header">
@@ -119,14 +143,15 @@
           <div class="modal-body login-modal">
             <p>Vous devez vous connecter pour accéder à cette fonction.</p>
             <div class="clearfix"></div>
-            <div id='social-icons-conatainer'>
+              <div id='social-icons-conatainer'>
 
-              <div class='modal-body'>
-                <div class="modal-social-icons">
-                  <a href="{{ path('hwi_oauth_service_redirect', {'service':'facebook'}) }}" class="btn btn-default facebook"> <i class="fa fa-facebook modal-icons"></i> Sign In with Facebook </a>
-                </div> 
-              </div>  
-            </div>                                                        
+                <div class='modal-body'>
+                  <div class="modal-social-icons">
+                    <a href="{{ path('hwi_oauth_service_redirect', {'service':'facebook'}) }}" class="btn btn-default facebook"> <i class="fa fa-facebook modal-icons"></i> Sign In with Facebook </a>
+                  </div> 
+                  <p> Ou <a href="{{ path('fos_user_security_login') }}">se connecter avec Un-mute </a></p>
+                </div>  
+              </div>                                                        
             <div class="clearfix"></div>
           </div>
           <div class="clearfix"></div>
@@ -134,50 +159,52 @@
     </div>
 </div>
 
- <script>
-  {%if app.user %}
-  $('.btn.btn-primary.btn-circle.points-given').click(function(){
-    var btnId = this.id;
-    var points = parseInt($('#bt'+btnId).find('#points').text()); 
-    var projectId = parseInt($('#bt'+btnId).find('input').val());
-    
+  {% block javascript %}
 
-    $.ajax({
-      url:"{{ path('x_projects_ajax_points') }}",
-      type: 'POST',
-      dataType:"JSON",
-      data:{
-        "points" : points,
-        "projectId" : projectId,
-      },
-      async:true,
+   <script>
+    {%if app.user %}
+    $('.btn.btn-primary.btn-circle.points-given').click(function(){
+      var btnId = this.id;
+      var points = parseInt($('#bt'+btnId).find('#points').text()); 
+      var projectId = parseInt($('#bt'+btnId).find('input').val());
+      
 
-      success:function(data)
-      {
-        console.log(data);
-        console.log($('#bt'+btnId).find('#points'));
-        $('#bt'+btnId).find('#points').text(data.points);
-      },
-      error:function(xhr, textStatus, errorThrown){
-        alert(xhr.status);
-        alert(xhr.responseText);
-      }
+      $.ajax({
+        url:"{{ path('x_projects_ajax_points') }}",
+        type: 'POST',
+        dataType:"JSON",
+        data:{
+          "points" : points,
+          "projectId" : projectId,
+        },
+        async:true,
+
+        success:function(data)
+        {
+          console.log(data);
+          console.log($('#bt'+btnId).find('#points'));
+          $('#bt'+btnId).find('#points').text(data.points);
+        },
+        error:function(xhr, textStatus, errorThrown){
+          alert(xhr.status);
+          alert(xhr.responseText);
+        }
+      });
+    });
+    {%endif%}
+
+    $('document').ready(function(){
+    //check all jPList javascript options
+    $('#demo').jplist({
+      itemsBox: '.jp-list'
+      ,itemPath: '.jp-list-item'
+      ,panelPath: '.jplist-panel'
     });
   });
-  {%endif%}
+    
+    </script>
+  {% endblock %}
 
-  $('document').ready(function(){
-  //check all jPList javascript options
-  $('#demo').jplist({
-    itemsBox: '.jp-list'
-    ,itemPath: '.jp-list-item'
-    ,panelPath: '.jplist-panel'
-  });
-});
-  
-  </script>
-
-
- {% endblock %}
+{% endblock %}
   
  

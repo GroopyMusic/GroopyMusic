@@ -31,18 +31,20 @@ class ProjectsController extends Controller
 		->getManager()
 		->getRepository('XBundle:Projects')
 		->findBy(array(), array('points' => 'desc'))
-		;
+		; //findAll est peut-être mieux - pas besoin de les afficher seulement le nombre de points
 
 	  return $this->render('XBundle:Projects:index.html.twig', array(
 		'listProjects' => $listProjects
 		));
   }
 
+  //Page d'accueil avec le projet à l'affiche
   public function homeAction(){
     $projects = $this->getDoctrine()->getManager()->getRepository('XBundle:Projects')->findAll();
 
     $points = array();
 
+    //Trouver le projet qui a le plus de points 
     foreach($projects as $project){
       $points[] = $project->getPoints();
 
@@ -65,6 +67,8 @@ class ProjectsController extends Controller
     $formDonation = $this->get('form.factory')->create(DonationType::class);
     $formDonation->handleRequest($request);
 
+
+    //Création d'un panier lorsque l'utilisateur valide le formulaire de donation
     if($formDonation->isSubmitted())
     {
       $cart = new XCart();
@@ -119,26 +123,26 @@ class ProjectsController extends Controller
     $project = new Projects();
     $points = new Points();
     $artist = new Artist();
-	   $user = $this->container->get('security.token_storage')->getToken()->getUser();
-	$form = $this->get('form.factory')->create(ProjectsType::class, $project);
+	  $user = $this->container->get('security.token_storage')->getToken()->getUser();
+	  $form = $this->get('form.factory')->create(ProjectsType::class, $project);
 	
-	if($request->isMethod('POST')) {
-		$form->handleRequest($request);
-		
-		if($form->isValid()) {
-			$em = $this->getDoctrine()->getManager();
-      $points->setProjectId($project);
-      $points->setGavePoints(0);
-      $project->setPoints(0);
-      $project->setUser($user);
-			$em->persist($project);
-      $em->persist($points);
-			$em->flush();
-			
-			$request->getSession()->getFlashBag()->add('notice', 'Projet enregistré');
-			
-			return $this->redirectToRoute('x_projects_home', array('id' => $project->getId()));
-		}
+  	if($request->isMethod('POST')) {
+  		$form->handleRequest($request);
+  		
+  		if($form->isValid()) {
+  			$em = $this->getDoctrine()->getManager();
+        $points->setProjectId($project);
+        $points->setGavePoints(0);
+        $project->setPoints(0);
+        $project->setUser($user);
+  			$em->persist($project);
+        $em->persist($points);
+  			$em->flush();
+  			
+  			$request->getSession()->getFlashBag()->add('notice', 'Projet enregistré');
+  			
+  			return $this->redirectToRoute('x_projects_home', array('id' => $project->getId()));
+  		}
 	}
 	
 	return $this->render('XBundle:Projects:add.html.twig', array(
@@ -146,6 +150,7 @@ class ProjectsController extends Controller
 		));
   }
 
+  //Fonctionalité non terminée 
   public function editAction($id, Request $request)
   {
     $em = $this->getDoctrine()->getManager();
@@ -171,6 +176,8 @@ class ProjectsController extends Controller
       'form'   => $form->createView(),
     ));
   }
+
+  //FOnctionnalité non terminée
   public function deleteAction(Request $request, $id)
   {
     $em = $this->getDoctrine()->getManager();
@@ -200,6 +207,7 @@ class ProjectsController extends Controller
     ));
   }
 
+  //Ajax call pour l'ajout de points aux projets
   public function ajaxAction(Request $request)
   {
     $em = $this->getDoctrine()->getManager();

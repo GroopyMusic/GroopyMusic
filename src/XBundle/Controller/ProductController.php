@@ -25,29 +25,29 @@ class ProductController extends Controller
     $project = $this->getDoctrine()->getManager()->getRepository('XBundle:Projects')->find($projectId);
     $product = new Product();
   
-  $form = $this->get('form.factory')->create(ProductType::class, $product);
-  $product->setProject($project);
-  
-  if($request->isMethod('POST')) {
-    $form->handleRequest($request);
+    $form = $this->get('form.factory')->create(ProductType::class, $product);
+    $product->setProject($project);
     
-    if($form->isValid()) {
-      $em = $this->getDoctrine()->getManager();
-      $em->persist($product);
-      $em->flush();
+    if($request->isMethod('POST')) {
+      $form->handleRequest($request);
       
-      $request->getSession()->getFlashBag()->add('notice', 'Produit enregistré');
-      
-      return $this->redirectToRoute('x_user_viewProjects');
+      if($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($product);
+        $em->flush();
+        
+        $request->getSession()->getFlashBag()->add('notice', 'Produit enregistré');
+        
+        return $this->redirectToRoute('x_user_viewProjects');
+      }
     }
-  }
-    return $this->render('XBundle:Product:add_product.html.twig', array(
-      'project' => $project,
-      'form' => $form->createView(),
-    ));
+      return $this->render('XBundle:Product:add_product.html.twig', array(
+        'project' => $project,
+        'form' => $form->createView(),
+      ));
   }
 
-
+  //Fonctionnalités à implémenter
   public function editAction($id, Request $request)
   {
     

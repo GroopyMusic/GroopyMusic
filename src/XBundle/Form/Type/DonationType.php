@@ -19,7 +19,7 @@ class DonationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('donation_amount', IntegerType::class)->add('submit', 	SubmitType::class);
+        $builder->add('donation_amount', IntegerType::class, array('label' => false))->add('submit', 	SubmitType::class, array('attr' => ['class' => 'btn btn-primary']));
     }/**
      * {@inheritdoc}
      */

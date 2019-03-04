@@ -32,9 +32,9 @@ class TagsTransformer implements DataTransformerInterface
 
 		$names = array_filter(array_unique(array_map('trim', explode(',', $value))));
 
-		$oldTags = $this->em->getRepository('XBundle:Tag')->findBy([ 'name' => $names]);
+		$tags = $this->em->getRepository('XBundle:Tag')->findBy([ 'name' => $names]);
 
-		$newTags = array_diff($names, $oldTags);
+		$newTags = array_diff($names, $tags);
 
 		$tag = [];
 		foreach ($newTags as $name){

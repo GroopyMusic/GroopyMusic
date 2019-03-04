@@ -15,7 +15,7 @@
    background-size: cover;
    background-repeat: no-repeat;
    background-position: 50% 50%;
-   /*filter: blur(5px);*/
+   /*filter: blur(5px); Flou sur l'image uniquement afin de cacher les pixels suite à l'étirage. Malheureusement l'effet s'applique à toute la classe. */
 }
 </style>
     <!-- Main jumbotron for a primary marketing message or call to action -->
@@ -28,6 +28,7 @@
           </p>
         </div>
         <div>
+          <!-- Fonctionnalité à implémenter -->
           <a href="#" class="fa fa-facebook"></a>
           <a href="#" class="fa fa-twitter"></a>
           <a href="#" class="fa fa-instagram"></a>
@@ -42,73 +43,76 @@
       </div>
       <div class="row">
         <div class="col-md-4">
+          <!-- Fonctionnalité à implémenter -->
           {% for video in project.video %}
               {{ video.embedVideo|raw }}
           {% endfor %}
+
         </div> 
         <div class= "col-md-4">
         </div>
         <div class = "col-md-4">
 
-      <div class="card">
-  <div class="card-header">
-    Faire une donation
-  </div>
-  <div class="card-body">
-    {{ form(formDonation) }}
-  </form>
-  </div>
-</div>
-      </div>
+          <div class="card">
+            <div class="card-header">
+              Faire une donation
+            </div>
+            <div class="card-body">
+              {{ form(formDonation) }}
+            </div>
+          </div>
+        </div>
 
+      </div>
     </div>
-  </div>
 	
 	<hr>
 
     <div class="container">
-          <div class="text-center">
-            <h2 class="key_features">Produits</h2>
-          </div>
-          <ul class="list-unstyled">
-    {% for product in listProduct %}
-    {% if product.project.id == project.id %}
-    <li class="media">
-      <img class="mr-3" src="{{ asset(product.photo.webPath(product.photo)) }}" width = "64" height = "64" alt="Generic placeholder image">
-      <div class="media-body">
-        <h5 class="mt-0 mb-1">{{ product.name }}</h5>
-        {{ product.description }}
-        <p>{{ product.price }} €</p>
+      <div class="text-center">
+        <h2 class="key_features">Produits</h2>
       </div>
-      <div style = "float: right; margin-right: 2em">Quantité :</div>
-      <div style = "float: right; margin-right: 2em">
-        <div class="input-group{{loop.index}}">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
-                                          -
-                                        </button>
-                                    </span>
-                                    <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="2" max="100">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
-                                            +
-                                        </button>
-                                    </span>
-                                    <input type = "hidden" value = "{{ product.id }}" id = "productId"/>
-                                </div>
-                              </div>
-      <div class="buy-pr" style = "float: right"> 
-        <a class="btn btn-primary btn-info buy-product" id="{{loop.index}}"><span class="fa fa-shopping-cart"></span> Acheter</a>
-                                        
-      </div>
+      <ul class="list-unstyled">
+        {% for product in listProduct %}
+          {% if product.project.id == project.id %} <!-- Affichage des produits liés aux projets uniquement -->
+          <li class="media">
+            <img class="mr-3" src="{{ asset(product.photo.webPath(product.photo)) }}" width = "64" height = "64" alt="Generic placeholder image">
+            <div class="media-body">
+              <h5 class="mt-0 mb-1">{{ product.name }}</h5>
+                {{ product.description }}
+              <p>{{ product.price }} €</p>
+            </div>
+            <div style = "margin-right: 2em;">Quantité :</div>
+            <div style = "float: right; margin-right: 2em;">
+              <div class="input-group{{loop.index}}">
+                <span class="input-group-btn">
+                    <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
+                      -
+                    </button>
+                </span>
+                <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="2" max="100">
+                <span class="input-group-btn">
+                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                        +
+                    </button>
+                </span>
+                <input type = "hidden" value = "{{ product.id }}" id = "productId"/>
+              </div>
+            </div>
+
+            <div class="buy-pr" style = "float: right"> 
+              
+              <a class="btn btn-primary btn-info buy-product" id="{{loop.index}}"><span class="fa fa-shopping-cart"></span>Acheter</a>
+                                              
+            </div>
 
 
 
-    </li>
-  {% endif %}
-{% endfor %}
+          </li>
+          {% endif %}
+        {% endfor %}
     
-  </ul>
+      </ul>
     </div>
 
     <hr>
@@ -116,6 +120,7 @@
     <div class="container">
       <div class="row text-center">
         <div>
+          <!-- Fonctionnalité à implémenter -->
           <h4>Plus d'informations</h4>
           <ul class="center" type="square">
             <li>...</li>
@@ -128,76 +133,77 @@
 
     <hr>
 
-<script>
-$('.btn.btn-primary.btn-info.buy-product').click(function(e){
-      var btnId = this.id;
-      var quantity = parseInt($('.input-group'+btnId).find('#quantity').val()); 
-      var productId = parseInt($('.input-group'+btnId).find('#productId').val());
+  {% block javascript %}
 
-      console.log(quantity);
-      console.log(productId);
+  <script>
+  // Passage de la variable quantité et id du produit avec Ajax au controlleur 
+  $('.btn.btn-primary.btn-info.buy-product').click(function(e){
+        var btnId = this.id;
+        var quantity = parseInt($('.input-group'+btnId).find('#quantity').val()); 
+        var productId = parseInt($('.input-group'+btnId).find('#productId').val());
 
-      var QPdata= {
-        'quantity' : quantity,
-        'productId' : productId
-      };
+        var QPdata= {
+          'quantity' : quantity,
+          'productId' : productId
+        };
 
-      $.ajax({
-        type:'POST',
-        url: '{{ absolute_url(path('x_ajax_post_order_product', {'id' : project.id})) }}',
-        dataType: "JSON",
-        data: {
-          "redirect" : "",
-          "quantity" : quantity,
-          "productId" : productId
-        },
-        success: function(data, textStatus){
-          if(data.redirect)
-          {
-            window.location.href = data.redirect; 
-          }
-          else{
-
-          }
-        }
-      });
-});
-
-
-$(document).ready(function(){
-
-var quantitiy=0;
-   $('.quantity-right-plus').click(function(e){
-        
-        // Stop acting like a button
-        e.preventDefault();
-        // Get the field name
-        var quantity = parseInt($('#quantity').val());
-        
-        // If is not undefined
-            
-            $('#quantity').val(quantity + 1);
-
-          
-            // Increment
-        
-    });
-
-     $('.quantity-left-minus').click(function(e){
-        // Stop acting like a button
-        e.preventDefault();
-        // Get the field name
-        var quantity = parseInt($('#quantity').val());
-        
-        // If is not undefined
-      
-            // Increment
-            if(quantity>0){
-            $('#quantity').val(quantity - 1);
+        $.ajax({
+          type:'POST',
+          url: '{{ absolute_url(path('x_ajax_post_order_product', {'id' : project.id})) }}',
+          dataType: "JSON",
+          data: {
+            "redirect" : "",
+            "quantity" : quantity,
+            "productId" : productId
+          },
+          success: function(data, textStatus){
+            if(data.redirect)
+            {
+              window.location.href = data.redirect; 
             }
-    });
-    
-});
-</script>
+            else{
+
+            }
+          }
+        });
+  });
+
+
+  $(document).ready(function(){
+
+  var quantitiy=0;
+     $('.quantity-right-plus').click(function(e){
+          
+          // Stop acting like a button
+          e.preventDefault();
+          // Get the field name
+          var quantity = parseInt($('#quantity').val());
+          
+          // If is not undefined
+              
+              $('#quantity').val(quantity + 1);
+
+            
+              // Increment
+          
+      });
+
+       $('.quantity-left-minus').click(function(e){
+          // Stop acting like a button
+          e.preventDefault();
+          // Get the field name
+          var quantity = parseInt($('#quantity').val());
+          
+          // If is not undefined
+        
+              // Increment
+              if(quantity>0){
+              $('#quantity').val(quantity - 1);
+              }
+      });
+      
+  });
+  </script>
+  {% endblock %}
 
 {% endblock %}

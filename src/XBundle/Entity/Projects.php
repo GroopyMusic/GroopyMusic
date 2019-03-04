@@ -42,6 +42,7 @@ class Projects
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Video", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $video;
 
@@ -75,7 +76,7 @@ class Projects
      *
      * @ORM\Column(name="totalAmount", type="float", nullable = true)
      */
-    private $totalAmount;
+    private $totalAmount = 0;
 
     /**
     * @var int
