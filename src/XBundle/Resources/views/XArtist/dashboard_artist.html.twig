@@ -1,0 +1,52 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+    <section class="container py-5">
+        <h2>Projets en cours</h2>
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>NOM PROJET</h3>
+                <div class="mt-2"><h4>250 € sur 1000 €</h4></div>
+            </div>
+            <div class="col-12 col-md-2">
+                15 dons(s)<br />
+                20 vente(s) effectuée(s)<br />
+                40 jour(s) restant(s)<br /><br />
+            </div>
+            <div class="col-12 col-md-2">
+                <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('x_artist_project_details') }}">Détails du projet</a>
+            </div>
+            <div class="col-12 col-md-2">
+                <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_update') }}">Modifier les informations</a>
+            </div>
+            <div class="col-12 col-md-2">
+                <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_donations_sales_details') }}">Détails des dons et des ventes</a>
+            </div>
+            <div class="col-12 col-md-2">
+                <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_products') }}">Articles mis en vente</a>
+            </div>
+            <div class="col-12 col-md-2">
+                <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="#">Envoyer un message transactionnel</a>
+            </div>
+            
+        </div>
+        Avancement du financement participatif: <strong>25%</strong>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <h2>Tableau de bord</h2>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{{ path('x_artist_project_new') }}"><i class="far fa-plus-square"></i> Nouveau projet</a>
+                <div class="text-muted">Lancez une campagne de financement participatif pour votre projet.</div>
+            </li>
+            <li class="list-group-item">
+                <a href="#"><i class="far fa-clock"></i> Projets passés</a>
+                <div class="text-muted">Retrouvez toutes les informations des projets que vous avez lancés par le passé et qui sont terminés.</div>
+            </li>
+        </ul>
+    </section>
+{% endblock %}

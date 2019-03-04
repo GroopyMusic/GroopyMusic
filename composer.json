@@ -61,7 +61,8 @@
         "tecnickcom/tcpdf": "6.2.17",
         "sonata-project/formatter-bundle": "^3.4",
         "azine/email-bundle": "dev-master",
-        "liuggio/ExcelBundle": "^2.1"
+        "liuggio/ExcelBundle": "^2.1",
+        "ob/highcharts-bundle": "^1.6"
     },
     "scripts": {
         "post-install-cmd": [
@@ -78,7 +79,8 @@
         "deployer/deployer": "~3.0",
         "symfony/phpunit-bridge": "^4.0",
         "symfony/browser-kit": "^3.4",
-        "symfony/css-selector": "^3.4"
+        "symfony/css-selector": "^3.4",
+        "symfony/var-dumper": "^3.4"
     },
     "extra": {
         "symfony-app-dir": "app",

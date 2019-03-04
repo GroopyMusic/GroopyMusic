@@ -1,0 +1,15 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    <h2>Détails des dons et des ventes</h2>
+    <div id="realtimechart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+    </br>
+    <div id="cumulchart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script type="text/javascript"> {{ chart(realtimechart) }} </script>
+    <script type="text/javascript"> {{ chart(cumulchart) }} </script>
+{% endblock %}

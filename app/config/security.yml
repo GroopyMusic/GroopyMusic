@@ -16,6 +16,22 @@ security:
             id: fos_user.user_provider.username_email # authorize login by e-mail
 
     firewalls:
+        x:
+          host: "localhost"
+          pattern: ^/x/
+          form_login:
+            check_path: fos_user_security_check_x
+            provider: fos_userbundle
+            failure_path: x_login
+            always_use_default_target_path: true
+            default_target_path: x_artist_dashboard
+            use_referer: true
+            username_parameter: _um_username
+            password_parameter: _um_password
+          logout:
+            path: x_logout
+            target: x_homepage
+          anonymous: true
         yb:
           host: "%yb_host%"
           pattern: "%yb_pattern%"

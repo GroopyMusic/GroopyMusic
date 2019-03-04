@@ -4,7 +4,7 @@ namespace XBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class DefaultControllerTest extends WebTestCase
+class XPublicControllerTest extends WebTestCase
 {
     public function testIndex()
     {
