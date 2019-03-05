@@ -4,6 +4,7 @@ namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\Organization;
 use AppBundle\Form\AddressType;
 use AppBundle\Form\CounterPartType;
 use AppBundle\Form\PhotoType;
@@ -16,16 +17,24 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class YBContractArtistType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            /*->add('organization', EntityType::class, [
+                'class' => Organization::class,
+                'choices' => $options['userOrganizations'],
+                'choice_label' => 'name',
+            ])*/
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
@@ -153,6 +162,7 @@ class YBContractArtistType extends AbstractType
                 new Assert\Callback(array($this, 'validate'))
             ),
             'creation' => false,
+            'userOrganizations' => new ArrayCollection(),
         ]);
     }
 

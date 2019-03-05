@@ -6,10 +6,13 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBTransactionalMessage;
+use AppBundle\Entity\YB\Organization;
+use AppBundle\Entity\YB\Participation;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
 use AppBundle\Form\YB\YBTransactionalMessageType;
+use AppBundle\Form\YB\OrganizationType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\StringHelper;
@@ -22,6 +25,8 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class YBMembersController extends BaseController
 {
@@ -54,8 +59,14 @@ class YBMembersController extends BaseController
         foreach($adminUsers as $au) {
             $campaign->addHandler($au);
         }
+        
+        /*$currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        $userOrganizations = $currentUser->getOrganizations();
+        $ownNameOrg = new Organization();
+        $ownNameOrg->setName($currentUser->getDisplayName());
+        array_unshift($userOrganizations, $ownNameOrg);*/
 
-        $form = $this->createForm(YBContractArtistType::class, $campaign, ['creation' => true]);
+        $form = $this->createForm(YBContractArtistType::class, $campaign, ['creation' => true, /*'userOrganizations' => $userOrganizations*/]);
 
         $form->handleRequest($request);
 
@@ -391,5 +402,107 @@ class YBMembersController extends BaseController
 
         return new Response();
     }
+
+    /**
+     * @Route("/my-organizations", name="yb_members_my_organizations")
+     */
+    public function myOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, MailDispatcher $mailDispatcher){
+        
+        // regarder si il a les autorisations pour accéder à la page
+        //$this->checkIfAuthorized($user);
+
+        // récupérer toutes ses organisations
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        $organizationsToBeDisplayed = $currentUser->getPublicOrganizations();
+
+        // init form pour la création d'une nouvelle organisation
+        $organization = new Organization();
+        $form = $this->createForm(OrganizationType::class, $organization);
+
+        // creation form pour l'ajout d'une personne
+        $defaultData = ['email_adress' => 'Adresse e-mail de la personne'];
+        $form_add_user = $this->createFormBuilder($defaultData)
+            ->add('email_address', TextType::class, ['label' => 'Adresse e-mail'])
+            ->add('submit', SubmitType::class, ['label' => 'Ajouter'])
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $participation = new Participation();
+            $participation->setAdmin(true);
+            $currentUser->addParticipation($participation);
+            $organization->addParticipation($participation);
+            $participation->setRole();
+            $em->persist($organization);
+            $em->flush();
+            $orgName = $organization->getName();
+            $this->addFlash('yb_notice', 'Votre nouvelle organisation, '. $orgName .', a bien été enregistrée.');
+            return $this->redirectToRoute('yb_members_my_organizations');
+        }
+
+        if ($form_add_user->isSubmitted() && $form->isValid){
+            $data = $form_add_user->getData();
+            if ($form_add_user->get('submit')->isClicked()) {
+                // TODO
+                return $this->redirectToRoute('yb_members_my_organizations');
+            }
+        }
+
+        // renvoyer vers la page
+        return $this->render('@App/YB/Members/my_organizations.html.twig', [
+            'organizations' => $organizationsToBeDisplayed,
+            'form' => $form->createView(),
+            'currentUser' => $currentUser,
+            'newMemberForm' => $form_add_user->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/delete-organization/{id}", name="yb_members_delete_organization")
+     */
+    public function deleteOrganizationAction(Organization $org, UserInterface $user = null, EntityManagerInterface $em){
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if ($org->hasOnlyOneMember()){
+            if (!$this->hasPendingProjects($org)){
+                $em->remove($currentUser->getParticipationToOrganizaton($org));
+            } else {
+                $this->addFlash('yb_notice', 'Votre organisation a encore des projets et vous êtes le seul membre restant ! Vous ne pouvez pas quitter le navire en pleine mer !');
+            }
+        } else {
+            if ($org->hasAtLeastOneAdmin($currentUser)){
+                $em->remove($currentUser->getParticipationToOrganizaton($org));
+            } else {
+                $this->addFlash('yb_notice', 'Si vous partez, il n\'y a plus de maître à bord ! Désigner d\'abord un administrateur avant de partir !');
+            }
+        }
+        $em->flush();
+        return $this->redirectToRoute('yb_members_my_organizations');
+    }
+
+    private function hasPendingProjects(Organization $organization){
+        return false;
+    }
+
+    /**
+     * @Route("/remove-from-organization/{id}", name="yb_members_remove_from_organization")
+     */
+    public function removeFromOrganizationAction(){
+
+    }
+
+    /**
+     * @Route("/make-admin/{organization_id}/{user_id}/", name="yb_members_make_admin")
+     */
+    public function makeAdminAction(){
+        
+    }
+
+    /**
+     * @Route("/unmake-admin/{organization_id}/{user_id}/", name="yb_members_unmake_admin")
+     */
+    public function unmakeAdminAction(){
+        
+    }
+
 
 }

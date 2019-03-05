@@ -1,0 +1,63 @@
+{% macro organization_row(organization, currentUser, newMemberForm) %}
+    
+    {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
+
+    <div class="">
+        <h3>{{ organization.getName|nl2br }}</h3>
+        <!-- quand on est super admin, on voit tout le monde -->
+        {% if currentUser.getRoleForOrganization(organization) == 3 or currentUser.getRoleForOrganization(organization) == 2 %}
+            <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
+                {% for member in organization.getMembers %}
+                    {{ macros.organization_member_row(currentUser, member, organization) }}
+                {% endfor %}
+            </table>
+        <!-- quand on est simple admin ou membre, on ne voit pas Pierre et Gonzague -->
+        {% else %}
+            <table class="table">
+                {% for member in organization.getNonSuperAdminMembers %}
+                    {{ macros.organization_member_row(currentUser, member, organization) }}
+                {% endfor %}
+            </table>
+        {% endif %}
+        <p><a class="link-secondary" data-toggle="modal" data-target="#dataModal" href="#">Rajouter un membre à cette organisation...</a></p>
+        <p><a class="link-secondary" href="{{ path('yb_members_delete_organization', {'id': organization.getId}) }}">Supprimer cette organisation.</a></p>
+        <div id="dataModal" class="modal fade">
+            <div class="modal-dialog">  
+            <div class="modal-content">  
+                <div class="modal-header">  
+                    <h4 class="modal-title" id="modal-title">Rajouter un membre</h4>
+                </div>  
+                <div class="modal-body" id="modal_detail"> 
+                    <p>Entrez l'adresse email de la personne que vous voulez ajouter. Elle sera notifié de votre inviation.</p>
+                    {{ form(newMemberForm) }}
+                </div>  
+                <div class="modal-footer">  
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                </div>  
+            </div>  
+        </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-bold').click(function () {
+                $('#dataModal').modal('show');
+                /*var url = '{{ path('fos_user_profile_edit') }}';
+
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    success: function (data) {
+                        $('#modal_detail').html(data);
+                        $('#dataModal').modal('show');
+                    }
+                });*/
+
+            });
+
+
+        });
+    </script>
+
+{% endmacro %}

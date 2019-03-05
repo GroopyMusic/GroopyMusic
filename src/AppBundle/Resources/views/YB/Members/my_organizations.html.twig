@@ -1,0 +1,27 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    {% import '@App/YB/Macros/organization.html.twig' as macros %}
+
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li class="active"><span>Mes organisations</span></li>
+        </ol>
+    </section>
+
+    <section class="container py-5">
+        <h2>Mes organisations</h2>
+        {% for organization in organizations %}
+            {{ macros.organization_row(organization, currentUser, newMemberForm) }}
+        {% else %}
+            <p>Vous ne faites partie d'aucune organisation.</p>
+        {% endfor %}
+    </section>
+
+    <section class="container py-5">
+        <h2>Créer une organisation</h2>
+        {{ form(form) }}
+    </section>
+
+{% endblock body %}

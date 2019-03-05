@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\Organization;
 use Azine\EmailBundle\Entity\RecipientInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -36,6 +37,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->sponsorships = new ArrayCollection();
         $this->yb = false;
         $this->yb_campaigns = new ArrayCollection();
+        $this->participations = new ArrayCollection();
     }
 
     public function owns(Artist $artist)
@@ -316,6 +318,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
      */
     private $vat_number;
+
+    /**
+    * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Participation", mappedBy="member", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+    */
+    private $participations;
 
     /**
      * @ORM\Column(name="organization_name", type="string", length=50, nullable=true)
@@ -1166,5 +1173,66 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getOrganizationName()
     {
         return $this->organization_name;
+    }
+
+    public function getParticipations(){
+        return $this->participations->toArray();
+    }
+
+    public function addParticipation(\AppBundle\Entity\YB\Participation $participation){
+        if (!$this->participations->contains($participation)){
+            $this->participations->add($participation);
+            $participation->setMember($this);
+        }
+        return $this;
+    }
+
+    public function removeParticipation(\AppBundle\Entity\YB\Participation $participation){
+        if ($this->participations->contains($participation)){
+            $this->participations->removeElement($participation);
+            $participation->setMember(null);
+        }
+        return $this;
+    }
+
+    public function getOrganizations(){
+        return array_map(
+            function ($participation){
+                return $participation->getOrganization();
+            },
+            $this->participations->toArray()
+        );
+    }
+
+    public function getPublicOrganizations(){
+        $publicOrganizations = [];
+        foreach ($this->participations as $participation){
+            if ($participation->getOrganization()->getName() !== $this->getDisplayName()){
+                $publicOrganizations[] = $participation->getOrganization();
+            }
+        }
+        return $publicOrganizations;
+    }
+
+    public function setRightForOrganization(\AppBundle\Entity\YB\Participation $participation, $isAdmin){
+        if ($this->participation->contains($participation)){
+            $participation->setAdmin($isAdmin);
+        }
+    }
+
+    public function getRoleForOrganization(Organization $org){
+        foreach ($this->participations as $part){
+            if ($part->getOrganization() === $org){
+                return $part->getRole();
+            }
+        }
+    }
+
+    public function getParticipationToOrganizaton(Organization $org){
+        foreach ($this->participations as $part){
+            if ($part->getOrganization() === $org){
+                return $part;
+            }
+        }
     }
 }

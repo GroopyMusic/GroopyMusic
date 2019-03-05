@@ -1272,4 +1272,8 @@ class BaseContractArtist implements TranslatableInterface
         }
         return $this;
     }
+
+    public function getDateEvent(){
+
+    }
 }

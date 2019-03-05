@@ -41,6 +41,21 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ])
             ->getQuery()
             ->getResult()
-            ;
+        ;
+    }
+
+    /**
+     * Gets all the differents users that handle Ticked-it campaigns.
+     *
+     * @return array a list of the differents users that handle Ticked-it campaigns
+     */
+    public function getHandlersList(){
+        return $this->createQueryBuilder('c')
+            ->join('c.handlers', 'u')
+            ->addSelect('u')
+            ->groupBy('c.handlers')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }

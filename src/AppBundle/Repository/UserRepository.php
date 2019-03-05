@@ -278,4 +278,20 @@ class UserRepository extends EntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * Gets, from the DB, the user that has the username and the password indicated as arguments
+     *
+     * @param [type] $username the username of the user
+     * @return mixed the user that fits those values or null
+     */
+    public function findByUsername($username){
+        return $this->createQueryBuilder('u')
+            ->where('u.username = ?1')
+            ->setParameter('1', $username)
+            ->distinct()
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
