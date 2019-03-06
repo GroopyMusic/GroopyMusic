@@ -61,7 +61,7 @@ class RestController extends BaseController {
         $password = '';
         $id = '';
         if (count($user) !== 0){
-            $campaigns = $user[0]->getYbCampaigns();
+            $campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllEvents($user[0]);
             if (count($campaigns) === 0){
                 $error = 'Vous ne pouvez pas utiliser l\'application. Vous devez être gestionnaire de campagnes.';
             } else {
@@ -92,10 +92,7 @@ class RestController extends BaseController {
         $user = $em->getRepository('AppBundle:User')->find($user_id);
         $events = [];
         if ($user !== null){
-            $events = $user->getYbCampaigns();
-            /* 
-             * $events = $user->getCampaigns();
-             */
+            $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllEvents($user);
             if (count($events) === 0) {
                 $error = 'Vous n\'avez pas d\'événements.';
             } else {

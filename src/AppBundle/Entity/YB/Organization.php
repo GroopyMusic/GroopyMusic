@@ -5,6 +5,11 @@ namespace AppBundle\Entity\YB;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Entity\User;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @ORM\Entity
@@ -14,6 +19,7 @@ class Organization {
 
     public function __construct(){
         $this->participations = new ArrayCollection();
+        $this->campaigns = new ArrayCollection();
     }
 
     /**
@@ -33,9 +39,14 @@ class Organization {
     private $name;
 
     /**
-    * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Participation", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=TRUE)
-    */
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Participation", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     */
     private $participations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBContractArtist", mappedBy="organization", cascade={"persist"})
+     */
+    private $campaigns;
 
     public function getId(){
         return $this->id;
@@ -89,7 +100,7 @@ class Organization {
     }
 
     public function hasOnlyOneMember(){
-        return count($this->participations) === 1;
+        return count($this->getNonSuperAdminMembers()) === 1;
     }
 
     public function hasAtLeastOneAdminLeft(User $quittingMember){
@@ -101,4 +112,7 @@ class Organization {
         return false;
     }
 
+    public function hasMember(User $member){
+        return in_array($member, $this->getMembers());
+    }
 }

@@ -17,11 +17,11 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class YBContractArtistType extends AbstractType
@@ -30,11 +30,12 @@ class YBContractArtistType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            /*->add('organization', EntityType::class, [
+            ->add('organization', EntityType::class, [
                 'class' => Organization::class,
+                'label' => 'Organisation',
                 'choices' => $options['userOrganizations'],
                 'choice_label' => 'name',
-            ])*/
+            ])
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
@@ -162,7 +163,7 @@ class YBContractArtistType extends AbstractType
                 new Assert\Callback(array($this, 'validate'))
             ),
             'creation' => false,
-            'userOrganizations' => new ArrayCollection(),
+            'userOrganizations' => null,
         ]);
     }
 

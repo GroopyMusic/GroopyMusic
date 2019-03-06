@@ -202,6 +202,11 @@ class YBContractArtist extends BaseContractArtist
     private $handlers;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="campaigns", cascade={"persist"})
+     */
+    private $organization;
+
+    /**
      * @var string
      * @ORM\Column(name="code", type="string", length=255)
      */
@@ -450,5 +455,17 @@ class YBContractArtist extends BaseContractArtist
     public function setTransactionalMessages($transactional_messages)
     {
         $this->transactional_messages = $transactional_messages;
+    }
+
+    public function getOrganization(){
+        return $this->organization;
+    }
+
+    public function setOrganization($organization){
+        $this->organization = $organization;
+    }
+    
+    public function getOrganizers(){
+        return $this->organization->getMembers();
     }
 }

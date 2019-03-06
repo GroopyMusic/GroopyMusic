@@ -279,6 +279,14 @@ class UserRepository extends EntityRepository
         ;
     }
 
+    public function getSuperAdmins(){
+        return $this->baseQueryBuilder()
+            ->andWhere("u.roles LIKE '%ROLE_SUPER_ADMIN%'")
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /**
      * Gets, from the DB, the user that has the username and the password indicated as arguments
      *

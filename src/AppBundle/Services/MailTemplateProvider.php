@@ -70,6 +70,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const YB_EVENT_CREATED = 'AppBundle:Mail/YB/Reminders:organizer_event_created.txt.twig';
     const YB_TRANSACTIONAL_MESSAGE = 'AppBundle:Mail/YB/Communication:transactional_message.txt.twig';
     const YB_TRANSACTIONAL_MESSAGE_COPY = 'AppBundle:Mail/YB/Communication:transactional_message_copy.txt.twig';
+    const YB_JOIN_ORGANIZATION = 'AppBundle:Mail/YB/Reminders:request_to_join_orga.txt.twig';
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()

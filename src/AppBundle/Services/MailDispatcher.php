@@ -16,6 +16,7 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\User_Category;
 use AppBundle\Entity\VIPInscription;
 use AppBundle\Entity\VolunteerProposal;
+use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBTransactionalMessage;
@@ -642,6 +643,16 @@ class MailDispatcher
         $subject_params = ['%event%' => $campaign->getTitle()];
 
         $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
+    }
+
+    public function sendYBJoinOrganization($data, Organization $organization, User $user){
+        $email = $data['email_address'];
+        $to = self::ADMIN_TO;
+        $to[$email] = $this->translator->getLocale();
+        $params = ['organization' => $organization, 'member' => $user];
+        $subject = 'subjects.yb.reminders.join_organization';
+        $subject_params = ['%organization%' => $organization->getName()];
+        $this->sendEmail(MailTemplateProvider::YB_JOIN_ORGANIZATION, $subject, $params, $subject_params, $to);
     }
 
     public function sendYBTransactionalMessageWithCopy(YBTransactionalMessage $message) {

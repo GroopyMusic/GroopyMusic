@@ -13,7 +13,8 @@
     <section class="container py-5">
         <h2>Mes organisations</h2>
         {% for organization in organizations %}
-            {{ macros.organization_row(organization, currentUser, newMemberForm) }}
+            {{ macros.organization_row(organization, currentUser) }}
+            <hr size="4" color="orange">
         {% else %}
             <p>Vous ne faites partie d'aucune organisation.</p>
         {% endfor %}

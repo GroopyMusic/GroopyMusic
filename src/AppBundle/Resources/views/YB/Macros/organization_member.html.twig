@@ -5,7 +5,11 @@
             {{ member.getDisplayName }}
         </td>
         {% if currentUser.getRoleForOrganization(organization) == 0 %}
-            {% if member.getRoleForOrganization(organization) != 0 %}
+            {% if member.isPendingInOrganization(organization) %}
+                <td>
+                    EN ATTENTE DE CONFIRMATION
+                </td>
+            {% elseif member.getRoleForOrganization(organization) != 0 %}
                 <td>
                     ADMINISTRATEUR
                 </td>
@@ -15,21 +19,25 @@
                 </td>
             {% endif %}
         {% else %}
-            {% if member == currentUser %}
+            {% if member.isPendingInOrganization(organization) %}
+                <td>
+                    EN ATTENTE DE CONFIRMATION
+                </td>
+            {% elseif member == currentUser %}
                 <td>
                     ADMINISTRATEUR
                 </td>
             {% else %}
                 <td>
-                    <button type="button" class="btn btn-success" href="{{ path('yb_members_remove_from_organization', {'id': member.getId}) }}">Supprimer</button>
+                    <a class="btn btn-success" href="{{ path('yb_members_remove_from_organization', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Supprimer</button>
                 </td>
                 {% if member.getRoleForOrganization(organization) != 0 %}
                     <td>
-                        <button type="button" class="btn btn-success" href="{{ path('yb_members_unmake_admin', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Enlever les droits admin</button>
+                        <a class="btn btn-success" href="{{ path('yb_members_unmake_admin', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Enlever les droits admin</button>
                     </td>
                 {% else %}
                     <td>
-                        <button type="button" class="btn btn-success" href="{{ path('yb_members_make_admin', {'id': member.getId, 'organization_id': organization.getId}) }}">Accorder les droits admin</button>
+                        <a class="btn btn-success" href="{{ path('yb_members_make_admin', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Accorder les droits admin</button>
                     </td>
                 {% endif %}
             {% endif %}

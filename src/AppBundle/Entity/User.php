@@ -158,7 +158,8 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     public function ownsYBCampaign(YBContractArtist $contractArtist) {
-        return $this->yb_campaigns->contains($contractArtist);
+        $organizers = $contractArtist->getOrganizers();
+        return in_array($this, $organizers);
     }
 
     public function isYB() {
@@ -1228,11 +1229,24 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         }
     }
 
-    public function getParticipationToOrganizaton(Organization $org){
+    public function getParticipationToOrganization(Organization $org){
         foreach ($this->participations as $part){
             if ($part->getOrganization() === $org){
                 return $part;
             }
         }
+    }
+
+    public function hasPrivateOrganization(){
+        foreach ($this->participations as $part){
+            if ($part->getOrganization()->getName() === $this->getDisplayName()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function isPendingInOrganization(Organization $org){
+        return $this->getParticipationToOrganization($org)->isPending();
     }
 }
