@@ -1,0 +1,49 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    <section class="container px-0 mt-3">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            {#<a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id}) }}">{{ project.title }}</a>#}
+            <span class="breadcrumb-item active">Articles mis en vente</span>
+        </nav>
+    </section>
+    
+    <section class="container my-4 py-2 my-md-4">
+        {% if products is empty %}
+            <h3>Pas d'articles en vente</h3>
+        {% else %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Intitulé</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr class="table-active">
+                            <td style="text-align: center"><img src="{{ asset(product.photo.webPath(product.photo)) }}" width="90px" height="90px"/></td>
+                            <th scope="row">{{ product.name }}</th>
+                            <td>{{ product.description }}</td>
+                            <td>{{ product.price }} €</td>
+                            <td>{{ product.supply }}</td>
+                            <td><button>Modifier</button</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table> 
+        {% endif %}
+
+        {% if not project.failed %}
+            <a href="{{ path('x_artist_product_new', {'id': project.id}) }}"><i class="far fa-plus-square"></i> Ajouter un article</a>
+        {% endif %}
+
+    </section>
+
+{% endblock %}

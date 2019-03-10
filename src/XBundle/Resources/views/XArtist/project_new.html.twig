@@ -2,7 +2,44 @@
 
 {% block body %}
 
-    <h2>Lancer un nouveau projet</h2>
-    <h2>Modifier les infos</h2>
+    <section class="container px-0 mt-3">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            {% if project.id is null %}
+                <span class="breadcrumb-item active">Nouveau projet</span>
+            {% else %}
+                <span class="breadcrumb-item active">Modifier les informations</span>
+            {% endif %}
+        </nav>
+    </section>
+
+    {{ form_start(form) }}
+
+    <section class="container my-4 py-2 my-md-4">
+        <div class="row">
+            <div class="col-12">
+            
+                {{ form_row(form.title) }}
+               
+                {{ form_row(form.artist) }}
+
+                {{ form_row(form.description) }}
+  
+                {{ form_row(form.dateEnd) }}
+
+                {{ form_row(form.threshold) }}
+
+                {{ form_row(form.tag) }}
+
+                {{ form_row(form.coverpic) }}
+
+                {{ form_row(form.submit) }}
+
+            </div>
+        </div>
+
+    </section>
+
+    {{ form_end(form) }}
 
 {% endblock %}

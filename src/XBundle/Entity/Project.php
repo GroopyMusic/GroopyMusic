@@ -1,0 +1,631 @@
+<?php
+
+namespace XBundle\Entity;
+
+use AppBundle\Entity\Artist;
+use AppBundle\Entity\User;
+use Doctrine\ORM\Mapping as ORM;
+use XBundle\Entity\Image;
+use XBundle\Entity\Tag;
+
+/**
+ * Project
+ *
+ * @ORM\Table(name="project")
+ * @ORM\Entity(repositoryClass="XBundle\Repository\ProjectRepository")
+ */
+class Project
+{
+
+    public function __construct() {
+        $this->dateCreation = new \DateTime();
+        $this->dateEnd = new \DateTime();
+        $this->collectedAmount = 0;
+        $this->successful = false;
+        $this->failed = false;
+        $this->refunded = false;
+        $this->noThreshold = true;
+        $this->nbDonations = 0;
+        $this->nbSales = 0;
+        $this->points = 0;
+    }
+
+    
+
+    public function hasThreshold()
+    {
+        return !$this->noThreshold;
+    }
+
+    /**
+     * Calculates the number of remaining days for project funding
+     */
+    public function getRemainingDays()
+    {
+        return $this->getDateEnd()->diff(new \DateTime())->format('%a');
+    }
+
+    /**
+     * Calculates the number of remaining hours for project funding
+     */
+    public function getRemainingHours()
+    {
+        $diff = $this->getDateEnd()->diff(new \DateTime());
+        return $diff->h + ($diff->days*24);
+    }
+
+    /**
+     * Calculates the number of remaining minutes for project funding
+     */
+    public function getRemainingMinutes()
+    {
+        $diff = $this->getDateEnd()->diff(new \DateTime());
+        return ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
+    }
+
+    /**
+     * Calculates the percentage of project funding progress
+     */
+    public function getProgressPercent() {
+        return min(floor(($this->getCollectedAmount() / max(1, $this->getThreshold())) * 100), 100);
+    }
+
+    public function addAmount($amount) {
+        $this->collectedAmount += $amount;
+    }
+
+    public function addNbDonations() {
+        $this->nbDonations++;
+    }
+
+    public function addNbSales() {
+        $this->nbSales++;
+    }
+
+    public function isPassed() {
+        return $this->dateEnd < new \DateTime();
+    }
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255)
+     */
+    private $title;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\Artist")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $artist;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_creation", type="datetime")
+     */
+    private $dateCreation;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_end", type="datetime")
+     */
+    private $dateEnd;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Tag")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $tag;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="threshold", type="float", nullable=true)
+     */
+    private $threshold;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="collected_amount", type="float")
+     */
+    private $collectedAmount;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="successful", type="boolean")
+     */
+    private $successful;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="failed", type="boolean")
+     */
+    private $failed;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="refunded", type="boolean")
+     */
+    private $refunded;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="no_threshold", type="boolean")
+     */
+    private $noThreshold;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nb_donations", type="integer")
+     */
+    private $nbDonations;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nb_sales", type="integer")
+     */
+    private $nbSales;
+
+    /**
+     * @ORM\OneToOne(targetEntity="\XBundle\Entity\Image", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $coverpic;
+
+    /**
+     * @var int
+     * 
+     * @ORM\Column(name="points", type="integer")
+     */
+    private $points;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Project
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set artist
+     *
+     * @param Artist $artist
+     *
+     * @return Project
+     */
+    public function setArtist($artist)
+    {
+        $this->artist = $artist;
+
+        return $this;
+    }
+
+    /**
+     * Get artist
+     *
+     * @return Artist
+     */
+    public function getArtist()
+    {
+        return $this->artist;
+    }
+
+    /**
+     * Set user
+     *
+     * @param User $user
+     *
+     * @return Project
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Project
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set dateCreation
+     *
+     * @param \DateTime $dateCreation
+     *
+     * @return Project
+     */
+    public function setDateCreation($dateCreation)
+    {
+        $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    /**
+     * Get dateCreation
+     *
+     * @return \DateTime
+     */
+    public function getDateCreation()
+    {
+        return $this->dateCreation;
+    }
+
+    /**
+     * Set dateEnd
+     *
+     * @param \DateTime $dateEnd
+     *
+     * @return Project
+     */
+    public function setDateEnd($dateEnd)
+    {
+        $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get dateEnd
+     *
+     * @return \DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->dateEnd;
+    }
+
+    /**
+     * Set tag
+     *
+     * @param User $tag
+     *
+     * @return Project
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Get tag
+     *
+     * @return Tag
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
+
+    /**
+     * Set threshold
+     *
+     * @param float $threshold
+     *
+     * @return Project
+     */
+    public function setThreshold($threshold)
+    {
+        $this->threshold = $threshold;
+
+        return $this;
+    }
+
+    /**
+     * Get threshold
+     *
+     * @return float
+     */
+    public function getThreshold()
+    {
+        return $this->threshold;
+    }
+
+    /**
+     * Set collectedAmount
+     *
+     * @param float $collectedAmount
+     *
+     * @return Project
+     */
+    public function setCollectedAmount($collectedAmount)
+    {
+        $this->collectedAmount = $collectedAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get collectedAmount
+     *
+     * @return float
+     */
+    public function getCollectedAmount()
+    {
+        return $this->collectedAmount;
+    }
+
+    /**
+     * Set successful
+     *
+     * @param boolean $successful
+     *
+     * @return Project
+     */
+    public function setSuccessful($successful)
+    {
+        $this->successful = $successful;
+
+        return $this;
+    }
+
+    /**
+     * Get successful
+     *
+     * @return bool
+     */
+    public function getSuccessful()
+    {
+        return $this->successful;
+    }
+
+    /**
+     * Set failed
+     *
+     * @param boolean $failed
+     *
+     * @return Project
+     */
+    public function setFailed($failed)
+    {
+        $this->failed = $failed;
+
+        return $this;
+    }
+
+    /**
+     * Get failed
+     *
+     * @return bool
+     */
+    public function getFailed()
+    {
+        return $this->failed;
+    }
+
+    /**
+     * Set refunded
+     *
+     * @param boolean $refunded
+     *
+     * @return Project
+     */
+    public function setRefunded($refunded)
+    {
+        $this->refunded = $refunded;
+
+        return $this;
+    }
+
+    /**
+     * Get refunded
+     *
+     * @return bool
+     */
+    public function getRefunded()
+    {
+        return $this->refunded;
+    }
+
+    /**
+     * Set noThreshold
+     *
+     * @param boolean $noThreshold
+     *
+     * @return Project
+     */
+    public function setNoThreshold($noThreshold)
+    {
+        $this->noThreshold = $noThreshold;
+
+        return $this;
+    }
+
+    /**
+     * Get noThreshold
+     *
+     * @return bool
+     */
+    public function getNoThreshold()
+    {
+        return $this->noThreshold;
+    }
+
+    /**
+     * Set nbDonations
+     *
+     * @param integer $nbDonations
+     *
+     * @return Project
+     */
+    public function setNbDonations($nbDonations)
+    {
+        $this->nbDonations = $nbDonations;
+
+        return $this;
+    }
+
+    /**
+     * Get nbDonations
+     *
+     * @return int
+     */
+    public function getNbDonations()
+    {
+        return $this->nbDonations;
+    }
+
+    /**
+     * Set nbSales
+     *
+     * @param integer $nbSales
+     *
+     * @return Project
+     */
+    public function setNbSales($nbSales)
+    {
+        $this->nbSales = $nbSales;
+
+        return $this;
+    }
+
+    /**
+     * Get nbSales
+     *
+     * @return int
+     */
+    public function getNbSales()
+    {
+        return $this->nbSales;
+    }
+
+    /**
+     * Set coverpic
+     *
+     * @param Image $coverpic
+     *
+     * @return Project
+     */
+    public function setCoverpic($coverpic = null)
+    {
+        $this->coverpic = $coverpic;
+
+        return $this;
+    }
+
+    /**
+     * Get coverpic
+     *
+     * @return Image
+     */
+    public function getCoverpic()
+    {
+        return $this->coverpic;
+    }
+
+    /**
+     * Set points
+     * 
+     * @return Project
+     */
+    public function setPoints($points)
+    {
+        $this->points = $points;
+        
+        return $this;
+    }
+
+    /**
+     * Get points
+     * 
+     * @return int
+     */
+    public function getPoints(){
+        return $this->points;
+    }
+}
+

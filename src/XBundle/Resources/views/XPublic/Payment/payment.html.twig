@@ -1,0 +1,400 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block head %}
+    <!-- Bootstrap core CSS -->
+    <!--<link href="../../../../dist/css/bootstrap.min.css" rel="stylesheet">-->
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="form-validation.css" >
+    <link rel="stylesheet" href="{{ asset('x/css/payment.css') }}">
+{% endblock %}
+
+
+{% block body %}
+<style>
+  .container { max-width: 960px; }
+  .border-top { border-top: 1px solid #e5e5e5; }
+  .border-bottom { border-bottom: 1px solid #e5e5e5; }
+  .border-top-gray { border-top-color: #adb5bd; }
+  .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+  .lh-condensed { line-height: 1.25; }
+</style>
+
+<!--<body class="bg-light">-->
+
+    <div class="container py-5">
+  
+		<!-- Used to display Element errors -->
+    <!--<div class="stripe-error alert alert-danger" role="alert"></div>-->
+    <div id="stripe-loader">
+      {{ hidden_loader(true, false) }}
+    </div>
+
+    <h2>Paiement</h2><br>
+
+		<div class="row">
+		  <div class="col-md-4 order-md-2 mb-4">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted">Votre panier</span>
+        </h4>
+        <ul class="list-group mb-3">
+          {#% if amount is defined %#}
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            {% if cart.product == null %}
+              <h6 class="my-0">Donation</h6>
+              <small class="text-muted">en faveur de </small>
+            </div>
+            <span class="text-muted">{{ cart.donationAmount }}€</span>  
+          </li>
+
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total</span>
+            <strong>{{ cart.donationAmount }}€</strong>
+          </li>
+        </ul>
+      </div>
+        {% else %}
+          <h6 class="my-0">Article</h6>
+          <small class="text-muted">Nom: {{ cart.product.name }}</small></br>
+          <small class="text-muted">Quantité : {{ cart.prodQuantity }}</small>
+          <span class="text-muted">{{ cart.product.price }}€</span>      
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total</span>
+            <strong>{{ cart.donationAmount }}€</strong>
+          </li>
+        </ul>
+        {% endif %}
+      {#% endif %#}
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Vos coordonnées</h4>
+          <form id= "payment-form" class="needs-validation" novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <input type="text" class="form-control" id="first_name" name = "first_name" placeholder="Entrez votre prénom" required>
+                <div class="invalid-feedback">
+                  Votre prénom est requis.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <input type="text" class="form-control" id="last_name" name = "last_name" placeholder="Entrez votre nom" required>
+                <div class="invalid-feedback">
+                  Votre nom est requis.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <input type="email" class="form-control" id="email" name = "email" placeholder="Entrez votre e-mail (you@example.com)">
+              <div class="invalid-feedback">
+                Votre e-mail est requis.
+              </div>
+            </div>
+
+            <hr class="mb-4">
+                <h4 class="mb-3">Mode de paiement</h4>
+                <div class="d-block my-3">
+                  <div class="custom-control custom-radio">
+                    <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+                    <label class="custom-control-label" for="debit">Bancontact</label>
+                  </div>
+                  <div class="custom-control custom-radio">
+                    <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+                    <label class="custom-control-label" for="credit">Carte de crédit</label>
+                  </div>
+                  <div id="card-element">
+                    <!-- A Stripe Element will be inserted here. -->
+                  </div>
+                </div>
+
+    			<div id="bancontact-form">
+    			  <img src="{{ asset('x/images/bancontact_logo.png') }}" >
+    			  <p><button id="bancontact-b" class="btn btn-success mt-3" style="margin-top: 2%">Payer avec Bancontact</button></p>
+    			</div>
+                <!--<hr class="mb-4">
+                <button id = "credit-c" class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>-->
+          </form>
+		  </div>
+      </div>
+  </div>
+<!--</body>-->
+{% endblock %}
+
+
+
+{% block additional_javascripts %}
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="https://code.jquery.com/jquery-3.1.0.js"></script>-->
+
+    <script>
+      // Example starter JavaScript for disabling form submissions if there are invalid fields
+	    var $loader = $('#stripe-loader .loader');
+      var $loaderexplanation = $('#stripe-loader .loader-explanation');
+	    var amount = ({{ cart.donationAmount }} * 100);
+	    $('.stripe-error').hide();
+	  
+	    var stripe = Stripe('{{ stripe_api_public }}');
+      (function() {
+        'use strict';
+
+        window.addEventListener('load', function() {
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+          var forms = document.getElementsByClassName('needs-validation');
+
+          // Loop over them and prevent submission
+          var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+              if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add('was-validated');
+            }, false);
+          });
+        }, false);
+      })();
+		
+		  var elements = stripe.elements({
+			  fonts: [
+			    {
+				  cssSrc: 'https://fonts.googleapis.com/css?family=Roboto',
+			    },
+			  ],
+        // Stripe's examples are localized to specific languages, but if
+        // you wish to have Elements automatically detect your user's locale,
+        // use `locale: 'auto'` instead.
+        locale: window.__exampleLocale
+        });
+
+        var style = {
+        base: {
+        // Add your base input styles here. For example:
+        fontSize: '16px',
+        color: "#32325d",
+        }
+      };
+
+      // Create an instance of the card Element.
+      var card = elements.create('card', {style: style});
+      
+      // Add an instance of the card Element into the `card-element` <div>.
+      card.mount('#card-element');
+      $('input[type="radio"]').click(function () {
+          //Check if selected id and name is of test1 and A
+          if ($(this).attr('id') == "debit") {
+            //Show the message for demo
+            $('#credit-c').hide();
+            $('#card-element').hide();
+            $('#bancontact-form').show();
+
+            //You can trigger the event here
+          }
+          if ($(this).attr('id') == "credit") {
+            //Show the message for demo
+            $('#credit-c').show();
+            $('#card-element').show();
+            $('#bancontact-form').hide();
+            //You can trigger the event here
+          }
+        });
+      $('input[type="radio"]').trigger('click');
+      
+      $('#bancontact-b').click(function(e){
+        e.preventDefault();
+        displayLoader("");
+        scrollToLoader();
+
+        var $first_name = $('#first_name');
+        var $last_name = $('#last_name');
+        var $email = $('#email');
+
+        $.post('{{ url('x_ajax_post_order', {'code': cart.barcodeText}) }}', {
+          'first_name': $first_name.val(),
+          'last_name': $last_name.val(),
+          'email': $email.val()
+        }, function() {
+            displayLoader("", false);
+            scrollToLoader();
+            stripe.createSource({
+                type: 'bancontact',
+                amount: amount,
+                currency: 'eur',
+                bancontact: {
+                  preferred_language: 'fr'
+                },
+                owner: {
+                  name: $first_name.val() + ' ' + $last_name.val(),
+                  email: $email.val()
+                },
+                redirect: {
+                  return_url: '{{ absolute_url(path('x_payment_pending', {'code': cart.barcodeText})) }}'
+                },
+                  statement_descriptor: 'Chapots - cart {{ cart.id }}'
+                }).then(function (result) {
+                    on3DSSource(result);
+                });
+            })
+            .fail(function() {
+                displayForm();
+                displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+            });
+      });
+		
+		function onCardSource(result) {
+			if (result.error) {
+				displayForm();
+				displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
+			}
+			console.log(result);
+			console.log(result.source.card);
+			if (result.source.card.three_d_secure == 'optional') {
+				displayLoader("");
+				scrollToLoader();
+
+				var $first_name = $('#first_name');
+				var $last_name = $('#last_name');
+				var $email = $('#email');
+
+				$.post('{{ url('x_ajax_post_order', {'code': cart.barcodeText}) }}', {
+					'first_name': $first_name.val(),
+					'last_name': $last_name.val(),
+					'email': $email.val()
+				}, function() {
+					displayLoader("", false);
+					console.log(result)
+					stripe.createSource({
+						type: 'three_d_secure',
+						amount: amount,
+						currency: "eur",
+						three_d_secure: {
+							card: result.source.id
+						},
+						redirect: {
+							return_url: '{{ absolute_url(path('x_payment_pending', {'code': cart.barcodeText})) }}'
+						}
+					}).then(function (result) {
+						console.log(result);
+						on3DSSource(result)
+					});
+				})
+				.fail(function() {
+					displayForm();
+					displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+				});
+			}
+			else{
+				stripeSourceHandler(result);
+			}
+		}
+
+		$('#payment-form').submit(function (e) {
+            e.preventDefault();
+            // Disable the submit button to prevent repeat
+            $('input[type="submit"]').prop('disabled', true);
+
+            displayLoader();
+            scrollToLoader();
+            var extraDetails = {
+                name: $('#first_name').val + ' ' + $('#last_name').val(),
+                email: $('#email').val()
+            };
+            console.log('payment-form')
+            stripe.createSource(card).then(onCardSource);
+		});
+		function scrollToLoader() {
+            $('html, body').animate({
+                scrollTop: $("#stripe-loader").offset().top - 300
+            }, 500);
+        }
+
+        function scrollToError() {
+            $('html, body').animate({
+                scrollTop: $(".stripe-error").first().offset().top - 300
+            }, 500);
+        }
+
+        function displayLoader(html, hideform = true) {
+            $loader.show();
+
+            if(hideform)
+                $('form').hide();
+
+            hideError();
+            if (html) {
+                $loaderexplanation.html(html);
+                $loaderexplanation.show();
+            }
+            else {
+                $loaderexplanation.hide();
+            }
+        }
+
+        function displayForm() {
+            $('form').show();
+            $loader.hide();
+            $loaderexplanation.hide();
+        }
+
+        function displayError(html) {
+            $('input[type="submit"]').prop('disabled', false);
+            $('.stripe-error').html(html);
+            $('.stripe-error').show();
+            $loader.hide();
+            $loaderexplanation.hide();
+            scrollToError();
+        }
+
+        function hideError() {
+            $('.stripe-error').hide();
+        }
+		    function on3DSSource(result) {
+          if (result.error) {
+            displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
+          }
+          else {
+            hideError();
+            displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
+            window.location.replace(result.source.redirect.url);
+            $('#payment-intro').hide();
+          }
+        }
+
+        function onChargeable3DS(status, source) {
+          if (source.status == 'chargeable') {
+            stripeTokenHandler(source);
+          }
+          else if (source.status == 'failed') {
+            displayError("{{ 'threeds.error'|trans({'%backUrl%': url('yb_index')})|raw }}");
+          }
+          {#else if (source.status != 'pending') {
+            displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+          }#}
+        }
+		    function stripeSourceHandler(source) {
+          $('#payment-intro').hide();
+          displayLoader("{{ 'threeds.pending'|trans|raw }}");
+
+          // Insert the token ID into the form so it gets submitted to the server
+          var form = document.getElementById('payment-form');
+          var hiddenInput = document.createElement('input');
+          hiddenInput.setAttribute('type', 'hidden');
+          hiddenInput.setAttribute('name', 'stripeSource');
+          hiddenInput.setAttribute('value', source.id);
+
+          var hiddenInput3 = document.createElement('input');
+          hiddenInput3.setAttribute('type', 'hidden');
+          hiddenInput3.setAttribute('name', 'amount');
+          hiddenInput3.setAttribute('value', '' + amount);
+
+          form.appendChild(hiddenInput);
+          form.appendChild(hiddenInput3);
+          // Submit the form
+          form.submit();
+        } 
+    </script>
+
+{% endblock %}

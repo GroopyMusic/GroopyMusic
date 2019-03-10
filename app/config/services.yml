@@ -29,6 +29,10 @@ services:
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
         tags: ['controller.service_arguments']
+    
+    XBundle\Controller\:
+        resource: '../../src/XBundle/Controller'
+        tags: ['controller.service_arguments']
 
     # Registration
     app.form.registration:

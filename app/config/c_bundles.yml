@@ -16,6 +16,7 @@ assetic:
         - FpJsFormValidatorBundle
         - AppBundle
         - FOSUserBundle
+        - XBundle
 
 a2lix_translation_form:
   locale_provider: default
@@ -62,6 +63,14 @@ vich_uploader:
       yb_campaign_header:
           uri_prefix:         yb/images/campaigns
           upload_destination: '%kernel.root_dir%/../web/yb/images/campaigns'
+          delete_on_update: true
+          delete_on_remove: true
+          inject_on_load: true
+          namer:
+            service: AppBundle\Services\UniqIdNamer
+      x_project_header:
+          uri_prefix:         x/images/projects
+          upload_destination: '%kernel.root_dir%/../web/x/images/projects'
           delete_on_update: true
           delete_on_remove: true
           inject_on_load: true

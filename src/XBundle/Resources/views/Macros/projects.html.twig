@@ -1,0 +1,88 @@
+{% macro project_row(project) %}
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3><strong>{{ project.title }}</strong></h3>
+            <h5>Artiste associé : <strong>{{ project.artist.artistname }}</strong></h5>
+            <div class="mt-2">
+                {% if project.hasThreshold %}
+                    <h4><strong>{{ project.collectedAmount }} €</strong> sur {{ project.threshold }} €</h4>
+                {% else %}
+                    <h4><strong>{{ project.collectedAmount }} €</strong> récoltés<h4>
+                {% endif %}
+            </div>
+            <div class="mt-2">
+                Clotûre du financement
+                {% if not project.isPassed %}
+                    dans
+                    {% if project.remainingDays > 0 %}
+                        <strong>{{ project.remainingDays }}</strong> jour(s)<br/>
+                    {% else %}
+                        {% if project.remainingHours > 0 %}
+                            <strong>{{ project.remainingHours }}</strong> heure(s)<br/>
+                        {% else %}
+                            <strong>{{ project.remainingMinutes }}</strong> minute(s)<br/>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    le {{ project.dateEnd|date('d/m/Y \\à H:i') }}
+                {% endif %}
+            </div>
+            <br>
+        </div>
+
+        <div class="col-12 col-md-2">
+            <strong>{{ project.nbDonations }}</strong> don(s)<br/>
+            <strong>{{ project.nbSales }}</strong> vente(s) effectuée(s)<br/>
+            <br />
+        </div>
+
+        <div class="col-12 col-md-2">
+            <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('x_project', {'id': project.id}) }}">Détails du projet</a>
+        </div>
+        {% if not project.isPassed %}
+        <div class="col-12 col-md-2">
+            <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_update', {'id': project.id}) }}">Modifier les informations</a>
+        </div>
+        {% endif %}
+        <div class="col-12 col-md-2">
+            <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_donations_sales_details', {'id': project.id}) }}">Détails des dons et des ventes</a>
+        </div>
+
+        <div class="col-12 col-md-2">
+            <i class="fas fa-clipboard text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_products', {'id': project.id}) }}">Articles mis en vente</a>
+        </div>
+        {% if not project.isPassed %}
+        <div class="col-12 col-md-2">
+            <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="#">Envoyer un message transactionnel</a>
+        </div>
+        {% endif %}
+
+        {% if project.successful %}
+        <div class="col-12 col-md-2">
+            <i class="fas fa-thumbs-up fa-w-16 fa-7x" style="color:green"></i>
+        </div>
+        {% endif %}
+
+        {% if project.failed %}
+        <div class="col-12 col-md-2">
+            <i class="fas fa-thumbs-down fa-w-16 fa-7x" style="color:red"></i>
+        </div>
+        {% endif %}
+
+        
+        {% if project.hasThreshold %}
+            {% if not project.isPassed %}
+                <div class="col-12 mt-2">
+                    Progression : <strong>{{ project.progressPercent }}%</strong>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: {{ project.progressPercent }}%" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        
+       
+    </div>
+
+{% endmacro %}

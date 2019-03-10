@@ -8,7 +8,7 @@ x_artist_controller:
   resource: "@XBundle/Controller/XArtistController.php"
   type: annotation
   schemes: ['%http_protocol%']
-  prefix: /
+  prefix: /artist
 
 fos_user_security_check_x:
   path: "/login_check"

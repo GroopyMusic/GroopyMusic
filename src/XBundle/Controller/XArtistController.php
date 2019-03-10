@@ -2,127 +2,150 @@
 
 namespace XBundle\Controller;
 
+use AppBundle\Controller\BaseController;
 use Doctrine\ORM\EntityManagerInterface;
-use Ob\HighchartsBundle\Highcharts\Highchart;
-use Symfony\Component\Routing\Annotation\Route;
+//use Ob\HighchartsBundle\Highcharts\Highchart;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
+use XBundle\Entity\Product;
+use XBundle\Entity\Project;
+use XBundle\Form\ProductType;
+use XBundle\Form\ProjectType;
 
-class XArtistController extends Controller
+class XArtistController extends BaseController
 {
 
     /**
      * @Route("/dashboard", name="x_artist_dashboard")
      */
-    public function dashboardAction()
+    public function dashboardAction(EntityManagerInterface $em, UserInterface $user = null)
     {
-        return $this->render('XBundle:XArtist:dashboard_artist.html.twig');
+        $currentProjects = $em->getRepository('XBundle:Project')->getCurrentProjects($user);
+        $passedProjects = $em->getRepository('XBundle:Project')->getPassedProjects($user);
+
+        return $this->render('@X/XArtist/dashboard_artist.html.twig', [
+            'current_projects' => $currentProjects,
+            'passed_projects' => $passedProjects
+        ]);
     }
 
 
     /**
      * @Route("/project/new", name="x_artist_project_new")
      */
-    public function newProjectAction()
+    public function newProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request)
     {
-        return $this->render('XBundle:XArtist:project_new.html.twig');
+        $project = new Project();
+        $project->setUser($user);
+
+        $form = $this->createForm(ProjectType::class, $project/*, ['creation' => true]*/);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('threshold')->getData != null) {
+                $project->setNoThreshold(false);
+            }
+            $artist = $form->get('artist')->getData();
+            $project->setArtist($artist);
+            $em->persist($project);
+            $em->flush();
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
+
+        //$request->getSession()->getFlashBag()->add('notice', 'Le projet a été créé');
+        
+        return $this->render('@X/XArtist/project_new.html.twig', array(
+            'form' => $form->createView(),
+            'project' => $project
+        ));
     }
 
 
     /**
-     * @Route("/project/details", name="x_artist_project_details")
+     * @Route("/passed-projects", name="x_artist_passed_projects")
      */
-    public function detailsProjectAction()
+    public function passedProjectsAction(EntityManagerInterface $em, UserInterface $user = null)
     {
-        return $this->render('XBundle:XArtist:project_details.html.twig');
+        $passedProjects = $em->getRepository('XBundle:Project')->getPassedProjects($user);
+
+        return $this->render('@X/XArtist/passed_projects.html.twig', [
+            'projects' => $passedProjects,
+        ]);
     }
 
 
     /**
-     * @Route("/project/update", name="x_artist_project_update")
+     * @Route("/project/{id}/update", name="x_artist_project_update")
      */
-    public function updateProjectAction()
+    public function updateProjectAction(EntityManagerInterface $em, $id)
     {
-        return $this->render('XBundle:XArtist:project_new.html.twig');
+
+        $project = $em->getRepository('XBundle:Project')->find($id);
+        $form = $this->createForm(ProjectType::class, $project/*, ['creation' => true]*/);
+
+        return $this->render('@X/XArtist/project_new.html.twig', array(
+            'project' => $project,
+            'form' => $form->createView(),
+        ));
     }
 
 
     /**
-     * @Route("project/donations-sales-details", name="x_artist_donations_sales_details")
+     * @Route("/project/{id}/donations-sales-details", name="x_artist_donations_sales_details")
      */
-    public function donationsSalesDetailsAction()
+    public function donationsSalesDetailsAction(EntityManagerInterface $em, $id)
     {
-        // Real-time Chart
-        $realTimeHistory = array(
-            array(
-                 "name" => "Total",
-                 "data" => array(1, 2, 5, 5, 5, 5, 8)
-            ),
-            array(
-                 "name" => "Ventes",
-                 "data" => array(0, 2, 0, 1, 5, 3, 7)
-            ),
-            array(
-                "name" => "Dons",
-                "data" => array(1, 0, 5, 4, 0, 2, 1)
-           ),
+        //$project = $em->getRepository('XBundle:Project')->find($id);
+        //$carts = $em->getRepository('XBundle:XCart')->getProjectCarts($project);
 
-        );
+        //file_put_contents('test.txt', $carts[0]);
 
-        $days = array(
-            "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"
-        );
-
-        $realtime = new Highchart();
-        // ID de l'élement de DOM que vous utilisez comme conteneur
-        $realtime->chart->renderTo('realtimechart');
-        $realtime->title->text('Evolution des dons et des ventes en temps réel');
-        $realtime->yAxis->title(array('text' => "Montant récolté (en €)"));
-        $realtime->xAxis->title(array('text' => "Jour"));
-        $realtime->xAxis->categories($days);
-        $realtime->series($realTimeHistory);
-
-        // Cumulative Chart
-        $cumulHistory = array(
-            array(
-                 "name" => "Total",
-                 "data" => array(136, 134, 154, 142, 147)
-            ),
-            array(
-                 "name" => "Ventes",
-                 "data" => array(86, 78, 90, 84, 87)
-            ),
-            array(
-                "name" => "Dons",
-                "data" => array(50, 56, 64, 58, 60)
-           ),
-
-        );
-
-        $weeks = array(
-            "1", "2", "3", "4", "5"
-        );
-
-        $cumul = new Highchart();
-        // ID de l'élement de DOM que vous utilisez comme conteneur
-        $cumul->chart->renderTo('cumulchart');
-        $cumul->title->text('Evolution des dons et des ventes en cumulé');
-        $cumul->yAxis->title(array('text' => "Montant récolté (en €)"));
-        $cumul->xAxis->title(array('text' => "Semaine"));
-        $cumul->xAxis->categories($weeks);
-        $cumul->series($cumulHistory);
-
-        return $this->render('XBundle:XArtist:donations_sales_details.html.twig', 
-                                array('cumulchart' => $cumul,
-                                      'realtimechart' => $realtime));
+        return $this->render('@X/XArtist/donations_sales_details.html.twig'/*, 
+                                array()*/);
     }
 
 
     /**
-     * @Route("project/products", name="x_artist_project_products")
+     * @Route("/project/{id}/products", name="x_artist_project_products")
      */
-    public function productsDetailsAction()
+    public function viewProductsAction(EntityManagerInterface $em, $id)
     {
-        return $this->render('XBundle:XArtist:project_products.html.twig');
+        $project = $em->getRepository('XBundle:Project')->find($id);
+        $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
+        return $this->render('@X/XArtist/Product/products.html.twig', array(
+            'project' => $project,
+            'products' => $products
+        ));
+    }
+
+
+    /**
+     * @Route("/project/{id}/product/new", name="x_artist_product_new")
+     */
+    public function newProductAction(EntityManagerInterface $em, Request $request, $id)
+    {
+        $product = new Product();
+
+        $project = $em->getRepository('XBundle:Project')->find($id);
+        
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $product->setProject($project);
+            $em->persist($product);
+            $em->flush();
+            return $this->redirectToRoute('x_artist_project_products', ['id' => $id]);
+        }
+
+        return $this->render('@X/XArtist/Product/product_new.html.twig', array(
+            'project' => $project,
+            'form' => $form->createView()
+        ));
     }
 
 }

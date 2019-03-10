@@ -1,0 +1,194 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block headtitle %}
+  {{ project.Title }}
+{% endblock %}
+
+{% block body %}
+
+  <div class="container py-5">
+    <link rel="stylesheet" href="{{ asset('x/css/project.css') }}">
+    {#<style>
+      .jumbotron {
+        padding: 5em inherit;
+        padding-top: 3;
+        background-image: url("{{ asset(project.coverpic.webPath(project.coverpic)) }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        /*filter: blur(5px);*/
+      }
+    </style>#}
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <!--<div class="jumbotron">
+        <div class="container text-center">
+         <div>
+            <a href="#" class="fa fa-facebook"></a>
+            <a href="#" class="fa fa-twitter"></a>
+            <a href="#" class="fa fa-instagram"></a>
+          </div>
+        </div>
+      </div>-->
+
+    <div class="row mt-4">
+
+      <div class="col-12">
+        <h1>{{ project.title }}</h1>
+      </div>
+      <div class="col-12 col-md-4">
+        <img src="{{ asset(project.coverpic.webPath(project.coverpic)) }}" width="500" height="400">
+      </div>
+
+      <div class="col-12 col-md-4">
+          {#<div class="card">
+              <div class="card-header">
+                <h3 style="text-align: center">{{ project.title }}</h3>
+              </div>
+              <div class="card-body">
+
+              </div>
+          </div>#}
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="card">
+              <div class="card-header">
+                <h3 style="text-align: center">Faites un don</h3>
+              </div>
+              <div class="card-body">
+                {{ form_start(form) }}
+                {{ form_widget(form.donationAmount) }}
+                <br/>
+                {{ form_widget(form.submit) }}
+                {{ form_end(form) }}
+              </div>
+          </div>
+      </div>
+
+      <div class="container my-4 py-2 my-md-4">
+        <div class="row text-center">
+          <h3 class="key_features">Description</h3>
+        </div>
+        <div class="row"> 
+          <div class= "col-md-4">
+            {{ project.description }}
+          </div>
+          <div class= "col-md-4">
+          </div>
+          
+        </div>
+      </div>
+    <!--</div>-->
+    
+    {% if products|length > 0 %}
+    
+    <div class="container">
+      <hr>
+      <div class="text-center">
+        <h3 class="key_features">Articles en vente pour aider le financement du projet</h3>
+      </div>
+      <br/>
+      <ul class="list-unstyled">
+        {% for product in products %}
+          <li class="media">
+            <img class="mr-3" src="{{ asset(product.photo.webPath(product.photo)) }}" width="70" height="70" alt="Generic placeholder image">
+            <div class="media-body">
+              <h5 class="mt-0 mb-1">{{ product.name }}</h5>
+              {{ product.description }}
+              <p>{{ product.price }} €</p>
+            </div>
+            <div style = "float: right; margin-right: 2em">Quantité :</div>
+            <div style = "float: right; margin-right: 2em">
+              <div class="input-group{{ loop.index }}">
+                <span class="input-group-btn">
+                    <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">-</button>
+                </span>
+                <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="2" max="100">
+                <span class="input-group-btn">
+                  <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">+</button>
+                </span>
+                <input type = "hidden" value = "{{ product.id }}" id = "productId"/>
+              </div>
+            </div>
+            <div class="buy-pr" style = "float: right"> 
+              <a class="btn btn-primary btn-info buy-product" id="{{ loop.index }}"><span class="fa fa-shopping-cart"></span>Acheter</a>                                 
+            </div>
+          </li>
+          <hr>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+
+  </div>
+
+{% endblock %}
+
+{% block additional_javascripts %}
+  <script>
+    $('.btn.btn-primary.btn-info.buy-product').click(function(e){
+      var btnId = this.id;
+      var quantity = parseInt($('.input-group'+btnId).find('#quantity').val()); 
+      var productId = parseInt($('.input-group'+btnId).find('#productId').val());
+
+      console.log(quantity);
+      console.log(productId);
+
+      var QPdata= {
+        'quantity' : quantity,
+        'productId' : productId
+      };
+
+      $.ajax({
+        type:'POST',
+        url: '{{ absolute_url(path('x_ajax_post_order_product', {'id' : project.id})) }}',
+        dataType: "JSON",
+        data: {
+          "redirect" : "",
+          "quantity" : quantity,
+          "productId" : productId
+        },
+        success: function(data, textStatus){
+          if(data.redirect) {
+            window.location.href = data.redirect; 
+          } else{
+          }
+        }
+      });
+    });
+
+    $(document).ready(function(){
+
+      var quantitiy=0;
+      $('.quantity-right-plus').click(function(e){
+            
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        var quantity = parseInt($('#quantity').val());
+            
+        // If is not undefined
+                
+        $('#quantity').val(quantity + 1);
+
+        // Increment
+            
+      });
+
+      $('.quantity-left-minus').click(function(e){
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        var quantity = parseInt($('#quantity').val());
+            
+        // If is not undefined
+          
+        // Increment
+        if(quantity > 0){
+          $('#quantity').val(quantity-1);
+        }
+      });
+    });
+  </script>
+{% endblock %}

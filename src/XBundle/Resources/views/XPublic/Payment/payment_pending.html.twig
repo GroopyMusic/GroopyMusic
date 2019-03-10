@@ -1,0 +1,105 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+    
+    <section class="container py-5">
+        <form method="post" action="{{ path('x_payment', {'code' : cart.barcodeText}) }}" id="payment-form">
+        </form>
+
+        <!--<div class="stripe-error alert alert-danger" role="alert"></div>-->
+        <div id="stripe-loader" style="text-align: center">
+            {{ hidden_loader(false) }}
+        </div>
+    </section>
+  
+{% endblock %}
+
+{% block additional_javascripts %}
+
+    <script>
+        hideError();
+        var $loader = $('#stripe-loader .loader');
+        var $loaderexplanation = $('#stripe-loader .loader-explanation');
+        var amount = {{ cart.donationAmount }} * 100;
+        var stripe = Stripe('{{ stripe_api_public }}');
+        var elements = stripe.elements();
+        // After some amount of time, we should stop trying to resolve the order synchronously:
+		var MAX_POLL_COUNT = 10;
+		var pollCount = 0;
+
+		function pollForSourceStatus() {
+		  stripe.retrieveSource({id: '{{ source }}', client_secret: '{{ client_secret }}'}).then(function(result) {
+		    var source = result.source;
+		    if (source.status === 'chargeable') {
+		      onChargeable3DS(source.status, source);
+		    } else if (source.status === 'pending' && pollCount < MAX_POLL_COUNT) {
+		      // Try again in a second, if the Source is still `pending`:
+		      pollCount += 1;
+		      setTimeout(pollForSourceStatus, 1000);
+		    } else {
+		      // Depending on the Source status, show your customer the relevant message.
+		    }
+		  });
+		}
+
+		pollForSourceStatus();
+
+        displayLoader("{{ 'threeds.pending_stripe'|trans|raw }}");
+        function onChargeable3DS(status, source) {
+            if (source.status == 'chargeable') {
+                stripeTokenHandler(source);
+            }
+            else if (source.status == 'failed') {
+                displayError("{{ 'threeds.error'|trans({'%backUrl%': url('yb_index')})|raw }}");
+            }
+            /*else if (source.status != 'pending') {
+                displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+             }*/
+        }
+        function displayLoader(html) {
+            $loader.show();
+            $('form').hide();
+            hideError();
+            if(html) {
+                $loaderexplanation.html(html);
+                $loaderexplanation.show();
+            }
+            else {
+                $loaderexplanation.hide();
+            }
+        }
+        function displayError(html) {
+            $('.stripe-error').html(html);
+            $('.stripe-error').show();
+            $loader.hide();
+            $loaderexplanation.hide();
+        }
+        function hideError() {
+            $('.stripe-error').hide();
+        }
+        function stripeTokenHandler(source) {
+            $('#payment-intro').hide();
+            displayLoader("{{ 'threeds.pending'|trans|raw }}");
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeSource');
+            hiddenInput.setAttribute('value', source.id);
+            var hiddenInput3 = document.createElement('input');
+            hiddenInput3.setAttribute('type', 'hidden');
+            hiddenInput3.setAttribute('name', 'amount');
+            hiddenInput3.setAttribute('value', '' + amount);
+            var hiddenInput4 = document.createElement('input');
+            hiddenInput4.setAttribute('type', 'hidden');
+            hiddenInput4.setAttribute('name', 'accept_conditions');
+            hiddenInput4.setAttribute('value', 'true');
+            form.appendChild(hiddenInput);
+            form.appendChild(hiddenInput3);
+            form.appendChild(hiddenInput4);
+            // Submit the form
+            form.submit();
+        }
+    </script>
+
+{% endblock %}

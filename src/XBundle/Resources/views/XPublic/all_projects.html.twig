@@ -1,0 +1,130 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+<section class="container py-5">
+
+    <h3 style="text-align: center">TOUS LES PROJETS</h3><br>
+    {#<link rel = "stylesheet" href = "{{ asset('x/css/index.css') }}">#}
+
+    <div id="projects">
+        <!-- Filtre
+        <div class="jplist-panel">
+            <div class="jplist-ios-button">
+                <i class="fa fa-sort"></i>jPList Actions
+            </div>
+            
+            <select 
+                class="jplist-select" 
+                data-control-type="sort-select" 
+                data-control-name="sort" 
+                data-control-action="sort">
+                
+                <option data-path="default">Sort by</option>
+                <option data-path=".card-title" data-order="asc" data-type="text">Title A-Z</option>
+                <option data-path=".card-title" data-order="desc" data-type="text">Title Z-A</option>
+                <option data-path=".card-funds" data-order="asc" data-type="number">Funds asc</option>
+                <option data-path=".card-funds" data-order="desc" data-type="number">Funds desc</option>
+                <option data-path=".date" data-order="asc" data-type="datetime">Date asc</option>
+                <option data-path=".date" data-order="desc" data-type="datetime">Date desc</option>                
+            </select>   
+
+            <div class="text-filter-box">
+                <i class="fa fa-search jplist-icon"></i>
+                <input 
+                    data-path=".card-title"
+                    type="text"
+                    value=""
+                    placeholder="Filter by Title"
+                    data-control-type="textbox"
+                    data-control-name="title-filter"
+                    data-control-action="filter"
+                    />
+            </div>
+
+            <div class="text-filter-box">
+                <i class="fa fa-search jplist-icon"></i>
+                <input 
+                    data-path=".badge"
+                    type="text"
+                    value=""
+                    placeholder="Filter by Tag"
+                    data-control-type="textbox"
+                    data-control-name="tag-filter"
+                    data-control-action="filter"
+                    />
+            </div>
+        </div>
+        -->
+
+        <div class="container-fluid jp-list">
+            <div class="row jp-list-item">
+            {% for project in projects %}
+                {% if not project.failed %}
+                <div class="col-sm-4">
+                    <a href="{{ path('x_project', {'id':project.id}) }}" class="custom-card">
+                    <div class="card jp-list-item">
+                            <img class="card-img-top" src="{{ asset(project.coverpic.webPath(project.coverpic)) }}" width="140" height="140"/>
+                        <div class="card-body">
+                            <h4 class="card-title">{{ project.title }}</h4>
+                            <span class = "badge badge-warning">{{project.tag.name}}</span><br>
+                            {% if project.hasThreshold %}
+                                <strong>{{ project.collectedAmount }}€</strong> sur {{ project.threshold }}€
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
+                                </div>
+                            {% else %}
+                                <strong>{{ project.collectedAmount }}€</strong> récolté(s)
+                            {% endif %}
+                            -
+                            {% if project.remainingDays > 0 %}
+                                <strong>{{ project.remainingDays }}</strong> jour(s) restant(s)
+                            {% else %}
+                                {% if project.remainingHours > 0 %}
+                                    <strong>{{ project.remainingHours }}</strong> heure(s) restante(s)
+                                {% else %}
+                                    <strong>{{ project.remainingMinutes }}</strong> minute(s) restante(s)
+                                {% endif %}
+                            {% endif %}
+                            
+                            <div id = "bt{{loop.index}}">
+                                {#<a href="{{ path('x_project', {'id' : project.id}) }}" class="btn btn-primary">Soutenez-le</a>#}
+                                <!--Bouton pour compter les points-->
+                                <button type="button" id = "{{loop.index}}" style = "float:right; background-color: #ff3333; border-color: #ff3333; width: 45px; height: 45px;text-align: center; padding: 6px 0; margin-top: 10px; font-size: 20px; line-height: 1.428571429; border-radius: 22.5px;"class="btn btn-primary btn-circle points-given" {%if not app.user %}data-toggle="modal" data-target="#login-modal" {% endif %}><span class="fa fa-caret-up"></span> <span id = "points">{{ project.points }}</span></a>
+                                    <input type = "hidden" value = "{{ project.id }}" id = "id"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+                {% endif %}
+                {#% if loop.index is divisible by(3) %}
+                    </div>
+                    <div class = "row jp-list-item" style = "margin-top : 3em" >
+                {% else %}
+                    <p> Pas (encore!) de projets </p>
+                {% endif %#}
+            {% else %}
+                <p> Pas (encore!) de projets lancés</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</section>
+    
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script>
+		$('document').ready(function(){	
+				
+			$('#projects').jplist({				
+				itemsBox: '.list' 
+				,itemPath: '.list-item' 
+				,panelPath: '.jplist-panel'	
+			});
+		});
+	</script>
+{% endblock %}

@@ -2,14 +2,64 @@
 
 {% block body %}
 
-    <h2>Détails des dons et des ventes</h2>
-    <div id="realtimechart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
-    </br>
-    <div id="cumulchart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+    <section class="container px-0 mt-3">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            {#<a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id}) }}">{{ project.title }}</a>#}
+            <span class="breadcrumb-item active">Détails des dons et des ventes</span>
+        </nav>
+    </section>
+    
+    <section class="container my-4 py-2 my-md-4">
+        {#% if %}
+            <h3>Pas de dons ou de ventes pour le moment</h3>
+        {% else %#}
+            <h3>Dons</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Donateur</th>
+                        <th scope="col">Montant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#% for  in  %#}
+                        <tr class="table-active">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    {#% endfor %#}
+                </tbody>
+            </table>
+            
+            <br><hr><br>
 
-{% endblock %}
+            <h3>Ventes</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Acheteur</th>
+                        <th scope="col">Achat(s)</th>
+                        <th scope="col">Montant total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#% for in %#}
+                        <tr class="table-active">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    {#% endfor %#}
+                </tbody>
+            </table>
+        {#% endif %#}
 
-{% block additional_javascripts %}
-    <script type="text/javascript"> {{ chart(realtimechart) }} </script>
-    <script type="text/javascript"> {{ chart(cumulchart) }} </script>
+    </section>
+    
+
 {% endblock %}

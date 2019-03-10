@@ -19,12 +19,16 @@ security:
         x:
           host: "localhost"
           pattern: ^/x/
+          remember_me:
+            secret:   '%secret%'
+            lifetime: 2419200 # 4 weeks in seconds
+            name: '%session.remember_me.name%'
           form_login:
             check_path: fos_user_security_check_x
             provider: fos_userbundle
             failure_path: x_login
             always_use_default_target_path: true
-            default_target_path: x_artist_dashboard
+            default_target_path: x_artist_dashboard # à changer pcq compte contributeur et compte "artiste"
             use_referer: true
             username_parameter: _um_username
             password_parameter: _um_password
