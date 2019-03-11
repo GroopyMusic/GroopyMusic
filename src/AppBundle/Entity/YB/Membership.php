@@ -12,7 +12,7 @@ use AppBundle\Entity\YB\EnumRole;
         @ORM\UniqueConstraint(name="user_organization_unique", columns={"member_id", "organization_id"})
     })
 */
-class Participation {
+class Membership {
 
     /**
     * @ORM\Id
@@ -32,13 +32,13 @@ class Participation {
     protected $role;
 
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="participations")
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="participations", cascade={"persist"})
     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=FALSE)
     */
     protected $member;
 
     /**
-    * @ORM\ManyToOne(targetEntity="Organization", inversedBy="members")
+    * @ORM\ManyToOne(targetEntity="Organization", inversedBy="participations")
     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=FALSE)
     */
     protected $organization;

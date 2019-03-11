@@ -14,7 +14,10 @@ class OrganizationType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options){
         $builder
             ->add('name', TextType::class, array('label' => 'Nom de l\'organisation',))
-            ->add('save', SubmitType::class, array('label' => 'Enregistrer'));
+            ->add('save', SubmitType::class, array(
+                'label' => 'Enregistrer',
+                'attr' => array('class' => 'btn'),
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver){

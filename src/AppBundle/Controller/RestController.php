@@ -23,12 +23,15 @@ class RestController extends BaseController {
      * @Rest\Get("/scanticket")
      */
     public function scanTicketAction(Request $request){
+        $user_id = $request->get("user_id");
         $event_id = $request->get('event_id');
         $barcode = $request->get('barcode');
         $em = $this->getDoctrine()->getManager();
         $ticket = $em->getRepository('AppBundle:Ticket')->findOneBy(['barcode_text' => $barcode]);
         $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->find($event_id);
-        if ($ticket === null){
+        if (!$this->isOrganizer($user_id, $event_id)){
+            $error = 'Vous n\'organisez pas cet événement';
+        } elseif ($ticket === null){
             $error = 'Ce ticket n\'existe pas.';
         } elseif ($contract_artist === null) {
             $error = 'Cet événement n\'existe pas.';
@@ -118,19 +121,22 @@ class RestController extends BaseController {
                     - on ajoute par contrepartie, histoire que l'organisateur connaissent les vraies stats
         */
         $em = $this->getDoctrine()->getManager();
-        $quantity = $request->get('quantity');
-        $contract_artist = $em->getRepository('AppBundle:ContractArtist')->find($request->get('event_id'));
-        $counterpart = $em->getRepository('AppBundle:CounterPart')->find($request->get('counterpart_id'));
-        $price = $counterpart->getPrice();
-        $anonym = new User();
-        $anonym->setFirstname('anonym - on site');
-        for ($i = 0; $i < $quantity; $i++){
-            $ticket = new Ticket(null, $counterpart, $price, $anonym, $contract_artist);
-            $ticket->setIsBoughtOnSite(true);
-            // $em->persist($ticket);
-            // $em->flush();
+        if ($this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
+            $quantity = $request->get('quantity');
+            $contract_artist = $em->getRepository('AppBundle:ContractArtist')->find($request->get('event_id'));
+            $counterpart = $em->getRepository('AppBundle:CounterPart')->find($request->get('counterpart_id'));
+            $price = $counterpart->getPrice();
+            $anonym = new User();
+            $anonym->setFirstname('anonym - on site');
+            for ($i = 0; $i < $quantity; $i++){
+                $ticket = new Ticket(null, $counterpart, $price, $anonym, $contract_artist);
+                $ticket->setIsBoughtOnSite(true);
+                // $em->persist($ticket);
+                // $em->flush();
+            }
+        } else {
+            // TODO
         }
-
         
         /* $rest_ticket = $this->setRestTicket($ticket, '');
         return new JsonResponse($this->getArrayFromTicket($rest_ticket)); */
@@ -141,11 +147,13 @@ class RestController extends BaseController {
      * @Rest\Get("/getcounterpart")
      */
     public function getCounterpartAction(Request $request){
-        $event_id = $request->get('id');
+        $event_id = $request->get('event_id');
         $em = $this->getDoctrine()->getManager();
         $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->find($event_id);
         $counterparts = [];
-        if ($contract_artist === null){
+        if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
+            $error = 'Vous n\'organisez pas cet événement.';
+        } elseif ($contract_artist === null){
             $error = 'Cet événement n\'existe pas.';
         } else {
             $counterparts = $contract_artist->getCounterParts();
@@ -157,6 +165,30 @@ class RestController extends BaseController {
         }
         $array_tix = $this->getTicketFromCounterpart($counterparts, $error);
         return new JsonResponse($array_tix);
+    }
+
+    /**
+     * @Rest\View()
+     * @Rest\Get("/getguests")
+     */
+    public function getGuestAction(Request $request){
+        $tickets = [];
+        if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
+            $error = 'Vous n\'organisez pas cet événement.';
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($request->get('event_id'));
+            if (count($tickets) === 0){
+                $error = 'Il n\'y a pas de tickets pour cet événement.';
+            } else {
+                $error = '';
+            }
+        }
+        $rest_tickets_array = [];
+        foreach ($tickets as $ticket){
+            $rest_tickets_array[] = $this->getArrayFromTicket($this->setRestTicket($ticket, $error));
+        }
+        return new JsonResponse($rest_tickets_array);
     }
 
     // private functions
@@ -247,7 +279,7 @@ class RestController extends BaseController {
         return $nbTicketSoldOnSite;
     }
 
-    public function getNbScannedTicket($event_id){
+    private function getNbScannedTicket($event_id){
         $em = $this->getDoctrine()->getManager();
         $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($event_id);
         $nbScannedTicket = 0;
@@ -257,6 +289,13 @@ class RestController extends BaseController {
             }
         }
         return $nbScannedTicket;
+    }
+
+    private function isOrganizer($user_id, $event_id){
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AppBundle:User')->find($user_id);
+        $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->find($event_id);
+        return in_array($user, $contract_artist->getOrganizers());
     }
 
 }

@@ -48,7 +48,7 @@ class YBContractArtist extends BaseContractArtist
     {
         parent::__construct();
         $this->tickets_sent = false;
-        $this->date_closure = new \DateTime();
+        $this->date_closure = (new \DateTime())->add(new \DateInterval('P1M'));
         $this->sold_counterparts = 0;
         $this->code = uniqid();
         $this->transactional_messages = new ArrayCollection();
@@ -398,7 +398,7 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getHandlers()
     {
-        return $this->handlers;
+        return $this->organization->getMembers();
     }
 
     /**

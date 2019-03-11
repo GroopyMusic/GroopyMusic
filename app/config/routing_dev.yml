@@ -46,3 +46,7 @@ getcounterpart:
     resource: AppBundle\Controller\RestController
     type: rest
 
+getguests:
+    resource: AppBundle\Controller\RestController
+    type: rest
+

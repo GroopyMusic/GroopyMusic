@@ -41,6 +41,8 @@ subjects:
       organizers:
         event_created: Votre campagne "%event%" est en ligne !
       join_organization: Rejoigniez l'équipe de "%organization%" sur Ticked-it !
+    notifications:
+      join_organization_cancelled: Votre invitation à %email_address% pour rejoindre votre organisation %organization% a expirée !
     transactional_message: Nouveau message pour l'événement "%event%"
     transactional_message_copy: Votre message pour l'événement "%event%"
 
@@ -311,8 +313,22 @@ yb:
         Vous pourrez ensuite gérer tous les événéments organisés par cette organisation.
 
         A bientôt, et merci de faire confiance à Ticked-it!
+  notifications:
+    join_organization_cancelled: |
+      Bonjour,
 
+      Il y a un mois, vous avez invité un nouveau membre dans votre organisation, %organization%.
 
+      Cette invitation a été envoyé à l'adresse %email_address%. La personne a reçu un lien d'activation mais n'a jamais cliqué dessus.
+      Elle ne fait donc toujours pas partie de votre organisation. Le délai d'un mois maintenant dépassé, votre invitation a été supprimée.
+
+      Si vous voulez ré-inviter cette personne, vérifiez bien que l'adresse email est bien la bonne et recommencez la procédure.
+
+      Le lien suivant vous renverra directement sur la page de vos organisations :
+
+      %url%
+
+      Merci de faire confiance à Ticked-it et à bientôt !
   transactional_message: |
     Vous avez reçu un nouveau message concernant l'événement "%event%" pour lequel vous avez acheté un ou plusieurs ticket(s) sur Ticked-it!
     Ce message a été envoyé par l'organisateur le %date%.

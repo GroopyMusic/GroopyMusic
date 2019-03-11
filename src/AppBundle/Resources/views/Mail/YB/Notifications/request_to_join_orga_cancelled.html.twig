@@ -1,0 +1,15 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.html.twig' %}
+
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('yb.notifications.join_organization_cancelled', {
+                '%email_address%' : guest_email,
+                '%organization%': organization.getName,
+                '%url%': url('yb_members_my_organizations'),
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

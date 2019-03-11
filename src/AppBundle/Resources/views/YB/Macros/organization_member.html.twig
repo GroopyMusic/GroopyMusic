@@ -29,15 +29,36 @@
                 </td>
             {% else %}
                 <td>
-                    <a class="btn btn-success" href="{{ path('yb_members_remove_from_organization', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Supprimer</button>
+                    <a class="btn-secondary btn" data-toggle="modal" href="#confirmModal{{ organization.id }}-{{ member.id }}">Supprimer</button>
                 </td>
+                <div class="modal fade" id="confirmModal{{ organization.id }}-{{ member.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modal_detail">
+                                Vous êtes sur le point de supprimer un membre de cette organisation ({{ member.getDisplayName }}). Êtes vous sûr ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                                <form action="{{ path('yb_members_remove_from_organization', {'user_id': member.getId, 'organization_id': organization.getId}) }}">
+                                    <input class="btn" type="submit" value="Supprimer"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% if member.getRoleForOrganization(organization) != 0 %}
                     <td>
-                        <a class="btn btn-success" href="{{ path('yb_members_unmake_admin', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Enlever les droits admin</button>
+                        <a class="btn-secondary btn" href="{{ path('yb_members_unmake_admin', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Enlever les droits admin</button>
                     </td>
                 {% else %}
                     <td>
-                        <a class="btn btn-success" href="{{ path('yb_members_make_admin', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Accorder les droits admin</button>
+                        <a class="btn-secondary btn" href="{{ path('yb_members_make_admin', {'user_id': member.getId, 'organization_id': organization.getId}) }}">Accorder les droits admin</button>
                     </td>
                 {% endif %}
             {% endif %}

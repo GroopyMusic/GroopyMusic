@@ -22,7 +22,33 @@
 
     <section class="container py-5">
         <h2>Créer une organisation</h2>
-        {{ form(form) }}
+        {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn-secondary btn" data-toggle="modal" data-target="#createOrgaModal">
+                    Enregistrer
+                </button>
+            </div>
+            <div class="modal fade" id="createOrgaModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Vous êtes sur le point de créer une organisation. Êtes vous sûr ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                            {{ form_widget(form.save) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
     </section>
 
 {% endblock body %}

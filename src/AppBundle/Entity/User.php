@@ -321,7 +321,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     private $vat_number;
 
     /**
-    * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Participation", mappedBy="member", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+    * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Membership", mappedBy="member", cascade={"persist", "remove"}, orphanRemoval=TRUE)
     */
     private $participations;
 
@@ -329,6 +329,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      * @ORM\Column(name="organization_name", type="string", length=50, nullable=true)
      */
     private $organization_name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\OrganizationJoinRequest", mappedBy="demander", cascade={"persist"})
+     */
+    private $join_organization_request;
 
     /**
      * @param mixed $salutation
@@ -1180,7 +1185,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return $this->participations->toArray();
     }
 
-    public function addParticipation(\AppBundle\Entity\YB\Participation $participation){
+    public function addParticipation(\AppBundle\Entity\YB\Membership $participation){
         if (!$this->participations->contains($participation)){
             $this->participations->add($participation);
             $participation->setMember($this);
@@ -1188,7 +1193,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return $this;
     }
 
-    public function removeParticipation(\AppBundle\Entity\YB\Participation $participation){
+    public function removeParticipation(\AppBundle\Entity\YB\Membership $participation){
         if ($this->participations->contains($participation)){
             $this->participations->removeElement($participation);
             $participation->setMember(null);
@@ -1199,7 +1204,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getOrganizations(){
         return array_map(
             function ($participation){
-                return $participation->getOrganization();
+                $org = $participation->getOrganization();
+                if (!$org->isDeleted()){
+                    return $org;
+                }
             },
             $this->participations->toArray()
         );
@@ -1208,14 +1216,14 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getPublicOrganizations(){
         $publicOrganizations = [];
         foreach ($this->participations as $participation){
-            if ($participation->getOrganization()->getName() !== $this->getDisplayName()){
+            if ($participation->getOrganization()->getName() !== $this->getDisplayName() || !$participation->getOrganization()->isDeleted()){
                 $publicOrganizations[] = $participation->getOrganization();
             }
         }
         return $publicOrganizations;
     }
 
-    public function setRightForOrganization(\AppBundle\Entity\YB\Participation $participation, $isAdmin){
+    public function setRightForOrganization(\AppBundle\Entity\YB\Membership $participation, $isAdmin){
         if ($this->participation->contains($participation)){
             $participation->setAdmin($isAdmin);
         }
@@ -1238,12 +1246,16 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     public function hasPrivateOrganization(){
+        return $this->getPrivateOrganization() !== null;
+    }
+
+    public function getPrivateOrganization(){
         foreach ($this->participations as $part){
             if ($part->getOrganization()->getName() === $this->getDisplayName()){
-                return true;
+                return $part->getOrganization();
             }
         }
-        return false;
+        return null;
     }
 
     public function isPendingInOrganization(Organization $org){
