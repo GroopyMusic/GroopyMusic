@@ -43,7 +43,6 @@ class YBMembersController extends BaseController
 
         $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getOnGoingEvents($user);
         $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
-        file_put_contents('minFile.txt', $passed_campaigns);
 
         return $this->render('@App/YB/Members/dashboard.html.twig', [
             'current_campaigns' => $current_campaigns,
@@ -61,18 +60,7 @@ class YBMembersController extends BaseController
         if (!$currentUser->hasPrivateOrganization()){
             $this->createPrivateOrganization($em, $currentUser);
         }
-        $userOrganizations = $currentUser->getOrganizations();
-        file_put_contents("minFile.txt", count($userOrganizations));
-
-        for ($i = 0; $i < count($userOrganizations); $i++){
-            $file = 'myFile'.$i.'txt';
-            file_put_contents($file, $userOrganizations[$i]->getName());
-        }
-
-
-        usort($userOrganizations, function($organization1, $organization2){
-            return strtolower($organization1->getName()) > strtolower($organization2->getName());
-        });
+        $userOrganizations = $this->getOrganizationsFromUser($currentUser);
         $form = $this->createForm(YBContractArtistType::class, $campaign, ['creation' => true, 'userOrganizations' => $userOrganizations]);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
@@ -657,30 +645,18 @@ class YBMembersController extends BaseController
         return false;
     }
 
+    /**
+     * Send a invitation to join a organization to the one person that is invited
+     *
+     * @param OrganizationJoinRequest $invitation
+     * @param MailDispatcher $mailDispatcher
+     */
     private function sendInvitation(OrganizationJoinRequest $invitation, MailDispatcher $mailDispatcher){
         $email = $invitation->getEmail();
         $organization = $invitation->getOrganization();
         $demander = $invitation->getDemander();
         $mailDispatcher->sendYBJoinOrganization($email, $organization, $demander);
     }
-
-    /**
-     * Add the guest to the organization with a "pending" status
-     * Send a mail to the guest to tell him he/she been invited
-     *
-     * @param User $guest
-     * @param $data
-     * @param Organization $org
-     * @param EntityManagerInterface $em
-     * @param MailDispatcher $mailDispatcher
-     * @param User $host
-     */
-    /*private function addGuestToOrganizationAndSendMail(User $guest, $data, Organization $org, EntityManagerInterface $em, MailDispatcher $mailDispatcher, User $host){
-        $participation = $this->createNewParticipation($org, $guest, false);
-        $participation->setPending(true);
-        $em->flush();
-        $mailDispatcher->sendYBJoinOrganization($data, $org, $host);
-    }*/
 
     /**
      * Adds a user to an organization
@@ -731,10 +707,23 @@ class YBMembersController extends BaseController
      * @return bool
      */
     private function organizationNameExist(EntityManagerInterface $em, $newName){
-        return count($em->getRepository('AppBundle:YB\Organization')->findBy(['name' => $newName])) !== 0;
+        $selfNamedOrg = $em->getRepository('AppBundle:YB\Organization')->findBy(['name' => $newName]);
+        if (count($selfNamedOrg) === 0){
+            return false;
+        } else {
+            return !$this->areAllDeleted($selfNamedOrg);
+        }
     }
 
-    private function isNameOfMember(Organization $organization, $newName){
+    /**
+     * Checks if a given string is already used as the name of a member of a given organization
+     * When you create or rename an organization, it cant have the same name as one of its member
+     *
+     * @param Organization $organization
+     * @param $newName
+     * @return bool
+     */
+    private function isNameOfMember(EntityManagerInterface $em, Organization $organization, $newName){
         foreach ($organization->getMembers() as $member){
             if ($member->getDisplayName() === $newName){
                 return true;
@@ -743,12 +732,22 @@ class YBMembersController extends BaseController
         return false;
     }
 
+    /**
+     * Checks if the name is already used by another organization
+     * Checks if the name is not one of its member
+     * Changes the name of the organization and show a message
+     *
+     * @param FormInterface $form
+     * @param Organization $organization
+     * @param EntityManagerInterface $em
+     * @return bool
+     */
     private function handleRenameOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
         $new_name = $form->getData()['new_name'];
         if ($this->organizationNameExist($em, $new_name)){
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
             return false;
-        } elseif($this->isNameOfMember($organization, $new_name)){
+        } elseif($this->isNameOfMember($em, $organization, $new_name)){
             $this->addFlash('error', 'L\'organisation ne peut avoir le même nom qu\'un de ses membres. Essayez un autre nom !');
             return false;
         } else {
@@ -757,6 +756,59 @@ class YBMembersController extends BaseController
             $this->addFlash('yb_notice', 'Le nom a bien été changé !');
             return true;
         }
+    }
+
+    /**
+     * Fetches all the active organization of a user
+     * Sort them according to their name (A->Z)
+     * If the user is a super admin, it removes all the private organization of the other user
+     *
+     * Result : all the active public organization + the user's private one
+     *
+     * @param User $currentUser
+     * @return array
+     */
+    private function getOrganizationsFromUser(User $currentUser){
+        $userOrganizations = $currentUser->getOrganizations();
+        usort($userOrganizations, function($organization1, $organization2){
+            return strtolower($organization1->getName()) > strtolower($organization2->getName());
+        });
+        if ($currentUser->isSuperAdmin()){
+            $userOrganizations = $this->removeOthersPrivateOrganization($userOrganizations, $currentUser);
+        }
+        return $userOrganizations;
+    }
+
+    /**
+     * Remove all the private organization of the other users.
+     * By default, a super admin has access to all the organizations of the DB
+     * Here, we remove all the private organization that does not belong to him
+     *
+     * @param $orgs
+     * @param $user
+     * @return array
+     */
+    private function removeOthersPrivateOrganization($orgs, $user){
+        $finalOrg = [];
+        foreach ($orgs as $org){
+            if (!$org->isPrivate()){
+                $finalOrg[] = $org;
+            } else {
+                if($org->getName() === $user->getDisplayName()){
+                    $finalOrg[] = $org;
+                }
+            }
+        }
+        return $finalOrg;
+    }
+
+    private function areAllDeleted($orgs){
+        foreach ($orgs as $org){
+            if (!$org->isDeleted()){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

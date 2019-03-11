@@ -629,7 +629,6 @@ class MailDispatcher
     public function sendYBReminderEventCreated(YBContractArtist $campaign) {
         $organizers = $campaign->getHandlers();
         $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
-            file_put_contents("myfile.txt", $person->getEmail());
             return $person->getEmail();
         }, $organizers));
 
