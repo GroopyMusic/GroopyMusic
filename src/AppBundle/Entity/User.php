@@ -1202,21 +1202,19 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     public function getOrganizations(){
-        return array_map(
-            function ($participation){
-                $org = $participation->getOrganization();
-                if (!$org->isDeleted()){
-                    return $org;
-                }
-            },
-            $this->participations->toArray()
-        );
+        $activeOrganizations = [];
+        foreach ($this->participations as $part){
+            if (!$part->getOrganization()->isDeleted()){
+                $activeOrganizations[] = $part->getOrganization();
+            }
+        }
+        return $activeOrganizations;
     }
 
     public function getPublicOrganizations(){
         $publicOrganizations = [];
         foreach ($this->participations as $participation){
-            if ($participation->getOrganization()->getName() !== $this->getDisplayName() || !$participation->getOrganization()->isDeleted()){
+            if ($participation->getOrganization()->getName() !== $this->getDisplayName() && !$participation->getOrganization()->isDeleted()){
                 $publicOrganizations[] = $participation->getOrganization();
             }
         }

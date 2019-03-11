@@ -62,6 +62,14 @@ class YBMembersController extends BaseController
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $currentUser->getOrganizations();
+        file_put_contents("minFile.txt", count($userOrganizations));
+
+        for ($i = 0; $i < count($userOrganizations); $i++){
+            $file = 'myFile'.$i.'txt';
+            file_put_contents($file, $userOrganizations[$i]->getName());
+        }
+
+
         usort($userOrganizations, function($organization1, $organization2){
             return strtolower($organization1->getName()) > strtolower($organization2->getName());
         });
