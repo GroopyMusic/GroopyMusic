@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\YB\EnumRole;
 
 /**
-* @ORM\Entity(repositoryClass="AppBundle\Repository\YB\MembershipRepository")
+* @ORM\Entity
 * @ORM\Table(name="yb_organization_participations",
     uniqueConstraints={
         @ORM\UniqueConstraint(name="user_organization_unique", columns={"member_id", "organization_id"})
