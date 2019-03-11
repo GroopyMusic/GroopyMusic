@@ -19,6 +19,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use XBundle\Entity\Project;
 use XBundle\Entity\Tag;
 use XBundle\Form\ImageType;
@@ -33,7 +35,9 @@ class ProjectType extends AbstractType
         $builder
             ->add('title', TextType::class, array(
                 'label' => 'Titre du projet',
-                'required' => true
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ]
             ))
             ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
                 $project = $event->getData();
@@ -48,26 +52,41 @@ class ProjectType extends AbstractType
                             ->andWhere('a.deleted = 0');
                     },
                     'label' => 'Artiste associé',
-                    'required' => true
+                    'placeholder' => '',
+                    'empty_data' => null,
+                    'constraints' => [
+                        new Assert\NotBlank(),
+                    ]
                 ));
             })
             ->add('description', TextareaType::class, array(
                 'label' => 'Description',
-                'required' => true
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ]
             ))
             ->add('dateEnd', DateTimeType::class, array(
                 'label' => 'Date de clôture du financement participatif',
-                'required' => true
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ]
             ))
             ->add('threshold', IntegerType::class, array(
-                'label' => 'Seuil de validation (optionnel)',
-                'required' => false
+                'label' => 'Seuil de validation',
+                'required' => false,
+                'constraints' => [
+                    new Assert\GreaterThanOrEqual(['value' => 0])
+                ]
             ))
             ->add('tag', EntityType::class, array(
                 'label' => 'Catégorie',
                 'class' => Tag::class,
                 'choice_label' => 'name',
-                'required' => true
+                'placeholder' => '',
+                'empty_data' => null,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ]
             ))
             ->add('coverpic', ImageType::class, array(
                 'label' => 'Photo de couverture',
@@ -78,15 +97,33 @@ class ProjectType extends AbstractType
             ))
         ;
 
-        /*if ($option['creation']) {
+        if ($options['creation']) {
             $builder
                 ->add('noThreshold', CheckboxType::class, array(
                     'label' => 'Pas de seuil de validation',
                     'required' => false
                 ))
             ;
-        }*/
+        }
     }
+
+
+    public function validate(Project $project, ExecutionContextInterface $context)
+    {
+
+        if(!$project->getNoThreshold()) {
+            if($project->getThreshold() <= 0) {
+                $context->addViolation('Puisque le projet à un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0');
+            }
+        }
+
+        if($project->getDateEnd() != null) {
+            if ($project->getDateEnd() < $project->getDateCreation()) {
+                $context->addViolation('La date de clôture du financement du projet doit être dans le futur');
+            }
+        }
+    }
+
     
     /**
      * {@inheritdoc}
@@ -94,7 +131,11 @@ class ProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => Project::class
+            'data_class' => Project::class,
+            'constraints' => array(
+                new Assert\Callback(array($this, 'validate'))
+            ),
+            'creation' => false
         ));
     }
 
@@ -103,7 +144,7 @@ class ProjectType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'xbundle_project';
+        return 'xbundle_project_type';
     }
 
 

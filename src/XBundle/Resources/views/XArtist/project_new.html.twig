@@ -13,33 +13,83 @@
         </nav>
     </section>
 
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
+
     {{ form_start(form) }}
 
     <section class="container my-4 py-2 my-md-4">
         <div class="row">
-            <div class="col-12">
-            
+            <div class="col-12 col-md-6">            
                 {{ form_row(form.title) }}
-               
+            </div>
+            <div class="col-12 col-md-6">            
                 {{ form_row(form.artist) }}
-
-                {{ form_row(form.description) }}
-  
-                {{ form_row(form.dateEnd) }}
-
-                {{ form_row(form.threshold) }}
-
-                {{ form_row(form.tag) }}
-
-                {{ form_row(form.coverpic) }}
-
-                {{ form_row(form.submit) }}
-
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(form.description) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_errors(form.dateEnd) }}
+                {{ form_row(form.dateEnd) }}
+            </div>
+        </div>
+    </section>
 
+    <section class="container my-4 py-2 my-md-4">
+        {% if project.id is null %}
+        <div class="row">
+            <div class="col-12 col-md-5" id="x_no_threshold_checkbox">
+                {{ form_widget(form.noThreshold) }}
+            </div>
+            <div class="col-12 col-md-4 x_threshold_only">
+                {{ form_errors(form.threshold) }}
+                {{ form_row(form.threshold) }}
+            </div>
+        </div>
+        <p style="color: red">
+            <i class="fas fa-exclamation-triangle"></i> Vous ne pourrez plus modifier ce comportement (avec seuil ou non) une fois le projet créé.
+        </p>
+        {% else %}
+            {% do form.threshold.setRendered %}
+            {% if project.hasThreshold %}
+                <p>Seuil de validation du projet: <b>{{ project.threshold }}</b></p>
+            {% else %}
+                <p>Pas de seuil de validation pour ce projet</p>
+            {% endif %}
+        {% endif %}
+    </section>
+
+    <section class="container my-4 py-2 my-md-4">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                {{ form_row(form.tag) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(form.coverpic) }}
+            </div>
+        </div>
     </section>
 
     {{ form_end(form) }}
 
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            var $chckbx = $('#x_no_threshold_checkbox input[type="checkbox"]');
+
+            {% if project.id is null %}
+                $chckbx.on('change', function() {
+                    $('.x_threshold_only').toggle(!this.checked);
+                });
+                $chckbx.trigger("change");
+            {% endif %}
+        });
+    </script>
 {% endblock %}

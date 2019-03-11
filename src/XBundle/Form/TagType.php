@@ -29,7 +29,7 @@ class TagType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'xbundle_tag';
+        return 'xbundle_tag_type';
     }
 
 

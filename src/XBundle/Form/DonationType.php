@@ -43,7 +43,7 @@ class DonationType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'xbundle_xcart';
+        return 'xbundle_donation_type';
     }
 
 

@@ -70,9 +70,6 @@
                             <span class = "badge badge-warning">{{project.tag.name}}</span><br>
                             {% if project.hasThreshold %}
                                 <strong>{{ project.collectedAmount }}€</strong> sur {{ project.threshold }}€
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
-                                </div>
                             {% else %}
                                 <strong>{{ project.collectedAmount }}€</strong> récolté(s)
                             {% endif %}
@@ -85,6 +82,12 @@
                                 {% else %}
                                     <strong>{{ project.remainingMinutes }}</strong> minute(s) restante(s)
                                 {% endif %}
+                            {% endif %}
+
+                            {% if project.hasThreshold %}
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
+                                </div>
                             {% endif %}
                             
                             <div id = "bt{{loop.index}}">

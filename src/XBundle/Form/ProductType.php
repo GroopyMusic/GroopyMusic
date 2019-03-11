@@ -64,7 +64,7 @@ class ProductType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'xbundle_product';
+        return 'xbundle_product_type';
     }
 
 

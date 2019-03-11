@@ -3,6 +3,7 @@
 namespace XBundle\Controller;
 
 use AppBundle\Controller\BaseController;
+use AppBundle\Services\MailDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
 //use Ob\HighchartsBundle\Highcharts\Highchart;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -37,26 +38,28 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/new", name="x_artist_project_new")
      */
-    public function newProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request)
+    public function newProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request/*, MailDispatcher $mailDispatcher*/)
     {
         $project = new Project();
         $project->setUser($user);
 
-        $form = $this->createForm(ProjectType::class, $project/*, ['creation' => true]*/);
+    $form = $this->createForm(ProjectType::class, $project, ['creation' => true]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('threshold')->getData != null) {
-                $project->setNoThreshold(false);
-            }
             $artist = $form->get('artist')->getData();
             $project->setArtist($artist);
             $em->persist($project);
             $em->flush();
+
+            //$this->addFlash('x_notice', 'Le projet a bien été créée.');
+
+            $request->getSession()->getFlashBag()->add('x_notice', 'Le projet a été créé');
+
             return $this->redirectToRoute('x_artist_dashboard');
         }
 
-        //$request->getSession()->getFlashBag()->add('notice', 'Le projet a été créé');
+        
         
         return $this->render('@X/XArtist/project_new.html.twig', array(
             'form' => $form->createView(),
