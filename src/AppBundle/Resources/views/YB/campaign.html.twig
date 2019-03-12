@@ -35,6 +35,9 @@
 
         <div class="row">
             <div class="col-12 col-lg-7">
+                <div class="mb-2">
+                    <b>Organisé par {{ campaign.organization.name|raw|nl2br }}</b>
+                </div>
                 {% if is_event %}
                     <div class="mb-2">
                         <b>Date : {{ campaign.dateEvent|date('d/m/Y') }}</b>

@@ -17,7 +17,7 @@ notice:
   back: Retour
 
 error:
-  title: Une erreur est surenue
+  title: Une erreur est survenue
   back: Retour
   form_error: Le formulaire contient une ou plusieurs erreurs.
 

@@ -48,7 +48,7 @@ class YBContractArtist extends BaseContractArtist
     {
         parent::__construct();
         $this->tickets_sent = false;
-        $this->date_closure = new \DateTime();
+        $this->date_closure = (new \DateTime())->add(new \DateInterval('P1M'));
         $this->sold_counterparts = 0;
         $this->code = uniqid();
         $this->transactional_messages = new ArrayCollection();
@@ -200,6 +200,11 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="yb_campaigns")
      */
     private $handlers;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="campaigns", cascade={"persist"})
+     */
+    private $organization;
 
     /**
      * @var string
@@ -393,7 +398,7 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getHandlers()
     {
-        return $this->handlers;
+        return $this->organization->getMembers();
     }
 
     /**
@@ -450,5 +455,17 @@ class YBContractArtist extends BaseContractArtist
     public function setTransactionalMessages($transactional_messages)
     {
         $this->transactional_messages = $transactional_messages;
+    }
+
+    public function getOrganization(){
+        return $this->organization;
+    }
+
+    public function setOrganization($organization){
+        $this->organization = $organization;
+    }
+    
+    public function getOrganizers(){
+        return $this->organization->getMembers();
     }
 }

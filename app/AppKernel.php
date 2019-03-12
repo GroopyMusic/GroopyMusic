@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
             new Azine\EmailBundle\AzineEmailBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Sonata\CoreBundle\SonataCoreBundle(),
@@ -36,6 +37,7 @@ class AppKernel extends Kernel
             new JMose\CommandSchedulerBundle\JMoseCommandSchedulerBundle(),
             new JMS\I18nRoutingBundle\JMSI18nRoutingBundle(),
             new JMS\TranslationBundle\JMSTranslationBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
             new Skies\QRcodeBundle\SkiesQRcodeBundle(),
             new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
@@ -50,6 +52,7 @@ class AppKernel extends Kernel
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+            new Nelmio\CorsBundle\NelmioCorsBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

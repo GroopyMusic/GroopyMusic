@@ -4,6 +4,7 @@ namespace AppBundle\Repository\YB;
 
 
 use AppBundle\Entity\User;
+use AppBundle\Entity\YB\Organization;
 
 class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
@@ -43,6 +44,75 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ])
             ->getQuery()
             ->getResult()
-            ;
+        ;
+    }
+
+    public function getOnGoingEvents(User $user){
+        return $this->createQueryBuilder('c')
+            ->join('c.organization', 'org')
+            ->join('org.participations', 'part')
+            ->join('part.member', 'u')
+            ->where('u.id = :id')
+            ->andWhere('c.date_closure >= :now AND c.failed = 0')
+            ->setParameters([
+                'id' => $user->getId(),
+                'now' => new \DateTime(),
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getOrganizationOnGoingEvents(Organization $organization){
+        return $this->createQueryBuilder('c')
+            ->join('c.organization', 'org')
+            ->where('org.id = :id')
+            ->andWhere('c.date_closure >= :now AND c.failed = 0')
+            ->setParameters([
+                'id' => $organization->getId(),
+                'now' => new \DateTime(),
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+    
+    public function getPassedEvents(User $user){
+        return $this->createQueryBuilder('c')
+            ->join('c.organization', 'org')
+            ->join('org.participations', 'part')
+            ->join('part.member', 'u')
+            ->where('u.id = :id')
+            ->andWhere('c.date_closure < :now OR c.failed = 1')
+            ->setParameters([
+                'id' => $user->getId(),
+                'now' => new \DateTime(),
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllEvents(User $user){
+        return $this->createQueryBuilder('c')
+            ->join('c.organization', 'org')
+            ->join('org.participations', 'part')
+            ->join('part.member', 'u')
+            ->where('u.id = :id')
+            ->setParameter('id',$user->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Gets all the differents users that handle Ticked-it campaigns.
+     *
+     * @return array a list of the differents users that handle Ticked-it campaigns
+     */
+    public function getHandlersList(){
+        return $this->createQueryBuilder('c')
+            ->join('c.handlers', 'u')
+            ->addSelect('u')
+            ->groupBy('c.handlers')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }
