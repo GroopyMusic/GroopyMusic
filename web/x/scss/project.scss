@@ -1,0 +1,21 @@
+@include media-breakpoint-down(lg) {
+
+  .quantity-left-minus, .quantity-right-plus {
+    padding: 1px 6px;
+  }
+
+  .quantity {
+    padding: 0.25rem;
+  }
+
+}
+
+.free-price-euro-sign {
+  top: 6px;
+  right: 10px;
+}
+
+.quantity-error-display {
+  @extend .text-danger;
+  @extend .pb-2;
+}

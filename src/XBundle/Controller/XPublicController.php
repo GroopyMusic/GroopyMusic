@@ -36,7 +36,7 @@ class XPublicController extends BaseController
         //$contact = new YBContact();
         //$form = $this->createForm(YBContactType::class, $contact);
         
-        return $this->render('@X/XPublic/index.html.twig', array(
+        return $this->render('@X/XPublic/home.html.twig', array(
             'projects' => $projects,
             /*'form' => $form->createView()*/
         ));
@@ -49,7 +49,7 @@ class XPublicController extends BaseController
     public function projectsAction(EntityManagerInterface $em)
     {
         $projects = $em->getRepository('XBundle:Project')->findAll();
-        return $this->render('@X/XPublic/all_projects.html.twig', array(
+        return $this->render('@X/XPublic/catalog_projects.html.twig', array(
             'projects' => $projects
         ));
     }

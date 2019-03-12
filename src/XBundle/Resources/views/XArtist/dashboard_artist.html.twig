@@ -6,7 +6,7 @@
 
     {% if current_projects is not empty %}
     <section class="container py-5">
-        <h2 style="text-align: center">Projets en cours</h2>
+        <h2>Projets en cours</h2>
         {% for project in current_projects %}
             {{ macros.project_row(project)}}
             <hr>
@@ -19,7 +19,7 @@
     {% else %}
     <section class="container py-5">
     {% endif %}
-        <h2 style="text-align: center">Tableau de bord</h2>
+        <h2>Tableau de bord</h2>
         <ul class="list-group">
             <li class="list-group-item">
                 <a href="{{ path('x_artist_project_new') }}"><i class="far fa-plus-square"></i> Nouveau projet</a>

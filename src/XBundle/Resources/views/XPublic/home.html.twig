@@ -1,7 +1,18 @@
-{% extends "XBundle::base.html.twig" %}
+{% extends "@X/base.html.twig" %}
+
+{% block main_attributes %}class="home-main"{% endblock %}
+
+{% block nav_details_links %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('x_homepage') ~ "#about" }}">À propos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('x_homepage') ~ "#contact" }}">Contact</a>
+    </li>
+{% endblock %}
 
 {% block body %}
-    <section class="container py-5">
+    <section id="about" class="container py-5">
         <h3 style="text-align: center">CHAPOTS</h3>
     </section>
     <hr>
@@ -61,7 +72,7 @@
 
     <hr>
 
-    <section class="container py-5">
+    <section id="contact" class="container py-5">
         <h3 style="text-align: center">CONTACT</h3><br>
         {#<div class="well">
             {{ form(form) }}
