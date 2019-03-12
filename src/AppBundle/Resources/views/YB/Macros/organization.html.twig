@@ -1,0 +1,60 @@
+{% macro organization_row(organization, currentUser) %}
+    {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
+    <div class="">
+        <h3>{{ organization.getName|nl2br }}</h3>
+        <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
+            <!-- quand on est super admin, on voit tout le monde -->
+            {% if currentUser.getRoleForOrganization(organization) == 3 or currentUser.getRoleForOrganization(organization) == 2 %}
+                {% for member in organization.getMembers %}
+                    {{ macros.organization_member_row(currentUser, member, organization) }}
+                {% endfor %}
+            <!-- quand on est simple admin ou membre, on ne voit pas Pierre, Gonzague et adrien.suys@gmail.com -->
+            {% else %}
+                {% for member in organization.getNonSuperAdminMembers %}
+                    {{ macros.organization_member_row(currentUser, member, organization) }}
+                {% endfor %}
+            {% endif %}
+            <!-- Afficher les invitations -->
+            {% if organization.hasPendingRequest %}
+                {% for request in organization.getJoinOrganizationRequests %}
+                    <tr>
+                        <td> {{ request.getEmail }}</td>
+                        <td>EN ATTENTE DE CONFIRMATION</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+        <!-- On ne peut ajouter une personne qui si on est admin -->
+        {% if currentUser.getRoleForOrganization(organization) != 0 %}
+            <p><a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">Rajouter un membre à cette organisation...</a></p>
+            <p><a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">Renommer votre organisation...</a></p>
+        {% endif %}
+        <p>
+            <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">
+                Quitter cette organisation...
+            </a>
+        </p>
+
+        <div class="modal fade" id="quitModal{{ organization.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal_detail">
+                        Vous êtes sur le point de quitter l'organisation {{ organization.getName }}. Êtes vous sûr ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                        <form action="{{ path('yb_members_quit_organization', {'id': organization.getId}) }}">
+                            <input class="btn" type="submit" value="Valider"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

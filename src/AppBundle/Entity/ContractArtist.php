@@ -184,7 +184,10 @@ class ContractArtist extends BaseContractArtist
 
     public function isDeadlineDate() {
         $today = new \DateTime();
-        return $today->diff($this->dateEnd)->days == 1 && $today < $this->dateEnd;
+        $di = $today->diff($this->dateEnd);
+        // Careful, dateinterval:days works as it is the absolute number of days difference between today & deadline
+        // dateinterval:d wouldn't work as it returns the difference between the days numeric values (e.g. 4 d diff between 11 may and 15 september)
+        return $di->days == 0 && $di->h <= 24 && $today < $this->dateEnd;
     }
 
     /** @deprecated  */

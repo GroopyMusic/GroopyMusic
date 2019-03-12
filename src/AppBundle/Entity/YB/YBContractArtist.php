@@ -48,7 +48,7 @@ class YBContractArtist extends BaseContractArtist
     {
         parent::__construct();
         $this->tickets_sent = false;
-        $this->date_closure = new \DateTime();
+        $this->date_closure = (new \DateTime())->add(new \DateInterval('P1M'));
         $this->sold_counterparts = 0;
         $this->code = uniqid();
         $this->commissions = new ArrayCollection();
@@ -201,6 +201,11 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="yb_campaigns")
      */
     private $handlers;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="campaigns", cascade={"persist"})
+     */
+    private $organization;
 
     /**
      * @var string
@@ -425,7 +430,7 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getHandlers()
     {
-        return $this->handlers;
+        return $this->organization->getMembers();
     }
 
     /**
@@ -528,76 +533,16 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->transactional_messages = $transactional_messages;
     }
-
-    /**
-     * Set bankAccount
-     *
-     * @param string $bankAccount
-     *
-     * @return YBContractArtist
-     */
-    public function setBankAccount($bankAccount)
-    {
-        $this->bank_account = $bankAccount;
-
-        return $this;
+   
+    public function getOrganization(){
+        return $this->organization;
     }
 
-    /**
-     * Get bankAccount
-     *
-     * @return string
-     */
-    public function getBankAccount()
-    {
-        return $this->bank_account;
+    public function setOrganization($organization){
+        $this->organization = $organization;
     }
-
-    /**
-     * Set vatNumber
-     *
-     * @param string $vatNumber
-     *
-     * @return YBContractArtist
-     */
-    public function setVatNumber($vatNumber)
-    {
-        $this->vat_number = $vatNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get vatNumber
-     *
-     * @return string
-     */
-    public function getVatNumber()
-    {
-        return $this->vat_number;
-    }
-
-    /**
-     * Set organizationName
-     *
-     * @param string $organizationName
-     *
-     * @return YBContractArtist
-     */
-    public function setOrganizationName($organizationName)
-    {
-        $this->organization_name = $organizationName;
-
-        return $this;
-    }
-
-    /**
-     * Get organizationName
-     *
-     * @return string
-     */
-    public function getOrganizationName()
-    {
-        return $this->organization_name;
+    
+    public function getOrganizers(){
+        return $this->organization->getMembers();
     }
 }

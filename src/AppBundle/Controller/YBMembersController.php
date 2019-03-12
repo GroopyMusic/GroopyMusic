@@ -8,28 +8,37 @@ use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\YBCommission;
+use AppBundle\Entity\User;
+use AppBundle\Entity\YB\OrganizationJoinRequest;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBInvoice;
 use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Exception\YBAuthenticationException;
+use AppBundle\Entity\YB\Organization;
+use AppBundle\Entity\YB\Membership;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
 use AppBundle\Services\AdminExcelCreator;
 use AppBundle\Form\YB\YBTransactionalMessageType;
 use AppBundle\Services\FinancialDataGenerator;
+use AppBundle\Form\YB\OrganizationType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\StringHelper;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class YBMembersController extends BaseController
 {
@@ -40,8 +49,8 @@ class YBMembersController extends BaseController
     {
         $this->checkIfAuthorized($user);
 
-        $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getCurrentYBCampaigns($user);
-        $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedYBCampaigns($user);
+        $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getOnGoingEvents($user);
+        $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
 
         return $this->render('@App/YB/Members/dashboard.html.twig', [
             'current_campaigns' => $current_campaigns,
@@ -64,39 +73,28 @@ class YBMembersController extends BaseController
         /** @var \AppBundle\Entity\User $user */
         $this->checkIfAuthorized($user);
         $campaign = new YBContractArtist();
-        $campaign->addHandler($user);
 
-        $campaign->setBankAccount($user->getBankAccount());
-        $campaign->setVatNumber($user->getVatNumber());
-        $campaign->setOrganizationName($user->getOrganizationName());
-
-        $adminUsers = $em->getRepository('AppBundle:User')->getYBAdmins();
-
-        foreach($adminUsers as $au) {
-            $campaign->addHandler($au);
+    
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if (!$currentUser->hasPrivateOrganization()){
+            $this->createPrivateOrganization($em, $currentUser);
         }
-
-        $form = $this->createForm(YBContractArtistType::class, $campaign,
-            ['creation' => true, 'admin' => $user->isSuperAdmin()]);
+        $userOrganizations = $this->getOrganizationsFromUser($currentUser);
+        $form = $this->createForm(YBContractArtistType::class, $campaign, ['creation' => true, 'userOrganizations' => $userOrganizations]);
 
         $form->handleRequest($request);
-
         if($form->isSubmitted() && $form->isValid()) {
             $em->persist($campaign);
             $em->flush();
-
             $this->addFlash('yb_notice', 'La campagne a bien été créée.');
 
-            try {
-            	$mailDispatcher->sendYBReminderEventCreated($campaign);
+            try { 
+            	$mailDispatcher->sendYBReminderEventCreated($campaign); 
             }
             catch(\Exception $e) {
-
             }
-
             return $this->redirectToRoute('yb_members_dashboard');
         }
-
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
             'admin' => $user->isSuperAdmin(),
             'form' => $form->createView(),
@@ -436,7 +434,7 @@ class YBMembersController extends BaseController
     {
         $this->checkIfAuthorized($user);
 
-        $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedYBCampaigns($user);
+        $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
 
         return $this->render('@App/YB/Members/passed_campaigns.html.twig', [
             'campaigns' => $passed_campaigns,
@@ -635,5 +633,431 @@ class YBMembersController extends BaseController
         $response->headers->set('Content-Disposition', $dispositionHeader);
 
         return $response;
+    }
+
+     /**
+     * @Route("/my-organizations", name="yb_members_my_organizations")
+     */
+    public function myOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null, Request $request){
+        $this->checkIfAuthorized($user);
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        $organizationsToBeDisplayed = $currentUser->getPublicOrganizations();
+        $organization = new Organization();
+        $form = $this->createForm(OrganizationType::class, $organization);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $this->handleNewOrganizationRequest($organization, $currentUser, $em);
+            return $this->redirectToRoute('yb_members_my_organizations');
+        }
+        return $this->render('@App/YB/Members/my_organizations.html.twig', [
+            'organizations' => $organizationsToBeDisplayed,
+            'form' => $form->createView(),
+            'currentUser' => $currentUser,
+        ]);
+    }
+
+    /**
+     * @Route("/quit-organization/{id}", name="yb_members_quit_organization")
+     */
+    public function quitOrganizationAction(Organization $org, UserInterface $user = null, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user);
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if ($org->hasOnlyOneMember()){
+            if (!$this->hasPendingProjects($org, $em)){
+                $em->remove($org);
+            } else {
+                $this->addFlash('error', 'Votre organisation a encore des projets et vous êtes le seul membre restant ! Vous ne pouvez pas quitter le navire en pleine mer !');
+            }
+        } else {
+            if ($org->hasAtLeastOneAdminLeft($currentUser)){
+                $this->quitOrganization($em, $org, $currentUser);
+            } else {
+                $this->addFlash('error', 'Si vous partez, il n\'y a plus de maître à bord ! Désigner d\'abord un administrateur avant de partir !');
+            }
+        }
+        $em->flush();
+        return $this->redirectToRoute('yb_members_my_organizations');
+    }
+
+    /**
+     * @Route("/add-to-organization/{id}", name="yb_members_add_to_organization")
+     */
+    public function addToOrganizationAction(Request $request, Organization $org, UserInterface $user = null, MailDispatcher $mailDispatcher, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user);
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        $form_add_user = $this->createFormBuilder()
+            ->add('email_address', EmailType::class, ['label' => 'Adresse e-mail'])
+            ->add('submit', SubmitType::class, ['label' => 'Ajouter'])
+            ->getForm();
+        $form_add_user->handleRequest($request);
+        if ($form_add_user->isSubmitted() && $form_add_user->isValid()){
+            if ($this->handleAddUserToOrganization($form_add_user, $mailDispatcher, $org, $currentUser, $em)){
+                return $this->redirectToRoute('yb_members_my_organizations');
+            }
+        }
+        return $this->render('@App/YB/Members/add_to_organizations.html.twig', [
+            'organization' => $org,
+            'form' => $form_add_user->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/remove-from-organization/{organization_id}/{user_id}/", name="yb_members_remove_from_organization")
+     */
+    public function removeFromOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+        $member = $em->getRepository('AppBundle:User')->find($request->get('user_id'));
+        $organization = $em->getRepository('AppBundle:YB\Organization')->find($request->get('organization_id'));
+        if (!in_array($organization, $member->getOrganizations())){
+            $this->addFlash('error', 'Cet utilisateur ne fait pas partie de cette organisation.');
+        } else if (!in_array($member, $organization->getMembers())) {
+            $this->addFlash('error', 'Cet utilisateur ne fait pas partie de cette organisation.');
+        } else {
+            $this->quitOrganization($em, $organization, $member);
+        }
+        $em->flush();
+        return $this->redirectToRoute('yb_members_my_organizations');
+    }
+
+    /**
+     * @Route("/make-admin/{organization_id}/{user_id}/", name="yb_members_make_admin")
+     */
+    public function makeAdminAction(Request $request, EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+        $this->changeAdminRight($request, $em, true);
+        return $this->redirectToRoute('yb_members_my_organizations');
+    }
+
+    /**
+     * @Route("/unmake-admin/{organization_id}/{user_id}/", name="yb_members_unmake_admin")
+     */
+    public function unmakeAdminAction(Request $request, EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+        $this->changeAdminRight($request, $em, false);
+        return $this->redirectToRoute('yb_members_my_organizations');
+    }
+
+    /**
+     * @Route("/venue/new", name="yb_members_venue_new")
+     */
+    public function newVenueAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher){
+        //TODO
+    }
+
+    /**
+     * @Route("/confirm-joining-organization/{id}", name="yb_members_confirm_joining_organization")
+     */
+    public function confirmJoiningOrganization(Organization $org, UserInterface $user = null, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user);
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        $request = $em->getRepository('AppBundle:YB\OrganizationJoinRequest')->findByUserAndOrga($org, $currentUser);
+        if ($request !== null){
+            $participation = $this->createNewParticipation($org, $currentUser, false);
+            $em->persist($participation);
+            $em->remove($request);
+            $em->flush();
+        }
+        return $this->redirectToRoute('yb_members_my_organizations');
+    }
+
+    /**
+     * @Route("rename_organization/{id}", name="yb_members_rename_organization")
+     */
+    public function renameOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null, Organization $organization){
+        $this->checkIfAuthorized($user);
+        $form = $this->createFormBuilder()
+            ->add('new_name', TextType::class, ['label' => 'Nouveau nom'])
+            ->add('submit', SubmitType::class, ['label' => 'Valider'])
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            if ($this->handleRenameOrganization($form, $organization, $em)){
+                return $this->redirectToRoute('yb_members_my_organizations');
+            }
+        }
+        return $this->render('@App/YB/Members/rename_organizations.html.twig', [
+            'organization' => $organization,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    // ------------------ private functions -------------------- //
+
+    /**
+     * Check if an organization has ongoing campaigns
+     *
+     * @param Organization $organization
+     * @param EntityManagerInterface $em
+     * @return bool
+     */
+    private function hasPendingProjects(Organization $organization, EntityManagerInterface $em){
+        $pendingProjects = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingEvents($organization);
+        return count($pendingProjects) !== 0;
+    }
+
+    /**
+     * The user quit the organization
+     * Even if the user was the last member, the organization is not deleted
+     *
+     * @param EntityManagerInterface $em
+     * @param Organization $org
+     * @param User $member
+     */
+    private function quitOrganization(EntityManagerInterface $em, Organization $org, User $member){
+        $em->remove($member->getParticipationToOrganization($org));
+    }
+
+    /**
+     * Changes the admin right of a user for a given organization
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param $isAdmin
+     */
+    private function changeAdminRight(Request $request, EntityManagerInterface $em, $isAdmin){
+        $member = $em->getRepository('AppBundle:User')->find($request->get('user_id'));
+        $org = $em->getRepository('AppBundle:YB\Organization')->find($request->get('organization_id'));
+        $participation = $member->getParticipationToOrganization($org);
+        $participation->setAdmin($isAdmin);
+        $participation->setRole();
+        $em->flush();
+    }
+
+    /**
+     * When a user wanna create a new organization
+     *
+     * First, check that the user does not try to create a self-named organization (it's forbidden)
+     * Creates the new organization, set the user as its admin
+     * Also add the super-admin of Un-Mute as admin of the organization
+     *
+     * @param Organization $organization
+     * @param User $currentUser
+     * @param EntityManagerInterface $em
+     */
+    private function handleNewOrganizationRequest(Organization $organization, User $currentUser, EntityManagerInterface $em){
+        if ($organization->getName() === $currentUser->getDisplayName()){
+            $this->addFlash('error', 'Une organisation ne peut porter le même nom que son administrateur !');
+        } elseif ($this->organizationNameExist($em, $organization->getName())){
+            $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
+        } else {
+            $superAdmins = $em->getRepository('AppBundle:User')->getSuperAdmins();
+            if (!$currentUser->hasRole('ROLE_SUPER_ADMIN')) {
+                array_push($superAdmins, $currentUser);
+            }
+            foreach ($superAdmins as $member) {
+                $isAdmin = $member === $currentUser;
+                $this->createNewParticipation($organization, $member, $isAdmin);
+            }
+            $em->persist($organization);
+            $em->flush();
+            $orgName = $organization->getName();
+            $this->addFlash('yb_notice', 'Votre nouvelle organisation, ' . $orgName . ', a bien été enregistrée.');
+        }
+    }
+
+    /**
+     * When a user wanna add another user to its organization
+     *
+     * First check if the user to be addde is not already a member
+     * If the user is not in the DB, it creates a User with the given email address as username
+     * Add the user in the organization with a "pending" status
+     * Send a confirmation email to the user to be added
+     *
+     * @param FormInterface $form_add_user
+     * @param MailDispatcher $mailDispatcher
+     * @param Organization $org
+     * @param User $user
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    private function handleAddUserToOrganization(FormInterface $form_add_user, MailDispatcher $mailDispatcher, Organization $org, User $user, EntityManagerInterface $em){
+        $data = $form_add_user->getData();
+        if ($form_add_user->get('submit')->isClicked()) {
+            $guest = $em->getRepository('AppBundle:User')->findOneBy(['username' => $data['email_address']]);
+            if ($guest !== null && $org->hasMember($guest)){
+                $this->addFlash('error', 'Cet utilisateur est déjà dans votre organisation !');
+                return false;
+            } else {
+                $invitation = new OrganizationJoinRequest($user, $data['email_address'], $org);
+                $em->persist($invitation);
+                $em->flush();
+                $this->sendInvitation($invitation, $mailDispatcher);
+                $this->addFlash('yb_notice', 'Un mail a été envoyé à la personne invitée !');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Send a invitation to join a organization to the one person that is invited
+     *
+     * @param OrganizationJoinRequest $invitation
+     * @param MailDispatcher $mailDispatcher
+     */
+    private function sendInvitation(OrganizationJoinRequest $invitation, MailDispatcher $mailDispatcher){
+        $email = $invitation->getEmail();
+        $organization = $invitation->getOrganization();
+        $demander = $invitation->getDemander();
+        $mailDispatcher->sendYBJoinOrganization($email, $organization, $demander);
+    }
+
+    /**
+     * Adds a user to an organization
+     *
+     * @param Organization $org
+     * @param User $user
+     * @param $isAdmin
+     * @return Membership
+     */
+    private function createNewParticipation(Organization $org, User $user, $isAdmin){
+        $participation = new Membership();
+        $participation->setAdmin($isAdmin);
+        $user->addParticipation($participation);
+        $org->addParticipation($participation);
+        $participation->setRole();
+        return $participation;
+    }
+
+    /**
+     * Creates a self-named organization for the user.
+     * When he creates a campaign, he can either do it on the name of a organization
+     * or on its own name (a "self-named organization").
+     *
+     * @param EntityManagerInterface $em
+     * @param User $currentUser
+     */
+    private function createPrivateOrganization(EntityManagerInterface $em, User $currentUser){
+        $superAdmins = $em->getRepository('AppBundle:User')->getSuperAdmins();
+        if (!$currentUser->hasRole('ROLE_SUPER_ADMIN')){
+            array_push($superAdmins, $currentUser);
+        }
+        $ownNameOrg = new Organization();
+        $ownNameOrg->setName($currentUser->getDisplayName());
+        $ownNameOrg->setIsPrivate(true);
+        foreach ($superAdmins as $admin){
+            $isAdmin = $admin === $currentUser;
+            $this->createNewParticipation($ownNameOrg, $admin, $isAdmin);
+        }
+        $em->persist($ownNameOrg);
+        $em->flush();
+    }
+
+    /**
+     * Checks if a organization that has the given name already exists
+     *
+     * @param EntityManagerInterface $em
+     * @param $newName
+     * @return bool
+     */
+    private function organizationNameExist(EntityManagerInterface $em, $newName){
+        $selfNamedOrg = $em->getRepository('AppBundle:YB\Organization')->findBy(['name' => $newName]);
+        if (count($selfNamedOrg) === 0){
+            return false;
+        } else {
+            return !$this->areAllDeleted($selfNamedOrg);
+        }
+    }
+
+    /**
+     * Checks if a given string is already used as the name of a member of a given organization
+     * When you create or rename an organization, it cant have the same name as one of its member
+     *
+     * @param Organization $organization
+     * @param $newName
+     * @return bool
+     */
+    private function isNameOfMember(EntityManagerInterface $em, Organization $organization, $newName){
+        foreach ($organization->getMembers() as $member){
+            if ($member->getDisplayName() === $newName){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the name is already used by another organization
+     * Checks if the name is not one of its member
+     * Changes the name of the organization and show a message
+     *
+     * @param FormInterface $form
+     * @param Organization $organization
+     * @param EntityManagerInterface $em
+     * @return bool
+     */
+    private function handleRenameOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
+        $new_name = $form->getData()['new_name'];
+        if ($this->organizationNameExist($em, $new_name)){
+            $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
+            return false;
+        } elseif($this->isNameOfMember($em, $organization, $new_name)){
+            $this->addFlash('error', 'L\'organisation ne peut avoir le même nom qu\'un de ses membres. Essayez un autre nom !');
+            return false;
+        } else {
+            $organization->setName($new_name);
+            $em->flush();
+            $this->addFlash('yb_notice', 'Le nom a bien été changé !');
+            return true;
+        }
+    }
+
+    /**
+     * Fetches all the active organization of a user
+     * Sort them according to their name (A->Z)
+     * If the user is a super admin, it removes all the private organization of the other user
+     *
+     * Result : all the active public organization + the user's private one
+     *
+     * @param User $currentUser
+     * @return array
+     */
+    private function getOrganizationsFromUser(User $currentUser){
+        $userOrganizations = $currentUser->getOrganizations();
+        usort($userOrganizations, function($organization1, $organization2){
+            return strtolower($organization1->getName()) > strtolower($organization2->getName());
+        });
+        if ($currentUser->isSuperAdmin()){
+            $userOrganizations = $this->removeOthersPrivateOrganization($userOrganizations, $currentUser);
+        }
+        return $userOrganizations;
+    }
+
+    /**
+     * Remove all the private organization of the other users.
+     * By default, a super admin has access to all the organizations of the DB
+     * Here, we remove all the private organization that does not belong to him
+     *
+     * @param $orgs
+     * @param $user
+     * @return array
+     */
+    private function removeOthersPrivateOrganization($orgs, $user){
+        $finalOrg = [];
+        foreach ($orgs as $org){
+            if (!$org->isPrivate()){
+                $finalOrg[] = $org;
+            } else {
+                if($org->getName() === $user->getDisplayName()){
+                    $finalOrg[] = $org;
+                }
+            }
+        }
+        return $finalOrg;
+    }
+
+    /**
+     * Checks if all the organizations of an array are deleted
+     *
+     * @param $orgs
+     * @return bool
+     */
+    private function areAllDeleted($orgs){
+        foreach ($orgs as $org){
+            if (!$org->isDeleted()){
+                return false;
+            }
+        }
+        return true;
     }
 }

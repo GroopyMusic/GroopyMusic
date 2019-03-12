@@ -48,7 +48,11 @@ class CounterPartTranslation
     {
         return $this->name;
     }
-    public function name() {return $this->getName();}
+    
+    public function name() 
+    {
+        return $this->getName();
+    }
 
     /**
      * Set description

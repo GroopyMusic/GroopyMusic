@@ -605,10 +605,8 @@ class ContractFan
      */
     public function getPayment()
     {
-        if($this->cart != null) {
-            return $this->cart->getPayment();
-        }
-        return $this->payment;
+        $payment = $this->cart->getPayment();
+        return $payment == null ? $this->payment : $payment;
     }
 
     /**

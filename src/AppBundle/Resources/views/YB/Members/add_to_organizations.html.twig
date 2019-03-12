@@ -1,0 +1,19 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('yb_members_my_organizations') }}">Mes organisations</a></li>
+            <li class="active"><span>Ajouter un membre</span></li>
+        </ol>
+    </section>
+
+    <section class="container py-5">
+        <h2>Ajouter un membre à "{{ organization.getName }}"</h2>
+        Entrez l'adresse e-mail du membre que vous voulez ajouter à votre organisation. Il/Elle sera notifié par mail.
+        {{ form(form) }}
+    </section>
+
+{% endblock body %}

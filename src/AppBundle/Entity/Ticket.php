@@ -20,7 +20,6 @@ class Ticket
         $this->setPrice($price);
         $this->validated = false;
         $this->rewards = new ArrayCollection();
-
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
@@ -126,6 +125,11 @@ class Ticket
      * @ORM\Column(name="date_validated", type="datetime", nullable=true)
      */
     private $date_validated;
+
+    /**
+     * @ORM\Column(name="isBoughtOnSite", type="boolean")
+     */
+    private $isBoughtOnSite = false;
 
     /**
      * Get id
@@ -362,5 +366,13 @@ class Ticket
     public function setDateValidated(\DateTime $date_validated)
     {
         $this->date_validated = $date_validated;
+    }
+
+    public function setIsBoughtOnSite($isBoughtOnSite){
+        $this->isBoughtOnSite = $isBoughtOnSite;
+    }
+
+    public function isBoughtOnSite(){
+        return $this->isBoughtOnSite;
     }
 }
