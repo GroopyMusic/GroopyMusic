@@ -263,6 +263,12 @@ class Purchase
     private $artists;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\YBInvoice", inversedBy="purchases")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $invoice;
+
+    /**
      * Get id
      *
      * @return int
@@ -530,5 +536,14 @@ class Purchase
     public function getArtists()
     {
         return $this->artists;
+    }
+
+    public function getInvoice(){
+        return $this->invoice;
+    }
+
+    public function setInvoice(YB\YBInvoice $invoice)
+    {
+        $this->invoice = $invoice;
     }
 }

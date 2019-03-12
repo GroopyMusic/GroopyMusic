@@ -1,0 +1,136 @@
+{% extends '@App/PDF/yb_layout.html.twig' %}
+{% trans_default_domain 'yb' %}
+
+{% block additional_styles %}
+{% endblock %}
+
+{% block page %}
+    <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+        {% block header %}
+        {% endblock %}
+        {% block footer %}
+        {% endblock %}
+        {{ block('header') }}
+        {{ block('footer') }}
+        {% if invoice is not null %}
+            {% if invoice.userValidated %}
+                <p>
+                    Numéro de facture: FV-{{ invoice.invoiceIdentifier }}
+                </p>
+            {% else %}
+                <h3> IMPORTANT: Ce document ne constitue pas une facture valable
+                    tant que vous ne la validez pas.
+                </h3>
+            {% endif %}
+        {% else %}
+            <p>Aperçu de facture</p>
+        {% endif %}
+        <p>
+            {{ campaign.organizationName }} <br />
+            <!-- {{ campaign.address.name }} <br />-->
+            {{ campaign.address.street }}
+            {{ campaign.address.number }} <br />
+            {{ campaign.address.zipcode }}
+            {{ campaign.address.city }} <br />
+            {{ campaign.address.country }} <br />
+            Num&eacute;ro de TVA: {{ campaign.vatNumber }} <br />
+            IBAN: {{ campaign.bankAccount }}
+        </p>
+        <p align="right">
+            Ticked-it <br />
+            3, Place Saint-Antoine <br />
+            1040 Bruxelles <br />
+            0497/21.26.54 <br />
+            Num&eacute;ro de TVA: BE 06 64 782 372
+        </p>
+
+        {% if invoice is null %}
+            <h2>{{ campaign }} - Facture sur les recettes</h2>
+        {% else %}
+            <h2>{{ campaign }} - Facture sur les recettes du {{ invoice.dateValidated|date("d/m/Y") }}</h2>
+        {% endif %}
+
+        <table border="1" style="width: 100%; border-collapse: collapse;">
+            <tr class="bg-gray">
+                <th>Description</th>
+                <th>Prix unitaire HT</th>
+                <th>Quantité</th>
+                <th>TVA</th>
+                <th>Montant</th>
+            </tr>
+            {% set totalRaw = 0 %}
+            {% set totalVat = 0 %}
+            {% set commission = 0 %}
+            {% for item in ticketData %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td class="text-center">{{ item.unitPriceRaw|round(2) }}€</td>
+                    <td class="text-center">{{ item.qty }}</td>
+                    {% set vat = item.qty*(item.unitPrice - item.unitPriceRaw) %}
+                    <td class="text-center">{{ vat|round(2) }}€</td>
+                    {% set subtotal = item.unitPriceRaw * item.qty %}
+                    <td class="text-right">{{ subtotal|round(2) }}€</td>
+                </tr>
+                {% set commission = commission + item.commission * item.qty %}
+                {% set totalVat = totalVat + vat %}
+                {% set totalRaw = totalRaw + subtotal %}
+            {% endfor %}
+            <tr class="text-bold text-right bg-gray">
+                <td colspan="2" class="bg-white"></td>
+                <td colspan="2" class="text-italic">Total HT</td>
+                <td>{{ totalRaw|round(2) }}€</td>
+            </tr>
+            <tr class="text-bold text-right bg-gray">
+                <td colspan="2" class="bg-white"></td>
+                <td colspan="2" class="text-italic">Taux de TVA</td>
+                <td>{{ 100*campaign.vat }}%</td>
+            </tr>
+            <tr class="text-bold text-right bg-gray">
+                <td colspan="2" class="bg-white"></td>
+                <td colspan="2" class="text-italic">TVA</td>
+                <td>{{ totalVat|round(2) }}€</td>
+            </tr>
+            <tr class="text-bold text-right bg-gray">
+                <td colspan="2" class="bg-white"></td>
+                <td colspan="2" class="text-italic">Commission Ticked-it</td>
+                <td>-{{ commission|round(2) }}€</td>
+            </tr>
+            <tr class="text-bold text-right bg-gray">
+                <td colspan="2" class="bg-white"></td>
+                <td colspan="2" class="text-italic">Total</td>
+                <td>{{ totalRaw + totalVat - commission|round(2) }}€</td>
+            </tr>
+        </table>
+
+    </page>
+
+    {% set ticketCount = 0 %}
+    {% set ticketsPerPage = 5 %}
+    {% for ticket in tickets %}
+        {% if ticketCount % ticketsPerPage == 0 %}
+            <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            <h2>Liste des tickets vendus</h2>
+            <table border="1" style="width: 100%; border-collapse: collapse;">
+                <tr class="bg-gray">
+                    <th>Identifiant du ticket</th>
+                    <th>Type de ticket et prix</th>
+                    <th>Acheteur</th>
+                </tr>
+        {% endif %}
+            {% set ticketCount = ticketCount + 1 %}
+                <tr>
+                    <td>{{ ticket.barCodeText }}</td>
+                    <td>{{ ticket.counterPart }} ({{ ticket.price }} €)</td>
+                    <td>{{ ticket.name }}</td>
+                </tr>
+        {% if ticketCount % ticketsPerPage == 0 %}
+            </table>
+            </page>
+        {% endif %}
+    {% endfor %}
+    {% if ticketCount % ticketsPerPage != 0 %}
+        </table>
+        </page>
+    {% endif %}
+
+{% endblock %}

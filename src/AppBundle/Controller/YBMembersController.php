@@ -2,18 +2,26 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
+use AppBundle\Entity\YB\YBCommission;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\OrganizationJoinRequest;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 use AppBundle\Entity\YB\YBTransactionalMessage;
+use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\Membership;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
+use AppBundle\Services\AdminExcelCreator;
 use AppBundle\Form\YB\YBTransactionalMessageType;
+use AppBundle\Services\FinancialDataGenerator;
 use AppBundle\Form\YB\OrganizationType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
@@ -51,22 +59,35 @@ class YBMembersController extends BaseController
     }
 
     /**
+     * @Route("/organizations", name="yb_members_orgs")
+     */
+    public function viewOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+        return $this->render('@App/YB/Members/orgs_list.html.twig');
+    }
+
+    /**
      * @Route("/campaign/new", name="yb_members_campaign_new")
      */
     public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher) {
+        /** @var \AppBundle\Entity\User $user */
         $this->checkIfAuthorized($user);
         $campaign = new YBContractArtist();
+
+    
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         if (!$currentUser->hasPrivateOrganization()){
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
         $form = $this->createForm(YBContractArtistType::class, $campaign, ['creation' => true, 'userOrganizations' => $userOrganizations]);
+
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $em->persist($campaign);
             $em->flush();
             $this->addFlash('yb_notice', 'La campagne a bien été créée.');
+
             try { 
             	$mailDispatcher->sendYBReminderEventCreated($campaign); 
             }
@@ -75,6 +96,7 @@ class YBMembersController extends BaseController
             return $this->redirectToRoute('yb_members_dashboard');
         }
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
+            'admin' => $user->isSuperAdmin(),
             'form' => $form->createView(),
             'campaign' => $campaign,
         ]);
@@ -84,14 +106,18 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/update", name="yb_members_campaign_edit")
      */
     public function editCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
-        $this->checkIfAuthorized($user, $campaign);
+        if (!$user->isSuperAdmin()){
+            $this->checkIfAuthorized($user, $campaign);
+        }
+
 
         if($campaign->isPassed()) {
             $this->addFlash('yb_error', 'Cette campagne est passée. Il est donc impossible de la modifier.');
             return $this->redirectToRoute('yb_members_passed_campaigns');
         }
 
-        $form = $this->createForm(YBContractArtistType::class, $campaign);
+        $form = $this->createForm(YBContractArtistType::class, $campaign,
+            ['admin' => $user->isSuperAdmin()]);
 
         $form->handleRequest($request);
 
@@ -105,6 +131,7 @@ class YBMembersController extends BaseController
 
 
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
+            'admin' => $user->isSuperAdmin(),
             'form' => $form->createView(),
             'campaign' => $campaign,
         ]);
@@ -153,7 +180,9 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/orders", name="yb_members_campaign_orders")
      */
     public function ordersCampaignAction(YBContractArtist $campaign, UserInterface $user = null) {
-        $this->checkIfAuthorized($user, $campaign);
+        if (!$user->isSuperAdmin()){
+            $this->checkIfAuthorized($user, $campaign);
+        }
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
 
@@ -195,7 +224,192 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/facturation", name="yb_members_payment_options")
+     * @Route("/invoices", name="yb_members_invoices")
+     */
+    public function invoicesViewListAction(EntityManagerInterface $em,UserInterface $user = null){
+        $this->checkIfAuthorized($user);
+
+        /** @var \AppBundle\Repository\YB\YBContractArtistRepository $YBCARepository */
+        $YBCARepository = $em->getRepository('AppBundle:YB\YBContractArtist');
+        $all_campaigns = $YBCARepository->getAllYBCampaigns($user);
+
+        return $this->render('@App/YB/Members/invoices.html.twig', [
+            'admin' => $user->isSuperAdmin(),
+            'campaigns' => $all_campaigns,
+        ]);
+    }
+
+    /**
+     * @Route("/invoice/{id}/generate", name="yb_members_invoice_generate")
+     */
+    public function invoiceGenerateAction(YBContractArtist $campaign, EntityManagerInterface $em, UserInterface $user = null){
+        //$this->checkIfAuthorized($user);
+        if (!$user->isSuperAdmin()){
+            throw new YBAuthenticationException();
+        }
+
+        $invoice = new YBInvoice();
+        $invoice->setCampaign($campaign);
+        $em->persist($invoice);
+
+        $cfs = $campaign->getContractsFanPaid();
+        /** @var ContractFan $cf */
+        foreach ($cfs as $cf){
+            /** @var Purchase $purchase */
+            foreach ($cf->getPurchases() as $purchase){
+                if ($purchase->getInvoice() === null){
+                    $purchase->setInvoice($invoice);
+                    $em->persist($purchase);
+                }
+            }
+        }
+
+        $em->flush();
+        return $this->redirectToRoute("yb_members_invoices");
+    }
+
+    /**
+     * @Route("/invoice/{id}/validate", name="yb_members_invoice_validate")
+     */
+    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user, $invoice->getCampaign());
+
+        $invoice->validate();
+        $em->persist($invoice);
+
+        return $this->redirectToRoute("yb_members_invoices");
+    }
+
+    /**
+     * @Route("/invoice/{id}/sold", name="yb_members_invoice_sold")
+     */
+    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
+        $campaign = $invoice->getCampaign();
+        if (!$user->isSuperAdmin()){
+            $this->checkIfAuthorized($user, $campaign);
+        }
+        $cfs = array_reverse($campaign->getContractsFanPaid());
+        $purchases = $invoice->getPurchases();
+
+        $tickets = array();
+
+        foreach ($cfs as $cf){
+            /** @var ContractFan $cf */
+            if ($cf->getPurchases()->first()->getInvoice() == $invoice){
+                $tickets = array_merge($tickets, $cf->getTickets()->toArray());
+            }
+        }
+
+        $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildFromInvoice($invoice);
+
+        $counterparts = array_map(function ($purchase){
+            /** @var Purchase $purchase */
+            return $purchase->getCounterpart();
+        }, $invoice->getPurchases()->toArray());
+
+        return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+            'invoice' => $invoice,
+            'ticketData' => $financialDataService->getTicketData(),
+            'campaign' => $campaign,
+            //'counterparts' => $counterparts,
+            'tickets' => $tickets
+        ]);
+    }
+
+    /**
+     * @Route("/invoice/{id}/fee", name="yb_members_invoice_fee")
+     */
+    public function invoiceFeeDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
+        $campaign = $invoice->getCampaign();
+        if (!$user->isSuperAdmin()){
+            $this->checkIfAuthorized($user, $campaign);
+        }
+
+        //$purchases = $invoice->getPurchases();
+        $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildFromInvoice($invoice);
+
+        $counterparts = array_map(function ($purchase){
+            /** @var Purchase $purchase */
+            return $purchase->getCounterpart();
+        }, $invoice->getPurchases()->toArray());
+
+        $cfs = array_map(function ($purchase){
+            /** @var Purchase $purchase */
+            return $purchase->getContractFan();
+        }, $invoice->getPurchases()->toArray());
+
+        return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
+            'invoice' => $invoice,
+            'ticketData' => $financialDataService->getTicketData(),
+            'campaign' => $campaign,
+            //'counterparts' => $counterparts,
+            //'cfs' => $cfs
+        ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/sold", name="yb_members_campaign_sold")
+     */
+    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
+        if (!$user->isSuperAdmin()){
+            throw new YBAuthenticationException();
+        }
+        //$this->checkIfAuthorized($user, $campaign);
+
+        $cfs = array_reverse($campaign->getContractsFanPaid());
+        $cfs = array_filter($cfs, function($cf){
+            /** @var ContractFan $cf */
+            /** @var Purchase $purchase */
+            $purchase = $cf->getPurchases()->first();
+            return $purchase->getInvoice() == null;
+        });
+        $tickets = array();
+
+        foreach ($cfs as $cf){
+            /** @var ContractFan $cf */
+            $tickets = array_merge($tickets, $cf->getTickets()->toArray());
+        }
+
+
+        $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildInvoicelessCampaignData();
+
+        return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+            'invoice' => null,
+            'ticketData' => $financialDataService->getTicketData(),
+            'campaign' => $campaign,
+            //'counterparts' => $campaign->getCounterparts()->toArray(),
+            //'cfs' => $cfs,
+            'tickets' => $tickets
+        ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/fee", name="yb_members_campaign_fee")
+     */
+    public function campaignFeeDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
+        if (!$user->isSuperAdmin()){
+            throw new YBAuthenticationException();
+        }
+        //$this->checkIfAuthorized($user, $campaign);
+
+        $cfs = array_reverse($campaign->getContractsFanPaid());
+        $financialDataService = new FinancialDataGenerator($campaign);
+        $financialDataService->buildInvoicelessCampaignData();
+
+        return $this->render('@App/PDF/yb_invoice_fee.html.twig', [
+            'invoice' => null,
+            'ticketData' => $financialDataService->getTicketData(),
+            'campaign' => $campaign,
+            //'counterparts' => $campaign->getCounterparts()->toArray(),
+            //'cfs' => $cfs,
+        ]);
+    }
+
+    /**
+     * @Route("/aide-facturation", name="yb_members_payment_options")
      */
     public function paymentOptionsAction(UserInterface $user = null, Request $request) {
         $this->checkIfAuthorized($user, null);
@@ -231,7 +445,10 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/excel", name="yb_members_campaign_excel")
      */
     public function excelAction(YBContractArtist $campaign, UserInterface $user = null, StringHelper $strHelper) {
-        $this->checkIfAuthorized($user, $campaign);
+        if (!$user->isSuperAdmin()){
+            throw new YBAuthenticationException();
+        }
+        //$this->checkIfAuthorized($user, $campaign);
 
         // ask the service for a Excel5
         $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
@@ -392,6 +609,33 @@ class YBMembersController extends BaseController
     }
 
     /**
+     * @Route("admin/campaigns/excel", name="yb_admin_excel_all_campaigns")
+     */
+    public function adminExcelAllCampaigns(UserInterface $user = null){
+        //$this->checkIfAuthorized($user);
+
+        // ask the service for a Excel5
+        $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+        $adminExcelCreator = new AdminExcelCreator($phpExcelObject);
+
+        // create the writer
+        $writer = $this->get('phpexcel')->createWriter($adminExcelCreator->renderExcel(), 'Excel5');
+        // create the response
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'commissions.xls'
+        );
+        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        return $response;
+    }
+
+     /**
      * @Route("/my-organizations", name="yb_members_my_organizations")
      */
     public function myOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null, Request $request){
@@ -816,5 +1060,4 @@ class YBMembersController extends BaseController
         }
         return true;
     }
-
 }

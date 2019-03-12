@@ -8,19 +8,19 @@
         <h2>Tableau de bord</h2>
         <ul class="list-group">
             <li class="list-group-item">
+                <a href="{{ path('yb_members_orgs') }}"><i class="fas fa-users"></i> Mes organisations</a>
+                <div class="text-muted">Voyez et gérez les organisations dont vous faites partie.</div>
+            </li>
+            <li class="list-group-item">
                 <a href="{{ path('yb_members_campaign_new') }}"><i class="far fa-plus-square"></i> Nouvelle campagne</a>
                 <div class="text-muted">Créez une campagne de vente de tickets pour votre événement, avec de nombreuses options de configuration.</div>
             </li>
             <li class="list-group-item">
+                <a href="{{ path('yb_members_invoices') }}"><i class="far fa-credit-card"></i> Facturation</a>
+                <div class="text-muted">Consultez vos factures, les infos concernant notre mode de facturation et configurez vos infos de paiement.</div>
+            <li>
                 <a href="{{ path('yb_members_venue_new') }}"><i class="fas fa-plus-square"></i> Nouvelle salle</a>
                 <div class="text-muted">Enregistrez votre salle, renseignez son adresse et créer un plan de salle simple.</div>
-            </li>
-            <li class="list-group-item">
-                <a href="{{ path('yb_members_payment_options') }}"><i class="far fa-credit-card"></i> Facturation</a>
-                <div class="text-muted">Trouvez les infos concernant notre mode de facturation et configurez vos infos de paiement.</div>
-                {% if app.user.bankAccount is null %}
-                    <div><i class="fas fa-exclamation"></i> Vous n'avez pas encore renseigné vos infos de paiement. Nous vous conseillons de nous donner ces informations dès que possible.</div>
-                {% endif %}
             </li>
             <li class="list-group-item">
                 <a href="{{ path('yb_members_my_organizations') }}"><i class="fa fa-group"></i> Mes organisations</a>

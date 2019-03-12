@@ -11,7 +11,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function getCurrentYBCampaigns($user = null) {
 
         $qb = $this->createQueryBuilder('c');
-        if($user instanceof User) {
+        if($user instanceof User && !$user->isSuperAdmin()) {
             $qb
                 ->join('c.handlers', 'u')
                 ->addSelect('u')
@@ -114,5 +114,17 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function getAllYBCampaigns(User $user){
+        $qb = $this->createQueryBuilder('c');
+            if (!$user->isSuperAdmin()){
+                $qb->join('c.handlers', 'u')
+                    ->orderBy('c.date_event', 'DESC')
+                    ->where('u.id = :id')
+                    ->setParameter('id', $user->getId());
+            }
+            return $qb->getQuery()
+            ->getResult();
     }
 }
