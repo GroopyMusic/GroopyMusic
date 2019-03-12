@@ -802,6 +802,12 @@ class YBMembersController extends BaseController
         return $finalOrg;
     }
 
+    /**
+     * Checks if all the organizations of an array are deleted
+     *
+     * @param $orgs
+     * @return bool
+     */
     private function areAllDeleted($orgs){
         foreach ($orgs as $org){
             if (!$org->isDeleted()){
