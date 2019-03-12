@@ -221,7 +221,7 @@ class YBContractArtistType extends AbstractType
                 new Assert\Callback(array($this, 'validate'))
             ),
             'creation' => false,
-            'admin' => false
+            'admin' => false,
             'userOrganizations' => null,
         ]);
     }
