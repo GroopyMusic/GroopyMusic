@@ -10,7 +10,7 @@
         </ol>
     </section>
 
-    <section class="container py-5">
+    <section class="container py-5" id="organization-catalogue">
         <h2>Mes organisations</h2>
         {% for organization in organizations %}
             {{ macros.organization_row(organization, currentUser) }}
@@ -52,3 +52,15 @@
     </section>
 
 {% endblock body %}
+
+{% block additional_javascripts %}
+    <script>
+        $('document').ready(function () {
+            $('#organization-catalogue').jplist({
+                itemsBox: '.jp-list'
+                ,itemPath: '.jp-list-item'
+                ,panelPath: '.jplist-panel'
+            });
+        });
+    </script>
+{% endblock %}

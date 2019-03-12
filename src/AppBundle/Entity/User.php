@@ -1227,18 +1227,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         }
     }
 
-    public function getRoleForOrganization(Organization $org){
+    public function isAdminForOrganization(Organization $org){
         foreach ($this->participations as $part){
             if ($part->getOrganization() === $org){
-                return $part->getRole();
-            }
-        }
-    }
-
-    public function getParticipationToOrganization(Organization $org){
-        foreach ($this->participations as $part){
-            if ($part->getOrganization() === $org){
-                return $part;
+                return $part->isAdmin();
             }
         }
     }
@@ -1254,9 +1246,5 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
             }
         }
         return null;
-    }
-
-    public function isPendingInOrganization(Organization $org){
-        return $this->getParticipationToOrganization($org)->isPending();
     }
 }

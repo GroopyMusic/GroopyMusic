@@ -99,6 +99,22 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    public function getAllOnGoingEvents(){
+        return $this->createQueryBuilder('c')
+            ->where('c.date_closure >= :now AND c.failed = 0')
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllPastEvents(){
+        return $this->createQueryBuilder('c')
+            ->where('c.date_closure < :now OR c.failed = 1')
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Gets all the differents users that handle Ticked-it campaigns.
      *

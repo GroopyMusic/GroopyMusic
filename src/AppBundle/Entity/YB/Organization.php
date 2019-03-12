@@ -14,7 +14,7 @@ use Gedmo\Mapping\Annotations as Gedmo;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\OrganizationRepository")
  * @ORM\Table(name="yb_organization")
  **/
 class Organization {
@@ -55,18 +55,8 @@ class Organization {
         );
     }
 
-    public function getNonSuperAdminMembers(){
-        $nonSuperAdminMembers = [];
-        foreach ($this->participations as $part){
-            if ($part->getRole() !== EnumRole::SUPER_ADMIN){
-                $nonSuperAdminMembers[] = $part->getMember();
-            }
-        }
-        return $nonSuperAdminMembers;
-    }
-
     public function hasOnlyOneMember(){
-        return count($this->getNonSuperAdminMembers()) <= 1;
+        return count($this->getMembers()) <= 1;
     }
 
     public function hasAtLeastOneAdminLeft(User $quittingMember){
