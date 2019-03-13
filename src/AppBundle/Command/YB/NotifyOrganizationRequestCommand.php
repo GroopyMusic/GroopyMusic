@@ -47,7 +47,7 @@ class NotifyOrganizationRequestCommand extends ContainerAwareCommand{
                 if ((new \DateTime()) >= $request->getDate()->add(new \DateInterval('P1M'))){
                     $em->remove($request);
                     $mailer->sendYBNotifyOrganizationRequestCancel($request);
-                    $message = 'La demande de '.$request->getDemander()->getDisplayName().' destiné à '.$request->getEmail().' pour rejoindre l\'organisation '.$request->getOrganization()->getName().' a été annulée !';
+                    $message = 'La demande de '.$request->getDemander()->getDisplayName().' destinée à '.$request->getEmail().' pour rejoindre l\'organisation '.$request->getOrganization()->getName().' a été annulée !';
                     $output->writeln($message);
                     $cptOutlastRequest++;
                 }

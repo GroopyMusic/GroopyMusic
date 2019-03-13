@@ -326,9 +326,9 @@ event:
     see_profile: Voir le profil
   state:
     success:
-      pending: Objectif atteint
+      pending: Objectif de campagne atteint - tickets en vente jusqu'au sold out
       passed: Objectif atteint
-      ongoing: Objectif atteint
+      ongoing: Objectif de campagne atteint - tickets en vente jusqu'au sold out
       closed:  Objectif atteint
       soldout:
         soldout: Objectif atteint (SOLD OUT)
