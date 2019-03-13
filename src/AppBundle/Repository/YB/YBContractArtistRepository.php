@@ -8,6 +8,9 @@ use AppBundle\Entity\YB\Organization;
 
 class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @deprecated, use getOnGoingEvents
+     */
     public function getCurrentYBCampaigns($user = null) {
 
         $qb = $this->createQueryBuilder('c');
@@ -32,6 +35,9 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
+    /**
+     * @deprecated, use getPassedEvents
+     */
     public function getPassedYBCampaigns(User $user) {
         return $this->createQueryBuilder('c')
             ->join('c.handlers', 'u')
@@ -54,6 +60,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('part.member', 'u')
             ->where('u.id = :id')
             ->andWhere('c.date_closure >= :now AND c.failed = 0')
+            ->orderBy('c.date_event', 'ASC')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime(),
@@ -67,6 +74,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('c.organization', 'org')
             ->where('org.id = :id')
             ->andWhere('c.date_closure >= :now AND c.failed = 0')
+            ->orderBy('c.date_event', 'ASC')
             ->setParameters([
                 'id' => $organization->getId(),
                 'now' => new \DateTime(),
@@ -82,6 +90,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('part.member', 'u')
             ->where('u.id = :id')
             ->andWhere('c.date_closure < :now OR c.failed = 1')
+            ->orderBy('c.date_event', 'DESC')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime(),
@@ -96,6 +105,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('org.participations', 'part')
             ->join('part.member', 'u')
             ->where('u.id = :id')
+            ->orderBy('c.date_event', 'DESC')
             ->setParameter('id',$user->getId())
             ->getQuery()
             ->getResult();

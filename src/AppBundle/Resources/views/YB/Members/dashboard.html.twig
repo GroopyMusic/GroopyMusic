@@ -4,6 +4,15 @@
 
     {% import '@App/YB/Macros/campaigns.html.twig' as macros %}
 
+    {% if current_campaigns is not empty %}
+        <section class="container pb-5">
+            <h2>Campagnes en cours</h2>
+            {% for campaign in current_campaigns %}
+                {{ macros.campaign_row(campaign) }}
+            {% endfor %}
+        </section>
+    {% endif %}
+
     <section class="container py-5">
         <h2>Tableau de bord</h2>
         <ul class="list-group">
@@ -49,12 +58,4 @@
         </ul>
     </section>
 
-    {% if current_campaigns is not empty %}
-        <section class="container pb-5">
-            <h2>Campagnes en cours</h2>
-            {% for campaign in current_campaigns %}
-                {{ macros.campaign_row(campaign) }}
-            {% endfor %}
-        </section>
-    {% endif %}
 {% endblock %}
