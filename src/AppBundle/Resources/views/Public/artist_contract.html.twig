@@ -113,7 +113,7 @@
                 {% set visiblePromos = contract.currentPromotionsVisible %}
                 {% if visiblePromos is not empty %}
                     {% set endSentence = visiblePromos|length > 1 ? "des promotions suivantes" : "de la promotion suivante" %}
-                    <div class="col-12 content-box mt-5">
+                    <div class="col-12 content-box mt-4 mt-md-5">
                         <h3 class="festival-section-title"><img src="{{ asset('images/icons/continuity.png') }}" class="title-icon" /> <span>Promotions</span></h3>
                         <div class="content-box-content" style="border-top: 2px solid #becdf1;border-left: 2px solid #becdf1;">
                             {% if not contract.inTestPeriod %}
@@ -131,7 +131,7 @@
 
 
             {% if not contract.hasNoDefinedHall %}
-                <div class="col-12 col-lg-4 content-box">
+                <div class="col-12 col-lg-4 mt-3 mt-md-0 content-box">
                         <h3 class="festival-section-title"><img src="{{ asset('images/icons/blue/hall.png') }}" class="title-icon" /> <span>{{ 'event.hall.known'|trans|raw }}</span></h3>
 
                     <div class="content-box-content">
@@ -170,15 +170,15 @@
     {% endif %}
     <section class="container-fluid position-relative bg-body-strong">
 
-        <h3 class="festival-section-title">Financement participatif</h3>
+        <h3 class="festival-section-title mt-4 mt-md-0">Financement participatif</h3>
         {% if state not in contract.successfulStates %}<p class="font-italic text-center">Ce festival ne sera confirmé que si suffisamment de tickets sont vendus d'ici la date de validation. <a href="{{ path('homepage') }}#about" class="text-secondary">En savoir plus</a></p>{% endif %}
 
         <div class="content-box solid-borders">
             <div class="content-box-content no-border text-center bg-transparent">
                 <div class="col-12 content-box-col">
-                    <span class="contract-info-title pr-2">
+                    <div class="contract-info-title pr-2">
                         {{ 'event.infos.state'|trans|raw }}
-                    </span>
+                    </div>
                     <span class="contract-info-content pr-1">
                         {{ ('event.'~state)|trans|raw }}
                     </span>
@@ -218,12 +218,12 @@
                 </section>
                 <section class="container-fluid position-relative bg-body-strong">
                 {% set total_sales = contract.counterpartsSold %}
-                <h3 class="festival-section-title">Distribution des ventes</h3>
+                <h3 class="festival-section-title mt-4 mt-md-0">Distribution des ventes</h3>
                 <p class="font-italic text-center">
                     Vous ne voyez ceci que parce que vous êtes connecté en tant qu'artiste participant à la line-up de ce festival.
                 </p>
 
-                <div class="row d-none d-md-flex p-3 counterparts-header bg-secondary text-white">
+                <div class="row d-flex p-3 counterparts-header bg-secondary text-white">
                     <div class="col-4 um-label-bold">
                         Artiste
                     </div>
@@ -291,7 +291,7 @@
     </section>
 
     <section class="container-fluid position-relative bg-body-light p-4 mt-2" id="tickets">
-        <h3 class="festival-section-title"><img src="{{ asset('images/icons/blue/concert-ticket.png') }}" class="title-icon" /> Tickets</h3>
+        <h3 class="festival-section-title "><img src="{{ asset('images/icons/blue/concert-ticket.png') }}" class="title-icon" /> Tickets</h3>
         {% if state not in contract.uncrowdableStates %}
             {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
