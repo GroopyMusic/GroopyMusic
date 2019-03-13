@@ -10,10 +10,7 @@ footer_links:
   about: A propos
   contact: Contact
 
-
-organizer_event_created:
-  txt:
-    twig:add_to_contacts: Ajoutez "%address%" à votre carnet d'adresse pour assurer la réception de nos e-mails.
+add_to_contacts: Ajoutez "%address%" à votre carnet d'adresse pour assurer la réception de nos e-mails.
 
 subjects:
   change_email_confirmation: Votre demande de changement d'adresse e-mail

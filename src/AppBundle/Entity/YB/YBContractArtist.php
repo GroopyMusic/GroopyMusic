@@ -173,6 +173,10 @@ class YBContractArtist extends BaseContractArtist
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
     }
 
+    public function getOrganizationName() {
+        return $this->organization->getName();
+    }
+
     /**
      * @var integer
      * @ORM\Column(name="sold_counterparts", type="float")
@@ -203,28 +207,33 @@ class YBContractArtist extends BaseContractArtist
     private $handlers;
 
     /**
+     * @var Organization
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="campaigns", cascade={"persist"})
      */
     private $organization;
 
     /**
      * @var string
+     * @var string
      * @ORM\Column(name="code", type="string", length=255)
      */
     private $code;
 
     /**
+     * @var Address
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Address", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
 
     /**
+     * @var float
      * @ORM\Column(name="vat", type="float", nullable=true)
      */
     private $vat;
 
     /**
+     * #var YBCommission[]
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign")
      */
     private $commissions;
@@ -241,19 +250,16 @@ class YBContractArtist extends BaseContractArtist
     private $transactional_messages;
 
     /**
+     * @var string
      * @ORM\Column(name="bank_account", type="string", length=50, nullable=true)
      */
     private $bank_account;
 
     /**
+     * @var string
      * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
      */
     private $vat_number;
-
-    /**
-     * @ORM\Column(name="organization_name", type="string", length=50, nullable=true)
-     */
-    private $organization_name;
 
     /**
      * Set ticketsSent
@@ -544,5 +550,24 @@ class YBContractArtist extends BaseContractArtist
     
     public function getOrganizers(){
         return $this->organization->getMembers();
+    }
+
+    public function getVatNumber() {
+        return $this->vat_number;
+    }
+    public function setVatNumber($vat_number) {
+        $this->vat_number = $vat_number;
+        return $this;
+    }
+
+    public function getBankAccount()
+    {
+        return $this->bank_account;
+    }
+
+    public function setBankAccount($bank_account)
+    {
+        $this->bank_account = $bank_account;
+        return $this;
     }
 }

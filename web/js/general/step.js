@@ -7,7 +7,7 @@ $(function() {
         var tp = 0;
         var q = 0;
         $('.quantity.form-control').each(function() {
-            var qval = parseInt($(this).val());
+            var qval = parseFloat($(this).val());
             q += qval;
             var $select2_container = $(this).closest('.counterpart-form').find('.select2-artists');
             if(qval == 0) {
@@ -15,7 +15,7 @@ $(function() {
             }
             else {
                 if(needForTotal) {
-                    var price = parseInt($(this).closest('.count-input').attr('data-price'));
+                    var price = parseFloat($(this).closest('.count-input').attr('data-price'));
                     tp += price * qval;
                 }
                 $select2_container.show();
