@@ -585,7 +585,6 @@ class YBMembersController extends BaseController
         $org = $em->getRepository('AppBundle:YB\Organization')->find($request->get('organization_id'));
         $participation = $member->getParticipationToOrganization($org);
         $participation->setAdmin($isAdmin);
-        //$participation->setRole();
         $em->flush();
     }
 

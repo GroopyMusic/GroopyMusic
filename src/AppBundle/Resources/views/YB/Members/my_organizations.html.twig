@@ -10,14 +10,40 @@
         </ol>
     </section>
 
-    <section class="container py-5" id="organization-catalogue">
+    <div
+        style="display:none"
+        data-group="group1"
+        data-path=".name"
+        data-type="text">
+    </div>
+
+    <section class="container py-5">
         <h2>Mes organisations</h2>
-        {% for organization in organizations %}
-            {{ macros.organization_row(organization, currentUser) }}
-            <hr size="4" color="orange">
+        <div align="center">
+            <input
+                    data-jplist-control="textbox-filter"
+                    data-group="group1"
+                    data-name="my-filter-1"
+                    data-path=".name"
+                    type="text"
+                    value=""
+                    data-clear-btn-id="name-clear-btn"
+                    placeholder="Chercher..." />
+            <button type="button" id="name-clear-btn">Supprimer</button>
+        </div>
+        <br>
+        {% if organizations|length > 0 %}
+            <div data-jplist-group="group1">
+                {% for organization in organizations %}
+                    {{ macros.organization_row(organization, currentUser) }}
+                {% endfor %}
+                <div data-jplist-control="no-results" data-group="group1" data-name="no-results">
+                    No Results Found
+                </div>
+            </div>
         {% else %}
             <p>Vous ne faites partie d'aucune organisation.</p>
-        {% endfor %}
+        {% endif %}
     </section>
 
     <section class="container py-5">
@@ -51,16 +77,8 @@
         {{ form_end(form) }}
     </section>
 
-{% endblock body %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
+    <script src="/GroopyMusic/web/js/jplist/jplist.min.js"></script>
+    <script>jplist.init();</script>
 
-{% block additional_javascripts %}
-    <script>
-        $('document').ready(function () {
-            $('#organization-catalogue').jplist({
-                itemsBox: '.jp-list'
-                ,itemPath: '.jp-list-item'
-                ,panelPath: '.jplist-panel'
-            });
-        });
-    </script>
-{% endblock %}
+{% endblock body %}
