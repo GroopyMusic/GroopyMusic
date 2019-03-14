@@ -1,0 +1,82 @@
+{% extends '@App/PDF/yb_layout.html.twig' %}
+{% trans_default_domain 'yb' %}
+
+{% block additional_styles %}
+{% endblock %}
+
+{% block page %}
+    <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+        {% block header %}
+        {% endblock %}
+        {% block footer %}
+        {% endblock %}
+        {{ block('header') }}
+        {{ block('footer') }}
+        {% if invoice is not null %}
+            {% if invoice.userValidated %}
+                <p>
+                    Numéro de facture: FC-{{ invoice.invoiceIdentifier }}
+                </p>
+            {% else %}
+                <h3> IMPORTANT: Ce document ne constitue pas une facture valable
+                    tant que vous ne la validez pas.
+                </h3>
+            {% endif %}
+        {% else %}
+            <p>Aperçu de facture</p>
+        {% endif %}
+        <p>
+            Ticked-it <br />
+            3, Place Saint-Antoine <br />
+            1040 Bruxelles <br />
+            0497/21.26.54 <br />
+            Num&eacute;ro de TVA: BE 06 64 782 372
+        </p>
+        <p align="right">
+            {{ campaign.organizationName }} <br />
+            <!-- {{ campaign.address.name }} <br /> -->
+            {{ campaign.address.street }}
+            {{ campaign.address.number }} <br />
+            {{ campaign.address.zipcode }}
+            {{ campaign.address.city }} <br />
+            {{ campaign.address.country }} <br />
+            Num&eacute;ro de TVA: {{ campaign.vatNumber }} <br />
+            IBAN: {{ campaign.bankAccount }}
+        </p>
+
+        {% if invoice is null %}
+            <h2>{{ campaign }} - Facture de commission</h2>
+        {% else %}
+            <h2>{{ campaign }} - Facture de commission du {{ invoice.dateValidated|date("d/m/Y") }}</h2>
+        {% endif %}
+
+        <table border="1" style="width: 100%; border-collapse: collapse;">
+            <tr class="bg-gray">
+                <th>Description</th>
+                <th>Commission unitaire</th>
+                <th>Quantité</th>
+                <th>Montant</th>
+            </tr>
+            {% set total = 0 %}
+            {% for item in ticketData %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td class="text-center">{{ item.commission|round(2) }}€</td>
+                    <td class="text-center">{{ item.qty }}</td>
+                    {% set subtotal = item.commission * item.qty %}
+                    <td class="text-right">{{ subtotal|round(2) }}€</td>
+                </tr>
+                {% set total = total + subtotal %}
+            {% endfor %}
+            <tr class="text-bold text-right bg-gray">
+                <td colspan="2" class="bg-white"></td>
+                <td colspan="1" class="text-italic">Grand Total</td>
+                <td>{{ total|round(2) }}€</td>
+            </tr>
+        </table>
+        <p>Le montant de cette facture sera directement déduit
+            des montants récoltés par Ticked-it dans le cadre de cette campagne
+            de vente de tickets
+        </p>
+    </page>
+{% endblock %}

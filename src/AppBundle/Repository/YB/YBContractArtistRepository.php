@@ -8,7 +8,6 @@ use AppBundle\Entity\YB\Organization;
 
 class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
-
     public function findById($id){
         return $this->createQueryBuilder('c')
             ->where('c.id = :id')
@@ -17,10 +16,13 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @deprecated, use getOnGoingEvents
+     */
     public function getCurrentYBCampaigns($user = null) {
 
         $qb = $this->createQueryBuilder('c');
-        if($user instanceof User) {
+        if($user instanceof User && !$user->isSuperAdmin()) {
             $qb
                 ->join('c.handlers', 'u')
                 ->addSelect('u')
@@ -34,15 +36,20 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
         return $qb
             ->andWhere('c.date_closure >= :now')
             ->andWhere('c.failed = 0')
+            ->orderBy('c.date_event', 'ASC')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
         ;
     }
 
+    /**
+     * @deprecated, use getPassedEvents
+     */
     public function getPassedYBCampaigns(User $user) {
         return $this->createQueryBuilder('c')
             ->join('c.handlers', 'u')
+            ->orderBy('c.date_event', 'DESC')
             ->where('u.id = :id')
             ->andWhere('c.date_closure < :now OR c.failed = 1')
             ->setParameters([
@@ -61,6 +68,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('part.member', 'u')
             ->where('u.id = :id')
             ->andWhere('c.date_closure >= :now AND c.failed = 0')
+            ->orderBy('c.date_event', 'ASC')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime(),
@@ -74,6 +82,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('c.organization', 'org')
             ->where('org.id = :id')
             ->andWhere('c.date_closure >= :now AND c.failed = 0')
+            ->orderBy('c.date_event', 'ASC')
             ->setParameters([
                 'id' => $organization->getId(),
                 'now' => new \DateTime(),
@@ -89,6 +98,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('part.member', 'u')
             ->where('u.id = :id')
             ->andWhere('c.date_closure < :now OR c.failed = 1')
+            ->orderBy('c.date_event', 'DESC')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime(),
@@ -103,6 +113,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('org.participations', 'part')
             ->join('part.member', 'u')
             ->where('u.id = :id')
+            ->orderBy('c.date_event', 'DESC')
             ->setParameter('id',$user->getId())
             ->getQuery()
             ->getResult();
@@ -137,5 +148,17 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function getAllYBCampaigns(User $user){
+        $qb = $this->createQueryBuilder('c');
+            if (!$user->isSuperAdmin()){
+                $qb->join('c.handlers', 'u')
+                    ->orderBy('c.date_event', 'DESC')
+                    ->where('u.id = :id')
+                    ->setParameter('id', $user->getId());
+            }
+            return $qb->getQuery()
+            ->getResult();
     }
 }

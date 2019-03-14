@@ -125,7 +125,7 @@ class CounterPart implements TranslatableInterface
     private $free_price;
 
     /**
-     * @ORM\Column(name="minimum_price", type="smallint")
+     * @ORM\Column(name="minimum_price", type="float")
      */
     private $minimum_price;
 
