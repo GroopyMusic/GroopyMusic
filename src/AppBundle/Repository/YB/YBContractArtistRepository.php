@@ -8,6 +8,15 @@ use AppBundle\Entity\YB\Organization;
 
 class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function findById($id){
+        return $this->createQueryBuilder('c')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function getCurrentYBCampaigns($user = null) {
 
         $qb = $this->createQueryBuilder('c');

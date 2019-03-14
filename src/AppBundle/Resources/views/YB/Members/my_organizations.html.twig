@@ -77,8 +77,8 @@
         {{ form_end(form) }}
     </section>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
-    <script src="/GroopyMusic/web/js/jplist/jplist.min.js"></script>
-    <script>jplist.init();</script>
-
 {% endblock body %}
+
+{% block additional_javascripts %}
+    <script>jplist.init();</script>
+{% endblock additional_javascripts %}

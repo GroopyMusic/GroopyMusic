@@ -103,6 +103,12 @@ class YBContractArtist extends BaseContractArtist
         return min(floor(($this->getCounterpartsSold() / max(1, $this->getThreshold())) * 100), 100);
     }
 
+    public function isToday(){
+        $dateOfEvent = $this->date_event->format('m/d/Y');
+        $today = (new \DateTime())->format('m/d/Y');
+        return $dateOfEvent === $today;
+    }
+
     public function getState()
     {
         if ($this->state != null) {
