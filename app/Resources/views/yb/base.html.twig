@@ -176,9 +176,12 @@
             integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
             crossorigin="anonymous"></script>
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
+
     {% javascripts filter='jsqueeze' output='js/compiled/yb/main.js'
     'yb/js/yb.js'
     'yb/js/dropzone.js'
+    'yb/js/jplist.min.js'
     %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}

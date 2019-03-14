@@ -46,7 +46,15 @@ getcounterpart:
     resource: AppBundle\Controller\RestController
     type: rest
 
-getguests:
+getaudience:
     resource: AppBundle\Controller\RestController
     type: rest
+
+getaudience-in:
+  resource: AppBundle\Controller\RestController
+  type: rest
+
+getaudience-out:
+  resource: AppBundle\Controller\RestController
+  type: rest
 

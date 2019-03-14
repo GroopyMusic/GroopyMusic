@@ -27,11 +27,6 @@ class Membership {
     protected $isMemberAdmin;
 
     /**
-    * @ORM\Column(type="integer", name="role")
-    */
-    protected $role;
-
-    /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="participations", cascade={"persist"})
     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=FALSE)
     */
@@ -42,11 +37,6 @@ class Membership {
     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=FALSE)
     */
     protected $organization;
-
-    /**
-    * @ORM\Column(type="boolean", name="isPending")
-    */
-    protected $isPending = false;
 
     // getters and setters
     
@@ -76,34 +66,6 @@ class Membership {
 
     public function setAdmin($isAdmin){
         $this->isMemberAdmin = $isAdmin;
-    }
-
-    public function getRole(){
-        return $this->role;
-    }
-
-    public function setRole(){
-        if (!$this->isAdmin()){
-            if ($this->getMember()->hasRole("ROLE_SUPER_ADMIN")){
-                $this->role = EnumRole::SUPER_ADMIN;
-            } else {
-                $this->role = EnumRole::MEMBER;
-            }
-        } else {
-            if ($this->getMember()->hasRole("ROLE_SUPER_ADMIN")){
-                $this->role = EnumRole::ADMIN_AND_SUPER_ADMIN;
-            } else {
-                $this->role = EnumRole::ADMIN;
-            }
-        }
-    }
-
-    public function isPending(){
-        return $this->isPending;
-    }
-
-    public function setPending($isPending){
-        $this->isPending = $isPending;
     }
 
 }

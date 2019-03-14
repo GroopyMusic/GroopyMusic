@@ -8,6 +8,14 @@ use AppBundle\Entity\YB\Organization;
 
 class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findById($id){
+        return $this->createQueryBuilder('c')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * @deprecated, use getOnGoingEvents
      */
@@ -107,6 +115,22 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->where('u.id = :id')
             ->orderBy('c.date_event', 'DESC')
             ->setParameter('id',$user->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllOnGoingEvents(){
+        return $this->createQueryBuilder('c')
+            ->where('c.date_closure >= :now AND c.failed = 0')
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllPastEvents(){
+        return $this->createQueryBuilder('c')
+            ->where('c.date_closure < :now OR c.failed = 1')
+            ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();
     }

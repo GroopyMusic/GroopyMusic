@@ -332,6 +332,16 @@ class ContractArtist extends BaseContractArtist
         return $this->festivalDates;
     }
 
+    public function isToday(){
+        foreach($this->festivalDates as $date){
+            if ($date === new \DateTime()){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
     /** @return array */
     public function getFestivalHalls() {
         if($this->festivalHalls == null) {

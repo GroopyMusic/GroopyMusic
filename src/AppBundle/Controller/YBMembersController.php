@@ -49,9 +49,14 @@ class YBMembersController extends BaseController
     {
         $this->checkIfAuthorized($user);
 
-        $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getOnGoingEvents($user);
-        $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
-
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if ($currentUser->isSuperAdmin()){
+            $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
+            $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllPastEvents();
+        } else {
+            $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getOnGoingEvents($user);
+            $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
+        }
         return $this->render('@App/YB/Members/dashboard.html.twig', [
             'current_campaigns' => $current_campaigns,
             'passed_campaigns' => $passed_campaigns,
@@ -641,7 +646,12 @@ class YBMembersController extends BaseController
     public function myOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null, Request $request){
         $this->checkIfAuthorized($user);
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        $organizationsToBeDisplayed = $currentUser->getPublicOrganizations();
+        if ($currentUser->isSuperAdmin()){
+            $organizations = $em->getRepository('AppBundle:YB\Organization')->findAll();
+            $organizationsToBeDisplayed = $this->fetchOrganizationsForSuperUser($currentUser, $organizations);
+        } else {
+            $organizationsToBeDisplayed = $currentUser->getPublicOrganizations();
+        }
         $organization = new Organization();
         $form = $this->createForm(OrganizationType::class, $organization);
         $form->handleRequest($request);
@@ -819,7 +829,6 @@ class YBMembersController extends BaseController
         $org = $em->getRepository('AppBundle:YB\Organization')->find($request->get('organization_id'));
         $participation = $member->getParticipationToOrganization($org);
         $participation->setAdmin($isAdmin);
-        $participation->setRole();
         $em->flush();
     }
 
@@ -840,14 +849,7 @@ class YBMembersController extends BaseController
         } elseif ($this->organizationNameExist($em, $organization->getName())){
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
         } else {
-            $superAdmins = $em->getRepository('AppBundle:User')->getSuperAdmins();
-            if (!$currentUser->hasRole('ROLE_SUPER_ADMIN')) {
-                array_push($superAdmins, $currentUser);
-            }
-            foreach ($superAdmins as $member) {
-                $isAdmin = $member === $currentUser;
-                $this->createNewParticipation($organization, $member, $isAdmin);
-            }
+            $this->createNewParticipation($organization, $currentUser, true);
             $em->persist($organization);
             $em->flush();
             $orgName = $organization->getName();
@@ -915,7 +917,6 @@ class YBMembersController extends BaseController
         $participation->setAdmin($isAdmin);
         $user->addParticipation($participation);
         $org->addParticipation($participation);
-        $participation->setRole();
         return $participation;
     }
 
@@ -928,17 +929,10 @@ class YBMembersController extends BaseController
      * @param User $currentUser
      */
     private function createPrivateOrganization(EntityManagerInterface $em, User $currentUser){
-        $superAdmins = $em->getRepository('AppBundle:User')->getSuperAdmins();
-        if (!$currentUser->hasRole('ROLE_SUPER_ADMIN')){
-            array_push($superAdmins, $currentUser);
-        }
         $ownNameOrg = new Organization();
         $ownNameOrg->setName($currentUser->getDisplayName());
         $ownNameOrg->setIsPrivate(true);
-        foreach ($superAdmins as $admin){
-            $isAdmin = $admin === $currentUser;
-            $this->createNewParticipation($ownNameOrg, $admin, $isAdmin);
-        }
+        $this->createNewParticipation($ownNameOrg, $currentUser, true);
         $em->persist($ownNameOrg);
         $em->flush();
     }
@@ -967,7 +961,7 @@ class YBMembersController extends BaseController
      * @param $newName
      * @return bool
      */
-    private function isNameOfMember(EntityManagerInterface $em, Organization $organization, $newName){
+    private function isNameOfMember(Organization $organization, $newName){
         foreach ($organization->getMembers() as $member){
             if ($member->getDisplayName() === $newName){
                 return true;
@@ -991,7 +985,7 @@ class YBMembersController extends BaseController
         if ($this->organizationNameExist($em, $new_name)){
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
             return false;
-        } elseif($this->isNameOfMember($em, $organization, $new_name)){
+        } elseif($this->isNameOfMember($organization, $new_name)){
             $this->addFlash('error', 'L\'organisation ne peut avoir le même nom qu\'un de ses membres. Essayez un autre nom !');
             return false;
         } else {
@@ -1060,4 +1054,20 @@ class YBMembersController extends BaseController
         }
         return true;
     }
+
+    private function fetchOrganizationsForSuperUser($currentUser, $organizations){
+        $organizations = array_filter($organizations, function($org){
+            return !$org->isDeleted();
+        });
+        $organizationsToBeDisplayed = [];
+        foreach ($organizations as $org){
+            if ($org->hasMember($currentUser)){
+                array_unshift($organizationsToBeDisplayed, $org);
+            } else {
+                array_push($organizationsToBeDisplayed, $org);
+            }
+        }
+        return $organizationsToBeDisplayed;
+    }
+
 }

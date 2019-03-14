@@ -1,20 +1,16 @@
 {% macro organization_row(organization, currentUser) %}
     {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
-    <div class="">
-        <h3>{{ organization.getName|nl2br }}</h3>
+    <div data-jplist-item>
+        {% if organization.hasMember(currentUser) %}
+            <h3 class="name">{{ organization.getName|nl2br }}</h3>
+        {% else %}
+            <h3 class="name" style="color:orange;">{{ organization.getName|nl2br }} (SUPER ADMIN)</h3>
+        {% endif %}
+
         <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
-            <!-- quand on est super admin, on voit tout le monde -->
-            {% if currentUser.getRoleForOrganization(organization) == 3 or currentUser.getRoleForOrganization(organization) == 2 %}
-                {% for member in organization.getMembers %}
-                    {{ macros.organization_member_row(currentUser, member, organization) }}
-                {% endfor %}
-            <!-- quand on est simple admin ou membre, on ne voit pas Pierre, Gonzague et adrien.suys@gmail.com -->
-            {% else %}
-                {% for member in organization.getNonSuperAdminMembers %}
-                    {{ macros.organization_member_row(currentUser, member, organization) }}
-                {% endfor %}
-            {% endif %}
-            <!-- Afficher les invitations -->
+            {% for member in organization.getMembers %}
+                {{ macros.organization_member_row(currentUser, member, organization) }}
+            {% endfor %}
             {% if organization.hasPendingRequest %}
                 {% for request in organization.getJoinOrganizationRequests %}
                     <tr>
@@ -25,15 +21,20 @@
             {% endif %}
         </table>
         <!-- On ne peut ajouter une personne qui si on est admin -->
-        {% if currentUser.getRoleForOrganization(organization) != 0 %}
-            <p><a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">Rajouter un membre à cette organisation...</a></p>
+        {% if currentUser.isAdminForOrganization(organization) or currentUser.isSuperAdmin() %}
+            {% if not organization.isPrivate() %}
+                <p><a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">Rajouter un membre à cette organisation...</a></p>
+            {% endif %}
             <p><a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">Renommer votre organisation...</a></p>
         {% endif %}
-        <p>
-            <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">
-                Quitter cette organisation...
-            </a>
-        </p>
+        {% if organization.hasMember(currentUser) %}
+            <p>
+                <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">
+                    Quitter cette organisation...
+                </a>
+            </p>
+        {% endif %}
+        <hr size="4" color="orange">
 
         <div class="modal fade" id="quitModal{{ organization.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
