@@ -29,7 +29,7 @@ class Promotion
     public function __toString()
     {
         return $this->type != null ?
-            'Promotion "' . $this->getMathematicString() . '"" du ' . $this->start_date->format('d/m/Y') . ' au ' . $this->end_date->format('d/m/Y')
+            'Promotion "' . $this->getMathematicString() . '" du ' . $this->start_date->format('d/m/Y') . ' au ' . $this->end_date->format('d/m/Y')
             :
             'Nouvelle promotion'
         ;
@@ -195,6 +195,12 @@ class Promotion
     protected $contracts;
 
     /**
+     * @var bool
+     * @ORM\Column(name="hidden", type="boolean")
+     */
+    private $hidden;
+
+    /**
      * Get id
      *
      * @return integer
@@ -308,5 +314,28 @@ class Promotion
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHidden() {
+        return $this->getHidden();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHidden() {
+        return $this->hidden;
+    }
+
+    /**
+     * @param $hidden
+     * @return $this
+     */
+    public function setHidden($hidden) {
+        $this->hidden = $hidden;
+        return $this;
     }
 }

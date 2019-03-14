@@ -16,5 +16,15 @@
                 add: '<a href="#">Ajouter</a>'
             }, options));
         }
+
+        function yb_second_collection(options) {
+            $('.second-collection').collection($.extend({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>',
+                prefix: 'second-collection'
+            }, options));
+        }
     </script>
 {% endblock %}

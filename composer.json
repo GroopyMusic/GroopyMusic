@@ -44,7 +44,7 @@
         "twbs/bootstrap": "4.0.0-beta.2",
         "spipu/html2pdf": "5.0",
         "ramsey/uuid": "3.7.0",
-        "yellowskies/QR-code-bundle": "^1.2",
+        "yellowskies/qr-code-bundle": "^1.2",
         "ninsuo/symfony-collection": "^2.1",
         "a2lix/translation-form-bundle": "^2.1",
         "knplabs/doctrine-behaviors": "^1.4",
@@ -61,7 +61,7 @@
         "tecnickcom/tcpdf": "6.2.17",
         "sonata-project/formatter-bundle": "^3.4",
         "azine/email-bundle": "dev-master",
-        "liuggio/ExcelBundle": "^2.1",
+        "liuggio/excelBundle": "^2.1",
         "friendsofsymfony/rest-bundle": "^2.5",
         "jms/serializer-bundle": "^2.4",
         "nelmio/cors-bundle": "^1.5"

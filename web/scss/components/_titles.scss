@@ -66,3 +66,12 @@ h1 {
     font-weight: 600;
   }
 }
+
+img.title-icon {
+  @extend .img-fluid;
+  max-width:70px;
+}
+
+.festival-section-title {
+  @extend .festival-title, .text-center;
+}

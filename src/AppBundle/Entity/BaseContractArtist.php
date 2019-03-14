@@ -146,6 +146,12 @@ class BaseContractArtist implements TranslatableInterface
         });
     }
 
+    public function getCurrentPromotionsVisible() {
+        return array_filter($this->getCurrentPromotions(), function(Promotion $promotion) {
+            return !$promotion->isHidden();
+        });
+    }
+
     // Facilitates admin list export
     public function getPromotionsExport() {
         $exportList = array();

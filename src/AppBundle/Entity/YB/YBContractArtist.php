@@ -51,6 +51,7 @@ class YBContractArtist extends BaseContractArtist
         $this->date_closure = (new \DateTime())->add(new \DateInterval('P1M'));
         $this->sold_counterparts = 0;
         $this->code = uniqid();
+        $this->commissions = new ArrayCollection();
         $this->transactional_messages = new ArrayCollection();
     }
 
@@ -178,6 +179,10 @@ class YBContractArtist extends BaseContractArtist
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
     }
 
+    public function getOrganizationName() {
+        return $this->organization->getName();
+    }
+
     /**
      * @var integer
      * @ORM\Column(name="sold_counterparts", type="float")
@@ -208,26 +213,59 @@ class YBContractArtist extends BaseContractArtist
     private $handlers;
 
     /**
+     * @var Organization
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="campaigns", cascade={"persist"})
      */
     private $organization;
 
     /**
      * @var string
+     * @var string
      * @ORM\Column(name="code", type="string", length=255)
      */
     private $code;
 
     /**
+     * @var Address
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Address", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
 
     /**
+     * @var float
+     * @ORM\Column(name="vat", type="float", nullable=true)
+     */
+    private $vat;
+
+    /**
+     * #var YBCommission[]
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign")
+     */
+    private $commissions;
+
+    /**
+     * @var YBInvoice[]
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBInvoice", cascade={"all"}, mappedBy="campaign")
+     */
+    private $invoices;
+
+    /**
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
      */
     private $transactional_messages;
+
+    /**
+     * @var string
+     * @ORM\Column(name="bank_account", type="string", length=50, nullable=true)
+     */
+    private $bank_account;
+
+    /**
+     * @var string
+     * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
+     */
+    private $vat_number;
 
     /**
      * Set ticketsSent
@@ -447,6 +485,51 @@ class YBContractArtist extends BaseContractArtist
         $this->address = $address;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * @param mixed $vat
+     * @return YBContractArtist
+     */
+    public function setVat($vat)
+    {
+        $this->vat = $vat;
+        return $this;
+    }
+
+    /**
+     * @param $commissions
+     * @return YBContractArtist
+     */
+    public function setCommissions($commissions)
+    {
+        $this->commissions = $commissions;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommissions()
+    {
+        return $this->commissions;
+    }
+
+    /**
+     * @return YBInvoice[]
+     */
+    public function getInvoices()
+    {
+        return $this->invoices;
+    }
+
     /**
      * @return mixed
      */
@@ -462,7 +545,7 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->transactional_messages = $transactional_messages;
     }
-
+   
     public function getOrganization(){
         return $this->organization;
     }
@@ -473,5 +556,24 @@ class YBContractArtist extends BaseContractArtist
     
     public function getOrganizers(){
         return $this->organization->getMembers();
+    }
+
+    public function getVatNumber() {
+        return $this->vat_number;
+    }
+    public function setVatNumber($vat_number) {
+        $this->vat_number = $vat_number;
+        return $this;
+    }
+
+    public function getBankAccount()
+    {
+        return $this->bank_account;
+    }
+
+    public function setBankAccount($bank_account)
+    {
+        $this->bank_account = $bank_account;
+        return $this;
     }
 }

@@ -326,9 +326,9 @@ event:
     see_profile: Voir le profil
   state:
     success:
-      pending: Objectif atteint
+      pending: Objectif de campagne atteint - tickets en vente jusqu'au sold out
       passed: Objectif atteint
-      ongoing: Objectif atteint
+      ongoing: Objectif de campagne atteint - tickets en vente jusqu'au sold out
       closed:  Objectif atteint
       soldout:
         soldout: Objectif atteint (SOLD OUT)
@@ -727,7 +727,7 @@ notices:
   artist_ownership_request_refused: Votre choix a bien été enregistré.
   artist_leave_last: Vous avez quitté la gestion de %artist%. Vous êtiez le dernier propriétaire de cet artiste ; il a donc été supprimé de la plateforme.
   artist_leave: Vous avez bien quitté la gestion de %artist%.
-  payment: Votre paiement a bien été reçu. Vous allez recevoir un récapitulatif par e-mail.
+  payment: Votre paiement a bien été reçu. Vous allez recevoir un récapitulatif par e-mail. <script>fbq('track', 'Purchase')</script>
   change_email_request: Votre demande a bien été reçue. Pour valider le changement d'adresse e-mail, il vous faut cliquer sur un lien qui a été envoyé à la nouvelle adresse demandée.
   change_email_logged_out: Votre e-mail a bien été modifié ; apparemment, vous étiez connecté avec un autre compte donc nous nous sommes permis de vous déconnecter.
   change_email: Votre adresse e-mail a bien été modifiée.

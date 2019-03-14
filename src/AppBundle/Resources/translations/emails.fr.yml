@@ -10,10 +10,7 @@ footer_links:
   about: A propos
   contact: Contact
 
-
-organizer_event_created:
-  txt:
-    twig:add_to_contacts: Ajoutez "%address%" à votre carnet d'adresse pour assurer la réception de nos e-mails.
+add_to_contacts: Ajoutez "%address%" à votre carnet d'adresse pour assurer la réception de nos e-mails.
 
 subjects:
   change_email_confirmation: Votre demande de changement d'adresse e-mail
@@ -86,11 +83,13 @@ concert:
     confirmation: |
       Félicitations !
 
-      L'événement "%title%" est confirmé ! Ce festival a en effet obtenu le soutien d'assez de producteurs qui, comme vous, croyaient en l'affiche et en la scène belge !
+      Le %title% est confirmé ! Ce festival a en effet obtenu le soutien d'assez de producteurs qui, comme vous, croyaient en son affiche et en la scène locale belge !
 
-      Vous recevrez vos tickets dans les quelques jours qui viennent.
+      Que vous ayez acheté votre (ou vos) place(s) pour soutenir des amis, pour découvrir les pépites musicales proposées ou pour vous assurer de passer une soirée unique signée Un-Mute, MERCI à vous d'avoir participé à la production de cet événement ! Sachez que nous commençons déjà à le préparer activement de notre côté, et que nous prévoyons bien des surprises !
 
-      Envie de soutenir/découvrir d'autres artistes ? Rendez-vous sur Un-Mute.be !
+      Vous recevrez vos tickets par mail ainsi que dans votre espace personnel sur Un-Mute, dans les quelques semaines qui précèdent le festival.
+
+      Envie de découvrir et soutenir d'autres artistes ? Rendez-vous très bientôt sur Un-Mute.be, il y a d'autres festivals prévus !
     tickets: |
       Nous voici à quelques jours de l'événement "%festival_title%".
 

@@ -1,5 +1,9 @@
 {% block style %}
     <style type="text/css">
+        page {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
         .header {
             text-align: center;
             color: #ea900c;
@@ -59,6 +63,17 @@
             font-weight: bold;
         }
 
+        .text-italic {
+            font-style: italic;
+        }
+
+        .bg-gray, .bg-grey {
+            background-color: lightgrey;
+        }
+
+        .bg-white {
+            background-color: white;
+        }
         {% block additional_styles %}
         {% endblock %}
     </style>
