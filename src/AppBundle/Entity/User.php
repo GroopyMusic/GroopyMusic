@@ -1247,4 +1247,13 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         }
         return null;
     }
+
+    public function getParticipationToOrganization(Organization $org){
+        foreach ($this->participations as $participation){
+            if ($participation->getOrganization() === $org){
+                return $participation;
+            }
+        }
+        return null;
+    }
 }
