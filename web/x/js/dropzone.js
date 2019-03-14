@@ -456,7 +456,8 @@
         throw new Error("Invalid dropzone element.");
       }
       if (this.element.dropzone) {
-        throw new Error("Dropzone already attached.");
+        //throw new Error("Dropzone already attached.");
+        return this.element.dropzone;
       }
       Dropzone.instances.push(this);
       this.element.dropzone = this;

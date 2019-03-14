@@ -12,68 +12,35 @@
 {% endblock %}
 
 {% block body %}
-    <section id="about" class="container py-5">
-        <h3 style="text-align: center">CHAPOTS</h3>
-    </section>
-    <hr>
-    <section class="container py-5">
-        <h3 style="text-align: center">LES PROJETS POPULAIRES</h3><br>
-        <div class="container-fluid jp-list">
-            <div class="row jp-list-item">
-            {% for project in projects %}
-                {% if not project.failed %}
-                    <div class="col-sm-4">
-                        <a href="{{ path('x_project', {'id':project.id}) }}" class="custom-card">
-                        <div class="card jp-list-item">
-                                <img class="card-img-top" src="{{ asset(project.coverpic.webPath(project.coverpic)) }}" width="140" height="140"/>
-                            <div class="card-body">
-                                <h4 class="card-title">{{ project.title }}</h4>
-                                <span class = "badge badge-warning">{{project.tag.name}}</span><br>
-                                {% if project.hasThreshold %}
-                                    <strong>{{ project.collectedAmount }}€</strong> sur {{ project.threshold }}€
-                                {% else %}
-                                    <strong>{{ project.collectedAmount }}€</strong> récolté(s)
-                                {% endif %}
-                                -
-                                {% if project.remainingDays > 0 %}
-                                    <strong>{{ project.remainingDays }}</strong> jour(s) restant(s)
-                                {% else %}
-                                    {% if project.remainingHours > 0 %}
-                                        <strong>{{ project.remainingHours }}</strong> heure(s) restante(s)
-                                    {% else %}
-                                        <strong>{{ project.remainingMinutes }}</strong> minute(s) restante(s)
-                                    {% endif %}
-                                {% endif %}
 
-                                {% if project.hasThreshold %}
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
-                                </div>
-                                {% endif %}
-
-                                <div id = "bt{{loop.index}}">
-                                    {#<a href="{{ path('x_project', {'id' : project.id}) }}" class="btn btn-primary">Soutenez-le</a>#}
-                                    <!--Bouton pour compter les points-->
-                                    <button type="button" id = "{{loop.index}}" style = "float:right; background-color: #ff3333; border-color: #ff3333; width: 45px; height: 45px;text-align: center; padding: 6px 0; margin-top: 10px; font-size: 20px; line-height: 1.428571429; border-radius: 22.5px;"class="btn btn-primary btn-circle points-given" {%if not app.user %}data-toggle="modal" data-target="#login-modal" {% endif %}><span class="fa fa-caret-up"></span> <span id = "points">{{ project.points }}</span></a>
-                                        <input type = "hidden" value = "{{ project.id }}" id = "id"/>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        </a>
-                    </div>
-                {% endif %}
-            {% else %}
-                <p> Pas (encore!) de projets lancés</p>
-            {% endfor %}
-            </div>
+    <section id="about">
+        <div class="container p-5">
+            <h3 class="text-center">CHAPOTS</h3>
         </div>
     </section>
 
-    <hr>
 
-    <section id="contact" class="container py-5">
-        <h3 style="text-align: center">CONTACT</h3><br>
+    <section class="container py-5">
+        <h3 class="text-center">LES PROJETS POPULAIRES</h3><br>
+        {% if projects is empty %}
+            <p class="text-center">Pas (encore!) de projets lancés</p>
+        {% else %}
+            <div class="row jp-list">
+                {% for project in projects %}
+                    {% if loop.index < 4 %}
+                        {% include 'XBundle:XPublic/Card:card_project.html.twig' with {'bgwhite': true, 'jplist': true} %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p class="text-center mt-3">
+                <a class="btn btn-primary" href="{{ path('x_projects') }}">Voir tous les projets</a>
+            </p>
+        {% endif %}
+    </section>
+
+
+    <section id="contact">
+        <h3 class="text-center">CONTACT</h3><br>
         {#<div class="well">
             {{ form(form) }}
         </div>#}

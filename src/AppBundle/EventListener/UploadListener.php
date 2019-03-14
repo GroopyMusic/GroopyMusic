@@ -51,6 +51,14 @@ class UploadListener
             $this->om->persist($campaign);
         }
 
+        elseif($project_id = $request->get('project')) {
+            $image = new \XBundle\Entity\Image();
+            $image->setFilename($file->getFilename());
+            $project = $this->om->getRepository('XBundle:Project')->find($project_id);
+            $project->addProjectPhoto($image);
+            $this->om->persist($project);
+        }
+
 
         $this->om->flush();
 

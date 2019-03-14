@@ -15,8 +15,14 @@ use XBundle\Entity\Project;
 class Product
 {
 
+    const PHOTOS_DIR = 'x/images/projects/';
+
     public function __construct() {
         $this->productsSold = 0;
+    }
+
+    public static function getWebPath(Image $image) {
+        return self::PHOTOS_DIR . $image->getFilename();
     }
 
     public function addProductsSold($quantity) {

@@ -3,11 +3,11 @@
 {% block body %}
     
     <section class="container py-5">
-        <form method="post" action="{{ path('x_payment', {'code' : cart.barcodeText}) }}" id="payment-form">
+        <form method="post" action="{{ path('x_payment_checkout', {'code' : cart.barcodeText}) }}" id="payment-form">
         </form>
 
-        <!--<div class="stripe-error alert alert-danger" role="alert"></div>-->
-        <div id="stripe-loader" style="text-align: center">
+        <div class="stripe-error alert alert-danger" role="alert"></div>
+        <div class="text-center" id="stripe-loader">
             {{ hidden_loader(false) }}
         </div>
     </section>

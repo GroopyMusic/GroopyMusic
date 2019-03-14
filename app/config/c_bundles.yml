@@ -48,6 +48,11 @@ oneup_uploader:
             namer: AppBundle\Services\YBContractArtistPhotoUploadNamer
             storage:
               directory: "%kernel.root_dir%/../web/yb/images/campaigns/"
+        x_project:
+            frontend: dropzone
+            namer: XBundle\Services\ProjectPhotoUploadNamer
+            storage:
+              directory: '%kernel.root_dir%/../web/x/images/projects'
 
 vich_uploader:
     db_driver: orm

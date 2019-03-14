@@ -21,15 +21,6 @@
             %}
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
-
-        
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.core.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.filter-toggle-bundle.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.textbox-filter.min.css">
-        
-        <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.demo-pages.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.pagination-bundle.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/css/jplist.list-grid-view.min.css">-->
     {% endblock %}
 
 </head>
@@ -116,6 +107,10 @@
 
         <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
          
+         <script type="text/javascript"
+                 src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+                 integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+                 crossorigin="anonymous"></script>
         <!-- popper.js needed to use bootstrap modals -->
         <script type="text/javascript"
                 src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" 
@@ -128,13 +123,6 @@
                 crossorigin="anonymous">
         </script>
         
-         <script
-            type="text/javascript"
-            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-            crossorigin="anonymous">
-        </script>
-        
         {% javascripts filter='jsqueeze' output='js/compiled/x/main.js'
         'x/js/x.js'
         'x/js/dropzone.js'
@@ -142,11 +130,18 @@
         <script src="{{ asset_url }}"></script>
         {% endjavascripts %}
 
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.core.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.pagination-bundle.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.filter-toggle-bundle.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.textbox-filter.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.sort-bundle.min.js"></script>
+        <script>
+            Dropzone.prototype.defaultOptions.dictDefaultMessage = "{{ 'dictDefaultMessage'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictFallbackMessage = "{{ 'dictFallbackMessage'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictFallbackText = "{{ 'dictFallbackText'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictFileTooBig = "{{ 'dictFileTooBig'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictInvalidFileType = "{{ 'dictInvalidFileType'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictResponseError = "{{ 'dictResponseError'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictCancelUpload = "{{ 'dictCancelUpload'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictCancelUploadConfirmation = "{{ 'dictCancelUploadConfirmation'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictRemoveFile = "{{ 'dictRemoveFile'|trans({}, 'dropzone') }}";
+            Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "{{ 'dictMaxFilesExceeded'|trans({}, 'dropzone') }}";
+        </script>
         
         {% block additional_javascripts %}{% endblock %}
     

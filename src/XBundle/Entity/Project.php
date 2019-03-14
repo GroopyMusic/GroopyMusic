@@ -4,7 +4,9 @@ namespace XBundle\Entity;
 
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use XBundle\Entity\Image;
 use XBundle\Entity\Tag;
 
@@ -16,6 +18,9 @@ use XBundle\Entity\Tag;
  */
 class Project
 {
+    use ORMBehaviors\Sluggable\Sluggable;
+
+    const PHOTOS_DIR = 'x/images/projects/';
 
     public function __construct() {
         $this->dateCreation = new \DateTime();
@@ -27,10 +32,17 @@ class Project
         $this->noThreshold = true;
         $this->nbDonations = 0;
         $this->nbSales = 0;
+        $this->code = uniqid('x');
         $this->points = 0;
     }
 
-    
+    public function getSluggableFields() {
+        return ['title'];
+    }
+
+    public static function getWebPath(Image $image) {
+        return self::PHOTOS_DIR . $image->getFilename();
+    }
 
     public function hasThreshold()
     {
@@ -200,10 +212,21 @@ class Project
     private $nbSales;
 
     /**
-     * @ORM\OneToOne(targetEntity="\XBundle\Entity\Image", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="\XBundle\Entity\Image", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $coverpic;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="\XBundle\Entity\Image", cascade={"all"})
+     */
+    private $projectPhotos;
+
+    /**
+     * @var string
+     * @ORM\Column(name="code", type="string", length=255)
+     */
+    private $code;
 
     /**
      * @var int
@@ -605,6 +628,65 @@ class Project
     public function getCoverpic()
     {
         return $this->coverpic;
+    }
+
+
+    /**
+     * Add projectPhoto
+     *
+     * @param Image $projectPhoto
+     *
+     * @return Project
+     */
+    public function addProjectPhoto($projectPhoto)
+    {
+        $this->projectPhotos[] = $projectPhoto;
+
+        return $this;
+    }
+
+    /**
+     * Remove projectPhoto
+     *
+     * @param Image $projectPhoto
+     */
+    public function removeProjectPhoto(Image $projectPhoto)
+    {
+        $this->projectPhotos->removeElement($projectPhoto);
+    }
+
+    /**
+     * Get projectPhotos
+     *
+     * @return Collection
+     */
+    public function getProjectPhotos()
+    {
+        return $this->projectPhotos;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Project
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 
     /**

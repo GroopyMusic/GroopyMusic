@@ -32,8 +32,9 @@ $black: #000 !default;
 @import "scss/payment.scss";
 @import "scss/loader.scss";
 @import 'scss/project.scss';
-@import "scss/edition.scss";
 @import 'scss/dropzone.scss';
+@import 'scss/card.scss';
+@import 'scss/catalog.scss';
 
 body {
   font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, sans-serif;

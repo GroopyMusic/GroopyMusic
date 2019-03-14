@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -43,7 +44,9 @@ class XArtistController extends BaseController
         $project = new Project();
         $project->setUser($user);
 
-    $form = $this->createForm(ProjectType::class, $project, ['creation' => true]);
+        // Ajouter les autres users s'ils sont plusieurs à être associés à l'artiste
+
+        $form = $this->createForm(ProjectType::class, $project, ['creation' => true]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -52,15 +55,20 @@ class XArtistController extends BaseController
             $em->persist($project);
             $em->flush();
 
-            //$this->addFlash('x_notice', 'Le projet a bien été créée.');
+            $this->addFlash('x_notice', 'Le projet a bien été créée.');
 
-            $request->getSession()->getFlashBag()->add('x_notice', 'Le projet a été créé');
+            //$request->getSession()->getFlashBag()->add('x_notice', 'Le projet a été créé');
+
+            // Envoie email pour création de projet
+            /*try { 
+            	$mailDispatcher->sendXReminderProjectCreated($project); 
+            }
+            catch(\Exception $e) {
+            }*/
 
             return $this->redirectToRoute('x_artist_dashboard');
         }
 
-        
-        
         return $this->render('@X/XArtist/project_new.html.twig', array(
             'form' => $form->createView(),
             'project' => $project
@@ -84,16 +92,28 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/update", name="x_artist_project_update")
      */
-    public function updateProjectAction(EntityManagerInterface $em, $id)
+    public function updateProjectAction(EntityManagerInterface $em, Request $request, Project $project)
     {
+        if($project->isPassed()) {
+            // addFlash('x_error')
+            return $this->redirectToRoute('x_artist_passed_projets');
+        }
+        
+        $form = $this->createForm(ProjectType::class, $project, ['is_edit' => true]);
+        $form->handleRequest($request);
 
-        $project = $em->getRepository('XBundle:Project')->find($id);
-        $form = $this->createForm(ProjectType::class, $project/*, ['creation' => true]*/);
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($project);
+            $em->flush();
 
-        return $this->render('@X/XArtist/project_new.html.twig', array(
-            'project' => $project,
+            $this->addFlash('x_notice', 'Le projet a bien été mis à jour.');
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@X/XArtist/project_new.html.twig', [
             'form' => $form->createView(),
-        ));
+            'project' => $project,
+        ]);
     }
 
 
@@ -102,13 +122,14 @@ class XArtistController extends BaseController
      */
     public function donationsSalesDetailsAction(EntityManagerInterface $em, $id)
     {
-        //$project = $em->getRepository('XBundle:Project')->find($id);
+        $project = $em->getRepository('XBundle:Project')->find($id);
         //$carts = $em->getRepository('XBundle:XCart')->getProjectCarts($project);
 
         //file_put_contents('test.txt', $carts[0]);
 
-        return $this->render('@X/XArtist/donations_sales_details.html.twig'/*, 
-                                array()*/);
+        return $this->render('@X/XArtist/donations_sales_details.html.twig', array(
+            'project' => $project
+        ));
     }
 
 
@@ -119,6 +140,7 @@ class XArtistController extends BaseController
     {
         $project = $em->getRepository('XBundle:Project')->find($id);
         $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
+        
         return $this->render('@X/XArtist/Product/products.html.twig', array(
             'project' => $project,
             'products' => $products
@@ -146,10 +168,36 @@ class XArtistController extends BaseController
         }
 
         return $this->render('@X/XArtist/Product/product_new.html.twig', array(
+            'form' => $form->createView(),
             'project' => $project,
-            'form' => $form->createView()
         ));
     }
+
+
+    /**
+     * @Route("/project/{id}/{code}remove-photo", name="x_artist_project_remove_photo")
+     */
+    public function removePhotoAction(EntityManagerInterface $em, Request $request, Project $project, $code) {
+
+        //$em = $this->getDoctrine()->getManager();
+
+        $filename = $request->get('filename');
+
+        $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $filename]);
+
+        $em->remove($photo);
+
+        $project->removeProjectPhoto($photo);
+
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Project::getWebPath($photo));
+
+        $em->persist($project);
+        $em->flush();
+
+        return new Response();
+    }
+
 
 }
 

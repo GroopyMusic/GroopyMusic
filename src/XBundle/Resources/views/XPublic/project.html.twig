@@ -7,28 +7,6 @@
 {% block body %}
 
   <div class="container py-5">
-    {#<link rel="stylesheet" href="{{ asset('x/css/project.css') }}">#}
-    {#<style>
-      .jumbotron {
-        padding: 5em inherit;
-        padding-top: 3;
-        background-image: url("{{ asset(project.coverpic.webPath(project.coverpic)) }}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: 50% 50%;
-        /*filter: blur(5px);*/
-      }
-    </style>#}
-      <!-- Main jumbotron for a primary marketing message or call to action -->
-      <!--<div class="jumbotron">
-        <div class="container text-center">
-         <div>
-            <a href="#" class="fa fa-facebook"></a>
-            <a href="#" class="fa fa-twitter"></a>
-            <a href="#" class="fa fa-instagram"></a>
-          </div>
-        </div>
-      </div>-->
 
     <div class="row mt-4">
 
@@ -36,7 +14,11 @@
         <h1>{{ project.title }}</h1>
       </div>
       <div class="col-12 col-md-4">
-        <img src="{{ asset(project.coverpic.webPath(project.coverpic)) }}" width="500" height="400">
+        {% if project.coverpic is null %}
+          <img src="{{ asset('x/images/project-card-default.jpg') }}" width="600" height="400">
+        {% else %}
+          <img src="{{ asset(project.webPath(project.coverpic)) }}" width="600" height="400">
+        {% endif %}
       </div>
 
       <div class="col-12 col-md-4">
@@ -91,7 +73,7 @@
       <ul class="list-unstyled">
         {% for product in products %}
           <li class="media">
-            <img class="mr-3" src="{{ asset(product.photo.webPath(product.photo)) }}" width="70" height="70" alt="Generic placeholder image">
+            <img class="mr-3" src="{{ asset(product.webPath(product.photo)) }}" width="70" height="70" alt="Generic placeholder image">
             <div class="media-body">
               <h5 class="mt-0 mb-1">{{ product.name }}</h5>
               {{ product.description }}

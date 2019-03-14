@@ -103,3 +103,6 @@ services:
     AppBundle\Services\CaptchaManager:
       arguments:
         $google_captcha_api_secret: "%google_captcha_api_secret%"
+
+    XBundle\Services\:
+      resource: '../../src/XBundle/Services/*'

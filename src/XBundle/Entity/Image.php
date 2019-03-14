@@ -16,8 +16,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Image
 {
 
-    const PHOTOS_DIR = 'x/images/projects/';
-
     public function __construct()
     {
         $this->updatedAt = new \DateTime();
@@ -32,9 +30,6 @@ class Image
         return $this->getFilename();
     }
 
-    public static function getWebPath(Image $image) {
-        return self::PHOTOS_DIR . $image->getFilename();
-    }
 
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.

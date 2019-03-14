@@ -1,0 +1,57 @@
+{% extends ":patterns:card.html.twig" %}
+
+{% block card_content %}
+
+    {% if project.coverpic is null %}
+        {% set src = asset('x/images/project-card-default.jpg') %}
+    {% else %}
+        {% set src = absolute_url(asset(project.webPath(project.coverpic))) %}
+    {% endif %}
+
+    <div class="x-card">
+        <div class="x-card-header w-100" style="background-image: url({{ src }});">
+        </div>
+
+        <!-- this is the content of the card with an optionnal span for ⭐ -->
+        <div class="x-card-content">
+            {% set tag_slug = "jplist-" ~ project.tag.name|slug %}
+            <h5 class="project-title">{{ project.title }}</h5>
+            <p>{{ project.artist.artistname }}</p>
+            <div class="badge badge-warning project-tag {{ tag_slug }}">{{ project.tag.name }}</div>
+            <!-- for several tags -->
+            {#<span class="d-none project-tag">{% for genre in artist.genres %}{% if not loop.first %} {% endif %}<span class="jplist-{{ genre|slug }}">{{ genre }}</span>{% endfor %}</span>#}
+            <p>
+            {% if project.hasThreshold %}
+                <strong>{{ project.collectedAmount }} €</strong> sur {{ project.threshold }} €
+            {% else %}
+                <strong>{{ project.collectedAmount }} €</strong> récoltés
+            {% endif %}
+                -
+            {% if project.remainingDays > 0 %}
+                <strong>{{ project.remainingDays }}</strong> jour(s) restant(s)
+            {% else %}
+                {% if project.remainingHours > 0 %}
+                    <strong>{{ project.remainingHours }}</strong> heure(s) restante(s)
+                {% else %}
+                    <strong>{{ project.remainingMinutes }}</strong> minute(s) restante(s)
+                {% endif %}
+            {% endif %}
+            <p>
+            {% if project.hasThreshold %}
+                 <div class="progress">
+                    <div class="progress-bar {% if project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
+                </div>
+            {% endif %}
+
+            <!--Bouton pour compter les points-->
+            {#<div id = "bt{{loop.index}}">   
+                <button type="button" id = "{{loop.index}}" style = "float:right; background-color: #ff3333; border-color: #ff3333; width: 45px; height: 45px;text-align: center; padding: 6px 0; margin-top: 10px; font-size: 20px; line-height: 1.428571429; border-radius: 22.5px;"class="btn btn-primary btn-circle points-given" {%if not app.user %}data-toggle="modal" data-target="#login-modal" {% endif %}><span class="fa fa-caret-up"></span> <span id = "points">{{ project.points }}</span></a>
+                    <input type = "hidden" value = "{{ project.id }}" id = "id"/>
+                </button>
+            </div>#}
+        </div>
+
+        <!-- this is the link that the card need to take to -->
+        <a class="x-card-link" href="{{ path('x_project', {'id': project.id, 'slug': project.slug}) }}"></a>
+    </div>
+{% endblock %}

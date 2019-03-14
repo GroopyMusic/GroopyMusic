@@ -13,9 +13,11 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
 use XBundle\Entity\XOrder;
 use XBundle\Entity\XPayment;
+use XBundle\Entity\Tag;
 use XBundle\Form\DonationType;
 use XBundle\Form\PurchaseType;
 
@@ -30,7 +32,7 @@ class XPublicController extends BaseController
      */
     public function indexAction(EntityManagerInterface $em)
     {
-        // à changer pour afficher que les populaires
+        // à changer pour afficher que les populaires et courant
         $projects = $em->getRepository('XBundle:Project')->findAll();
         
         //$contact = new YBContact();
@@ -48,20 +50,28 @@ class XPublicController extends BaseController
      */
     public function projectsAction(EntityManagerInterface $em)
     {
+        // à changer pour afficher que les courants
         $projects = $em->getRepository('XBundle:Project')->findAll();
+        $tags = $em->getRepository('XBundle:Tag')->findAll();
+
         return $this->render('@X/XPublic/catalog_projects.html.twig', array(
-            'projects' => $projects
+            'projects' => $projects,
+            'tags' => $tags
         ));
     }
 
 
     /**
-     * @Route("/project/{id}", name="x_project")
+     * @Route("/project/{id}-{slug}", name="x_project")
      */
-    public function projectAction(EntityManagerInterface $em, Request $request, $id)
+    public function projectAction(Project $p, EntityManagerInterface $em, Request $request, $slug = null /*$id*/)
     {
-        $project = $em->getRepository('XBundle:Project')->find($id);
-        $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
+        if($slug != null && $p->getSlug() != $slug) {
+            return $this->redirectToRoute('x_project', ['id' => $p->getId(), 'slug' => $p->getSlug()]);
+        }
+
+        /*$project = $em->getRepository('XBundle:Project')->find($id);*/
+        $products = $em->getRepository('XBundle:Product')->getProjectProducts($p);
 
         $form = $this->createForm(DonationType::class);
         $form->handleRequest($request);
@@ -71,7 +81,7 @@ class XPublicController extends BaseController
             $cart = new XCart();
             $cart->setConfirmed(true);
             $cart->setDonationAmount($form['donationAmount']->getData());
-            $cart->setProject($project);
+            $cart->setProject($p);
             $cart->generateBarCode();
 
             $em->persist($cart);
@@ -81,7 +91,7 @@ class XPublicController extends BaseController
         }
 
         return $this->render('@X/XPublic/project.html.twig', array(
-            'project' => $project,
+            'project' => $p,
             'products' => $products,
             'form' => $form->createView()
         ));
@@ -145,9 +155,9 @@ class XPublicController extends BaseController
 
 
     /**
-	 * @Route("/payment/{code}", name="x_payment")
+	 * @Route("/payment/{code}", name="x_payment_checkout")
 	 */
-	public function paymentAction(EntityManagerInterface $em, Request $request, $code){
+	public function paymentCheckoutAction(EntityManagerInterface $em, Request $request, $code){
 		
 		$cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
 
@@ -231,8 +241,9 @@ class XPublicController extends BaseController
             }
         }
         
-		return $this->render('@X/XPublic/Payment/payment.html.twig', array(
-			'cart' => $cart
+		return $this->render('@X/XPublic/Payment/payment_checkout.html.twig', array(
+            'cart' => $cart,
+            'error_conditions' => isset($_POST['accept_conditions']) && !$_POST['accept_conditions']
         ));
     }
     
@@ -277,22 +288,24 @@ class XPublicController extends BaseController
         $em->persist($project);
         $em->flush();
 
-        // $this->addFlash('notice', 'Paiement bien reçu ! Votre commande est validée. Vous devriez avoir reçu un récapitulatif par e-mail.');
+        $this->addFlash('x_notice', 'Paiement bien reçu !');
 
-        return $this->render('@X/XPublic/Payment/payment_success.html.twig');
+        return $this->redirectToRoute('x_homepage');
+        //return $this->render('@X/XPublic/Payment/payment_success.html.twig');
     }
 
 	
 	/**
-	 * @Route("/api/submit-order-coordinates/{code}", name="x_ajax_post_order")
+	 * @Route("/api/submit-order-coordinates", name="x_ajax_post_order")
 	 */
-    public function orderAjaxAction(EntityManagerInterface $em, Request $request, $code) {
-
-		$cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
-
+    public function orderAjaxAction(EntityManagerInterface $em, Request $request)
+    {
         $firstName = $_POST['first_name'];
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
+        $code = $_POST['cart_code'];
+
+        $cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
 		
         $xorder = new XOrder();
         $xorder->setCart($cart)

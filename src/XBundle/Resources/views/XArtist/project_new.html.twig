@@ -8,16 +8,19 @@
             {% if project.id is null %}
                 <span class="breadcrumb-item active">Nouveau projet</span>
             {% else %}
+                <a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">{{ project.title }}</a>
                 <span class="breadcrumb-item active">Modifier les informations</span>
             {% endif %}
         </nav>
     </section>
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
     {{ form_start(form) }}
 
-    <section class="container my-4 py-2 my-md-4">
+    <!-- General Informations Section -->
+    <section class="container my-4 py-2 my-md-4 project-section">
+        <h2>Informations générales</h2><hr>
         <div class="row">
             <div class="col-12 col-md-6">            
                 {{ form_row(form.title) }}
@@ -27,49 +30,93 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12">
-                {{ form_row(form.description) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                {{ form_errors(form.dateEnd) }}
-                {{ form_row(form.dateEnd) }}
-            </div>
-        </div>
-    </section>
-
-    <section class="container my-4 py-2 my-md-4">
-        {% if project.id is null %}
-        <div class="row">
-            <div class="col-12 col-md-5" id="x_no_threshold_checkbox">
-                {{ form_widget(form.noThreshold) }}
-            </div>
-            <div class="col-12 col-md-4 x_threshold_only">
-                {{ form_errors(form.threshold) }}
-                {{ form_row(form.threshold) }}
-            </div>
-        </div>
-        <p style="color: red">
-            <i class="fas fa-exclamation-triangle"></i> Vous ne pourrez plus modifier ce comportement (avec seuil ou non) une fois le projet créé.
-        </p>
-        {% else %}
-            {% do form.threshold.setRendered %}
-            {% if project.hasThreshold %}
-                <p>Seuil de validation du projet: <b>{{ project.threshold }}</b></p>
-            {% else %}
-                <p>Pas de seuil de validation pour ce projet</p>
-            {% endif %}
-        {% endif %}
-    </section>
-
-    <section class="container my-4 py-2 my-md-4">
-        <div class="row">
             <div class="col-12 col-md-6">
                 {{ form_row(form.tag) }}
             </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {% if project.id is null %}
+                    {{ form_label(form.description) }}
+                    <div class="text-muted font-italic pb-2">
+                        Il s'agit d'une description brêve de votre projet. Une fois celui-ci créé, vous pourrez le décrire plus en détails (vos motivations, à quoi va servir le financement, comment va-t-il être répartie, ...)
+                    </div>
+                    {{ form_widget(form.description) }}<br>
+                {% else %}
+                    {{ form_row(form.description) }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {% if project.id is null %}
+                    {{ form_row(form.dateEnd) }}<br>
+                {% else %}
+                    {{ form_row(form.dateEnd, { 'attr':{'disabled':'disabled'} }) }}<br>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Threshold Section -->
+    <section class="container my-4 py-2 my-md-4 project-section">
+        <h2>Financement participatif</h2><hr>
+        <div class="text-muted font-italic pb-2">
+            Il est possible de fixer un seuil de validation à un projet. Ce seuil correspond au montant que vous désirez atteindre pour confirmer le lancement du projet. Il suffit de décocher la mention "Pas de seuil de validation" et d'indiquer le montant visé.
+        </div>
+        {% if project.id is null %}
+            <p style="color: red">
+                <i class="fas fa-exclamation-triangle"></i> Vous ne pourrez plus modifier ce comportement (avec seuil ou non) une fois le projet créé.
+            </p>
+            <div class="row">
+                <div class="col-12 col-md-6" id="x_no_threshold_checkbox">
+                    {{ form_widget(form.noThreshold) }}
+                </div>
+            </div>
+        {% endif %}
+        {% if project.id is null or project.hasThreshold %}
+        <div class="row">
+            <div class="col-12 col-md-3 x_threshold_only">
+                {{ form_row(form.threshold) }}
+            </div>
+        </div>
+        {% else %}
+            <p>Pas de seuil de validation pour ce projet</p>
+            {% do form.threshold.setRendered %}
+        {% endif %}
+    </section>
+
+    <!-- Pictures Section -->
+    <section class="container my-4 py-2 my-md-4 project-section">
+        <h2>Images</h2><hr>
+        <div class="row">
             <div class="col-12 col-md-6">
-                {{ form_row(form.coverpic) }}
+                {{ form_label(form.coverpic) }}
+                <div class="text-muted font-italic pb-2">
+                    Cette photo sera utilisée comme bannière pour votre projet. {% if project.id is null %}(Elle n'est pas obligatoire lors de la création du projet, vous pouvez la rajouter plus tard){% endif %}
+                </div>
+                {{ form_errors(form.coverpic) }}
+                {{ form_widget(form.coverpic) }}
+            </div>
+            {% if project.id is not null and project.coverpic is not null %}
+                <div class="col-12 col-md-6">
+                    <img class="img-fluid" src="{{ asset(project.webPath(project.coverpic)) }}" />
+                </div>
+            {% endif %}
+        </div>
+        <div class="row py-3">
+            <div class="col-12">
+                <div class="form-row">
+                    <div><label>Autres photos</label></div>
+                    <div class="text-muted font-italic pb-2">
+                        Les photos que vous ajoutez ici seront affichées sous la description du projet, les unes à la suite des autres. Nous vous conseillons de limiter le nombre de photos afin que la page ne soit pas trop longue pour vos visiteurs.
+                    </div>
+                        {% if project.id is not null %}
+                            <div class="dropzone w-100" id="#project_edit_photos"></div>
+                        {% else %}
+                            <p>Une fois le projet créé, vous pourrez ajouter d'autres images pour l'illustrer.</p>
+                        {% endif %}
+                </div>
             </div>
         </div>
     </section>
@@ -90,6 +137,73 @@
                 });
                 $chckbx.trigger("change");
             {% endif %}
+
+            {% if project.id is not null %}
+                var $dropzone = $("div.dropzone");
+                var mocks = [];
+                {% for photo in project.projectPhotos %}
+                    mocks.push({
+                        name: "{{ photo.filename }}",
+                        url: "{{ absolute_url(asset(project.webPath(photo))) }}",
+                        size: 12345
+                    });
+                {% endfor %}
+
+                $dropzone.dropzone({
+                    url: "{{ oneup_uploader_endpoint('x_project') }}",
+                    resizeWidth: 1000,
+                    maxFiles: 5,
+                    addRemoveLinks: true,
+                    params: {
+                        project: {{ project.id }},
+                        code: "{{ project.code }}"
+                    },
+                    accept: function (file, done) {
+                        console.log(file);
+                        if ((file.type).toLowerCase() != "image/jpg" &&
+                            (file.type).toLowerCase() != "image/gif" &&
+                            (file.type).toLowerCase() != "image/jpeg" &&
+                            (file.type).toLowerCase() != "image/png"
+                        ) {
+                            done("Invalid file");
+                        }
+                        else {
+                            done();
+                        }
+                    },
+                    removedfile: function(file) {
+                        $.ajax({
+                            method: 'get',
+                            url: "{{ path('x_artist_project_remove_photo', {'id': project.id, 'code' : project.code}) }}",
+                            data: {
+                                filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
+                            },
+                            complete: function() {
+                                file.previewElement.remove();
+                            }
+                        });
+                    },
+                    init: function() {
+                        var i = 0;
+                        while(i < mocks.length) {
+                            var mock = mocks[i];
+                            mock.accepted = true;
+
+                            this.files.push(mock);
+                            this.createThumbnailFromUrl(mock, mock.url);
+                            this.emit('addedfile', mock);
+                            this.emit("thumbnail", mock, mock.url);
+                            this.emit('complete', mock);
+                            i++;
+                        }
+                        $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
+                    },
+                    success: function(file, serverResponse) {
+                        file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;
+                    }
+                });
+            {% endif %}
+
         });
     </script>
 {% endblock %}

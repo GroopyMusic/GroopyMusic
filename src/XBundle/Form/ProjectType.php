@@ -67,12 +67,14 @@ class ProjectType extends AbstractType
             ))
             ->add('dateEnd', DateTimeType::class, array(
                 'label' => 'Date de clôture du financement participatif',
+                'disabled' => $options['is_edit'],
                 'constraints' => [
                     new Assert\NotBlank(),
                 ]
             ))
             ->add('threshold', IntegerType::class, array(
-                'label' => 'Seuil de validation',
+                'label' => 'Montant à atteindre (en €)',
+                'disabled' => $options['is_edit'],
                 'required' => false,
                 'constraints' => [
                     new Assert\GreaterThanOrEqual(['value' => 0])
@@ -135,7 +137,8 @@ class ProjectType extends AbstractType
             'constraints' => array(
                 new Assert\Callback(array($this, 'validate'))
             ),
-            'creation' => false
+            'creation' => false,
+            'is_edit'=> false,
         ));
     }
 

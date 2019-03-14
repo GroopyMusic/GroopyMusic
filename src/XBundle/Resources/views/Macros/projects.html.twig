@@ -38,11 +38,11 @@
         </div>
 
         <div class="col-12 col-md-2">
-            <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('x_project', {'id': project.id}) }}">Détails du projet</a>
+            <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">Détails du projet</a>
         </div>
         {% if not project.isPassed %}
         <div class="col-12 col-md-2">
-            <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_update', {'id': project.id}) }}">Modifier les informations</a>
+            <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_update', {'id': project.id}) }}">Mettre à jour les informations</a>
         </div>
         {% endif %}
         <div class="col-12 col-md-2">
@@ -76,7 +76,7 @@
                 <div class="col-12 mt-2">
                     Progression : <strong>{{ project.progressPercent }}%</strong>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: {{ project.progressPercent }}%" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar {% if project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
             {% endif %}
