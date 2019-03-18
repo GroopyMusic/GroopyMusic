@@ -6,13 +6,12 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichImageType;
+use XBundle\Entity\Image;
 
 
 class ImageType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('imageFile', VichImageType::class, [
@@ -31,7 +30,7 @@ class ImageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'XBundle\Entity\Image'
+            'data_class' => Image::class
         ));
     }
 

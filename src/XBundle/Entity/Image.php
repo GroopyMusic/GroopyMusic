@@ -52,7 +52,7 @@ class Image
     public function setImageFile(File $image = null)
     {
         $this->imageFile = $image;
-
+      
         if (null !== $image) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
@@ -85,16 +85,16 @@ class Image
     /**
      * @var int
      *
-     * @ORM\Column(name="imageSize", type="integer", nullable=true)
+     * @ORM\Column(name="image_size", type="integer", nullable=true)
      */
     private $imageSize;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updateAt", type="datetime", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $updateAt;
+    private $updatedAt;
 
 
     /**
@@ -158,13 +158,13 @@ class Image
     /**
      * Set updateAt
      *
-     * @param \DateTime $updateAt
+     * @param \DateTime $updatedAt
      *
      * @return Image
      */
-    public function setUpdateAt($updateAt)
+    public function setUpdatedAt($updatedAt)
     {
-        $this->updateAt = $updateAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -174,9 +174,9 @@ class Image
      *
      * @return \DateTime
      */
-    public function getUpdateAt()
+    public function getUpdatedAt()
     {
-        return $this->updateAt;
+        return $this->updatedAt;
     }
 }
 

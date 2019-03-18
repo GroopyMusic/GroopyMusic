@@ -26,6 +26,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
+use XBundle\Entity\Project;
 
 class MailDispatcher
 {
@@ -444,6 +445,8 @@ class MailDispatcher
             $params, [], [], [], $to, [], self::REPLY_TO, self::REPLY_TO_NAME);
     }
 
+
+
     // ----------------------
     // ADMIN EMAILS
     // ----------------------
@@ -540,6 +543,7 @@ class MailDispatcher
         $subject_params = [];
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_PROPOSITION_SUBMIT, $subject, $params, $subject_params);
     }
+
 
 
     // ------------------------ YB
@@ -692,4 +696,60 @@ class MailDispatcher
 
         $this->sendEmail(MailTemplateProvider::YB_TRANSACTIONAL_MESSAGE_COPY, $subject, $params, $subject_params, $to);
     }
+    
+
+
+    // ------------------------ X
+
+    public function sendAdminNewProject(Project $project)
+    {
+        $params = ['project' => $project];
+        $subject = 'Nouveau projet créé sur Chapots';
+        $subject_params = [];
+
+        $this->sendAdminEmail(MailTemplateProvider::X_ADMIN_NEW_PROJECT, $subject, $params, $subject_params);
+    }
+
+    public function sendProjectValidated(Project $project)
+    {
+        $params = [
+            'project' => $project,
+        ];
+
+        $to = [];
+        foreach ($project->getHandlers() as $handler) {
+            /** @var User $handler */
+            $to[$handler->getEmail()] = $handler->getPreferredLocale();
+        }
+
+        $toName = [];
+
+        $subject = 'Votre project sur Chapots a été vérifié';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_PROJECT_VALIDATED, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    public function sendProjectRefused(Project $project, $reason)
+    {
+        $params = [
+            'project' => $project,
+            'reason' => $reason,
+        ];
+
+        $to = [];
+        foreach ($project->getHandlers() as $handler) {
+            /** @var User $handler */
+            $to[$handler->getEmail()] = $handler->getPreferredLocale();
+        }
+
+        $toName = [];
+
+        $subject = 'Votre project sur Chapots a été refusé';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_PROJECT_REFUSED, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+
 }

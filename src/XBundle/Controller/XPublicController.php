@@ -51,7 +51,7 @@ class XPublicController extends BaseController
     public function projectsAction(EntityManagerInterface $em)
     {
         // à changer pour afficher que les courants
-        $projects = $em->getRepository('XBundle:Project')->findAll();
+        $projects = $em->getRepository('XBundle:Project')->findValidatedProjects();
         $tags = $em->getRepository('XBundle:Tag')->findAll();
 
         return $this->render('@X/XPublic/catalog_projects.html.twig', array(
@@ -87,7 +87,7 @@ class XPublicController extends BaseController
             $em->persist($cart);
             $em->flush();
 
-            return $this->redirectToRoute('x_payment', ['code' => $cart->getBarcodeText()]);
+            return $this->redirectToRoute('x_payment_checkout', ['code' => $cart->getBarcodeText()]);
         }
 
         return $this->render('@X/XPublic/project.html.twig', array(
@@ -121,7 +121,7 @@ class XPublicController extends BaseController
         $em->flush();
 
         $response = new Response(json_encode(array(
-          'redirect' => $this->generateUrl('x_payment', array(
+          'redirect' => $this->generateUrl('x_payment_checkout', array(
                 'code' => $cart->getBarcodeText())),
                 'quantity' => $quantity,
                 'productId' => $productId

@@ -39,31 +39,19 @@ class ProjectType extends AbstractType
                     new Assert\NotBlank(),
                 ]
             ))
-            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
-                $project = $event->getData();
-                $event->getForm()->add('artist', EntityType::class, array(
-                    'class' => Artist::class,
-                    'choice_label' => 'artistname',
-                    'query_builder' => function (ArtistRepository $ar) use ($project) {
-                        return $ar->baseQueryBuilder()
-                            ->innerJoin('a.artists_user', 'au')
-                            ->where('au.user = :user')
-                            ->setParameter('user', $project->getUser())
-                            ->andWhere('a.deleted = 0');
-                    },
-                    'label' => 'Artiste associé',
-                    'placeholder' => '',
-                    'empty_data' => null,
-                    'constraints' => [
-                        new Assert\NotBlank(),
-                    ]
-                ));
-            })
             ->add('description', TextareaType::class, array(
                 'label' => 'Description',
                 'constraints' => [
                     new Assert\NotBlank(),
                 ]
+            ))
+            ->add('motivations', TextareaType::class, array(
+                'label' => 'Motivations',
+                'required' => false
+            ))
+            ->add('thresholdPurpose', TextareaType::class, array(
+                'label' => 'A quoi servira le financement du projet',
+                'required' => false
             ))
             ->add('dateEnd', DateTimeType::class, array(
                 'label' => 'Date de clôture du financement participatif',
@@ -101,9 +89,41 @@ class ProjectType extends AbstractType
 
         if ($options['creation']) {
             $builder
+                ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+                    $project = $event->getData();
+                    $event->getForm()->add('artist', EntityType::class, array(
+                        'class' => Artist::class,
+                        'choice_label' => 'artistname',
+                        'query_builder' => function (ArtistRepository $ar) use ($project) {
+                            return $ar->baseQueryBuilder()
+                                ->innerJoin('a.artists_user', 'au')
+                                ->where('au.user = :user')
+                                ->setParameter('user', $project->getCreator())
+                                ->andWhere('a.deleted = 0');
+                        },
+                        'label' => 'Artiste associé',
+                        'placeholder' => '',
+                        'empty_data' => null,
+                        'constraints' => [
+                            new Assert\NotBlank(),
+                        ]
+                    ));
+                })
                 ->add('noThreshold', CheckboxType::class, array(
                     'label' => 'Pas de seuil de validation',
                     'required' => false
+                ))
+            ;
+        } else {
+            $builder
+                ->add('artist', EntityType::class, array(
+                    'label' => 'Artiste associé',
+                    'class' => Artist::class,
+                    'choice_label' => 'artistname',
+                    'disabled' => $options['is_edit'],
+                    'constraints' => [
+                        new Assert\NotBlank(),
+                    ]
                 ))
             ;
         }

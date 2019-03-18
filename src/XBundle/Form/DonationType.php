@@ -21,7 +21,7 @@ class DonationType extends AbstractType
     {
         $builder
             ->add('donationAmount', NumberType::class, [
-                'attr' => ['placeholder' => 'Entrez le montant']
+                'attr' => ['placeholder' => 'Entrez le montant (en euros)']
             ])
             ->add('submit', SubmitType::class, array(
                 'label' => 'Valider'

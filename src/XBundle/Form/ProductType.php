@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use XBundle\Entity\Product;
 use XBundle\Form\ImageType;
 
 class ProductType extends AbstractType
@@ -33,11 +34,11 @@ class ProductType extends AbstractType
                 'required' => 'true'
             ))
             ->add('price', NumberType::class, array(
-                'label' => 'Prix',
+                'label' => 'Prix (en euros)',
                 'required' => 'true'
             ))
             ->add('supply', IntegerType::class, array(
-                'label' => 'Stock',
+                'label' => 'Quantité à mettre en vente',
                 'required' => 'true'
             ))
             ->add('photo', ImageType::class, array(
@@ -55,7 +56,7 @@ class ProductType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'XBundle\Entity\Product'
+            'data_class' => Product::class
         ));
     }
 

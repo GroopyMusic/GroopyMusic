@@ -76,3 +76,12 @@ h2 {
 .link-secondary {
   color: $link-secondary-color !important;
 }
+
+.x-link-artist {
+  color: black;
+
+  &:hover {
+    color: $primary;
+    text-decoration: none;
+  }
+}

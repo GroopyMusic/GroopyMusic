@@ -51,7 +51,7 @@
       }
   
       h5 {
-        @extend .text-uppercase;
+        font-weight: bold;
         color: rgba(45, 44, 44, 1);
       }
   
@@ -77,3 +77,14 @@
       }
     }
   }
+
+.project-artistname {
+    position: absolute;
+    bottom: 0;
+    background: white;
+    color: rgba(99, 99, 99, 1);
+    font-size: 13px;
+    font-weight: bold;
+    width: auto;
+    padding: 7px;
+}

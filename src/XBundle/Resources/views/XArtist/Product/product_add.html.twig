@@ -1,0 +1,47 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    <section class="container px-0 mt-4">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            <a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">{{ project.title }}</a>
+            <a class="breadcrumb-item" href="{{ path('x_artist_project_products', {'id': project.id}) }}">Article mis en vente</a>
+            <span class="breadcrumb-item active">Ajouter un article</span>
+        </nav>
+    </section>
+
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+
+    {{ form_start(form) }}
+
+    <section class="container my-4 py-2 my-md-4 project-section">
+        <h2>Informations générales</h2><hr>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                {{ form_row(form.name) }}
+            </div>
+            <div class="col-12">
+                {{ form_row(form.description) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(form.price) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(form.supply) }}
+            </div>
+        </div>
+    </section>
+
+    <section class="container my-4 py-2 my-md-4 project-section">
+        <h2>Images</h2><hr>
+        <div class"row">
+            <div class="col-12 col-md-6">
+                {{ form_row(form.photo) }}
+            </div>
+        </div>
+    </section>
+
+    {{ form_end(form) }}
+
+{% endblock %}

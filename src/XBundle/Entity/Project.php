@@ -26,6 +26,8 @@ class Project
         $this->dateCreation = new \DateTime();
         $this->dateEnd = new \DateTime();
         $this->collectedAmount = 0;
+        $this->validated= false;
+        $this->deleted = false;
         $this->successful = false;
         $this->failed = false;
         $this->refunded = false;
@@ -33,6 +35,8 @@ class Project
         $this->nbDonations = 0;
         $this->nbSales = 0;
         $this->code = uniqid('x');
+        $this->projectPhotos = new ArrayCollection();
+        $this->handlers = new ArrayCollection();
         $this->points = 0;
     }
 
@@ -98,6 +102,9 @@ class Project
         return $this->dateEnd < new \DateTime();
     }
 
+    // Form only
+    public $creator;
+
 
     /**
      * @var int
@@ -125,7 +132,12 @@ class Project
      * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    //private $user;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\User", inversedBy="projects")
+     */
+    private $handlers;
 
     /**
      * @var string
@@ -133,6 +145,20 @@ class Project
      * @ORM\Column(name="description", type="text")
      */
     private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="motivations", type="text", nullable=true)
+     */
+    private $motivations;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="threshold_purpose", type="text", nullable=true)
+     */
+    private $thresholdPurpose;
 
     /**
      * @var \DateTime
@@ -147,7 +173,6 @@ class Project
      * @ORM\Column(name="date_end", type="datetime")
      */
     private $dateEnd;
-
 
     /**
      * @ORM\ManyToOne(targetEntity="XBundle\Entity\Tag")
@@ -168,6 +193,20 @@ class Project
      * @ORM\Column(name="collected_amount", type="float")
      */
     private $collectedAmount;
+
+    /**
+     * @var bool
+     * 
+     * @ORM\Column(name="validated", type="boolean")
+     */
+    private $validated;
+
+    /**
+     * @var bool
+     * 
+     * @ORM\Column(name="deleted", type="boolean")
+     */
+    private $deleted;
 
     /**
      * @var bool
@@ -301,21 +340,56 @@ class Project
      *
      * @return Project
      */
-    public function setUser($user)
+    /*public function setUser($user)
     {
         $this->user = $user;
 
         return $this;
-    }
+    }*/
 
     /**
      * Get user
      *
      * @return User
      */
-    public function getUser()
+    /*public function getUser()
     {
         return $this->user;
+    }*/
+
+
+    /**
+     * Add handler
+     *
+     * @param $handler
+     *
+     * @return Project
+     */
+    public function addHandler($handler)
+    {
+        $this->handlers[] = $handler;
+
+        return $this;
+    }
+
+    /**
+     * Remove handler
+     *
+     * @param User $handler
+     */
+    public function removeHandler($handler)
+    {
+        $this->handlers->removeElement($handler);
+    }
+
+    /**
+     * Get handlers
+     *
+     * @return Collection
+     */
+    public function getHandlers()
+    {
+        return $this->handlers;
     }
 
     /**
@@ -341,6 +415,55 @@ class Project
     {
         return $this->description;
     }
+
+    /**
+     * Set motivations
+     *
+     * @param string $motivations
+     *
+     * @return Project
+     */
+    public function setMotivations($motivations)
+    {
+        $this->motivations = $motivations;
+
+        return $this;
+    }
+
+    /**
+     * Get motivations
+     *
+     * @return string
+     */
+    public function getMotivations()
+    {
+        return $this->motivations;
+    }
+
+    /**
+     * Set thresholdPurpose
+     *
+     * @param string $thresholdPurpose
+     *
+     * @return Project
+     */
+    public function setThresholdPurpose($thresholdPurpose)
+    {
+        $this->thresholdPurpose = $thresholdPurpose;
+
+        return $this;
+    }
+
+    /**
+     * Get thresholdPurpose
+     *
+     * @return string
+     */
+    public function getThresholdPurpose()
+    {
+        return $this->thresholdPurpose;
+    }
+
 
     /**
      * Set dateCreation
@@ -460,6 +583,54 @@ class Project
     public function getCollectedAmount()
     {
         return $this->collectedAmount;
+    }
+
+    /**
+     * Set validated
+     * 
+     * @param boolean $validated
+     * 
+     * @return Project
+     */
+    public function setValidated($validated)
+    {
+        $this->validated = $validated;
+        
+        return $this;
+    }
+
+    /**
+     * Get validated
+     * 
+     * @return bool
+     */
+    public function getValidated()
+    {
+        return $this->validated;
+    }
+
+    /**
+     * Set deleted
+     * 
+     * @param boolean $deleted
+     * 
+     * @return Project
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * Get deleted
+     * 
+     * @return boolean
+     */
+    public function getDeleted()
+    {
+        return $this->deleted;
     }
 
     /**
@@ -709,5 +880,32 @@ class Project
     public function getPoints(){
         return $this->points;
     }
+
+    
+    // Form only
+    /**
+     * Set creator
+     *
+     * @param User $creator
+     *
+     * @return Project
+     */
+    public function setCreator($creator)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
 }
 

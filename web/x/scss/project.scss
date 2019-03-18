@@ -25,3 +25,8 @@
   @extend .text-danger;
   @extend .pb-2;
 }
+
+div[disabled=disabled] {
+  pointer-events: none;
+  opacity: 0.4;
+}

@@ -39,12 +39,10 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/new", name="x_artist_project_new")
      */
-    public function newProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request/*, MailDispatcher $mailDispatcher*/)
+    public function newProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, MailDispatcher $mailDispatcher)
     {
         $project = new Project();
-        $project->setUser($user);
-
-        // Ajouter les autres users s'ils sont plusieurs à être associés à l'artiste
+        $project->setCreator($user);
 
         $form = $this->createForm(ProjectType::class, $project, ['creation' => true]);
         $form->handleRequest($request);
@@ -52,19 +50,27 @@ class XArtistController extends BaseController
         if($form->isSubmitted() && $form->isValid()) {
             $artist = $form->get('artist')->getData();
             $project->setArtist($artist);
+
+            // add artist owners to project
+            $artistOwners = $em->getRepository('AppBundle:Artist_User')->getArtistOwners($artist->getId());
+            foreach($artistOwners as $ao) {
+                $project->addHandler($ao->getUser());
+            }
+
             $em->persist($project);
             $em->flush();
 
-            $this->addFlash('x_notice', 'Le projet a bien été créée.');
+            $notif = 'Le projet "' . $project->getTitle() . '" a bien été créée. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible sur Chapots';
+            $this->addFlash('x_notice', $notif);
 
             //$request->getSession()->getFlashBag()->add('x_notice', 'Le projet a été créé');
 
             // Envoie email pour création de projet
-            /*try { 
-            	$mailDispatcher->sendXReminderProjectCreated($project); 
+            try { 
+            	$mailDispatcher->sendAdminNewProject($project); 
             }
             catch(\Exception $e) {
-            }*/
+            }
 
             return $this->redirectToRoute('x_artist_dashboard');
         }
@@ -149,9 +155,9 @@ class XArtistController extends BaseController
 
 
     /**
-     * @Route("/project/{id}/product/new", name="x_artist_product_new")
+     * @Route("/project/{id}/product/add", name="x_artist_product_add")
      */
-    public function newProductAction(EntityManagerInterface $em, Request $request, $id)
+    public function addProductAction(EntityManagerInterface $em, Request $request, $id)
     {
         $product = new Product();
 
@@ -167,7 +173,7 @@ class XArtistController extends BaseController
             return $this->redirectToRoute('x_artist_project_products', ['id' => $id]);
         }
 
-        return $this->render('@X/XArtist/Product/product_new.html.twig', array(
+        return $this->render('@X/XArtist/Product/product_add.html.twig', array(
             'form' => $form->createView(),
             'project' => $project,
         ));

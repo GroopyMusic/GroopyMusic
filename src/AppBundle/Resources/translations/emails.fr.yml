@@ -175,6 +175,11 @@ admin :
       -- Adresse email : %mailContact%
 
       Raison de l'événement : %reasonEvent%
+  x :
+    new_project : |
+      Un nouveau projet a été créé par un artiste d'Un-Mute. Son titre: %project%
+
+      Pour voir ses infos et le valider, rendez-vous sur l'espace d'admin !
 
 
 artist:
@@ -325,3 +330,16 @@ yb:
     ------------------------------
        %content%
     ------------------------------
+
+
+x:
+  project:
+    validated: |
+      Le projet que vous avez créé sur Chapots (titre : %project%) a bien été validé par un administrateur d'Un-Mute.
+
+      Il est à présent visible publiquement sur la plateforme.
+    refused: |
+      Le projet que vous avez créé sur Chapots (titre : %project%) été refusé par un administrateur d'Un-Mute.
+
+      Raison(s) du refus :
+        %reason%
