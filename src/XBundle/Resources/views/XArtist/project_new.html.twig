@@ -19,7 +19,7 @@
     {{ form_start(form) }}
 
     <!-- General Informations Section -->
-    <section class="container my-4 py-2 my-md-4 project-section">
+    <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Informations générales</h2><hr>
         <div class="row">
             <div class="col-12 col-md-6">            
@@ -38,7 +38,7 @@
     </section>
 
     <!-- Description Section -->
-    <section class="container my-4 py-2 my-md-4 project-section">
+    <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Description</h2><hr>
         <div class="row">
             <div class="col-12">
@@ -61,7 +61,7 @@
     </section>
 
     <!-- Threshold Section -->
-    <section class="container my-4 py-2 my-md-4 project-section">
+    <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Financement participatif</h2><hr>
         <div class="text-muted font-italic pb-2">
             Il est possible de fixer un seuil de validation à un projet. Ce seuil correspond au montant que vous désirez atteindre pour confirmer le lancement du projet. Il suffit de décocher la mention "Pas de seuil de validation" et d'indiquer le montant visé.
@@ -89,13 +89,13 @@
     </section>
 
     <!-- Pictures Section -->
-    <section class="container my-4 py-2 my-md-4 project-section">
+    <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Images</h2><hr>
         <div class="row">
             <div class="col-12 col-md-6">
                 {{ form_label(form.coverpic) }}
                 <div class="text-muted font-italic pb-2">
-                    Cette photo sera utilisée comme bannière pour votre projet. {% if project.id is null %}(Elle n'est pas obligatoire lors de la création du projet, vous pouvez la rajouter plus tard){% endif %}
+                    Cette photo sera utilisée comme bannière pour votre projet. {% if project.id is null %}(Elle n'est pas obligatoire lors de la création du projet, vous pourrez la rajouter plus tard){% endif %}
                 </div>
                 {{ form_errors(form.coverpic) }}
                 {{ form_widget(form.coverpic) }}
@@ -122,6 +122,14 @@
             </div>
         </div>
     </section>
+
+    <!-- Accept Conditions Section -->
+    {% if form.acceptConditions is defined %}
+        <section class="container my-4 py-2 my-md-5 project-section">
+            <p><a href="{{ path('x_terms') }}">Lire nos conditions d'utilisation</a></p>
+            {{ form_widget(form.acceptConditions) }}
+        </section>
+    {% endif %}
 
     {{ form_end(form) }}
 

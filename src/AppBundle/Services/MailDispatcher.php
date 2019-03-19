@@ -27,6 +27,7 @@ use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
 use XBundle\Entity\Project;
+use XBundle\Entity\XContact;
 
 class MailDispatcher
 {
@@ -700,6 +701,16 @@ class MailDispatcher
 
 
     // ------------------------ X
+
+    public function sendAdminXContact(XContact $contact) {
+        $subject = 'Nouveau message sur Chapots!';
+        $params = ['contact' => $contact];
+        $subject_params = [];
+        $reply_to = $contact->getEmail();
+        $reply_to_name = $contact->getName();
+
+        $this->sendAdminEmail(MailTemplateProvider::X_ADMIN_CONTACT, $subject, $params, $subject_params, [], $reply_to, $reply_to_name);
+    }
 
     public function sendAdminNewProject(Project $project)
     {

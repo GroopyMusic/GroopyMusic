@@ -51,7 +51,7 @@ class XArtistController extends BaseController
             $artist = $form->get('artist')->getData();
             $project->setArtist($artist);
 
-            // add artist owners to project
+            // add all artist owners to project
             $artistOwners = $em->getRepository('AppBundle:Artist_User')->getArtistOwners($artist->getId());
             foreach($artistOwners as $ao) {
                 $project->addHandler($ao->getUser());
@@ -60,10 +60,8 @@ class XArtistController extends BaseController
             $em->persist($project);
             $em->flush();
 
-            $notif = 'Le projet "' . $project->getTitle() . '" a bien été créée. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible sur Chapots';
-            $this->addFlash('x_notice', $notif);
-
-            //$request->getSession()->getFlashBag()->add('x_notice', 'Le projet a été créé');
+            $message = 'Le projet "' . $project->getTitle() . '" a bien été créée. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible sur Chapots';
+            $this->addFlash('x_notice', $message);
 
             // Envoie email pour création de projet
             try { 
@@ -126,9 +124,8 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/donations-sales-details", name="x_artist_donations_sales_details")
      */
-    public function donationsSalesDetailsAction(EntityManagerInterface $em, $id)
+    public function donationsSalesDetailsAction(EntityManagerInterface $em, Project $project)
     {
-        $project = $em->getRepository('XBundle:Project')->find($id);
         //$carts = $em->getRepository('XBundle:XCart')->getProjectCarts($project);
 
         //file_put_contents('test.txt', $carts[0]);
@@ -142,9 +139,8 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/products", name="x_artist_project_products")
      */
-    public function viewProductsAction(EntityManagerInterface $em, $id)
+    public function viewProductsAction(EntityManagerInterface $em, Project $project)
     {
-        $project = $em->getRepository('XBundle:Project')->find($id);
         $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
         
         return $this->render('@X/XArtist/Product/products.html.twig', array(
@@ -157,11 +153,11 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/product/add", name="x_artist_product_add")
      */
-    public function addProductAction(EntityManagerInterface $em, Request $request, $id)
+    public function addProductAction(EntityManagerInterface $em, Request $request, Project $project)
     {
         $product = new Product();
 
-        $project = $em->getRepository('XBundle:Project')->find($id);
+        //$project = $em->getRepository('XBundle:Project')->find($id);
         
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
@@ -170,7 +166,7 @@ class XArtistController extends BaseController
             $product->setProject($project);
             $em->persist($product);
             $em->flush();
-            return $this->redirectToRoute('x_artist_project_products', ['id' => $id]);
+            return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
         }
 
         return $this->render('@X/XArtist/Product/product_add.html.twig', array(

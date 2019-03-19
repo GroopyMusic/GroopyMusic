@@ -67,6 +67,29 @@
     {% endblock %}
 
     <main id="main" {% block main_attributes %}{% endblock %}>
+        <!-- Errors -->
+        {% block error_modals %}
+            {% set error_bag = app.request.session.flashbag.get('error') %}
+            {% if error_bag is not empty %}
+                {% for message in error_bag %}
+                    {{ yb_error(message)|raw }}
+                {% endfor %}
+            {% endif %}
+            {% if (form is defined and form is not null and not form.vars.valid) %}
+                {{ yb_error('<p>'~ 'error.form_error'|trans ~ '</p>' ~ form_errors(form))|raw }}
+            {% endif %}
+            {% if (errors is defined and errors|length > 0) %}
+                {% for error in errors %}
+                    {{ yb_error(error)|raw }}
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+
+        <!-- Infos -->
+        {% block infos %}
+            {% include ":patterns:infos.html.twig" %}
+        {% endblock %}
+
         <!-- Notices -->
         {% block notices %}
             {% set notice_bag = app.request.session.flashbag.get('x_notice') %}
@@ -83,7 +106,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             </div>
                             <div class="modal-body text-center">
-                                <h4>Merci ! </h4>
+                                <h4>Merci !</h4>
                                 <p>{{ message }}</p>
                                 <button class="btn btn-success" data-dismiss="modal">
                                     <span>Retour</span><i class="far fa-arrow-alt-circle-right"></i>
@@ -99,6 +122,31 @@
         {% block body %}{% endblock %}
 
     </main>
+
+    <footer class="footer bg-light">
+        {% block footer %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+                        <ul class="list-inline mb-2">
+                            <li class="list-inline-item">
+                                <a class="js-scroll-trigger" href="{{ path('x_homepage') ~ "#about"}}">À propos</a>
+                            </li>
+                            <li class="list-inline-item">&sdot;</li>
+                            <li class="list-inline-item">
+                                <a class="js-scroll-trigger" href="{{ path('x_homepage') ~ "#contact"}}">Contact</a>
+                            </li>
+                            <li class="list-inline-item">&sdot;</li>
+                            <li class="list-inline-item">
+                                <a href="{{ path('x_terms') }}">Conditions d'utilisation</a>
+                            </li>
+                        </ul>
+                        <p class="text-muted small mb-4 mb-lg-0">Chapots 2019. Tous droits réservés</p>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </footer>
 
     <!-- Javascript -->
     {% block javascripts %}

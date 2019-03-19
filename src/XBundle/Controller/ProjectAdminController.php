@@ -61,7 +61,7 @@ class ProjectAdminController extends BaseAdminController
                     $message = "Le projet a bien été validé mais le mail qui devait avertir les gestionnaires du projet n'est pas parti";
                 }
                 finally {
-                    $this->addFlash('sonata_flash_succes', $message);
+                    $this->addFlash('sonata_flash_success', $message);
                     return new RedirectResponse($this->admin->generateUrl('list'));
                 }
             }            
@@ -129,7 +129,7 @@ class ProjectAdminController extends BaseAdminController
                     $message = "Le projet a bien été refusé mais le mail qui devait avertir les gestionnaires du projet n'est pas parti";
                 }
                 finally {
-                    $this->addFlash('sonata_flash_succes', $message);
+                    $this->addFlash('sonata_flash_success', $message);
                     return new RedirectResponse($this->admin->generateUrl('list'));
                 }
             }            

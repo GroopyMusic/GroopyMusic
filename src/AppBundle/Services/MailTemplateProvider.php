@@ -72,6 +72,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const YB_TRANSACTIONAL_MESSAGE_COPY = 'AppBundle:Mail/YB/Communication:transactional_message_copy.txt.twig';
 
     // X
+    const X_ADMIN_CONTACT = 'XBundle:Mail/Admin:contact.txt.twig';
     const X_ADMIN_NEW_PROJECT = 'XBundle:Mail/Admin:new_project.txt.twig';
     const X_PROJECT_VALIDATED = 'XBundle:Mail/Artist:project_validated.txt.twig';
     const X_PROJECT_REFUSED = 'XBundle:Mail/Artist:project_refused.txt.twig';

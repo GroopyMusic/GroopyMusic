@@ -62,6 +62,7 @@
         "sonata-project/formatter-bundle": "^3.4",
         "azine/email-bundle": "dev-master",
         "liuggio/ExcelBundle": "^2.1",
+        "egeloen/ckeditor-bundle": "4.*",
         "ob/highcharts-bundle": "^1.6"
     },
     "scripts": {

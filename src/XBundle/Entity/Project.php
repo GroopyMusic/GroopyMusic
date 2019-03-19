@@ -38,6 +38,7 @@ class Project
         $this->projectPhotos = new ArrayCollection();
         $this->handlers = new ArrayCollection();
         $this->points = 0;
+        $this->acceptConditions = false;
     }
 
     public function getSluggableFields() {
@@ -102,8 +103,11 @@ class Project
         return $this->dateEnd < new \DateTime();
     }
 
-    // Form only
-    public $creator;
+    // To get only artists that creator owns (form only)
+    private $creator;
+
+    // Conditions approval (form only)
+    private $acceptConditions;
 
 
     /**
@@ -906,6 +910,24 @@ class Project
     {
         return $this->creator;
     }
+
+    /**
+     * @param boolean $acceptConditions
+     */
+    public function setAcceptConditions($acceptConditions)
+    {
+        $this->acceptConditions = $acceptConditions;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAcceptConditions()
+    {
+        return $this->acceptConditions;
+    }
+
+    
 
 }
 

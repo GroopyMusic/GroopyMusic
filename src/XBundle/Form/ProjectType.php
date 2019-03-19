@@ -99,7 +99,8 @@ class ProjectType extends AbstractType
                                 ->innerJoin('a.artists_user', 'au')
                                 ->where('au.user = :user')
                                 ->setParameter('user', $project->getCreator())
-                                ->andWhere('a.deleted = 0');
+                                ->andWhere('a.deleted = 0')
+                                ->andWhere('a.validated = 1');
                         },
                         'label' => 'Artiste associé',
                         'placeholder' => '',
@@ -112,6 +113,13 @@ class ProjectType extends AbstractType
                 ->add('noThreshold', CheckboxType::class, array(
                     'label' => 'Pas de seuil de validation',
                     'required' => false
+                ))
+                ->add('acceptConditions', CheckboxType::class, array(
+                    'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Chapots!",
+                    'required' => true,
+                    'constraints' => array(
+                        new Assert\NotBlank(),
+                    )
                 ))
             ;
         } else {
@@ -133,17 +141,18 @@ class ProjectType extends AbstractType
     public function validate(Project $project, ExecutionContextInterface $context)
     {
 
-        if(!$project->getNoThreshold()) {
-            if($project->getThreshold() <= 0) {
-                $context->addViolation('Puisque le projet à un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0');
+        if($project->getDateEnd() != null) {
+            if ($project->getDateEnd() < $project->getDateCreation()) {
+                $context->addViolation('La date de clôture du financement du projet doit être dans le futur.');
             }
         }
 
-        if($project->getDateEnd() != null) {
-            if ($project->getDateEnd() < $project->getDateCreation()) {
-                $context->addViolation('La date de clôture du financement du projet doit être dans le futur');
+        if(!$project->getNoThreshold()) {
+            if($project->getThreshold() <= 0) {
+                $context->addViolation('Puisque le projet à un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0.');
             }
         }
+        
     }
 
     

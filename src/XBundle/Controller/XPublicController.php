@@ -3,6 +3,8 @@
 namespace XBundle\Controller;
 
 use AppBundle\Controller\BaseController;
+use AppBundle\Services\CaptchaManager;
+use AppBundle\Services\MailDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,9 +17,11 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
+use XBundle\Entity\XContact;
 use XBundle\Entity\XOrder;
 use XBundle\Entity\XPayment;
 use XBundle\Entity\Tag;
+use XBundle\Form\XContactType;
 use XBundle\Form\DonationType;
 use XBundle\Form\PurchaseType;
 
@@ -30,17 +34,37 @@ class XPublicController extends BaseController
     /**
      * @Route("/", name="x_homepage")
      */
-    public function indexAction(EntityManagerInterface $em)
+    public function indexAction(EntityManagerInterface $em, Request $request, MailDispatcher $mailDispatcher, CaptchaManager $captchaManager)
     {
         // à changer pour afficher que les populaires et courant
-        $projects = $em->getRepository('XBundle:Project')->findAll();
+        $projects = $em->getRepository('XBundle:Project')->findValidatedProjects();
         
-        //$contact = new YBContact();
-        //$form = $this->createForm(YBContactType::class, $contact);
+        $contact = new XContact();
+        $form = $this->createForm(XContactType::class, $contact, ['action' => $this->generateUrl('x_homepage') . '#contact']);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            if(!$captchaManager->verify()) {
+                $this->addFlash('error', 'Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !');
+                 return $this->render('@X/XPublic/home.html.twig', [
+                     'form' => $form->createView(),
+                 ]);
+            }
+ 
+             // DB save
+             $em->persist($contact);
+             $em->flush();
+ 
+             // Mail
+             //$mailDispatcher->sendXContactCopy($contact);
+             $mailDispatcher->sendAdminXContact($contact);
+ 
+             $this->addFlash('x_notice', 'Merci pour votre message. Nous vous recontacterons aussi vite que possible.');
+             return $this->redirectToRoute('x_homepage');
+         }
         
         return $this->render('@X/XPublic/home.html.twig', array(
+            'form' => $form->createView(),
             'projects' => $projects,
-            /*'form' => $form->createView()*/
         ));
     }
 
@@ -149,6 +173,16 @@ class XPublicController extends BaseController
     {
 
     }
+
+
+    /**
+     * @Route("/conditions", name="x_terms")
+     */
+    public function termsAction() {
+
+        return $this->render('@X/XPublic/terms.html.twig', []);
+    }
+
 
 
     ///////////////////////// PAYMENT /////////////////////////
