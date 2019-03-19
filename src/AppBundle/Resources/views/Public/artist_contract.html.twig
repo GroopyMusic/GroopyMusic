@@ -50,7 +50,7 @@
                     <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
                      style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                 </div>
-                <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
+                <div class="text-right mt-1 small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
                     {{ progress_100 }}% récoltés<br/>{{ ('event.'~state)|trans|raw }}
                 </div>
             </div>

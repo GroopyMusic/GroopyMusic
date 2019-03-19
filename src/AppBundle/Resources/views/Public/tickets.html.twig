@@ -27,7 +27,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-8 crowdfunding-box bg-body mb-3">
+                    <div class="col-12 col-md-8 crowdfunding-box crowdfunding-box-border bg-body mb-3">
                         {% set progress_100 = contractArtist.percentObjective %}
                         <h5 class="font-weight-bold">Financement participatif</h5>
                         {% if contractArtist.state not in contractArtist.successfulStates and contractArtist.state not in contractArtist.pendingStates %}
@@ -38,7 +38,7 @@
                             <div class="progress-bar{% if contractArtist.state in contractArtist.successfulStates %} successful-progress-bg{% endif %}"
                                  style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                         </div>
-                        <div class="text-right small font-weight-bold text-uppercase{% if contractArtist.state in contractArtist.successfulStates %} text-black{% else %} text-primary{% endif %}">
+                        <div class="text-right mt-1 small font-weight-bold text-uppercase{% if contractArtist.state in contractArtist.successfulStates %} text-black{% else %} text-primary{% endif %}">
                             {{ progress_100 }}% récoltés<br/>{{ ('event.'~contractArtist.state)|trans|raw }}
                         </div>
                     </div>
