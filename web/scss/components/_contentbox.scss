@@ -141,3 +141,12 @@
     }
   }
 }
+
+.crowdfunding-box {
+  border: 2px solid white;
+  background: rgba(195, 163, 232, 0.3);
+  @extend .rounded, .mx-auto, .p-3;
+  @include media-breakpoint-up(md) {
+    @extend .w-50;
+  }
+}

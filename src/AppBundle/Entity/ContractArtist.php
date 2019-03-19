@@ -190,6 +190,13 @@ class ContractArtist extends BaseContractArtist
         return $di->days == 0 && $di->h <= 24 && $today < $this->dateEnd;
     }
 
+
+    public function getCampaignDaysLeft() {
+        $today = new \DateTime();
+        $di = $today->diff($this->dateEnd);
+        return $di->days;
+    }
+
     /** @deprecated  */
     public function getTicketsSold() {
         return $this->getCounterpartsSold();

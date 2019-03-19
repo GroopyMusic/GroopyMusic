@@ -116,7 +116,7 @@ home:
     video:
       title: Notre dernière vidéo
   news:
-    title: Ils sont à l'affiche
+    title: À l'affiche
   join_us:
     title: Rejoignez-nous
     content_1: <strong>Vous désirez devenir <a href="%about_url%">producteur</a> et soutenir un artiste ?</strong> Découvrez <a href="%catalog_url%">le catalogue des artistes</a>.
@@ -335,9 +335,9 @@ event:
         pending: Objectif atteint (SOLD OUT)
     refunded: Annulé
     failed: Objectif non atteint
-    ongoing: En cours
+    ongoing: Campagne en cours
     pending: En cours d'examination par l'équipe Un-Mute
-    test_period: Pré-ventes en cours (avec promotions)
+    test_period: Pré-campagne en cours (avec promotions)
   stillselling: Places en vente
   lineup:
     title: Line-up
