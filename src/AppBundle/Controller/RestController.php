@@ -285,7 +285,7 @@ class RestController extends BaseController {
 
     private function setRestTicket($ticket, $error){
         if ($error !== ''){
-            return new RestTicket('','','','',$error);
+            return new RestTicket('','','','',$error, '');
         } else {
             $validation = $ticket->isValidated() ? 'vrai' : 'faux';
             return new RestTicket(
@@ -390,9 +390,9 @@ class RestController extends BaseController {
                     $this->validateTicket($ticket, $em);
                 }
             }
-            $rest_ticket = $this->setRestTicket($ticket, $error);
-            return new JsonResponse($this->getArrayFromTicket($rest_ticket));
         }
+        $rest_ticket = $this->setRestTicket($ticket, $error);
+        return new JsonResponse($this->getArrayFromTicket($rest_ticket));
     }
 
 }
