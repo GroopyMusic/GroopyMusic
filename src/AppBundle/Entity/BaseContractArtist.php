@@ -1109,6 +1109,9 @@ class BaseContractArtist implements TranslatableInterface
      */
     public function getGlobalSoldout()
     {
+        if ($this->global_soldout === null) {
+            return 0;
+        }
         return $this->global_soldout;
     }
 

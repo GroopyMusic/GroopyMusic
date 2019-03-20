@@ -12,6 +12,34 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository {
             ->getResult();
     }
 
+    public function getNbPresaleScannedFromEvent($event_id){
+        return $this->createQueryBuilder('t')
+            ->where('t.contractArtist = ?1')
+            ->andWhere('t.validated = 1')
+            ->andWhere('t.isBoughtOnSite = 0')
+            ->setParameter('1', $event_id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getNbPaidInCashFromEvent($event_id){
+        return $this->createQueryBuilder('t')
+            ->where('t.contractArtist = ?1')
+            ->andWhere('t.paidInCash = 1')
+            ->setParameter('1', $event_id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getNbBoughtOnSiteFromEvent($event_id){
+        return $this->createQueryBuilder('t')
+            ->where('t.contractArtist = ?1')
+            ->andWhere('t.isBoughtOnSite = 1')
+            ->setParameter('1', $event_id)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getScannedTicketsFromEvent($event_id){
         return $this->createQueryBuilder('t')
             ->where('t.contractArtist = ?1')
