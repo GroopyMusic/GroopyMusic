@@ -182,46 +182,6 @@ class RestController extends BaseController {
         return $this->getJSONResponseAudience($error, $tickets);
     }
 
-    /**
-     * @Rest\View()
-     * @Rest\Get("/getaudience-in")
-     */
-    public function getAudienceInAction(Request $request){
-        $tickets = [];
-        if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
-            $error = 'Vous n\'organisez pas cet événement.';
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $tickets = $em->getRepository('AppBundle:Ticket')->getScannedTicketsFromEvent($request->get('event_id'));
-            if (count($tickets) === 0){
-                $error = 'Aucun ticket n\'a été vendus...';
-            } else {
-                $error = '';
-            }
-        }
-        return $this->getJSONResponseAudience($error, $tickets);
-    }
-
-    /**
-     * @Rest\View()
-     * @Rest\Get("/getaudience-out")
-     */
-    public function getAudienceOutAction(Request $request){
-        $tickets = [];
-        if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
-            $error = 'Vous n\'organisez pas cet événement.';
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $tickets = $em->getRepository('AppBundle:Ticket')->getYetToBeScannedTicketsFromEvent($request->get('event_id'));
-            if (count($tickets) === 0){
-                $error = 'Aucun ticket n\'a été vendus...';
-            } else {
-                $error = '';
-            }
-        }
-        return $this->getJSONResponseAudience($error, $tickets);
-    }
-
     // private functions
 
     public function getEventsUnMute(EntityManagerInterface $em){
