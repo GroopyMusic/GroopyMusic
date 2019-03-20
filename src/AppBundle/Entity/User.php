@@ -1222,7 +1222,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     public function setRightForOrganization(\AppBundle\Entity\YB\Membership $participation, $isAdmin){
-        if ($this->participation->contains($participation)){
+        if ($this->participations->contains($participation)){
             $participation->setAdmin($isAdmin);
         }
     }

@@ -2,7 +2,7 @@
 
 <header id="home" class="masthead position-relative" style="background-image:url('{{ absolute_url(asset('images/live/live-1.jpg')) }}')">
     {% include ':patterns:header_nav.html.twig' with {'home_header': false} %}
-    <div class="container justify-content-center align-items-center text-center position-relative">
+    <div class="container justify-content-center align-items-center text-center position-relative mt-4">
         <a id="logo-header-container" href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>
 
         <div id="logo-video-container">
@@ -15,15 +15,14 @@
         </div>
 
         <h1 class="text-white text-bold">Un-Mute</h1>
-
         <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
     </div>
-    <div id="cta-festivals">
+    <div id="cta-festivals" class="mt-3">
         <a class="btn btn-outline-primary btn-primary scroll text-center" href="#festivals">
             Voir nos festivals<br />
             <i class="fas fa-arrow-down"></i> <i class="fas fa-arrow-down"></i> <i class="fas fa-arrow-down"></i>
         </a>
     </div>
-    <div class="separating-waves prior"></div>
+    <div class="separating-waves prior high big"></div>
 </header>
 

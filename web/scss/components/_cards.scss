@@ -134,7 +134,7 @@
     width: 100%;
     /* cursor: pointer; */
     height: 100%;
-    z-index: 1000;
+    z-index: 1001;
   }
 
   .tag {
@@ -180,9 +180,6 @@
         color: white;
       }
     }
-    .content {
-      display: none;
-    }
   }
   &:hover {
     .caption {
@@ -190,9 +187,6 @@
         a {
           color: #f0da22;
         }
-      }
-      .content {
-        display: block;
       }
     }
   }

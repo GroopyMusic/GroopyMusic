@@ -31,6 +31,7 @@
 {% set state = contract.state %}
 
 {% set first_counterpart = contract.firstCounterPart %}
+{% set progress_100 = contract.percentObjective %}
 
 {% block header_attributes %}id="home" class="masthead masthead-small position-relative" style="background-image:url('{{ absolute_url(asset(image_url)) }}')"{% endblock %}
 
@@ -38,6 +39,22 @@
     <div class="container justify-content-center text-white align-items-center text-center position-relative">
         <h2 class="festival-title text-uppercase font-weight-bold py-2">{{ contract.getTitle }}</h2>
         <p class="big p-3 p-md-5">{{ contract.getDescription }}</p>
+        {% if state not in contract.uncrowdableStates %}
+            <div class="crowdfunding-box mb-3">
+                {% if state not in contract.successfulStates and state not in contract.pendingStates %}
+                    <p><i class="fas fa-hourglass-half"></i> Il vous reste {{ contract.campaignDaysLeft }} jours pour soutenir cette campagne.
+                    Achetez votre ticket pour participer directement à la production de ce festival !</p>
+                {% endif %}
+                <div class="progress">
+                    <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
+                     style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
+                </div>
+                <div class="text-right mt-1 small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
+                    {{ progress_100 }}% récoltés<br/>{{ ('event.'~state)|trans|raw }}
+                </div>
+            </div>
+        {% endif %}
+
     </div>
     <div class="text-center">
         <a class="scroll btn btn-secondary" href="#tickets">Tickets</a>
@@ -199,16 +216,20 @@
                         <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
                             Avancement
                         </div>
-                        {% set progress_100 = state in contract.successfulStates ? 100 : contract.percentObjective %}
                         <div class="progress">
                             <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
                                  style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                         </div>
                         <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                            {% if state in contract.successfulStates %}{{ 'confirmed'|trans|raw }}{% else %}{{ progress_100 }}%{% endif %}
+                            {{ progress_100 }}% récoltés{% if state in contract.successfulStates %} - {{ 'confirmed'|trans|raw }}{% endif %}
                         </div>
                     </div>
                 </div>
+                {% if contract.nbOrdersPaid > 0 %}
+                    <div class="col-12 content-box-col">
+                        <span class="text-center um-label"><i class="fas fa-people-carry"></i> <span class="um-semi-bold">{{ contract.nbOrdersPaid }}</span> contributeur{% if contract.nbOrdersPaid > 1 %}s{% endif %}</span>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
