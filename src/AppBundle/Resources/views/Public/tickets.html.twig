@@ -29,7 +29,6 @@
 
                     <div class="col-12 col-md-8 crowdfunding-box crowdfunding-box-border bg-body mb-3">
                         {% set progress_100 = contractArtist.percentObjective %}
-                        <h5 class="font-weight-bold">Financement participatif</h5>
                         {% if contractArtist.state not in contractArtist.successfulStates and contractArtist.state not in contractArtist.pendingStates %}
                             <p><i class="fas fa-hourglass-half"></i> Il vous reste {{ contractArtist.campaignDaysLeft }} jours pour soutenir cette campagne.
                                 Achetez votre ticket pour participer directement à la production de ce festival !</p>

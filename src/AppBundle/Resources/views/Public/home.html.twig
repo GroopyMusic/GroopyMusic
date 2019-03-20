@@ -22,22 +22,29 @@
     <section id="festivals" class="container-fluid position-relative bg-body-strong">
         <h3 class="festival-section-title text-center">{{ 'home.concerts.title'|trans|raw }}</h3>
 
-        <p class="text-center w-75 mx-auto">
-            Nos festivals sont produits <b>par financement participatif</b>. Chaque ticket acheté participe à la jauge de validation du festival. Plus que de simples spectateurs, vous devenez les <b>producteurs</b> de la scène locale.
-        </p>
-
         <div class="row">
+            {% set md = crowdfundings is not empty ? 4 : 12 %}
+            <div class="col-12 col-md-{{ md }} my-auto">
+                <p class="text-center mx-auto">
+                    Nos festivals sont produits <b>par financement participatif</b>. Chaque ticket acheté participe à la jauge de validation du festival. Plus que de simples spectateurs, vous devenez les <b>producteurs</b> de la scène locale.
+                </p>
+            </div>
+
             {% for crowdfunding in crowdfundings %}
-                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':12, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': true, 'card_classes': ['pb-3']} %}
+                {% set md = loop.first or loop.last ? 8 : 12 %}
+                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':md, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': true, 'card_classes': ['pb-3']} %}
             {% endfor %}
+            {% if crowdfundings is not empty %}
+                {% set md = crowdfundings|length > 1 ? 4 : 12 %}
+                <div class="col-12 mx-auto my-auto col-md-{{ md }}">
+                    <p class="text-center mt-4">
+                        <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary">
+                            Voir les tickets en vente <b class="far fa-arrow-alt-circle-right"></b>
+                        </a>
+                    </p>
+                </div>
+            {% endif %}
         </div>
-        {% if crowdfundings is not empty %}
-            <p class="text-center mt-4">
-                <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary">
-                    Voir les tickets en vente <b class="far fa-arrow-alt-circle-right"></b>
-                </a>
-            </p>
-        {% endif %}
     </section>
 
     <section id="about" class="container-fluid position-relative">
