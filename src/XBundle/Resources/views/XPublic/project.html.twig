@@ -25,16 +25,16 @@
                 <hr>
                 <div>
                     <h3>A propos du projet</h3><br>
-                    {{ project.description }}
+                    {{ project.description | bbcode_filter('my_default_filter') | raw }}
                     {% if project.motivations is not null %}
                         <hr>
                         <h3>Les motivations du projet</h3><br>
-                        {{ project.motivations }}
+                        {{ project.motivations | bbcode_filter('my_default_filter') | raw }}
                     {% endif %}
                     {% if project.thresholdPurpose is not null %}
                         <hr>
                         <h3>A quoi servira le financement ?</h3><br>
-                        {{ project.thresholdPurpose }}
+                        {{ project.thresholdPurpose | bbcode_filter('my_default_filter') | raw }}
                     {% endif %}
                 </div>
 

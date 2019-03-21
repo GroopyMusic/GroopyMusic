@@ -5,6 +5,7 @@ namespace XBundle\Form;
 use AppBundle\Entity\Artist;
 use AppBundle\Repository\ArtistRepository;
 use Doctrine\ORM\EntityRepository;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -39,18 +40,21 @@ class ProjectType extends AbstractType
                     new Assert\NotBlank(),
                 ]
             ))
-            ->add('description', TextareaType::class, array(
+            ->add('description', 'ckeditor', array(
                 'label' => 'Description',
+                'config_name' => 'bbcode',
                 'constraints' => [
                     new Assert\NotBlank(),
                 ]
             ))
-            ->add('motivations', TextareaType::class, array(
+            ->add('motivations', 'ckeditor', array(
                 'label' => 'Motivations',
+                'config_name' => 'bbcode',
                 'required' => false
             ))
-            ->add('thresholdPurpose', TextareaType::class, array(
+            ->add('thresholdPurpose', 'ckeditor', array(
                 'label' => 'A quoi servira le financement du projet',
+                'config_name' => 'bbcode',
                 'required' => false
             ))
             ->add('dateEnd', DateTimeType::class, array(

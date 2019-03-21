@@ -7,14 +7,17 @@ use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\MailDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
 use XBundle\Entity\XContact;
@@ -74,7 +77,6 @@ class XPublicController extends BaseController
      */
     public function projectsAction(EntityManagerInterface $em)
     {
-        // à changer pour afficher que les courants
         $projects = $em->getRepository('XBundle:Project')->findValidatedProjects();
         $tags = $em->getRepository('XBundle:Tag')->findAll();
 
@@ -88,14 +90,13 @@ class XPublicController extends BaseController
     /**
      * @Route("/project/{id}-{slug}", name="x_project")
      */
-    public function projectAction(Project $p, EntityManagerInterface $em, Request $request, $slug = null /*$id*/)
+    public function projectAction(EntityManagerInterface $em, Request $request, Project $project, $slug = null)
     {
-        if($slug != null && $p->getSlug() != $slug) {
-            return $this->redirectToRoute('x_project', ['id' => $p->getId(), 'slug' => $p->getSlug()]);
+        if($slug != null && $project->getSlug() != $slug) {
+            return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
         }
 
-        /*$project = $em->getRepository('XBundle:Project')->find($id);*/
-        $products = $em->getRepository('XBundle:Product')->getProjectProducts($p);
+        $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
 
         $form = $this->createForm(DonationType::class);
         $form->handleRequest($request);
@@ -105,7 +106,7 @@ class XPublicController extends BaseController
             $cart = new XCart();
             $cart->setConfirmed(true);
             $cart->setDonationAmount($form['donationAmount']->getData());
-            $cart->setProject($p);
+            $cart->setProject($project);
             $cart->generateBarCode();
 
             $em->persist($cart);
@@ -115,9 +116,9 @@ class XPublicController extends BaseController
         }
 
         return $this->render('@X/XPublic/project.html.twig', array(
-            'project' => $p,
+            'form' => $form->createView(),
+            'project' => $project,
             'products' => $products,
-            'form' => $form->createView()
         ));
 
     }
@@ -161,27 +162,75 @@ class XPublicController extends BaseController
      * @Route("/signin", name="x_login")
      */
     public function loginAction(Request $request, CsrfTokenManagerInterface $tokenManager = null, UserInterface $user = null)
-    { 
-        return $this->render('@X/XPublic/login.html.twig');
+    {
+        // à changer pcq compte artiste et compte contributeur!
+        if($user != null) {
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
+
+        /** @var $session Session */
+        $session = $request->getSession();
+
+        $authErrorKey = Security::AUTHENTICATION_ERROR;
+        $lastUsernameKey = Security::LAST_USERNAME;
+
+        if ($request->attributes->has($authErrorKey)) {
+            $error = $request->attributes->get($authErrorKey);
+        } elseif (null !== $session && $session->has($authErrorKey)) {
+            $error = $session->get($authErrorKey);
+            $session->remove($authErrorKey);
+        } else {
+            $error = null;
+        }
+
+        if (!$error instanceof AuthenticationException) {
+            $error = null; // The value does not come from the security component.
+        }
+
+        // last username entered by the user
+        $lastUsername = (null === $session) ? '' : $session->get($lastUsernameKey);
+
+        $csrfToken = $tokenManager
+            ? $tokenManager->getToken('authenticate')->getValue()
+            : null;
+
+        return $this->render('@X/XPublic/login.html.twig', array(
+            'last_username' => $lastUsername,
+            'error' => $error,
+            'csrf_token' => $csrfToken,
+        ));
     }
 
 
     /**
      * @Route("/signout", name="x_logout")
      */
-    public function logoutAction()
+    public function logoutAction(Request $request, TokenStorageInterface $tokenStorage)
     {
-
+        $tokenStorage->setToken(null);
+        $session = $request->getSession();
+        $session->invalidate();
+        $response = new RedirectResponse($this->generateUrl('x_homepage'));
+        $cookieNames = [
+            $this->getParameter('session_name'),
+            $this->getParameter('remember_me_name'),
+        ];
+        foreach ($cookieNames as $cookieName) {
+            $response->headers->clearCookie($cookieName);
+        }
+        //$this->addFlash('x_notice', "Vous êtes bien déconnecté.");
+        return $response;
     }
 
 
     /**
      * @Route("/conditions", name="x_terms")
      */
-    public function termsAction() {
-
+    public function termsAction()
+    {
         return $this->render('@X/XPublic/terms.html.twig', []);
     }
+
 
 
 

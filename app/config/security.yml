@@ -27,8 +27,8 @@ security:
             check_path: fos_user_security_check_x
             provider: fos_userbundle
             failure_path: x_login
-            always_use_default_target_path: true
-            default_target_path: x_artist_dashboard # à changer pcq compte contributeur et compte "artiste"
+            always_use_default_target_path: false
+            default_target_path: x_homepage
             use_referer: true
             username_parameter: _um_username
             password_parameter: _um_password

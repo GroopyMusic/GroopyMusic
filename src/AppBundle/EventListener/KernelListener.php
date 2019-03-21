@@ -21,6 +21,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use XBundle\Controller\XArtistController;
+use XBundle\Controller\XPublicController;
+use XBundle\Exception\NoAuthenticationException;
+use XBundle\Exception\NotArtistOwnerException;
 
 class KernelListener implements EventSubscriberInterface
 {
@@ -33,8 +37,10 @@ class KernelListener implements EventSubscriberInterface
     private $session_name;
     private $remember_me_name;
     private $router;
+    private $XPublicController;
+    private $XArtistController;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, YBMembersController $YBMembersController, YBController $YBController, RouterInterface $router, $session_name, $remember_me_name)
+    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, YBMembersController $YBMembersController, YBController $YBController, RouterInterface $router, $session_name, $remember_me_name, XArtistController $XArtistController, XPublicController $XPublicController)
     {
         $this->tokenStorage = $tokenStorage;
         $this->em = $em;
@@ -45,6 +51,8 @@ class KernelListener implements EventSubscriberInterface
         $this->session_name = $session_name;
         $this->remember_me_name = $remember_me_name;
         $this->router = $router;
+        $this->XArtistController = $XArtistController;
+        $this->XPublicController = $XPublicController;
     }
 
     public static function getSubscribedEvents() {
@@ -60,6 +68,7 @@ class KernelListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $session = $request->getSession();
 
+        // YB
         if($exception instanceof YBAuthenticationException) {
             // Logging user out.
             $this->tokenStorage->setToken(null);
@@ -79,6 +88,39 @@ class KernelListener implements EventSubscriberInterface
             }
 
             $session->getFlashBag()->add('yb_error', "Votre compte n'est pas autorisé pour Ticked-it ; il faut qu'un administrateur Un-Mute vous donne les privilèges nécessaires.");
+            
+            $event->setResponse($response);
+        }
+
+        // X - if not authenticate
+        if($exception instanceof NoAuthenticationException) {
+            // Logging user out.
+            $this->tokenStorage->setToken(null);
+
+            // Invalidating the session.
+            $session->invalidate();
+
+            $cookieNames = [
+                $this->session_name,
+                $this->remember_me_name,
+            ];
+            
+            $response = new RedirectResponse($this->router->generate('x_login'));
+            
+            foreach ($cookieNames as $cookieName) {
+                $response->headers->clearCookie($cookieName);
+            }
+
+            $session->getFlashBag()->add('yb_error', "Votre compte n'est pas autorisé pour Chapots. Pour vous connecter, assurez vous d'avoir un compte sur Un-Mute");
+            
+            $event->setResponse($response);
+        }
+
+        // X - if not artist owner
+        if($exception instanceof NotArtistOwnerException) {
+            $response = new RedirectResponse($this->router->generate('x_homepage'));
+
+            $session->getFlashBag()->add('yb_error', "Accès refusé si vous ne gérez pas d'artiste!");
             
             $event->setResponse($response);
         }

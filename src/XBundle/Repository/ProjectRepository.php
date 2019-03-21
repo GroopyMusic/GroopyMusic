@@ -44,7 +44,7 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
                ->where('u.id = :id')
                ->setParameter('id', $user->getId());
         } else {
-            $qd
+            $qb
                ->leftJoin('p.handlers', 'u')
                ->addSelect('u');
         }
@@ -52,7 +52,7 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('p.dateEnd >= :now')
             ->andWhere('p.failed = 0')
             ->andWhere('p.deleted = 0')
-            ->orderBy('p.dateCreation', 'ASC')
+            ->orderBy('p.dateEnd', 'ASC')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()

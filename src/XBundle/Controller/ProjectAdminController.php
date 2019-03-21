@@ -93,8 +93,9 @@ class ProjectAdminController extends BaseAdminController
         }
 
         $form = $this->createFormBuilder()
-            ->add('reason', TextareaType::class, array(
-                'label' => 'Cause(s) du refus'
+            ->add('reason', 'ckeditor', array(
+                'label' => 'Cause(s) du refus',
+                'config_name' => 'bbcode'
             ))
             ->add('confirm', SubmitType::class, array(
                 'label' => 'Refuser le projet',

@@ -1,6 +1,6 @@
 {% macro project_row(project) %}
 
-    <div class="row mt-4">
+    <div class="row mt-4" {% if not project.validated %} disabled="disabled" {% endif %}>
         <div class="col-12">
             <h3><strong>{{ project.title }}</strong></h3>
             <h5>Artiste associé : <strong>{{ project.artist.artistname }}</strong></h5>

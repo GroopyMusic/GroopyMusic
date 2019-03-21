@@ -79,7 +79,23 @@ swiftmailer:
     password:   "%mailer_password%"
 
 ivory_ck_editor:
+  plugins:
+    bbcode:
+      path: '/groopymusic/web/bundles/x/ckeditor/bbcode/'
+      filename: 'plugin.js'
   configs:
     my_config:
-      toolbar: "full"
+      toolbar: 'full'
+    bbcode:
+      toolbar: [[ 'Bold','Italic','Underline','Link','Image' ]]
+      uiColor: "#FCFCFC"
+      extraPlugins: 'bbcode'
   default_config: my_config
+
+fm_bbcode:
+    filter_sets:
+        my_default_filter:
+          strict: false # if you want to parse attr values without quotes
+          locale: fr
+          xhtml: true
+          filters: [ default, image, url ]

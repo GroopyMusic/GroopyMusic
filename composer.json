@@ -63,6 +63,7 @@
         "azine/email-bundle": "dev-master",
         "liuggio/ExcelBundle": "^2.1",
         "egeloen/ckeditor-bundle": "4.*",
+        "helios-ag/fm-bbcode-bundle": "^7.0",
         "ob/highcharts-bundle": "^1.6"
     },
     "scripts": {

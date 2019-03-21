@@ -18,6 +18,8 @@ class Product
     const PHOTOS_DIR = 'x/images/projects/';
 
     public function __construct() {
+        $this->freePrice = false;
+        $this->minimumPrice = 0;
         $this->productsSold = 0;
     }
 
@@ -82,6 +84,20 @@ class Product
      * @ORM\Column(name="supply", type="integer")
      */
     private $supply;
+
+    /**
+     * @var bool
+     * 
+     * @ORM\Column(name="free_price", type="boolean")
+     */
+    private $freePrice;
+
+    /**
+     * @var float
+     * 
+     * @ORM\Column(name="minimum_price", type="float")
+     */
+    private $minimumPrice;
 
     /**
      * @var int
@@ -243,6 +259,54 @@ class Product
     public function getSupply()
     {
         return $this->supply;
+    }
+
+    /**
+     * Set freePrice
+     * 
+     * @param bool $freePrice
+     * 
+     * @return Product
+     */
+    public function setFreePrice($freePrice)
+    {
+        $this->freePrice = $freePrice;
+
+        return $this;
+    }
+
+    /**
+     * Get freePrice
+     * 
+     * @return bool
+     */
+    public function getFreePrice()
+    {
+        return $this->freePrice;
+    }
+
+    /**
+     * Set minimumPrice
+     * 
+     * @param float $minimumPrice
+     * 
+     * @return Product
+     */
+    public function setMinimumPrice($minimumPrice)
+    {
+        $this->minimumPrice = $minimumPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get minimumPrice
+     * 
+     * @return float
+     */
+    public function getMinimumPrice()
+    {
+        return $this->minimumPrice;
     }
 
     /**

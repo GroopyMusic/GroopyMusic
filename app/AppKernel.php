@@ -51,6 +51,7 @@ class AppKernel extends Kernel
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new XBundle\XBundle(),
+            new FM\BbcodeBundle\FMBbcodeBundle(),
             new Ob\HighchartsBundle\ObHighchartsBundle()
         ];
 

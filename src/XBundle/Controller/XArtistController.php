@@ -26,6 +26,8 @@ class XArtistController extends BaseController
      */
     public function dashboardAction(EntityManagerInterface $em, UserInterface $user = null)
     {
+        $this->checkIfArtistAuthorized($user);
+
         $currentProjects = $em->getRepository('XBundle:Project')->getCurrentProjects($user);
         $passedProjects = $em->getRepository('XBundle:Project')->getPassedProjects($user);
 
@@ -41,6 +43,8 @@ class XArtistController extends BaseController
      */
     public function newProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, MailDispatcher $mailDispatcher)
     {
+        $this->checkIfArtistAuthorized($user);
+
         $project = new Project();
         $project->setCreator($user);
 
@@ -60,10 +64,9 @@ class XArtistController extends BaseController
             $em->persist($project);
             $em->flush();
 
-            $message = 'Le projet "' . $project->getTitle() . '" a bien été créée. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible sur Chapots';
+            $message = 'Le projet "' . $project->getTitle() . '" a bien été créée. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible par le public sur Chapots';
             $this->addFlash('x_notice', $message);
 
-            // Envoie email pour création de projet
             try { 
             	$mailDispatcher->sendAdminNewProject($project); 
             }
@@ -85,6 +88,8 @@ class XArtistController extends BaseController
      */
     public function passedProjectsAction(EntityManagerInterface $em, UserInterface $user = null)
     {
+        $this->checkIfArtistAuthorized($user);
+
         $passedProjects = $em->getRepository('XBundle:Project')->getPassedProjects($user);
 
         return $this->render('@X/XArtist/passed_projects.html.twig', [
@@ -96,8 +101,10 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/update", name="x_artist_project_update")
      */
-    public function updateProjectAction(EntityManagerInterface $em, Request $request, Project $project)
+    public function updateProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project)
     {
+        $this->checkIfArtistAuthorized($user);
+
         if($project->isPassed()) {
             // addFlash('x_error')
             return $this->redirectToRoute('x_artist_passed_projets');
@@ -124,8 +131,10 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/donations-sales-details", name="x_artist_donations_sales_details")
      */
-    public function donationsSalesDetailsAction(EntityManagerInterface $em, Project $project)
+    public function donationsSalesDetailsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
     {
+        $this->checkIfArtistAuthorized($user);
+
         //$carts = $em->getRepository('XBundle:XCart')->getProjectCarts($project);
 
         //file_put_contents('test.txt', $carts[0]);
@@ -139,8 +148,10 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/products", name="x_artist_project_products")
      */
-    public function viewProductsAction(EntityManagerInterface $em, Project $project)
+    public function viewProductsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
     {
+        $this->checkIfArtistAuthorized($user);
+
         $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
         
         return $this->render('@X/XArtist/Product/products.html.twig', array(
@@ -153,8 +164,10 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/product/add", name="x_artist_product_add")
      */
-    public function addProductAction(EntityManagerInterface $em, Request $request, Project $project)
+    public function addProductAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project)
     {
+        $this->checkIfArtistAuthorized($user);
+        
         $product = new Product();
 
         //$project = $em->getRepository('XBundle:Project')->find($id);
@@ -179,9 +192,7 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/{code}remove-photo", name="x_artist_project_remove_photo")
      */
-    public function removePhotoAction(EntityManagerInterface $em, Request $request, Project $project, $code) {
-
-        //$em = $this->getDoctrine()->getManager();
+    public function removePhotoAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project, $code) {
 
         $filename = $request->get('filename');
 

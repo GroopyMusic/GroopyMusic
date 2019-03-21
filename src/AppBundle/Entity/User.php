@@ -1188,7 +1188,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
 
-    // CHAPOTS - PROJECT
+    // X - PROJECT
     /**
      * Add project
      *
@@ -1214,7 +1214,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     /**
-     * Get ybCampaigns
+     * Get project
      *
      * @return \Doctrine\Common\Collections\Collection
      */

@@ -342,4 +342,6 @@ x:
       Le projet que vous avez créé sur Chapots (titre : %project%) été refusé par un administrateur d'Un-Mute.
 
       Raison(s) du refus :
+      ------------------------------
         %reason%
+      ------------------------------

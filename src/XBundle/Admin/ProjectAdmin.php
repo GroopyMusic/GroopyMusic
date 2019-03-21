@@ -66,25 +66,35 @@ class ProjectAdmin extends BaseAdmin
                     'label' => 'Catégorie',
                     'associated_property' => 'name'
                 ))
+                ->add('dateEnd', null, array(
+                    'label' => 'Date de clôture du financement partipatif',
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr'
+                ))
+            ->end()
+            ->with('Description')
                 ->add('description', null, array(
-                    'label' => 'A propos du projet'
+                    'label' => 'A propos du projet',
+                    'template' => 'XBundle:Admin:description.html.twig'
                 ))
                 ->add('motivations', null, array(
-                    'label' => 'Motivations'
+                    'label' => 'Motivations',
+                    'template' => 'XBundle:Admin:motivations.html.twig'
                 ))
                 ->add('thresholdPurpose', null , array(
-                    'label' => 'Objectif du financement'
-                ))
-                ->add('dateEnd', null, array(
-                    'label' => 'Date de clôture du financement partipatif'
+                    'label' => 'Objectif du financement',
+                    'template' => 'XBundle:Admin:threshold_purpose.html.twig'
                 ))
             ->end()
             ->with('Financement participatif')
+                ->add('noThreshold', 'boolean', array(
+                    'label' => 'Pas de seuil de validation'
+                ))
                 ->add('collectedAmount', null, array(
                     'label' => 'Montant récolté'
                 ))
                 ->add('threshold', null, array(
-                    'label' => 'Seuil de validation'
+                    'label' => 'Montant à atteindre'
                 ))
             ->end()
             ->with('État')
