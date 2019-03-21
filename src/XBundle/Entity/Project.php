@@ -133,12 +133,6 @@ class Project
     private $artist;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    //private $user;
-
-    /**
      * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\User", inversedBy="projects")
      */
     private $handlers;
@@ -520,7 +514,7 @@ class Project
     /**
      * Set tag
      *
-     * @param User $tag
+     * @param Tag $tag
      *
      * @return Project
      */

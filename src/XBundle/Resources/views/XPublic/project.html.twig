@@ -133,8 +133,8 @@
                         {% for product in products %}
                         <div class="card-body contribution">
                                 <p>
-                                    <img src="{{ asset(product.webPath(product.photo)) }}" width="80" height="80" />
-                                    &nbsp;{{ product.name }}
+                                    {% if product.photo is not null %}<img src="{{ asset(product.webPath(product.photo)) }}" width="80" height="80" />
+                                    &nbsp;{% endif %}{{ product.name }}
                                 </p>
                                 <div class="text-muted font-italic pb-2">
                                     {{ product.description }}

@@ -16,7 +16,7 @@
         </nav>
     </section>
     
-    <section class="container my-4 py-2 my-md-4">
+    <section class="container my-4 py-2 my-md-5">
         {% if products is empty %}
             <h3>Pas d'articles en vente</h3>
         {% else %}
@@ -34,7 +34,11 @@
                 <tbody>
                     {% for product in products %}
                         <tr class="table-active">
-                            <td style="text-align: center"><img src="{{ asset(product.webPath(product.photo)) }}" width="90px" height="90px"/></td>
+                            {% if product.photo is not null %}
+                                <td class="text-center"><img src="{{ asset(product.webPath(product.photo)) }}" width="90px" height="90px"/></td>
+                            {% else %}
+                                <td>Pas d'image</td>
+                            {% endif %}
                             <th scope="row">{{ product.name }}</th>
                             <td>{{ product.description }}</td>
                             <td>{{ product.price }} €</td>
@@ -46,8 +50,11 @@
             </table> 
         {% endif %}
 
-        {% if not project.failed %}
+        {% if not project.isPassed %}
             <a href="{{ path('x_artist_product_add', {'id': project.id}) }}"><i class="far fa-plus-square"></i> Ajouter un article</a>
+            {% if project.tag.name == "Concert" %}
+                <a href="{{ path('x_artist_ticket_add', {'id': project.id}) }}"> / un ticket</a>  
+            {% endif %}
         {% endif %}
 
     </section>

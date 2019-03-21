@@ -22,6 +22,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use XBundle\Entity\Project;
 use XBundle\Entity\Tag;
 use XBundle\Form\ImageType;

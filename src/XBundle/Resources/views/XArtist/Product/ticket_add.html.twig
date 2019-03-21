@@ -1,0 +1,17 @@
+{% extends "XBundle::base.html.twig" %}
+
+
+{% block body %}
+    <section class="container px-0 mt-4">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            <a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">{{ project.title }}</a>
+            <a class="breadcrumb-item" href="{{ path('x_artist_project_products', {'id': project.id}) }}">Article mis en vente</a>
+            <span class="breadcrumb-item active">Ajouter un ticket</span>
+        </nav>
+    </section>
+
+    <section class="container my-4 py-2 my-md-5">
+        <h5>Tickets</h5>
+    </section>
+{% endblock %}

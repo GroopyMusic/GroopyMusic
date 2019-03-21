@@ -179,12 +179,28 @@ class XArtistController extends BaseController
             $product->setProject($project);
             $em->persist($product);
             $em->flush();
+
+            $this->addFlash('x_notice', 'La mise en vente de l\'article "' . $product->getName() . '" a bien été enregistrée!');
             return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
         }
 
         return $this->render('@X/XArtist/Product/product_add.html.twig', array(
             'form' => $form->createView(),
             'project' => $project,
+        ));
+    }
+
+    /**
+     * @Route("/project/{id}/ticket/add", name="x_artist_ticket_add")
+     */
+    public function addTicketAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project)
+    {
+        $this->checkIfArtistAuthorized($user);
+
+        // check if project = concert
+
+        return $this->render('@X/XArtist/Product/ticket_add.html.twig', array(
+            'project' => $project
         ));
     }
 

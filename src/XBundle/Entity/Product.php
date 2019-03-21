@@ -19,7 +19,7 @@ class Product
 
     public function __construct() {
         $this->freePrice = false;
-        $this->minimumPrice = 0;
+        $this->minimumPrice = 1;
         $this->productsSold = 0;
     }
 
@@ -98,6 +98,13 @@ class Product
      * @ORM\Column(name="minimum_price", type="float")
      */
     private $minimumPrice;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\Column(name="max_amount_per_purchase", type="smallint")
+     */
+    private $maxAmountPerPurchase;
 
     /**
      * @var int
@@ -307,6 +314,30 @@ class Product
     public function getMinimumPrice()
     {
         return $this->minimumPrice;
+    }
+
+    /**
+     * Set maxAmountPerPurchase
+     * 
+     * @param integer $maxAmountPerPurchase;
+     * 
+     * @return Product
+     */
+    public function setMaxAmountPerPurchase($maxAmountPerPurchase)
+    {
+        $this->maxAmountPerPurchase = $maxAmountPerPurchase;
+
+        return $this;
+    }
+
+    /**
+     * Get maxAmountPerPurchase
+     * 
+     * @return integer
+     */
+    public function getMaxAmountPerPurchase()
+    {
+        return $this->maxAmountPerPurchase;
     }
 
     /**
