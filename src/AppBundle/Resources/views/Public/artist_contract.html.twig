@@ -352,6 +352,7 @@
 
                     <div class="col-6 col-md-3 py-2 my-auto">
                         {% if counterpart.disabled %}
+                            {%  do purchase.setRendered(true) %}
                             <p><i>Pas disponible pour l'instant</i></p>
                         {% else %}
                             <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
