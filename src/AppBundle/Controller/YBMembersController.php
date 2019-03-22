@@ -439,7 +439,11 @@ class YBMembersController extends BaseController
     {
         $this->checkIfAuthorized($user);
 
-        $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
+        if ($user->isSuperAdmin()){
+            $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllPastEvents();
+        } else {
+            $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
+        }
 
         return $this->render('@App/YB/Members/passed_campaigns.html.twig', [
             'campaigns' => $passed_campaigns,

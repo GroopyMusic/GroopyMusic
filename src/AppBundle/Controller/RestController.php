@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Cart;
+use AppBundle\Entity\Purchase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -121,9 +123,24 @@ class RestController extends BaseController {
                 $counterpart = $em->getRepository('AppBundle:CounterPart')->find($request->get('counterpart_id'));
                 $price = $counterpart->getPrice();
                 $anonym = new User();
-                $anonym->setFirstname('anonym - on site');
+                $anonym->setFirstname('_anonym - on site');
+                $cf = new ContractFan($contract_artist);
+                foreach ($cf->getPurchases() as $purchase){
+                    if ($purchase->getCounterpart() === $counterpart){
+                        $purchase->setQuantity($quantity);
+                    } else {
+                        $cf->removePurchase($purchase);
+                    }
+                }
+                $cart = new Cart(false);
+                $cf->initAmount();
+                $cart->addContract($cf);
+                $cart->setConfirmed(true);
+                $cart->setPaid(true);
+                $cart->generateBarCode();
+                $em->persist($cart);
                 for ($i = 0; $i < $quantity; $i++){
-                    $ticket = new Ticket(null, $counterpart, $i, $price, $anonym, $contract_artist);
+                    $ticket = new Ticket($cf, $counterpart, $i, $price, $anonym, $contract_artist);
                     $ticket->setIsBoughtOnSite(true);
                     $ticket->setValidated(true);
                     $ticket->setDateValidated(new \DateTime());
@@ -194,7 +211,7 @@ class RestController extends BaseController {
                     'name' => $event->__toString(),
                     'nbTotalTicket' => $event->getGlobalSoldout(),
                     'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                    'nbSoldTicket' => $event->getNbCounterPartsPaid(),
+                    'nbSoldTicket' => $this->getNbPresales($event),
                     'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
                     'date' => $event->getOnlyDate(),
                     'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
@@ -206,7 +223,7 @@ class RestController extends BaseController {
                     'name' => $event->__toString(),
                     'nbTotalTicket' => $event->getGlobalSoldout(),
                     'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                    'nbSoldTicket' => $event->getNbCounterPartsPaid(),
+                    'nbSoldTicket' => $this->getNbPresales($event),
                     'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
                     'date' => 'no date',
                     'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
@@ -220,7 +237,7 @@ class RestController extends BaseController {
                         'name' => $day . ' - '.$event->__toString(),
                         'nbTotalTicket' => $event->getGlobalSoldout(),
                         'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                        'nbSoldTicket' => $event->getNbCounterPartsPaid(),
+                        'nbSoldTicket' => $this->getNbPresales($event),
                         'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
                         'date' => $event->getFestivalDates()[$i],
                         'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
@@ -241,7 +258,7 @@ class RestController extends BaseController {
                     'name' => $event->__toString(),
                     'nbTotalTicket' => $event->getGlobalSoldout(),
                     'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                    'nbSoldTicket' => $event->getNbCounterPartsPaid(),
+                    'nbSoldTicket' => $this->getNbPresales($event),
                     'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
                     'date' => $event->getDateEvent(),
                     'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
@@ -284,9 +301,7 @@ class RestController extends BaseController {
     }
 
     private function setRestTicket($ticket, $error){
-        if ($error !== ''){
-            return new RestTicket('','','','',$error, '');
-        } else {
+        if ($error === '' || $error === 'Ce ticket a déjà été scanné.'){
             $validation = $ticket->isValidated() ? 'vrai' : 'faux';
             return new RestTicket(
                 $ticket->getName(),
@@ -295,7 +310,9 @@ class RestController extends BaseController {
                 $ticket->getBarcodeText(),
                 $error,
                 $validation);
-        } 
+        } else {
+            return new RestTicket('','','','',$error, '');
+        }
     }
 
     private function getArrayFromTicket($rest_ticket){
@@ -308,6 +325,12 @@ class RestController extends BaseController {
             'is_validated' => $rest_ticket->isValidated(),
         );
         return $array_ticket;
+    }
+
+    private function getNbPresales($event){
+        $em = $this->getDoctrine()->getManager();
+        $tickets = $em->getRepository('AppBundle:Ticket')->getPresale($event->getId());
+        return count($tickets);
     }
 
     private function getNbTicketSoldOnSite($event_id){
