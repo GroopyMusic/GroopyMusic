@@ -351,18 +351,22 @@
                     </div>
 
                     <div class="col-6 col-md-3 py-2 my-auto">
-                        <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
-                            <a class="incr-btn" data-action="decrease" href="#">–</a>
-                            {{ form_widget(purchase.quantity) }}
-                            <a class="incr-btn" data-action="increase"
-                               data-max="{{ contract.nbAvailable(counterpart) }}"
-                               href="#">&plus;</a>
-                        </div>
-                        {% if counterpart.potentialArtists is not empty %}
-                            <div class="select2-artists">
-                                Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
-                                {{ form_widget(purchase.artists) }}
+                        {% if counterpart.disabled %}
+                            <p><i>Pas disponible pour l'instant</i></p>
+                        {% else %}
+                            <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
+                                <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                {{ form_widget(purchase.quantity) }}
+                                <a class="incr-btn" data-action="increase"
+                                   data-max="{{ contract.nbAvailable(counterpart) }}"
+                                   href="#">&plus;</a>
                             </div>
+                            {% if counterpart.potentialArtists is not empty %}
+                                <div class="select2-artists">
+                                    Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
+                                    {{ form_widget(purchase.artists) }}
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>

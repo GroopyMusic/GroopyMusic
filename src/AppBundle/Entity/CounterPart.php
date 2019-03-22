@@ -30,13 +30,14 @@ class CounterPart implements TranslatableInterface
     {
         try {
             return $this->proxyCurrentLocaleTranslation($method, $arguments);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $method = 'get' . ucfirst($method);
             return $this->proxyCurrentLocaleTranslation($method, $arguments);
         }
     }
 
-    public function getDefaultLocale() {
+    public function getDefaultLocale()
+    {
         return 'fr';
     }
 
@@ -59,12 +60,13 @@ class CounterPart implements TranslatableInterface
     // Unmapped, memoized
     private $potential_artists = null;
 
-    public function getPotentialArtists() {
-        if($this->potential_artists == null) {
+    public function getPotentialArtists()
+    {
+        if ($this->potential_artists == null) {
             $artists = [];
 
-            foreach($this->festivaldays as $festivalday) {
-                foreach($festivalday->getPerformances() as $performance) {
+            foreach ($this->festivaldays as $festivalday) {
+                foreach ($festivalday->getPerformances() as $performance) {
                     $artists[] = $performance->getArtist();
                 }
             }
@@ -72,18 +74,19 @@ class CounterPart implements TranslatableInterface
         }
         return $this->potential_artists;
     }
-    
-    public function getSemanticPrice() {
-        if($this->free_price) {
+
+    public function getSemanticPrice()
+    {
+        if ($this->free_price) {
             return $this->getMinimumPrice();
-        }
-        else {
+        } else {
             return $this->getPrice();
         }
     }
 
-    public function isFree() {
-        return (!$this->free_price && $this->price == 0); 
+    public function isFree()
+    {
+        return (!$this->free_price && $this->price == 0);
     }
 
     /**
@@ -149,6 +152,11 @@ class CounterPart implements TranslatableInterface
      * @ORM\Column(name="maximum_amount_per_purchase", type="smallint", )
      */
     private $maximum_amount_per_purchase;
+
+    /**
+     * @ORM\Column(name="disabled", type="boolean")
+     */
+    private $disabled;
 
     /**
      * Get id
@@ -279,6 +287,7 @@ class CounterPart implements TranslatableInterface
     {
         $this->contractArtist = $contractArtist;
     }
+
     /**
      * Add festivalday
      *
@@ -375,5 +384,23 @@ class CounterPart implements TranslatableInterface
     public function setMaximumAmountPerPurchase($maximum_amount_per_purchase)
     {
         $this->maximum_amount_per_purchase = $maximum_amount_per_purchase;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
+
+    /**
+     * @param bool
+     * @return $this
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+        return $this;
     }
 }

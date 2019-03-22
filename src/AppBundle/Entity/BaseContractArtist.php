@@ -527,6 +527,12 @@ class BaseContractArtist implements TranslatableInterface
     protected $reminders;
 
     /**
+     * @var string
+     * @ORM\Column(name="facebook_url", type="string", length=255, nullable=true)
+    */
+    protected $facebook_url;
+
+    /**
      * Get id
      *
      * @return int
@@ -1279,7 +1285,24 @@ class BaseContractArtist implements TranslatableInterface
         return $this;
     }
 
+    // todo what is this?????
     public function getDateEvent(){
 
+    }
+
+    /**
+     * @return string
+     */
+    public function getFacebookUrl() {
+        return $this->facebook_url;
+    }
+
+    /**
+     * @param $facebookUrl
+     * @return $this
+     */
+    public function setFacebookUrl($facebookUrl) {
+        $this->facebook_url = $facebookUrl;
+        return $this;
     }
 }
