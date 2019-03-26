@@ -87,10 +87,10 @@ class RestController extends BaseController {
         $unmute_events = [];
         if ($user !== null){
             if ($user->isSuperAdmin()){
-                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->findAll();
+                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllSuccess();
                 $unmute_events = $this->getEventsUnMute($em);
             } else {
-                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllEvents($user);
+                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllEventsSuccess($user);
             }
             if (count($events) === 0) {
                 $error = 'Vous n\'avez pas d\'événements.';
@@ -158,7 +158,7 @@ class RestController extends BaseController {
      * @Rest\View()
      * @Rest\Get("/getcounterpart")
      */
-    public function getCounterpartAction(Request $request){
+    /*public function getCounterpartAction(Request $request){
         $event_id = $request->get('event_id');
         $em = $this->getDoctrine()->getManager();
         $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->find($event_id);
@@ -177,13 +177,13 @@ class RestController extends BaseController {
         }
         $array_tix = $this->getTicketFromCounterpart($counterparts, $error);
         return new JsonResponse($array_tix);
-    }
+    }*/
 
     /**
      * @Rest\View()
      * @Rest\Get("/getaudience")
      */
-    public function getAudienceAction(Request $request){
+    /*public function getAudienceAction(Request $request){
         $tickets = [];
         if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
             $error = 'Vous n\'organisez pas cet événement.';
@@ -197,7 +197,7 @@ class RestController extends BaseController {
             }
         }
         return $this->getJSONResponseAudience($error, $tickets);
-    }
+    }*/
 
     // private functions
 
@@ -206,64 +206,56 @@ class RestController extends BaseController {
         $unmuteEvents = [];
         foreach ($events as $event){
             if ($event->hasOnlyOneDate()){
-                $unmuteEvents[] = array(
-                    'id' => $event->getId(),
-                    'name' => $event->__toString(),
-                    'nbTotalTicket' => $event->getGlobalSoldout(),
-                    'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                    'nbSoldTicket' => $this->getNbPresales($event),
-                    'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
-                    'date' => $event->getOnlyDate(),
-                    'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
-                    'error' => '',
-                );
+                if ($event->isFestivalDayToday()){
+                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event));
+                } else {
+                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), [], []);
+                }
             } else if (count($event->getFestivalDates()) === 0) {
-                $unmuteEvents[] = array(
-                    'id' => $event->getId(),
-                    'name' => $event->__toString(),
-                    'nbTotalTicket' => $event->getGlobalSoldout(),
-                    'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                    'nbSoldTicket' => $this->getNbPresales($event),
-                    'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
-                    'date' => 'no date',
-                    'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
-                    'error' => '',
-                );
+                $unmuteEvents[] = $this->createArray($event, $event->__toString(), 'no date', [], []);
             } else {
                 for ($i = 0; $i < count($event->getFestivalDates()); $i++){
                     $day = 'Day ' . ($i + 1);
-                    $unmuteEvents[] = array(
-                        'id' => $event->getId(),
-                        'name' => $day . ' - '.$event->__toString(),
-                        'nbTotalTicket' => $event->getGlobalSoldout(),
-                        'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                        'nbSoldTicket' => $this->getNbPresales($event),
-                        'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
-                        'date' => $event->getFestivalDates()[$i],
-                        'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
-                        'error' => '',
-                    );
+                    if ($event->getFestivalDates()[$i]->format('m/d/Y') === (new \DateTime())->format('m/d/Y')){
+                        $name = $day . ' - '.$event->__toString();
+                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event));
+                    } else {
+                        $name = $day . ' - '.$event->__toString();
+                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], [], []);
+                    }
                 }
             }
         }
         return $unmuteEvents;
     }
 
+    private function createArray($event, $eventName, $eventDate,$audience, $counterparts){
+        $event = array (
+            'id' => $event->getId(),
+            'name' => $eventName,
+            'nbTotalTicket' => $event->getGlobalSoldout(),
+            'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
+            'nbSoldTicket' => $this->getNbPresales($event),
+            'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
+            'date' => $eventDate,
+            'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
+            'error' => '',
+            'audience' => $audience,
+            'counterparts' => $counterparts,
+        );
+        return $event;
+    }
+
     private function getArrayFromEvents($events, $error){
         $array_events = [];
         if ($error === ''){
             foreach($events as $event){
-                $array_events[] = array(
-                    'id' => $event->getId(),
-                    'name' => $event->__toString(),
-                    'nbTotalTicket' => $event->getGlobalSoldout(),
-                    'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                    'nbSoldTicket' => $this->getNbPresales($event),
-                    'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
-                    'date' => $event->getDateEvent(),
-                    'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
-                    'error' => $error,
-                );
+                if ($event->isToday()){
+                    $array_events[] = $this->createArray($event, $event->__toString(), $event->getDateEvent(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event));
+                } else {
+                    $array_events[] = $this->createArray($event, $event->__toString(), $event->getDateEvent(), [], []);
+
+                }
             }
         } else {
             $array_events[] = array(
@@ -303,9 +295,10 @@ class RestController extends BaseController {
     private function setRestTicket($ticket, $error){
         if ($error === '' || $error === 'Ce ticket a déjà été scanné.'){
             $validation = $ticket->isValidated() ? 'vrai' : 'faux';
+            $cpName = $ticket->getCounterPart() === null ? '' : $ticket->getCounterPart()->__toString();
             return new RestTicket(
                 $ticket->getName(),
-                $ticket->getCounterPart()->__toString(),
+                $cpName,
                 '',
                 $ticket->getBarcodeText(),
                 $error,
@@ -375,6 +368,21 @@ class RestController extends BaseController {
         } else {
             return new JsonResponse(array('error' => $error));
         }
+    }
+
+    private function getAudienceForEvent($event){
+        $em = $this->getDoctrine()->getManager();
+        $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($event->getId());
+        $rest_tickets_array = [];
+        foreach ($tickets as $ticket){
+            $rest_tickets_array[] = $this->getArrayFromTicket($this->setRestTicket($ticket, ''));
+        }
+        return $rest_tickets_array;
+    }
+
+    private function getCounterpartsForEvent($event){
+        $counterparts = $event->getCounterParts();
+        return $this->getTicketFromCounterpart($counterparts, '');
     }
 
     private function handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
