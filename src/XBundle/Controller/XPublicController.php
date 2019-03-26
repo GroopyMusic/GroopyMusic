@@ -96,7 +96,7 @@ class XPublicController extends BaseController
             return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
         }
 
-        $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
+        $products = $em->getRepository('XBundle:Product')->getVisibleProductsForProject($project);
 
         $form = $this->createForm(DonationType::class);
         $form->handleRequest($request);
@@ -365,7 +365,6 @@ class XPublicController extends BaseController
             $product = $em->getRepository('XBundle:Product')->find($cart->getProduct());
             $qty = $cart->getProdQuantity();
             $product->addProductsSold($qty);
-            $product->updateSupply($qty);
         }
         $cart->setPaid(true);
         $em->persist($project);
@@ -373,8 +372,8 @@ class XPublicController extends BaseController
 
         $this->addFlash('x_notice', 'Paiement bien reçu !');
 
-        return $this->redirectToRoute('x_homepage');
-        //return $this->render('@X/XPublic/Payment/payment_success.html.twig');
+        return $this->redirectToRoute('x_project', ['id' => $project->getId()]);
+
     }
 
 	

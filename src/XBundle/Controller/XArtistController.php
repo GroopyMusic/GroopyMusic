@@ -61,6 +61,12 @@ class XArtistController extends BaseController
                 $project->addHandler($ao->getUser());
             }
 
+            // add Un-Mute admin to project
+            /*$adminUsers = $em->getRepository('AppBundle:User')->findUsersWithRoles(['ROLE_SUPER_ADMIN']);
+            foreach($adminUsers as $au) {
+                $project->addHandler($au);
+            }*/
+
             $em->persist($project);
             $em->flush();
 
@@ -137,8 +143,6 @@ class XArtistController extends BaseController
 
         //$carts = $em->getRepository('XBundle:XCart')->getProjectCarts($project);
 
-        //file_put_contents('test.txt', $carts[0]);
-
         return $this->render('@X/XArtist/donations_sales_details.html.twig', array(
             'project' => $project
         ));
@@ -152,7 +156,7 @@ class XArtistController extends BaseController
     {
         $this->checkIfArtistAuthorized($user);
 
-        $products = $em->getRepository('XBundle:Product')->getProjectProducts($project);
+        $products = $em->getRepository('XBundle:Product')->getProductsForProject($project);
         
         return $this->render('@X/XArtist/Product/products.html.twig', array(
             'project' => $project,
@@ -164,15 +168,13 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/product/add", name="x_artist_product_add")
      */
-    public function addProductAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project)
+    public function addProductAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project, MailDispatcher $mailDispatcher)
     {
         $this->checkIfArtistAuthorized($user);
         
         $product = new Product();
-
-        //$project = $em->getRepository('XBundle:Project')->find($id);
         
-        $form = $this->createForm(ProductType::class, $product);
+        $form = $this->createForm(ProductType::class, $product, ['creation' => true]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -180,15 +182,53 @@ class XArtistController extends BaseController
             $em->persist($product);
             $em->flush();
 
-            $this->addFlash('x_notice', 'La mise en vente de l\'article "' . $product->getName() . '" a bien été enregistrée!');
+            $this->addFlash('x_notice', 'La mise en vente de l\'article "' . $product->getName() . '" a bien été enregistrée! Elle doit maintenant être validé par l\'équipe d\'Un-Mute');
+            
+            try { 
+            	$mailDispatcher->sendAdminNewProduct($product); 
+            }
+            catch(\Exception $e) {
+            }
+            
             return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
         }
 
         return $this->render('@X/XArtist/Product/product_add.html.twig', array(
             'form' => $form->createView(),
             'project' => $project,
+            'product' => $product
         ));
     }
+
+
+    /**
+     * @Route("/project/{id}/product/{idProd}/update", name="x_artist_product_update")
+     */
+    public function updateProductAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project, $idProd)
+    {
+        $this->checkIfArtistAuthorized($user);
+
+        $product = $em->getRepository('XBundle:Product')->find($idProd);
+
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($product);
+            $em->flush();
+
+            $this->addFlash('x_notice', 'L\'article a bien été modifié.');
+            return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
+        }
+
+        return $this->render('@X/XArtist/Product/product_add.html.twig', array(
+            'form' => $form->createView(),
+            'project' => $project,
+            'product' => $product
+        ));
+    }
+
+
 
     /**
      * @Route("/project/{id}/ticket/add", name="x_artist_ticket_add")

@@ -33,8 +33,9 @@ class ProductType extends AbstractType
                     new Assert\NotBlank(),
                 ]
             ))
-            ->add('description', TextareaType::class, array(
+            ->add('description', 'ckeditor', array(
                 'label' => 'Description',
+                'config_name' => 'bbcode',
                 'constraints' => [
                     new Assert\NotBlank(),
                 ]
@@ -62,10 +63,15 @@ class ProductType extends AbstractType
                 'label' => 'Photo',
                 'required' => false
             ))
-            ->add('submit', SubmitType::class, array(
-                'label' => 'Enregistrer'
-            ))
         ;
+
+        if ($options['creation']) {
+            $builder
+                ->add('submit', SubmitType::class, array(
+                'label' => 'Enregistrer'
+                ))
+            ;
+        }
     }
     
 
@@ -87,7 +93,7 @@ class ProductType extends AbstractType
             if ($product->getPrice() == null || $product->getPrice() < 1) {
                 $context->addViolation('Le prix doit être de minimum 1 €');
             }
-            $product->getMinimumPrice($product->getPrice());
+            $product->setMinimumPrice($product->getPrice());
         }
 
     }
@@ -102,7 +108,8 @@ class ProductType extends AbstractType
             'data_class' => Product::class,
             'constraints' => array(
                 new Assert\Callback(array($this, 'validate'))
-            )
+            ),
+            'creation' => false
         ));
     }
 

@@ -96,6 +96,10 @@ class ProjectAdmin extends BaseAdmin
                 ->add('threshold', null, array(
                     'label' => 'Montant à atteindre'
                 ))
+                ->add('products', null, array(
+                    'label' => 'Articles mis en vente',
+                    'template' => 'XBundle:Admin:products.html.twig',
+                ))
             ->end()
             ->with('État')
                 ->add('validated', 'boolean', array(

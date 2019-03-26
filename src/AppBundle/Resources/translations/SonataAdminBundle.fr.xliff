@@ -52,8 +52,8 @@
                 <target>Gestion utilisateurs</target>
             </trans-unit>
 
-            <trans-unit id="app.admin.group.x.project">
-                <source>app.admin.group.x.project</source>
+            <trans-unit id="app.admin.group.x">
+                <source>app.admin.group.x</source>
                 <target>Chapots</target>
             </trans-unit>
 
@@ -240,6 +240,11 @@
             <trans-unit id="app.admin.x.project">
                <source>app.admin.x.project</source>
                <target>Projets</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.x.product">
+               <source>app.admin.x.product</source>
+               <target>Articles en vente</target>
             </trans-unit>
 
         </body>

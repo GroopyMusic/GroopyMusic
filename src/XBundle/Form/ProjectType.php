@@ -24,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use XBundle\Entity\Project;
+use XBundle\Entity\Product;
 use XBundle\Entity\Tag;
 use XBundle\Form\ImageType;
 
@@ -118,6 +119,17 @@ class ProjectType extends AbstractType
                 ->add('noThreshold', CheckboxType::class, array(
                     'label' => 'Pas de seuil de validation',
                     'required' => false
+                ))
+                ->add('products', CollectionType::class, array(
+                    'entry_type' => ProductType::class,
+                    'entry_options' => array(
+                        'label' => false,
+                    ),
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'prototype' => true,
+                    'attr' => ['class' => 'collection'],
                 ))
                 ->add('acceptConditions', CheckboxType::class, array(
                     'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Chapots!",

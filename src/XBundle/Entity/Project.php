@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use XBundle\Entity\Image;
+use XBundle\Entity\Product;
 use XBundle\Entity\Tag;
 
 /**
@@ -37,6 +38,7 @@ class Project
         $this->code = uniqid('x');
         $this->projectPhotos = new ArrayCollection();
         $this->handlers = new ArrayCollection();
+        $this->products = new ArrayCollection();
         $this->points = 0;
         $this->acceptConditions = false;
     }
@@ -258,6 +260,16 @@ class Project
      * @ORM\ManyToMany(targetEntity="\XBundle\Entity\Image", cascade={"all"})
      */
     private $projectPhotos;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\XBundle\Entity\Product", mappedBy="project", cascade={"all"})
+     */
+    private $products;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="\XBundle\Entity\Tags", cascade={"all"})
+     */
+    //private $tags;
 
     /**
      * @var string
@@ -832,6 +844,42 @@ class Project
     public function getProjectPhotos()
     {
         return $this->projectPhotos;
+    }
+
+    /**
+     * Add product
+     * 
+     * @param Product $product
+     * 
+     * @return Project
+     */
+    public function addProduct($product)
+    {
+        $this->products[] = $product;
+        $product->setProject($this);
+    }
+
+    // A VOIR SI C'EST NECESSAIRE
+    /**
+     * Remove product
+     * 
+     * @param Product $product
+     */
+    public function removeProduct($product)
+    {
+        $this->products->removeElement($product);
+        $product->setProject(null);
+        return $this;
+    }
+
+    /**
+     * Get products
+     * 
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProducts()
+    {
+        return $this->products;
     }
 
     /**

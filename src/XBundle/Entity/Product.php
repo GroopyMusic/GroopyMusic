@@ -21,6 +21,8 @@ class Product
         $this->freePrice = false;
         $this->minimumPrice = 1;
         $this->productsSold = 0;
+        $this->validated = false;
+        $this->deleted = false;
     }
 
     public static function getWebPath(Image $image) {
@@ -31,8 +33,8 @@ class Product
         $this->productsSold += $quantity;
     }
 
-    public function updateSupply($quantity) {
-        $this->supply -= $quantity;
+    public function disponibility() {
+        return $this->supply - $this->productsSold;
     }
 
 
@@ -67,7 +69,7 @@ class Product
     private $price;
 
     /**
-     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Project")
+     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Project", inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;
@@ -112,6 +114,20 @@ class Product
      * @ORM\Column(name="products_sold", type="integer")
      */
     private $productsSold;
+
+    /**
+     * @var bool
+     * 
+     * @ORM\Column(name="validated", type="boolean")
+     */
+    private $validated;
+
+    /**
+     * @var bool
+     * 
+     * @ORM\Column(name="deleted", type="boolean")
+     */
+    private $deleted;
 
 
     /**
@@ -363,5 +379,55 @@ class Product
     {
         return $this->productsSold;
     }
+
+    /**
+     * Set validated
+     * 
+     * @param boolean $validated
+     * 
+     * @return Product
+     */
+    public function setValidated($validated)
+    {
+        $this->validated = $validated;
+        
+        return $this;
+    }
+
+    /**
+     * Get validated
+     * 
+     * @return bool
+     */
+    public function getValidated()
+    {
+        return $this->validated;
+    }
+
+    /**
+     * Set deleted
+     * 
+     * @param boolean $deleted
+     * 
+     * @return Product
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * Get deleted
+     * 
+     * @return boolean
+     */
+    public function getDeleted()
+    {
+        return $this->deleted;
+    }
+
+
 }
 

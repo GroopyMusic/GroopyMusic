@@ -175,12 +175,17 @@ admin :
       -- Adresse email : %mailContact%
 
       Raison de l'événement : %reasonEvent%
+      
   x :
     new_project : |
       Un nouveau projet a été créé par un artiste d'Un-Mute. Son titre: %project%
 
       Pour voir ses infos et le valider, rendez-vous sur l'espace d'admin !
 
+    new_product: |
+      Un nouvel article a été mis en vente par un artiste pour l'aider à financer son projet. L'intitulé de l'article: %product%
+
+      Pour voir ses infos et le valider, rendez-vous sur l'espace d'admin !
 
 artist:
   validated: |
@@ -338,8 +343,23 @@ x:
       Le projet que vous avez créé sur Chapots (titre : %project%) a bien été validé par un administrateur d'Un-Mute.
 
       Il est à présent visible publiquement sur la plateforme.
+
     refused: |
       Le projet que vous avez créé sur Chapots (titre : %project%) été refusé par un administrateur d'Un-Mute.
+
+      Raison(s) du refus :
+      ------------------------------
+        %reason%
+      ------------------------------
+
+  product:
+    validated: |
+      L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a bien été validé par un administrateur d'Un-Mute.
+
+      Il est à présent visible publiquement sur la plateforme.
+
+    refused: |
+      L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a été refusé par un administrateur d'Un-Mute.
 
       Raison(s) du refus :
       ------------------------------

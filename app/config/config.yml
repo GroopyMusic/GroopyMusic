@@ -87,7 +87,7 @@ ivory_ck_editor:
     my_config:
       toolbar: 'full'
     bbcode:
-      toolbar: [[ 'Bold','Italic','Underline','Link','Image' ]]
+      toolbar: [[ 'Bold','Italic','Underline','Link' ]]
       uiColor: "#FCFCFC"
       extraPlugins: 'bbcode'
   default_config: my_config
@@ -98,4 +98,4 @@ fm_bbcode:
           strict: false # if you want to parse attr values without quotes
           locale: fr
           xhtml: true
-          filters: [ default, image, url ]
+          filters: [ default, url ]

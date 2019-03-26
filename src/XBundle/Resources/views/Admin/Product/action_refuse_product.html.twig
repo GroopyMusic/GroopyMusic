@@ -1,0 +1,18 @@
+{% extends 'sonata_admin_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+
+    <div class="content-box">
+        <div class="content-box-content">
+            <h2>Refus de la mise en vente d'un article</h2>
+
+            <p class="alert alert-warning">
+                Attention, cette action enverra un mail aux gestionnaires du projet pour les prévenir que la mise en vente de l'article a été refusé.
+            </p>
+
+            <div>
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

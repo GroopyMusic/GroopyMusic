@@ -28,6 +28,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Prix</th>
                         <th scope="col">Stock</th>
+                        <th scope="col">Vendus</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -37,13 +38,28 @@
                             {% if product.photo is not null %}
                                 <td class="text-center"><img src="{{ asset(product.webPath(product.photo)) }}" width="90px" height="90px"/></td>
                             {% else %}
-                                <td>Pas d'image</td>
+                                <td></td>
                             {% endif %}
                             <th scope="row">{{ product.name }}</th>
-                            <td>{{ product.description }}</td>
-                            <td>{{ product.price }} €</td>
+                            <td>{{ product.description | bbcode_filter('my_default_filter') }}</td>
+                            <td>
+                                {% if product.freePrice %}
+                                    <p>Prix libre</p>{{ product.minimumPrice }} € (prix minimum)
+                                {% else %}
+                                    {{ product.price }} €
+                                {% endif %}
+                            </td>
                             <td>{{ product.supply }}</td>
-                            <td><button>Modifier</button</td>
+                            <td>{{ product.productsSold }}</td>
+                            <td>
+                                {% if product.validated %}
+                                    <a class="btn btn-primary" href="{{ path('x_artist_product_update', {'id': project.id, 'idProd': product.id}) }}">Modifier</a>
+                                {% else %}
+                                    <div class="text-muted font-italic pb-2">
+                                        En cours de validation
+                                    </div>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

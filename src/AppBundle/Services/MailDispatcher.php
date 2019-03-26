@@ -26,6 +26,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
+use XBundle\Entity\Product;
 use XBundle\Entity\Project;
 use XBundle\Entity\XContact;
 
@@ -762,5 +763,56 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::X_PROJECT_REFUSED, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
+
+    
+    public function sendAdminNewProduct(Product $product)
+    {
+        $params = ['product' => $product];
+        $subject = 'Mise en vente d\'un article sur Chapots';
+        $subject_params = [];
+
+        $this->sendAdminEmail(MailTemplateProvider::X_ADMIN_NEW_PRODUCT, $subject, $params, $subject_params);
+    }
+
+    public function sendProductValidated(Product $product)
+    {
+        $params = [
+            'product' => $product,
+        ];
+
+        $to = [];
+        foreach ($product->getProject()->getHandlers() as $handler) {
+            /** @var User $handler */
+            $to[$handler->getEmail()] = $handler->getPreferredLocale();
+        }
+
+        $toName = [];
+
+        $subject = 'La mise en vente de votre article sur Chapots a été vérifiée';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_PRODUCT_VALIDATED, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    public function sendProductRefused(Product $product, $reason)
+    {
+        $params = [
+            'product' => $product,
+            'reason' => $reason,
+        ];
+
+        $to = [];
+        foreach ($product->getProject()->getHandlers() as $handler) {
+            /** @var User $handler */
+            $to[$handler->getEmail()] = $handler->getPreferredLocale();
+        }
+
+        $toName = [];
+
+        $subject = 'La mise en vente de votre article sur Chapots a été refusée';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_PRODUCT_REFUSED, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
 
 }

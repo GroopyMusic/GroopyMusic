@@ -18,7 +18,7 @@ sonata_admin:
              position: right
              type: sonata.admin.block.admin_list
              settings:
-               groups: [app.admin.group.events, app.admin.group.orders, app.admin.group.user_management, app.admin.group.x.project]
+               groups: [app.admin.group.events, app.admin.group.orders, app.admin.group.user_management, app.admin.group.x]
 
        groups:
            app.admin.group.user:
@@ -85,11 +85,13 @@ sonata_admin:
                 - AppBundle\Admin\RewardRestrictionAdmin
                 - AppBundle\Admin\ConsomableTypeAdmin
 
-           app.admin.group.x.project:
-                label: app.admin.group.x.project
+           app.admin.group.x:
+                label: app.admin.group.x
                 label_catalogue: SonataAdminBundle
                 items:
                   - XBundle\Admin\ProjectAdmin
+                  - XBundle\Admin\ProductAdmin
+        
 
    assets:
       extra_javascripts:
@@ -415,4 +417,10 @@ services:
         arguments: [~, XBundle\Entity\Project, XBundle:ProjectAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.x.project }
+        public: true
+
+    XBundle\Admin\ProductAdmin:
+        arguments: [~, XBundle\Entity\Product, XBundle:ProductAdmin]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.x.product }
         public: true
