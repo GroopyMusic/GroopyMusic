@@ -58,7 +58,7 @@
         <td class="contentWidth" width="{{ contentWidth }}" bgcolor="white"  style="padding:10px 20px 20px 20px; border-top: 1px solid #EEEEEE;">
             <a name="top" ></a>
 
-            <h2 style="color: #E36437; text-align:center; text-transform: uppercase;">{{ subject }}</h2>
+            <h2 style="color:#E27E29; text-align:center; text-transform: uppercase;">{{ subject }}</h2>
 
             {% block content %}
                 {% block contentHead %}
@@ -91,10 +91,12 @@
         </td>
         {{ rightShadow}}
         {{ leftShadow}}
-        <td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#E36437" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
+        <td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#E27E29" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
             {% block footerInfoText %}
                 <p style="color:white;">
                     {{ 'add_to_contacts'|trans({'%address%': '<a href="mailto:'~sendMailAccountName~'&lt;'~sendMailAccountAddress~'&gt;" style="color:white;">'~sendMailAccountAddress~'</a>'})|raw }}
+                    <br />
+                    <i>N'imprimez cet e-mail que si c'est réellement nécessaire !</i>
                 </p>
             {% endblock %}{# end block footerInfoText #}
             {% block footerCopyrightText %}
