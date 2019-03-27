@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Form\ContractArtistPreValidationType;
 use AppBundle\Form\ContractArtistValidationType;
@@ -231,12 +232,5 @@ class ContractArtistAdminController extends BaseAdminController
             'form' => $form->createView(),
             'contract' => $contract,
         ));
-    }
-
-    public function paymentsAction(Request $request, UserInterface $user) {
-        $em = $this->getDoctrine()->getManager();
-        $contract = $this->admin->getSubject();
-
-
     }
 }

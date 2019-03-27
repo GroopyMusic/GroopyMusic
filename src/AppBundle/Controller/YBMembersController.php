@@ -451,9 +451,6 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/excel", name="yb_members_campaign_excel")
      */
     public function excelAction(YBContractArtist $campaign, UserInterface $user = null, StringHelper $strHelper) {
-        if ($user == null){
-            throw new YBAuthenticationException();
-        }
         $this->checkIfAuthorized($user, $campaign);
 
         // ask the service for a Excel5

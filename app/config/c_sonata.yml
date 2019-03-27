@@ -60,6 +60,7 @@ sonata_admin:
                label_catalogue: SonataAdminBundle
                items:
                    - AppBundle\Admin\ContractArtistAdmin
+                   - AppBundle\Admin\BaseContractArtistAdmin
                    - AppBundle\Admin\FestivalDayAdmin
                    - AppBundle\Admin\ArtistPerformanceAdmin
                    - AppBundle\Admin\CounterPartAdmin
@@ -227,6 +228,12 @@ services:
         arguments: [~, AppBundle\Entity\Cart, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.cart }
+        public: true
+
+    AppBundle\Admin\BaseContractArtistAdmin:
+        arguments: [~, AppBundle\Entity\BaseContractArtist, AppBundle:BaseContractArtistAdmin]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: app.admin.basecontractartist }
         public: true
 
     AppBundle\Admin\ContractArtistAdmin:
