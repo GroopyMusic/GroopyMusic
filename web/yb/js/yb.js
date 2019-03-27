@@ -49,7 +49,8 @@ $('document').ready(function() {
         var max = parseInt($q.closest('.counterpart-form').find('.quantity-right-plus').data('max'));
         var quantity = parseInt($q.val());
         if (quantity > max) {
-            $displayer.text('Vous ne pouvez pas dépasser ' + max + " exemplaires de ce ticket dans votre commande.");
+            var s = max > 1 ? 's' : '';
+            $displayer.text('Vous ne pouvez pas dépasser ' + max + " exemplaire"+s+" de ce ticket dans votre commande.");
             $displayer.show();
             $q.val(max);
         }

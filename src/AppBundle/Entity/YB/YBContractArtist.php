@@ -166,15 +166,6 @@ class YBContractArtist extends BaseContractArtist
         }
     }
 
-    public function getMaxCounterParts() {
-        $normal_soldout = array_sum(array_map(function(CounterPart $counterPart) {
-            return $counterPart->getMaximumAmount();
-        }, $this->getCounterParts()->toArray()));
-
-        $global_soldout = $this->global_soldout == null ? $normal_soldout : $this->global_soldout;
-        return min($global_soldout, $normal_soldout);
-    }
-
     public function getTotalNbAvailable() {
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
     }

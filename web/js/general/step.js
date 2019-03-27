@@ -33,6 +33,16 @@ $(function() {
     });
 
     function disableIfNoTickets() {
+        $('.incr-btn').each(function() {
+            var $button = $(this);
+            if($button.data('action') == 'increase') {
+                var oldValue = $button.parent().find('.quantity').val();
+                var max = $button.data('max');
+                if(oldValue > max) {
+                    $button.parent().find('.quantity').val(max);
+                }
+            }
+        });
         calculateTickets();
         if(tickets == 0) {
             $('.submit-cart').attr('disabled', 'disabled');
