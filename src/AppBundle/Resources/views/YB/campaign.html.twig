@@ -44,7 +44,7 @@
                     </div>
                 {% endif %}
 
-                {{ campaign.getDescription|raw|nl2br }}
+                {{ campaign.getDescription|bbcode_filter('my_default_filter') }}
 
                 {% if campaign.campaignPhotos is not empty %}
                     {% for photo in campaign.campaignPhotos %}

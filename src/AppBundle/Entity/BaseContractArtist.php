@@ -199,6 +199,10 @@ class BaseContractArtist implements TranslatableInterface
         $this->collected_amount += $amount;
     }
 
+    public function isInCampaign() {
+        return $this->hasThreshold() && $this->dateEnd > (new \DateTime);
+    }
+
     public function getFirstCounterPart() {
         foreach($this->getCounterParts() as $cp) {
             return $cp;
@@ -207,7 +211,7 @@ class BaseContractArtist implements TranslatableInterface
     }
 
     public function getNbPurchasable(CounterPart $cp) {
-        return floor(min($this->getMaxCounterParts() / $cp->getThresholdIncrease(), min($this->getNbAvailable($cp), $cp->getMaximumAmountPerPurchase())));
+        return floor(min($this->getMaxCounterParts() / (max($cp->getThresholdIncrease(), 0.00001)), min($this->getNbAvailable($cp), $cp->getMaximumAmountPerPurchase())));
     }
     
     public function getNbAvailable(CounterPart $cp) {

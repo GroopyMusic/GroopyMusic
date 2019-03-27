@@ -81,7 +81,7 @@ swiftmailer:
 ivory_ck_editor:
   plugins:
     bbcode:
-      path: '/groopymusic/web/bundles/app/ckeditor/bbcode/'
+      path: 'bundles/app/ckeditor/bbcode/'
       filename: 'plugin.js'
   configs:
     my_config:

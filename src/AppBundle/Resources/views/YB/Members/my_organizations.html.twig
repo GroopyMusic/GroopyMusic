@@ -50,6 +50,8 @@
         <h2>Créer une organisation</h2>
         {{ form_start(form) }}
             {{ form_row(form.name) }}
+            {{ form_row(form.vatNumber) }}
+            {{ form_row(form.bankAccount) }}
             <div class="col-md-12 text-center">
                 <button type="button" class="btn-secondary btn" data-toggle="modal" data-target="#createOrgaModal">
                     Enregistrer

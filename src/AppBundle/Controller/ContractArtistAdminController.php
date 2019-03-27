@@ -232,4 +232,11 @@ class ContractArtistAdminController extends BaseAdminController
             'contract' => $contract,
         ));
     }
+
+    public function paymentsAction(Request $request, UserInterface $user) {
+        $em = $this->getDoctrine()->getManager();
+        $contract = $this->admin->getSubject();
+
+
+    }
 }

@@ -117,11 +117,12 @@ class YBContractArtistType extends AbstractType
                         ]
                     ],
                     'description' => [
-                        'field_type' => TextareaType::class,
+                        'field_type' => 'ckeditor',
                         'label' => 'Description',
                         'constraints' => [
                             new Assert\NotBlank(),
-                        ]
+                        ],
+                        'config_name' => 'bbcode',
                     ],
                 ],
                 'exclude_fields' => ['additional_info', 'slug']
@@ -173,10 +174,6 @@ class YBContractArtistType extends AbstractType
                 ))
                 ->add('vatNumber', TextType::class, array(
                     'label' => 'Numéro de TVA',
-                    'required' => false
-                ))
-                ->add('organizationName', TextType::class, array(
-                    'label' => "Nom de l'organisation",
                     'required' => false
                 ))
                 ;

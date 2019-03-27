@@ -231,7 +231,7 @@ class YBContractArtist extends BaseContractArtist
 
     /**
      * #var YBCommission[]
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign", orphanRemoval=true)
      */
     private $commissions;
 
@@ -501,7 +501,21 @@ class YBContractArtist extends BaseContractArtist
      */
     public function setCommissions($commissions)
     {
-        $this->commissions = $commissions;
+        $this->commissions->clear();
+        foreach($commissions as $commission) {
+            $this->addCommission($commission);
+        }
+        return $this;
+    }
+
+    public function addCommission(YBCommission $commission) {
+        $this->commissions->add($commission);
+        $commission->setCampaign($this);
+        return $this;
+    }
+
+    public function removeCommission(YBCommission $commission) {
+        $this->commissions->remove($commission);
         return $this;
     }
 
@@ -543,6 +557,14 @@ class YBContractArtist extends BaseContractArtist
 
     public function setOrganization($organization){
         $this->organization = $organization;
+
+        if($this->vat_number == null) {
+            $this->vat_number = $organization->getVatNumber();
+        }
+
+        if($this->bank_account == null) {
+            $this->bank_account = $organization->getBankAccount();
+        }
     }
     
     public function getOrganizers(){

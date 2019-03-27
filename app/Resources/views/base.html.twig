@@ -109,11 +109,13 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <a href="{{ url('x_homepage') }}" target="_blank">Chapots!</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a href="{{ url('x_homepage') }}" target="_blank">Chapots!</a>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
 
             </footer>
         {% endblock %}
