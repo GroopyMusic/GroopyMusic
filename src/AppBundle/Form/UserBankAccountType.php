@@ -15,9 +15,9 @@ class UserBankAccountType extends AbstractType
     {
         $builder
             ->add('bankAccount', TextType::class, array(
-            'required' => true,
-            'label' => 'Numéro de compte en banque IBAN',
-        ))
+                'required' => true,
+                'label' => 'Numéro de compte en banque IBAN',
+            ))
             ->add('vatNumber', TextType::class, array(
                 'required' => true,
                 'label' => 'Numéro de TVA',

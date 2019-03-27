@@ -14,7 +14,7 @@
 
             <p>{{ 'order_pdf.sales.intro'|trans|raw }}</p>
 
-            {% for promotion in cf.contractArtist.currentPromotions %}
+            {% for promotion in cf.contractArtist.currentPromotionsVisible %}
                 {% if loop.first %}
                     <p>Les promotions suivantes s'appliquent à l'heure actuelle pour ce festival :</p>
                     <ul>

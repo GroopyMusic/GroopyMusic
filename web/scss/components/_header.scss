@@ -343,15 +343,13 @@ header.masthead {
 }
 
 #headline {
-  font-size: 2.2rem;
+  @extend .font-italic;
+  font-size: 1.6rem;
   margin-bottom: 3rem;
 
   @include media-breakpoint-down(sm) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-bottom: 2rem;
   }
-  margin-top: 3rem;
-  text-transform: uppercase;
-  font-family: 'Concert One', sans-serif;
   color: $headline-color;
 }

@@ -180,7 +180,8 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
         }
 
         return $qb
-            ->orderBy('fd.date', 'asc')
+            ->orderBy('c.successful', 'asc')
+            ->addOrderBy('fd.date', 'asc')
             ->getQuery()
             ->getResult();
     }

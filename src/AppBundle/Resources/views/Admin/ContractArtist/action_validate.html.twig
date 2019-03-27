@@ -25,7 +25,7 @@
                     </p>
                 {% endif %}
 
-                <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.artist.slug}) }}">Voir la page de l'événement.</a></p>
+                <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.getSlug}) }}">Voir la page de l'événement.</a></p>
 
                 <p class="alert alert-warning">
                     Attention, quelle que soit ta décision, un mail sera envoyé à tous les crowdfundeurs pour la leur annoncer.

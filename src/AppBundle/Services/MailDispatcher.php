@@ -16,6 +16,8 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\User_Category;
 use AppBundle\Entity\VIPInscription;
 use AppBundle\Entity\VolunteerProposal;
+use AppBundle\Entity\YB\Organization;
+use AppBundle\Entity\YB\OrganizationJoinRequest;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBTransactionalMessage;
@@ -634,7 +636,7 @@ class MailDispatcher
         $organizers = $campaign->getHandlers();
         $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
             return $person->getEmail();
-        }, $organizers->toArray()));
+        }, $organizers));
 
         $to = self::ADMIN_TO; 
 
@@ -648,6 +650,34 @@ class MailDispatcher
         $subject_params = ['%event%' => $campaign->getTitle()];
 
         $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
+    }
+
+    public function sendYBJoinOrganization($email, Organization $organization, User $user){
+        $to = self::ADMIN_TO;
+        $to[$email] = $this->translator->getLocale();
+        $params = [
+            'organization' => $organization,
+            'member' => $user
+        ];
+        $subject = 'subjects.yb.reminders.join_organization';
+        $subject_params = ['%organization%' => $organization->getName()];
+        $this->sendEmail(MailTemplateProvider::YB_JOIN_ORGANIZATION, $subject, $params, $subject_params, $to);
+    }
+
+    public function sendYBNotifyOrganizationRequestCancel(OrganizationJoinRequest $request){
+        $email = $request->getDemander()->getEmail();
+        $to = self::ADMIN_TO;
+        $to[$email] = $this->translator->getLocale();
+        $params = [
+            'organization' => $request->getOrganization(),
+            'guest_email' => $request->getEmail(),
+        ];
+        $subject = 'subjects.yb.notifications.join_organization_cancelled';
+        $subject_params = [
+            '%organization%' => $request->getOrganization()->getName(),
+            '%email_address%' => $request->getEmail(),
+        ];
+        $this->sendEmail(MailTemplateProvider::YB_NOTIFY_JOIN_ORGANIZATION_CANCEL, $subject, $params, $subject_params, $to);
     }
 
     public function sendYBTransactionalMessageWithCopy(YBTransactionalMessage $message) {

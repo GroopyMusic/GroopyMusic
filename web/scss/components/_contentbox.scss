@@ -10,11 +10,12 @@
 
   &-row {
     @extend .align-items-end;
-    border-top: 1px solid #d2d2d2;
-    border-bottom: 1px solid #d2d2d2;
+
     width: 100%;
 
     @include media-breakpoint-up(md) {
+      border-top: 1px solid #d2d2d2;
+      border-bottom: 1px solid #d2d2d2;
       .content-box-col:not(:first-child) {
         border-left: 1px solid #d2d2d2;
       }
@@ -28,7 +29,7 @@
     }
   }
   &-col {
-    @extend .py-4;
+    @extend .py-3, .py-md-4;
     &.no-border-top {
       border-top: 0 none;
     }
@@ -45,7 +46,11 @@
   }
 
   &-content {
-    padding: 1.5rem;
+    padding: 1rem;
+
+    @include media-breakpoint-up(md) {
+      padding: 1.5rem;
+    }
 
     &.no-padding-left {
       @extend .pl-0;
@@ -134,5 +139,13 @@
     td.contract-info-title {
       @extend .text-left;
     }
+  }
+}
+
+.crowdfunding-box {
+  background: rgba(195, 163, 232, 0.2);
+  @extend .rounded, .mx-auto, .p-3;
+  &-border {
+    border: 1px solid #818394;
   }
 }

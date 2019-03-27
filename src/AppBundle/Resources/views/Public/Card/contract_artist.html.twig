@@ -3,6 +3,8 @@
 {% block card_content %}
 
     {% set rotation = false %}
+    {% set progress_100 = contract.percentObjective %}
+    {% set state = contract.state %}
 
     {% set is_event = contract is instanceof('\\AppBundle\\Entity\\ContractArtist') %}
     {% set is_pot = contract is instanceof('\\AppBundle\\Entity\\ContractArtistPot') %}
@@ -18,14 +20,18 @@
             {% if clickable %}
                 <a class="thumbnail-link" href="{{ url_contract }}"></a>
             {% endif %}
+            <div class="w-100 position-absolute" style="z-index:1000;">
+                <div class="progress">
+                    <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
+                         style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
+                </div>
+                <div class="pt-2 pr-2 text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
+                    {{ progress_100 }}% récoltés<br/>{{ ('event.'~state)|trans|raw }}
+                </div>
+            </div>
             <div class="overlay"></div>
-            {% if contract.crowdable %}
-                <a class="tag success" href="{{ url_contract }}">{% if is_event and contract.isInSuccessfulState %}{{ 'confirmed'|trans|raw }}
-                    {% elseif is_event  %}{{ 'stillselling'|trans }}{% else %}En vente
-                    {% endif %}
-                </a>
-            {% endif %}
-            <div class="caption{% if is_sales %} mt-4 pt-5{% endif %}">
+
+            <div class="caption mt-4 pt-5">
                 <h5 class="title"><a href="{{ url_contract }}">{{ contract.getTitle }}</a></h5>
                 <div class="clearfix">
                     {% if is_event %}
@@ -36,9 +42,8 @@
                             <div><i class="fas fa-map-marker-alt"></i> {{ contract.displayHalls }}</div>
                         {% endif %}
                     {% endif %}
-                    <div class="artists-list">{% for art in contract.allArtists %}{% if not loop.first %} - {% endif %}{{ art }}{% endfor %}</div>
-                        {% if is_sales or is_pot %}<a href="{{ url_contract }}" class="text-white"><i class="fas fa-compact-disc"></i> {{ 'sales.card_headline'|trans }}</a>
-                        {% endif %}
+                    <div class="artists-list">
+                        {% for art in contract.allArtists %}{% if not loop.first %} - {% endif %}{{ art }}{% endfor %}</div>
                     </div>
 
                 {% if is_event %}

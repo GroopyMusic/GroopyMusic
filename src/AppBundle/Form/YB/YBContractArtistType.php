@@ -4,15 +4,18 @@ namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\Organization;
 use AppBundle\Form\AddressType;
 use AppBundle\Form\CounterPartType;
 use AppBundle\Form\PhotoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,12 +23,60 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class YBContractArtistType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if($options['admin']){
+            $builder
+                ->add('commissions', CollectionType::class, array(
+                    'label' => 'Commissions',
+                    'entry_type' => YBCommissionType::class,
+                    'entry_options' => array(
+                        'label' => false,
+                    ),
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'prototype' => true,
+                    'attr' => ['class' => 'second-collection']
+                    //'required' => false,
+                    //'label' => 'Montant fixe minimum',
+                ))
+                ->add('vat', ChoiceType::class, array(
+                    'required' => false,
+                    'label' => 'Taux de TVA',
+                    'choices' => array(
+                        "0%" => 0,
+                        "6%" => 0.06,
+                        "12%" => 0.12,
+                        "21%" => 0.21),
+                    'constraints' => [
+                        new Assert\GreaterThanOrEqual(['value' => 0]),
+                        new Assert\LessThanOrEqual(['value' => 1])
+                    ]
+                ))
+            ;
+        }
+
         $builder
+            ->add('organization', EntityType::class, [
+                'class' => Organization::class,
+                'label' => 'Organisation',
+                'choices' => $options['userOrganizations'],
+                'group_by' => function(Organization $org){
+                    if ($org->isPrivate()){
+                        return 'Personnellement';
+                    } else {
+                        return 'Mes organisations';
+                    }
+                },
+                'choice_label' => 'name',
+            ])
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
@@ -95,6 +146,7 @@ class YBContractArtistType extends AbstractType
                 'label' => 'Sold out global (si applicable)',
                 'required' => false,
             ))
+
             ->add('submit', SubmitType::class, array(
                 'label' => 'Enregistrer',
             ))
@@ -113,7 +165,23 @@ class YBContractArtistType extends AbstractType
                         new Assert\NotBlank(),
                 )
             ));
+        } else {
+            $builder
+                ->add('bankAccount', TextType::class, array(
+                    'label' => 'Numéro de compte en banque IBAN',
+                    'required' => false
+                ))
+                ->add('vatNumber', TextType::class, array(
+                    'label' => 'Numéro de TVA',
+                    'required' => false
+                ))
+                ->add('organizationName', TextType::class, array(
+                    'label' => "Nom de l'organisation",
+                    'required' => false
+                ))
+                ;
         }
+
     }
 
     public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
@@ -153,6 +221,8 @@ class YBContractArtistType extends AbstractType
                 new Assert\Callback(array($this, 'validate'))
             ),
             'creation' => false,
+            'admin' => false,
+            'userOrganizations' => null,
         ]);
     }
 

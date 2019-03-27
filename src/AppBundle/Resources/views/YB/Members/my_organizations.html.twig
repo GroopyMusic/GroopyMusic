@@ -1,0 +1,84 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    {% import '@App/YB/Macros/organization.html.twig' as macros %}
+
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li class="active"><span>Mes organisations</span></li>
+        </ol>
+    </section>
+
+    <div
+        style="display:none"
+        data-group="group1"
+        data-path=".name"
+        data-type="text">
+    </div>
+
+    <section class="container py-5">
+        <h2>Mes organisations</h2>
+        <div align="center">
+            <input
+                    data-jplist-control="textbox-filter"
+                    data-group="group1"
+                    data-name="my-filter-1"
+                    data-path=".name"
+                    type="text"
+                    value=""
+                    data-clear-btn-id="name-clear-btn"
+                    placeholder="Chercher..." />
+            <button type="button" id="name-clear-btn">Supprimer</button>
+        </div>
+        <br>
+        {% if organizations|length > 0 %}
+            <div data-jplist-group="group1">
+                {% for organization in organizations %}
+                    {{ macros.organization_row(organization, currentUser) }}
+                {% endfor %}
+                <div data-jplist-control="no-results" data-group="group1" data-name="no-results">
+                    No Results Found
+                </div>
+            </div>
+        {% else %}
+            <p>Vous ne faites partie d'aucune organisation.</p>
+        {% endif %}
+    </section>
+
+    <section class="container py-5">
+        <h2>Créer une organisation</h2>
+        {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn-secondary btn" data-toggle="modal" data-target="#createOrgaModal">
+                    Enregistrer
+                </button>
+            </div>
+            <div class="modal fade" id="createOrgaModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Vous êtes sur le point de créer une organisation. Êtes vous sûr ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                            {{ form_widget(form.save) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </section>
+
+{% endblock body %}
+
+{% block additional_javascripts %}
+    <script>jplist.init();</script>
+{% endblock additional_javascripts %}

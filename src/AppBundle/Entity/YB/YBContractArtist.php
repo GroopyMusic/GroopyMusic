@@ -48,9 +48,10 @@ class YBContractArtist extends BaseContractArtist
     {
         parent::__construct();
         $this->tickets_sent = false;
-        $this->date_closure = new \DateTime();
+        $this->date_closure = (new \DateTime())->add(new \DateInterval('P1M'));
         $this->sold_counterparts = 0;
         $this->code = uniqid();
+        $this->commissions = new ArrayCollection();
         $this->transactional_messages = new ArrayCollection();
     }
 
@@ -101,6 +102,12 @@ class YBContractArtist extends BaseContractArtist
 
     public function getPercentObjective() {
         return min(floor(($this->getCounterpartsSold() / max(1, $this->getThreshold())) * 100), 100);
+    }
+
+    public function isToday(){
+        $dateOfEvent = $this->date_event->format('m/d/Y');
+        $today = (new \DateTime())->format('m/d/Y');
+        return $dateOfEvent === $today;
     }
 
     public function getState()
@@ -159,17 +166,12 @@ class YBContractArtist extends BaseContractArtist
         }
     }
 
-    public function getMaxCounterParts() {
-        $normal_soldout = array_sum(array_map(function(CounterPart $counterPart) {
-            return $counterPart->getMaximumAmount();
-        }, $this->getCounterParts()->toArray()));
-
-        $global_soldout = $this->global_soldout == null ? $normal_soldout : $this->global_soldout;
-        return min($global_soldout, $normal_soldout);
-    }
-
     public function getTotalNbAvailable() {
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
+    }
+
+    public function getOrganizationName() {
+        return $this->organization->getName();
     }
 
     /**
@@ -202,21 +204,59 @@ class YBContractArtist extends BaseContractArtist
     private $handlers;
 
     /**
+     * @var Organization
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="campaigns", cascade={"persist"})
+     */
+    private $organization;
+
+    /**
+     * @var string
      * @var string
      * @ORM\Column(name="code", type="string", length=255)
      */
     private $code;
 
     /**
+     * @var Address
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Address", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
 
     /**
+     * @var float
+     * @ORM\Column(name="vat", type="float", nullable=true)
+     */
+    private $vat;
+
+    /**
+     * #var YBCommission[]
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign")
+     */
+    private $commissions;
+
+    /**
+     * @var YBInvoice[]
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBInvoice", cascade={"all"}, mappedBy="campaign")
+     */
+    private $invoices;
+
+    /**
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
      */
     private $transactional_messages;
+
+    /**
+     * @var string
+     * @ORM\Column(name="bank_account", type="string", length=50, nullable=true)
+     */
+    private $bank_account;
+
+    /**
+     * @var string
+     * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
+     */
+    private $vat_number;
 
     /**
      * Set ticketsSent
@@ -393,7 +433,7 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getHandlers()
     {
-        return $this->handlers;
+        return $this->organization->getMembers();
     }
 
     /**
@@ -436,6 +476,51 @@ class YBContractArtist extends BaseContractArtist
         $this->address = $address;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * @param mixed $vat
+     * @return YBContractArtist
+     */
+    public function setVat($vat)
+    {
+        $this->vat = $vat;
+        return $this;
+    }
+
+    /**
+     * @param $commissions
+     * @return YBContractArtist
+     */
+    public function setCommissions($commissions)
+    {
+        $this->commissions = $commissions;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommissions()
+    {
+        return $this->commissions;
+    }
+
+    /**
+     * @return YBInvoice[]
+     */
+    public function getInvoices()
+    {
+        return $this->invoices;
+    }
+
     /**
      * @return mixed
      */
@@ -450,5 +535,36 @@ class YBContractArtist extends BaseContractArtist
     public function setTransactionalMessages($transactional_messages)
     {
         $this->transactional_messages = $transactional_messages;
+    }
+   
+    public function getOrganization(){
+        return $this->organization;
+    }
+
+    public function setOrganization($organization){
+        $this->organization = $organization;
+    }
+    
+    public function getOrganizers(){
+        return $this->organization->getMembers();
+    }
+
+    public function getVatNumber() {
+        return $this->vat_number;
+    }
+    public function setVatNumber($vat_number) {
+        $this->vat_number = $vat_number;
+        return $this;
+    }
+
+    public function getBankAccount()
+    {
+        return $this->bank_account;
+    }
+
+    public function setBankAccount($bank_account)
+    {
+        $this->bank_account = $bank_account;
+        return $this;
     }
 }

@@ -1,0 +1,15 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.html.twig' %}
+
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('yb.reminders.join_organization', {
+                '%sender%' : member.getDisplayName,
+                '%organization%': organization.getName,
+                '%url%': url('yb_members_confirm_joining_organization', {'id': organization.getId}),
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

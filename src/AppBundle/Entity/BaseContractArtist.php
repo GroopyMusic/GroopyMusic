@@ -88,6 +88,7 @@ class BaseContractArtist implements TranslatableInterface
         return $this instanceof YBContractArtist;
     }
 
+
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
     }
@@ -126,6 +127,16 @@ class BaseContractArtist implements TranslatableInterface
         $this->start_date = $this->isInTestPeriod() ? (new \DateTime())->add(new \DateInterval('P'.self::NB_TEST_PERIOD_DAYS.'D')) : (new \DateTime());
     }
 
+    public function getMaxCounterParts() {
+        $global_soldout = $this->global_soldout == null ? 0 : $this->global_soldout;
+
+        if($global_soldout > 0) {
+           $global_soldout -= $this->counterparts_sold;
+        }
+
+        return $global_soldout;
+    }
+
     // TODO handle case where test period lasts > x weeks
     public function generatePromotion() {
         $promo = new Promotion(Promotion::TYPE_THREE_PLUS_ONE);
@@ -143,6 +154,12 @@ class BaseContractArtist implements TranslatableInterface
         $now = new \DateTime();
         return array_filter($this->promotions->toArray(), function(Promotion $promotion) use ($now) {
             return $promotion->getStartDate() <= $now && $promotion->getEndDate() >= $now;
+        });
+    }
+
+    public function getCurrentPromotionsVisible() {
+        return array_filter($this->getCurrentPromotions(), function(Promotion $promotion) {
+            return !$promotion->isHidden();
         });
     }
 
@@ -190,25 +207,22 @@ class BaseContractArtist implements TranslatableInterface
     }
 
     public function getNbPurchasable(CounterPart $cp) {
-        return min($this->getNbAvailable($cp), $cp->getMaximumAmountPerPurchase());
+        return floor(min($this->getMaxCounterParts() / $cp->getThresholdIncrease(), min($this->getNbAvailable($cp), $cp->getMaximumAmountPerPurchase())));
     }
     
     public function getNbAvailable(CounterPart $cp) {
         $nb = $cp->getMaximumAmount();
 
-        foreach($this->contractsFan as $cf) {
+        foreach($this->getContractsFanPaid() as $cf) {
             /** @var ContractFan $cf */
-            if($cf->getPaid() && !$cf->getRefunded()) {
-                foreach ($cf->getPurchases() as $purchase) {
-                    if ($purchase->getCounterPart()->getId() == $cp->getId()) {
-                        $nb -= $purchase->getQuantity();
-                    }
+            foreach ($cf->getPurchases() as $purchase) {
+                if ($purchase->getCounterPart()->getId() == $cp->getId()) {
+                    $nb -= $purchase->getQuantity();
                 }
             }
         }
 
-        if($nb <= 0) return 0;
-        return $nb;
+        return max(0, $nb);
     }
 
     protected $contractsFanPaid = null;
@@ -519,6 +533,12 @@ class BaseContractArtist implements TranslatableInterface
      * @ORM\Column(name="reminders", type="array")
      */
     protected $reminders;
+
+    /**
+     * @var string
+     * @ORM\Column(name="facebook_url", type="string", length=255, nullable=true)
+    */
+    protected $facebook_url;
 
     /**
      * Get id
@@ -1270,6 +1290,27 @@ class BaseContractArtist implements TranslatableInterface
         if(!in_array($reminder, $this->reminders)) {
             $this->reminders[] = $reminder;
         }
+        return $this;
+    }
+
+    // todo what is this?????
+    public function getDateEvent(){
+
+    }
+
+    /**
+     * @return string
+     */
+    public function getFacebookUrl() {
+        return $this->facebook_url;
+    }
+
+    /**
+     * @param $facebookUrl
+     * @return $this
+     */
+    public function setFacebookUrl($facebookUrl) {
+        $this->facebook_url = $facebookUrl;
         return $this;
     }
 }
