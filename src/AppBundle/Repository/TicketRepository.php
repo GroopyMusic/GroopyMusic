@@ -67,4 +67,13 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository {
             ->getResult();
     }
 
+    public function getDuplicates()
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT t
+                  FROM AppBundle:Ticket t
+                  WHERE t.barcode_text IN (SELECT t2.barcode_text FROM AppBundle:Ticket t2 WHERE t2.barcode_text = t.barcode_text AND t2.id <> t.id)
+                  ');
+    }
+
 }
