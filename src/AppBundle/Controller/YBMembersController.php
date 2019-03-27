@@ -111,9 +111,8 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/update", name="yb_members_campaign_edit")
      */
     public function editCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
-        if (!$user->isSuperAdmin()){
-            $this->checkIfAuthorized($user, $campaign);
-        }
+
+        $this->checkIfAuthorized($user, $campaign);
 
 
         if($campaign->isPassed()) {
@@ -185,9 +184,9 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/orders", name="yb_members_campaign_orders")
      */
     public function ordersCampaignAction(YBContractArtist $campaign, UserInterface $user = null) {
-        if (!$user->isSuperAdmin()){
-            $this->checkIfAuthorized($user, $campaign);
-        }
+
+        $this->checkIfAuthorized($user, $campaign);
+
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
 
@@ -249,7 +248,7 @@ class YBMembersController extends BaseController
      */
     public function invoiceGenerateAction(YBContractArtist $campaign, EntityManagerInterface $em, UserInterface $user = null){
         //$this->checkIfAuthorized($user);
-        if (!$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()){
             throw new YBAuthenticationException();
         }
 
@@ -290,7 +289,7 @@ class YBMembersController extends BaseController
      */
     public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
         $campaign = $invoice->getCampaign();
-        if (!$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()){
             $this->checkIfAuthorized($user, $campaign);
         }
         $cfs = array_reverse($campaign->getContractsFanPaid());
@@ -327,7 +326,7 @@ class YBMembersController extends BaseController
      */
     public function invoiceFeeDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
         $campaign = $invoice->getCampaign();
-        if (!$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()){
             $this->checkIfAuthorized($user, $campaign);
         }
 
@@ -358,7 +357,7 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/sold", name="yb_members_campaign_sold")
      */
     public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
-        if (!$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()){
             throw new YBAuthenticationException();
         }
         //$this->checkIfAuthorized($user, $campaign);
@@ -395,7 +394,7 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/fee", name="yb_members_campaign_fee")
      */
     public function campaignFeeDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
-        if (!$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()){
             throw new YBAuthenticationException();
         }
         //$this->checkIfAuthorized($user, $campaign);
@@ -454,10 +453,10 @@ class YBMembersController extends BaseController
      * @Route("/campaign/{id}/excel", name="yb_members_campaign_excel")
      */
     public function excelAction(YBContractArtist $campaign, UserInterface $user = null, StringHelper $strHelper) {
-        if (!$user->isSuperAdmin()){
+        if ($user == null){
             throw new YBAuthenticationException();
         }
-        //$this->checkIfAuthorized($user, $campaign);
+        $this->checkIfAuthorized($user, $campaign);
 
         // ask the service for a Excel5
         $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
