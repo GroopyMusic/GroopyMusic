@@ -18,7 +18,6 @@ class Version20190315145418 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE yb_contract_artist DROP organization_name');
         $this->addSql('ALTER TABLE ticket ADD paidInCash TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE counter_part CHANGE minimum_price minimum_price DOUBLE PRECISION NOT NULL');
     }
