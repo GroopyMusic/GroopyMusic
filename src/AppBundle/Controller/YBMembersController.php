@@ -114,8 +114,7 @@ class YBMembersController extends BaseController
 
         $this->checkIfAuthorized($user, $campaign);
 
-
-        if($campaign->isPassed()) {
+        if(!$user->isSuperAdmon && $campaign->isPassed()) {
             $this->addFlash('yb_error', 'Cette campagne est passée. Il est donc impossible de la modifier.');
             return $this->redirectToRoute('yb_members_passed_campaigns');
         }
@@ -135,7 +134,6 @@ class YBMembersController extends BaseController
 
 
         return $this->render('@App/YB/Members/campaign_new.html.twig', [
-            'admin' => $user->isSuperAdmin(),
             'form' => $form->createView(),
             'campaign' => $campaign,
         ]);

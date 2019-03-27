@@ -3,6 +3,9 @@
     <div class="row mt-4">
         <div class="col-12">
             <h3>{{ campaign.getTitle }}</h3>
+            <div class="small">
+                Organisé par {{ campaign.getOrganizationName }}
+            </div>
             {% if campaign.pending %}
                 <div class="mt-2"><i class="fas fa-exclamation"></i>
                     Cette campagne est en attente de validation ou d'annulation de votre part.
@@ -21,7 +24,7 @@
         <div class="col-12 col-md-2">
             <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">Voir la page de la campagne</a>
         </div>
-        {% if not campaign.isPassed %}
+        {% if is_granted('ROLE_SUPER_ADMIN') or not campaign.isPassed %}
             <div class="col-12 col-md-2">
                 <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les informations</a>
             </div>
@@ -29,9 +32,13 @@
         <div class="col-12 col-md-2">
             <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}">Accéder à la liste de commandes</a>
         </div>
-        <div class="col-12 col-md-3">
-            <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_transactional_message', {'id': campaign.id}) }}">Envoyer un message transactionnel</a>
-        </div>
+
+        {% if campaign.wideBuyers is not empty and not campaign.isWayPassed %}
+            <div class="col-12 col-md-3">
+                <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_transactional_message', {'id': campaign.id}) }}">Envoyer un message transactionnel</a>
+            </div>
+        {% endif %}
+
         {% if campaign.hasThreshold %}
             <div class="col-12 col-md-3">
                 <i class="fas fa-chart-bar text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">Financement participatif</a>

@@ -238,7 +238,17 @@ class BaseContractArtist implements TranslatableInterface
         }
 
         return $this->contractsFanPaid;
+    }
 
+    protected $contractsFanPaidAndRefunded = null;
+    public function getContractsFanPaidAndRefunded() {
+        if($this->contractsFanPaidAndRefunded == null) {
+            $this->contractsFanPaidAndRefunded = array_filter($this->contractsFan->toArray(), function(ContractFan $contractFan) {
+                return $contractFan->isPaid();
+            });
+        }
+
+        return $this->contractsFanPaidAndRefunded;
     }
 
     public function getNbCounterPartsPaid() {

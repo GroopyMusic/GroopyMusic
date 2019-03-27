@@ -142,6 +142,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function getAllOnGoingEvents(){
         return $this->createQueryBuilder('c')
             ->where('c.date_closure >= :now AND c.failed = 0')
+            ->orderBy('c.date_event', 'ASC')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();
@@ -150,6 +151,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function getAllPastEvents(){
         return $this->createQueryBuilder('c')
             ->where('c.date_closure < :now OR c.failed = 1')
+            ->orderBy('c.date_event', 'DESC')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();

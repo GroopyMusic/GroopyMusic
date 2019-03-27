@@ -339,6 +339,7 @@ class Purchase
     public function setCounterpart(\AppBundle\Entity\CounterPart $counterpart)
     {
         $this->counterpart = $counterpart;
+        $this->free_price_value = $counterpart->getMinimumPrice();
 
         return $this;
     }

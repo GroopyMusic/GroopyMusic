@@ -15,7 +15,7 @@
   right: 10px;
 }
 
-.quantity-error-display {
+.quantity-error-display, .free-price-error-display {
   @extend .text-danger;
   @extend .pb-2;
 }

@@ -88,17 +88,18 @@
                             <div class="counterpart-form p-3 my-2 border">
 
                                 <div class="quantity-error-display" style="display:none;"></div>
+                                <div class="free-price-error-display" style="display:none;"></div>
 
                                 <div class="form-group form-row">
                                     {{ form_errors(purchase) }}
 
                                     <div class="col-8 col-sm-9 col-lg-8">
-                                        <label class="font-weight-bold">{{ counterpart.name }}{% if counterpart.freePrice %} (prix libre){% endif %}</label>
+                                        <label class="font-weight-bold">{{ counterpart.name }}{% if counterpart.freePrice %} (prix libre, minimum {{ counterpart.minimumPrice }} €){% endif %}</label>
                                     </div>
                                     {% if counterpart.freePrice %}
                                         <div class="col-4 col-sm-3 col-lg-4">
                                             <div class="w-90 position-relative mb-2">
-                                                {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice, 'value': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
+                                                {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
                                             </div>
                                         </div>
                                     {% else %}

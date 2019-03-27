@@ -24,6 +24,7 @@ use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -58,7 +59,7 @@ class MailDispatcher
     private $locales;
     private $logger;
 
-    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel, Environment $twig, $locales)
+    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel, Environment $twig, LoggerInterface $logger, $locales)
     {
         $this->mailer = $mailer;
         $this->translator = $translator;
@@ -69,6 +70,7 @@ class MailDispatcher
         $this->kernel = $kernel;
         $this->twig = $twig;
         $this->locales = $locales;
+        $this->logger = $logger;
     }
 
     private function extract_locale($locale, $haystack)
@@ -701,7 +703,8 @@ class MailDispatcher
 
     public function sendYBTransactionalMessageWithCopy(YBTransactionalMessage $message) {
         $this->sendYBTransactionalMessage($message);
-        $this->sendYBTransactionalMessageCopy($message);
+        try { $this->sendYBTransactionalMessageCopy($message); }
+        catch(\Throwable $exception) {$this->logger->error("Echec lors de l'envoi de la copie d'un message transactionnel aux organisateurs : " . $exception->getMessage());}
     }
 
     public function sendYBTransactionalMessage(YBTransactionalMessage $message) {

@@ -68,6 +68,20 @@ $('document').ready(function() {
         rectifyQuantities($(this));
     });
 
+    $('input.free-price-value').change(function() {
+        var $fpv = $(this);
+        var $displayer = $fpv.closest('.counterpart-form').find('.free-price-error-display');
+        var min = parseFloat($fpv.attr('min'));
+        if(parseFloat($fpv.val()) < min) {
+            $displayer.text('Le prix minimum pour ce ticket est de ' + min + ' euros.');
+            $displayer.show();
+            $fpv.val(min);
+        }
+        else {
+            $displayer.hide();
+        }
+    });
+
     $('.quantity-right-plus').click(function(e){
         e.preventDefault();
         var $q = $(this).closest('.input-group').find('input.quantity');
