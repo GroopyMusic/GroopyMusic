@@ -1,0 +1,13 @@
+.product-row {
+    @extend .my-3, .p-3;
+}
+
+.collection-actions {
+    @extend .w-100;
+    @extend .position-relative;
+
+    .collection-remove {
+        @extend .position-absolute;
+        right:0;
+    }
+}

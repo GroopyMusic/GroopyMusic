@@ -1,0 +1,534 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+<div class="container py-5">
+    <h2 class="text-center">Paiement</h2>
+
+    <div class="row">
+        <div class="col-12 col-md-7 order-2 order-md-1">
+            <div>
+                <!-- Used to display Element errors -->
+                <div class="stripe-error alert alert-danger" role="alert"></div>
+                <div id="stripe-loader">
+                    {{ hidden_loader(true, false) }}
+                </div>
+            </div>
+            <form id="payment-form" method="post">
+                <div class="checkout-order-form card card-info">
+                    <div class="card-header">
+                        Vos coordonnées
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name">Prénom</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" value="" required>
+                                <div class="invalid-feedback">
+                                    Veuillez renseigner un prénom valide.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name">Nom</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" value="" required>
+                                <div class="invalid-feedback">
+                                    Veuillez renseigner un nom valide.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="">
+                            <div class="invalid-feedback">
+                                Veuillez renseigner un email valide.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {#% if cart.amount == 0 %}
+                    <div class="checkout-payment-form card card-info mt-2">
+                        <div class="card-header">
+                            Validation
+                        </div>
+                        <div class="card-body">
+                            <p>{{ 'pay_cart.conditions.intro_free'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>
+                            <div class="form-row">
+                                {% if error_conditions %}
+                                    <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
+                                {% endif %}
+                                <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
+                                    <input type="checkbox" id="accept_conditions" name="accept_conditions"
+                                           class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
+                                </label>
+                            </div>
+                            <div class="form-row" id="card-form-row">
+                                <input type="submit" class="btn btn-primary" id="free-order-submit" value="Valider la commande (gratuite)"/>
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %#}
+                    <div class="checkout-payment-form card card-info mt-2">
+                        <div class="card-header"><i class="fas fa-lock"></i>  Paiement <i class="fab fa-stripe" title="Nous utilisons Stripe pour garantir la sécurité de vos paiements."></i> </div>
+                        <div class="card-body">
+                            {#<p>{{ 'pay_cart.conditions.intro'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>#}
+                            <div class="form-row">
+                                {% if error_conditions %}
+                                    <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
+                                {% endif %}
+                                <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
+                                    <input type="checkbox" id="accept_conditions" name="accept_conditions"
+                                           class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
+                                </label>
+                            </div>
+
+                            <div class="form-row" id="card-form-row">
+                                <div class="form-row form-group">
+                                    <div class="col-12">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="payment-method" value="credit-card"
+                                                   class="custom-control-input" checked="checked">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">{{ 'pay_cart.methods.creditcard'|trans|raw }}</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="payment-method" value="debit-card"
+                                                   class="custom-control-input">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">{{ 'pay_cart.methods.bancontact'|trans|raw }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="content-box col-12">
+                                    <div class="content-box-content content-box-content-zones">
+                                        <div id="credit-card" class="payment-method w-100">
+                                            <div class="col-12 content-box-content-zone">
+                                                <h5>
+                                                    {{ 'pay_cart.proceed.creditcard.title'|trans|raw }}
+                                                    <i class="fab fa-cc-visa"></i>
+                                                    <i class="fab fa-cc-mastercard"></i>
+                                                </h5>
+                                            </div>
+                                            <div class="content-box-content-zone no-border">
+                                                <div class="col-12 row">
+                                                    <div class="col-12">
+                                                        <label>
+                                                            <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.creditcard'|trans|raw }}</div>
+                                                            <div id="card-number-element" class="field"></div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-12 col-md-5 mt-3">
+                                                        <label>
+                                                            <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.exp'|trans|raw }}</div>
+                                                            <div id="card-expiry-element" class="field"></div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-12 col-md-5 mt-3">
+                                                        <label>
+                                                            <div class="text-left contract-info-title">{{ 'pay_cart.proceed.creditcard.labels.cvc'|trans|raw }}</div>
+                                                            <div id="card-cvc-element" class="field"></div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mt-5">
+                                                    <input type="submit" class="btn btn-primary"
+                                                           value="{{ 'pay_cart.proceed.creditcard.submit'|trans({'%amount%': cart.donationAmount})|raw }}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="debit-card" class="form-row payment-method w-100"
+                                             style="display:none;">
+                                            <div class="col-12 content-box-content-zone">
+                                                <h5>
+                                                    {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <i class="far fa-credit-card"></i>
+                                                </h5>
+                                                <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
+                                            </div>
+                                            <div class="content-box-content-zone no-border">
+                                                <div id="bc-card-element" class="text-center">
+                                                    <button type="button" class="btn btn-primary mt-3"
+                                                            id="choose-bancontact">
+                                                        {{ 'pay_cart.proceed.bancontact.submit'|trans({'%amount%': cart.donationAmount})|raw }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {#% endif %#}
+            </form>
+        </div>
+
+        <div class="col-12 col-md-5 order-1 order-md-2">
+            <div class="checkout-recap card card-info">
+                <div class="card-header">Récapitulatif</div>
+                <div class="card-body">
+                    <ul class="list-group mb-3">
+                        {% if cart.product == null %}
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div>
+                                    <h4 class="my-0">Donation</h4>
+                                    <small class="text-muted">en faveur de</small>
+                                </div>
+                                <span class="text-muted">{{ cart.donationAmount }}€</span>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div>
+                                    <h4 class="my-0">{{ cart.product.name }}</h4>
+                                    <small class="text-muted">Quantité: {{ cart.prodQuantity }}</small>
+                                </div>
+                                <span class="text-muted">{{ cart.donationAmount }}€</span>
+                            </li>
+                        {% endif %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Total (EUR)</span>
+                            <strong>{{ cart.donationAmount }}€</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script>
+        hideError();
+
+        var $loader = $('#stripe-loader .loader');
+        var $loaderexplanation = $('#stripe-loader .loader-explanation');
+
+        var amount = {{ cart.donationAmount * 100 }};
+
+        $('#card-form-row').hide();
+        $('#accept_conditions').change(function () {
+            if (this.checked) {
+                $('#card-form-row').show();
+            }
+            else {
+                $('#card-form-row').hide();
+            }
+            $('.error-notice').alert('close');
+        });
+
+        if($('input[type=radio]').length > 0)
+        {
+            $('input[type=radio]').change(function () {
+                hideError();
+                if ($(this).val() == 'debit-card') {
+                    $('.payment-method').hide();
+                    $('#debit-card').show();
+                }
+                else if ($(this).val() == 'credit-card') {
+                    $('.payment-method').hide();
+                    $('#credit-card').show();
+                }
+            });
+
+            var stripe = Stripe('{{ stripe_api_public }}');
+            var elements = stripe.elements();
+
+            var style = {
+                base: {
+                    color: '#32325D',
+                    fontWeight: 500,
+                    fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
+                    fontSize: '16px',
+                    fontSmoothing: 'antialiased'
+                },
+                invalid: {
+                    color: '#E25950',
+
+                    '::placeholder': {
+                        color: '#ffa65d'
+                    }
+                }
+            };
+
+            var elementClasses = {
+                focus: 'focused',
+                empty: 'empty',
+                invalid: 'invalid'
+            };
+
+            // set publishable key for V2
+            Stripe.setPublishableKey('{{ stripe_api_public }}');
+
+
+            var cardNumberElement = elements.create('cardNumber', {
+                style: style,
+                classes: elementClasses,
+                placeholder: 'Numéro de carte'
+            });
+            cardNumberElement.mount('#card-number-element');
+
+            var cardExpiryElement = elements.create('cardExpiry', {
+                style: style,
+                classes: elementClasses,
+                placeholder: 'MM/AA'
+            });
+            cardExpiryElement.mount('#card-expiry-element');
+
+            var cardCvcElement = elements.create('cardCvc', {
+                style: style,
+                classes: elementClasses,
+                placeholder: 'CVC'
+            });
+            cardCvcElement.mount('#card-cvc-element');
+
+            $('#choose-bancontact').click(function (e) {
+                e.preventDefault();
+
+                displayLoader("");
+                scrollToLoader();
+
+                var $first_name = $('#first_name');
+                var $last_name = $('#last_name');
+                var $email = $('#email');
+
+                $.post('{{ url('x_ajax_post_order') }}', {
+                    'first_name': $first_name.val(),
+                    'last_name': $last_name.val(),
+                    'email': $email.val(),
+                    'cart_code': "{{ cart.barcodeText }}"
+                }, function () {
+                    displayLoader("Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.");
+                    scrollToLoader();
+
+                    stripe.createSource({
+                        type: 'bancontact',
+                        amount: amount,
+                        currency: 'eur',
+                        bancontact: {
+                            preferred_language: 'fr'
+                        },
+                        owner: {
+                            name: $first_name.val() + ' ' + $last_name.val(),
+                            email: $email.val()
+                        },
+                        redirect: {
+                            return_url: '{{ absolute_url(path('x_payment_pending', {'code': cart.barcodeText})) }}'
+                        },
+                        statement_descriptor: 'Chapots - cart {{ cart.id }}'
+                    }).then(function (result) {
+                        on3DSSource(result);
+                    });
+                })
+                    .fail(function () {
+                        displayForm();
+                        displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+                    });
+            });
+
+            function onToken(result) {
+                if (result.token) {
+                    Stripe.source.create({
+                        type: 'card',
+                        token: result.token.id
+                    }, onCardSource);
+                } else if (result.error) {
+                    displayForm();
+                    displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
+                }
+            }
+
+            function onCardSource(status, result) {
+                if (result.error) {
+                    displayForm();
+                    displayError("Une erreur est survenue. Veuilles vérifier les informations soumises et réessayer.");
+                }
+
+                if (result.card.three_d_secure == 'required') {
+
+                    displayLoader("", false);
+                    scrollToLoader();
+
+                    var $first_name = $('#first_name');
+                    var $last_name = $('#last_name');
+                    var $email = $('#email');
+
+                    $.post('{{ url('x_ajax_post_order') }}', {
+                        'first_name': $first_name.val(),
+                        'last_name': $last_name.val(),
+                        'email': $email.val(),
+                        'cart_code': "{{ cart.barcodeText }}"
+                    }, function () {
+                        displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
+                        stripe.createSource({
+                            type: 'three_d_secure',
+                            amount: amount,
+                            currency: "eur",
+                            three_d_secure: {
+                                card: result.id
+                            },
+                            redirect: {
+                                return_url: '{{ absolute_url(path('x_payment_pending', {'code': cart.barcodeText})) }}'
+                            }
+                        }).then(function (result) {
+                            on3DSSource(result)
+                        });
+                    })
+                        .fail(function () {
+                            displayForm();
+                            displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+                        });
+                }
+                else {
+                    stripeTokenHandler(result);
+                }
+            }
+
+            function on3DSSource(result) {
+                if (result.error) {
+                    displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
+                }
+                else {
+                    hideError();
+                    displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
+                    window.location.replace(result.source.redirect.url);
+
+                    $('#payment-intro').hide();
+                }
+            }
+
+            function onChargeable3DS(status, source) {
+                if (source.status == 'chargeable') {
+                    stripeTokenHandler(source);
+                }
+                else if (source.status == 'failed') {
+                    displayError("{{ 'threeds.error'|trans({'%backUrl%': url('x_homepage')})|raw }}");
+                }
+                {#else if (source.status != 'pending') {
+                    displayError("{{ 'threeds.unknown_error'|trans|raw }}");
+                }#}
+            }
+
+            $('#payment-form').submit(function (e) {
+                e.preventDefault();
+                // Disable the submit button to prevent repeat
+                $('input[type="submit"]').prop('disabled', true);
+
+                displayLoader();
+                scrollToLoader();
+                var extraDetails = {
+                    name: $('#first_name').val + ' ' + $('#last_name').val(),
+                    email: $('#email').val()
+                };
+                stripe.createToken(cardNumberElement, extraDetails).then(onToken);
+            });
+
+            function stripeTokenHandler(source) {
+
+                $('#payment-intro').hide();
+                displayLoader("{{ 'threeds.pending'|trans|raw }}");
+
+                // Insert the token ID into the form so it gets submitted to the server
+                var form = document.getElementById('payment-form');
+                var hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeSource');
+                hiddenInput.setAttribute('value', source.id);
+
+                var hiddenInput3 = document.createElement('input');
+                hiddenInput3.setAttribute('type', 'hidden');
+                hiddenInput3.setAttribute('name', 'amount');
+                hiddenInput3.setAttribute('value', '' + amount);
+
+                form.appendChild(hiddenInput);
+                form.appendChild(hiddenInput3);
+                // Submit the form
+                form.submit();
+            }
+
+        }
+        function scrollToLoader() {
+            $('html, body').animate({
+                scrollTop: $("#stripe-loader").offset().top - 300
+            }, 500);
+        }
+
+        function scrollToError() {
+            $('html, body').animate({
+                scrollTop: $(".stripe-error").first().offset().top - 300
+            }, 500);
+        }
+
+        function displayLoader(html, hideform) {
+
+            if(typeof(hideform) == "undefined") {
+                hideform = true;
+            }
+            $loader.show();
+
+            if(hideform)
+                $('form').hide();
+
+            hideError();
+            if (html) {
+                $loaderexplanation.html(html);
+                $loaderexplanation.show();
+            }
+            else {
+                $loaderexplanation.hide();
+            }
+        }
+
+        function displayForm() {
+            $('form').show();
+            $loader.hide();
+            $loaderexplanation.hide();
+        }
+
+        function displayError(html) {
+            $('input[type="submit"]').prop('disabled', false);
+            $('.stripe-error').html(html);
+            $('.stripe-error').show();
+            $loader.hide();
+            $loaderexplanation.hide();
+            scrollToError();
+        }
+
+        function hideError() {
+            $('.stripe-error').hide();
+        }
+
+        /*$('#free-order-submit').click(function(e) {
+            e.preventDefault();
+
+            displayLoader("");
+            scrollToLoader();
+
+            var $first_name = $('#first_name');
+            var $last_name = $('#last_name');
+            var $email = $('#email');
+
+            $.post('{{ url('x_ajax_post_order') }}', {
+                'first_name': $first_name.val(),
+                'last_name': $last_name.val(),
+                'email': $email.val(),
+                'cart_code': "{{ cart.barcodeText }}"
+            }, function() {
+                window.location.assign("{{ url('yb_order', {'code': cart.barcodeText}) ~ '#order-recapitulation'}}");
+            }).fail(function () {
+                displayForm();
+                displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+            });
+
+        });*/
+    </script>
+{% endblock %}

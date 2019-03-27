@@ -73,6 +73,19 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const YB_JOIN_ORGANIZATION = 'AppBundle:Mail/YB/Reminders:request_to_join_orga.txt.twig';
     const YB_NOTIFY_JOIN_ORGANIZATION_CANCEL = 'AppBundle:Mail/YB/Notifications:request_to_join_orga_cancelled.txt.twig';
 
+    // X
+    const X_ADMIN_CONTACT = 'XBundle:Mail/Admin:contact.txt.twig';
+    
+    const X_ADMIN_NEW_PROJECT = 'XBundle:Mail/Admin:new_project.txt.twig';
+    const X_PROJECT_VALIDATED = 'XBundle:Mail/Artist:project_validated.txt.twig';
+    const X_PROJECT_REFUSED = 'XBundle:Mail/Artist:project_refused.txt.twig';
+
+    const X_ADMIN_NEW_PRODUCT = 'XBundle:Mail/Admin:new_product.txt.twig';
+    const X_PRODUCT_VALIDATED = 'XBundle:Mail/Artist/Product:product_validated.txt.twig';
+    const X_PRODUCT_REFUSED = 'XBundle:Mail/Artist/Product:product_refused.txt.twig';
+
+
+
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()
      * @param string $template

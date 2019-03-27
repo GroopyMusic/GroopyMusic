@@ -1,0 +1,41 @@
+{% block xbundle_product_type_row %}
+    <div class="row product-row">
+        <!--<div class="row">-->
+            <h3>Article</h3>
+
+            <div class="col-12">
+                {{ form_row(form.name) }}
+            </div>
+            <div class="col-12">
+                {{ form_row(form.description) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(form.supply) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(form.maxAmountPerPurchase) }}
+            </div>
+            <div class="col-12">
+                {{ form_widget(form.freePrice) }}
+                <div class="free-price-min" style="display:none;">
+                    {{ form_row(form.minimumPrice) }}
+                </div>
+                <div class="price">
+                    {{ form_row(form.price) }}
+                </div>
+            </div>
+            <div class="col-12">
+                {{ form_row(form.photo) }}
+            </div>
+        <!--</div>-->
+    <div>
+
+    <script type="text/javascript">
+        $('.free-price-checkbox').on('change', function() {
+            $('.free-price-min').toggle(this.checked);
+            $('.price').toggle(!this.checked);
+        });
+        $('.free-price-checkbox').trigger('change');
+    </script>
+
+{% endblock %}

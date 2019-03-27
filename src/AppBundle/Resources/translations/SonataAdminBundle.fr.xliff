@@ -52,6 +52,11 @@
                 <target>Gestion utilisateurs</target>
             </trans-unit>
 
+            <trans-unit id="app.admin.group.x">
+                <source>app.admin.group.x</source>
+                <target>Chapots</target>
+            </trans-unit>
+
             <trans-unit id="app.admin.step">
                 <source>app.admin.step</source>
                 <target>Palier</target>
@@ -231,6 +236,17 @@
                <source>app.admin.informationSession</source>
                <target>Session d'information</target>
             </trans-unit>
+
+            <trans-unit id="app.admin.x.project">
+               <source>app.admin.x.project</source>
+               <target>Projets</target>
+            </trans-unit>
+
+            <trans-unit id="app.admin.x.product">
+               <source>app.admin.x.product</source>
+               <target>Articles en vente</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

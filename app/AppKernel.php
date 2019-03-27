@@ -52,6 +52,9 @@ class AppKernel extends Kernel
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+            new XBundle\XBundle(),
+            new FM\BbcodeBundle\FMBbcodeBundle(),
+            new Ob\HighchartsBundle\ObHighchartsBundle()
             new Nelmio\CorsBundle\NelmioCorsBundle(),
         ];
 

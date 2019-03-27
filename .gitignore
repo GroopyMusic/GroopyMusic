@@ -48,3 +48,5 @@ web/js/compiled/*
 web/css/compiled/*
 !/vendor/tecnickcom/tcpdf/fonts/montserrat.z
 !/vendor/tecnickcom/tcpdf/fonts/montserrat.php
+/web/test.txt
+/web/x/images/projects

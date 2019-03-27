@@ -16,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
+use XBundle\Exception\NoAuthenticationException;
+use XBundle\Exception\NotArtistOwnerException;
 
 abstract class BaseController extends Controller
 {
@@ -124,4 +126,21 @@ abstract class BaseController extends Controller
             throw $this->createAccessDeniedException();
         }
     }
+
+
+
+    ///////////////////////////////////////////////
+    /// X                                //////////
+    ///////////////////////////////////////////////
+    protected function checkIfArtistAuthorized($user) {
+        if(!$user || !$user instanceof User) {
+            throw new NoAuthenticationException();
+        }
+        if(empty($this->em->getRepository('AppBundle:Artist')->findForUser($user))) {
+            throw new NotArtistOwnerException();
+        }
+    }
+
+
+
 }

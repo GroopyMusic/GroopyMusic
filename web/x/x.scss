@@ -1,0 +1,92 @@
+$main-orange: #f39200;
+$main-green: #66ad61;
+$dark-orange: #e15b34;
+$theme-colors: (
+        "primary": $main-orange,
+        "secondary": $main-green,
+        "dark": #607D8B,
+        "very-dark": #343a40,
+        "secondary-strong": $dark-orange,
+);
+$primary: $main-orange !default;
+$menu-color: #fbd060;
+$link-secondary-color: $main-green;
+
+$white: #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #868e96 !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black: #000 !default;
+
+@import "../../vendor/twbs/bootstrap/scss/bootstrap.scss";
+@import "scss/navbar.scss";
+@import "scss/modal.scss";
+@import "scss/home.scss";
+@import "scss/payment.scss";
+@import "scss/loader.scss";
+@import 'scss/project.scss';
+@import 'scss/dropzone.scss';
+@import 'scss/card.scss';
+@import 'scss/catalog.scss';
+@import 'scss/product.scss';
+
+body {
+  font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+footer.footer{
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  font-weight: bold;
+}
+
+.btn, button, a {
+  cursor: pointer;
+  white-space: inherit;
+}
+
+.btn-primary {
+  @extend .text-white;
+}
+
+.word-break-all {
+  word-break: break-all;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  -o-hyphens: auto;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+.link-secondary {
+  color: $link-secondary-color !important;
+}
+
+.x-link-artist {
+  color: black;
+
+  &:hover {
+    color: $primary;
+    text-decoration: none;
+  }
+}

@@ -29,6 +29,10 @@ services:
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
         tags: ['controller.service_arguments']
+    
+    XBundle\Controller\:
+        resource: '../../src/XBundle/Controller'
+        tags: ['controller.service_arguments']
 
     # Registration
     app.form.registration:
@@ -99,3 +103,6 @@ services:
     AppBundle\Services\CaptchaManager:
       arguments:
         $google_captcha_api_secret: "%google_captcha_api_secret%"
+
+    XBundle\Services\:
+      resource: '../../src/XBundle/Services/*'

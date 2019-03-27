@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('admin.x.new_project', {
+                '%project%': project.title
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

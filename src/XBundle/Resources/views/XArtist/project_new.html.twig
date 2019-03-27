@@ -1,0 +1,236 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    <section class="container px-0 mt-4">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            {% if project.id is null %}
+                <span class="breadcrumb-item active">Nouveau projet</span>
+            {% else %}
+                <a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">{{ project.title }}</a>
+                <span class="breadcrumb-item active">Modifier les informations</span>
+            {% endif %}
+        </nav>
+    </section>
+
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@X/Form/product.html.twig' ':Form:jquery.collection.html.twig' %}
+
+    {{ form_start(form) }}
+
+    <!-- General Informations Section -->
+    <section class="container my-4 py-2 my-md-5 project-section">
+        <h2>Informations générales</h2><hr>
+        <div class="row">
+            <div class="col-12 col-md-6">            
+                {{ form_row(form.title) }}
+            </div>
+            <div class="col-12 col-md-6">            
+                {{ form_row(form.artist) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(form.tag) }}
+            </div>
+            <div class="col-12">
+                {{ form_row(form.dateEnd) }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Description Section -->
+    <section class="container my-4 py-2 my-md-5 project-section">
+        <h2>Description</h2><hr>
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(form.description) }}
+                {{ form_row(form.motivations) }}
+                {{ form_row(form.thresholdPurpose) }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Threshold Section -->
+    <section class="container my-4 py-2 my-md-5 project-section">
+        <h2>Financement participatif</h2><hr>
+        <div class="text-muted font-italic pb-2">
+            Il est possible de fixer un seuil de validation à un projet. Ce seuil correspond au montant que vous désirez atteindre pour confirmer le lancement du projet. Il suffit de décocher la mention "Pas de seuil de validation" et d'indiquer le montant visé.
+        </div>
+        {% if project.id is null %}
+            <p style="color: red">
+                <i class="fas fa-exclamation-triangle"></i> Vous ne pourrez plus modifier ce comportement (avec seuil ou non) une fois le projet créé.
+            </p>
+            <div class="row">
+                <div class="col-12 col-md-6" id="x_no_threshold_checkbox">
+                    {{ form_widget(form.noThreshold) }}
+                </div>
+            </div>
+        {% endif %}
+        {% if project.id is null or project.hasThreshold %}
+        <div class="row">
+            <div class="col-12 col-md-3 x_threshold_only">
+                {{ form_row(form.threshold) }}
+            </div>
+        </div>
+        {% else %}
+            <p>Pas de seuil de validation pour ce projet</p>
+            {% do form.threshold.setRendered %}
+        {% endif %}
+    </section>
+
+    <!-- Pictures Section -->
+    <section class="container my-4 py-2 my-md-5 project-section">
+        <h2>Images</h2><hr>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                {{ form_label(form.coverpic) }}
+                <div class="text-muted font-italic pb-2">
+                    Cette photo sera utilisée comme bannière pour votre projet. {% if project.id is null %}(Elle n'est pas obligatoire lors de la création du projet, vous pourrez la rajouter plus tard){% endif %}
+                </div>
+                {{ form_errors(form.coverpic) }}
+                {{ form_widget(form.coverpic) }}
+            </div>
+            {% if project.id is not null and project.coverpic is not null %}
+                <div class="col-12 col-md-6">
+                    <img class="img-fluid" src="{{ asset(project.webPath(project.coverpic)) }}" />
+                </div>
+            {% endif %}
+        </div>
+        <div class="row py-3">
+            <div class="col-12">
+                <div class="form-row">
+                    <div><label>Autres photos</label></div>
+                    <div class="text-muted font-italic pb-2">
+                        Les photos que vous ajoutez ici seront affichées sous la description du projet, les unes à la suite des autres. Nous vous conseillons de limiter le nombre de photos afin que la page ne soit pas trop longue pour vos visiteurs.
+                    </div>
+                        {% if project.id is not null %}
+                            <div class="dropzone w-100" id="#project_edit_photos"></div>
+                        {% else %}
+                            <p>Une fois le projet créé, vous pourrez ajouter d'autres images pour l'illustrer.</p>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    {% if project.id is null %}
+    <section class="container my-4 py-2 my-md-5 project-section">
+        <h2>Articles mis en vente</h2><hr>
+        <div class="text-muted font-italic pb-2">Vous pouvez mettre des articles en vente afin d'aider le financement de votre projet.</div>
+        {{ form_widget(form.products) }}
+    </section>
+    {% endif %}
+
+    <!-- Accept Conditions Section -->
+    {% if form.acceptConditions is defined %}
+        <section class="container my-4 py-2 my-md-5 project-section">
+            <p><a href="{{ path('x_terms') }}">Lire nos conditions d'utilisation</a></p>
+            {{ form_widget(form.acceptConditions) }}
+        </section>
+    {% endif %}
+
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
+
+    <script type="text/javascript">
+
+        function x_collection(options) {
+            $('.collection').collection($.extend({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>'
+            }, options));
+        }
+
+        $(function() {
+            x_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un article</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer</a>'
+            });
+
+
+            var $chckbx = $('#x_no_threshold_checkbox input[type="checkbox"]');
+
+            {% if project.id is null %}
+                $chckbx.on('change', function() {
+                    $('.x_threshold_only').toggle(!this.checked);
+                });
+                $chckbx.trigger("change");
+            {% endif %}
+
+            {% if project.id is not null %}
+                var $dropzone = $("div.dropzone");
+                var mocks = [];
+                {% for photo in project.projectPhotos %}
+                    mocks.push({
+                        name: "{{ photo.filename }}",
+                        url: "{{ absolute_url(asset(project.webPath(photo))) }}",
+                        size: 12345
+                    });
+                {% endfor %}
+
+                $dropzone.dropzone({
+                    url: "{{ oneup_uploader_endpoint('x_project') }}",
+                    resizeWidth: 1000,
+                    maxFiles: 5,
+                    addRemoveLinks: true,
+                    params: {
+                        project: {{ project.id }},
+                        code: "{{ project.code }}"
+                    },
+                    accept: function (file, done) {
+                        console.log(file);
+                        if ((file.type).toLowerCase() != "image/jpg" &&
+                            (file.type).toLowerCase() != "image/gif" &&
+                            (file.type).toLowerCase() != "image/jpeg" &&
+                            (file.type).toLowerCase() != "image/png"
+                        ) {
+                            done("Invalid file");
+                        }
+                        else {
+                            done();
+                        }
+                    },
+                    removedfile: function(file) {
+                        $.ajax({
+                            method: 'get',
+                            url: "{{ path('x_artist_project_remove_photo', {'id': project.id, 'code' : project.code}) }}",
+                            data: {
+                                filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
+                            },
+                            complete: function() {
+                                file.previewElement.remove();
+                            }
+                        });
+                    },
+                    init: function() {
+                        var i = 0;
+                        while(i < mocks.length) {
+                            var mock = mocks[i];
+                            mock.accepted = true;
+
+                            this.files.push(mock);
+                            this.createThumbnailFromUrl(mock, mock.url);
+                            this.emit('addedfile', mock);
+                            this.emit("thumbnail", mock, mock.url);
+                            this.emit('complete', mock);
+                            i++;
+                        }
+                        $dropzone.options.maxFiles = $dropzone.options.maxFiles - i;
+                    },
+                    success: function(file, serverResponse) {
+                        file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;
+                    }
+                });
+            {% endif %}
+
+        });
+    </script>
+{% endblock %}

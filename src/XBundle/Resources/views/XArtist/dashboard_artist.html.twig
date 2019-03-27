@@ -1,0 +1,30 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    {% import '@X/Macros/projects.html.twig' as macros %}
+
+    {% if current_projects is not empty %}
+    <section class="container py-5">
+        <h2>Projets en cours</h2>
+        {% for project in current_projects %}
+            {{ macros.project_row(project)}}
+            <hr>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    <section class="container py-5">
+        <h2>Tableau de bord</h2>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{{ path('x_artist_project_new') }}"><i class="far fa-plus-square"></i> Nouveau projet</a>
+                <div class="text-muted">Lancez une campagne de financement participatif pour votre projet.</div>
+            </li>
+            <li class="list-group-item">
+                {% if passed_projects|length > 0 %}<a href="{{ path('x_artist_passed_projects') }}">{% endif %}<i class="far fa-clock"></i> Projets passés{% if passed_projects|length > 0 %}</a>{% endif %}
+                <div class="text-muted">Retrouvez toutes les informations des projets que vous avez lancés par le passé et qui sont terminés.</div>
+            </li>
+        </ul>
+    </section>
+{% endblock %}

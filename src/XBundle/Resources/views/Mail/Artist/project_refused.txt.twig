@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% autoescape false %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% block content %}
+    {{ email_content('x.project.refused', {
+                '%project%': project.title,
+                '%reason%': reason | bbcode_filter('my_default_filter') | raw
+         })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'XBundle:Mail/Artist:project_refused.html.twig' %}
+{% endblock %}
