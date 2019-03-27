@@ -713,7 +713,7 @@ class MailDispatcher
 
         $organizers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
             return $person->getEmail();
-        }, $organizers->toArray()));
+        }, $organizers));
 
         $to = self::ADMIN_TO;
 
