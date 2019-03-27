@@ -33,7 +33,7 @@ class RestController extends BaseController {
         $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->findById($event_id);
         if ($contract_artist === null){
             $contract_artist = $em->getRepository('AppBundle:ContractArtist')->find($event_id);
-            $response = $this->handleTicketValidationUM($user_id, $event_id, $ticket, $contract_artist, $em);
+            $response = $this->handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, $em);
         } else {
             $response = $this->handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, $em);
         }
@@ -387,17 +387,6 @@ class RestController extends BaseController {
 
     private function handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
         $error = '';
-        if (!$contract_artist->isToday()){
-            $error = 'Cet événement n\'a pas lieu aujourd\'hui.';
-        }
-        return $this->handleTicketValidation($error, $user_id, $event_id, $ticket, $contract_artist, $em);
-    }
-
-    private function handleTicketValidationUM($user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
-        $error = '';
-        if (!$contract_artist->isFestivalDayToday()){
-            $error = 'Cet événement n\'a pas lieu aujourd\'hui.';
-        }
         return $this->handleTicketValidation($error, $user_id, $event_id, $ticket, $contract_artist, $em);
     }
 
