@@ -119,6 +119,26 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    public function getAllEventsSuccess(User $user){
+        return $this->createQueryBuilder('c')
+            ->join('c.organization', 'org')
+            ->join('org.participations', 'part')
+            ->join('part.member', 'u')
+            ->where('u.id = :id')
+            ->andWhere('c.failed = 0')
+            ->orderBy('c.date_event', 'DESC')
+            ->setParameter('id',$user->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllSuccess(){
+        return $this->createQueryBuilder('c')
+            ->where('c.failed = 0')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getAllOnGoingEvents(){
         return $this->createQueryBuilder('c')
             ->where('c.date_closure >= :now AND c.failed = 0')

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Cart;
+use AppBundle\Entity\Purchase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,12 +31,12 @@ class RestController extends BaseController {
         $em = $this->getDoctrine()->getManager();
         $ticket = $em->getRepository('AppBundle:Ticket')->findOneBy(['barcode_text' => $barcode]);
         $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->findById($event_id);
-        //if ($contract_artist !== null){
-        $response = $this->handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, $em);
-        //} else {
-        //    $contract_artist = $em->getRepository('AppBundle:ContractArtist')->find($event_id);
-        //    $response = $this->handleTicketValidationUM($user_id, $event_id, $ticket, $contract_artist, $em);
-        //}
+        if ($contract_artist === null){
+            $contract_artist = $em->getRepository('AppBundle:ContractArtist')->find($event_id);
+            $response = $this->handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, $em);
+        } else {
+            $response = $this->handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, $em);
+        }
         return $response;
     }
     
@@ -48,6 +50,7 @@ class RestController extends BaseController {
         $user = $em->getRepository('AppBundle:User')->findByUsername($username);
         $password = '';
         $id = '';
+        $name = '';
         if (count($user) !== 0){
             $campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllEvents($user[0]);
             if (count($campaigns) === 0 && !$user[0]->isSuperAdmin()){
@@ -56,6 +59,7 @@ class RestController extends BaseController {
                 $error = '';
                 $password = $user[0]->getPassword();
                 $id = $user[0]->getId();
+                $name = $user[0]->getDisplayName();
             }
         } else {
             $username = '';
@@ -64,6 +68,7 @@ class RestController extends BaseController {
         $user_array = array(
             'id' => $id,
             'username' => $username,
+            'name' => $name,
             'password' => $password,
             'error' => $error
         );
@@ -79,11 +84,13 @@ class RestController extends BaseController {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AppBundle:User')->find($user_id);
         $events = [];
+        $unmute_events = [];
         if ($user !== null){
             if ($user->isSuperAdmin()){
-                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->findAll();
+                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllSuccess();
+                $unmute_events = $this->getEventsUnMute($em);
             } else {
-                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllEvents($user);
+                $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllEventsSuccess($user);
             }
             if (count($events) === 0) {
                 $error = 'Vous n\'avez pas d\'événements.';
@@ -93,7 +100,8 @@ class RestController extends BaseController {
         } else {
             $error = 'Cet utilisateur n\'existe pas.';
         }
-        $array_events = $this->getArrayFromEvents($events, $error);
+        $yb_events = $this->getArrayFromEvents($events, $error);
+        $array_events = array_merge($yb_events, $unmute_events);
         return new JsonResponse($array_events);
     }
 
@@ -107,6 +115,7 @@ class RestController extends BaseController {
             $error = 'Vous n\'organisez pas cet événement !';
         } else {
             $quantity = $request->get('quantity');
+            $modePayment = $request->get('mode');
             $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->find($request->get('event_id'));
             if ($contract_artist->isSoldOut()){
                 $error = 'L\'événement est sold-out...';
@@ -114,12 +123,28 @@ class RestController extends BaseController {
                 $counterpart = $em->getRepository('AppBundle:CounterPart')->find($request->get('counterpart_id'));
                 $price = $counterpart->getPrice();
                 $anonym = new User();
-                $anonym->setFirstname('anonym - on site');
+                $anonym->setFirstname('_anonym - on site');
+                $cf = new ContractFan($contract_artist);
+                foreach ($cf->getPurchases() as $purchase){
+                    if ($purchase->getCounterpart() === $counterpart){
+                        $purchase->setQuantity($quantity);
+                    } else {
+                        $cf->removePurchase($purchase);
+                    }
+                }
+                $cart = new Cart(false);
+                $cf->initAmount();
+                $cart->addContract($cf);
+                $cart->setConfirmed(true);
+                $cart->setPaid(true);
+                $cart->generateBarCode();
+                $em->persist($cart);
                 for ($i = 0; $i < $quantity; $i++){
-                    $ticket = new Ticket(null, $counterpart, $i, $price, $anonym, $contract_artist);
+                    $ticket = new Ticket($cf, $counterpart, $i, $price, $anonym, $contract_artist);
                     $ticket->setIsBoughtOnSite(true);
                     $ticket->setValidated(true);
                     $ticket->setDateValidated(new \DateTime());
+                    $ticket->setPaidInCash($modePayment === 'cash');
                     $em->persist($ticket);
                     $em->flush();
                 }
@@ -133,7 +158,7 @@ class RestController extends BaseController {
      * @Rest\View()
      * @Rest\Get("/getcounterpart")
      */
-    public function getCounterpartAction(Request $request){
+    /*public function getCounterpartAction(Request $request){
         $event_id = $request->get('event_id');
         $em = $this->getDoctrine()->getManager();
         $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->find($event_id);
@@ -152,13 +177,13 @@ class RestController extends BaseController {
         }
         $array_tix = $this->getTicketFromCounterpart($counterparts, $error);
         return new JsonResponse($array_tix);
-    }
+    }*/
 
     /**
      * @Rest\View()
      * @Rest\Get("/getaudience")
      */
-    public function getAudienceAction(Request $request){
+    /*public function getAudienceAction(Request $request){
         $tickets = [];
         if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
             $error = 'Vous n\'organisez pas cet événement.';
@@ -172,64 +197,65 @@ class RestController extends BaseController {
             }
         }
         return $this->getJSONResponseAudience($error, $tickets);
-    }
-
-    /**
-     * @Rest\View()
-     * @Rest\Get("/getaudience-in")
-     */
-    public function getAudienceInAction(Request $request){
-        $tickets = [];
-        if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
-            $error = 'Vous n\'organisez pas cet événement.';
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $tickets = $em->getRepository('AppBundle:Ticket')->getScannedTicketsFromEvent($request->get('event_id'));
-            if (count($tickets) === 0){
-                $error = 'Aucun ticket n\'a été vendus...';
-            } else {
-                $error = '';
-            }
-        }
-        return $this->getJSONResponseAudience($error, $tickets);
-    }
-
-    /**
-     * @Rest\View()
-     * @Rest\Get("/getaudience-out")
-     */
-    public function getAudienceOutAction(Request $request){
-        $tickets = [];
-        if (!$this->isOrganizer($request->get('user_id'), $request->get('event_id'))){
-            $error = 'Vous n\'organisez pas cet événement.';
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $tickets = $em->getRepository('AppBundle:Ticket')->getYetToBeScannedTicketsFromEvent($request->get('event_id'));
-            if (count($tickets) === 0){
-                $error = 'Aucun ticket n\'a été vendus...';
-            } else {
-                $error = '';
-            }
-        }
-        return $this->getJSONResponseAudience($error, $tickets);
-    }
+    }*/
 
     // private functions
+
+    public function getEventsUnMute(EntityManagerInterface $em){
+        $events = $em->getRepository('AppBundle:ContractArtist')->findEventForApp();
+        $unmuteEvents = [];
+        foreach ($events as $event){
+            if ($event->hasOnlyOneDate()){
+                if ($event->isFestivalDayToday()){
+                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event));
+                } else {
+                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), [], []);
+                }
+            } else if (count($event->getFestivalDates()) === 0) {
+                $unmuteEvents[] = $this->createArray($event, $event->__toString(), 'no date', [], []);
+            } else {
+                for ($i = 0; $i < count($event->getFestivalDates()); $i++){
+                    $day = 'Day ' . ($i + 1);
+                    if ($event->getFestivalDates()[$i]->format('m/d/Y') === (new \DateTime())->format('m/d/Y')){
+                        $name = $day . ' - '.$event->__toString();
+                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event));
+                    } else {
+                        $name = $day . ' - '.$event->__toString();
+                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], [], []);
+                    }
+                }
+            }
+        }
+        return $unmuteEvents;
+    }
+
+    private function createArray($event, $eventName, $eventDate,$audience, $counterparts){
+        $event = array (
+            'id' => $event->getId(),
+            'name' => $eventName,
+            'nbTotalTicket' => $event->getGlobalSoldout(),
+            'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
+            'nbSoldTicket' => $this->getNbPresales($event),
+            'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
+            'date' => $eventDate,
+            'nbTicketBoughtInCash' => $this->getTicketPaidByCash($event->getId()),
+            'error' => '',
+            'audience' => $audience,
+            'counterparts' => $counterparts,
+        );
+        return $event;
+    }
 
     private function getArrayFromEvents($events, $error){
         $array_events = [];
         if ($error === ''){
             foreach($events as $event){
-                $array_events[] = array(
-                    'id' => $event->getId(),
-                    'name' => $event->__toString(),
-                    'nbTotalTicket' => $event->getGlobalSoldout(),
-                    'nbScannedTicket' => $this->getNbScannedTicket($event->getId()),
-                    'nbSoldTicket' => $event->getNbCounterPartsPaid(),
-                    'nbBoughtOnSiteTicket' => $this->getNbTicketSoldOnSite($event->getId()),
-                    'date' => $event->getDateEvent(),
-                    'error' => $error,
-                );
+                if ($event->isToday()){
+                    $array_events[] = $this->createArray($event, $event->__toString(), $event->getDateEvent(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event));
+                } else {
+                    $array_events[] = $this->createArray($event, $event->__toString(), $event->getDateEvent(), [], []);
+
+                }
             }
         } else {
             $array_events[] = array(
@@ -267,16 +293,19 @@ class RestController extends BaseController {
     }
 
     private function setRestTicket($ticket, $error){
-        if ($error !== ''){
-            return new RestTicket('','','','',$error);
-        } else {
+        if ($error === '' || $error === 'Ce ticket a déjà été scanné.'){
+            $validation = $ticket->isValidated() ? 'vrai' : 'faux';
+            $cpName = $ticket->getCounterPart() === null ? '' : $ticket->getCounterPart()->__toString();
             return new RestTicket(
                 $ticket->getName(),
-                $ticket->getCounterPart()->__toString(),
+                $cpName,
                 '',
                 $ticket->getBarcodeText(),
-                $error);
-        } 
+                $error,
+                $validation);
+        } else {
+            return new RestTicket('','','','',$error, '');
+        }
     }
 
     private function getArrayFromTicket($rest_ticket){
@@ -286,32 +315,33 @@ class RestController extends BaseController {
             'seat_type' => $rest_ticket->getSeatType(),
             'barcode' => $rest_ticket->getBarcode(),
             'error' => $rest_ticket->getError(),
+            'is_validated' => $rest_ticket->isValidated(),
         );
         return $array_ticket;
     }
 
+    private function getNbPresales($event){
+        $em = $this->getDoctrine()->getManager();
+        $tickets = $em->getRepository('AppBundle:Ticket')->getPresale($event->getId());
+        return count($tickets);
+    }
+
     private function getNbTicketSoldOnSite($event_id){
         $em = $this->getDoctrine()->getManager();
-        $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($event_id);
-        $nbTicketSoldOnSite = 0;
-        foreach ($tickets as $ticket) {
-            if ($ticket->isBoughtOnSite()){
-                $nbTicketSoldOnSite++;
-            }
-        }
-        return $nbTicketSoldOnSite;
+        $tickets = $em->getRepository('AppBundle:Ticket')->getNbBoughtOnSiteFromEvent($event_id);
+        return count($tickets);
+    }
+
+    private function getTicketPaidByCash($event_id){
+        $em = $this->getDoctrine()->getManager();
+        $tickets = $em->getRepository('AppBundle:Ticket')->getNbPaidInCashFromEvent($event_id);
+        return count($tickets);
     }
 
     private function getNbScannedTicket($event_id){
         $em = $this->getDoctrine()->getManager();
-        $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($event_id);
-        $nbScannedTicket = 0;
-        foreach ($tickets as $ticket){
-            if ($ticket->isValidated() && !$ticket->isBoughtOnSite()){
-                $nbScannedTicket++;
-            }
-        }
-        return $nbScannedTicket;
+        $tickets = $em->getRepository('AppBundle:Ticket')->getNbPresaleScannedFromEvent($event_id);
+        return count($tickets);
     }
 
     private function isOrganizer($user_id, $event_id){
@@ -340,50 +370,45 @@ class RestController extends BaseController {
         }
     }
 
-    private function handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
-        if (!$this->isOrganizer($user_id, $event_id)){
-            $error = 'Vous n\'organisez pas cet événement';
-        } elseif ($ticket === null){
-            $error = 'Ce ticket n\'existe pas.';
-        } elseif ($contract_artist === null) {
-            $error = 'Cet événement n\'existe pas.';
-        } elseif(!$contract_artist->isToday()) {
-            $error = 'Cet événement n\'a pas lieu aujourd\'hui.';
-        } else {
-            if ($ticket->getContractArtist()->getId() != $contract_artist->getId()) {
-                $error = 'Ce ticket ne correspond pas à l\'évenement sélectionné';
-            } elseif ($ticket->isRefunded()) {
-                $error = 'Ce ticket a été remboursé et n\'est donc plus valide.';
-            } elseif ($ticket->isValidated()){
-                $error = 'Ce ticket a déjà été scanné.';
-            } else {
-                $error = '';
-                $this->validateTicket($ticket, $em);
-            }
+    private function getAudienceForEvent($event){
+        $em = $this->getDoctrine()->getManager();
+        $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($event->getId());
+        $rest_tickets_array = [];
+        foreach ($tickets as $ticket){
+            $rest_tickets_array[] = $this->getArrayFromTicket($this->setRestTicket($ticket, ''));
         }
-        $rest_ticket = $this->setRestTicket($ticket, $error);
-        return new JsonResponse($this->getArrayFromTicket($rest_ticket));
+        return $rest_tickets_array;
     }
 
-    private function handleTicketValidationUM($user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
-        if (!$this->isOrganizer($user_id, $event_id)){
-            $error = 'Vous n\'organisez pas cet événement';
-        } elseif ($ticket === null){
-            $error = 'Ce ticket n\'existe pas.';
-        } elseif ($contract_artist === null) {
-            $error = 'Cet événement n\'existe pas.';
-        } elseif(!$contract_artist->isToday()) {
-            $error = 'Cet événement n\'a pas lieu aujourd\'hui.';
-        } else {
-            if ($ticket->getContractArtist()->getId() != $contract_artist->getId()) {
-                $error = 'Ce ticket ne correspond pas à l\'évenement sélectionné';
-            } elseif ($ticket->isRefunded()) {
-                $error = 'Ce ticket a été remboursé et n\'est donc plus valide.';
-            } elseif ($ticket->isValidated()){
-                $error = 'Ce ticket a déjà été scanné.';
-            } else {
-                $error = '';
-                $this->validateTicket($ticket, $em);
+    private function getCounterpartsForEvent($event){
+        $counterparts = $event->getCounterParts();
+        return $this->getTicketFromCounterpart($counterparts, '');
+    }
+
+    private function handleTicketValidationYB($user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
+        $error = '';
+        return $this->handleTicketValidation($error, $user_id, $event_id, $ticket, $contract_artist, $em);
+    }
+
+    private function handleTicketValidation($error, $user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
+        if ($error === ''){
+            if (!$this->isOrganizer($user_id, $event_id)){
+                $error = 'Vous n\'organisez pas cet événement';
+            } elseif ($ticket === null){
+                $error = 'Ce ticket n\'existe pas.';
+            } elseif ($contract_artist === null) {
+                $error = 'Cet événement n\'existe pas.';
+            }else {
+                if ($ticket->getContractArtist()->getId() != $contract_artist->getId()) {
+                    $error = 'Ce ticket ne correspond pas à l\'évenement sélectionné';
+                } elseif ($ticket->isRefunded()) {
+                    $error = 'Ce ticket a été remboursé et n\'est donc plus valide.';
+                } elseif ($ticket->isValidated()){
+                    $error = 'Ce ticket a déjà été scanné.';
+                } else {
+                    $error = '';
+                    $this->validateTicket($ticket, $em);
+                }
             }
         }
         $rest_ticket = $this->setRestTicket($ticket, $error);

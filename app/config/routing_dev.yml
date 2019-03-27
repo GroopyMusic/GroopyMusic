@@ -34,6 +34,10 @@ getevents:
     resource: AppBundle\Controller\RestController
     type: rest
 
+getevents-um:
+  resource: AppBundle\Controller\RestController
+  type: rest
+
 loginuser:
     resource: AppBundle\Controller\RestController
     type: rest
@@ -49,12 +53,4 @@ getcounterpart:
 getaudience:
     resource: AppBundle\Controller\RestController
     type: rest
-
-getaudience-in:
-  resource: AppBundle\Controller\RestController
-  type: rest
-
-getaudience-out:
-  resource: AppBundle\Controller\RestController
-  type: rest
 

@@ -48,6 +48,7 @@
                         </div>
                         <div class="w-100 text-right"><a class="text-secondary font-italic" href="{{ path('yb_order', {code: cf.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir la confirmation de commande</a> (code de confirmation : {{ cf.cart.barcodeText }})</div>
                     </div>
+                    <!-- rajouter un div pour les tickets vendus sur le site -->
                 {% else %}
                     Il n'y a eu aucune commande pour cet événement pour l'instant.
                 {% endfor %}

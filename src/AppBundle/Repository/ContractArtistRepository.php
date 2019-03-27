@@ -369,4 +369,12 @@ class ContractArtistRepository extends OptimizedRepository implements ContainerA
             ->setParameter(2, new \DateTime())
             ->getResult();
     }
+
+    public function findEventForApp(){
+        return $this->createQueryBuilder('c')
+            ->where('c.failed = 0')
+            ->andWhere('c.successful = 1 OR c.tickets_sold >= c.threshold')
+            ->getQuery()
+            ->getResult();
+    }
 }

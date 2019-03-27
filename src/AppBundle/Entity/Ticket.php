@@ -132,6 +132,11 @@ class Ticket
     private $isBoughtOnSite = false;
 
     /**
+     * @ORM\Column(name="paidInCash", type="boolean")
+     */
+    private $paidInCash = false;
+
+    /**
      * Get id
      *
      * @return integer
@@ -375,4 +380,22 @@ class Ticket
     public function isBoughtOnSite(){
         return $this->isBoughtOnSite;
     }
+
+    /**
+     * @return mixed
+     */
+    public function isPaidInCash()
+    {
+        return $this->paidInCash;
+    }
+
+    /**
+     * @param mixed $paidInCash
+     */
+    public function setPaidInCash($paidInCash)
+    {
+        $this->paidInCash = $paidInCash;
+    }
+
+
 }

@@ -339,9 +339,11 @@ class ContractArtist extends BaseContractArtist
         return $this->festivalDates;
     }
 
-    public function isToday(){
-        foreach($this->festivalDates as $date){
-            if ($date === new \DateTime()){
+    public function isFestivalDayToday(){
+        foreach($this->getFestivalDates() as $date){
+            $dateOfEvent = $date->format('m/d/Y');
+            $today = (new \DateTime())->format('m/d/Y');
+            if ($dateOfEvent === $today){
                 return true;
             }
         }
