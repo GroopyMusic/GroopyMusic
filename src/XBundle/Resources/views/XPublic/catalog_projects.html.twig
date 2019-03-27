@@ -1,0 +1,81 @@
+{% extends "@X/base_catalog.html.twig" %}
+
+{% block body %}
+
+<section class="container py-5">
+
+    <div class="container" id="projects-catalog">
+
+        <h3 class="text-center">TOUS LES PROJETS</h3><br>
+
+        <!-- Filtre -->
+        {#<div>
+            <!-- ios button: show/hide panel -->
+            <div class="jplist-ios-button">
+                <i class="fa fa-sort"></i>
+                Filtrer...
+            </div>
+
+            <!-- panel -->
+            <div class="jplist-panel box panel-top">
+                <!-- sort dropdown -->
+                <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">Trier par</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
+                    <ul>
+                        <li class="active"><span data-path=".project-title" data-order="asc" data-type="text">A-Z</span></li>
+                        <li><span data-path=".project-title" data-order="desc" data-type="text">Z-A</span></li>
+                    </ul>
+                </div>
+
+                <div class="jplist-drop-down" data-control-type="filter-drop-down" data-control-action="filter" data-control-name="project-tag-filter" data-path=".project-tag">
+                    <div class="jplist-dd-panel"></div>
+                    <ul>
+                        <li class="active"><span data-path="default" style="color:grey">Catérogie</span></li>
+                        {% for tag in tags %}
+                            {% set slug = "jplist-" ~ tag.name|slug %}
+                            <li>
+                                <span data-path=".{{ slug }}">{{ tag.name }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="text-filter-box">
+                    <i class="fa fa-search  jplist-icon"></i>
+                    <!--[if lt IE 10]>
+                    <div class="jplist-label">{{ 'catalog_artists.filtering.search_name'|trans }}</div>
+                    <![endif]-->
+                    <input data-path=".project-name" type="text" value="" placeholder="Chercher..." data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
+                </div>
+
+            </div>
+        </div>#}
+        
+        {% if projects is empty %}
+            <p class="text-center">Pas (encore!) de projets lancés</p>
+        {% else %}
+            <div class="row jp-list">
+                {% for project in projects %}
+                    {% include 'XBundle:XPublic/Card:card_project.html.twig' with {'bgwhite': true, 'jplist': true} %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+
+    <!--<div class="separating-waves colored high prior"></div>-->
+
+</section>
+    
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script>
+		$('document').ready(function(){	
+			$('#projects-catalog').jplist({
+				itemsBox: 'jp-list' 
+				,itemPath: 'jp-list-item' 
+				,panelPath: '.jplist-panel'	
+			});
+		});
+	</script>
+{% endblock %}

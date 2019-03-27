@@ -1,0 +1,78 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    <style>
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+
+    <section class="container px-0 mt-4">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            <a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">{{ project.title }}</a>
+            <span class="breadcrumb-item active">Articles mis en vente</span>
+        </nav>
+    </section>
+    
+    <section class="container my-4 py-2 my-md-5">
+        {% if products is empty %}
+            <h3>Pas d'articles en vente</h3>
+        {% else %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Intitulé</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Vendus</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr class="table-active">
+                            {% if product.photo is not null %}
+                                <td class="text-center"><img src="{{ asset(product.webPath(product.photo)) }}" width="90px" height="90px"/></td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            <th scope="row">{{ product.name }}</th>
+                            <td>{{ product.description | bbcode_filter('my_default_filter') }}</td>
+                            <td>
+                                {% if product.freePrice %}
+                                    <p>Prix libre</p>{{ product.minimumPrice }} € (prix minimum)
+                                {% else %}
+                                    {{ product.price }} €
+                                {% endif %}
+                            </td>
+                            <td>{{ product.supply }}</td>
+                            <td>{{ product.productsSold }}</td>
+                            <td>
+                                {% if product.validated %}
+                                    <a class="btn btn-primary" href="{{ path('x_artist_product_update', {'id': project.id, 'idProd': product.id}) }}">Modifier</a>
+                                {% else %}
+                                    <div class="text-muted font-italic pb-2">
+                                        En cours de validation
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table> 
+        {% endif %}
+
+        {% if not project.isPassed %}
+            <a href="{{ path('x_artist_product_add', {'id': project.id}) }}"><i class="far fa-plus-square"></i> Ajouter un article</a>
+            {% if project.tag.name == "Concert" %}
+                <a href="{{ path('x_artist_ticket_add', {'id': project.id}) }}"> / un ticket</a>  
+            {% endif %}
+        {% endif %}
+
+    </section>
+
+{% endblock %}

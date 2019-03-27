@@ -1,0 +1,247 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block headtitle %}{{ project.title }}{% endblock %}
+
+{% block body %}
+
+    <div class="container py-5">
+
+        <div class="row">
+
+            <div class="col-12 col-lg-7">
+
+                {% if project.coverpic is null %}
+                    {% set src_project = asset('x/images/project-card-default.jpg')  %}
+                {% else %}
+                    {% set src_project = asset(project.webPath(project.coverpic)) %}
+                {% endif %}
+
+                <div>
+                    <h1 class="text-center">{{ project.title }}</h1>
+                    <p class="text-center">{{ project.tag.name }}</p>
+                    <img class="img-fluid d-block py-3 mx-auto" src="{{ src_project }}" />
+                </div>
+
+                <!-- Description Section -->
+                <hr>
+                <div>
+                    <h3>A propos du projet</h3><br>
+                    {{ project.description | bbcode_filter('my_default_filter') | raw }}
+                    {% if project.motivations is not null %}
+                        <hr>
+                        <h3>Les motivations du projet</h3><br>
+                        {{ project.motivations | bbcode_filter('my_default_filter') | raw }}
+                    {% endif %}
+                    {% if project.thresholdPurpose is not null %}
+                        <hr>
+                        <h3>A quoi servira le financement ?</h3><br>
+                        {{ project.thresholdPurpose | bbcode_filter('my_default_filter') | raw }}
+                    {% endif %}
+                </div>
+
+                <!-- Photos Section -->
+                {% if project.projectPhotos is not empty %}
+                    <hr>
+                    <div>
+                        {% for photo in project.projectPhotos %}
+                            <img class="img-fluid d-block py-3 mx-auto" src="{{ asset(project.webPath(photo)) }}" />
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+            </div>
+
+
+            <div class="col-12 col-lg-5">
+
+                {% set artist = project.artist %}
+
+                {% if artist.profilepic is null %}
+                    {% set src_artist = asset('images/artist-card-default.jpg') %}
+                {% else %}
+                    {% set src_artist = asset(artist.webPath(artist.profilepic)) %}
+                {% endif %}
+                
+
+                <!-- Statistics Project Card -->
+                <div class="mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>
+                                <a class="x-link-artist" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">
+                                    <img src="{{ src_artist }}" width="100" height="70" />
+                                    &nbsp;{{ artist.artistname }}
+                                </a>
+                            </p>
+
+                            <div class="row">
+                                <div class="col-8 col-sm-3 col-lg-4">
+                                {% if project.hasThreshold %}
+                                    <strong>{{ project.collectedAmount }} €</strong> sur {{ project.threshold }} €
+                                {% else %}
+                                    <strong>{{ project.collectedAmount }} €</strong> récoltés
+                                {% endif %}
+                                </div>
+                                <div class="col-8 col-sm-3 col-lg-4">
+                                {% if project.remainingDays > 0 %}
+                                    <strong>{{ project.remainingDays }} jour(s)</strong> restant(s)
+                                {% else %}
+                                    {% if project.remainingHours > 0 %}
+                                        <strong>{{ project.remainingHours }} heure(s)</strong> restante(s)
+                                    {% else %}
+                                        <strong>{{ project.remainingMinutes }} minute(s)</strong> restante(s)
+                                    {% endif %}
+                                {% endif %}
+                                </div>
+                            </div>
+    
+                            {% if project.hasThreshold %}
+                                <br>
+                                <div class="progress">
+                                    <div class="progress-bar {% if project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Donation Form Card -->
+                <div class="mt-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center">Faites un don</h3>
+                        </div>
+                        <div class="card-body contribution">
+                            {{ form_start(form) }}
+                            <div class="text-muted font-italic pb-2">
+                                Le montant d'un don est libre mais il doit être d'1 € minimum.
+                            </div>
+                            {{ form_errors(form.donationAmount) }}
+                            {{ form_widget(form.donationAmount) }}
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Purchase Form Card -->
+                {% if products is not empty %}
+                <div class="mt-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center">Articles en vente</h3>
+                        </div>
+                        {% for product in products %}
+                        <div class="card-body contribution" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
+                            <div class="container-fluid">
+                                <h5><strong>{{ product.name }}</strong>{% if product.freePrice %}&nbsp;(prix libre){% endif %}</h5>
+                                <div class="row">
+                                    <div class="col-7 col-sm-9 col-lg-8">
+                                        <p class="text-muted font-italic">{{ product.description | bbcode_filter('my_default_filter') | raw }}</p>
+                                        <p>Disponibilité : {{ product.disponibility }}/{{ product.supply }}</p>
+                                        {% if product.freePrice %}
+                                            Prix minimum : {{ product.minimumPrice }} €
+                                        {% else %}
+                                            Prix : {{ product.price }} €
+                                        {% endif %}
+                                    </div>
+                                    {% if product.photo is not null %}
+                                    <div class="col-5 col-sm-3 col-lg-4">
+                                        <img src="{{ asset(product.webPath(product.photo)) }}" width="100" height="100" />
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {#<div class="mt-5{% if campaign.noThreshold %} mt-lg-3{% endif %}">
+                    <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
+
+                    {% if campaign.isCrowdable %}
+                        {{ form_start(form) }}
+
+                        {% for purchase in form.purchases %}
+                            {% set counterpart = purchase.vars.value.counterpart %}
+                            <div class="counterpart-form p-3 my-2 border">
+
+                                <div class="quantity-error-display" style="display:none;"></div>
+
+                                <div class="form-group form-row">
+                                    {{ form_errors(purchase) }}
+
+                                    <div class="col-8 col-sm-9 col-lg-8">
+                                        <label class="font-weight-bold">{{ counterpart.name }}{% if counterpart.freePrice %} (prix libre){% endif %}</label>
+                                    </div>
+                                    {% if counterpart.freePrice %}
+                                        <div class="col-4 col-sm-3 col-lg-4">
+                                            <div class="w-90 position-relative mb-2">
+                                                {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice, 'value': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-4 col-sm-3 col-lg-4">
+                                        {% if counterpart.isFree %}Gratuit{% else %}{{ counterpart.price }} €{% endif %}
+                                        </div>
+                                    {% endif %}
+                                    {% set max_cp = campaign.nbPurchasable(counterpart) %}
+                                    <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
+                                    <div class="col-4 col-sm-3 col-lg-4">
+                                        <div class="container px-0">
+                                            {% if max_cp == 0 %}
+                                                <p>Il n'y a plus de tickets de ce type disponibles. (SOLD OUT)</p>
+                                                {% do purchase.setRendered(purchase.quantity) %}
+                                            {% else %}
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
+                                                            <i class="text-white fas fa-minus"></i>
+                                                        </button>
+                                                    </span>
+                                                    {{ form_widget(purchase.quantity) }}
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max_cp }}" data-field="">
+                                                            <i class="text-white fas fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {{ form_widget(form.submit) }}
+
+                        {{ form_end(form) }}
+                    {% else %}
+                        {% if campaign.passed %}
+                            <p>Cette campagne est terminée et il n'est donc plus possible d'acheter des tickets.</p>
+                        {% elseif campaign.pending %}
+                            <p>Il n'est actuellement pas possible de contribuer à cette campagne car elle est en cours d'examination par son organisateur. Vous saurez bientôt si elle est validée ou non.</p>
+                        {% else %}
+                            <p>Il n'est actuellement pas possible d'acheter des tickets.</p>
+                        {% endif %}
+                    {% endif %}
+                </div>#}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script type="text/javascript">
+        // Disable form when project is passed
+        {% if project.isPassed %}
+            $('.contribution').attr("disabled", true);
+        {% endif %}
+
+        $("a").attr("target", "_blank");
+    </script>
+{% endblock %}

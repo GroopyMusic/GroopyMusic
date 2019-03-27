@@ -11,6 +11,8 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use XBundle\Entity\Project;
+
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="fos_user")
@@ -37,6 +39,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->sponsorships = new ArrayCollection();
         $this->yb = false;
         $this->yb_campaigns = new ArrayCollection();
+        $this->projects = new ArrayCollection();
         $this->participations = new ArrayCollection();
     }
 
@@ -168,6 +171,13 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
 
     // Form only
     public $accept_conditions;
+
+
+    // CHAPOTS - PROJECT
+    public function ownsProject(Project $project) {
+        return $this->projects->contains($project);
+    }
+
 
     /**
      * @ORM\Id
@@ -329,6 +339,15 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      * @ORM\Column(name="organization_name", type="string", length=50, nullable=true)
      */
     private $organization_name;
+
+
+    // CHAPOTS - PROJECT
+    /**
+     * @ORM\ManyToMany(targetEntity="XBundle\Entity\Project", mappedBy="handlers")
+     */
+    private $projects;
+
+
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\OrganizationJoinRequest", mappedBy="demander", cascade={"persist"})
@@ -1181,6 +1200,41 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return $this->organization_name;
     }
 
+    // X - PROJECT
+    /**
+     * Add project
+     *
+     * @param \XBundle\Entity\Project $project
+     *
+     * @return User
+     */
+    public function addProject(\XBundle\Entity\Project $project)
+    {
+        $this->projects[] = $project;
+
+        return $this;
+    }
+
+    /**
+     * Remove project
+     *
+     * @param \XBundle\Entity\Project $project
+     */
+    public function removeProject(\XBundle\Entity\Project $project)
+    {
+        $this->projects->removeElement($project);
+    }
+
+    /**
+     * Get project
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+  
     public function getParticipations(){
         return $this->participations->toArray();
     }

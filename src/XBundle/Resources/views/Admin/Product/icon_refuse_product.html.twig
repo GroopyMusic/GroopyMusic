@@ -1,0 +1,3 @@
+{% if not object.validated and not object.deleted  %}
+    <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('refuse', object) }}">Refuser l'article</a>
+{% endif %}

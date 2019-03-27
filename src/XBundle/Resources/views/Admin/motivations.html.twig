@@ -1,0 +1,9 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% block field_value %}
+        {% if object.motivations is not null %}
+            {{ object.motivations | bbcode_filter('my_default_filter') | raw }}
+        {% endif %}
+    {% endblock %}
+{% endblock %}

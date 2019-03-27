@@ -1,0 +1,95 @@
+{% extends "@X/base.html.twig" %}
+
+{% block main_attributes %}class="home-main"{% endblock %}
+
+{% block nav_details_links %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('x_homepage') ~ "#about" }}">À propos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="{{ path('x_homepage') ~ "#contact" }}">Contact</a>
+    </li>
+{% endblock %}
+
+{% block body %}
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container p-5">
+            <h3 class="text-center">CHAPOTS</h3>
+        </div>
+    </section>
+
+
+    <!-- Popular Projects Section -->
+    <section class="container py-5">
+        <h3 class="text-center">LES PROJETS POPULAIRES</h3><br>
+        {% if projects is empty %}
+            <p class="text-center">Pas (encore!) de projets lancés</p>
+        {% else %}
+            <div class="row jp-list">
+                {% for project in projects %}
+                    {% if loop.index < 4 %}
+                        {% include 'XBundle:XPublic/Card:card_project.html.twig' with {'bgwhite': true, 'jplist': true} %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p class="text-center mt-3">
+                <a class="btn btn-primary" href="{{ path('x_projects') }}">Voir tous les projets</a>
+            </p>
+        {% endif %}
+    </section>
+
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h3 class="text-center">CONTACT</h3><br>
+
+        <div class="contact-section">
+            {{ hidden_loader(true, false) }}
+            <div class="container" id="contact-form-container">
+                {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+                {{ form_start(form) }}
+                    <div class="row">
+                        <div class="col-12 col-md-6 form-line">
+                            <div class="form-group">
+                                {{ form_row(form.name) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(form.email) }}
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.message) }}
+                            </div>
+                            <div>
+                                <button type="submit"  name="g-recaptcha-response"
+                                        class="g-recaptcha btn btn-default submit"
+                                        data-sitekey="6LfklYEUAAAAAMj_B1O7c8RvimKn5GFunxRPyiBz" data-callback="onrecaptcha"><i class="fa fa-paper-plane" aria-hidden="true"></i> Envoyer</button>
+                            </div>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script async defer>
+        $('button.submit').click(function() {
+            var $name = "{{ form.vars.value.name }}";
+            console.log("nom: " + $name);
+            $('#contact-form-container').hide();
+            $('.loader').show();
+        });
+        function onrecaptcha() {
+            $('form').submit();
+        }
+    </script>
+    <script src='https://www.google.com/recaptcha/api.js' async defer></script>
+
+{% endblock %}

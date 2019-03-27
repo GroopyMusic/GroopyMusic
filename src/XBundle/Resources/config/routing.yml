@@ -1,0 +1,18 @@
+x_public_controller:
+  resource: "@XBundle/Controller/XPublicController.php"
+  type: annotation
+  schemes: ['%http_protocol%']
+  prefix: /
+
+x_artist_controller:
+  resource: "@XBundle/Controller/XArtistController.php"
+  type: annotation
+  schemes: ['%http_protocol%']
+  prefix: /artist
+
+fos_user_security_check_x:
+  path: "/login_check"
+  methods: ["POST"]
+  host: localhost
+  defaults:
+    _controller: fos_user.security.controller:checkAction
