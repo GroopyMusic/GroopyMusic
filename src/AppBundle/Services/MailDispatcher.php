@@ -354,6 +354,10 @@ class MailDispatcher
             'payment' => $payment,
         ];
 
+        if($payment->isYB()) {
+            return $this->sendRefundedYBPayment($payment);
+        }
+
         $to = [$payment->getUser()->getEmail() => $payment->getUser()->getPreferredLocale()];
         $toName = [$payment->getUser()->getDisplayName()];
 
@@ -364,6 +368,12 @@ class MailDispatcher
     }
 
     public function sendRefundedContractFan(ContractFan $cf) {
+
+        if($cf->getContractArtist()->isYB()) {
+            $this->sendRefundedYBContractFan($cf, 'other');
+            return;
+        }
+
         $params = [
             'cf' => $cf,
         ];
@@ -599,16 +609,25 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::YB_TICKETS, $subject, $params, $subject_params, [], $attachments, $recipient, $recipientName, $reply_to, $reply_to_name);
     }
 
-    public function sendRefundedYBContractFan(ContractFan $cf) {
+    public function sendRefundedYBPayment(Payment $payment) {
+        foreach($payment->getContractsFan() as $cf) {
+            $this->sendRefundedYBContractFan($cf, 'other');
+        }
+    }
+
+    public function sendRefundedYBContractFan(ContractFan $cf, $reason = 'crowdfunding') {
         $params = [
             'cf' => $cf,
             'campaign' => $campaign = $cf->getContractArtist(),
+            'reason' => $reason,
         ];
 
         $to = [$cf->getEmail() => 'fr'];
         $toName = [$cf->getDisplayName()];
 
-        $subject = 'Remboursement - campagne "'. $campaign->getTitle() . '" annulée sur Ticked-it';
+        $subject = 'Remboursement de votre commande';
+        if($reason == 'crowdfunding')
+            $subject .= ' - campagne "'. $campaign->getTitle() . '" annulée sur Ticked-it';
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::YB_REFUNDED_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
