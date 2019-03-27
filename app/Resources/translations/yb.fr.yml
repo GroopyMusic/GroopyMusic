@@ -10,7 +10,7 @@ footer:
   about: À propos
   contact: Contact
   terms: Conditions d'utilisation
-  copyright: &copy; Ticked-it! 2018. Tous droits réservés.
+  copyright: &copy; Ticked-it! %year%. Tous droits réservés.
 
 notice:
   title: Merci !
