@@ -68,10 +68,6 @@ $('document').ready(function() {
         rectifyQuantities($(this));
     });
 
-    $('input.quantity').change(function() {
-        rectifyQuantities($(this));
-    });
-
     $('.quantity-right-plus').click(function(e){
         e.preventDefault();
         var $q = $(this).closest('.input-group').find('input.quantity');

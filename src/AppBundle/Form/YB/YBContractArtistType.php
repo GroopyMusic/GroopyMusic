@@ -144,7 +144,7 @@ class YBContractArtistType extends AbstractType
                 'attr' => ['class' => 'collection'],
             ))
             ->add('globalSoldout', NumberType::class, array(
-                'label' => 'Sold out global (si applicable)',
+                'label' => 'Sold out global',
                 'required' => false,
             ))
 

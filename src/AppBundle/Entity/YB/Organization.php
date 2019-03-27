@@ -229,7 +229,7 @@ class Organization {
     /**
      * @return string
      */
-    public function getBankAccount(): string
+    public function getBankAccount()
     {
         return $this->bank_account;
     }
@@ -237,7 +237,7 @@ class Organization {
     /**
      * @param string $bank_account
      */
-    public function setBankAccount(string $bank_account)
+    public function setBankAccount($bank_account)
     {
         $this->bank_account = $bank_account;
     }

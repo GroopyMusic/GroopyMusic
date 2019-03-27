@@ -47,7 +47,7 @@ class PurchaseType extends AbstractType
             if($contract_artist instanceof ContractArtistSales || $contract_artist instanceof ContractArtistPot || $purchase->getCounterPart()->getFreePrice()) {
                 $event->getForm()->add('free_price_value', NumberType::class, array(
                     'attr' => [
-                        'class' => 'quantity',
+                        'class' => 'free-price-value',
                     ],
                     'label' => false,
                 ));
