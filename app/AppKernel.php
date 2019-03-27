@@ -54,7 +54,7 @@ class AppKernel extends Kernel
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new XBundle\XBundle(),
             new FM\BbcodeBundle\FMBbcodeBundle(),
-            new Ob\HighchartsBundle\ObHighchartsBundle()
+            new Ob\HighchartsBundle\ObHighchartsBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
         ];
 
