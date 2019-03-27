@@ -752,7 +752,7 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/venue/new", name="yb_members_venue_new")
+     * @Route("/venue/new", name="yb_members_venues_new")
      */
     public function newVenueAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher){
         //TODO

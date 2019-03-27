@@ -31,17 +31,11 @@
                     <div class="text-muted">Gérez vos organisations, créez-en des nouvelles, rajouter des membres, etc.</div>
                 </li>
                 <li class="list-group-item">
-                    <i class="fas fa-plus-square"></i> Nouvelle salle
+                    <a href="{{ path('yb_members_venues_new') }}"><i class="fas fa-plus-square"></i> Nouvelle salle</a>
                     <div class="text-muted">(Bientôt) Enregistrez votre salle, renseignez son adresse et créer un plan de salle simple.</div>
                 </li>
                 <li class="list-group-item">
-                    {% if false %}
-                        <a href="{{ path('yb_members_my_organizations') }}">
-                    {% endif %}
-                            <i class="fa fa-home"></i> Mes salles
-                    {% if false %}
-                        </a>
-                    {% endif %}
+                    <a href="https://www.wikipedia.com"><i class="fa fa-home"></i> Mes salles</a>
                     <div class="text-muted">(Bientôt) Retrouvez toutes les infos de vos différentes salles et modifiez-les en cas de besoin.</div>
                 </li>
                 <li class="list-group-item">
