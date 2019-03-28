@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20190315145418 extends AbstractMigration
+class Version20190327132218 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -18,8 +18,7 @@ class Version20190315145418 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE ticket ADD paidInCash TINYINT(1) NOT NULL');
-        $this->addSql('ALTER TABLE counter_part CHANGE minimum_price minimum_price DOUBLE PRECISION NOT NULL');
+        $this->addSql('ALTER TABLE yb_organization ADD bank_account VARCHAR(50) DEFAULT NULL, ADD vat_number VARCHAR(50) DEFAULT NULL');
     }
 
     /**
@@ -30,8 +29,6 @@ class Version20190315145418 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE counter_part CHANGE minimum_price minimum_price SMALLINT NOT NULL');
-        $this->addSql('ALTER TABLE ticket DROP paidInCash');
-        $this->addSql('ALTER TABLE yb_contract_artist ADD organization_name VARCHAR(50) DEFAULT NULL COLLATE utf8_unicode_ci');
+        $this->addSql('ALTER TABLE yb_organization DROP bank_account, DROP vat_number');
     }
 }

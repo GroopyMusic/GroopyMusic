@@ -171,4 +171,20 @@ class YBCommission /*implements \ArrayAccess*/
         $this->{$offset} = null;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCampaign()
+    {
+        return $this->campaign;
+    }
+
+    /**
+     * @param mixed $campaign
+     */
+    public function setCampaign($campaign)
+    {
+        $this->campaign = $campaign;
+    }
+
 }

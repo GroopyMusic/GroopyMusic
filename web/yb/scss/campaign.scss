@@ -4,7 +4,7 @@
     padding: 1px 6px;
   }
 
-  .quantity {
+  .quantity, .free-price-value {
     padding: 0.25rem;
   }
 
@@ -15,7 +15,11 @@
   right: 10px;
 }
 
-.quantity-error-display {
+.quantity-error-display, .free-price-error-display {
   @extend .text-danger;
   @extend .pb-2;
+}
+
+.collection-actions .collection-remove {
+  position: relative !important;
 }

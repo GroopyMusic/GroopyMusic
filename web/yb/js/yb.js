@@ -62,14 +62,29 @@ $('document').ready(function() {
         else {
             $displayer.hide();
         }
+        calculateTickets();
     }
+
+    $('input.quantity').change(function() {
+        rectifyQuantities($(this));
+    });
 
     $('input.quantity').each(function() {
         rectifyQuantities($(this));
     });
 
-    $('input.quantity').change(function() {
-        rectifyQuantities($(this));
+    $('input.free-price-value').change(function() {
+        var $fpv = $(this);
+        var $displayer = $fpv.closest('.counterpart-form').find('.free-price-error-display');
+        var min = parseFloat($fpv.attr('min'));
+        if(parseFloat($fpv.val()) < min) {
+            $displayer.text('Le prix minimum pour ce ticket est de ' + min + ' euros.');
+            $displayer.show();
+            $fpv.val(min);
+        }
+        else {
+            $displayer.hide();
+        }
     });
 
     $('.quantity-right-plus').click(function(e){
@@ -89,4 +104,26 @@ $('document').ready(function() {
             $q.trigger('change');
         }
     });
+
+    function calculateTickets() {
+        var tp = 0;
+        var q = 0;
+        $('.quantity.form-control').each(function() {
+            var qval = parseFloat($(this).val());
+            q += qval;
+            var $priceElem = $(this).closest('.counterpart-form').find('.counterpart-price');
+            var price = isNaN(parseFloat($priceElem.val())) ? parseFloat($priceElem.text()) : parseFloat($priceElem.val());
+            tp += price * qval;
+        });
+
+        if(tp === 0 && q === 0) {
+           $('#totals').hide();
+        }
+
+        else {
+            $('#cart-total').text(tp);
+            $('#quantity-total').text(q);
+            $('#totals').show();
+        }
+    }
 });

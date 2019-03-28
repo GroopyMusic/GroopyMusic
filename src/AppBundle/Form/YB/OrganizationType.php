@@ -13,7 +13,17 @@ class OrganizationType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options){
         $builder
-            ->add('name', TextType::class, array('label' => 'Nom de l\'organisation',))
+            ->add('name', TextType::class, array(
+                'label' => 'Nom de l\'organisation',
+            ))
+            ->add('vatNumber', TextType::class, array(
+                'label' => 'Numéro de TVA (si applicable)',
+                'required' => false,
+            ))
+            ->add('bankAccount', TextType::class, array(
+                'label' => 'Numéro de compte IBAN',
+                'required' => false,
+            ))
             ->add('save', SubmitType::class, array(
                 'label' => 'Enregistrer',
                 'attr' => array('class' => 'btn'),

@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20190315145418 extends AbstractMigration
+class Version20190328150452 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -18,8 +18,9 @@ class Version20190315145418 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE ticket ADD paidInCash TINYINT(1) NOT NULL');
-        $this->addSql('ALTER TABLE counter_part CHANGE minimum_price minimum_price DOUBLE PRECISION NOT NULL');
+        $this->addSql('ALTER TABLE yb_contract_artist DROP FOREIGN KEY FK_5DD05B528F6756DB');
+        $this->addSql('DROP INDEX UNIQ_5DD05B528F6756DB ON yb_contract_artist');
+        $this->addSql('ALTER TABLE yb_contract_artist DROP sub_events_id');
     }
 
     /**
@@ -30,8 +31,8 @@ class Version20190315145418 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE counter_part CHANGE minimum_price minimum_price SMALLINT NOT NULL');
-        $this->addSql('ALTER TABLE ticket DROP paidInCash');
-        $this->addSql('ALTER TABLE yb_contract_artist ADD organization_name VARCHAR(50) DEFAULT NULL COLLATE utf8_unicode_ci');
+        $this->addSql('ALTER TABLE yb_contract_artist ADD sub_events_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE yb_contract_artist ADD CONSTRAINT FK_5DD05B528F6756DB FOREIGN KEY (sub_events_id) REFERENCES ybsubevent (id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_5DD05B528F6756DB ON yb_contract_artist (sub_events_id)');
     }
 }

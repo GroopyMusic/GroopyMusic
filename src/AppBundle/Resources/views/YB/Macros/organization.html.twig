@@ -6,6 +6,10 @@
         {% else %}
             <h3 class="name" style="color:orange;">{{ organization.getName|nl2br }} (SUPER ADMIN)</h3>
         {% endif %}
+        <p class="small">
+            <i>Numéro de TVA : {{ organization.vatNumber|default('non renseigné - envoyez-le par mail') }}</i><br />
+            <i>Numéro de compte : {{ organization.bankAccount|default('non renseigné - envoyez-le par mail') }}</i>
+        </p>
 
         <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
             {% for member in organization.getMembers %}
@@ -20,6 +24,7 @@
                 {% endfor %}
             {% endif %}
         </table>
+
         <!-- On ne peut ajouter une personne qui si on est admin -->
         {% if currentUser.isAdminForOrganization(organization) or currentUser.isSuperAdmin() %}
             {% if not organization.isPrivate() %}

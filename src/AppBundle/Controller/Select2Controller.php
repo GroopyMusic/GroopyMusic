@@ -129,4 +129,27 @@ class Select2Controller extends BaseController
         return new Response(json_encode($artistsArray), 200, array('Content-Type' => 'application/json'));
     }
 
+
+    /**
+     * @Route("/counterpart-sub-events", name="select2_yb_sub_events")
+     */
+    public function counterpartSubEvents(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $campaign_id = $request->get('campaign');
+
+        $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find($campaign_id);
+        $subEvents = $campaign->getSubEvents()->toArray();
+        $searray = [];
+
+        foreach ($subEvents as $se) {
+            $searray[] = array(
+                'id' => $se->getId(),
+                'text' => $se->__toString(),
+            );
+        }
+        return new Response(json_encode($searray), 200, array('Content-Type' => 'application/json'));
+    }
+
 }

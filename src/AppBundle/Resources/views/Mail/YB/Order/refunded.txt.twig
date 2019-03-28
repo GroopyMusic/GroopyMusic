@@ -5,7 +5,7 @@
 {% autoescape false %}
 
 {% block content %}
-    {{ email_content('yb.order.refunded', {
+    {{ email_content('yb.order.refunded_'~reason, {
         '%name%': cf.physicalPerson.displayName,
         '%event%': campaign.getTitle,
         '%amount%': cf.amount

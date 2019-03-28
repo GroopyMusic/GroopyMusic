@@ -280,12 +280,18 @@ yb:
       Veuillez trouver vos tickets pour "%event%" en pièce jointe.
 
       Passez une excellente journée,
-    refunded: |
+    refunded_crowdfunding: |
       Cher/Chère %name%,
 
       La campagne "%event%" n'a pas pu être confirmée par son organisateur car trop peu de tickets ont été vendus.
 
       Vous allez être remboursé(e) de votre commande de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
+    refunded_other: |
+      Cher/Chère %name%,
+
+      Votre commande de tickets sur Ticked-it pour la campagne "%event%" (total : %amount% €) va être remboursée dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
+
+      La raison du remboursement devrait vous avoir été, par ailleurs, communiquée par l'organisateur.
   reminders:
     buyers:
       upcoming_event: |
