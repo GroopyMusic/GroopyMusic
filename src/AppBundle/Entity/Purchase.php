@@ -133,8 +133,6 @@ class Purchase
         }
 
         foreach ($this->getContractArtist()->getPromotionsDecr() as $promotion) {
-            echo 'lol';
-            var_dump($this->nb_free_counterparts);
             /** @var Promotion $promotion */
             if ($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getPromotions())) {
                 // Additional tickets
