@@ -41,7 +41,7 @@
                 {% if is_event %}
                     <div class="mb-2">
                         {% if campaign.hasSubEvents %}
-                            <b>Dates : {% for se in campaign.getSubEvents %}{% if not loop.first %},{% endif %}{{ se }} {% endfor %}</b>
+                            <b>Dates : {% for se in campaign.getSubEvents %}{% if not loop.first %}, {% endif %}{{ se }}  {% endfor %}</b>
                         {% else %}
                             <b>Date : {{ campaign.dateEvent|date('d/m/Y') }}</b>
                         {% endif %}

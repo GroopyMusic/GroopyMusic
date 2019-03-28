@@ -108,7 +108,7 @@ class Promotion
                 return 6;
             break;
             case self::TYPE_EIGHT_PLUS_TWO:
-                return 6;
+                return 8;
             break;
             case self::TYPE_TEN_PLUS_TWO:
                 return 10;

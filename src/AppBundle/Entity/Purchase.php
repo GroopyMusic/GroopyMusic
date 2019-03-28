@@ -133,11 +133,15 @@ class Purchase
         }
 
         foreach ($this->getContractArtist()->getPromotionsDecr() as $promotion) {
+            echo 'lol';
+            var_dump($this->nb_free_counterparts);
             /** @var Promotion $promotion */
             if ($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getPromotions())) {
                 // Additional tickets
                 $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($organicsLeft / $promotion->getNbOrganicNeeded()));
+                var_dump($new_promotional_counterparts);
                 $this->nb_free_counterparts += $new_promotional_counterparts;
+                var_dump($this->nb_free_counterparts);
                 $this->addQuantity($new_promotional_counterparts);
                 $organicsLeft %= $promotion->getNbOrganicNeeded();
                 // End additional tickets
