@@ -103,12 +103,12 @@
                                     {% if counterpart.freePrice %}
                                         <div class="col-4 col-sm-3 col-lg-4">
                                             <div class="w-90 position-relative mb-2">
-                                                {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
+                                                {{ form_widget(purchase.free_price_value, {'attr':  {'min': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
                                             </div>
                                         </div>
                                     {% else %}
                                         <div class="col-4 col-sm-3 col-lg-4">
-                                        {% if counterpart.isFree %}Gratuit{% else %}{{ counterpart.price }} €{% endif %}
+                                            <span class="counterpart-price d-none">{{ counterpart.price }}</span>{% if counterpart.isFree %}Gratuit{% else %}{{ counterpart.price }} €{% endif %}
                                         </div>
                                     {% endif %}
                                     {% set max_cp = campaign.nbPurchasable(counterpart) %}
@@ -139,14 +139,23 @@
                             </div>
                         {% endfor %}
 
-                        {{ form_widget(form.submit) }}
+                        <div class="text-right">
+                            <span class="pr-2" id="totals">
+                                TOTAL : <span id="cart-total">0</span> € pour <span id="quantity-total">0</span> ticket(s)
+                            </span>
+                            {{ form_widget(form.submit) }}
+                        </div>
+
 
                         {{ form_end(form) }}
+
                     {% else %}
                         {% if campaign.passed %}
                             <p>Cette campagne est terminée et il n'est donc plus possible d'acheter des tickets.</p>
                         {% elseif campaign.pending %}
                             <p>Il n'est actuellement pas possible de contribuer à cette campagne car elle est en cours d'examination par son organisateur. Vous saurez bientôt si elle est validée ou non.</p>
+                        {% elseif campaign.soldOut %}
+                            <p>Cette campagne est sold out, il n'est donc plus possible d'acheter des tickets.</p>
                         {% else %}
                             <p>Il n'est actuellement pas possible d'acheter des tickets.</p>
                         {% endif %}
@@ -169,6 +178,7 @@
 
                 {% endif %}
             </div>
+
         </div>
     </div>
 {% endblock %}

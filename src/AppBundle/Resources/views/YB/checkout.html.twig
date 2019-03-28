@@ -205,7 +205,10 @@
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
                                         <h4 class="my-0">{{ purchase }}</h4>
-                                        <small class="text-muted">{{ purchase.counterPart.getDescription }}</small>
+                                        <small class="text-muted">
+                                            {{ purchase.counterPart.getDescription }}<br />
+                                            Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.counterpart.freePrice %} (choisi librement){% endif %}
+                                        </small>
                                     </div>
                                     <span class="text-muted">{{ purchase.amount > 0 ? purchase.amount ~ ' €' : 'Gratuit' }}</span>
                                 </li>

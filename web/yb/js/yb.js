@@ -62,7 +62,12 @@ $('document').ready(function() {
         else {
             $displayer.hide();
         }
+        calculateTickets();
     }
+
+    $('input.quantity').change(function() {
+        rectifyQuantities($(this));
+    });
 
     $('input.quantity').each(function() {
         rectifyQuantities($(this));
@@ -99,4 +104,26 @@ $('document').ready(function() {
             $q.trigger('change');
         }
     });
+
+    function calculateTickets() {
+        var tp = 0;
+        var q = 0;
+        $('.quantity.form-control').each(function() {
+            var qval = parseFloat($(this).val());
+            q += qval;
+            var $priceElem = $(this).closest('.counterpart-form').find('.counterpart-price');
+            var price = isNaN(parseFloat($priceElem.val())) ? parseFloat($priceElem.text()) : parseFloat($priceElem.val());
+            tp += price * qval;
+        });
+
+        if(tp === 0 && q === 0) {
+           $('#totals').hide();
+        }
+
+        else {
+            $('#cart-total').text(tp);
+            $('#quantity-total').text(q);
+            $('#totals').show();
+        }
+    }
 });
