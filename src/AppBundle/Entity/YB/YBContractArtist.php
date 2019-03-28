@@ -51,6 +51,9 @@ class YBContractArtist extends BaseContractArtist
         $this->code = uniqid();
         $this->commissions = new ArrayCollection();
         $this->transactional_messages = new ArrayCollection();
+        $this->sub_events = new ArrayCollection();
+        $this->no_sub_events = true;
+        $this->date_event = new \DateTime();
     }
 
     public function getBuyers() {
@@ -180,6 +183,10 @@ class YBContractArtist extends BaseContractArtist
         return $this->organization->getName();
     }
 
+    public function hasSubEvents() {
+        return !$this->no_sub_events;
+    }
+
     /**
      * @var integer
      * @ORM\Column(name="sold_counterparts", type="float")
@@ -203,6 +210,17 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="date_event", type="datetime", nullable=true)
      */
     private $date_event;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", mappedBy="campaign", cascade="persist")
+     */
+    private $sub_events;
+
+    /**
+     * @ORM\Column(name="no_sub_events", type="boolean")
+     */
+    private $no_sub_events;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="yb_campaigns")
@@ -236,13 +254,13 @@ class YBContractArtist extends BaseContractArtist
     private $vat;
 
     /**
-     * #var YBCommission[]
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign", orphanRemoval=true)
+     * #var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign")
      */
     private $commissions;
 
     /**
-     * @var YBInvoice[]
+     * @var  ArrayCollection
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBInvoice", cascade={"all"}, mappedBy="campaign")
      */
     private $invoices;
@@ -333,6 +351,10 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getDateEvent()
     {
+        if($this->hasSubEvents() && count($this->sub_events) > 0) {
+            return $this->sub_events->first()->getDate();
+        }
+
         return $this->date_event;
     }
 
@@ -593,6 +615,53 @@ class YBContractArtist extends BaseContractArtist
     public function setBankAccount($bank_account)
     {
         $this->bank_account = $bank_account;
+        return $this;
+    }
+
+    /**
+     * @param array|ArrayCollection $sub_events
+     * @return YBContractArtist
+     */
+    public function setSubEvents($sub_events)
+    {
+        $this->sub_events->clear();
+        foreach($sub_events as $sub_event) {
+            $this->addSubEvent($sub_event);
+        }
+        return $this;
+    }
+
+    public function addSubEvent(YBSubEvent $sub_event) {
+        $this->sub_events->add($sub_event);
+        $sub_event->setCampaign($this);
+        return $this;
+    }
+
+    public function removeSubEvent(YBSubEvent $sub_event) {
+        $this->sub_events->remove($sub_event);
+        return $this;
+    }
+
+    public function getSubEvents()
+    {
+        return $this->sub_events;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getNoSubEvents()
+    {
+        return $this->no_sub_events;
+    }
+
+    /**
+     * @param bool $no_sub_events
+     * @return $this
+     */
+    public function setNoSubEvents($no_sub_events)
+    {
+        $this->no_sub_events = $no_sub_events;
         return $this;
     }
 }

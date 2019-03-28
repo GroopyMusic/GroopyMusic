@@ -5,6 +5,11 @@
         <div class="col-12">
             {{ form_widget(form.translations) }}
         </div>
+        {% if attr.class == '' %}
+            <div class="col-12">
+                {{ form_row(form.subEvents) }}
+            </div>
+        {% endif %}
         <div class="col-12 col-md-6 row">
             <div class="col-12">
             {{ form_row(form.maximumAmount) }}

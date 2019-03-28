@@ -654,23 +654,33 @@ class MailDispatcher
     }
 
     public function sendYBReminderEventCreated(YBContractArtist $campaign) {
-        $organizers = $campaign->getHandlers();
-        $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
-            return $person->getEmail();
-        }, $organizers));
+        $reminders = $campaign->getReminders();
 
-        $to = self::ADMIN_TO; 
+        if(!in_array('organizer_campaign_created', $reminders)) {
+            $organizers = $campaign->getHandlers();
+            $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+                return $person->getEmail();
+            }, $organizers));
 
-        foreach($emails as $email) {
-            $to[$email] = $this->translator->getLocale();
+            $to = self::ADMIN_TO;
+
+            foreach($emails as $email) {
+                $to[$email] = $this->translator->getLocale();
+            }
+
+            $params = ['campaign' => $campaign];
+            $subject = 'subjects.yb.reminders.organizers.event_created';
+
+            $subject_params = ['%event%' => $campaign->getTitle()];
+
+            $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
+
+            $campaign->addReminder('organizer_campaign_created');
+            $this->em->persist($campaign);
+            $this->em->flush();
         }
 
-        $params = ['campaign' => $campaign]; 
-        $subject = 'subjects.yb.reminders.organizers.event_created';
 
-        $subject_params = ['%event%' => $campaign->getTitle()];
-
-        $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
     }
 
     public function sendYBJoinOrganization($email, Organization $organization, User $user){

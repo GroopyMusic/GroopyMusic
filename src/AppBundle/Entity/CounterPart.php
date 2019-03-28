@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\YBSubEvent;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Sonata\TranslationBundle\Model\TranslatableInterface;
@@ -19,12 +20,14 @@ class CounterPart implements TranslatableInterface
 
     public function __construct()
     {
-        $this->festivaldays = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->festivaldays = new ArrayCollection();
         $this->free_price = false;
         $this->minimum_price = 0;
         $this->threshold_increase = 1;
         $this->maximum_amount_per_purchase = 1000;
         $this->disabled = 0;
+        $this->price = 0;
+        $this->sub_events = new ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -102,7 +105,7 @@ class CounterPart implements TranslatableInterface
     /**
      * @var float
      *
-     * @ORM\Column(name="price", type="float")
+     * @ORM\Column(name="price", type="float", nullable=true)
      */
     private $price;
 
@@ -158,6 +161,11 @@ class CounterPart implements TranslatableInterface
      * @ORM\Column(name="disabled", type="boolean")
      */
     private $disabled;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", mappedBy="counterparts")
+     */
+    private $sub_events;
 
     /**
      * Get id
@@ -402,6 +410,30 @@ class CounterPart implements TranslatableInterface
     public function setDisabled($disabled)
     {
         $this->disabled = $disabled;
+        return $this;
+    }
+
+    public function setSubEvents($ses) {
+        $this->sub_events = new ArrayCollection();
+        foreach($ses as $se) {
+            $this->addSubEvent($se);
+        }
+    }
+
+    public function getSubEvents() {
+        return $this->sub_events;
+    }
+
+    public function addSubEvent(YBSubEvent $se) {
+        if($this->sub_events == null) {
+            $this->sub_events = new ArrayCollection();
+        }
+        $this->sub_events->add($se);
+        return $this;
+    }
+
+    public function removeSubEvent(YBSubEvent $se) {
+        $this->sub_events->remove($se);
         return $this;
     }
 }

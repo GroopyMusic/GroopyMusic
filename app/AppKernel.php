@@ -56,6 +56,7 @@ class AppKernel extends Kernel
             new FM\BbcodeBundle\FMBbcodeBundle(),
             new Ob\HighchartsBundle\ObHighchartsBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
+            new Craue\FormFlowBundle\CraueFormFlowBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

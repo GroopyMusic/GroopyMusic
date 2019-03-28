@@ -19,3 +19,7 @@
   @extend .text-danger;
   @extend .pb-2;
 }
+
+.collection-actions .collection-remove {
+  position: relative !important;
+}

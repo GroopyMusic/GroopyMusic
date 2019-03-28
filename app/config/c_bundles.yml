@@ -89,3 +89,8 @@ cspoo_swiftmailer_mailgun:
     key: "%mailgun_api_secret%"
     domain: "%mailgun_domain%"
     http_client: ~ # Optional. Defaults to null and uses discovery to find client.
+
+services:
+    yb_contract_artist_flow:
+      class: AppBundle\Form\YB\YBContractArtistType
+      parent: craue.form.flow
