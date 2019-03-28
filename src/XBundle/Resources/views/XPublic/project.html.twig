@@ -18,7 +18,14 @@
 
                 <div>
                     <h1 class="text-center">{{ project.title }}</h1>
-                    <p class="text-center">{{ project.tag.name }}</p>
+                    <p class="text-center">{{ project.category.name }}</p>
+                    {% if project.tags is not empty %}
+                        <div class="text-center">
+                        {% for tag in project.tags %}
+                            <span class="badge badge-info">{{ tag.name }}</span>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
                     <img class="img-fluid d-block py-3 mx-auto" src="{{ src_project }}" />
                 </div>
 
@@ -241,7 +248,5 @@
         {% if project.isPassed %}
             $('.contribution').attr("disabled", true);
         {% endif %}
-
-        $("a").attr("target", "_blank");
     </script>
 {% endblock %}

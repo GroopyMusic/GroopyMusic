@@ -2,7 +2,7 @@
 
 namespace XBundle\Exception;
 
-class NotArtistOwnerException extends \RuntimeException
+class NotAllowedException extends \RuntimeException
 {
     private $attributes = array();
     private $subject;

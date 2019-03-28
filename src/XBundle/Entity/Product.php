@@ -29,6 +29,11 @@ class Product
         return self::PHOTOS_DIR . $image->getFilename();
     }
 
+    public function __toString()
+    {
+        return '' . $this->getName();
+    }
+
     public function addProductsSold($quantity) {
         $this->productsSold += $quantity;
     }

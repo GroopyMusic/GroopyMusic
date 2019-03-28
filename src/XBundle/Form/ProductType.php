@@ -65,7 +65,7 @@ class ProductType extends AbstractType
             ))
         ;
 
-        if ($options['creation']) {
+        if ($options['creation'] || $options['is_edit']) {
             $builder
                 ->add('submit', SubmitType::class, array(
                 'label' => 'Enregistrer'
@@ -109,7 +109,8 @@ class ProductType extends AbstractType
             'constraints' => array(
                 new Assert\Callback(array($this, 'validate'))
             ),
-            'creation' => false
+            'creation' => false,
+            'is_edit' =>false
         ));
     }
 

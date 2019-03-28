@@ -16,9 +16,11 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
     public function baseQueryBuilder() {
         return $this->createQueryBuilder('p')
             ->leftJoin('p.artist', 'a')
-            ->leftJoin('p.tag', 't') // modifier pcq plusieurs tags possibles 
+            ->leftJoin('p.category', 'c')
+            ->leftJoin('p.tags', 't')
             ->leftJoin('p.coverpic', 'cp')
             ->addSelect('a')
+            ->addSelect('c')
             ->addSelect('t')
             ->addSelect('cp')
         ;

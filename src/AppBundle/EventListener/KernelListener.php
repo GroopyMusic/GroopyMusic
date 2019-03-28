@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use XBundle\Controller\XArtistController;
 use XBundle\Controller\XPublicController;
 use XBundle\Exception\NoAuthenticationException;
-use XBundle\Exception\NotArtistOwnerException;
+use XBundle\Exception\NotAllowedException;
 
 class KernelListener implements EventSubscriberInterface
 {
@@ -116,11 +116,11 @@ class KernelListener implements EventSubscriberInterface
             $event->setResponse($response);
         }
 
-        // X - if not artist owner
-        if($exception instanceof NotArtistOwnerException) {
+        // X - if not project handler
+        if($exception instanceof NotAllowedException) {
             $response = new RedirectResponse($this->router->generate('x_homepage'));
 
-            $session->getFlashBag()->add('yb_error', "Accès refusé si vous ne gérez pas d'artiste!");
+            $session->getFlashBag()->add('yb_error', "Accès refusé si vous n'êtes pas gestionnaire de projet");
             
             $event->setResponse($response);
         }

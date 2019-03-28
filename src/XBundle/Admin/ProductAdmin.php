@@ -32,7 +32,6 @@ class ProductAdmin extends BaseAdmin
             ))
             ->add('project', null, array(
                 'label' => 'Projet associé',
-                'associated_property' => 'title'
             ))
             ->add('validated', null, array(
                 'label'=> 'Validé'
@@ -63,7 +62,6 @@ class ProductAdmin extends BaseAdmin
                 ))
                 ->add('project', null, array(
                     'label' => 'Projet associé',
-                    'associated_property' => 'title'
                 ))
                 ->add('description', null , array(
                     'label' => 'Description'

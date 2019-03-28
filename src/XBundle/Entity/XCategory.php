@@ -5,12 +5,12 @@ namespace XBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Tag
+ * XCategory
  *
- * @ORM\Table(name="tag")
- * @ORM\Entity(repositoryClass="XBundle\Repository\TagRepository")
+ * @ORM\Table(name="x_category")
+ * @ORM\Entity(repositoryClass="XBundle\Repository\XCategoryRepository")
  */
-class Tag
+class XCategory
 {
 
     public function __toString()
@@ -50,7 +50,7 @@ class Tag
      *
      * @param string $name
      *
-     * @return Tag
+     * @return XCategory
      */
     public function setName($name)
     {

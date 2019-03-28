@@ -10,6 +10,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use XBundle\Entity\Image;
 use XBundle\Entity\Product;
 use XBundle\Entity\Tag;
+use XCategory\Entity\XCategory;
 
 /**
  * Project
@@ -39,6 +40,7 @@ class Project
         $this->projectPhotos = new ArrayCollection();
         $this->handlers = new ArrayCollection();
         $this->products = new ArrayCollection();
+        $this->tags = new ArrayCollection();
         $this->points = 0;
         $this->acceptConditions = false;
     }
@@ -49,6 +51,11 @@ class Project
 
     public static function getWebPath(Image $image) {
         return self::PHOTOS_DIR . $image->getFilename();
+    }
+
+    public function __toString()
+    {
+        return '' . $this->getTitle();
     }
 
     public function hasThreshold()
@@ -175,10 +182,10 @@ class Project
     private $dateEnd;
 
     /**
-     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Tag")
+     * @ORM\ManyToOne(targetEntity="XBundle\Entity\XCategory")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $tag;
+    private $category;
 
     /**
      * @var float
@@ -267,9 +274,9 @@ class Project
     private $products;
 
     /**
-     * @ORM\ManyToMany(targetEntity="\XBundle\Entity\Tags", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="\XBundle\Entity\Tag", cascade={"all"})
      */
-    //private $tags;
+    private $tags;
 
     /**
      * @var string
@@ -524,27 +531,27 @@ class Project
     }
 
     /**
-     * Set tag
+     * Set category
      *
-     * @param Tag $tag
+     * @param XCategory $category
      *
      * @return Project
      */
-    public function setTag($tag)
+    public function setCategory($category)
     {
-        $this->tag = $tag;
+        $this->category = $category;
 
         return $this;
     }
 
     /**
-     * Get tag
+     * Get category
      *
-     * @return Tag
+     * @return XCategory
      */
-    public function getTag()
+    public function getCategory()
     {
-        return $this->tag;
+        return $this->category;
     }
 
     /**
@@ -971,5 +978,38 @@ class Project
 
     
 
-}
 
+    /**
+     * Add tag
+     *
+     * @param \XBundle\Entity\Tag $tag
+     *
+     * @return Project
+     */
+    public function addTag(\XBundle\Entity\Tag $tag)
+    {
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param \XBundle\Entity\Tag $tag
+     */
+    public function removeTag(\XBundle\Entity\Tag $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+}

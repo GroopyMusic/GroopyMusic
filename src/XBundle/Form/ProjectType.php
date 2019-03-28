@@ -26,7 +26,9 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use XBundle\Entity\Project;
 use XBundle\Entity\Product;
 use XBundle\Entity\Tag;
+use XBundle\Entity\XCategory;
 use XBundle\Form\ImageType;
+use XBundle\Form\TagType;
 
 class ProjectType extends AbstractType
 {
@@ -74,15 +76,19 @@ class ProjectType extends AbstractType
                     new Assert\GreaterThanOrEqual(['value' => 0])
                 ]
             ))
-            ->add('tag', EntityType::class, array(
+            ->add('category', EntityType::class, array(
                 'label' => 'Catégorie',
-                'class' => Tag::class,
+                'class' => XCategory::class,
                 'choice_label' => 'name',
                 'placeholder' => '',
                 'empty_data' => null,
                 'constraints' => [
                     new Assert\NotBlank(),
                 ]
+            ))
+            ->add('tags', TagType::class, array(
+                'label' => 'Tags',
+                'required' => false
             ))
             ->add('coverpic', ImageType::class, array(
                 'label' => 'Photo de couverture',

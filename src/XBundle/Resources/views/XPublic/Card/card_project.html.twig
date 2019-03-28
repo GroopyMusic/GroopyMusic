@@ -17,9 +17,9 @@
 
         <!-- this is the content of the card with an optionnal span for ⭐ -->
         <div class="x-card-content">
-            {% set tag_slug = "jplist-" ~ project.tag.name|slug %}
+            {% set category_slug = "jplist-" ~ project.category.name|slug %}
             <h5>{{ project.title }}</h5>
-            <div class="badge badge-warning project-tag {{ tag_slug }}">{{ project.tag.name }}</div>
+            <div class="badge badge-warning project-category {{ category_slug }}">{{ project.category.name }}</div>
             <!-- for several tags -->
             {#<span class="d-none project-tag">{% for genre in artist.genres %}{% if not loop.first %} {% endif %}<span class="jplist-{{ genre|slug }}">{{ genre }}</span>{% endfor %}</span>#}
             <p>

@@ -62,10 +62,12 @@ class XArtistController extends BaseController
             }
 
             // add Un-Mute admin to project
-            /*$adminUsers = $em->getRepository('AppBundle:User')->findUsersWithRoles(['ROLE_SUPER_ADMIN']);
+            $adminUsers = $em->getRepository('AppBundle:User')->getAdminsForProject();
             foreach($adminUsers as $au) {
-                $project->addHandler($au);
-            }*/
+                if (!$project->contains($au)) {
+                    $project->addHandler($au);
+                }
+            }
 
             $em->persist($project);
             $em->flush();
@@ -109,7 +111,7 @@ class XArtistController extends BaseController
      */
     public function updateProjectAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
 
         if($project->isPassed()) {
             // addFlash('x_error')
@@ -139,7 +141,7 @@ class XArtistController extends BaseController
      */
     public function donationsSalesDetailsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
 
         //$carts = $em->getRepository('XBundle:XCart')->getProjectCarts($project);
 
@@ -154,7 +156,7 @@ class XArtistController extends BaseController
      */
     public function viewProductsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
 
         $products = $em->getRepository('XBundle:Product')->getProductsForProject($project);
         
@@ -170,7 +172,7 @@ class XArtistController extends BaseController
      */
     public function addProductAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project, MailDispatcher $mailDispatcher)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
         
         $product = new Product();
         
@@ -206,11 +208,11 @@ class XArtistController extends BaseController
      */
     public function updateProductAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project, $idProd)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
 
         $product = $em->getRepository('XBundle:Product')->find($idProd);
 
-        $form = $this->createForm(ProductType::class, $product);
+        $form = $this->createForm(ProductType::class, $product, ['is_edit' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -235,7 +237,7 @@ class XArtistController extends BaseController
      */
     public function addTicketAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
 
         // check if project = concert
 

@@ -20,6 +20,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
+use XBundle\Entity\XCategory;
 use XBundle\Entity\XContact;
 use XBundle\Entity\XOrder;
 use XBundle\Entity\XPayment;
@@ -78,11 +79,11 @@ class XPublicController extends BaseController
     public function projectsAction(EntityManagerInterface $em)
     {
         $projects = $em->getRepository('XBundle:Project')->findValidatedProjects();
-        $tags = $em->getRepository('XBundle:Tag')->findAll();
+        $categories = $em->getRepository('XBundle:XCategory')->findAll();
 
         return $this->render('@X/XPublic/catalog_projects.html.twig', array(
             'projects' => $projects,
-            'tags' => $tags
+            'categories' => $categories
         ));
     }
 

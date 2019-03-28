@@ -62,9 +62,8 @@ class ProjectAdmin extends BaseAdmin
                 ->add('artist', null, array(
                     'label' => 'Artiste associé'
                 ))
-                ->add('tag', null , array(
+                ->add('category', null , array(
                     'label' => 'Catégorie',
-                    'associated_property' => 'name'
                 ))
                 ->add('dateEnd', null, array(
                     'label' => 'Date de clôture du financement partipatif',
