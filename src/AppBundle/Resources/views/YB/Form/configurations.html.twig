@@ -1,0 +1,54 @@
+{% block app_bundle_venue_config_type_row %}
+    <div class="row counterpart-row">
+        <h3>Configuration</h3>
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(form.name) }}
+                {{ form_row(form.maxCapacity) }}
+            </div>
+            <div class="col-12" id="yb_venue_has_only_free_seating">
+                {{ form_widget(form.onlyStandup) }}
+            </div>
+            <div class="col-12 col-md-6 row yb_free_seat_only">
+                <div class="text-muted font-italic pb-2">
+                    Si votre salle dispose des types de places suivantes, cochez les cases correspondantes :
+                </div>
+                <div class="col-12">{{ form_row(form.nbStandUp) }}</div>
+                <div class="col-12">{{ form_row(form.nbSeatedSeats) }}</div>
+                <div class="col-12">{{ form_row(form.nbBalconySeats) }}</div>
+            </div>
+            <div class="col_12 col-md-6 row">
+                <div class="text-muted font-italic pb-2">
+                    Si votre salle peut accueillir des PMR, donnez vos informations pour que ces personnes puissent
+                    vous contacter :
+                </div>
+                <div class="col-12" id="yb_venue_has_pmr_zone">
+                    {{ form_widget(form.pmrAccessible) }}
+                </div>
+                <div class="col-12 yb_pmr_zone">
+                    {{ form_row(form.phoneNumberPMR) }}
+                </div>
+                <div class="col-12 yb_pmr_zone">
+                    {{ form_row(form.emailAddressPMR) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <hr size="4" color="orange">
+        </div>
+    </div>
+    <script type="text/javascript">
+        yb_second_collection({
+            add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un bloc</a>',
+            remove:'<div class="input-group"><a class="btn btn-danger" href="#">Supprimer</a></div>'
+        });
+        $('#yb_venue_has_only_free_seating input[type="checkbox"]').on('change', function(){
+            $(this).closest('.counterpart-row').find('.yb_free_seat_only').toggle(!this.checked);
+        });
+        $('#yb_venue_has_only_free_seating input[type="checkbox"]').trigger('change');
+        $('#yb_venue_has_pmr_zone input[type="checkbox"]').on('change', function(){
+            $(this).closest('.counterpart-row').find('.yb_pmr_zone').toggle(this.checked);
+        });
+        $('#yb_venue_has_pmr_zone input[type="checkbox"]').trigger('change');
+    </script>
+{% endblock %}

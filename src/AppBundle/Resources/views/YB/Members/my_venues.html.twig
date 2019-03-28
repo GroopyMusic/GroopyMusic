@@ -1,0 +1,53 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    {% import '@App/YB/Macros/venue.html.twig' as macros %}
+
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li class="active"><span>Mes salles</span></li>
+        </ol>
+    </section>
+
+    <div
+            style="display:none"
+            data-group="group1"
+            data-path=".name"
+            data-type="text">
+    </div>
+
+    <section class="container py-5">
+        <h2>Mes salles</h2>
+        <div align="center">
+            <input
+                    data-jplist-control="textbox-filter"
+                    data-group="group1"
+                    data-name="my-filter-1"
+                    data-path=".name"
+                    type="text"
+                    value=""
+                    data-clear-btn-id="name-clear-btn"
+                    placeholder="Chercher..." />
+            <button type="button" id="name-clear-btn">Supprimer</button>
+        </div>
+        <br>
+        {% if venues|length > 0 %}
+            <div data-jplist-group="group1">
+                {% for venue in venues %}
+                    {{ macros.venue_row(venue, currentUser) }}
+                {% endfor %}
+                <div data-jplist-control="no-results" data-group="group1" data-name="no-results">
+                    Aucun résultat trouvé...
+                </div>
+            </div>
+        {% else %}
+            <p>Vous ne gérez aucune salle.</p>
+        {% endif %}
+    </section>
+
+{% endblock body %}
+
+{% block additional_javascripts %}
+    <script>jplist.init();</script>
+{% endblock additional_javascripts %}

@@ -76,6 +76,10 @@ class Organization {
         return count($this->getJoinOrganizationRequest()) > 0;
     }
 
+    public function handleVenue(Venue $venue){
+        return in_array($venue, $this->venues);
+    }
+
     // ATTRIBUTES
 
     /**
@@ -103,6 +107,11 @@ class Organization {
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBContractArtist", mappedBy="organization", cascade={"persist"})
      */
     private $campaigns;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Venue", mappedBy="organization", cascade={"persist"})
+     */
+    private $venue;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\OrganizationJoinRequest", mappedBy="organization", cascade={"persist"})
@@ -180,6 +189,22 @@ class Organization {
     public function setCampaigns($campaigns)
     {
         $this->campaigns = $campaigns;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVenues()
+    {
+        return $this->venues;
+    }
+
+    /**
+     * @param mixed $venues
+     */
+    public function setVenues($venues)
+    {
+        $this->venues = $venues;
     }
 
     /**

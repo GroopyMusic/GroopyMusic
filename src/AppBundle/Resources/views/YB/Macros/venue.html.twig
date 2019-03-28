@@ -1,0 +1,56 @@
+{% macro venue_row(venue, currentUser) %}
+    {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
+    <div data-jplist-item>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="name">{{ venue.address.name|nl2br }}</h3>
+            </div>
+            <div class="col-12 col-md-4">
+                {% if venue.hasOnlyFreeSeating %}
+                    Placement libre
+                {% else %}
+                    Choix de place
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-4">
+                <p><a class="link-secondary" href="{{ path('yb_members_venue_edit', {'id': venue.id}) }}">Modifier la salle...</a></p>
+            </div>
+            <div class="col-12 col-md-4">
+                {% if venue.isHandledByUser(currentUser) %}
+                    <p>
+                        <a class="link-secondary" data-toggle="modal" href="#quitModal{{ venue.id }}">
+                            Supprimer cette salle...
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+        <hr size="4" color="orange">
+        <div class="modal fade" id="quitModal{{ venue.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal_detail">
+                        Vous êtes sur le point de fermer cette salle {{ venue.address.name }}. Êtes vous sûr ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                        <form action="{{ path('yb_members_close_venue', {'id': venue.id}) }}">
+                            <input class="btn" type="submit" value="Valider"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+
+
+

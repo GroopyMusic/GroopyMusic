@@ -1,0 +1,16 @@
+{% block app_bundle_block_type_row %}
+    <div class="row counterpart-row">
+        <div class="col-12"><h3>Bloc</h3></div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(form.name) }}
+                {{ form_row(form.type) }}
+                {{ form_row(form.capacity) }}
+                {{ form_row(form.freeSeating) }}
+            </div>
+        </div>
+        <div class="col-12">
+            <hr size="4" color="green">
+        </div>
+    </div>
+{% endblock %}

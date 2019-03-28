@@ -2,7 +2,11 @@
 
 namespace AppBundle\Entity\YB;
 
+use AppBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+
 
 /**
  * Class Venue
@@ -11,14 +15,28 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Venue {
 
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
+
     public function __construct(){
-        $this->hasFreeSeating = false;
-        $this->hasStandUpZone = false;
-        $this->hasSeats = false;
-        $this->hasBalcony = false;
-        $this->hasPMRZone = false;
-        $this->phoneNumberPMR = '';
-        $this->emailAddressPMR = '';
+        $this->configurations = new ArrayCollection();
+    }
+
+    public function addConfiguration(VenueConfig $config){
+        $config->setVenue($this);
+        $this->configurations->add($config);
+    }
+
+    public function removeConfiguration(VenueConfig $config){
+        $config->setVenue(null);
+        $this->configurations->removeElement($config);
+    }
+
+    public function getHandlers(){
+        return $this->organization->getMembers();
+    }
+
+    public function isHandledByUser(User $user){
+        return in_array($user, $this->organization->getMembers());
     }
 
     /**
@@ -38,41 +56,54 @@ class Venue {
     private $address;
 
     /**
-     * @ORM\Column(name="hasFreeSeating", type="boolean")
+     * @var Organization
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="venue", cascade={"persist"})
      */
-    private $hasFreeSeating;
+    private $organization;
 
     /**
-     * @ORM\Column(name="hasStandUpZone", type="boolean")
+     * @var VenueConfig
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\VenueConfig", mappedBy="venue", cascade={"all"})
      */
-    private $hasStandUpZone;
+    private $configurations;
 
-    /**
-     * @ORM\Column(name="hasSeats", type="boolean")
-     */
-    private $hasSeats;
-
-    /**
-     * @ORM\Column(name="hasBalcony", type="boolean")
-     */
-    private $hasBalcony;
-
-    /**
-     * @ORM\Column(name="hasPMRZone", type="boolean")
-     */
-    private $hasPMRZone;
-
-    /**
-     * @ORM\Column(name="phoneNumberPMR", type="string", length=20)
-     */
-    private $phoneNumberPMR;
-
-    /**
-     * @ORM\Column(name="emailAddressPMR", type="string", length=50)
-     */
-    private $emailAddressPMR;
+    protected $accept_conditions;
+    protected $accept_being_responsible;
+    protected $accept_venue_temp;
 
     // getters & setters
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return Address
@@ -91,117 +122,75 @@ class Venue {
     }
 
     /**
-     * @return mixed
+     * @return Organization
      */
-    public function getHasFreeSeating()
+    public function getOrganization()
     {
-        return $this->hasFreeSeating;
+        return $this->organization;
     }
 
     /**
-     * @param mixed $hasFreeSeating
+     * @param Organization $organization
      */
-    public function setHasFreeSeating($hasFreeSeating)
+    public function setOrganization($organization)
     {
-        $this->hasFreeSeating = $hasFreeSeating;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHasStandUpZone()
-    {
-        return $this->hasStandUpZone;
-    }
-
-    /**
-     * @param mixed $hasStandUpZone
-     */
-    public function setHasStandUpZone($hasStandUpZone)
-    {
-        $this->hasStandUpZone = $hasStandUpZone;
+        $this->organization = $organization;
     }
 
     /**
      * @return mixed
      */
-    public function getHasSeats()
+    public function getAcceptConditions()
     {
-        return $this->hasSeats;
+        return $this->accept_conditions;
     }
 
     /**
-     * @param mixed $hasSeats
+     * @param mixed $accept_conditions
      */
-    public function setHasSeats($hasSeats)
+    public function setAcceptConditions($accept_conditions)
     {
-        $this->hasSeats = $hasSeats;
+        $this->accept_conditions = $accept_conditions;
     }
 
     /**
-     * @return mixed
+     * @return VenueConfig
      */
-    public function getHasBalcony()
+    public function getConfigurations()
     {
-        return $this->hasBalcony;
-    }
-
-    /**
-     * @param mixed $hasBalcony
-     */
-    public function setHasBalcony($hasBalcony)
-    {
-        $this->hasBalcony = $hasBalcony;
+        return $this->configurations;
     }
 
     /**
      * @return mixed
      */
-    public function getHasPMRZone()
+    public function getAcceptBeingResponsible()
     {
-        return $this->hasPMRZone;
+        return $this->accept_being_responsible;
     }
 
     /**
-     * @param mixed $hasPMRZone
+     * @param mixed $accept_being_responsible
      */
-    public function setHasPMRZone($hasPMRZone)
+    public function setAcceptBeingResponsible($accept_being_responsible)
     {
-        $this->hasPMRZone = $hasPMRZone;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPhoneNumberPMR()
-    {
-        return $this->phoneNumberPMR;
-    }
-
-    /**
-     * @param mixed $phoneNumberPMR
-     */
-    public function setPhoneNumberPMR($phoneNumberPMR)
-    {
-        $this->phoneNumberPMR = $phoneNumberPMR;
+        $this->accept_being_responsible = $accept_being_responsible;
     }
 
     /**
      * @return mixed
      */
-    public function getEmailAddressPMR()
+    public function getAcceptVenueTemp()
     {
-        return $this->emailAddressPMR;
+        return $this->accept_venue_temp;
     }
 
     /**
-     * @param mixed $emailAddressPMR
+     * @param mixed $accept_venue_temp
      */
-    public function setEmailAddressPMR($emailAddressPMR)
+    public function setAcceptVenueTemp($accept_venue_temp)
     {
-        $this->emailAddressPMR = $emailAddressPMR;
+        $this->accept_venue_temp = $accept_venue_temp;
     }
-
-
 
 }

@@ -7,6 +7,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
+use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\YBCommission;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\OrganizationJoinRequest;
@@ -19,6 +20,7 @@ use AppBundle\Entity\YB\Membership;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
+use AppBundle\Form\YB\VenueType;
 use AppBundle\Services\AdminExcelCreator;
 use AppBundle\Form\YB\YBTransactionalMessageType;
 use AppBundle\Services\FinancialDataGenerator;
@@ -121,8 +123,14 @@ class YBMembersController extends BaseController
             return $this->redirectToRoute('yb_members_passed_campaigns');
         }
 
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if (!$currentUser->hasPrivateOrganization()){
+            $this->createPrivateOrganization($em, $currentUser);
+        }
+        $userOrganizations = $this->getOrganizationsFromUser($currentUser);
+
         $form = $this->createForm(YBContractArtistType::class, $campaign,
-            ['admin' => $user->isSuperAdmin()]);
+            ['admin' => $user->isSuperAdmin(), 'userOrganizations' => $userOrganizations]);
 
         $form->handleRequest($request);
 
@@ -752,13 +760,6 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/venue/new", name="yb_members_venues_new")
-     */
-    public function newVenueAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher){
-        //TODO
-    }
-
-    /**
      * @Route("/confirm-joining-organization/{id}", name="yb_members_confirm_joining_organization")
      */
     public function confirmJoiningOrganization(Organization $org, UserInterface $user = null, EntityManagerInterface $em){
@@ -794,6 +795,132 @@ class YBMembersController extends BaseController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/venue/new", name="yb_members_venues_new")
+     */
+    public function newVenueAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher){
+        $this->checkIfAuthorized($user);
+        $venue = new Venue();
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if (!$currentUser->hasPrivateOrganization()){
+            $this->createPrivateOrganization($em, $currentUser);
+        }
+        $userOrganizations = $this->getOrganizationsFromUser($currentUser);
+        $form = $this->createForm(VenueType::class, $venue, ['creation' => true, 'userOrganizations' => $userOrganizations]);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($venue);
+            $em->flush();
+            $this->addFlash('yb_notice', 'La salle a bien été créée.');
+            /*try {
+                $mailDispatcher->sendYBReminderEventCreated($campaign);
+            }
+            catch(\Exception $e) {
+            }*/
+            return $this->redirectToRoute('yb_members_dashboard');
+        }
+        return $this->render('@App/YB/Members/venue_new.html.twig', [
+            'admin' => $user->isSuperAdmin(),
+            'form' => $form->createView(),
+            'venue' => $venue,
+        ]);
+    }
+
+    /**
+     * @Route("/venue/{id}/update", name="yb_members_venue_edit")
+     */
+    public function editVenueAction(Venue $venue, UserInterface $user = null, Request $request, EntityManagerInterface $em){
+        if (!$user->isSuperAdmin()){
+            $this->checkIfAuthorizedVenue($user, $venue);
+        }
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if (!$currentUser->hasPrivateOrganization()){
+            $this->createPrivateOrganization($em, $currentUser);
+        }
+        $userOrganizations = $this->getOrganizationsFromUser($currentUser);
+        $form = $this->createForm(VenueType::class, $venue, ['admin' => $user->isSuperAdmin(), 'userOrganizations' => $userOrganizations]);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($venue);
+            $em->flush();
+            $this->addFlash('yb_notice', 'La salle a bien été modifiée.');
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+        return $this->render('@App/YB/Members/venue_new.html.twig', [
+            'admin' => $user->isSuperAdmin(),
+            'form' => $form->createView(),
+            'venue' => $venue,
+        ]);
+    }
+
+    /**
+     * @Route("/my-venues", name="yb_members_my_venues")
+     */
+    public function myVenuesAction(UserInterface $user = null, Request $request, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user);
+        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        if ($currentUser->isSuperAdmin()) {
+            $venues = $em->getRepository('AppBundle:YB\Venue')->findAll();
+        } else {
+            $venues = $currentUser->getVenuesHandled();
+        }
+        $venues = $this->removeClosedVenues($venues);
+        return $this->render('@App/YB/Members/my_venues.html.twig', [
+            'venues' => $venues,
+            'currentUser' => $currentUser,
+        ]);
+    }
+
+    /**
+     * @Route("/venue/{id}/close", name="yb_members_close_venue")
+     */
+    public function closeVenueAction(){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // ------------------ private functions -------------------- //
 
@@ -1011,37 +1138,16 @@ class YBMembersController extends BaseController
      * @return array
      */
     private function getOrganizationsFromUser(User $currentUser){
-        $userOrganizations = $currentUser->getOrganizations();
+        if ($currentUser->isSuperAdmin()){
+            $userOrganizations = $this->getDoctrine()->getManager()->getRepository('AppBundle:YB\Organization')->findAll();
+            $userOrganizations = $this->fetchOrganizationsForSuperUser($currentUser, $userOrganizations);
+        } else {
+            $userOrganizations = $currentUser->getOrganizations();
+        }
         usort($userOrganizations, function($organization1, $organization2){
             return strtolower($organization1->getName()) > strtolower($organization2->getName());
         });
-        if ($currentUser->isSuperAdmin()){
-            $userOrganizations = $this->removeOthersPrivateOrganization($userOrganizations, $currentUser);
-        }
         return $userOrganizations;
-    }
-
-    /**
-     * Remove all the private organization of the other users.
-     * By default, a super admin has access to all the organizations of the DB
-     * Here, we remove all the private organization that does not belong to him
-     *
-     * @param $orgs
-     * @param $user
-     * @return array
-     */
-    private function removeOthersPrivateOrganization($orgs, $user){
-        $finalOrg = [];
-        foreach ($orgs as $org){
-            if (!$org->isPrivate()){
-                $finalOrg[] = $org;
-            } else {
-                if($org->getName() === $user->getDisplayName()){
-                    $finalOrg[] = $org;
-                }
-            }
-        }
-        return $finalOrg;
     }
 
     /**
@@ -1072,6 +1178,16 @@ class YBMembersController extends BaseController
             }
         }
         return $organizationsToBeDisplayed;
+    }
+
+    private function removeClosedVenues($venues){
+        $venues = array_filter($venues, function($venue){
+            return !$venue->isDeleted();
+        });
+        usort($venues, function(Venue $v1, Venue $v2){
+           return strtolower($v1->getAddress()->getName()) > strtolower($v2->getAddress()->getName());
+        });
+        return $venues;
     }
 
 }

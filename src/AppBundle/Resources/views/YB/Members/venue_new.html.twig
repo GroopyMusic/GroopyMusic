@@ -1,0 +1,74 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            {% if venue.id is null %}
+                <li class="active"><span>Nouvelle salle</span></li>
+            {% else %}
+                <li><a href="{{ path('yb_members_my_venues') }}">Mes salles</a></li>
+                <li class="active"><span>Edition</span></li>
+            {% endif %}
+        </ol>
+    </section>
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/configurations.html.twig' ':Form:jquery.collection.html.twig' %}
+    {{ form_start(form) }}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Organisation en charge de la salle </h2>
+        <div class="row">
+            <div class="col-12 col-md-12">
+                {{ form_row(form.organization) }}
+            </div>
+        </div>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Adresse</h2>
+        <div class="row">
+            <div class="col-12">{{ form_row(form.address.name) }}</div>
+            <div class="col-12 col-md-10">{{ form_row(form.address.street) }}</div>
+            <div class="col-12 col-md-2">{{ form_row(form.address.number) }}</div>
+            <div class="col-12 col-md-4">{{ form_row(form.address.zipcode) }}</div>
+            <div class="col-12 col-md-8">{{ form_row(form.address.city) }}</div>
+            <div class="col-12">{{ form_row(form.address.country) }}</div>
+        </div>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Sièges et places</h2>
+        <div class="text-muted font-italic pb-2">
+            Rajouter la configuration de base de votre salle. Si votre salle est modulable, n'hésitez pas à rajouter des configurations !
+        </div>
+        {{ form_widget(form.configurations) }}
+    </section>
+    {% if form.acceptConditions is defined %}
+        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <p><a href="{{ path('yb_terms') }}">Lire nos conditions d'utilisation</a></p>
+            <div class="row">
+                <div class="col-12">{{ form_widget(form.acceptConditions) }}</div>
+                <div class="col-12">{{ form_widget(form.accept_being_responsible) }}</div>
+                <div class="col-12">{{ form_widget(form.accept_venue_temp) }}</div>
+            </div>
+        </section>
+    {% endif %}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            yb_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une configuration</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer</a>'
+            });
+            $('#yb_venue_has_only_free_seating input[type="checkbox"]').on('change', function(){
+                $(this).closest('.config-row').find('.yb_free_seat_only').toggle(!this.checked);
+            });
+            $('#yb_venue_has_only_free_seating input[type="checkbox"]').trigger('change');
+            $('#yb_venue_has_pmr_zone input[type="checkbox"]').on('change', function(){
+                $(this).closest('.config-row').find('.yb_pmr_zone').toggle(this.checked);
+            });
+            $('#yb_venue_has_pmr_zone input[type="checkbox"]').trigger('change');
+        });
+    </script>
+{% endblock %}
