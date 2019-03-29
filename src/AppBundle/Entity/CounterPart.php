@@ -163,7 +163,7 @@ class CounterPart implements TranslatableInterface
     private $disabled;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", mappedBy="counterparts")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", inversedBy="counterparts", cascade={"persist"})
      */
     private $sub_events;
 
@@ -429,11 +429,13 @@ class CounterPart implements TranslatableInterface
             $this->sub_events = new ArrayCollection();
         }
         $this->sub_events->add($se);
+        $se->addCounterpart($this);
         return $this;
     }
 
     public function removeSubEvent(YBSubEvent $se) {
         $this->sub_events->remove($se);
+        $se->removeCounterpart($this);
         return $this;
     }
 }
