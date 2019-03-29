@@ -11,12 +11,23 @@
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
 
             {% if campaign.id is null %}
-                <li><a href="{{ path('yb_members_campaign_new') }}">Nouvelle campagne</a></li>
+                <li class="active"><span>Nouvelle campagne (étape {{ flow.currentStepNumber }} - {{ flow.currentStepLabel }})</span></li>
             {% else %}
                 <li><a target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+                {% for stepLabel in flow.getStepLabels() %}
+                    <li {% if loop.index == flow.currentStepNumber %}class="active"{% endif %}>
+                        {%- if craue_isStepLinkable(flow, loop.index) -%}
+                            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all
+                            | merge(app.request.attributes.get('_route_params'))
+                            | craue_addDynamicStepNavigationParameters(flow, loop.index)) }}">
+                                {{ flow.stepLabels[loop.index0] }}
+                            </a>
+                        {%- else -%}
+                            <span>{{ flow.stepLabels[loop.index0] }}</span>
+                        {%- endif -%}
+                    </li>
+                {% endfor %}
             {% endif %}
-            <li><span class="{% if flow.currentStepNumber == 1 %}font-weight-bold text-primary active{% else %}text-muted{% endif %}">Infos de l'événement</span></li>
-            <li><span class="{% if flow.currentStepNumber == 2 %}font-weight-bold text-primary active{% else %}text-muted{% endif %}">Tickets</span></li>
         </ol>
     </section>
 

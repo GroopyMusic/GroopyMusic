@@ -145,6 +145,7 @@ class YBMembersController extends BaseController
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
 
         $flow->setGenericFormOptions(['creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId()]);
+        $flow->setAllowDynamicStepNavigation(true);
 
         $flow->bind($campaign);
         $form = $flow->createForm();
