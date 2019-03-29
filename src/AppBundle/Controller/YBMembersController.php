@@ -324,6 +324,10 @@ class YBMembersController extends BaseController
         }
 
         $em->flush();
+
+        // TODO MAIL
+
+        $this->addFlash('yb_notice', 'La facture a bien été générée. Les organisateurs ont été prévenus par mail qu\'ils étaient priés de la valider.');
         return $this->redirectToRoute("yb_members_invoices");
     }
 
@@ -335,7 +339,26 @@ class YBMembersController extends BaseController
 
         $invoice->validate();
         $em->persist($invoice);
+        $em->flush();
 
+        $this->addFlash('yb_notice', 'La facture a bien été validée, elle est dès à présent valable.');
+        return $this->redirectToRoute("yb_members_invoices");
+    }
+
+    /**
+     * @Route("/invoice/{id}/invalidate", name="yb_members_invoice_invalidate")
+     */
+    public function invoiceInvalidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null){
+        $this->checkIfAuthorized($user, $invoice->getCampaign());
+
+        $purchases = $invoice->getPurchases();
+
+        if(!$invoice->isUserValidated()) {
+            $em->remove($invoice);
+            $em->flush();
+        }
+
+        $this->addFlash('yb_notice', 'La facture a bien été supprimée ; merci de contacter nos administrateurs si vous attendez une action de leur part.');
         return $this->redirectToRoute("yb_members_invoices");
     }
 

@@ -10,6 +10,7 @@ use AppBundle\Entity\Photo;
 use AppBundle\Entity\Purchase;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
  * ContractArtist
@@ -19,10 +20,25 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class YBInvoice
 {
+    use ORMBehaviors\SoftDeletable\SoftDeletable {
+        delete as protected softdelete;
+    }
+
     public function __construct()
     {
         $this->date_generated = new \DateTime();
         $this->user_validated = false;
+        $this->purchases = new ArrayCollection();
+    }
+
+    public function delete()
+    {
+        if(!$this->isDeleted()) {
+            $this->softdelete();
+            foreach($this->getPurchases() as $purchase) {
+                $this->removePurchase($purchase);
+            }
+        }
     }
 
     /**
@@ -59,7 +75,7 @@ class YBInvoice
     private $date_validated;
 
     /**
-     * @var Purchase[] $purchases
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Purchase", cascade={"all"}, mappedBy="invoice")
      */
     private $purchases;
@@ -126,10 +142,23 @@ class YBInvoice
     }
 
     /**
-     * @return Purchase[]
+     * @return ArrayCollection
      */
     public function getPurchases(){
         return $this->purchases;
+    }
+
+    public function addPurchase(Purchase $purchase) {
+        $this->purchases->add($purchase);
+        $purchase->setInvoice($this);
+    }
+
+    public function removePurchase(Purchase $purchase) {
+        if($this->purchases->contains($purchase)) {
+            $this->purchases->remove($purchase);
+            $purchase->setInvoice(null);
+        }
+
     }
 
     public function getSequenceNumber(){

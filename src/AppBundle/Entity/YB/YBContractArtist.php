@@ -569,7 +569,9 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getInvoices()
     {
-        return $this->invoices;
+        return array_filter($this->invoices->toArray(), function(YBInvoice $invoice) {
+            return !$invoice->isDeleted();
+        });
     }
 
     /**

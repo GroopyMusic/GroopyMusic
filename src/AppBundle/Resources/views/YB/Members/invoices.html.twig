@@ -11,57 +11,71 @@
     <section class="container py-5">
         <h2>Factures</h2>
 
-        <div class="row col-12 justify-content-between">
+        <div class="text-right">
             <a href="{{ path('yb_members_payment_options') }}">
-                <div class="btn btn-info"><i class="fa fa-info-circle"></i> Aide</div>
+                <div class="btn btn-info progress-bar-striped"><i class="fa fa-info-circle"></i> Aide</div>
             </a>
         </div>
 
         {% if campaigns|length > 0 %}
-            <div class="container row mt-4">
+            <div class="container">
                 {% for campaign in campaigns %}
-                    <div class="row col-12">
-                        <h3><a class="link-secondary" target="_blank"
-                               href="{{ path('yb_campaign', {'id': campaign.id}) }}">
+                    <div class="row border-dark py-2 my-3">
+                        <div class="col-12 my-2">
+                            <h3>
                                 {{ campaign.getTitle }}
-                            </a></h3>
+                            </h3>
+                            <p class="small">
+                                Organisé par : {{ campaign.organizationName }}<br />
+                                Numéro de TVA : {{ campaign.vat|default('non renseigné') }}<br />
+                                Numéro de compte : {{ campaign.bankAccount|default('non renseigné') }}
+                            </p>
+                        </div>
                         {% if admin %}
-                        <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                           href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
-                            <i class="fas fa-download text-primary"></i> Ventes (Apercu)
-                        </a>
-                        <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                           href="{{ url('yb_members_campaign_fee', {'id': campaign.id}) }}">
-                            <i class="fas fa-download text-primary"></i> Commissions (Apercu)
-                        </a>
-                        <a class="btn btn-sm btn-secondary col-12 col-md-2" target="_blank"
-                           href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
-                            Générer
-                        </a>
+                            <div class="col-12 col-md-3">
+                                <a class="btn btn-sm btn-primary" target="_blank"
+                                   href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
+                                    <i class="fas fa-download"></i> Ventes (Apercu)
+                                </a>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <a class="btn btn-sm btn-secondary progress-bar-striped" target="_blank" href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
+                                    <i class="fas fa-cogs"></i> Générer
+                                </a>
+                            </div>
                         {% endif %}
                         {% for invoice in campaign.getInvoices %}
-                            <div class="row col-12 {% if not invoice.userValidated %} bg-warning {% endif %}">
-                                <h4>
-                                    Facture du {{ invoice.getDateGenerated|date("d/m/Y") }}
+                            <div class="col-12 mt-3{% if not invoice.userValidated %} bg-warning{% endif %}">
+                                <h4>Facture du {{ invoice.getDateGenerated|date("d/m/Y") }}
                                     {% if invoice.userValidated %}
                                         <small>{{ invoice.invoiceIdentifier }}</small>
                                     {% endif %}
                                 </h4>
-                                <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                                   href="{{ url('yb_members_invoice_sold', {'id': invoice.id}) }}">
-                                    <i class="fas fa-download text-primary"></i> Ventes
-                                </a>
-                                <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
+                                <div class="row">
+                                    <div class="col-12 col-md-3">
+                                        <a class="btn btn-sm btn-success" target="_blank"
+                                           href="{{ url('yb_members_invoice_sold', {'id': invoice.id}) }}">
+                                            <i class="fas fa-download"></i> Télécharger
+                                        </a>
+                                    </div>
+                                    {% if not invoice.userValidated %}
+                                        <div class="col-12 col-md-3">
+                                            <a class="btn btn-sm btn-secondary" href="{{ url('yb_members_invoice_validate', {'id': invoice.id}) }}">
+                                                <i class="fas fa-check-double"></i> Valider
+                                            </a>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <a class="btn btn-sm btn-danger" href="{{ url('yb_members_invoice_invalidate', {'id': invoice.id}) }}">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                                {#<a class="btn btn-sm btn-success col-12 col-md-3" target="_blank"
                                    href="{{ url('yb_members_invoice_fee', {'id': invoice.id}) }}">
                                     <i class="fas fa-download text-primary"></i> Commissions
-                                </a>
-                                {% if not invoice.userValidated %}
-                                    <a class="btn btn-sm btn-secondary col-12 col-md-2"
-                                       href="{{ url('yb_members_invoice_validate', {'id': invoice.id}) }}">
-                                        Valider
-                                    </a>
-                                {% endif %}
-                            </div>
+                                </a>#}
                         {% endfor %}
                     </div>
                 {% endfor %}
