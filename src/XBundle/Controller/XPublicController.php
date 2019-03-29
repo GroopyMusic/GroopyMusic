@@ -20,18 +20,18 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
+use XBundle\Entity\XContractFan;
+use XBundle\Entity\XPurchase;
 use XBundle\Entity\XCategory;
 use XBundle\Entity\XContact;
 use XBundle\Entity\XOrder;
 use XBundle\Entity\XPayment;
 use XBundle\Entity\Tag;
+use XBundle\Form\XContractFanType;
 use XBundle\Form\XContactType;
 use XBundle\Form\DonationType;
-use XBundle\Form\PurchaseType;
+//use XBundle\Form\PurchaseType;
 
-// A changer -> XContact
-//use AppBundle\Entity\YB\YBContact;
-//use AppBundle\Form\YB\YBContactType;
 
 class XPublicController extends BaseController
 {
@@ -97,12 +97,18 @@ class XPublicController extends BaseController
             return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
         }
 
-        $products = $em->getRepository('XBundle:Product')->getVisibleProductsForProject($project);
+        $contribution = new XContractFan($project);
+
+        //$products = $em->getRepository('XBundle:Product')->getVisibleProductsForProject($project);
 
         $form = $this->createForm(DonationType::class);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
+        $formPurchase = $this->createForm(XContractFanType::class, $contribution);
+        $formPurchase->handleRequest($request);
+
+        // DONATION SUBMIT
+        /*if($form->isSubmitted() && $form->isValid()) {
 
             $cart = new XCart();
             $cart->setConfirmed(true);
@@ -114,49 +120,44 @@ class XPublicController extends BaseController
             $em->flush();
 
             return $this->redirectToRoute('x_payment_checkout', ['code' => $cart->getBarcodeText()]);
+        }*/
+
+        // PURCHASE SUMIT
+        if($formPurchase->isSubmitted() && $form->isValid()) {
+
+            $cart = new XCart();
+
+            foreach($contribution->getPurchases() as $purchase) {
+                if($purchase->getQuantity() == 0) {
+                    $contribution->removePurchase($purchase);
+                }
+                $purchase->setContractFan($contribution);
+                $em->persist($purchase);
+            }
+
+            $contribution->initAmount();
+
+            $cart->addContract($contribution);
+            $cart->setConfirmed(true);
+            $cart->generateBarCode();
+
+            $contribution->setCart($cart);
+
+            $em->persist($cart);
+            $em->persist($contribution);
+            $em->flush();
+
+            return $this->redirectToRoute('x_payment_checkout', ['code' => $cart->getBarcodeText()]);
         }
 
         return $this->render('@X/XPublic/project.html.twig', array(
             'form' => $form->createView(),
+            'form_purchase' => $formPurchase->createView(),
             'project' => $project,
-            'products' => $products,
+            //'products' => $products,
         ));
 
     }
-
-    /**
-     * @Route("/api/submit-order-product-coordinates/{id}", name="x_ajax_post_order_product")
-     */
-    public function orderProductAjaxAction(EntityManagerInterface $em, Request $request, $id)
-    {
-        $productId = $request->request->get('productId');
-        $quantity = $request->request->get('quantity');
-
-        $project = $em->getRepository('XBundle:Project')->find($id);
-        $product = $em->getRepository('XBundle:Product')->find($productId);
-
-        $cart = new XCart();
-        $cart->setConfirmed(true);
-        $cart->setProdQuantity($quantity);
-        $cart->setProduct($product);
-        $cart->setDonationAmount($quantity * $product->getPrice());
-        $cart->setProject($project);
-        $cart->generateBarCode();
-
-        $em->persist($cart);
-        $em->flush();
-
-        $response = new Response(json_encode(array(
-          'redirect' => $this->generateUrl('x_payment_checkout', array(
-                'code' => $cart->getBarcodeText())),
-                'quantity' => $quantity,
-                'productId' => $productId
-        )));
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-  }
 
 
     /**
@@ -246,35 +247,44 @@ class XPublicController extends BaseController
 		$cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
 
         /** @var XCart $cart */
-        if ($cart == null) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
-
         
-		if($request->getMethod() == 'POST'){
+		if($request->getMethod() == 'POST' /*&& isset($_POST['accept_conditions']) && $_POST['accept_conditions']*/) {
 
-            $amount = $cart->getDonationAmount();
+            //$amount = $cart->getDonationAmount();
 
-			$xorder = $em->getRepository('XBundle:XOrder')->findOneBy(array('cart' => $cart));
-			$xorder->setCart($cart);
+            $amount = intval($_POST['amount']);
+
+			//$xorder = $em->getRepository('XBundle:XOrder')->findOneBy(array('cart' => $cart));
+			//$xorder->setCart($cart);
     
-            /*if($cart->getXOrder() == null) {
+            if($cart->getOrder() == null) {
                 $firstName = $_POST['first_name'];
                 $lastName = $_POST['last_name'];
                 $email = $_POST['email'];
 
-                $xorder = new XOrder();
-                $xorder->setEmail($email)
+                $order = new XOrder();
+                $order->setEmail($email)
                        ->setFirstName($firstName)
                        ->setLastName($lastName)
                        ->setCart($cart);
             }
 
             else {
-                $xorder = $cart->getXOrder();
+                $order = $cart->getOrder();
+            }
+
+            // check error
+            /*/foreach($cart->getContracts() as $contribution) {
+                $project = $contribution->getProject();
+                // check if project validated
+                foreach($contribution->getPurchases() as $purchase) {
+                }
             }*/
 
-			$em->persist($xorder);
+			$em->persist($order);
 			$em->flush();
 		
             \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
@@ -286,13 +296,13 @@ class XPublicController extends BaseController
                 $payment->setCart($cart)
                         ->setDate(new \DateTime())
                         ->setRefunded(false)
-                        ->setAmount($amount);
+                        ->setAmount($cart->getAmount());
                 
                 $charge = \Stripe\Charge::create(array(
-                    "amount" => $amount * 100,
+                    "amount" => $amount,
                     "currency" => "eur",
                     "source" => $source,
-                    "description" => "Donation"
+                    "description" => "Chapots - payment " . $cart->getId(),
                 ));
                     
                 $payment->setChargeId($charge->id);
@@ -337,8 +347,13 @@ class XPublicController extends BaseController
 	 */
 	public function paymentPendingAction(EntityManagerInterface $em, Request $request, $code)
     {
+        /** @var XCart $cart */
 		$cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
         
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+            throw $this->createNotFoundException("Pas de panier, pas de paiement !");
+        }
+
         $source = $request->get('source');
         $client_secret = $request->get('client_secret');
 
@@ -357,7 +372,11 @@ class XPublicController extends BaseController
 
         /** @var XCart $cart */
         $cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
-        $project = $em->getRepository('XBundle:Project')->find($cart->getProject());
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+            throw $this->createNotFoundException("Pas de panier, pas de paiement !");
+        }
+        
+        /*$project = $em->getRepository('XBundle:Project')->find($cart->getProject());
         $project->addAmount($cart->getDonationAmount());  
         if ($cart->getProduct() == null) {
             $project->addNbDonations();
@@ -366,9 +385,25 @@ class XPublicController extends BaseController
             $product = $em->getRepository('XBundle:Product')->find($cart->getProduct());
             $qty = $cart->getProdQuantity();
             $product->addProductsSold($qty);
+        }*/
+
+        foreach($cart->getContracts() as $contribution) {
+            /** @var Project $project */
+            $project = $contribution->getProject();
+            $project->addAmount($contribution->getAmount());
+            $project->addNbSales();
+
+            foreach($contribution->getPurchases() as $purchase) {
+                $product = $purchase->getProduct();
+                $product->addProductsSold($purchase->getQuantity());
+                $em->persist($product);
+            }
+
+            $em->persist($project);
         }
+
         $cart->setPaid(true);
-        $em->persist($project);
+        //$em->persist($project);
         $em->flush();
 
         $this->addFlash('x_notice', 'Paiement bien reçu !');
@@ -388,16 +423,22 @@ class XPublicController extends BaseController
         $email = $_POST['email'];
         $code = $_POST['cart_code'];
 
+        /** @var XCart $cart */
         $cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
-		
-        $xorder = new XOrder();
-        $xorder->setCart($cart)
+        
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+            throw $this->createNotFoundException("Pas de panier, pas de paiement !");
+        }
+
+        $order = new XOrder();
+        $order->setCart($cart)
                ->setEmail($email)
                ->setFirstName($firstName)
                ->setLastName($lastName);
-        //$cart->setXOrder($xorder);
+        $cart->setOrder($order);
 
-        $em->persist($xorder);
+        $em->persist($order);
+        $em->persist($cart);
         $em->flush();
 
         return new Response(' ', 200);

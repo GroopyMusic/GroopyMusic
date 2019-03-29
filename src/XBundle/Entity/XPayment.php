@@ -14,6 +14,11 @@ use XBundle\Entity\XCart;
 class XPayment
 {
 
+    public function __toString()
+    {
+        return 'x_paiment';
+    }
+
     /**
      * @var int
      *
@@ -25,7 +30,7 @@ class XPayment
 
     /**
      *@var XCart
-     * @ORM\OneToOne(targetEntity="XBundle\Entity\XCart", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="XBundle\Entity\XCart", inversedBy="payment", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $cart;

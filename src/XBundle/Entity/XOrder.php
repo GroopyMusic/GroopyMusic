@@ -38,7 +38,7 @@ class XOrder implements PhysicalPersonInterface
 
     /**
      * @var XCart
-     * @ORM\OneToOne(targetEntity="XBundle\Entity\XCart")
+     * @ORM\OneToOne(targetEntity="XBundle\Entity\XCart", inversedBy="order")
      */
     private $cart;
 

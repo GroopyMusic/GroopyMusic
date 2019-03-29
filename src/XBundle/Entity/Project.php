@@ -43,6 +43,7 @@ class Project
         $this->tags = new ArrayCollection();
         $this->points = 0;
         $this->acceptConditions = false;
+        $this->contributions= new ArrayCollection();
     }
 
     public function getSluggableFields() {
@@ -290,6 +291,13 @@ class Project
      * @ORM\Column(name="points", type="integer")
      */
     private $points;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\XContractFan", mappedBy="project", cascade={"persist"})
+     */
+    private $contributions;
+
 
 
     /**
@@ -1011,5 +1019,39 @@ class Project
     public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * Add contribution
+     *
+     * @param \XBundle\Entity\XContractFan $contribution
+     *
+     * @return Project
+     */
+    public function addContribution(\XBundle\Entity\XContractFan $contribution)
+    {
+        $this->contributions[] = $contribution;
+
+        return $this;
+    }
+
+    /**
+     * Remove contribution
+     *
+     * @param \XBundle\Entity\XContractFan $contribution
+     */
+    public function removeContribution(\XBundle\Entity\XContractFan $contribution)
+    {
+        $this->contributions->removeElement($contribution);
+    }
+
+    /**
+     * Get contributions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContributions()
+    {
+        return $this->contributions;
     }
 }

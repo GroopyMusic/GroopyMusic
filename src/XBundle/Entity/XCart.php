@@ -2,9 +2,8 @@
 
 namespace XBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use XBundle\Entity\Product;
-use XBundle\Entity\Project;
 use XBundle\Entity\XOrder;
 use XBundle\Entity\XPayment;
 
@@ -19,10 +18,11 @@ class XCart
 
     public function __construct()
     {
-        $this->date_creation = new \DateTime();
+        $this->dateCreation = new \DateTime();
         $this->confirmed = false;
         $this->paid = false;
         $this->finalized = false;
+        $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function generateBarCode()
@@ -33,6 +33,22 @@ class XCart
             $this->barcode_text = $str;
         }
         return $this->barcode_text;
+    }
+
+    // Unmapped
+    private $amount = null;
+    public function getAmount()  {
+        if($this->amount == null) {
+            $this->amount = array_sum(array_map(function($contract) {
+                /** @var XContractFan $contract */
+                return $contract->getAmount();
+            }, $this->contracts->toArray()));
+        }
+        return $this->amount;
+    }
+
+    public function isRefunded() {
+        return $this->payment == null ? false : $this->payment->getRefunded();
     }
 
     /**
@@ -48,44 +64,25 @@ class XCart
      * @var \DateTime
      * @ORM\Column(name="date_creation", type="datetime")
      */
-    private $date_creation;
+    private $dateCreation;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\XContractFan", mappedBy="cart", cascade={"all"})
+     */
+    private $contracts;
 
     /**
      * @var XOrder
-     * @ORM\OneToOne(targetEntity="XBundle\Entity\XOrder")
+     * @ORM\OneToOne(targetEntity="XBundle\Entity\XOrder", mappedBy="cart")
      */
-    //private $xOrder;
+    private $order;
 
     /**
      * @var XPayment
-     * @ORM\OneToOne(targetEntity="XBundle\Entity\XPayment")
+     * @ORM\OneToOne(targetEntity="XBundle\Entity\XPayment", mappedBy="cart")
      */
-    //private $xPayment;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Project", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $project;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Product", cascade={"persist"})
-     */
-    private $product;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="donation_amount", type="float", nullable=true)
-     */
-    private $donationAmount;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="prod_quantity", type="integer", nullable=true)
-     */
-    private $prodQuantity;
+    private $payment;
 
     /**
      * @var bool
@@ -134,7 +131,7 @@ class XCart
      */
     public function setDateCreation($dateCreation)
     {
-        $this->date_creation = $dateCreation;
+        $this->dateCreation = $dateCreation;
 
         return $this;
     }
@@ -146,7 +143,7 @@ class XCart
      */
     public function getDateCreation()
     {
-        return $this->date_creation;
+        return $this->dateCreation;
     }
 
     /**
@@ -221,79 +218,6 @@ class XCart
         return $this->finalized;
     }
 
-    /**
-     * Set donationAmount
-     *
-     * @param float $donationAmount
-     *
-     * @return XCart
-     */
-    public function setDonationAmount($donationAmount)
-    {
-        $this->donationAmount = $donationAmount;
-
-        return $this;
-    }
-
-    /**
-     * Get donationAmount
-     *
-     * @return float
-     */
-    public function getDonationAmount()
-    {
-        return $this->donationAmount;
-    }
-
-    /**
-     * Set xOrder
-     *
-     * @param $xOrder
-     *
-     * @return XCart
-     */
-    /*public function setXOrder($xOrder = null)
-    {
-        $this->xOrder = $xOrder;
-
-        return $this;
-    }*/
-
-    /**
-     * Get xOrder
-     *
-     * @return XOrder
-     */
-    /*public function getXOrder()
-    {
-        return $this->xOrder;
-    }*/
-
-
-    /**
-     * Set xPayment
-     *
-     * @param $xPayment
-     *
-     * @return XCart
-     */
-    /*public function setXPayment($xPayment = null)
-    {
-        $this->xPayment = $xPayment;
-
-        return $this;
-    }*/
-
-    /**
-     * Get xPayment
-     *
-     * @return XPayment
-     */
-    /*public function getXPayment()
-    {
-        return $this->xPayment;
-    }*/
-
 
     /**
      * Set barcodeText
@@ -319,78 +243,86 @@ class XCart
         return $this->barcode_text;
     }
 
+
     /**
-     * Set prodQuantity
+     * Add contract
      *
-     * @param integer $prodQuantity
+     * @param \XBundle\Entity\XContractFan $contract
      *
      * @return XCart
      */
-    public function setProdQuantity($prodQuantity)
+    public function addContract(\XBundle\Entity\XContractFan $contract)
     {
-        $this->prodQuantity = $prodQuantity;
+        $this->contracts[] = $contract;
 
         return $this;
     }
 
     /**
-     * Get prodQuantity
+     * Remove contract
      *
-     * @return integer
+     * @param \XBundle\Entity\XContractFan $contract
      */
-    public function getProdQuantity()
+    public function removeContract(\XBundle\Entity\XContractFan $contract)
     {
-        return $this->prodQuantity;
+        $this->contracts->removeElement($contract);
     }
 
-
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
+    }
 
     /**
-     * Set product
+     * Set order
      *
-     * @param Product $product
+     * @param \XBundle\Entity\XOrder $order
      *
      * @return XCart
      */
-    public function setProduct($product = null)
+    public function setOrder(\XBundle\Entity\XOrder $order = null)
     {
-        $this->product = $product;
+        $this->order = $order;
 
         return $this;
     }
 
     /**
-     * Get product
+     * Get order
      *
-     * @return Product
+     * @return \XBundle\Entity\XOrder
      */
-    public function getProduct()
+    public function getOrder()
     {
-        return $this->product;
+        return $this->order;
     }
 
-
     /**
-     * Set project
+     * Set payment
      *
-     * @param Project $project
+     * @param \XBundle\Entity\XPayment $payment
      *
      * @return XCart
      */
-    public function setProject(Project $project)
+    public function setPayment(\XBundle\Entity\XPayment $payment = null)
     {
-        $this->project = $project;
+        $this->payment = $payment;
 
         return $this;
     }
 
     /**
-     * Get project
+     * Get payment
      *
-     * @return Project
+     * @return \XBundle\Entity\XPayment
      */
-    public function getProject()
+    public function getPayment()
     {
-        return $this->project;
+        return $this->payment;
     }
 }
