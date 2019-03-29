@@ -75,8 +75,9 @@ class YBContractArtist extends BaseContractArtist
         }, $this->getContractsFanPaidAndRefunded());
     }
 
+    /** @deprecated */
     public function isEvent() {
-        return $this->getDateEvent() != null;
+        return true;
     }
 
     public function isUncrowdable() {
@@ -100,7 +101,7 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isWayPassed() {
-        return $this->isPassed() && $this->date_event->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
+        return $this->isPassed() && $this->getDateEvent()->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
     }
 
     public function isOngoing() {
@@ -116,9 +117,16 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isToday(){
-        $dateOfEvent = $this->date_event->format('m/d/Y');
+        $dates = [];
+        if(!$this->hasSubEvents())
+            $dates[] = $this->date_event->format('m/d/Y');
+        else {
+            foreach($this->sub_events as $se) {
+                $dates[] = $se->getDate()->format('m/d/Y');
+            }
+        }
         $today = (new \DateTime())->format('m/d/Y');
-        return $dateOfEvent === $today;
+        return in_array($today, $dates);
     }
 
     public function getState()
@@ -158,7 +166,7 @@ class YBContractArtist extends BaseContractArtist
 
                     return $this->state = self::STATE_SUCCESS_PENDING;
                 }
-                if ($this->dateEnd >= $today) {
+                if ($this->getDateEvent() >= $today) {
                     return $this->state = self::STATE_ONGOING;
                 } else {
                     if ($this->successful) {
@@ -351,8 +359,9 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getDateEvent()
     {
+        // For compatibility, this function returns the last event date when event is multidates
         if($this->hasSubEvents() && count($this->sub_events) > 0) {
-            return $this->sub_events->first()->getDate();
+            return $this->sub_events->last()->getDate();
         }
 
         return $this->date_event;
