@@ -86,7 +86,7 @@ class YBMembersController extends BaseController
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
 
-        $generic_options = ['creation' => true, 'userOrganizations' => $userOrganizations];
+        $generic_options = ['admin' => $user->isSuperAdmin(), 'creation' => true, 'userOrganizations' => $userOrganizations];
         $flow->setGenericFormOptions($generic_options);
 
         $flow->bind($campaign);
@@ -109,7 +109,11 @@ class YBMembersController extends BaseController
                 catch(\Exception $e) {
                 }
 
-                $this->addFlash('yb_notice', "La campagne a bien été créée. Pour qu'elle soit fonctionnelle, vous n'avez plus qu'à créer des tickets.");
+                if($flow->getCurrentStepNumber() == 2)
+                    $this->addFlash('yb_notice', "La campagne a bien été créée. Pour qu'elle soit fonctionnelle, vous n'avez plus qu'à créer des tickets.");
+
+                elseif($flow->getCurrentStepNumber() == 3)
+                    $this->addFlash('yb_notice', "Les tickets ont été créés. Vous pouvez maintenant nous donner vos infos de facturation, qui nous permettront de vous reverser le fruit de vos ventes. Si vous souhaitez vous occuper de cette étape plus tard, libre à vous..");
 
                 $form = $flow->createForm();
             }
@@ -144,8 +148,9 @@ class YBMembersController extends BaseController
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
 
-        $flow->setGenericFormOptions(['creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId()]);
+        $flow->setGenericFormOptions(['admin' => $user->isSuperAdmin(), 'creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId()]);
         $flow->setAllowDynamicStepNavigation(true);
+        $flow->setAllowRedirectAfterSubmit(true);
 
         $flow->bind($campaign);
         $form = $flow->createForm();
@@ -158,7 +163,12 @@ class YBMembersController extends BaseController
             $em->flush();
 
             if ($flow->nextStep()) {
-                $this->addFlash('yb_notice', 'Les infos générales ont bien été modifiées.');
+
+                if($flow->getCurrentStepNumber() == 2)
+                    $this->addFlash('yb_notice', 'Les infos générales ont bien été modifiées.');
+
+                elseif($flow->getCurrentStepNumber() == 3)
+                    $this->addFlash('yb_notice', 'Les tickets ont bien été modifiés.');
 
                 if ($flow->redirectAfterSubmit($form)) {
                     $params = $this->get('craue_formflow_util')->addRouteParameters(array_merge($request->query->all(),
