@@ -152,7 +152,7 @@
                                 <a href="{{ path('yb_login') }}">{% if not app.user %}Connexion{% else %}Tableau de bord{% endif %}</a>
                             </li>
                         </ul>
-                        <p class="text-muted small mb-4 mb-lg-0">{{ 'footer.copyright'|trans|nl2br }}</p>
+                        <p class="text-muted small mb-4 mb-lg-0">{{ 'footer.copyright'|trans({'%year%': 'now'|date('Y')})|nl2br }}</p>
                     </div>
                 </div>
             </div>

@@ -24,6 +24,7 @@ use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -58,7 +59,7 @@ class MailDispatcher
     private $locales;
     private $logger;
 
-    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel, Environment $twig, $locales)
+    public function __construct(AzineTwigSwiftMailer $mailer, Translator $translator, NotificationDispatcher $notificationDispatcher, EntityManagerInterface $em, $from_address, $from_name, KernelInterface $kernel, Environment $twig, LoggerInterface $logger, $locales)
     {
         $this->mailer = $mailer;
         $this->translator = $translator;
@@ -69,6 +70,7 @@ class MailDispatcher
         $this->kernel = $kernel;
         $this->twig = $twig;
         $this->locales = $locales;
+        $this->logger = $logger;
     }
 
     private function extract_locale($locale, $haystack)
@@ -354,6 +356,10 @@ class MailDispatcher
             'payment' => $payment,
         ];
 
+        if($payment->isYB()) {
+            return $this->sendRefundedYBPayment($payment);
+        }
+
         $to = [$payment->getUser()->getEmail() => $payment->getUser()->getPreferredLocale()];
         $toName = [$payment->getUser()->getDisplayName()];
 
@@ -364,6 +370,12 @@ class MailDispatcher
     }
 
     public function sendRefundedContractFan(ContractFan $cf) {
+
+        if($cf->getContractArtist()->isYB()) {
+            $this->sendRefundedYBContractFan($cf, 'other');
+            return;
+        }
+
         $params = [
             'cf' => $cf,
         ];
@@ -599,16 +611,25 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::YB_TICKETS, $subject, $params, $subject_params, [], $attachments, $recipient, $recipientName, $reply_to, $reply_to_name);
     }
 
-    public function sendRefundedYBContractFan(ContractFan $cf) {
+    public function sendRefundedYBPayment(Payment $payment) {
+        foreach($payment->getContractsFan() as $cf) {
+            $this->sendRefundedYBContractFan($cf, 'other');
+        }
+    }
+
+    public function sendRefundedYBContractFan(ContractFan $cf, $reason = 'crowdfunding') {
         $params = [
             'cf' => $cf,
             'campaign' => $campaign = $cf->getContractArtist(),
+            'reason' => $reason,
         ];
 
         $to = [$cf->getEmail() => 'fr'];
         $toName = [$cf->getDisplayName()];
 
-        $subject = 'Remboursement - campagne "'. $campaign->getTitle() . '" annulée sur Ticked-it';
+        $subject = 'Remboursement de votre commande';
+        if($reason == 'crowdfunding')
+            $subject .= ' - campagne "'. $campaign->getTitle() . '" annulée sur Ticked-it';
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::YB_REFUNDED_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
@@ -633,23 +654,33 @@ class MailDispatcher
     }
 
     public function sendYBReminderEventCreated(YBContractArtist $campaign) {
-        $organizers = $campaign->getHandlers();
-        $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
-            return $person->getEmail();
-        }, $organizers));
+        $reminders = $campaign->getReminders();
 
-        $to = self::ADMIN_TO; 
+        if(!in_array('organizer_campaign_created', $reminders)) {
+            $organizers = $campaign->getHandlers();
+            $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+                return $person->getEmail();
+            }, $organizers));
 
-        foreach($emails as $email) {
-            $to[$email] = $this->translator->getLocale();
+            $to = self::ADMIN_TO;
+
+            foreach($emails as $email) {
+                $to[$email] = $this->translator->getLocale();
+            }
+
+            $params = ['campaign' => $campaign];
+            $subject = 'subjects.yb.reminders.organizers.event_created';
+
+            $subject_params = ['%event%' => $campaign->getTitle()];
+
+            $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
+
+            $campaign->addReminder('organizer_campaign_created');
+            $this->em->persist($campaign);
+            $this->em->flush();
         }
 
-        $params = ['campaign' => $campaign]; 
-        $subject = 'subjects.yb.reminders.organizers.event_created';
 
-        $subject_params = ['%event%' => $campaign->getTitle()];
-
-        $this->sendEmail(MailTemplateProvider::YB_EVENT_CREATED, $subject, $params, $subject_params, $to);
     }
 
     public function sendYBJoinOrganization($email, Organization $organization, User $user){
@@ -682,7 +713,8 @@ class MailDispatcher
 
     public function sendYBTransactionalMessageWithCopy(YBTransactionalMessage $message) {
         $this->sendYBTransactionalMessage($message);
-        $this->sendYBTransactionalMessageCopy($message);
+        try { $this->sendYBTransactionalMessageCopy($message); }
+        catch(\Throwable $exception) {$this->logger->error("Echec lors de l'envoi de la copie d'un message transactionnel aux organisateurs : " . $exception->getMessage());}
     }
 
     public function sendYBTransactionalMessage(YBTransactionalMessage $message) {
@@ -713,7 +745,7 @@ class MailDispatcher
 
         $organizers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
             return $person->getEmail();
-        }, $organizers->toArray()));
+        }, $organizers));
 
         $to = self::ADMIN_TO;
 

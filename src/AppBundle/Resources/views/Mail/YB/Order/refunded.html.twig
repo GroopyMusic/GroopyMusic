@@ -5,7 +5,7 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
-            {{ email_content('yb.order.refunded', {
+            {{ email_content('yb.order.refunded_'~reason, {
                 '%name%': cf.physicalPerson.displayName,
                 '%event%': email_link(url('yb_campaign', {'id': campaign.id}), campaign.getTitle),
                 '%amount%': cf.amount,

@@ -93,7 +93,7 @@
 	            </td>
     	{{ rightShadow}}
 		{{ leftShadow}}
-            	<td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#4a4b4d" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
+            	<td class="contentWidth" width="{{ contentWidth }}" align="center" valign="top" bgcolor="#285f8b" style="font: normal 12px/18px {{ fontFamily }}; padding:10px 30px 30px 30px; border-top:3px solid black; text-align:center;" >
                 	{% block footerInfoText %}
             		<p style="color:white;">
                         {{ 'add_to_contacts'|trans({'%address%': '<a href="mailto:'~sendMailAccountName~'&lt;'~sendMailAccountAddress~'&gt;" style="color:white;">'~sendMailAccountAddress~'</a>'})|raw }}
@@ -104,7 +104,7 @@
             			&copy; Un-Mute ASBL {{ "now"|date('Y') }}
 					</p>
 					{% endblock %}{# end block footerCopyrightText #}
-                    <p style="color:#acacac;">
+                    <p style="color:#cecece;">
                     {% block footerLinks %}
 	               	    <a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('homepage')) }}"> {{ 'footer_links.home'|trans }} </a> -
 						<a style="color:#acacac; text-decoration:none;" href="{{ absolute_url(path('about')) }}"> {{ 'footer_links.about'|trans }} </a> -

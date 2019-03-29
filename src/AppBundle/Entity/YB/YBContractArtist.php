@@ -27,14 +27,12 @@ class YBContractArtist extends BaseContractArtist
     const STATE_SUCCESS_ONGOING = 'state.success.ongoing';
     const STATE_PENDING = 'state.pending';
     const STATE_SOLD_OUT_PENDING = 'state.soldout.pending';
-    const STATE_WAY_PASSED = 'state.way_passed';
 
     const UNCROWDABLE_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_SOLD_OUT, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const PENDING_STATES = [self::STATE_SUCCESS_PENDING, self::STATE_PENDING, self::STATE_SOLD_OUT_PENDING];
     const SOLDOUT_STATES = [self::STATE_SOLD_OUT, self::STATE_SOLD_OUT];
-    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED, self::STATE_WAY_PASSED];
+    const PASSED_STATES = [self::STATE_PASSED, self::STATE_FAILED, self::STATE_REFUNDED];
     const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
-    const WAY_PASSED_STATES = [self::STATE_WAY_PASSED];
 
     const PHOTOS_DIR = 'images/campaigns/';
 
@@ -53,6 +51,9 @@ class YBContractArtist extends BaseContractArtist
         $this->code = uniqid();
         $this->commissions = new ArrayCollection();
         $this->transactional_messages = new ArrayCollection();
+        $this->sub_events = new ArrayCollection();
+        $this->no_sub_events = true;
+        $this->date_event = new \DateTime();
     }
 
     public function getBuyers() {
@@ -62,6 +63,16 @@ class YBContractArtist extends BaseContractArtist
         return array_map(function(ContractFan $cf) {
             return $cf->getPhysicalPerson();
         }, $this->getContractsFanPaid());
+    }
+
+    // Also return refunded buyers
+    public function getWideBuyers() {
+        if($this->getContractsFanPaidAndRefunded() == null || empty($this->getContractsFanPaidAndRefunded())) {
+            return [];
+        }
+        return array_map(function(ContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getContractsFanPaidAndRefunded());
     }
 
     public function isEvent() {
@@ -89,7 +100,7 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isWayPassed() {
-        return in_array($this->getState(), self::WAY_PASSED_STATES);
+        return $this->isPassed() && $this->date_event->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
     }
 
     public function isOngoing() {
@@ -159,8 +170,6 @@ class YBContractArtist extends BaseContractArtist
                     return $this->state = self::STATE_PENDING;
                 }
             } else {
-                if($this->date_event != null && $this->date_event < $today && $this->date_event->diff($today)->days > self::DAYS_BEFORE_WAY_PASSED)
-                    return $this->state = self::STATE_WAY_PASSED;
                 return $this->state = self::STATE_PASSED;
             }
         }
@@ -172,6 +181,10 @@ class YBContractArtist extends BaseContractArtist
 
     public function getOrganizationName() {
         return $this->organization->getName();
+    }
+
+    public function hasSubEvents() {
+        return !$this->no_sub_events;
     }
 
     /**
@@ -197,6 +210,17 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="date_event", type="datetime", nullable=true)
      */
     private $date_event;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", mappedBy="campaign", cascade="persist")
+     */
+    private $sub_events;
+
+    /**
+     * @ORM\Column(name="no_sub_events", type="boolean")
+     */
+    private $no_sub_events;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="yb_campaigns")
@@ -230,13 +254,13 @@ class YBContractArtist extends BaseContractArtist
     private $vat;
 
     /**
-     * #var YBCommission[]
+     * #var ArrayCollection
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBCommission", cascade={"all"}, mappedBy="campaign")
      */
     private $commissions;
 
     /**
-     * @var YBInvoice[]
+     * @var  ArrayCollection
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBInvoice", cascade={"all"}, mappedBy="campaign")
      */
     private $invoices;
@@ -327,6 +351,10 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getDateEvent()
     {
+        if($this->hasSubEvents() && count($this->sub_events) > 0) {
+            return $this->sub_events->first()->getDate();
+        }
+
         return $this->date_event;
     }
 
@@ -501,7 +529,21 @@ class YBContractArtist extends BaseContractArtist
      */
     public function setCommissions($commissions)
     {
-        $this->commissions = $commissions;
+        $this->commissions->clear();
+        foreach($commissions as $commission) {
+            $this->addCommission($commission);
+        }
+        return $this;
+    }
+
+    public function addCommission(YBCommission $commission) {
+        $this->commissions->add($commission);
+        $commission->setCampaign($this);
+        return $this;
+    }
+
+    public function removeCommission(YBCommission $commission) {
+        $this->commissions->remove($commission);
         return $this;
     }
 
@@ -543,6 +585,14 @@ class YBContractArtist extends BaseContractArtist
 
     public function setOrganization($organization){
         $this->organization = $organization;
+
+        if($this->vat_number == null) {
+            $this->vat_number = $organization->getVatNumber();
+        }
+
+        if($this->bank_account == null) {
+            $this->bank_account = $organization->getBankAccount();
+        }
     }
     
     public function getOrganizers(){
@@ -565,6 +615,53 @@ class YBContractArtist extends BaseContractArtist
     public function setBankAccount($bank_account)
     {
         $this->bank_account = $bank_account;
+        return $this;
+    }
+
+    /**
+     * @param array|ArrayCollection $sub_events
+     * @return YBContractArtist
+     */
+    public function setSubEvents($sub_events)
+    {
+        $this->sub_events->clear();
+        foreach($sub_events as $sub_event) {
+            $this->addSubEvent($sub_event);
+        }
+        return $this;
+    }
+
+    public function addSubEvent(YBSubEvent $sub_event) {
+        $this->sub_events->add($sub_event);
+        $sub_event->setCampaign($this);
+        return $this;
+    }
+
+    public function removeSubEvent(YBSubEvent $sub_event) {
+        $this->sub_events->remove($sub_event);
+        return $this;
+    }
+
+    public function getSubEvents()
+    {
+        return $this->sub_events;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getNoSubEvents()
+    {
+        return $this->no_sub_events;
+    }
+
+    /**
+     * @param bool $no_sub_events
+     * @return $this
+     */
+    public function setNoSubEvents($no_sub_events)
+    {
+        $this->no_sub_events = $no_sub_events;
         return $this;
     }
 }

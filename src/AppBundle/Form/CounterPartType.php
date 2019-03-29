@@ -4,6 +4,8 @@ namespace AppBundle\Form;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\CounterPart;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -14,6 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class CounterPartType extends AbstractType
 {
@@ -62,8 +65,25 @@ class CounterPartType extends AbstractType
             ->add('maximumAmountPerPurchase', NumberType::class, array(
                 'required' => true,
                 'label' => "Nombre max par commande",
-            ))
-        ;
+            ));
+
+        $id = $options['campaign_id'];
+        if($options['has_sub_events'])
+            $builder
+                ->add('subEvents', EntityType::class, array(
+                    'required' => false,
+                    'label' => 'Dates auxquelles ce ticket donne accès',
+                    'multiple' => true,
+                    'expanded' => true,
+                    'class' => 'AppBundle\Entity\YB\YBSubEvent',
+                    'query_builder' => function (EntityRepository $er) use ($id) {
+                        return $er->createQueryBuilder('s')
+                            ->innerJoin('s.campaign','c')
+                            ->where('c.id = :id')
+                            ->orderBy('s.date', 'ASC')
+                            ->setParameter('id', $id);
+                    },
+                ));
     }
 
     public function validate(CounterPart $counterPart, ExecutionContextInterface $context)
@@ -94,6 +114,8 @@ class CounterPartType extends AbstractType
             'constraints' => array(
                 new Assert\Callback(array($this, 'validate'))
             ),
+            'campaign_id' => null,
+            'has_sub_events' => false,
         ]);
     }
 

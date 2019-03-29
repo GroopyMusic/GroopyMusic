@@ -128,7 +128,7 @@
                     </div>
                 </div>
                 {% set visiblePromos = contract.currentPromotionsVisible %}
-                {% if visiblePromos is not empty %}
+                {% if visiblePromos is not empty or contract.isInCampaign %}
                     {% set endSentence = visiblePromos|length > 1 ? "des promotions suivantes" : "de la promotion suivante" %}
                     <div class="col-12 content-box mt-4 mt-md-5">
                         <h3 class="festival-section-title"><img src="{{ asset('images/icons/continuity.png') }}" class="title-icon" /> <span>Promotions</span></h3>
@@ -139,8 +139,11 @@
                                 <p class="text-center">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
                             {% endif %}
                             {% for promo in visiblePromos %}
-                                <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span>{# (jusqu'au {{ promo.endDate|fancy_date(true) }})#}</p>
+                                <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span></p>
                             {% endfor %}
+                            {% if contract.isInCampaign %}
+                                <p class="text-center">1 commande passée avant la date de validation <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">accès au bar Vedett all-in à 18h</span></p>
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
@@ -313,6 +316,9 @@
 
     <section class="container-fluid position-relative bg-body-light p-4 mt-2" id="tickets">
         <h3 class="festival-section-title "><img src="{{ asset('images/icons/blue/concert-ticket.png') }}" class="title-icon" /> Tickets</h3>
+
+        <p class="text-center"><i>Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett, pendant la première demi-heure (18h).
+            <br />C'est une façon pour nous de remercier les premiers contributeurs du financement participatif !</i></p>
         {% if state not in contract.uncrowdableStates %}
             {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 

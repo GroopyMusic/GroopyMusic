@@ -67,7 +67,8 @@
         "ob/highcharts-bundle": "^1.6",
         "friendsofsymfony/rest-bundle": "^2.5",
         "jms/serializer-bundle": "^2.4",
-        "nelmio/cors-bundle": "^1.5"
+        "nelmio/cors-bundle": "^1.5",
+        "craue/formflow-bundle": "~3.1"
     },
     "scripts": {
         "post-install-cmd": [

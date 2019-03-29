@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Form\ContractArtistPreValidationType;
 use AppBundle\Form\ContractArtistValidationType;

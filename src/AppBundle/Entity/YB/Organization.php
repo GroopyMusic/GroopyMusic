@@ -116,6 +116,18 @@ class Organization {
      */
     private $isPrivate = false;
 
+    /**
+     * @var string
+     * @ORM\Column(name="bank_account", type="string", length=50, nullable=true)
+     */
+    private $bank_account;
+
+    /**
+     * @var string
+     * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
+     */
+    private $vat_number;
+
     // GETTERS & SETTERS
 
     /**
@@ -212,5 +224,37 @@ class Organization {
     public function setIsPrivate($isPrivate)
     {
         $this->isPrivate = $isPrivate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBankAccount()
+    {
+        return $this->bank_account;
+    }
+
+    /**
+     * @param string $bank_account
+     */
+    public function setBankAccount($bank_account)
+    {
+        $this->bank_account = $bank_account;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVatNumber()
+    {
+        return $this->vat_number;
+    }
+
+    /**
+     * @param string $vat_number
+     */
+    public function setVatNumber(string $vat_number)
+    {
+        $this->vat_number = $vat_number;
     }
 }
