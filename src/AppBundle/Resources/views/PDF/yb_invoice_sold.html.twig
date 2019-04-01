@@ -106,15 +106,19 @@
 
     {% set ticketCount = 0 %}
     {% set ticketsPerPage = 5 %}
-    {% for ticket in tickets %}
+    {% for order in orders %}
         {% if ticketCount % ticketsPerPage == 0 %}
             <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
             <h2>Liste des tickets vendus</h2>
             <table border="1" style="width: 100%; border-collapse: collapse;">
                 <tr class="bg-gray">
-                    <th>Identifiant du ticket</th>
-                    <th>Type de ticket et prix</th>
-                    <th>Acheteur</th>
+                    <th>#commande</th>
+                    <th>Date</th>
+                    <th>Identifiant Stripe</th>
+                    <th>Type de ticket</th>
+                    <th>Prix unitaire</th>
+                    <th>Quantité</th>
+                    <th>Prix total</th>
                 </tr>
         {% endif %}
             {% set ticketCount = ticketCount + 1 %}

@@ -64,11 +64,13 @@
                                                 <i class="fas fa-check-double"></i> Valider
                                             </a>
                                         </div>
-                                        <div class="col-12 col-md-3">
-                                            <a class="btn btn-sm btn-danger" href="{{ url('yb_members_invoice_invalidate', {'id': invoice.id}) }}">
-                                                <i class="fas fa-trash-alt"></i> Supprimer
-                                            </a>
-                                        </div>
+                                        {% if admin %}
+                                            <div class="col-12 col-md-3">
+                                                <a class="btn btn-sm btn-danger" href="{{ url('yb_members_invoice_invalidate', {'id': invoice.id}) }}">
+                                                    <i class="fas fa-trash-alt"></i> Supprimer
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>

@@ -349,16 +349,16 @@ class YBMembersController extends BaseController
      * @Route("/invoice/{id}/invalidate", name="yb_members_invoice_invalidate")
      */
     public function invoiceInvalidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null){
-        $this->checkIfAuthorized($user, $invoice->getCampaign());
+        $this->checkIfAuthorized($user, $invoice->getCampaign(), true);
 
-        $purchases = $invoice->getPurchases();
+        $purchases = $invoice->getPurchases(); // Necessary for hydratation
 
         if(!$invoice->isUserValidated()) {
             $em->remove($invoice);
             $em->flush();
         }
 
-        $this->addFlash('yb_notice', 'La facture a bien été supprimée ; merci de contacter nos administrateurs si vous attendez une action de leur part.');
+        $this->addFlash('yb_notice', 'La facture a bien été supprimée.');
         return $this->redirectToRoute("yb_members_invoices");
     }
 
@@ -367,35 +367,19 @@ class YBMembersController extends BaseController
      */
     public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
         $campaign = $invoice->getCampaign();
-        if ($user == null || !$user->isSuperAdmin()){
-            $this->checkIfAuthorized($user, $campaign);
-        }
-        $cfs = array_reverse($campaign->getContractsFanPaid());
-        $purchases = $invoice->getPurchases();
-
-        $tickets = array();
-
-        foreach ($cfs as $cf){
-            /** @var ContractFan $cf */
-            if ($cf->getPurchases()->first()->getInvoice() == $invoice){
-                $tickets = array_merge($tickets, $cf->getTickets()->toArray());
-            }
-        }
+        $this->checkIfAuthorized($user, $campaign);
+        $cfs = $campaign->getContractsFanPaid();
+        $purchases = $invoice->getPurchases();  // Necessary for hydratation
 
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildFromInvoice($invoice);
 
-        $counterparts = array_map(function ($purchase){
-            /** @var Purchase $purchase */
-            return $purchase->getCounterpart();
-        }, $invoice->getPurchases()->toArray());
 
         return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
             'invoice' => $invoice,
             'ticketData' => $financialDataService->getTicketData(),
             'campaign' => $campaign,
-            //'counterparts' => $counterparts,
-            'tickets' => $tickets
+            'cfs' => $cfs,
         ]);
     }
 

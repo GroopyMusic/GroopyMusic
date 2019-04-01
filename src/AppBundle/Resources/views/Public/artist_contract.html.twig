@@ -141,9 +141,9 @@
                             {% for promo in visiblePromos %}
                                 <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span></p>
                             {% endfor %}
-                            {% if contract.isInCampaign %}
+                            {# if contract.isInCampaign %}
                                 <p class="text-center">1 commande passée avant la date de validation <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">accès au bar Vedett all-in à 18h</span></p>
-                            {% endif %}
+                            {% endif #}
                         </div>
                     </div>
                 {% endif %}
@@ -317,8 +317,12 @@
     <section class="container-fluid position-relative bg-body-light p-4 mt-2" id="tickets">
         <h3 class="festival-section-title "><img src="{{ asset('images/icons/blue/concert-ticket.png') }}" class="title-icon" /> Tickets</h3>
 
-        <p class="text-center"><i>Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett, pendant la première demi-heure (18h).
-            <br />C'est une façon pour nous de remercier les premiers contributeurs du financement participatif !</i></p>
+        {# if contract.isInCampaign() %}
+            <p class="text-center">
+                <i>Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett, pendant la première demi-heure (18h).
+                <br />C'est une façon pour nous de remercier les premiers contributeurs du financement participatif !</i>
+            </p>
+        {% endif #}
         {% if state not in contract.uncrowdableStates %}
             {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
