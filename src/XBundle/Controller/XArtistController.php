@@ -143,10 +143,13 @@ class XArtistController extends BaseController
     {
         $this->checkIfArtistAuthorized($user, $project);
 
-        //$carts = $em->getRepository('XBundle:XCart')->getProjectCarts($project);
+        $donations = $project->getDonationsPaid();
+        $sales = $project->getSalesPaid();
 
         return $this->render('@X/XArtist/donations_sales_details.html.twig', array(
-            'project' => $project
+            'project' => $project,
+            'donations' => $donations,
+            'sales' => $sales
         ));
     }
 

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use XBundle\Entity\XContractFan;
 
 class DonationType extends AbstractType
 {
@@ -20,8 +21,8 @@ class DonationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('donationAmount', NumberType::class, [
-                'attr' => ['placeholder' => 'Entrez le montant (en euros)']
+            ->add('amount', NumberType::class, [
+                'attr' => ['placeholder' => 'Entrez le montant']
             ])
             ->add('submit', SubmitType::class, array(
                 'label' => 'Valider'
@@ -34,7 +35,7 @@ class DonationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'XBundle\Entity\XCart'
+            'data_class' => XContractFan::class
         ));
     }
 

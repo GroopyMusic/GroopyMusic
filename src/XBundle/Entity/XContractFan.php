@@ -31,17 +31,43 @@ class XContractFan
         $this->amount = 0;
         $this->date = new \DateTime();
         $this->refunded = false;
+        $this->isDonation = false;
     }
 
     public function __toString()
     {
-        return 'x_contract_fan';
+        $str = "";
+
+        for ($i = 0; $i < $this->purchases->count(); $i++) {
+            $str .= $this->purchases->get($i);
+            if ($i < $this->purchases->count()-1) {
+                $str .= "\n";
+            }
+        }
+
+        return $str;
     }
 
     public function initAmount() {
         $this->amount = array_sum(array_map(function(XPurchase $purchase) {
             return $purchase->getAmount();
         }, $this->purchases->toArray()));
+    }
+
+    public function getPaid() {
+        return $this->cart->getPaid();
+    }
+
+    /** @return PhysicalPersonInterface */
+    public function getPhysicalPerson() {
+        return $this->getCart()->getOrder();
+    }
+
+    public function getDisplayName() {
+        if($this->getPhysicalPerson() == null) {
+            return 'anonyme';
+        }
+        return $this->getPhysicalPerson()->getDisplayName();
     }
 
     /**
@@ -97,6 +123,13 @@ class XContractFan
      * @ORM\Column(name="barcode_text", type="string", length=255,  nullable=true)
      */
     private $barcodeText;
+
+    /**
+     * @var boolean
+     * 
+     * @ORM\Column(name="is_donation", type="boolean")
+     */
+    private $isDonation;
 
 
     /**
@@ -285,5 +318,29 @@ class XContractFan
     public function getPurchases()
     {
         return $this->purchases;
+    }
+
+    /**
+     * Set isDonation
+     *
+     * @param boolean $isDonation
+     *
+     * @return XContractFan
+     */
+    public function setIsDonation($isDonation)
+    {
+        $this->isDonation = $isDonation;
+
+        return $this;
+    }
+
+    /**
+     * Get isDonation
+     *
+     * @return boolean
+     */
+    public function getIsDonation()
+    {
+        return $this->isDonation;
     }
 }

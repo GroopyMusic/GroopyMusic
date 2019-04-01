@@ -9,57 +9,66 @@
             <span class="breadcrumb-item active">Détails des dons et des ventes</span>
         </nav>
     </section>
-    
-    <section class="container my-4 py-2 my-md-4">
-        {#% if %}
-            <h3>Pas de dons ou de ventes pour le moment</h3>
-        {% else %#}
-            <h3>Dons</h3>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Donateur</th>
-                        <th scope="col">Montant</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#% for  in  %#}
-                        <tr class="table-active">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    {#% endfor %#}
-                </tbody>
-            </table>
-            
-            <br><hr><br>
 
-            <h3>Ventes</h3>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Acheteur</th>
-                        <th scope="col">Achat(s)</th>
-                        <th scope="col">Montant total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#% for in %#}
-                        <tr class="table-active">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    {#% endfor %#}
-                </tbody>
-            </table>
-        {#% endif %#}
+    <section class="container" >
+        <ul class="nav nav-pills" id="donations-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="donations-details-tab" data-toggle="pill" href="#donations-details" role="tab" aria-controls="donations-details" aria-selected="true">Voir les dons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="sales-details-tab" data-toggle="pill" href="#sales-details" role="tab" aria-controls="sales-details" aria-selected="false">Voir les ventes</a>
+            </li>
+        </ul>
 
+        <div class="tab-content" id="donations-tab-content">
+            <div class="tab-pane fade show active" id="donations-details" role="tabpanel" aria-labelledby="donations-details-tab">
+                {% if donations is empty %}
+                    <div class="my-3 px-2">Pas de dons pour le moment</div>
+                {% else %}
+                    <div class= "donations-row my-3 px-2">
+                        <div class="row">
+                            <div class="col-8 col-md-3"><strong>Date</strong></div>
+                            <div class="col-8 col-md-3"><strong>Donateur</strong></div>
+                            <div class="col-4 col-md-3"><strong>Montant</strong></div>
+                        </div>
+                    </div>
+                    {% for donation in donations %}
+                        <div class= "donations-row border my-3 px-2">
+                            <div class="row">
+                                <div class="col-8 col-md-3">{{ donation.date|date('d/m/Y \\à H:i') }}</div>
+                                <div class="col-8 col-md-3">{{ donation.displayName }}</div>
+                                <div class="col-4 col-md-3">{{ donation.amount }} €</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="tab-pane fade show" id="sales-details" role="tabpanel" aria-labelledby="sales-details-tab">
+                {% if sales is empty %}
+                    <div class="my-3 px-2">Pas de ventes pour le moment</div>
+                {% else %}
+                    <div class= "sales-row my-3 px-2">
+                        <div class="row">
+                            <div class="col-4 col-md-3"><strong>Date</strong></div>
+                            <div class="col-8 col-md-3"><strong>Acheteur</strong></div>
+                            <div class="col-4 col-md-3"><strong>Montant total</strong></div>
+                            <div class="col-8 col-md-3"><strong>Achat(s)</strong></div>
+                        </div>
+                    </div>
+                    {% for sale in sales %}
+                        <div class= "sales-row border my-3 px-2">
+                            <div class="row">
+                                <div class="col-4 col-md-3">{{ sale.date|date('d/m/Y \\à H:i') }}</div>
+                                <div class="col-8 col-md-3">{{ sale.displayName }}</div>
+                                <div class="col-4 col-md-3">{{ sale.amount }} €</div>
+                                <div class="col-8 col-md-3">{{ sale|nl2br }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
     </section>
     
-
 {% endblock %}

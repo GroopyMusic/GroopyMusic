@@ -101,38 +101,49 @@ class XPublicController extends BaseController
 
         //$products = $em->getRepository('XBundle:Product')->getVisibleProductsForProject($project);
 
-        $form = $this->createForm(DonationType::class);
+        $form = $this->createForm(DonationType::class, $contribution);
         $form->handleRequest($request);
 
         $formPurchase = $this->createForm(XContractFanType::class, $contribution);
         $formPurchase->handleRequest($request);
 
         // DONATION SUBMIT
-        /*if($form->isSubmitted() && $form->isValid()) {
+        if($form->isSubmitted() && $form->isValid()) {
 
             $cart = new XCart();
+
+            foreach($contribution->getPurchases() as $purchase) {
+                $contribution->removePurchase($purchase);
+            }
+
+            $contribution->setAmount($form['amount']->getData());
+            $contribution->setIsDonation(true);
+
+            $cart->addContract($contribution);
             $cart->setConfirmed(true);
-            $cart->setDonationAmount($form['donationAmount']->getData());
-            $cart->setProject($project);
             $cart->generateBarCode();
 
+            $contribution->setCart($cart);
+
             $em->persist($cart);
+            $em->persist($contribution);
             $em->flush();
 
             return $this->redirectToRoute('x_payment_checkout', ['code' => $cart->getBarcodeText()]);
-        }*/
+        }
 
         // PURCHASE SUMIT
-        if($formPurchase->isSubmitted() && $form->isValid()) {
+        if($formPurchase->isSubmitted() && $formPurchase->isValid()) {
 
             $cart = new XCart();
 
             foreach($contribution->getPurchases() as $purchase) {
                 if($purchase->getQuantity() == 0) {
                     $contribution->removePurchase($purchase);
+                } else {
+                    $purchase->setContractFan($contribution);
+                    $em->persist($purchase);
                 }
-                $purchase->setContractFan($contribution);
-                $em->persist($purchase);
             }
 
             $contribution->initAmount();
@@ -253,13 +264,8 @@ class XPublicController extends BaseController
         
 		if($request->getMethod() == 'POST' /*&& isset($_POST['accept_conditions']) && $_POST['accept_conditions']*/) {
 
-            //$amount = $cart->getDonationAmount();
-
             $amount = intval($_POST['amount']);
 
-			//$xorder = $em->getRepository('XBundle:XOrder')->findOneBy(array('cart' => $cart));
-			//$xorder->setCart($cart);
-    
             if($cart->getOrder() == null) {
                 $firstName = $_POST['first_name'];
                 $lastName = $_POST['last_name'];
@@ -270,9 +276,7 @@ class XPublicController extends BaseController
                        ->setFirstName($firstName)
                        ->setLastName($lastName)
                        ->setCart($cart);
-            }
-
-            else {
+            } else {
                 $order = $cart->getOrder();
             }
 
@@ -391,24 +395,29 @@ class XPublicController extends BaseController
             /** @var Project $project */
             $project = $contribution->getProject();
             $project->addAmount($contribution->getAmount());
-            $project->addNbSales();
 
-            foreach($contribution->getPurchases() as $purchase) {
-                $product = $purchase->getProduct();
-                $product->addProductsSold($purchase->getQuantity());
-                $em->persist($product);
+            if ($contribution->getIsDonation()) {
+                $project->addNbDonations();
+            } else {
+                $project->addNbSales();
+
+                foreach($contribution->getPurchases() as $purchase) {
+                    $product = $purchase->getProduct();
+                    $product->addProductsSold($purchase->getQuantity());
+                    $em->persist($product);
+                }
             }
 
             $em->persist($project);
         }
 
         $cart->setPaid(true);
-        //$em->persist($project);
+        $em->persist($cart);
         $em->flush();
 
         $this->addFlash('x_notice', 'Paiement bien reçu !');
 
-        return $this->redirectToRoute('x_project', ['id' => $project->getId()]);
+        return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
 
     }
 

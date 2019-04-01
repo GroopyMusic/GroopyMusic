@@ -124,8 +124,10 @@
                             <div class="text-muted font-italic pb-2">
                                 Le montant d'un don est libre mais il doit être d'1 € minimum.
                             </div>
-                            {{ form_errors(form.donationAmount) }}
-                            {{ form_widget(form.donationAmount) }}
+                            {{ form_errors(form.amount) }}
+                            <div class="w-90 position-relative mb-2">
+                                {{ form_widget(form.amount) }}<span class="free-price-euro-sign position-absolute">€</span>
+                            </div>
                             {{ form_end(form) }}
                         </div>
                     </div>

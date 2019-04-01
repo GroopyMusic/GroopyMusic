@@ -10,7 +10,8 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use XBundle\Entity\Image;
 use XBundle\Entity\Product;
 use XBundle\Entity\Tag;
-use XCategory\Entity\XCategory;
+use XBundle\Entity\XContractFan;
+use XBundle\Entity\XCategory;
 
 /**
  * Project
@@ -111,6 +112,28 @@ class Project
 
     public function isPassed() {
         return $this->dateEnd < new \DateTime();
+    }
+
+    // Get donations paid
+    private $donationsPaid = null;
+    public function getDonationsPaid() {
+        if($this->donationsPaid == null) {
+            $this->donationsPaid = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                return $contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+            });
+        }
+        return $this->donationsPaid;
+    }
+
+    // Get sales paid
+    private $salesPaid = null;
+    public function getSalesPaid() {
+        if($this->salesPaid == null) {
+            $this->salesPaid = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                return !$contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+            });
+        }
+        return $this->salesPaid;
     }
 
     // To get only artists that creator owns (form only)

@@ -21,7 +21,11 @@ class XPurchase
 
     public function __toString()
     {
-        return 'x_purchase';
+        $str = '';
+
+        $str .= $this->product . ' (x' . $this->quantity . ') - ' . $this->getAmount() . ' €';
+
+        return $str;
     }
 
     public function getAmount()
