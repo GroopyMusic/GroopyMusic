@@ -157,10 +157,6 @@ class ContractArtist extends BaseContractArtist
         return in_array($this->getState(), self::getPassedStates());
     }
 
-    public function getPercentObjective() {
-       return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
-    }
-
     public function getTotalBookedTickets() {
         return $this->tickets_reserved + $this->getCounterpartsSold();
     }

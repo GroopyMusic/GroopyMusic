@@ -371,6 +371,21 @@ class BaseContractArtist implements TranslatableInterface
         $this->counterparts_sold -= $quantity;
     }
 
+    public function getPercentObjective() {
+        return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
+    }
+
+    public function getPercentSoldOutRelativeToObjective() {
+        if($this->no_threshold || $this->threshold == 0) {
+            return 100;
+        }
+        return ($this->getGlobalSoldout() / $this->threshold) * 100;
+    }
+
+    public function getTotalBookedTickets() {
+        return max(0, $this->counterparts_sold);
+    }
+
     // Unmapped
     protected $state;
 
