@@ -63,6 +63,11 @@ class ProductType extends AbstractType
                 'label' => 'Photo',
                 'required' => false
             ))
+            ->add('isTicket', CheckboxType::class, array(
+                'label' => 'L\'article mis en vente est un ticket',
+                'attr' => ['class' => 'is-ticket-checkbox'],
+                'required' => false
+            ))
         ;
 
         if ($options['creation'] || $options['is_edit']) {

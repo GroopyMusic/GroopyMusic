@@ -45,16 +45,18 @@
                             <a class="nav-link" href="{{ path('x_projects') }}">Projets</a>
                         </li>
                         {% if not app.user %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('x_login') }}">Connexion</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('x_login') }}">Connexion</a>
+                            </li>
                         {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('x_logout') }}">Déconnexion</a>
-                        </li>
+                            {% if app.user.isArtistOwner or app.user.isSuperAdmin %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('x_logout') }}">Déconnexion</a>
+                            </li>
                         {% endif %}
                     </ul>
                 </div>

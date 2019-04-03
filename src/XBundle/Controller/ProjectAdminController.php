@@ -118,6 +118,12 @@ class ProjectAdminController extends BaseAdminController
                 
                 $em = $this->getDoctrine()->getManager();
                 $project->setDeleted(true);
+
+                foreach($project->getProducts() as $product) {
+                    $product->setDeleted(true);
+                    $em->persist($product);
+                }
+
                 $em->persist($project);
                 $em->flush();
 

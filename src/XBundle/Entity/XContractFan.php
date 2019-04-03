@@ -70,6 +70,13 @@ class XContractFan
         return $this->getPhysicalPerson()->getDisplayName();
     }
 
+    public function getProductsQuantity()
+    {
+        return array_sum(array_map(function (XPurchase $purchase) {
+            return $purchase->getQuantity();
+        }, $this->purchases->toArray()));
+    }
+
     /**
      * @var int
      *

@@ -897,7 +897,6 @@ class Project
         $product->setProject($this);
     }
 
-    // A VOIR SI C'EST NECESSAIRE
     /**
      * Remove product
      * 

@@ -31,7 +31,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
 use XBundle\Entity\Product;
 use XBundle\Entity\Project;
+use XBundle\Entity\XCart;
 use XBundle\Entity\XContact;
+
 
 class MailDispatcher
 {
@@ -766,7 +768,7 @@ class MailDispatcher
     // ------------------------ X
 
     public function sendAdminXContact(XContact $contact) {
-        $subject = 'Nouveau message sur Chapots!';
+        $subject = 'Nouveau message sur Chapots';
         $params = ['contact' => $contact];
         $subject_params = [];
         $reply_to = $contact->getEmail();
@@ -875,6 +877,18 @@ class MailDispatcher
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::X_PRODUCT_REFUSED, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    public function sendXOrderRecap(XCart $cart) {
+        $subject = 'Votre contribution sur Chapots';
+        $params = ['cart' => $cart];
+        $subject_params = [];
+        $recipient = [$cart->getOrder()->getEmail() => $this->translator->getLocale()];
+        $recipientName = '';
+        $reply_to = "info@chapots.be";
+        $reply_to_name = "Chapots";
+
+        $this->sendEmail(MailTemplateProvider::X_ORDER_RECAP, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
     }
 
 }

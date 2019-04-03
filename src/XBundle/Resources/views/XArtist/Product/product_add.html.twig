@@ -22,6 +22,16 @@
     <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Article</h2><hr>
         <div class="row">
+            {% if product.id is null %}
+                <div class="col-12">
+                    <div class="text-muted font-italic">
+                        Précisez d'abord si l'article mis en vente est un ticket ou non en cochant la mention ci-dessous. Ce comportement ne pourra plus être modifié une fois l'article créé.
+                    </div>
+                    {{ form_widget(form.isTicket) }}
+                </div>
+            {% else %}
+                {% do form.isTicket.setRendered %}
+            {% endif %}
             <div class="col-12 col-md-6">
                 {{ form_row(form.name) }}
             </div>
@@ -43,13 +53,17 @@
                     {{ form_row(form.price) }}
                 </div>
             </div>
-            <div class="col-12 col-md-7">
-                {{ form_row(form.photo) }}
-            </div>
-            {% if product.id is not null and product.photo is not null %}
-                <div class="col-12 col-md-3">
-                    <img class="img-fluid" src="{{ asset(product.webPath(product.photo)) }}" />
+            {% if product.id is not null and not product.isTicket %}
+                <div class="col-12 col-md-7 product-photo">
+                    {{ form_row(form.photo) }}
                 </div>
+                {% if product.photo is not null %}
+                    <div class="col-12 col-md-3">
+                        <img class="img-fluid" src="{{ asset(product.webPath(product.photo)) }}" />
+                    </div>
+                {% endif %}
+            {% else %}
+                {% do form.photo.setRendered %}
             {% endif %}
         </div>
     {{ form_end(form) }}
@@ -58,6 +72,13 @@
 
 {% block additional_javascripts %}
     <script type="text/javascript">
+        {% if product.id is null %}
+            $('.is-ticket-checkbox').on('change', function() {
+                $('.product-photo').toggle(!this.checked);
+            });
+            $('.is-ticket-checkbox').on('change'),
+        {% endif %}
+
         $('.free-price-checkbox').on('change', function() {
             $('.free-price-min').toggle(this.checked);
             $('.price').toggle(!this.checked);

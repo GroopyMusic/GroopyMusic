@@ -21,10 +21,6 @@
   right: 10px;
 }
 
-.quantity-error-display {
-  @extend .text-danger;
-  @extend .pb-2;
-}
 
 div[disabled=disabled] {
   pointer-events: none;

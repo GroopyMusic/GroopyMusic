@@ -5,8 +5,10 @@ namespace XBundle\Controller;
 use AppBundle\Controller\BaseController;
 use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\MailDispatcher;
+use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +32,6 @@ use XBundle\Entity\Tag;
 use XBundle\Form\XContractFanType;
 use XBundle\Form\XContactType;
 use XBundle\Form\DonationType;
-//use XBundle\Form\PurchaseType;
 
 
 class XPublicController extends BaseController
@@ -97,9 +98,11 @@ class XPublicController extends BaseController
             return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
         }
 
-        $contribution = new XContractFan($project);
+        // To know if at least one product is validated
+        // -> p-e remplacer ça par une function dans Project pour savoir si au moins un produits est valide
+        $products = $em->getRepository('XBundle:Product')->getVisibleProductsForProject($project);
 
-        //$products = $em->getRepository('XBundle:Product')->getVisibleProductsForProject($project);
+        $contribution = new XContractFan($project);
 
         $form = $this->createForm(DonationType::class, $contribution);
         $form->handleRequest($request);
@@ -165,8 +168,35 @@ class XPublicController extends BaseController
             'form' => $form->createView(),
             'form_purchase' => $formPurchase->createView(),
             'project' => $project,
-            //'products' => $products,
+            'products' => $products,
         ));
+    }
+
+    /**
+     * @Route("/order/{code}", name="x_order")
+     */
+    public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager) {
+
+        $cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
+
+        /*foreach($cart->getContracts() as $cf) {
+            if(!$cf->getcounterpartsSent())
+                $ticketingManager->generateAndSendYBTickets($cf);
+        }*/
+
+        // barcode généré qd on appelle generateAndSendYBTickets
+
+        return $this->render('XBundle:XPublic:order.html.twig', [
+            'cart' => $cart,
+        ]);
+    }
+
+    /**
+     * @Route("/ticket/{code}", name="x_get_ticket")
+     */
+    public function getTicketAction(EntityManagerInterface $em, TicketingManager $ticketingManager, $code)
+    {
+        $contribution = $em->getRepository('XBundle:XContractFan')->findOneBy(['barcode_text' => $code]);
 
     }
 
@@ -258,7 +288,7 @@ class XPublicController extends BaseController
 		$cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
 
         /** @var XCart $cart */
-        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->isPaid() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
         
@@ -354,7 +384,7 @@ class XPublicController extends BaseController
         /** @var XCart $cart */
 		$cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
         
-        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->isPaid() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
 
@@ -372,41 +402,38 @@ class XPublicController extends BaseController
 	/**
 	 * @Route("/payment/success/{code}", name="x_payment_success")
 	 */
-	public function paymentSuccessAction(EntityManagerInterface $em, Request $request, $code) {
+	public function paymentSuccessAction(EntityManagerInterface $em, Request $request, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, $code) {
 
         /** @var XCart $cart */
         $cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code]);
-        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->isPaid() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
-        
-        /*$project = $em->getRepository('XBundle:Project')->find($cart->getProject());
-        $project->addAmount($cart->getDonationAmount());  
-        if ($cart->getProduct() == null) {
-            $project->addNbDonations();
-        } else {
-            $project->addNbSales();
-            $product = $em->getRepository('XBundle:Product')->find($cart->getProduct());
-            $qty = $cart->getProdQuantity();
-            $product->addProductsSold($qty);
-        }*/
+
+        // Send order recap
+        $mailDispatcher->sendXOrderRecap($cart);
 
         foreach($cart->getContracts() as $contribution) {
             /** @var Project $project */
             $project = $contribution->getProject();
+
             $project->addAmount($contribution->getAmount());
 
             if ($contribution->getIsDonation()) {
                 $project->addNbDonations();
             } else {
                 $project->addNbSales();
-
                 foreach($contribution->getPurchases() as $purchase) {
                     $product = $purchase->getProduct();
                     $product->addProductsSold($purchase->getQuantity());
                     $em->persist($product);
                 }
             }
+
+            // Need to also send tickets if project is succesful
+            /* if($project->getSuccessful()) {
+                $ticketingManager->generateAndSendXTickets($contribution);
+            } */
 
             $em->persist($project);
         }
@@ -415,9 +442,9 @@ class XPublicController extends BaseController
         $em->persist($cart);
         $em->flush();
 
-        $this->addFlash('x_notice', 'Paiement bien reçu !');
+        $this->addFlash('x_notice', 'Paiement bien reçu ! Vous devriez avoir reçu un récapitulatif par e-mail.');
 
-        return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
+        return $this->redirectToRoute('x_order', ['code' => $cart->getBarcodeText()]);
 
     }
 

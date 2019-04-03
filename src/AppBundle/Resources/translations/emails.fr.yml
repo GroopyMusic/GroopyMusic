@@ -402,3 +402,36 @@ x:
       ------------------------------
         %reason%
       ------------------------------
+  
+  order:
+    recap:
+      intro: |
+        Merci pour de votre contribution sur Chapots.
+      donation: |
+        Vous trouverez ci-dessous un récapitulatif de votre don passé le %date%. Les informations de votre don sont également accessibles à l'adresse %order_url%.
+        
+        Dans le cas où le projet n'est pas confirmé par ses gestionnaires, vous serez entièrement remboursé(e).
+      contract_fan: |
+        Vous trouverez ci-dessous un récapitulatif de votre commande passée le %date%. Les informations de votre commande sont également accessibles à l'adresse %order_url%.
+        
+        Vous ne recevrez le contenu de votre commande que si le projet est confirmé par les gestionnaires du projet. Dans le cas contraire, vous serez entièrement remboursé(e).
+      outro: |
+        A très bientôt !
+    tickets: |
+      Cher %name%, %intro%
+
+      Veuillez trouver vos tickets pour "%project%" en pièce jointe.
+
+      Passez une excellente journée,
+    refunded_crowdfunding: |
+      Cher/Chère %name%,
+
+      Le projet "%project%" n'a pas pu être confirmée car le montant visé n'a pas été atteint.
+
+      Vous allez être remboursé(e) de votre contribution de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
+    refunded_other: |
+      Cher/Chère %name%,
+
+      Votre commande sur Chapots pour soutenir le projet "%project%" (total : %amount% €) va être remboursée dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
+
+      La raison du remboursement devrait vous avoir été, par ailleurs, communiquée par l'organisateur.

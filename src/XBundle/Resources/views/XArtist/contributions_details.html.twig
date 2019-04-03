@@ -13,15 +13,15 @@
     <section class="container" >
         <ul class="nav nav-pills" id="donations-tab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="donations-details-tab" data-toggle="pill" href="#donations-details" role="tab" aria-controls="donations-details" aria-selected="true">Voir les dons</a>
+                <a class="nav-link{% if sales is empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="donations-details-tab" data-toggle="pill" href="#donations-details" role="tab" aria-controls="donations-details">Voir les dons</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="sales-details-tab" data-toggle="pill" href="#sales-details" role="tab" aria-controls="sales-details" aria-selected="false">Voir les ventes</a>
+                <a class="nav-link{% if sales is not empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="sales-details-tab" data-toggle="pill" href="#sales-details" role="tab" aria-controls="sales-details">Voir les ventes</a>
             </li>
         </ul>
 
         <div class="tab-content" id="donations-tab-content">
-            <div class="tab-pane fade show active" id="donations-details" role="tabpanel" aria-labelledby="donations-details-tab">
+            <div class="tab-pane fade{% if sales is empty %} show active{% endif %}" id="donations-details" role="tabpanel" aria-labelledby="donations-details-tab">
                 {% if donations is empty %}
                     <div class="my-3 px-2">Pas de dons pour le moment</div>
                 {% else %}
@@ -39,12 +39,13 @@
                                 <div class="col-8 col-md-3">{{ donation.displayName }}</div>
                                 <div class="col-4 col-md-3">{{ donation.amount }} €</div>
                             </div>
+                            <br /><div class="w-100 text-left"><a class="text-secondary font-italic" href="{{ path('x_order', {code: donation.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir la confirmation du don</a> (code de confirmation : {{ donation.cart.barcodeText }})</div>
                         </div>
                     {% endfor %}
                 {% endif %}
             </div>
 
-            <div class="tab-pane fade show" id="sales-details" role="tabpanel" aria-labelledby="sales-details-tab">
+            <div class="tab-pane fade show{% if sales is not empty %} active{% endif %}" id="sales-details" role="tabpanel" aria-labelledby="sales-details-tab">
                 {% if sales is empty %}
                     <div class="my-3 px-2">Pas de ventes pour le moment</div>
                 {% else %}
@@ -64,7 +65,9 @@
                                 <div class="col-4 col-md-3">{{ sale.amount }} €</div>
                                 <div class="col-8 col-md-3">{{ sale|nl2br }}</div>
                             </div>
+                            <br /><div class="w-100 text-left"><a class="text-secondary font-italic" href="{{ path('x_order', {code: sale.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir la confirmation de la commande</a> (code de confirmation : {{ sale.cart.barcodeText }})</div>
                         </div>
+                       
                     {% endfor %}
                 {% endif %}
             </div>

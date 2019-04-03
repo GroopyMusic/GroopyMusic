@@ -68,9 +68,6 @@
 
         {% if not project.isPassed %}
             <a href="{{ path('x_artist_product_add', {'id': project.id}) }}"><i class="far fa-plus-square"></i> Ajouter un article</a>
-            {% if project.category.name == "Concert" %}
-                <a href="{{ path('x_artist_ticket_add', {'id': project.id}) }}"> / un ticket</a>  
-            {% endif %}
         {% endif %}
 
     </section>

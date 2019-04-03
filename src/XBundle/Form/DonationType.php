@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use XBundle\Entity\XContractFan;
 
 class DonationType extends AbstractType
@@ -22,11 +24,23 @@ class DonationType extends AbstractType
     {
         $builder
             ->add('amount', NumberType::class, [
-                'attr' => ['placeholder' => 'Entrez le montant']
+                'attr' => [
+                    'class' => 'amount-donation',
+                ],
+                'constraints' => [
+                    new Assert\GreaterThanOrEqual(['value' => 0])
+                ]
             ])
             ->add('submit', SubmitType::class, array(
                 'label' => 'Valider'
             ));
+    }
+
+    public function validate(XContractFan $contractFan, ExecutionContextInterface $context)
+    {
+        if ($contractFan->getAmount() <= 0) {
+            $context->addViolation('Le montant du don doit être minimum de 1 €');
+        }
     }
     
     /**
@@ -35,7 +49,10 @@ class DonationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => XContractFan::class
+            'data_class' => XContractFan::class,
+            'constraints' => array(
+                new Assert\Callback(array($this, 'validate'))
+            ),
         ));
     }
 

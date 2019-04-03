@@ -123,6 +123,13 @@ class Product
     /**
      * @var bool
      * 
+     * @ORM\Column(name="is_ticket", type="boolean")
+     */
+    private $isTicket;
+
+    /**
+     * @var bool
+     * 
      * @ORM\Column(name="validated", type="boolean")
      */
     private $validated;
@@ -434,5 +441,28 @@ class Product
     }
 
 
-}
 
+    /**
+     * Set isTicket
+     *
+     * @param boolean $isTicket
+     *
+     * @return Product
+     */
+    public function setIsTicket($isTicket)
+    {
+        $this->isTicket = $isTicket;
+
+        return $this;
+    }
+
+    /**
+     * Get isTicket
+     *
+     * @return boolean
+     */
+    public function getIsTicket()
+    {
+        return $this->isTicket;
+    }
+}

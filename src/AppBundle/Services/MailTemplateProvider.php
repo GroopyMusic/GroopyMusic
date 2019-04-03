@@ -84,6 +84,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const X_PRODUCT_VALIDATED = 'XBundle:Mail/Artist/Product:product_validated.txt.twig';
     const X_PRODUCT_REFUSED = 'XBundle:Mail/Artist/Product:product_refused.txt.twig';
 
+    const X_ORDER_RECAP = 'XBundle:Mail/Public:recap.txt.twig';
 
 
     /**

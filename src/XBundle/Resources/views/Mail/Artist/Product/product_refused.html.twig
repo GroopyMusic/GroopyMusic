@@ -1,0 +1,13 @@
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('x.product.refused', {
+                '%product%': product.name,
+                '%reason%': reason | bbcode_filter('my_default_filter') | raw
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

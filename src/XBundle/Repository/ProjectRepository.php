@@ -59,20 +59,6 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult()
         ;
-
-        /*return $this->createQueryBuilder('p')
-            ->join('p.user', 'u')
-            ->where('u.id = :id')
-            ->andWhere('p.dateEnd >= :now')
-            ->andWhere('p.failed = 0')
-            ->orderBy('p.dateCreation', 'ASC')
-            ->setParameters([
-                'id' => $user->getId(),
-                'now' => new \DateTime()
-            ])
-            ->getQuery()
-            ->getResult()
-        ;*/
     }
 
 

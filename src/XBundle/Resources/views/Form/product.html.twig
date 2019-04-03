@@ -2,7 +2,12 @@
     <div class="row product-row">
         <!--<div class="row">-->
             <h3>Article</h3>
-
+            <div class="col-12">
+                <div class="text-muted font-italic">
+                    Précisez d'abord si l'article mis en vente est un ticket ou non en cochant la mention ci-dessous. Ce comportement ne pourra plus être modifié une fois l'article créé.
+                </div>
+                {{ form_widget(form.isTicket) }}
+            </div>
             <div class="col-12">
                 {{ form_row(form.name) }}
             </div>
@@ -24,13 +29,18 @@
                     {{ form_row(form.price) }}
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-12 product-photo">
                 {{ form_row(form.photo) }}
             </div>
         <!--</div>-->
     <div>
 
     <script type="text/javascript">
+        $('.is-ticket-checkbox').on('change', function() {
+            $('.product-photo').toggle(!this.checked);
+        });
+        $('.is-ticket-checkbox').on('change');
+
         $('.free-price-checkbox').on('change', function() {
             $('.free-price-min').toggle(this.checked);
             $('.price').toggle(!this.checked);

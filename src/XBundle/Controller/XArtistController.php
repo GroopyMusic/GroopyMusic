@@ -28,6 +28,8 @@ class XArtistController extends BaseController
     {
         $this->checkIfArtistAuthorized($user);
 
+        /*if ($user->isSuperAdmin())*/
+        
         $currentProjects = $em->getRepository('XBundle:Project')->getCurrentProjects($user);
         $passedProjects = $em->getRepository('XBundle:Project')->getPassedProjects($user);
 
@@ -64,7 +66,7 @@ class XArtistController extends BaseController
             // add Un-Mute admin to project
             $adminUsers = $em->getRepository('AppBundle:User')->getAdminsForProject();
             foreach($adminUsers as $au) {
-                if (!$project->contains($au)) {
+                if (!$project->getHandlers()->contains($au)) {
                     $project->addHandler($au);
                 }
             }
@@ -72,7 +74,7 @@ class XArtistController extends BaseController
             $em->persist($project);
             $em->flush();
 
-            $message = 'Le projet "' . $project->getTitle() . '" a bien été créée. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible par le public sur Chapots';
+            $message = 'Le projet "' . $project->getTitle() . '" a bien été créé. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible par le public sur Chapots';
             $this->addFlash('x_notice', $message);
 
             try { 
@@ -137,16 +139,16 @@ class XArtistController extends BaseController
 
 
     /**
-     * @Route("/project/{id}/donations-sales-details", name="x_artist_donations_sales_details")
+     * @Route("/project/{id}/contributions-details", name="x_artist_contributions_details")
      */
-    public function donationsSalesDetailsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
+    public function contributionsDetailsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
     {
         $this->checkIfArtistAuthorized($user, $project);
 
         $donations = $project->getDonationsPaid();
         $sales = $project->getSalesPaid();
 
-        return $this->render('@X/XArtist/donations_sales_details.html.twig', array(
+        return $this->render('@X/XArtist/contributions_details.html.twig', array(
             'project' => $project,
             'donations' => $donations,
             'sales' => $sales
@@ -230,22 +232,6 @@ class XArtistController extends BaseController
             'form' => $form->createView(),
             'project' => $project,
             'product' => $product
-        ));
-    }
-
-
-
-    /**
-     * @Route("/project/{id}/ticket/add", name="x_artist_ticket_add")
-     */
-    public function addTicketAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project)
-    {
-        $this->checkIfArtistAuthorized($user, $project);
-
-        // check if project = concert
-
-        return $this->render('@X/XArtist/Product/ticket_add.html.twig', array(
-            'project' => $project
         ));
     }
 

@@ -178,6 +178,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return $this->projects->contains($project);
     }
 
+    public function isArtistOwner() {
+        return !empty($this->getArtists());
+    }
+
 
     /**
      * @ORM\Id

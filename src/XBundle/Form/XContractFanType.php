@@ -46,25 +46,23 @@ class XContractFanType extends AbstractType
         });
     }
 
-    public function validate(XContractFan $contractFan, ExecutionContextInterface $context)
+    public function validate(XContractFan $contribution, ExecutionContextInterface $context)
     {
-        /*if ($contractFan->getCart() == null && $contractFan->getCounterPartsQuantity() == 0) {
+        if ($contribution->getCart() == null && $contribution->getProductsQuantity() == 0) {
             $context->addViolation('contractfan.quantity_min');
         }
 
-        $contract_artist = $contractFan->getContractArtist();
-
-        foreach($contractFan->getPurchases() as $purchase) {*/
-            /** @var Purchase $purchase */
-            /*if($purchase->getCounterPart()->getFreePrice() && $purchase->getFreePriceValue() < $purchase->getCounterpart()->getMinimumPrice()) {
+        foreach($contribution->getPurchases() as $purchase) {
+            /** @var XPurchase $purchase */
+            if($purchase->getProduct()->getFreePrice() && $purchase->getFreePrice() < $purchase->getProduct()->getMinimumPrice()) {
                 $context->addViolation('contractfan.free_price_min');
             }
-            $purchasable = $contract_artist->getNbPurchasable($purchase->getCounterpart());
-            if($purchasable < $purchase->getQuantityOrganic()) {
-                $context->addViolation("Vous ne pouvez pas commander plus de " . $purchasable . " exemplaires de \"" . $purchase->getCounterpart()->getName() . "\".");
+            $purchasable = $purchase->getProduct()->getMaxAmountPerPurchase();
+            if($purchase->getQuantity() > $purchasable) {
+                $context->addViolation("Vous ne pouvez pas commander plus de " . $purchasable . " exemplaires de \"" . $purchase->getProduct()->getName() . "\".");
             }
         }
-        if($contractFan->getCounterPartsQuantityOrganic() > $contract_artist->getMaxCounterParts())
+        /*if($contractFan->getCounterPartsQuantityOrganic() > $contract_artist->getMaxCounterParts())
             $context->addViolation("Il n'y a plus que " . $contract_artist->getMaxCounterParts() . " tickets disponibles, toutes catégories confondues. Veuillez réduire le nombre de tickets commandés");*/
     }
 

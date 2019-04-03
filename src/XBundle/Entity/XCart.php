@@ -51,6 +51,23 @@ class XCart
         return $this->payment == null ? false : $this->payment->getRefunded();
     }
 
+    public function isPaid() {
+        return $this->getPaid();
+    }
+
+    public function getState() {
+        if($this->getPaid()) {
+            if($this->getPayment()->getRefunded()) {
+                return 'Remboursé';
+            } else {
+                return 'Payé';
+            }
+        } else {
+            return 'Non finalisé';
+        }
+    }
+
+
     /**
      * @var int
      *

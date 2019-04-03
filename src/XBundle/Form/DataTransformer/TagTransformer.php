@@ -25,12 +25,12 @@ class TagTransformer implements DataTransformerInterface
 
 	public function transform($value){
 
-		return implode(', ', $value); 
+		return implode(', ', $value);
 	}
 
 	public function reverseTransform($value){
 
-		$names = array_filter(array_unique(array_map('trim', explode(',', $value))));
+		$names = array_filter(array_unique(array_map('strtolower', array_map('trim', explode(',', $value)))));
 
 		$tags = $this->em->getRepository('XBundle:Tag')->findBy([ 'name' => $names]);
 
