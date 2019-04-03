@@ -229,6 +229,13 @@ class BaseContractArtist implements TranslatableInterface
         return max(0, $nb);
     }
 
+    public function getNbPurchasesPaid() {
+        $contractsFanPaid = $this->getContractsFanPaid();
+        return array_sum(array_map(function(ContractFan $cf) {
+            return count($cf->getPurchases());
+        }, $contractsFanPaid));
+    }
+
     protected $contractsFanPaid = null;
     public function getContractsFanPaid() {
         if($this->contractsFanPaid == null) {

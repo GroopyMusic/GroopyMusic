@@ -7,6 +7,8 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\User;
+use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -23,6 +25,7 @@ class PDFWriter
     const ORDER_TEMPLATE = 'order.html.twig';
     const TICKETS_TEMPLATE = 'tickets.html.twig';
     const YB_TICKETS_TEMPLATE = 'yb_tickets.html.twig';
+    const YB_INVOICE_SOLD_TEMPLATE = 'yb_invoice_sold.html.twig';
 
     private $twig;
     /** @var RouterInterface Router */
@@ -88,5 +91,13 @@ class PDFWriter
         if(!empty($tickets)) {
             $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda], 'D');
         }
+    }
+
+    public function writeSoldInvoice(YBInvoice $invoice = null, $ticketData, YBContractArtist $campaign, $cfs) {
+        $this->write(self::YB_INVOICE_SOLD_TEMPLATE, 'invoice.pdf', ['invoice' => $invoice,
+            'ticketData' => $ticketData,
+            'campaign' => $campaign,
+            'cfs' => $cfs,
+        ], 'D');
     }
 }

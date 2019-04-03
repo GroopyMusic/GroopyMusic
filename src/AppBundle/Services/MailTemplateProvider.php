@@ -62,6 +62,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
 
     // YB
     const YB_ADMIN_CONTACT = 'AppBundle:Mail/YB/Contact:admin.txt.twig';
+    const YB_ADMIN_INVOICE_VALIDATED = 'AppBundle:Mail/YB/Invoices:admin_validated.txt.twig';
     const YB_CONTACT_COPY = 'AppBundle:Mail/YB/Contact:copy.txt.twig';
     const YB_ORDER_RECAP = 'AppBundle:Mail/YB/Order:recap.txt.twig';
     const YB_TICKETS = 'AppBundle:Mail/YB/Order:tickets.txt.twig';
@@ -72,6 +73,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const YB_TRANSACTIONAL_MESSAGE_COPY = 'AppBundle:Mail/YB/Communication:transactional_message_copy.txt.twig';
     const YB_JOIN_ORGANIZATION = 'AppBundle:Mail/YB/Reminders:request_to_join_orga.txt.twig';
     const YB_NOTIFY_JOIN_ORGANIZATION_CANCEL = 'AppBundle:Mail/YB/Notifications:request_to_join_orga_cancelled.txt.twig';
+    const YB_INVOICE_GENERATED = 'AppBundle:Mail/YB/Invoices:generated.txt.twig';
 
     // X
     const X_ADMIN_CONTACT = 'XBundle:Mail/Admin:contact.txt.twig';

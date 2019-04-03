@@ -18,8 +18,8 @@
                     Numéro de facture: FV-{{ invoice.invoiceIdentifier }}
                 </p>
             {% else %}
-                <h3> IMPORTANT: Ce document ne constitue pas une facture valable
-                    tant que vous ne la validez pas.
+                <h3>
+                    IMPORTANT: Ce document ne constitue pas une facture valable tant que vous ne la validez pas.
                 </h3>
             {% endif %}
         {% else %}
@@ -27,12 +27,14 @@
         {% endif %}
         <p>
             {{ campaign.organizationName }} <br />
-            <!-- {{ campaign.address.name }} <br />-->
-            {{ campaign.address.street }}
-            {{ campaign.address.number }} <br />
-            {{ campaign.address.zipcode }}
-            {{ campaign.address.city }} <br />
-            {{ campaign.address.country }} <br />
+            {% if campaign.address is not null %}
+                {{ campaign.address.name }} <br />
+                {{ campaign.address.street }}
+                {{ campaign.address.number }} <br />
+                {{ campaign.address.zipcode }}
+                {{ campaign.address.city }} <br />
+                {{ campaign.address.country }} <br />
+            {% endif %}
             Num&eacute;ro de TVA: {{ campaign.vatNumber }} <br />
             IBAN: {{ campaign.bankAccount }}
         </p>
@@ -104,35 +106,52 @@
 
     </page>
 
-    {% set ticketCount = 0 %}
-    {% set ticketsPerPage = 5 %}
-    {% for order in orders %}
-        {% if ticketCount % ticketsPerPage == 0 %}
-            <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
-            <h2>Liste des tickets vendus</h2>
-            <table border="1" style="width: 100%; border-collapse: collapse;">
-                <tr class="bg-gray">
-                    <th>#commande</th>
-                    <th>Date</th>
-                    <th>Identifiant Stripe</th>
-                    <th>Type de ticket</th>
-                    <th>Prix unitaire</th>
-                    <th>Quantité</th>
-                    <th>Prix total</th>
-                </tr>
-        {% endif %}
-            {% set ticketCount = ticketCount + 1 %}
+    {% set purchasesCount = 0 %}
+    {% set purchasesPerPage = 20 %}
+    {% set pagesCount = 0 %}
+    {% set totalPages = (campaign.nbPurchasesPaid / purchasesPerPage)|round(0, 'ceil') %}
+    {% for cf in cfs %}
+        {% for purchase in cf.purchases%}
+            {% if purchasesCount % purchasesPerPage == 0 %}
+                {% if pagesCount > 0 %}
+                    </table>
+                    </page>
+                {% endif %}
+                {% set pagesCount = pagesCount + 1 %}
+                <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+                {% if invoice is not null and invoice.userValidated %}
+                    <p>
+                        Numéro de facture: FV-{{ invoice.invoiceIdentifier }}
+                    </p>
+                {% endif %}
+                <h2>Annexe : liste des tickets vendus ({{ pagesCount }}/{{ totalPages }})</h2>
+                <table border="1" style="width: 100%; border-collapse: collapse;">
+                    <tr class="bg-gray">
+                        <th>#commande</th>
+                        <th>Date</th>
+                        <th>Identifiant Stripe</th>
+                        <th>Type de ticket</th>
+                        <th>Prix unitaire</th>
+                        <th>Quantité</th>
+                        <th>Prix total</th>
+                    </tr>
+            {% endif %}
+            {% set purchasesCount = purchasesCount + 1 %}
                 <tr>
-                    <td>{{ ticket.barCodeText }}</td>
-                    <td>{{ ticket.counterPart }} ({{ ticket.price }} €)</td>
-                    <td>{{ ticket.name }}</td>
+                    {% if loop.first %}
+                        {% set rowspan = cf.purchases|length %}
+                        <td rowspan="{{ rowspan }}">{{ cf.id }}</td>
+                        <td rowspan="{{ rowspan }}">{{ cf.date|date('d/m/Y H:i:s') }}</td>
+                        <td rowspan="{{ rowspan }}">{{ cf.chargeId }}</td>
+                    {% endif %}
+                    <td>{{ purchase.counterpart }}</td>
+                    <td>{{ purchase.unitaryPrice }}</td>
+                    <td>{{ purchase.quantity }}</td>
+                    <td>{{ purchase.amount }}</td>
                 </tr>
-        {% if ticketCount % ticketsPerPage == 0 %}
-            </table>
-            </page>
-        {% endif %}
+        {% endfor %}
     {% endfor %}
-    {% if ticketCount % ticketsPerPage != 0 %}
+    {% if pagesCount > 0 %}
         </table>
         </page>
     {% endif %}

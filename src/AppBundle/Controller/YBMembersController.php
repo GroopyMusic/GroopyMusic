@@ -25,6 +25,7 @@ use AppBundle\Services\FinancialDataGenerator;
 use AppBundle\Form\YB\OrganizationType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
+use AppBundle\Services\PDFWriter;
 use AppBundle\Services\StringHelper;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -325,7 +326,7 @@ class YBMembersController extends BaseController
 
         $em->flush();
 
-        // TODO MAIL
+        $this->mailDispatcher->sendYBInvoiceGenerated($invoice);
 
         $this->addFlash('yb_notice', 'La facture a bien été générée. Les organisateurs ont été prévenus par mail qu\'ils étaient priés de la valider.');
         return $this->redirectToRoute("yb_members_invoices");
@@ -334,14 +335,23 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/validate", name="yb_members_invoice_validate")
      */
-    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null){
+    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null, MailDispatcher $mailDispatcher){
         $this->checkIfAuthorized($user, $invoice->getCampaign());
 
+        if($invoice->isUserValidated()) {
+            throw new YBAuthenticationException();
+        }
         $invoice->validate();
         $em->persist($invoice);
         $em->flush();
 
         $this->addFlash('yb_notice', 'La facture a bien été validée, elle est dès à présent valable.');
+
+        try {
+            $mailDispatcher->sendAdminYBInvoiceValidated($invoice);
+       }
+        catch(\Exception $e) {}
+
         return $this->redirectToRoute("yb_members_invoices");
     }
 
@@ -363,24 +373,27 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/invoice/{id}/sold", name="yb_members_invoice_sold")
+     * @Route("/invoice/{id}/sold/{format}", name="yb_members_invoice_sold")
      */
-    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
+    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user, $format = 'pdf', PDFWriter $writer){
         $campaign = $invoice->getCampaign();
         $this->checkIfAuthorized($user, $campaign);
-        $cfs = $campaign->getContractsFanPaid();
         $purchases = $invoice->getPurchases();  // Necessary for hydratation
 
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildFromInvoice($invoice);
 
-
-        return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
-            'invoice' => $invoice,
-            'ticketData' => $financialDataService->getTicketData(),
-            'campaign' => $campaign,
-            'cfs' => $cfs,
-        ]);
+        if(strtoupper($format) == 'HTML') {
+            return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+                'invoice' => $invoice,
+                'ticketData' => $financialDataService->getTicketData(),
+                'campaign' => $campaign,
+                'cfs' => $invoice->getContractsFan()
+            ]);
+        }
+        else {
+            $writer->writeSoldInvoice($invoice, $financialDataService->getTicketData(), $campaign, $invoice->getContractsFan());
+        }
     }
 
     /**
@@ -416,13 +429,12 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/campaign/{id}/sold", name="yb_members_campaign_sold")
+     * @Route("/campaign/{id}/sold/{format}", name="yb_members_campaign_sold")
      */
-    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
+    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null, $format = 'pdf', PDFWriter $writer){
         if ($user == null || !$user->isSuperAdmin()){
             throw new YBAuthenticationException();
         }
-        //$this->checkIfAuthorized($user, $campaign);
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
         $cfs = array_filter($cfs, function($cf){
@@ -431,25 +443,21 @@ class YBMembersController extends BaseController
             $purchase = $cf->getPurchases()->first();
             return $purchase->getInvoice() == null;
         });
-        $tickets = array();
-
-        foreach ($cfs as $cf){
-            /** @var ContractFan $cf */
-            $tickets = array_merge($tickets, $cf->getTickets()->toArray());
-        }
-
 
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildInvoicelessCampaignData();
 
-        return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
-            'invoice' => null,
-            'ticketData' => $financialDataService->getTicketData(),
-            'campaign' => $campaign,
-            //'counterparts' => $campaign->getCounterparts()->toArray(),
-            //'cfs' => $cfs,
-            'tickets' => $tickets
-        ]);
+        if(strtoupper($format) == 'HTML') {
+            return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
+                'invoice' => null,
+                'ticketData' => $financialDataService->getTicketData(),
+                'campaign' => $campaign,
+                'cfs' => $cfs
+            ]);
+        }
+        else {
+            $writer->writeSoldInvoice(null, $financialDataService->getTicketData(), $campaign, $cfs);
+        }
     }
 
     /**

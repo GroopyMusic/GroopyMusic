@@ -32,17 +32,25 @@
                             </p>
                         </div>
                         {% if admin %}
-                            <div class="col-12 col-md-3">
-                                <a class="btn btn-sm btn-primary" target="_blank"
-                                   href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
-                                    <i class="fas fa-download"></i> Ventes (Apercu)
-                                </a>
-                            </div>
-                            <div class="col-12 col-md-3">
-                                <a class="btn btn-sm btn-secondary progress-bar-striped" target="_blank" href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
-                                    <i class="fas fa-cogs"></i> Générer
-                                </a>
-                            </div>
+                            {% if campaign.vat is not null and campaign.commissions is not null and campaign.commissions|length > 0 %}
+                                <div class="col-12 col-md-3">
+                                    <a class="btn btn-sm btn-primary" target="_blank"
+                                       href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
+                                        <i class="fas fa-download"></i> Ventes (Apercu)
+                                    </a>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <a class="btn btn-sm btn-secondary progress-bar-striped" target="_blank" href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
+                                        <i class="fas fa-cogs"></i> Générer
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div>
+                                    Impossible de générer une facture à l'heure actuelle car il n'y a aucune commission
+                                    et/ou aucun taux de TVA renseigné(s) pour cette campagne.
+                                    <a href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les infos de la campagne</a>
+                                </div>
+                            {% endif %}
                         {% endif %}
                         {% for invoice in campaign.getInvoices %}
                             <div class="col-12 mt-3{% if not invoice.userValidated %} bg-warning{% endif %}">

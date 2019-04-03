@@ -183,16 +183,34 @@ class YBContractArtist extends BaseContractArtist
         }
     }
 
+    /**
+     * @return float|int
+     */
     public function getTotalNbAvailable() {
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
     }
 
+    /**
+     * @return string
+     */
     public function getOrganizationName() {
         return $this->organization->getName();
     }
 
+    /**
+     * @return bool
+     */
     public function hasSubEvents() {
         return !$this->no_sub_events;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubEventsDates() {
+        return array_map(function(YBSubEvent $subEvent) {
+            return $subEvent->getDate();
+        }, $this->sub_events->toArray());
     }
 
     /**
@@ -466,7 +484,7 @@ class YBContractArtist extends BaseContractArtist
     /**
      * Get handlers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getHandlers()
     {
