@@ -20,16 +20,23 @@
     <section class="container py-5">
         <h2>Mes organisations</h2>
         <div align="center">
-            <input
-                    data-jplist-control="textbox-filter"
-                    data-group="group1"
-                    data-name="my-filter-1"
-                    data-path=".name"
-                    type="text"
-                    value=""
-                    data-clear-btn-id="name-clear-btn"
-                    placeholder="Chercher..." />
-            <button type="button" id="name-clear-btn">Supprimer</button>
+            <div class="input-group mb-3" style="width:500px;">
+                <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Chercher..."
+                        aria-label="Chercher..."
+                        aria-describedby="basic-addon2"
+                        data-jplist-control="textbox-filter"
+                        data-group="group1"
+                        data-name="my-filter-1"
+                        data-path=".name"
+                        value=""
+                        data-clear-btn-id="name-clear-btn">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="button" id="name-clear_btn">Supprimer</button>
+                </div>
+            </div>
         </div>
         <br>
         {% if organizations|length > 0 %}

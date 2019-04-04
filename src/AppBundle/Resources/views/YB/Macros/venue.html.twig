@@ -1,21 +1,22 @@
 {% macro venue_row(venue, currentUser) %}
     {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
-    <div data-jplist-item>
-        <div class="row">
-            <div class="col-12">
-                <h3 class="name">{{ venue.address.name|nl2br }}</h3>
+<div data-jplist-item>
+    <div class="row">
+        <div class="col-12 row" style="border: orange solid 2px; padding: 7px">
+            <div class="col-12 col-md-3">
+                <h3 class="name">{{ venue.address.name }}</h3>
             </div>
-            <div class="col-12 col-md-4">
-                {% if venue.hasOnlyFreeSeating %}
-                    Placement libre
-                {% else %}
-                    Choix de place
-                {% endif %}
+            <div class="col-12 col-md-3">
+                <a class="link-secondary" href="{{ path('yb_members_venue_edit', {'id': venue.id}) }}">
+                    Modifier la salle...
+                </a>
             </div>
-            <div class="col-12 col-md-4">
-                <p><a class="link-secondary" href="{{ path('yb_members_venue_edit', {'id': venue.id}) }}">Modifier la salle...</a></p>
+            <div class="col-12 col-md-3">
+                <a class="link-secondary"
+                   href="{{ path('yb_members_add_venue_block', {'venue': venue.id}) }}">Modifier les configurations...
+                </a>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 {% if venue.isHandledByUser(currentUser) %}
                     <p>
                         <a class="link-secondary" data-toggle="modal" href="#quitModal{{ venue.id }}">
@@ -25,30 +26,104 @@
                 {% endif %}
             </div>
         </div>
-        <hr size="4" color="orange">
-        <div class="modal fade" id="quitModal{{ venue.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+        <div class="col-12 row" style="border: orange solid 2px; padding: 7px">
+            {% for config in venue.configurations %}
+                <div class="row mt-4">
+                    <div class="col-12 col-md-8">
+                        <h4 style="color: orange">
+                            Configuration : {{ config.name }}
+                        </h4>
                     </div>
-                    <div class="modal-body" id="modal_detail">
-                        Vous êtes sur le point de fermer cette salle {{ venue.address.name }}. Êtes vous sûr ?
+                    {% if venue.isHandledByUser(currentUser) %}
+                        <div class="col-12 col-md-4">
+                            <p>
+                                <a class="btn-outline-warning btn" data-toggle="modal"
+                                   href="#deleteConfModal{{ config.id }}">
+                                    Supprimer la configuration...
+                                </a>
+                            </p>
+                        </div>
+                    {% endif %}
+                    <div class="col-12">
+                        capacité maximale : {{ config.maxCapacity }} <br>
+                        {{ config.nbStandUp }} places debout <br>
+                        {{ config.nbSeatedSeats }} places assises (hors balcon) <br>
+                        {{ config.nbBalconySeats }} places balcon
+                        <hr color="grey" size="3"/>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn" data-dismiss="modal">Annuler</button>
-                        <form action="{{ path('yb_members_close_venue', {'id': venue.id}) }}">
-                            <input class="btn" type="submit" value="Valider"/>
-                        </form>
+                    {% if config.blocks|length > 0 %}
+                        {% for block in config.blocks %}
+                            <div class="col-12 row">
+                                <div class="col-12 col-md-3">Bloc : {{ block.name }}</div>
+                                <div class="col-12 col-md-3">Type : {{ block.type }}</div>
+                                <div class="col-12 col-md-3">Capacité : {{ block.capacity }}</div>
+                                {% if block.notSquared %}
+                                    <div class="col-12 col-md-3">
+                                        <a class="btn-outline-info btn"
+                                           href="{{ path('yb_members_configure_block', {'id' : block.id}) }}">
+                                            Configurer les rangées
+                                        </a>
+                                    </div>
+                                {% endif %}
+                                <div class="col-12">
+                                    <hr color="grey" size="3"/>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 font-italic text-muted">
+                            Votre salle n'a aucun bloc. C'est le cas, si le placement est libre ou si vous ne possédez que des places debout.
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="modal fade" id="deleteConfModal{{ config.id }}" tabindex="-1" role="dialog"
+                     aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modal_detail">
+                                Vous êtes sur le point de supprimer la configuration {{ config.name }}. Êtes vous sûr ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                                <form action="{{ path('yb_members_delete_config', {'id': config.id}) }}">
+                                    <input class="btn" type="submit" value="Valider"/>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="modal fade" id="quitModal{{ venue.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_detail">
+                    Vous êtes sur le point de supprimer cette salle {{ venue.address.name }}. Êtes vous sûr ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                    <form action="{{ path('yb_members_close_venue', {'id': venue.id}) }}">
+                        <input class="btn" type="submit" value="Valider"/>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-{% endmacro %}
+    {% endmacro %}
 
 
 

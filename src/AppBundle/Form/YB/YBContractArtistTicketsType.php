@@ -55,15 +55,13 @@ class YBContractArtistTicketsType extends AbstractType
 
     }
 
-    public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
-    {
+    public function validate(YBContractArtist $campaign, ExecutionContextInterface $context){
         if(count($campaign->getCounterParts()) == 0) {
             $context->addViolation('Il faut au moins un article en vente pour que la campagne soit valide.');
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
+    public function configureOptions(OptionsResolver $resolver){
         $resolver->setDefaults([
             'data_class' => YBContractArtist::class,
             'constraints' => array(
@@ -72,6 +70,7 @@ class YBContractArtistTicketsType extends AbstractType
             'creation' => false,
             'admin' => false,
             'userOrganizations' => null,
+            'venues' => null,
             'campaign_id' => null,
             'has_sub_events' => false,
         ]);

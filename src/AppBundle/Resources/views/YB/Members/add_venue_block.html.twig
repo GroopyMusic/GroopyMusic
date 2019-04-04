@@ -1,0 +1,94 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('yb_members_my_venues') }}">Mes salles</a></li>
+            <li><a href="#">{{ venue.address.name }}</a></li>
+            <li class="active"><span>Edition</span></li>
+        </ol>
+    </section>
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/configurations_edit.html.twig' '@App/YB/Form/block.html.twig'  ':Form:jquery.collection.html.twig' %}
+    {{ form_start(form) }}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+        <div>
+            <h2>Ma configuration :
+                <select class="config">
+                    <option value="-1">Sélectionner une configuration</option>
+                {% for config in venue.configurations %}
+                    {% if config.onlyStandup or config.hasFreeSeatingPolicy %}
+                        <option disabled value="{{ config.id }}">{{ config.name }}</option>
+                    {% else %}
+                        <option value="{{ config.id }}">{{ config.name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </h2>
+        </div>
+        <div class="text-muted font-italic pb-2">
+            C'est ici que vous allez préciser les configurations de vos salles, vous pourrez indiquer combien il y a de rangées, combien il y a de sièges par rangées, etc.
+        </div>
+        {{ form_widget(form.configurations) }}
+        {{ form_end(form) }}
+    </section>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            window.onload = function() {
+                $('div.config').hide();
+            };
+            $("select.config").change(function(){
+                var selectedConfig = $(this).children("option:selected").val();
+                if (selectedConfig === '-1'){
+                    $('div.config').hide();
+                } else {
+                    var id = "#".concat(selectedConfig);
+                    $('div.config').not(id).hide();
+                    var x = "div.config".concat(id);
+                    $(x).show();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            $(document).ready(function() {
+                $('select.block-type').change(function () {
+                        if ($(this).val() == 'Debout') {
+                            $(this).closest('.venue-block').find('.hide-if-standup').hide();
+                        } else {
+                            $(this).closest('.venue-block').find('.hide-if-standup').show();
+                        }
+                    }
+                );
+            });
+            yb_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un bloc</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer le bloc</a>'
+            });
+            yb_second_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un bloc</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer le bloc</a>'
+            });
+            yb_third_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une rangée</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer la rangée</a>'
+            })
+            $('#is-squared input[type="checkbox"]').on('change', function(){
+                $(this).closest('.venue-block').find('.hide-if-squared').toggle(this.checked);
+                $(this).closest('.venue-block').find('.show-if-squared').toggle(!this.checked);
+            });
+            $('#is-squared input[type="checkbox"]').trigger('change');
+
+            $('#free-placement input[type="checkbox"]').on('change', function(){
+                $(this).closest('.venue-block').find('.hide-if-free-placement').toggle(!this.checked);
+            });
+            $('#free-placement input[type="checkbox"]').trigger('change');
+        });
+    </script>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\YBSubEvent;
@@ -65,7 +66,6 @@ class YBContractArtistInfosType extends AbstractType
                 ))
             ;
         }
-
         $builder
             ->add('organization', EntityType::class, [
                 'class' => Organization::class,
@@ -79,6 +79,12 @@ class YBContractArtistInfosType extends AbstractType
                     }
                 },
                 'choice_label' => 'name',
+            ])
+            ->add('venue', EntityType::class, [
+                'class' => VenueConfig::class,
+                'label' => 'Salle',
+                'choices' => $options['venues'],
+                'choice_label' => 'displayName',
             ])
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
@@ -220,6 +226,7 @@ class YBContractArtistInfosType extends AbstractType
             'creation' => false,
             'admin' => false,
             'userOrganizations' => null,
+            'venues' => null,
             'campaign_id' => null,
             'has_sub_events' => false,
         ]);

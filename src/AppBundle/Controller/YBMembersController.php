@@ -7,7 +7,9 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
+use AppBundle\Entity\YB\Block;
 use AppBundle\Entity\YB\Venue;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBCommission;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\OrganizationJoinRequest;
@@ -18,6 +20,9 @@ use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\Membership;
 use AppBundle\Form\UserBankAccountType;
+use AppBundle\Form\YB\BlockType;
+use AppBundle\Form\YB\VenueConfigType;
+use AppBundle\Form\YB\VenueEditType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
 use AppBundle\Form\YB\VenueType;
@@ -29,6 +34,7 @@ use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\StringHelper;
 use AppBundle\Services\TicketingManager;
+use cspoo\Swiftmailer\MailgunBundle\DependencyInjection\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -87,8 +93,11 @@ class YBMembersController extends BaseController
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
-
-        $generic_options = ['creation' => true, 'userOrganizations' => $userOrganizations];
+        $venues = $em->getRepository('AppBundle:YB\VenueConfig')->findAllOpened();
+        usort($venues, function(VenueConfig $v1, VenueConfig $v2){
+            strtolower($v1->getDisplayName()) < strtolower($v2->getDisplayName());
+        });
+        $generic_options = ['creation' => true, 'userOrganizations' => $userOrganizations, 'venues' => $venues];
         $flow->setGenericFormOptions($generic_options);
 
         $flow->bind($campaign);
@@ -146,7 +155,12 @@ class YBMembersController extends BaseController
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
 
-        $flow->setGenericFormOptions(['creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId()]);
+        $venues = $em->getRepository('AppBundle:YB\VenueConfig')->findAllOpened();
+        usort($venues, function(VenueConfig $v1, VenueConfig $v2){
+            strtolower($v1->getDisplayName()) < strtolower($v2->getDisplayName());
+        });
+
+        $flow->setGenericFormOptions(['creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId(), 'venues' => $venues]);
 
         $flow->bind($campaign);
         $form = $flow->createForm();
@@ -841,21 +855,40 @@ class YBMembersController extends BaseController
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
-        $form = $this->createForm(VenueType::class, $venue, ['creation' => true, 'userOrganizations' => $userOrganizations]);
+        $form = $this->createForm(VenueType::class, $venue, ['creation' => true, 'userOrganizations' => $userOrganizations, 'block' => false]);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $em->persist($venue);
             $em->flush();
             $this->addFlash('yb_notice', 'La salle a bien été créée.');
-            /*try {
-                $mailDispatcher->sendYBReminderEventCreated($campaign);
+            if($venue->isOnlyFreeSeating()){
+                return $this->redirectToRoute('yb_members_my_venues');
+            } else {
+                return $this->redirectToRoute('yb_members_add_venue_block', ['venue' => $venue->getId()]);
             }
-            catch(\Exception $e) {
-            }*/
-            return $this->redirectToRoute('yb_members_dashboard');
         }
         return $this->render('@App/YB/Members/venue_new.html.twig', [
             'admin' => $user->isSuperAdmin(),
+            'form' => $form->createView(),
+            'venue' => $venue,
+        ]);
+    }
+
+    /**
+     * @Route("/venue/{venue}/add-blocks", name="yb_members_add_venue_block")
+     */
+    public function addBlocksAction(Venue $venue, Request $request, EntityManagerInterface $em){
+        $form = $this->createForm(VenueType::class, $venue, ['block' => true]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            //$this->refreshRows($venue, $em);
+            $venue->generateRows();
+            $em->persist($venue);
+            $em->flush();
+            $this->addFlash('yb_notice', 'La salle a bien été configurée.');
+            return $this->redirectToRoute('yb_members_my_venues');
+        }
+        return $this->render('@App/YB/Members/add_venue_block.html.twig', [
             'form' => $form->createView(),
             'venue' => $venue,
         ]);
@@ -878,8 +911,12 @@ class YBMembersController extends BaseController
         if($form->isSubmitted() && $form->isValid()) {
             $em->persist($venue);
             $em->flush();
-            $this->addFlash('yb_notice', 'La salle a bien été modifiée.');
-            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+            if($venue->isOnlyFreeSeating()){
+                $this->addFlash('yb_notice', 'La salle a bien été modifiée.');
+                return $this->redirectToRoute('yb_members_my_venues');
+            } else {
+                return $this->redirectToRoute('yb_members_add_venue_block', ['venue' => $venue->getId()]);
+            }
         }
         return $this->render('@App/YB/Members/venue_new.html.twig', [
             'admin' => $user->isSuperAdmin(),
@@ -909,8 +946,42 @@ class YBMembersController extends BaseController
     /**
      * @Route("/venue/{id}/close", name="yb_members_close_venue")
      */
-    public function closeVenueAction(){
+    public function closeVenueAction(Venue $venue, UserInterface $user = null, Request $request, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user);
+        // TODO : check if an event is still planned in this venue
+        $em->remove($venue);
+        $em->flush();
+        return $this->redirectToRoute('yb_members_my_venues');
+    }
 
+    /**
+     * @Route("/config/{id}/close", name="yb_members_delete_config")
+     */
+    public function deleteConfiguration(VenueConfig $config, UserInterface $user = null, Request $request, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user);
+        // TODO : check if an event is still planned in this venue
+        $em->remove($config);
+        $em->flush();
+        return $this->redirectToRoute('yb_members_my_venues');
+    }
+
+    /**
+     * @Route("/config/block/{id}/configure-row", name="yb_members_configure_block")
+     */
+    public function configureBlockAction(Block $block, UserInterface $user, Request $request, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user);
+        $form = $this->createForm(BlockType::class, $block, ['row' => true]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $em->persist($block);
+            $em->flush();
+            $this->addFlash('Les rangées ont bien été ajoutées.');
+            return $this->redirectToRoute('yb_members_my_venues');
+        }
+        return $this->render('@App/YB/Members/configure_block.html.twig', [
+            'block' => $block,
+            'form' => $form->createView(),
+        ]);
     }
 
 
@@ -1222,6 +1293,15 @@ class YBMembersController extends BaseController
            return strtolower($v1->getAddress()->getName()) > strtolower($v2->getAddress()->getName());
         });
         return $venues;
+    }
+
+    private function refreshRows(Venue $venue, EntityManagerInterface $em) {
+        $rows = $em->getRepository('AppBundle:YB\BlockRow')->getRowsFromVenue($venue->getId());
+        foreach ($rows as $row){
+            $row;
+            $em->remove($row);
+            $em->flush();
+        }
     }
 
 }

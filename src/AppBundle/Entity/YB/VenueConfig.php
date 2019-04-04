@@ -2,20 +2,57 @@
 
 namespace AppBundle\Entity\YB;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity\Photo;
 
 /**
  * Class Venue
  * @ORM\table(name="yb_venues_config")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\VenueConfigRepository")
  */
 class VenueConfig {
+
+    const PHOTOS_DIR = 'images/campaigns/';
+
+    public static function getWebPath(Photo $photo) {
+        return self::PHOTOS_DIR . $photo->getFilename();
+    }
 
     public function __construct(){
         $this->maxCapacity = 0;
         $this->nbStandUp = 0;
         $this->nbSeatedSeats = 0;
         $this->nbBalconySeats = 0;
+        $this->blocks = new ArrayCollection();
+    }
+
+    public function isValidCapacityUp(){
+        $nbStandUp = 0;
+        $nbSeated = 0;
+        $nbBalcony = 0;
+        foreach ($this->blocks as $block){
+            if ($block->isValidCapacity()){
+                switch ($block->getType()){
+                    case 'Debout' :
+                        $nbStandUp += $block->getNbSeatsOfBlock();
+                        break;
+                    case 'Assis' :
+                        $nbSeated += $block->getNbSeatsOfBlock();
+                        break;
+                    default :
+                        $nbBalcony += $block->getNbSeatsOfBlock();
+                        break;
+                }
+                return $nbStandUp === $this->nbStandUp && $nbSeated === $this->nbSeatedSeats && $nbBalcony === $this->nbBalconySeats;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function getAddress(){
+        return $this->venue->getAddress();
     }
 
     /**
@@ -82,6 +119,12 @@ class VenueConfig {
     private $phoneNumberPMR;
 
     /**
+     * @var
+     * @ORM\Column(name="hasFreeSeatingPolicy", type="boolean")
+     */
+    private $hasFreeSeatingPolicy;
+
+    /**
      * @var Venue
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Venue", inversedBy="configurations")
      * @ORM\JoinColumn(nullable=true)
@@ -89,9 +132,20 @@ class VenueConfig {
     private $venue;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Block", mappedBy="config", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Block", mappedBy="config", cascade={"all"})
      */
     private $blocks;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBContractArtist", mappedBy="venue", cascade={"all"})
+     */
+    private $events;
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Photo", cascade={"all"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    protected $photo;
 
     /**
      * @return mixed
@@ -269,12 +323,67 @@ class VenueConfig {
         return $this->blocks;
     }
 
-    /**
-     * @param mixed $blocks
-     */
-    public function setBlocks($blocks)
-    {
-        $this->blocks = $blocks;
+    public function addBlock(Block $block){
+        $block->setConfig($this);
+        $this->blocks->add($block);
     }
+
+    public function removeBlock(Block $block){
+        $block->setConfig(null);
+        $this->blocks->removeElement($block);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function hasFreeSeatingPolicy()
+    {
+        return $this->hasFreeSeatingPolicy;
+    }
+
+    /**
+     * @param mixed $hasFreeSeatingPolicy
+     */
+    public function setHasFreeSeatingPolicy($hasFreeSeatingPolicy)
+    {
+        $this->hasFreeSeatingPolicy = $hasFreeSeatingPolicy;
+    }
+
+    /**
+     * @return YBContractArtist
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * @param YBContractArtist $events
+     */
+    public function setEvents($events){
+        $this->events = $events;
+    }
+
+    public function getDisplayName(){
+        return $this->venue->getAddress()->getName() . ' ('.$this->name.')';
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param mixed $photo
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+    }
+
+
 
 }

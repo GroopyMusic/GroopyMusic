@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity\YB;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -11,6 +12,65 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  */
 class Block {
+
+    public function __construct(){
+        $this->rows = new ArrayCollection();
+    }
+
+    public function generateSeats(){
+        $alphabet = range('A', 'Z');
+        if (count($this->rows) > 0){
+            foreach ($this->rows as $row){
+                $this->removeRow($row);
+            }
+        }
+        for ($i = 0; $i < $this->nbRows; $i++){
+            $row = new BlockRow();
+            if ($this->rowLabel === 2){
+                $row->setName($i);
+            } else {
+                $row->setName($alphabet[$i]);
+            }
+            $row->setBlock($this);
+            $row->setNbSeats($this->getNbSeatsPerRow());
+            $row->setNumerotationSystem($this->getSeatLabel());
+            $this->addRow($row);
+        }
+    }
+
+    public function constructAllUp(){
+        $this->freeSeating = true;
+        $this->notSquared = false;
+        $this->nbRows = 0;
+        $this->nbSeatsPerRow = 0;
+        $this->rowLabel = 1;
+        $this->seatLabel = 1;
+    }
+
+    public function constructFreeSeating(){
+        $this->notSquared = false;
+        $this->nbRows = 0;
+        $this->nbSeatsPerRow = 0;
+        $this->rowLabel = 1;
+        $this->seatLabel = 1;
+    }
+
+    public function getNbSeatsOfBlock(){
+        if ($this->type === 'Debout'){
+            return $this->capacity;
+        }
+        if ($this->getFreeSeating()){
+            return $this->capacity;
+        }
+        if (!$this->isNotSquared()){
+            return $this->nbRows * $this->nbSeatsPerRow;
+        }
+        $nb = 0;
+        foreach ($this->rows as $row){
+            $nb += $row->getNbSeats();
+        }
+        return $nb;
+    }
 
     /**
      * @var int
@@ -46,16 +106,35 @@ class Block {
     private $freeSeating;
 
     /**
-     * @var BlockRow
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\BlockRow", mappedBy="block", cascade={"persist"})
      */
     private $rows;
 
     /**
      * @var VenueConfig
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\VenueConfig", inversedBy="blocks", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\VenueConfig", inversedBy="blocks")
      */
     private $config;
+
+    /**
+     * @var boolean
+     * @ORM\Column(name="is_not_squared", type="boolean")
+     */
+    private $notSquared;
+
+    /**
+     * @var
+     * @ORM\Column(name="nb_rows", type="integer")
+     */
+    private $nbRows;
+
+    /**
+     * @var
+     * @ORM\Column(name="nb_seats_per_row", type="integer")
+     */
+    private $nbSeatsPerRow;
+    private $rowLabel;
+    private $seatLabel;
 
     /**
      * @return int
@@ -121,20 +200,19 @@ class Block {
         $this->freeSeating = $freeSeating;
     }
 
-    /**
-     * @return BlockRow
-     */
     public function getRows()
     {
         return $this->rows;
     }
 
-    /**
-     * @param BlockRow $rows
-     */
-    public function setRows($rows)
-    {
-        $this->rows = $rows;
+    public function addRow(BlockRow $row){
+        $row->setBlock($this);
+        $this->rows->add($row);
+    }
+
+    public function removeRow(BlockRow $row){
+        $row->setBlock(null);
+        $this->rows->removeElement($row);
     }
 
     /**
@@ -169,6 +247,85 @@ class Block {
         $this->name = $name;
     }
 
+    /**
+     * @return mixed
+     */
+    public function isNotSquared()
+    {
+        return $this->notSquared;
+    }
+
+    /**
+     * @param mixed $notSquared
+     */
+    public function setNotSquared($notSquared)
+    {
+        $this->notSquared = $notSquared;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNbRows()
+    {
+        return $this->nbRows;
+    }
+
+    /**
+     * @param mixed $nbRows
+     */
+    public function setNbRows($nbRows)
+    {
+        $this->nbRows = $nbRows;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNbSeatsPerRow()
+    {
+        return $this->nbSeatsPerRow;
+    }
+
+    /**
+     * @param mixed $nbSeatsPerRow
+     */
+    public function setNbSeatsPerRow($nbSeatsPerRow)
+    {
+        $this->nbSeatsPerRow = $nbSeatsPerRow;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowLabel()
+    {
+        return $this->rowLabel;
+    }
+
+    /**
+     * @param mixed $rowLabel
+     */
+    public function setRowLabel($rowLabel)
+    {
+        $this->rowLabel = $rowLabel;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSeatLabel()
+    {
+        return $this->seatLabel;
+    }
+
+    /**
+     * @param mixed $seatLabel
+     */
+    public function setSeatLabel($seatLabel)
+    {
+        $this->seatLabel = $seatLabel;
+    }
 
 
 }

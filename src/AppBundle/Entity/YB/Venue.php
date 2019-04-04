@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\YB;
 
+use AppBundle\Entity\Photo;
 use AppBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,6 +40,39 @@ class Venue {
         return in_array($user, $this->organization->getMembers());
     }
 
+    public function getRows(){
+        $rows = [];
+        foreach ($this->configurations as $config){
+            foreach ($config->getBlocks() as $block){
+                foreach ($block->getRows() as $row){
+                    array_map($row, $rows);
+                }
+            }
+        }
+        return $rows;
+    }
+
+    public function generateRows(){
+        foreach ($this->configurations as $config){
+            foreach ($config->getBlocks() as $block){
+                if ($block->isNotSquared()){
+                    // TODO
+                } else {
+                    $block->generateSeats();
+                }
+            }
+        }
+    }
+
+    public function isOnlyFreeSeating(){
+        foreach ($this->configurations as $configuration){
+            if (!$configuration->isOnlyStandup() || !$configuration->hasFreeSeatingPolicy()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * @var int
      *
@@ -67,8 +101,22 @@ class Venue {
      */
     private $configurations;
 
+    /**
+     * @var
+     * @ORM\Column(name="accept_conditions", type="boolean")
+     */
     protected $accept_conditions;
+
+    /**
+     * @var
+     * @ORM\Column(name="has_legal_manager", type="boolean")
+     */
     protected $accept_being_responsible;
+
+    /**
+     * @var
+     * @ORM\Column(name="is_temp", type="boolean")
+     */
     protected $accept_venue_temp;
 
     // getters & setters
@@ -192,5 +240,23 @@ class Venue {
     {
         $this->accept_venue_temp = $accept_venue_temp;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param mixed $photo
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+    }
+
+
 
 }

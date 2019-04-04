@@ -1,0 +1,29 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+        <h2>Bloc : {{ block.name }}</h2>
+        <h2 style="font-size: 18px">Configuration : {{ block.config.name }}</h2>
+        <h2 style="font-size: 18px">Salle : {{ block.config.venue.address.name }}</h2>
+        <h2>Capacité : {{ block.capacity }}</h2>
+        <div class="text-muted font-italic pb-2">
+            Ce bloc n'est pas rectangulaire. Vous allez pouvoir rajouter des rangées et renseigner pour chacune d'elle le nombre de sièges qu'elle comprend.
+        </div>
+        {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/block_row.html.twig' ':Form:jquery.collection.html.twig' %}
+        {{ form_start(form) }}
+        {{ form_widget(form.rows) }}
+        {{ form_end(form) }}
+    </section>
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            yb_third_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une rangée</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer la rangée</a>'
+            })
+        });
+    </script>
+{% endblock %}

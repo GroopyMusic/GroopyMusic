@@ -43,10 +43,10 @@
     {% if form.acceptConditions is defined %}
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <p><a href="{{ path('yb_terms') }}">Lire nos conditions d'utilisation</a></p>
-            <div class="row">
+            <div class="row conditions">
                 <div class="col-12">{{ form_widget(form.acceptConditions) }}</div>
-                <div class="col-12">{{ form_widget(form.accept_being_responsible) }}</div>
-                <div class="col-12">{{ form_widget(form.accept_venue_temp) }}</div>
+                <div class="col-12 real" id="realCB">{{ form_widget(form.accept_being_responsible) }}</div>
+                <div class="col-12 temp" id="tempCB">{{ form_widget(form.accept_venue_temp) }}</div>
             </div>
         </section>
     {% endif %}
@@ -57,9 +57,17 @@
     {{ parent() }}
     <script type="text/javascript">
         $(function() {
+            $('#realCB input[type="checkbox"]').on('change', function(){
+                $('.temp').toggle(!this.checked);
+            });
+            $('#realCB input[type="checkbox"]').trigger('change');
+            $('#tempCB input[type="checkbox"]').on('change', function(){
+                $('.real').toggle(!this.checked);
+            });
+            $('#tempCB input[type="checkbox"]').trigger('change');
             yb_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une configuration</a>',
-                remove:'<a class="btn btn-danger" href="#">Supprimer</a>'
+                remove:'<a class="btn btn-danger" href="#">Supprimer la configuration</a>'
             });
             $('#yb_venue_has_only_free_seating input[type="checkbox"]').on('change', function(){
                 $(this).closest('.config-row').find('.yb_free_seat_only').toggle(!this.checked);

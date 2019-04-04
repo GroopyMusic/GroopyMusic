@@ -248,6 +248,12 @@ class YBContractArtist extends BaseContractArtist
     private $address;
 
     /**
+     * @var VenueConfig
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\VenueConfig", inversedBy="events", cascade={"persist"})
+     */
+    private $venue;
+
+    /**
      * @var float
      * @ORM\Column(name="vat", type="float", nullable=true)
      */
@@ -491,9 +497,12 @@ class YBContractArtist extends BaseContractArtist
     /**
      * @return Address
      */
-    public function getAddress()
-    {
-        return $this->address;
+    public function getAddress(){
+        if ($this->venue === null){
+            return $this->address;
+        } else {
+            return $this->venue->getAddress();
+        }
     }
 
     /**
@@ -664,4 +673,15 @@ class YBContractArtist extends BaseContractArtist
         $this->no_sub_events = $no_sub_events;
         return $this;
     }
+
+    public function getVenue()
+    {
+        return $this->venue;
+    }
+
+    public function setVenue($venue)
+    {
+        $this->venue = $venue;
+    }
+
 }
