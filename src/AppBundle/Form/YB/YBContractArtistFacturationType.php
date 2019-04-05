@@ -50,20 +50,7 @@ class YBContractArtistFacturationType extends AbstractType
                     //'required' => false,
                     //'label' => 'Montant fixe minimum',
                 ))
-                ->add('vat', ChoiceType::class, array(
-                    'required' => false,
-                    'label' => 'Taux de TVA',
-                    'choices' => array(
-                        "0%" => 0,
-                        "6%" => 0.06,
-                        "12%" => 0.12,
-                        "21%" => 0.21),
-                    'constraints' => [
-                        new Assert\GreaterThanOrEqual(['value' => 0]),
-                        new Assert\LessThanOrEqual(['value' => 1])
-                    ]
-                ))
-            ;
+               ;
         }
 
         $builder
@@ -75,6 +62,21 @@ class YBContractArtistFacturationType extends AbstractType
                 'label' => 'Numéro de TVA',
                 'required' => false
             ))
+            ->add('vat', ChoiceType::class, array(
+                'required' => true,
+                'label' => 'Taux de TVA (laisser 0 si vous êtes un particulier sans numéro de TVA)',
+                'choices' => array(
+                    "0%" => 0,
+                    "6%" => 0.06,
+                    "12%" => 0.12,
+                    "21%" => 0.21),
+                'constraints' => [
+                    new Assert\GreaterThanOrEqual(['value' => 0]),
+                    new Assert\LessThanOrEqual(['value' => 1]),
+                    new Assert\NotBlank(),
+                ]
+            ))
+        ;
         ;
 
     }

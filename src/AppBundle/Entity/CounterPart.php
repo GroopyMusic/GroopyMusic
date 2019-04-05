@@ -28,6 +28,7 @@ class CounterPart implements TranslatableInterface
         $this->disabled = 0;
         $this->price = 0;
         $this->sub_events = new ArrayCollection();
+        $this->maximum_amount_per_purchase = 1000;
     }
 
     public function __call($method, $arguments)

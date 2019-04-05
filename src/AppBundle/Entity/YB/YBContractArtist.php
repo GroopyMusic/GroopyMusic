@@ -166,17 +166,18 @@ class YBContractArtist extends BaseContractArtist
 
                     return $this->state = self::STATE_SUCCESS_PENDING;
                 }
-                if ($this->getDateEvent() >= $today) {
-                    return $this->state = self::STATE_ONGOING;
-                } else {
-                    if ($this->successful) {
-                        return $this->state = self::STATE_SUCCESS_ONGOING;
-                    }
-                    // if($this->getNbCounterPartsPaid() >= $max_cp) {
-                    //     return $this->state = self::STATE_SOLD_OUT_PENDING;
-                    // }
-                    return $this->state = self::STATE_PENDING;
+
+                if ($this->successful) {
+                    return $this->state = self::STATE_SUCCESS_ONGOING;
                 }
+                // if($this->getNbCounterPartsPaid() >= $max_cp) {
+                //     return $this->state = self::STATE_SOLD_OUT_PENDING;
+                // }
+
+                if($this->dateEnd > $today) {
+                    return $this->state = self::STATE_ONGOING;
+                }
+                return $this->state = self::STATE_PENDING;
             } else {
                 return $this->state = self::STATE_PASSED;
             }

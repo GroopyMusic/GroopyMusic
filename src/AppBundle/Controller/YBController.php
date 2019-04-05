@@ -312,7 +312,8 @@ class YBController extends BaseController
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
 
         foreach($cart->getContracts() as $cf) {
-            if(!$cf->getcounterpartsSent())
+            /** @var ContractFan $cf */
+            if($cf->getContractArtist()->getTicketsSent() && !$cf->getcounterpartsSent())
                 $ticketingManager->generateAndSendYBTickets($cf);
         }
 

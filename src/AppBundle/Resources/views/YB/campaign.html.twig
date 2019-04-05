@@ -41,7 +41,7 @@
                 {% if is_event %}
                     <div class="mb-2">
                         {% if campaign.hasSubEvents %}
-                            <b>Dates : {% for se in campaign.getSubEvents %}{% if not loop.first %}, {% endif %}{{ se }}  {% endfor %}</b>
+                            <b>Dates : {% for se in campaign.getSubEvents %}{% if not loop.first %}, {% endif %}{{ se }}{% endfor %}</b>
                         {% else %}
                             <b>Date : {{ campaign.dateEvent|date('d/m/Y') }}</b>
                         {% endif %}
@@ -84,7 +84,7 @@
                 <div class="mt-5{% if campaign.noThreshold %} mt-lg-3{% endif %}">
                     <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
 
-                    {% if campaign.isCrowdable %}
+                    {% if campaign.isCrowdable and form.purchases|length > 0 %}
                         {{ form_start(form) }}
 
                         {% for purchase in form.purchases %}
@@ -156,6 +156,8 @@
                             <p>Il n'est actuellement pas possible de contribuer à cette campagne car elle est en cours d'examination par son organisateur. Vous saurez bientôt si elle est validée ou non.</p>
                         {% elseif campaign.soldOut %}
                             <p>Cette campagne est sold out, il n'est donc plus possible d'acheter des tickets.</p>
+                        {% elseif form.purchases|length == 0 %}
+                            <p>Il n'y a pas encore de tickets mis en vente ; les organisateurs sont en train de paramétrer l'événement.</p>
                         {% else %}
                             <p>Il n'est actuellement pas possible d'acheter des tickets.</p>
                         {% endif %}
