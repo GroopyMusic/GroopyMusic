@@ -63,6 +63,7 @@ class MailAdminService
         foreach ($contract_artists as $contract_artist) {
             $users = $this->em->getRepository('AppBundle:User')->getParticipants($contract_artist);
             foreach ($users as $user) {
+
                 array_push($user_participants, ['email' => $user->getEmail(), 'id' => $user->getId()]);
             }
         }

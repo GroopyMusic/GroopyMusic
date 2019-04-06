@@ -219,6 +219,8 @@ class UserRepository extends EntityRepository
                   LEFT JOIN c.contracts cf
                   LEFT JOIN cf.contractArtist ca
                   WHERE u.yb = 0 
+                  AND c.paid = 1
+                  and cf.refunded = 0
                   AND ca.id = ?1
                 
                   ')
