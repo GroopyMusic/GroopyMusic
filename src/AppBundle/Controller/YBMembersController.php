@@ -74,13 +74,21 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/campaign/new", name="yb_members_campaign_new")
+     * @Route("/campaign/new/", name="yb_members_campaign_new")
      */
     public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher, YBContractArtistType $flow) {
         /** @var \AppBundle\Entity\User $user */
         $this->checkIfAuthorized($user);
-        $campaign = new YBContractArtist();
-    
+
+        $campaign_id = $request->get('campaign_id');
+        if(null !== $campaign_id) {
+            $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find(intval($campaign_id));
+            $this->checkIfAuthorized($user, $campaign);
+        }
+        else {
+            $campaign = new YBContractArtist();
+        }
+
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         if (!$currentUser->hasPrivateOrganization()){
             $this->createPrivateOrganization($em, $currentUser);
@@ -89,6 +97,7 @@ class YBMembersController extends BaseController
 
         $generic_options = ['admin' => $user->isSuperAdmin(), 'creation' => true, 'userOrganizations' => $userOrganizations];
         $flow->setGenericFormOptions($generic_options);
+        $flow->setAllowRedirectAfterSubmit(true);
 
         $flow->bind($campaign);
         $form = $flow->createForm();
@@ -116,7 +125,11 @@ class YBMembersController extends BaseController
                 elseif($flow->getCurrentStepNumber() == 3)
                     $this->addFlash('yb_notice', "Les tickets ont été créés. Vous pouvez maintenant nous donner vos infos de facturation, qui nous permettront de vous reverser le fruit de vos ventes. Si vous souhaitez vous occuper de cette étape plus tard, libre à vous..");
 
-                $form = $flow->createForm();
+                // Redirecting to avoid multiple submissions
+                $params = $this->get('craue_formflow_util')->addRouteParameters(array_merge(array_merge(['campaign_id' => $campaign->getId()], $request->query->all()),
+                    $request->attributes->get('_route_params')), $flow);
+
+                return $this->redirect($this->generateUrl($request->attributes->get('_route'), $params));
             }
             else {
                 $flow->reset(); // remove step data from the session
@@ -153,14 +166,10 @@ class YBMembersController extends BaseController
         $flow->setAllowDynamicStepNavigation(true);
         $flow->setAllowRedirectAfterSubmit(true);
 
-        $flow->bind($campaign);
-        $form = $flow->createForm();
-
         //$form->handleRequest($request);
         if($flow->isValid($form)) {
 
             $flow->saveCurrentStepData($form);
-            $em->persist($campaign);
             $em->flush();
 
             if ($flow->nextStep()) {

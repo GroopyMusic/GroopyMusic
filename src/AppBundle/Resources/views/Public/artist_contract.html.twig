@@ -317,12 +317,13 @@
     <section class="container-fluid position-relative bg-body-light p-4 mt-2" id="tickets">
         <h3 class="festival-section-title "><img src="{{ asset('images/icons/blue/concert-ticket.png') }}" class="title-icon" /> Tickets</h3>
 
-        {# if contract.isInCampaign() %}
+        {%  if contract.isInCampaign() %}
             <p class="text-center">
-                <i>Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett, pendant la première demi-heure (18h).
+                <i>Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett, avant les premiers concerts.
+                    Si vous êtes un "early bird", envoyez-nous votre photo à festivals@un-mute.be pour que nous préparions une bouteille Vedett dont l'étiquette sera frappée à votre effigie !
                 <br />C'est une façon pour nous de remercier les premiers contributeurs du financement participatif !</i>
             </p>
-        {% endif #}
+        {% endif %}
         {% if state not in contract.uncrowdableStates %}
             {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
