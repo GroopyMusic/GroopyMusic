@@ -50,6 +50,18 @@ class UserRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findUsersWithRolesMandatory(array $roles)
+    {
+        $qb = $this->baseQueryBuilder();
+
+        foreach ($roles as $role) {
+            $qb->andWhere('u.roles LIKE :role')
+                ->setParameter('role', '%' . $role . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 
     /**
      * Count all users' statistics results for the category

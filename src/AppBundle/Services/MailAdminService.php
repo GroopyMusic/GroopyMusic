@@ -208,7 +208,7 @@ class MailAdminService
      */
     public function addAdminToRecipients($recipients)
     {
-        $users = $this->em->getRepository('AppBundle:User')->findUsersWithRoles(['ROLE_SUPER_ADMIN']);
+        $users = $this->em->getRepository('AppBundle:User')->findUsersWithRolesMandatory(['ROLE_SUPER_ADMIN']);
         foreach ($users as $user) {
             array_push($recipients, $user);
         }
