@@ -238,14 +238,14 @@
             $.post(url,
                 {
                     recipients: recipients,
-                    object: $('.mail_content_textarea').val(),
-                    content: $('.object_mail_input').val()
+                    object: $('.object_mail_input').val(),
+                    content: $('.mail_content_textarea').val()
                 },
                 function () {
-                    displayAlertOnTop("Envoie réussis", "success");
+                    displayAlertOnTop("Envoi réussi", "success");
                     enableAndDeload(button);
                     clearForm();
-                    //TODO a faire bien
+                    /* TODO a faire bien */
                 }
             ).fail(function (err) {
                 displayAlertOnTop(err.responseText, "error");

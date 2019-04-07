@@ -440,7 +440,7 @@ class MailDispatcher
     {
         $params = ['content' => $content];
         $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
-            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
+            $params, [], $emails, [], [], [], self::REPLY_TO, self::REPLY_TO_NAME);
     }
 
     public function sendSponsorshipInvitationEmail(SponsorshipInvitation $sponsorshipInvitation, $content)

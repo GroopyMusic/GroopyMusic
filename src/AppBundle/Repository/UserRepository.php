@@ -43,7 +43,7 @@ class UserRepository extends EntityRepository
         $qb = $this->baseQueryBuilder();
 
         foreach ($roles as $role) {
-            $qb->orWhere('u.roles LIKE :role')
+            $qb->orWhere('u.roles LIKE :role') // TODO Why "OR" ?
                 ->setParameter('role', '%' . $role . '%');
         }
 
