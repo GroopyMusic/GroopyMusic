@@ -6,7 +6,7 @@
         <h2>Récapitulatif</h2>
         <p>
             Numéro: <span class="text-muted">{{ cart.barcodeText }}</span>
-            <br />Date de la contribution : {{ cart.dateCreation|fancy_date }}
+            <br />Date de la contribution : {{ cart.dateCreation|date('d/m/Y \\à H:i') }}
             <br />Etat de la contribution : {{ cart.state }}
         </p>
 

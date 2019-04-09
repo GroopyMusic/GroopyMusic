@@ -5,46 +5,29 @@
             <h3><strong>{{ project.title }}</strong></h3>
             <h5>Artiste associé : <strong>{{ project.artist.artistname }}</strong></h5>
             <div class="mt-2">
-                {% if project.hasThreshold %}
-                    <h4><strong>{{ project.collectedAmount }} €</strong> sur {{ project.threshold }} €</h4>
-                {% else %}
-                    <h4><strong>{{ project.collectedAmount }} €</strong> récoltés<h4>
-                {% endif %}
+                 <h4><strong>{{ project.collectedAmount }} €</strong>{% if project.hasThreshold %} sur {{ project.threshold }} € {% else %} récoltés{% endif %}</h4>
             </div>
             <div class="mt-2">
-                Clotûre du financement
-                {% if not project.isPassed %}
-                    dans
-                    {% if project.remainingDays > 0 %}
-                        <strong>{{ project.remainingDays }}</strong> jour(s)<br/>
-                    {% else %}
-                        {% if project.remainingHours > 0 %}
-                            <strong>{{ project.remainingHours }}</strong> heure(s)<br/>
-                        {% else %}
-                            <strong>{{ project.remainingMinutes }}</strong> minute(s)<br/>
-                        {% endif %}
-                    {% endif %}
-                {% else %}
-                    le {{ project.dateEnd|date('d/m/Y \\à H:i') }}
-                {% endif %}
+                Clotûre du financement : {% if not project.isPassed %}<strong>{{ project.remainingTime }}</strong>{% else %}<strong>{{ project.dateEnd|date('d/m/Y \\à H:i') }}</strong>{% endif %}
             </div>
-            <br>
         </div>
 
-        <div class="col-12 col-md-2">
-            <strong>{{ project.nbDonations }}</strong> don(s)<br/>
-            <strong>{{ project.nbSales }}</strong> vente(s) effectuée(s)<br/>
-            <br />
+        <div class="col-12 col-md-2 mt-2">
+            <strong>{{ project.nbDonations }}</strong> don(s)<br />
+            <strong>{{ project.nbSales }}</strong> vente(s)<br />
+            <strong>{{ project.nbContributors }}</strong> contributeur(s)
         </div>
 
-        <div class="col-12 col-md-2">
+        <div class="col-12 col-md-2 mt-2">
             <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">Détails du projet</a>
         </div>
+
         {% if not project.isPassed %}
-        <div class="col-12 col-md-2">
-            <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_update', {'id': project.id}) }}">Mettre à jour les informations</a>
-        </div>
+            <div class="col-12 col-md-2">
+                <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_update', {'id': project.id}) }}">Mettre à jour les informations</a>
+            </div>
         {% endif %}
+
         <div class="col-12 col-md-2">
             <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_contributions_details', {'id': project.id}) }}">Détails des dons et des ventes</a>
         </div>
@@ -52,37 +35,90 @@
         <div class="col-12 col-md-2">
             <i class="fas fa-clipboard text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_products', {'id': project.id}) }}">Articles mis en vente</a>
         </div>
-        {% if not project.isPassed %}
+
         <div class="col-12 col-md-2">
             <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="#">Envoyer un message transactionnel</a>
         </div>
-        {% endif %}
 
-        {% if project.successful %}
-        <div class="col-12 col-md-2">
-            <i class="fas fa-thumbs-up fa-w-16 fa-7x" style="color:green"></i>
-        </div>
-        {% endif %}
-
-        {% if project.failed %}
-        <div class="col-12 col-md-2">
-            <i class="fas fa-thumbs-down fa-w-16 fa-7x" style="color:red"></i>
-        </div>
-        {% endif %}
-
-        
         {% if project.hasThreshold %}
-            {% if not project.isPassed %}
-                <div class="col-12 mt-2">
-                    Progression : <strong>{{ project.progressPercent }}%</strong>
-                    <div class="progress">
-                        <div class="progress-bar {% if project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="col-12 mt-2">
+                Progression : <strong>{{ project.progressPercent }}%</strong>
+                <div class="progress">
+                    <div class="progress-bar {% if project.isPassed and project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if project.isPassed and project.isPending %}
+            <div class="col-12 mt-4">
+
+                <div class="text-muted font-italic pb-2">
+                    La date de clotûre du financement du projet est arrivé à son terme {% if project.hasThreshold %} mais le montant visé n'a pas été atteint{% endif %}. Voulez-vous {% if project.hasThreshold %}tout de même{% endif %} confirmer le projet ?
+                </div>
+
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal">
+                    Confirmer le projet
+                </button>&nbsp;
+
+                <!-- Modal -->
+                <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmModalLabel">Confirmer le projet</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Vous êtes sur le point de confirmer ce projet et donc d'expédier tous les tickets si vous en avez mis en vente. Êtes-vous sûr de continuer ?
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{{ path('x_artist_project_confirm', {'id': project.id}) }}">
+                                    <input class="btn btn-success" type="submit" value="Confirmer"/>
+                                </form>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            {% endif %}
+
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#refundModal">
+                    Annuler le projet
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="refundModalLabel">Annuler le projet</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Vous êtes sur le point d'annuler ce projet et donc de rembourser tous les éventuels contributeurs. Êtes-vous sûr de continuer ?
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{{ path('x_artist_project_refund', {'id': project.id}) }}">
+                                    <input class="btn btn-danger" type="submit" value="Annuler"/>
+                                </form>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        {% endif %}
+
+        {% if project.isPassed and not project.isPending %}
+            <div class="col-12 mt-4 text-center">
+                <h5>État du projet : {% if project.successful %}<strong style="color: green;">Réussite</strong> {% elseif project.failed %}<strong style="color: red;">Échec</strong>{% endif %}</h5>
+            </div>
         {% endif %}
         
-       
     </div>
 
 {% endmacro %}

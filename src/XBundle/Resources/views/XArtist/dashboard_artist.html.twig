@@ -9,12 +9,14 @@
             <li class="nav-item">
                 <a class="nav-link{% if current_projects is empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="tab-dashboard-toggler" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard">Tableau de bord</a>
             </li>
-            {#<li class="nav-item">
-                <a class="nav-link" aria-selected="false" id="tab-projects-admin-toggler" data-toggle="tab" href="#tab-projects-admin" role="tab" aria-controls="tab-projects-admin">Vos projets en cours</a>
-            </li>#}
             <li class="nav-item">
-                <a class="nav-link{% if current_projects is not empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="tab-current-projects-toggler" data-toggle="tab" href="#tab-current-projects" role="tab" aria-controls="tab-current-projects">Projets en cours</a>
+                <a class="nav-link{% if current_projects is not empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="tab-current-projects-toggler" data-toggle="tab" href="#tab-current-projects" role="tab" aria-controls="tab-current-projects">Vos projets en cours</a>
             </li>
+            {% if app.user.isSuperAdmin %}
+                <li class="nav-item">
+                    <a class="nav-link" aria-selected="false" id="tab-projects-admin-toggler" data-toggle="tab" href="#tab-projects-admin" role="tab" aria-controls="tab-projects-admin">Autres projets en cours</a>
+                </li>
+            {% endif %}
         </ul>
     </nav>
 
@@ -26,15 +28,11 @@
                     <div class="text-muted">Lancez une campagne de financement participatif pour votre projet.</div>
                 </li>
                 <li class="list-group-item">
-                    {% if passed_projects|length > 0 %}<a href="{{ path('x_artist_passed_projects') }}">{% endif %}<i class="far fa-clock"></i> Projets passés{% if passed_projects|length > 0 %}</a>{% endif %}
-                    <div class="text-muted">Retrouvez toutes les informations des projets que vous avez lancés par le passé et qui sont terminés.</div>
+                    {% if passed_projects|length > 0 or other_passed_projects|length > 0 %}<a href="{{ path('x_artist_passed_projects') }}">{% endif %}<i class="far fa-clock"></i> Projets passés{% if passed_projects|length > 0 or other_passed_projects|length > 0 %}</a>{% endif %}
+                    <div class="text-muted">Retrouvez toutes les informations des projets qui ont été lancés par le passé et qui sont terminés.</div>
                 </li>
             </ul>
         </section>
-
-        {#<section class="tab-pane fade container py-5" id="tab-projects-admin" role="tabpanel" aria-labelledby="tab-projects-admin-toggler">
-            <p>Vous n'avez pas de projet en cours</p>
-        </section>#}
 
         <section class="tab-pane fade{% if current_projects is not empty %} show active{% endif %} container py-5" id="tab-current-projects" role="tabpanel" aria-labelledby="tab-current-projects-toggler">
             {% if current_projects is not empty %}
@@ -46,6 +44,19 @@
                 <p>Vous n'avez pas de projet en cours. Pour en lancer un, cliquez <a href="{{ path('x_artist_project_new') }}">ici</a> !</p>
             {% endif %}
         </section>
+
+        {% if app.user.isSuperAdmin %}
+        <section class="tab-pane fade container py-5" id="tab-projects-admin" role="tabpanel" aria-labelledby="tab-projects-admin-toggler">
+            {% if other_current_projects is not empty %}
+                {% for project in other_current_projects %}
+                    {{ macros.project_row(project) }}
+                    <hr>
+                {% endfor %}
+            {% else %}
+                <p>Aucun autre projet n'a encore été lancé !</p>
+            {% endif %}
+        </section>
+        {% endif %}
     </div>
 
 {% endblock %}

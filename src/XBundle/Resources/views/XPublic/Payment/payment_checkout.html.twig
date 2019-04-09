@@ -47,36 +47,10 @@
                     </div>
                 </div>
 
-
-                {#% if cart.amount == 0 %}
-                    <div class="checkout-payment-form card card-info mt-2">
-                        <div class="card-header">
-                            Validation
-                        </div>
-                        <div class="card-body">
-                            <p>{{ 'pay_cart.conditions.intro_free'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>
-                            <div class="form-row">
-                                {% if error_conditions %}
-                                    <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
-                                {% endif %}
-                                <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
-                                    <input type="checkbox" id="accept_conditions" name="accept_conditions"
-                                           class="custom-control-input">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
-                                </label>
-                            </div>
-                            <div class="form-row" id="card-form-row">
-                                <input type="submit" class="btn btn-primary" id="free-order-submit" value="Valider la commande (gratuite)"/>
-                            </div>
-                        </div>
-                    </div>
-
-                {% else %#}
                     <div class="checkout-payment-form card card-info mt-2">
                         <div class="card-header"><i class="fas fa-lock"></i>  Paiement <i class="fab fa-stripe" title="Nous utilisons Stripe pour garantir la sécurité de vos paiements."></i> </div>
                         <div class="card-body">
-                            {#<p>{{ 'pay_cart.conditions.intro'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>#}
+                            <p>En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="{{ url('x_terms') }}">conditions générales d'utilisation et de vente</a>.</p>
                             <div class="form-row">
                                 {% if error_conditions %}
                                     <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
@@ -176,27 +150,6 @@
                 <div class="card-header">Récapitulatif</div>
                 <div class="card-body">
                     <ul class="list-group mb-3">
-                        {#% if cart.product == null %}
-                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                <div>
-                                    <h4 class="my-0">Donation</h4>
-                                    <small class="text-muted">en faveur de</small>
-                                </div>
-                                <span class="text-muted">{{ cart.amount }}€</span>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                <div>
-                                    <h4 class="my-0">{{ cart.product.name }}</h4>
-                                    <small class="text-muted">Quantité: {{ cart.prodQuantity }}</small>
-                                </div>
-                                <span class="text-muted">{{ cart.amount }}€</span>
-                            </li>
-                        {% endif %}
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>Total (EUR)</span>
-                            <strong>{{ cart.amount }}€</strong>
-                        </li>#}
                         {% for contract in cart.contracts %}
                             {% if cart.contracts|length > 1 %}
                                 <h3>{{ contract.project.title }}</h3>
@@ -433,7 +386,8 @@
                 }
                 else {
                     hideError();
-                    displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
+                    //displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
+                    displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
                     window.location.replace(result.source.redirect.url);
 
                     $('#payment-intro').hide();
@@ -469,8 +423,8 @@
             function stripeTokenHandler(source) {
 
                 $('#payment-intro').hide();
-                displayLoader("{{ 'threeds.pending'|trans|raw }}");
-
+                //displayLoader("{{ 'threeds.pending'|trans|raw }}");
+                 displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
                 // Insert the token ID into the form so it gets submitted to the server
                 var form = document.getElementById('payment-form');
                 var hiddenInput = document.createElement('input');

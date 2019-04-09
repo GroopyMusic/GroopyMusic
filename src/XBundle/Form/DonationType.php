@@ -26,6 +26,7 @@ class DonationType extends AbstractType
             ->add('amount', NumberType::class, [
                 'attr' => [
                     'class' => 'amount-donation',
+                    'value' => null
                 ],
                 'constraints' => [
                     new Assert\GreaterThanOrEqual(['value' => 0])

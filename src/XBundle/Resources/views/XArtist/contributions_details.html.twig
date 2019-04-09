@@ -10,8 +10,8 @@
         </nav>
     </section>
 
-    <section class="container" >
-        <ul class="nav nav-pills" id="donations-tab" role="tablist">
+    <section class="container my-4 py-2 my-md-4" >
+        <ul class="nav nav-pills" id="contributions-tab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link{% if sales is empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="donations-details-tab" data-toggle="pill" href="#donations-details" role="tab" aria-controls="donations-details">Voir les dons</a>
             </li>
@@ -20,23 +20,23 @@
             </li>
         </ul>
 
-        <div class="tab-content" id="donations-tab-content">
+        <div class="tab-content" id="contributions-tab-content">
             <div class="tab-pane fade{% if sales is empty %} show active{% endif %}" id="donations-details" role="tabpanel" aria-labelledby="donations-details-tab">
                 {% if donations is empty %}
                     <div class="my-3 px-2">Pas de dons pour le moment</div>
                 {% else %}
                     <div class= "donations-row my-3 px-2">
                         <div class="row">
-                            <div class="col-8 col-md-3"><strong>Date</strong></div>
-                            <div class="col-8 col-md-3"><strong>Donateur</strong></div>
+                            <div class="col-4 col-md-3"><strong>Date</strong></div>
+                            <div class="col-4 col-md-3"><strong>Donateur</strong></div>
                             <div class="col-4 col-md-3"><strong>Montant</strong></div>
                         </div>
                     </div>
                     {% for donation in donations %}
                         <div class= "donations-row border my-3 px-2">
                             <div class="row">
-                                <div class="col-8 col-md-3">{{ donation.date|date('d/m/Y \\à H:i') }}</div>
-                                <div class="col-8 col-md-3">{{ donation.displayName }}</div>
+                                <div class="col-4 col-md-3">{{ donation.date|date('d/m/Y \\à H:i') }}</div>
+                                <div class="col-4 col-md-3">{{ donation.displayName }}</div>
                                 <div class="col-4 col-md-3">{{ donation.amount }} €</div>
                             </div>
                             <br /><div class="w-100 text-left"><a class="text-secondary font-italic" href="{{ path('x_order', {code: donation.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir la confirmation du don</a> (code de confirmation : {{ donation.cart.barcodeText }})</div>
@@ -51,19 +51,19 @@
                 {% else %}
                     <div class= "sales-row my-3 px-2">
                         <div class="row">
-                            <div class="col-4 col-md-3"><strong>Date</strong></div>
-                            <div class="col-8 col-md-3"><strong>Acheteur</strong></div>
-                            <div class="col-4 col-md-3"><strong>Montant total</strong></div>
-                            <div class="col-8 col-md-3"><strong>Achat(s)</strong></div>
+                            <div class="col-4 col-md-3 my-2"><strong>Date</strong></div>
+                            <div class="col-4 col-md-3 my-2"><strong>Acheteur</strong></div>
+                            <div class="col-4 col-md-2 my-2"><strong>Montant total</strong></div>
+                            <div class="col-12 col-md-4 my-2"><strong>Achat(s)</strong></div>
                         </div>
                     </div>
                     {% for sale in sales %}
                         <div class= "sales-row border my-3 px-2">
                             <div class="row">
-                                <div class="col-4 col-md-3">{{ sale.date|date('d/m/Y \\à H:i') }}</div>
-                                <div class="col-8 col-md-3">{{ sale.displayName }}</div>
-                                <div class="col-4 col-md-3">{{ sale.amount }} €</div>
-                                <div class="col-8 col-md-3">{{ sale|nl2br }}</div>
+                                <div class="col-4 col-md-3 my-2">{{ sale.date|date('d/m/Y \\à H:i') }}</div>
+                                <div class="col-4 col-md-3 my-2">{{ sale.displayName }}</div>
+                                <div class="col-4 col-md-2 my-2">{{ sale.amount }} €</div>
+                                <div class="col-12 col-md-4 my-2">{{ sale|nl2br }}</div>
                             </div>
                             <br /><div class="w-100 text-left"><a class="text-secondary font-italic" href="{{ path('x_order', {code: sale.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir la confirmation de la commande</a> (code de confirmation : {{ sale.cart.barcodeText }})</div>
                         </div>

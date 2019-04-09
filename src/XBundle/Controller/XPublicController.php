@@ -183,21 +183,14 @@ class XPublicController extends BaseController
             if(!$cf->getcounterpartsSent())
                 $ticketingManager->generateAndSendYBTickets($cf);
         }*/
-
         // barcode généré qd on appelle generateAndSendYBTickets
+        
+        $cart->setFinalized(true);
+        $em->flush();
 
         return $this->render('XBundle:XPublic:order.html.twig', [
             'cart' => $cart,
         ]);
-    }
-
-    /**
-     * @Route("/ticket/{code}", name="x_get_ticket")
-     */
-    public function getTicketAction(EntityManagerInterface $em, TicketingManager $ticketingManager, $code)
-    {
-        $contribution = $em->getRepository('XBundle:XContractFan')->findOneBy(['barcode_text' => $code]);
-
     }
 
 
@@ -206,9 +199,13 @@ class XPublicController extends BaseController
      */
     public function loginAction(Request $request, CsrfTokenManagerInterface $tokenManager = null, UserInterface $user = null)
     {
-        // à changer pcq compte artiste et compte contributeur!
+        // à changer pcq tenir aussi compte contributeur!
         if($user != null) {
-            return $this->redirectToRoute('x_artist_dashboard');
+            if($user->isSuperAdmin() || $user->isArtistOwner()) {
+                return $this->redirectToRoute('x_artist_dashboard');
+            } else {
+                return $this->redirectToRoute('x_homepage');
+            }
         }
 
         /** @var $session Session */
@@ -267,7 +264,7 @@ class XPublicController extends BaseController
 
 
     /**
-     * @Route("/conditions", name="x_terms")
+     * @Route("/terms", name="x_terms")
      */
     public function termsAction()
     {
@@ -430,10 +427,17 @@ class XPublicController extends BaseController
                 }
             }
 
+            if ($project->hasThreshold() && $project->getCollectedAmount() >= $project->getThreshold()) {
+                $project->setSuccessful(true);
+                $mailDispatcher->sendProjectThresholdConfirmed($project);
+            }
+
             // Need to also send tickets if project is succesful
-            /* if($project->getSuccessful()) {
-                $ticketingManager->generateAndSendXTickets($contribution);
-            } */
+            /*if($project->getSuccessful() && !$project->isPassed()) {
+                if(!empty($contribution->getTicketsPurchases())) {
+                    $ticketingManager->generateAndSendXTickets($contribution);
+                }
+            }*/
 
             $em->persist($project);
         }
@@ -443,7 +447,6 @@ class XPublicController extends BaseController
         $em->flush();
 
         $this->addFlash('x_notice', 'Paiement bien reçu ! Vous devriez avoir reçu un récapitulatif par e-mail.');
-
         return $this->redirectToRoute('x_order', ['code' => $cart->getBarcodeText()]);
 
     }

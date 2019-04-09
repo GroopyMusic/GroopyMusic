@@ -56,8 +56,8 @@ class XCart
     }
 
     public function getState() {
-        if($this->getPaid()) {
-            if($this->getPayment()->getRefunded()) {
+        if($this->isPaid()) {
+            if($this->isRefunded()) {
                 return 'Remboursé';
             } else {
                 return 'Payé';

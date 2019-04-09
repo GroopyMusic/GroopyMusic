@@ -13,6 +13,13 @@
             <div class="project-artistname">
                 {{ project.artist.artistname }}
             </div>
+            {% if project.isPassed and not project.isPending %}
+                {% if project.successful %}
+                    <div class="project-state">
+                        réussite&nbsp;<i class="fas fa-check-circle"></i>
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
 
         <!-- this is the content of the card with an optionnal span for ⭐ -->
@@ -23,25 +30,19 @@
             <!-- for several tags -->
             {#<span class="d-none project-tag">{% for genre in artist.genres %}{% if not loop.first %} {% endif %}<span class="jplist-{{ genre|slug }}">{{ genre }}</span>{% endfor %}</span>#}
             <p>
-            {% if project.hasThreshold %}
-                <strong>{{ project.collectedAmount }} €</strong> sur {{ project.threshold }} €
-            {% else %}
-                <strong>{{ project.collectedAmount }} €</strong> récoltés
-            {% endif %}
-                -
-            {% if project.remainingDays > 0 %}
-                <strong>{{ project.remainingDays }}</strong> jour(s) restant(s)
-            {% else %}
-                {% if project.remainingHours > 0 %}
-                    <strong>{{ project.remainingHours }}</strong> heure(s) restante(s)
+                <strong>{{ project.collectedAmount }} €</strong> {% if project.hasThreshold %}sur {{ project.threshold }} €{% else %}récoltés {% endif %}
+                - 
+                {% if project.isPassed %}
+                    <strong>{{ project.dateEnd|date('d/m/Y') }}</strong> date de fin
                 {% else %}
-                    <strong>{{ project.remainingMinutes }}</strong> minute(s) restante(s)
+                    <strong>{{ project.remainingTime }}</strong>
                 {% endif %}
-            {% endif %}
+                -
+                <strong>{{ project.nbContributors }}</strong> contributeur(s)
             </p>
             {% if project.hasThreshold %}
                  <div class="progress">
-                    <div class="progress-bar {% if project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
+                    <div class="progress-bar {% if project.isPassed and project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
                 </div>
             {% endif %}
 

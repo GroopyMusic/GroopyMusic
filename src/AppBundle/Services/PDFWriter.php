@@ -24,6 +24,8 @@ class PDFWriter
     const TICKETS_TEMPLATE = 'tickets.html.twig';
     const YB_TICKETS_TEMPLATE = 'yb_tickets.html.twig';
 
+    const X_TICKETS_TEMPLATE = 'x_tickets.html.twig';
+
     private $twig;
     /** @var RouterInterface Router */
     private $router;
@@ -89,4 +91,17 @@ class PDFWriter
             $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda], 'D');
         }
     }
+
+
+    // ------------------------ X
+
+    public function writeXTickets($path, $tickets) {
+        if(!empty($tickets)) {
+            $html = $this->twig->render('XBundle:PDF:' . self::X_TICKETS_TEMPLATE, ['tickets' => $tickets]);
+            $html2pdf = new Html2Pdf();
+            $html2pdf->writeHTML($html);
+            $html2pdf->output($path, 'F');
+        }
+    }
+
 }

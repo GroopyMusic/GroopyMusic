@@ -3,6 +3,7 @@
 namespace XBundle\Form;
 
 use AppBundle\Entity\Artist;
+use AppBundle\Form\AddressType;
 use AppBundle\Repository\ArtistRepository;
 use Doctrine\ORM\EntityRepository;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
@@ -68,6 +69,17 @@ class ProjectType extends AbstractType
                     new Assert\NotBlank(),
                 ]
             ))
+            ->add('dateEvent', DateTimeType::class, array(
+                'required' => false,
+                'label' => "Date de l'événement"
+            ))
+            ->add('address', AddressType::class, array(
+                'required' => false,
+                'label' => "Lieu de l'événement",
+                'constraints' => [
+                    new Assert\Valid(),
+                ]
+            ))
             ->add('threshold', IntegerType::class, array(
                 'label' => 'Montant à atteindre (en €)',
                 'disabled' => $options['is_edit'],
@@ -80,8 +92,10 @@ class ProjectType extends AbstractType
                 'label' => 'Catégorie',
                 'class' => XCategory::class,
                 'choice_label' => 'name',
+                'choice_value' => 'name',
                 'placeholder' => '',
                 'empty_data' => null,
+                'disabled' => $options['is_edit'],
                 'constraints' => [
                     new Assert\NotBlank(),
                 ]
@@ -163,17 +177,18 @@ class ProjectType extends AbstractType
 
     public function validate(Project $project, ExecutionContextInterface $context)
     {
-
-        if($project->getDateEnd() != null) {
-            if ($project->getDateEnd() < $project->getDateCreation()) {
-                $context->addViolation('La date de clôture du financement du projet doit être dans le futur.');
-            }
+        if($project->getDateEnd() != null && $project->getDateEnd() < $project->getDateCreation()) {
+            $context->addViolation('La date de clôture du financement du projet doit être dans le futur.');
         }
 
-        if(!$project->getNoThreshold()) {
-            if($project->getThreshold() <= 0) {
-                $context->addViolation('Puisque le projet à un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0.');
-            }
+        if($project->getDateEvent() != null && $project->getDateEvent() < $project->getDateEnd()) {
+            $context->addViolation('La date de l\'évènement doit être postérieur à celle de clôture du financement du projet.');
+        }
+
+        if($project->hasThreshold() && $project->getThreshold() <= 0) {
+            $context->addViolation('Puisque le projet à un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0.');
+        } else {
+            $project->setThreshold(null);
         }
         
     }

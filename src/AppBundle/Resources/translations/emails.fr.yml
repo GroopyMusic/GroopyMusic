@@ -380,7 +380,6 @@ x:
       Le projet que vous avez créé sur Chapots (titre : %project%) a bien été validé par un administrateur d'Un-Mute.
 
       Il est à présent visible publiquement sur la plateforme.
-
     refused: |
       Le projet que vous avez créé sur Chapots (titre : %project%) été refusé par un administrateur d'Un-Mute.
 
@@ -388,13 +387,30 @@ x:
       ------------------------------
         %reason%
       ------------------------------
+    threshold:
+      confirmed: |
+        Bravo !
 
+        Le projet que vous avez créé sur Chapots (titre : %project%) a atteint son seuil de validation avant la date de clotûre du financement. Il est donc automatiquement confirmé et les contributeurs en seront avertis.
+    confirm: |
+      Le projet que vous avez créé sur Chapots (titre: %project%) a atteint sa date de fin. Rendez-vous sur votre espace de gestion de projet pour le confirmer ou non.
+    confirmed: |
+      Le projet "%project%" que vous avez soutenu a été confirmé !
+
+      Si vous faites partie des contributeurs attendant leur(s) commande(s), vous serez recontacter d'ici peu de temps.
+
+      Encore merci de votre soutien et à très bientôt sur Chapots !
+    refunded: |
+      Cher/Chère %name%,
+
+      Le projet "%project%" n'a pas pu être confirmée. La raison devrait vous avoir été, par ailleurs, communiquée par le gestionnaire du projet.
+
+      Vous allez être remboursé(e) de votre contribution de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
   product:
     validated: |
       L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a bien été validé par un administrateur d'Un-Mute.
 
       Il est à présent visible publiquement sur la plateforme.
-
     refused: |
       L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a été refusé par un administrateur d'Un-Mute.
 
@@ -402,7 +418,6 @@ x:
       ------------------------------
         %reason%
       ------------------------------
-  
   order:
     recap:
       intro: |
@@ -418,20 +433,8 @@ x:
       outro: |
         A très bientôt !
     tickets: |
-      Cher %name%, %intro%
+      Cher/Chère %name%,
 
       Veuillez trouver vos tickets pour "%project%" en pièce jointe.
 
       Passez une excellente journée,
-    refunded_crowdfunding: |
-      Cher/Chère %name%,
-
-      Le projet "%project%" n'a pas pu être confirmée car le montant visé n'a pas été atteint.
-
-      Vous allez être remboursé(e) de votre contribution de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
-    refunded_other: |
-      Cher/Chère %name%,
-
-      Votre commande sur Chapots pour soutenir le projet "%project%" (total : %amount% €) va être remboursée dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
-
-      La raison du remboursement devrait vous avoir été, par ailleurs, communiquée par l'organisateur.

@@ -14,6 +14,8 @@ use XBundle\Entity\XPurchase;
  */
 class XContractFan
 {
+    //const X_ORDERS_DIRECTORY = 'x/orders/';
+    const X_TICKETS_DIRECTORY = 'x/tickets/';
 
     public function __construct(Project $p)
     {
@@ -32,6 +34,8 @@ class XContractFan
         $this->date = new \DateTime();
         $this->refunded = false;
         $this->isDonation = false;
+        $this->ticketsSent = false;
+        $this->tickets = new ArrayCollection();
     }
 
     public function __toString()
@@ -70,12 +74,60 @@ class XContractFan
         return $this->getPhysicalPerson()->getDisplayName();
     }
 
+    public function getEmail() {
+        if($this->getPhysicalPerson() == null) {
+            return 'anonyme' ;
+        }
+        return $this->getPhysicalPerson()->getEmail();
+    }
+
     public function getProductsQuantity()
     {
         return array_sum(array_map(function (XPurchase $purchase) {
             return $purchase->getQuantity();
         }, $this->purchases->toArray()));
     }
+
+    public function getPayment() {
+        return $this->cart->getPayment();
+    }
+
+    public function generateBarCode()
+    {
+        if (empty($this->barcodeText))
+            $this->barcodeText = 'cf' . $this->id . uniqid();
+    }
+
+    public function getTicketsFileName()
+    {
+        return $this->getBarcodeText() . '-tickets.pdf';
+    }
+
+    public function getTicketsPath()
+    {
+        return self::X_TICKETS_DIRECTORY . $this->getTicketsFileName();
+    }
+
+    private $ticketsPurchases = null;
+    public function getTicketsPurchases() {
+        if($this->ticketsPurchases == null) {
+            $this->ticketsPurchases = array_filter($this->purchases->toArray(), function(XPurchase $p) {
+                return $p->getProduct()->isTicket();
+            });
+        }
+        return $this->ticketsPurchases;
+    }
+
+    /*public function getOrderFileName()
+    {
+        return $this->getBarcodeText() . '.pdf';
+    }
+
+    public function getPdfPath()
+    {
+        return self::X_ORDERS_DIRECTORY . $this->getOrderFileName();
+    }*/
+
 
     /**
      * @var int
@@ -137,6 +189,18 @@ class XContractFan
      * @ORM\Column(name="is_donation", type="boolean")
      */
     private $isDonation;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="tickets_sent", type="boolean")
+     */
+    private $ticketsSent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\XTicket", mappedBy="contractFan", cascade={"all"})
+     */
+    private $tickets;
 
 
     /**
@@ -349,5 +413,63 @@ class XContractFan
     public function getIsDonation()
     {
         return $this->isDonation;
+    }
+
+    /**
+     * Add ticket
+     *
+     * @param \XBundle\Entity\XTicket $ticket
+     *
+     * @return XContractFan
+     */
+    public function addTicket(\XBundle\Entity\XTicket $ticket)
+    {
+        $this->tickets[] = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * Remove ticket
+     *
+     * @param \XBundle\Entity\XTicket $ticket
+     */
+    public function removeTicket(\XBundle\Entity\XTicket $ticket)
+    {
+        $this->tickets->removeElement($ticket);
+    }
+
+    /**
+     * Get tickets
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
+    }
+
+    /**
+     * Set ticketsSent
+     *
+     * @param boolean $ticketsSent
+     *
+     * @return XContractFan
+     */
+    public function setTicketsSent($ticketsSent)
+    {
+        $this->ticketsSent = $ticketsSent;
+
+        return $this;
+    }
+
+    /**
+     * Get ticketsSent
+     *
+     * @return boolean
+     */
+    public function getTicketsSent()
+    {
+        return $this->ticketsSent;
     }
 }

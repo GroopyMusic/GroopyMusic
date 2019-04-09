@@ -304,13 +304,4 @@ class UserRepository extends EntityRepository
     }
 
 
-    // X - CHAPOTS
-    public function getAdminsForProject(){
-        return $this->createQueryBuilder('u')
-            ->andWhere("u.roles LIKE '%ROLE_SUPER_ADMIN%'")
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
 }

@@ -23,6 +23,7 @@ class Product
         $this->productsSold = 0;
         $this->validated = false;
         $this->deleted = false;
+        $this->isTicket = false;
     }
 
     public static function getWebPath(Image $image) {
@@ -40,6 +41,10 @@ class Product
 
     public function disponibility() {
         return $this->supply - $this->productsSold;
+    }
+
+    public function isTicket() {
+        return $this->getIsTicket();
     }
 
 

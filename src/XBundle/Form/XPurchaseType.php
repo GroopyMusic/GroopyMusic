@@ -35,6 +35,7 @@ class XPurchaseType extends AbstractType
                         'class' => 'free-price-value product-price',
                     ],
                     'label' => false,
+                    'required' => false
                 ));
             }
         });

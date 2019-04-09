@@ -28,17 +28,33 @@
             <div class="col-12 col-md-6">            
                 {{ form_row(form.artist) }}
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6" id="project_category">
                 {{ form_row(form.category) }}
             </div>
             <div class="col-12">
                 {{ form_row(form.tags) }}
             </div>
-            <div class="col-12">
+            <div class="col-12 col-md-6">
                 {{ form_row(form.dateEnd) }}
+            </div>
+            <div class="col-12 col-md-6" id="project_date_event" style="display: none;">
+                {{ form_row(form.dateEvent) }}
             </div>
         </div>
     </section>
+
+    <!-- Address Section if Project is Event -->
+    <section class="container my-4 py-2 my-md-5 project-section" id="project_address" style="display: none;">
+            <h2>Adresse</h2><hr>
+            <div class="row">
+                <div class="col-12">{{ form_row(form.address.name) }}</div>
+                <div class="col-12 col-md-10">{{ form_row(form.address.street) }}</div>
+                <div class="col-12 col-md-2">{{ form_row(form.address.number) }}</div>
+                <div class="col-12 col-md-4">{{ form_row(form.address.zipcode) }}</div>
+                <div class="col-12 col-md-8">{{ form_row(form.address.city) }}</div>
+                <div class="col-12">{{ form_row(form.address.country) }}</div>
+            </div>
+        </section>
 
     <!-- Description Section -->
     <section class="container my-4 py-2 my-md-5 project-section">
@@ -124,15 +140,6 @@
     </section>
     {% endif %}
 
-    <!-- Counterparts Section -->
-    {#% if project.id is null %}
-    <section class="container my-4 py-2 my-md-5 project-section">
-        <h2>Tickets mis en vente</h2><hr>
-        <div class="text-muted font-italic pb-2">Vous pouvez mettre des tickets en vente si votre projet est un concert.</div>
-        {{ form_widget(form.counterparts) }}
-    </section>
-    {% endif %#}
-
     <!-- Accept Conditions Section -->
     {% if form.acceptConditions is defined %}
         <section class="container my-4 py-2 my-md-5 project-section">
@@ -153,7 +160,6 @@
     <script type="text/javascript" src="{{ absolute_url(asset('x/js/tagsinput.js')) }}"></script>
 
     <script type="text/javascript">
-
         function x_collection(options) {
             $('.collection').collection($.extend({
                 up: '',
@@ -169,14 +175,33 @@
                 remove:'<a class="btn btn-danger" href="#">Supprimer</a>'
             });
 
-
             var $chckbx = $('#x_no_threshold_checkbox input[type="checkbox"]');
-
             {% if project.id is null %}
                 $chckbx.on('change', function() {
                     $('.x_threshold_only').toggle(!this.checked);
                 });
                 $chckbx.trigger("change");
+            {% endif %}
+
+            function displayDateEventAndAddress() {
+                $('#project_category').on('change', function() {
+                    if($('#project_category select').val() === 'Évènement'){
+                        $('#project_date_event').show();
+                        $('#project_address').show();
+                    } else {
+                        $('#project_date_event').hide();
+                        $('#project_address').hide();
+                    }
+                });
+            }
+
+            {% if project.id is null %}
+                displayDateEventAndAddress();
+            {% else %}
+                {% if project.category.name is same as('Évènement') %}
+                    $('#project_date_event').show();
+                    $('#project_address').show();
+                {% endif %}
             {% endif %}
 
             {% if project.id is not null %}

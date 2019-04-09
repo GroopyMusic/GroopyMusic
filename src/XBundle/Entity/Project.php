@@ -2,6 +2,7 @@
 
 namespace XBundle\Entity;
 
+use AppBundle\Entity\Address;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -45,6 +46,7 @@ class Project
         $this->points = 0;
         $this->acceptConditions = false;
         $this->contributions= new ArrayCollection();
+        $this->notifSent = 0;
     }
 
     public function getSluggableFields() {
@@ -92,6 +94,24 @@ class Project
     }
 
     /**
+     * Display remaining time
+     */
+    public function getRemainingTime()
+    {
+        $time = '';
+        if($this->getRemainingDays() > 0) {
+            $time .= $this->getRemainingDays() . ' jour(s) restant(s)';
+        } else {
+            if($this->getRemainingHours() > 0) {
+                $time .= $this->getRemainingHours() . ' heure(s) restante(s)';
+            } else {
+                $time .= $this->getRemainingMinutes() . ' minute(s) restante(s)';
+            }
+        }
+        return $time;
+    }
+
+    /**
      * Calculates the percentage of project funding progress
      */
     public function getProgressPercent() {
@@ -110,8 +130,24 @@ class Project
         $this->nbSales++;
     }
 
+    // count contributors, once if a contributors paid several times
+    public function getNbContributors() {
+        $nbContributors = array_unique(array_map(function(XOrder $person) {
+            return $person->getEmail();
+        }, $this->getContributors()));
+        return count($nbContributors);
+    }
+
     public function isPassed() {
         return $this->dateEnd < new \DateTime();
+    }
+
+    public function isPending() {
+        return !$this->successful && !$this->failed && !$this->refunded;
+    }
+
+    public function isEvent() {
+        return $this->dateEvent != null;
     }
 
     // Get donations paid
@@ -125,6 +161,16 @@ class Project
         return $this->donationsPaid;
     }
 
+    // Get all donators
+    public function getDonators() {
+        if($this->getDonationsPaid() == null || empty($this->getDonationsPaid())) {
+            return [];
+        }
+        return array_map(function(XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getDonationsPaid());
+    }
+
     // Get sales paid
     private $salesPaid = null;
     public function getSalesPaid() {
@@ -135,6 +181,38 @@ class Project
         }
         return $this->salesPaid;
     }
+
+    // Get all buyers
+    public function getBuyers() {
+        if($this->getSalesPaid() == null || empty($this->getSalesPaid())) {
+            return [];
+        }
+        return array_map(function(XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getSalesPaid());
+    }
+
+    // Get all contributions paid
+    private $contributionsPaid = null;
+    public function getContributionsPaid() {
+        if($this->contributionsPaid == null) {
+            $this->contributionsPaid = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                return $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+            });
+        }
+        return $this->contributionsPaid;
+    }
+
+    // Get all contributors
+    public function getContributors() {
+        if($this->getContributionsPaid() == null || empty($this->getContributionsPaid())) {
+            return [];
+        }
+        return array_map(function(XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getContributionsPaid());
+    }
+
 
     // To get only artists that creator owns (form only)
     private $creator;
@@ -320,6 +398,27 @@ class Project
      * @ORM\OneToMany(targetEntity="XBundle\Entity\XContractFan", mappedBy="project", cascade={"persist"})
      */
     private $contributions;
+
+    /**
+     * @var boolean
+     * 
+     * @ORM\Column(name="notif_sent", type="boolean")
+     */
+    private $notifSent;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_event", type="datetime", nullable=true)
+     */
+    private $dateEvent;
+
+    /**
+     * @var Address
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Address", cascade={"all"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $address;
 
 
 
@@ -1075,5 +1174,77 @@ class Project
     public function getContributions()
     {
         return $this->contributions;
+    }
+
+    /**
+     * Set notifSent
+     *
+     * @param boolean $notifSent
+     *
+     * @return Project
+     */
+    public function setNotifSent($notifSent)
+    {
+        $this->notifSent = $notifSent;
+
+        return $this;
+    }
+
+    /**
+     * Get notifSent
+     *
+     * @return boolean
+     */
+    public function getNotifSent()
+    {
+        return $this->notifSent;
+    }
+
+    /**
+     * Set dateEvent
+     *
+     * @param \DateTime $dateEvent
+     *
+     * @return Project
+     */
+    public function setDateEvent($dateEvent)
+    {
+        $this->dateEvent = $dateEvent;
+
+        return $this;
+    }
+
+    /**
+     * Get dateEvent
+     *
+     * @return \DateTime
+     */
+    public function getDateEvent()
+    {
+        return $this->dateEvent;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return Project
+     */
+    public function setAddress(\AppBundle\Entity\Address $address = null)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 }

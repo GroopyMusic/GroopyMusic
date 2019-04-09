@@ -28,33 +28,48 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
 
     public function findValidatedProjects() {
         return $this->baseQueryBuilder()
-            ->where('p.deleted = 0')
-            ->andWhere('p.validated = 1')
+            ->where('p.deleted = 0 AND p.validated = 1')
+            ->andWhere('p.successful = 1 OR (p.successful = 0 AND p.failed = 0)')
+            ->orderBy('p.dateEnd', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findPendingProjects() {
+        return $this->baseQueryBuilder()
+            ->where('p.deleted = 0 AND p.validated = 1')
+            ->andWhere('p.successful = 0 AND p.failed = 0 AND p.refunded = 0')
+            ->andWhere('p.dateEnd < :now')
+            ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
         ;
     }
 
 
-    public function getCurrentProjects($user = null) {
-        $qb = $this->createQueryBuilder('p');
-
-        if($user instanceof User) {
-            $qb
-               ->join('p.handlers', 'u')
-               ->addSelect('u')
-               ->where('u.id = :id')
-               ->setParameter('id', $user->getId());
-        } else {
-            $qb
-               ->leftJoin('p.handlers', 'u')
-               ->addSelect('u');
-        }
-        return $qb
-            ->andWhere('p.dateEnd >= :now')
-            ->andWhere('p.failed = 0')
+    public function getCurrentProjects(User $user) {
+        return $this->createQueryBuilder('p')
+            ->join('p.handlers', 'u')
+            ->where('u.id = :id')
+            ->andwhere('p.dateEnd >= :now OR (p.successful = 0 AND p.failed = 0)')
             ->andWhere('p.deleted = 0')
             ->orderBy('p.dateEnd', 'ASC')
+            ->setParameter('id', $user->getId())
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getOtherCurrentProjects(User $user) {
+        return $this->createQueryBuilder('p')
+            ->join('p.handlers', 'u')
+            ->where('u.id != :id')
+            ->andwhere('p.dateEnd >= :now OR (p.successful = 0 AND p.failed = 0)')
+            ->andWhere('p.deleted = 0')
+            ->orderBy('p.dateEnd', 'ASC')
+            ->setParameter('id', $user->getId())
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
@@ -68,8 +83,8 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('p.dateEnd', 'DESC')
             ->where('u.id = :id')
             ->andWhere('p.dateEnd < :now')
-            ->andWhere('p.validated = 1')
-            ->andWhere('p.deleted = 0')
+            ->andWhere('p.validated = 1 AND p.deleted = 0')
+            ->andWhere('p.successful = 1 OR p.failed = 1')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime()
@@ -78,5 +93,23 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
             ->getResult()
         ;
     }
+
+    public function getOtherPassedProjects(User $user) {
+        return $this->createQueryBuilder('p')
+            ->join('p.handlers', 'u')
+            ->orderBy('p.dateEnd', 'DESC')
+            ->where('u.id != :id')
+            ->andWhere('p.dateEnd < :now')
+            ->andWhere('p.validated = 1 AND p.deleted = 0')
+            ->andWhere('p.successful = 1 OR p.failed = 1')
+            ->setParameters([
+                'id' => $user->getId(),
+                'now' => new \DateTime()
+            ])
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 
 }

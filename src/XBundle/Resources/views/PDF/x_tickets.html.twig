@@ -1,0 +1,48 @@
+{% extends '@X/PDF/x_layout.html.twig' %}
+{#% trans_default_domain 'yb' %#}
+
+{% block additional_styles %}
+{% endblock %}
+
+{% block header_content %}
+    <h3 class="green">Ne m'imprimez pas, je me porte bien mieux en milieu virtuel !</h3>
+{% endblock %}
+
+{% block page %}
+    {% for ticket in tickets %}
+        {% set project = ticket.project %}
+        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            {{ block('header') }}
+            {{ block('footer') }}
+
+            <h2>Je suis votre ticket Chapots{#<img src="{{ absolute_url(asset('yb/images/logo/logo-short.png')) }}" height="30" alt="Ticked-it!" />#}</h2>
+
+            <p>
+                Je donne accès à l'événement <a href="{{ url('x_project', {'id': project.id, 'slug': project.slug}) }}" target="_blank">{{ project.title }}</a>.
+            {% if project.isEvent %}
+                <br />Date de l'événement : {{ project.dateEvent|fancy_date }}
+            {% endif %}
+            </p>
+
+            <qrcode value="{{ ticket.barcodeText }}" ec="H"
+                    style="width: 30mm; background-color: white; color: black;"></qrcode>
+            <p>
+                {{ ticket.barcodeText }}
+            </p>
+            <p>
+                {{ ticket.product.name }} - {{ ticket.price }} € - {{ ticket.name }}
+            </p>
+
+            <p>Conditions d'utilisation{#{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }#}</p>
+
+            {% if project.address is not null %}
+                <p>Adresse de l'événement : {{ project.address }}</p>
+                {% set base64 = base64("https://maps.googleapis.com/maps/api/staticmap?center=" ~ project.address|url_encode ~ "&zoom=13&size=600x300&maptype=roadmap&key=AIzaSyAjWpC8y-sy07JHTBAexmdCT4cQaC84y8U") %}
+
+                {% if base64 is not same as(false) %}
+                    <img style="height:300px;" src="{{ base64 }}" />
+                {% endif %}
+            {% endif %}
+        </page>
+    {% endfor %}
+{% endblock %}

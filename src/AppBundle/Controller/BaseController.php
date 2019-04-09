@@ -136,10 +136,7 @@ abstract class BaseController extends Controller
         if(!$user || !$user instanceof User) {
             throw new NoAuthenticationException();
         }
-        if(!$user->isSuperAdmin() && empty($this->em->getRepository('AppBundle:Artist')->findForUser($user))) {
-            throw new NotAllowedException();
-        }
-        if($project != null && !$user->ownsProject($project)){
+        if(!$user->isSuperAdmin() && !$user->isArtistOwner() && $project != null && !$user->ownsProject($project)){
             throw new NotAllowedException();
         }
     }

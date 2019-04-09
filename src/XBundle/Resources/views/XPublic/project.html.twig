@@ -75,43 +75,62 @@
                     <div class="card">
                         <div class="card-body">
                             <p>
-                                <a class="x-link-artist" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">
+                                <a class="x-link-artist" target="_blank" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">
                                     <img src="{{ src_artist }}" width="100" height="70" />
                                     &nbsp;{{ artist.artistname }}
                                 </a>
                             </p>
 
                             <div class="row">
-                                <div class="col-8 col-sm-3 col-lg-4">
-                                {% if project.hasThreshold %}
-                                    <strong>{{ project.collectedAmount }} €</strong> sur {{ project.threshold }} €
-                                {% else %}
-                                    <strong>{{ project.collectedAmount }} €</strong> récoltés
-                                {% endif %}
+                                <div class="col-8 col-sm-4 col-lg-4">
+                                    <strong>{{ project.collectedAmount }} €</strong>{% if project.hasThreshold %} sur {{ project.threshold }} €{% else %} récoltés{% endif %}
                                 </div>
-                                <div class="col-8 col-sm-3 col-lg-4">
-                                {% if project.remainingDays > 0 %}
-                                    <strong>{{ project.remainingDays }} jour(s)</strong> restant(s)
-                                {% else %}
-                                    {% if project.remainingHours > 0 %}
-                                        <strong>{{ project.remainingHours }} heure(s)</strong> restante(s)
+                                <div class="col-8 col-sm-4 col-lg-4">
+                                    {% if project.isPassed %}
+                                        <strong>{{ project.dateEnd|date('d/m/Y') }}</strong> date de fin
                                     {% else %}
-                                        <strong>{{ project.remainingMinutes }} minute(s)</strong> restante(s)
+                                        <strong>{{ project.remainingTime }}</strong>
                                     {% endif %}
-                                {% endif %}
+                                </div>
+                                <div class="col-8 col-sm-4 col-lg-4">
+                                    <strong>{{ project.nbContributors }}</strong> contributeur(s)
                                 </div>
                             </div>
     
                             {% if project.hasThreshold %}
                                 <br>
                                 <div class="progress">
-                                    <div class="progress-bar {% if project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
+                                    <div class="progress-bar {% if project.isPassed and project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
                                 </div>
+                            {% endif %}
+
+                            {% if project.isPassed and not project.isPending and project.successful %}
+                                <br><p class="text-center" style="color: green;"><strong>Réussite</strong>&nbsp;<i class="fas fa-check-circle"></i></p>
                             {% endif %}
                         </div>
                     </div>
                 </div>
 
+                <!-- Infos Event Section -->
+                {% if project.isEvent %}
+                <div class="mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Date de l'évènement : <strong>{{ project.dateEvent|date('d/m/Y \\à H:i') }}</strong></p>
+                            {% if project.address is not null %}
+                                <p>Adresse : <strong>{{ project.address }}</strong></p>
+                                {#<div class="embed-responsive embed-responsive-16by9">
+                                    <iframe
+                                        class="embed-responsive-item"
+                                        frameborder="0" style="border:0"
+                                        src="https://www.google.com/maps/embed/v1/place?key={{ maps_api_key }}&q={{ project.address|url_encode }}" allowfullscreen>
+                                    </iframe>
+                                </div>#}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
 
                 <!-- Donation Form Card -->
                 <div class="mt-5">
@@ -141,12 +160,13 @@
                             <h3 class="text-center">Articles en vente</h3>
                         </div>
 
+                        <div class="card-body contribution">
                         {{ form_start(form_purchase) }}
-
+                        
                         {% for purchase in form_purchase.purchases %}
                             {% set product = purchase.vars.value.product %}
-                            <div class="card-body contribution" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
-                                <div class="container-fluid">
+                            {#<div class="card-body contribution" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>#}
+                                <div class="container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
                                     {{ form_errors(purchase) }}
 
                                     <h5><strong>{{ product.name }}</strong>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
@@ -198,87 +218,17 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            {#</div>#}
 
                         {% endfor %}
 
                         {{ form_widget(form_purchase.submit) }}
 
                         {{ form_end(form_purchase) }}
+                        </div>
                     </div>
                 </div>
                 {% endif %}
-
-                {#<div class="mt-5{% if campaign.noThreshold %} mt-lg-3{% endif %}">
-                    <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
-
-                    {% if campaign.isCrowdable %}
-                        {{ form_start(form) }}
-
-                        {% for purchase in form.purchases %}
-                            {% set counterpart = purchase.vars.value.counterpart %}
-                            <div class="counterpart-form p-3 my-2 border">
-
-                                <div class="quantity-error-display" style="display:none;"></div>
-
-                                <div class="form-group form-row">
-                                    {{ form_errors(purchase) }}
-
-                                    <div class="col-8 col-sm-9 col-lg-8">
-                                        <label class="font-weight-bold">{{ counterpart.name }}{% if counterpart.freePrice %} (prix libre){% endif %}</label>
-                                    </div>
-                                    {% if counterpart.freePrice %}
-                                        <div class="col-4 col-sm-3 col-lg-4">
-                                            <div class="w-90 position-relative mb-2">
-                                                {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice, 'value': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <div class="col-4 col-sm-3 col-lg-4">
-                                        {% if counterpart.isFree %}Gratuit{% else %}{{ counterpart.price }} €{% endif %}
-                                        </div>
-                                    {% endif %}
-                                    {% set max_cp = campaign.nbPurchasable(counterpart) %}
-                                    <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
-                                    <div class="col-4 col-sm-3 col-lg-4">
-                                        <div class="container px-0">
-                                            {% if max_cp == 0 %}
-                                                <p>Il n'y a plus de tickets de ce type disponibles. (SOLD OUT)</p>
-                                                {% do purchase.setRendered(purchase.quantity) %}
-                                            {% else %}
-                                                <div class="input-group">
-                                                    <span class="input-group-btn">
-                                                        <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
-                                                            <i class="text-white fas fa-minus"></i>
-                                                        </button>
-                                                    </span>
-                                                    {{ form_widget(purchase.quantity) }}
-                                                    <span class="input-group-btn">
-                                                        <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max_cp }}" data-field="">
-                                                            <i class="text-white fas fa-plus"></i>
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-
-                        {{ form_widget(form.submit) }}
-
-                        {{ form_end(form) }}
-                    {% else %}
-                        {% if campaign.passed %}
-                            <p>Cette campagne est terminée et il n'est donc plus possible d'acheter des tickets.</p>
-                        {% elseif campaign.pending %}
-                            <p>Il n'est actuellement pas possible de contribuer à cette campagne car elle est en cours d'examination par son organisateur. Vous saurez bientôt si elle est validée ou non.</p>
-                        {% else %}
-                            <p>Il n'est actuellement pas possible d'acheter des tickets.</p>
-                        {% endif %}
-                    {% endif %}
-                </div>#}
 
             </div>
         </div>

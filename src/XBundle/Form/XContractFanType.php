@@ -41,7 +41,7 @@ class XContractFanType extends AbstractType
                 $builder
                     ->add('submit', SubmitType::class, array(
                         'label' => 'Valider',
-                        'attr' => ['class' => 'btn btn-primary submit-cart'],
+                        'attr' => ['class' => 'btn btn-secondary submit-cart'],
                     ));
         });
     }
@@ -54,7 +54,7 @@ class XContractFanType extends AbstractType
 
         foreach($contribution->getPurchases() as $purchase) {
             /** @var XPurchase $purchase */
-            if($purchase->getProduct()->getFreePrice() && $purchase->getFreePrice() < $purchase->getProduct()->getMinimumPrice()) {
+            if($purchase->getProduct()->getFreePrice() && ($purchase->getFreePrice() < $purchase->getProduct()->getMinimumPrice() || $purchase->getFreePrice() == null)) {
                 $context->addViolation('contractfan.free_price_min');
             }
             $purchasable = $purchase->getProduct()->getMaxAmountPerPurchase();
