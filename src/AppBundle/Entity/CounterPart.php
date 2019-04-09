@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\Block;
 use AppBundle\Entity\YB\YBSubEvent;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -93,6 +94,26 @@ class CounterPart implements TranslatableInterface
         return (!$this->free_price && $this->price == 0);
     }
 
+    public function canOverpassVenueCapacity(){
+        foreach ($this->venue_blocks as $blk){
+            if ($blk->getType() === 'Debout') {
+                return true;
+            }
+        }
+    }
+
+    public function getBlkCapacity(){
+        $capacity = 0;
+        foreach ($this->venue_blocks as $blk){
+            $capacity += $blk->getCapacity();
+        }
+        return $capacity;
+    }
+
+    public function isCapacityMaxReach(){
+        return $this->maximum_amount > $this->getBlkCapacity();
+    }
+
     /**
      * @var int
      *
@@ -163,9 +184,20 @@ class CounterPart implements TranslatableInterface
     private $disabled;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", mappedBy="counterparts")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", inversedBy="counterparts")
      */
     private $sub_events;
+
+    /**
+     * @var
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\Block", inversedBy="counterparts")
+     */
+    private $venue_blocks;
+
+    /**
+     * @ORM\Column(name="give_access_everywhere", type="boolean")
+     */
+    private $access_everywhere;
 
     /**
      * Get id
@@ -436,4 +468,52 @@ class CounterPart implements TranslatableInterface
         $this->sub_events->remove($se);
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getVenueBlocks() {
+        return $this->venue_blocks;
+    }
+
+    /**
+     * @param mixed $venue_blocks
+     */
+    public function setVenueBlocks($venue_blocks) {
+        $this->venue_blocks = new ArrayCollection();
+        foreach ($venue_blocks as $venue_block){
+            $this->addVenueBlock($venue_block);
+        }
+    }
+
+    public function addVenueBlock(Block $block){
+        if ($this->venue_blocks == null){
+            $this->venue_blocks = new ArrayCollection();
+        }
+        $this->venue_blocks->add($block);
+        return $this;
+    }
+
+    public function removeVenueBlock(Block $block){
+        $this->venue_blocks->remove($block);
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccessEverywhere()
+    {
+        return $this->access_everywhere;
+    }
+
+    /**
+     * @param mixed $access_everywhere
+     */
+    public function setAccessEverywhere($access_everywhere)
+    {
+        $this->access_everywhere = $access_everywhere;
+    }
+
+
 }

@@ -248,10 +248,16 @@ class YBContractArtist extends BaseContractArtist
     private $address;
 
     /**
+     * @var Venue
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Venue", inversedBy="events", cascade={"persist"})
+     */
+    private $venue;
+
+    /**
      * @var VenueConfig
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\VenueConfig", inversedBy="events", cascade={"persist"})
      */
-    private $venue;
+    private $config;
 
     /**
      * @var float
@@ -674,11 +680,27 @@ class YBContractArtist extends BaseContractArtist
         return $this;
     }
 
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * @return Venue
+     */
     public function getVenue()
     {
         return $this->venue;
     }
 
+    /**
+     * @param Venue $venue
+     */
     public function setVenue($venue)
     {
         $this->venue = $venue;

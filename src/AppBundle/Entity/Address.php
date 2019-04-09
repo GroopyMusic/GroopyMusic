@@ -35,6 +35,25 @@ class Address
         return $name . '' . $this->street . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city; // . ' (' . $this->country . ')';
     }
 
+    public function equals(Address $other){
+        if (strtolower($this->street) !== strtolower($other->getStreet())){
+            return false;
+        }
+        if (strtolower($this->zipcode) !== strtolower($other->getZipcode())){
+            return false;
+        }
+        if (strtolower($this->country) !== strtolower($other->getCountry())){
+            return false;
+        }
+        if (strtolower($this->number) !== strtolower($other->getNumber())){
+            return false;
+        }
+        if (strtolower($this->city) !== strtolower($other->getCity())){
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @var int
      *

@@ -34,12 +34,20 @@
         </div>
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Capacité par défaut</h2>
+        <div class="row">
+            <div class="col-12 col-md-12">
+                {{ form_row(form.defaultCapacity) }}
+            </div>
+        </div>
+    </section>
+    <!--<section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Sièges et places</h2>
         <div class="text-muted font-italic pb-2">
             Rajouter la configuration de base de votre salle. Si votre salle est modulable, n'hésitez pas à rajouter des configurations !
         </div>
-        {{ form_widget(form.configurations) }}
-    </section>
+        {##}{ form_widget(form.configurations) }}
+    </section>-->
     {% if form.acceptConditions is defined %}
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <p><a href="{{ path('yb_terms') }}">Lire nos conditions d'utilisation</a></p>
@@ -50,6 +58,16 @@
             </div>
         </section>
     {% endif %}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <p>Vous pouvez ajouter des configurations à votre salle. Une configuration est un agencement spécifique de votre salle. Vous pourriez avoir des gradins rétractables et/ou mobile et donc créer des configurations différentes. Si vous cliquez sur "Terminer", une configuration par défaut vous sera créée. Si vous voulez renseigner une configuration spécifique, cliquez sur "Ajouter une configuration".</p>
+        {% if venue.id is null %}
+            <div><h2 style="margin-left: -30px">{{ form_widget(form.addBlocks) }}
+                {{ form_widget(form.submit) }}</h2></div>
+        {% else %}
+            <div><h2 style="margin-left: -30px">
+                    {{ form_widget(form.submit) }}</h2></div>
+        {% endif %}
+    </section>
     {{ form_end(form) }}
 {% endblock %}
 

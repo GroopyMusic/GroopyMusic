@@ -17,8 +17,12 @@ class Block {
         $this->rows = new ArrayCollection();
     }
 
+    public function __toString(){
+        return $this->name;
+    }
+
     public function generateSeats(){
-        $alphabet = range('A', 'Z');
+        $alphabet = $this->generateAlphabet();
         if (count($this->rows) > 0){
             foreach ($this->rows as $row){
                 $this->removeRow($row);
@@ -38,6 +42,15 @@ class Block {
         }
     }
 
+    private function generateAlphabet(){
+        $letters = array();
+        $letter = 'A';
+        while ($letter !== 'AAA') {
+            $letters[] = $letter++;
+        }
+        return $letters;
+    }
+
     public function constructAllUp(){
         $this->freeSeating = true;
         $this->notSquared = false;
@@ -55,6 +68,17 @@ class Block {
         $this->seatLabel = 1;
     }
 
+    public function constructNotSquare(){
+        $this->nbRows = 0;
+        $this->nbSeatsPerRow = 0;
+        $this->rowLabel = 1;
+        $this->seatLabel = 1;
+    }
+
+    public function isValidCustomRow(){
+        return $this->capacity === $this->getNbSeatsCustomRow();
+    }
+
     public function getNbSeatsOfBlock(){
         if ($this->type === 'Debout'){
             return $this->capacity;
@@ -64,7 +88,12 @@ class Block {
         }
         if (!$this->isNotSquared()){
             return $this->nbRows * $this->nbSeatsPerRow;
+        } else {
+            return $this->capacity;
         }
+    }
+
+    private function getNbSeatsCustomRow(){
         $nb = 0;
         foreach ($this->rows as $row){
             $nb += $row->getNbSeats();
@@ -106,7 +135,7 @@ class Block {
     private $freeSeating;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\BlockRow", mappedBy="block", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\BlockRow", mappedBy="block", cascade={"all"})
      */
     private $rows;
 
@@ -135,6 +164,11 @@ class Block {
     private $nbSeatsPerRow;
     private $rowLabel;
     private $seatLabel;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CounterPart", mappedBy="venue_blocks")
+     */
+    private $counterparts;
 
     /**
      * @return int
@@ -326,6 +360,23 @@ class Block {
     {
         $this->seatLabel = $seatLabel;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCounterparts()
+    {
+        return $this->counterparts;
+    }
+
+    /**
+     * @param mixed $counterparts
+     */
+    public function setCounterparts($counterparts)
+    {
+        $this->counterparts = $counterparts;
+    }
+
 
 
 }

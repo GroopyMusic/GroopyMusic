@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use AppBundle\Entity\CounterPart;
 use Doctrine\ORM\EntityRepository;
+use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -84,6 +85,24 @@ class CounterPartType extends AbstractType
                             ->setParameter('id', $id);
                     },
                 ));
+        if ($options['has_venue']){
+            $config = $options['config'];
+            $blks = $config->getBlocks();
+            $builder
+                ->add('accessEverywhere', CheckboxType::class, array(
+                    'required' => false,
+                    'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
+                    'attr' => ['class' => 'give-access-everywhere'],
+                ))
+                ->add('venueBlocks', EntityType::class, array(
+                    'required' => false,
+                    'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
+                    'multiple' => true,
+                    'expanded' => true,
+                    'class' => 'AppBundle\Entity\YB\Block',
+                    'choices' => $blks,
+                ));
+        }
     }
 
     public function validate(CounterPart $counterPart, ExecutionContextInterface $context)
@@ -105,6 +124,18 @@ class CounterPartType extends AbstractType
             $context->addViolation('La quantité max de chaque type de ticket par commande doit être minimum de 1, maximum de ' . $absolute_max_amount . '.');
             $counterPart->setMaximumAmountPerPurchase($absolute_max_amount);
         }
+        if (count($counterPart->getContractArtist()->getConfig()->getBlocks()) < 0){
+            $counterPart->setAccessEverywhere(true);
+        } else {
+            if($counterPart->getAccessEverywhere() === false && count($counterPart->getVenueBlocks()) === 0){
+                $context->addViolation('Si le ticket ne donne pas accès à toute la salle, vous devez sélectionner au moins un bloc.');
+            }
+        }
+        if (!$counterPart->canOverpassVenueCapacity()){
+            if ($counterPart->isCapacityMaxReach()){
+                $context->addViolation("Le nombre de ticket en stock est supérieur aux nombre de places dans la salle !");
+            }
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -116,6 +147,8 @@ class CounterPartType extends AbstractType
             ),
             'campaign_id' => null,
             'has_sub_events' => false,
+            'has_venue' => false,
+            'config' => null,
         ]);
     }
 

@@ -22,6 +22,10 @@ class Venue {
         $this->configurations = new ArrayCollection();
     }
 
+    public function __toString(){
+        return $this->name;
+    }
+
     public function addConfiguration(VenueConfig $config){
         $config->setVenue($this);
         $this->configurations->add($config);
@@ -66,11 +70,31 @@ class Venue {
 
     public function isOnlyFreeSeating(){
         foreach ($this->configurations as $configuration){
-            if (!$configuration->isOnlyStandup() || !$configuration->hasFreeSeatingPolicy()){
+            if (!$configuration->isOnlyStandup()){
+                return false;
+            }
+            if (!$configuration->hasFreeSeatingPolicy()){
                 return false;
             }
         }
         return true;
+    }
+
+    public function getNotDefaultConfig(){
+        $nonDefault = [];
+        foreach ($this->configurations as $configuration){
+            if (!$configuration->isDefault()){
+                array_push($nonDefault, $configuration);
+            }
+        }
+        return $nonDefault;
+    }
+
+    public function createDefaultConfig(){
+        $config = new VenueConfig();
+        $config->constructDefault($this);
+        $this->addConfiguration($config);
+        //$this->setDefaultConfig($config);
     }
 
     /**
@@ -81,6 +105,18 @@ class Venue {
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @var string
+     * @ORM\Column(name="name", type="string")
+     */
+    private $name;
+
+    /**
+     * @var integer
+     * @ORM\Column(name="default_capacity", type="integer")
+     */
+    private $defaultCapacity;
 
     /**
      * @var Address
@@ -96,7 +132,7 @@ class Venue {
     private $organization;
 
     /**
-     * @var VenueConfig
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\VenueConfig", mappedBy="venue", cascade={"all"})
      */
     private $configurations;
@@ -118,6 +154,16 @@ class Venue {
      * @ORM\Column(name="is_temp", type="boolean")
      */
     protected $accept_venue_temp;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBContractArtist", mappedBy="venue", cascade={"all"})
+     */
+    private $events;
+
+    /**
+     * @var VenueConfig
+     */
+    private $defaultConfig;
 
     // getters & setters
 
@@ -202,7 +248,7 @@ class Venue {
     }
 
     /**
-     * @return VenueConfig
+     * @return ArrayCollection
      */
     public function getConfigurations()
     {
@@ -242,21 +288,67 @@ class Venue {
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPhoto()
+    public function getName()
     {
-        return $this->photo;
+        return $this->name;
     }
 
     /**
-     * @param mixed $photo
+     * @param string $name
      */
-    public function setPhoto($photo)
+    public function setName($name)
     {
-        $this->photo = $photo;
+        $this->name = $name;
     }
 
+    /**
+     * @return int
+     */
+    public function getDefaultCapacity()
+    {
+        return $this->defaultCapacity;
+    }
 
+    /**
+     * @param int $defaultCapacity
+     */
+    public function setDefaultCapacity($defaultCapacity)
+    {
+        $this->defaultCapacity = $defaultCapacity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * @param mixed $events
+     */
+    public function setEvents($events)
+    {
+        $this->events = $events;
+    }
+
+    /**
+     * @return VenueConfig
+     */
+    public function getDefaultConfig()
+    {
+        return $this->defaultConfig;
+    }
+
+    /**
+     * @param VenueConfig $defaultConfig
+     */
+    public function setDefaultConfig($defaultConfig)
+    {
+        $this->defaultConfig = $defaultConfig;
+    }
 
 }

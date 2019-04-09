@@ -32,7 +32,7 @@ class BlockRow {
 
     /**
      * @var
-     * @ORM\Column(name="name", type="string", length=3)
+     * @ORM\Column(name="name", type="string", length=15)
      */
     private $name;
 

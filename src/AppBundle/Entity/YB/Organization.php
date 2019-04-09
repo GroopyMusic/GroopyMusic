@@ -111,7 +111,7 @@ class Organization {
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Venue", mappedBy="organization", cascade={"persist"})
      */
-    private $venue;
+    private $venues;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\OrganizationJoinRequest", mappedBy="organization", cascade={"persist"})

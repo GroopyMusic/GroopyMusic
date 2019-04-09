@@ -1,0 +1,35 @@
+{% block app_bundle_block_type_row %}
+    <div class="row counterpart-row config" id="{{ form.vars.data.id }}">
+        <div class="col-12"><h2>Bloc : {{ form.vars.data.name }}</h2></div>
+        <div class="col-12"><h2 style="font-size: 18px">Configuration : {{ form.vars.data.config.name }} - Salle : {{ form.vars.data.config.venue.address.name }}</h2></div>
+        <div class="col-12"><h2>Capacité : {{ form.vars.data.capacity }}</h2></div>
+        <div class="col-12"><h2><a class="btn btn-outline-secondary" href="#" data-toggle="modal" data-target="#confirmModal">Pas la bonne capacité? Changez-là!</a></h2></div>
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Changer la capacité du bloc</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal_detail">
+                        Nouvelle capacité du bloc : <input type="number" id="newCapacity">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                        <form action="#">
+                            <input class="btn" type="submit" value="Modifier"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-muted font-italic pb-2">
+            Ce bloc n'est pas rectangulaire. Vous allez pouvoir rajouter des rangées et renseigner pour chacune d'elle le nombre de sièges qu'elle comprend.
+        </div>
+        <div class="col-12">
+            {{ form_widget(form.rows) }}
+        </div>
+    </div>
+{% endblock %}

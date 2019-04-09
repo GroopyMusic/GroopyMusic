@@ -31,15 +31,21 @@ class YBContractArtistTicketsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $class_attr = $options['data']->hasSubEvents() ? '' : 'no-sub-events';
+        $class2_attr = count($options['data']->getConfig()->getBlocks()) > 0 ? '' : 'no-blk';
         $builder
             ->add('counterParts',  CollectionType::class, array(
                 'label' => 'Tickets en vente',
                 'entry_type' => CounterPartType::class,
                 'entry_options' => array(
-                    'attr' => ['class' => $class_attr],
+                    'attr' => [
+                        'class' => $class_attr,
+                        'class2' => $class2_attr,
+                    ],
                     'label' => false,
                     'campaign_id' => $options['data']->getId(),
+                    'config' => $options['data']->getConfig(),
                     'has_sub_events' => $options['data']->hasSubEvents(),
+                    'has_venue' => $options['data']->getVenue() !== null,
             ),
                 'allow_add' => true,
                 'allow_delete' => true,
@@ -73,6 +79,8 @@ class YBContractArtistTicketsType extends AbstractType
             'venues' => null,
             'campaign_id' => null,
             'has_sub_events' => false,
+            'em' => null,
+            'user' => null,
         ]);
     }
 

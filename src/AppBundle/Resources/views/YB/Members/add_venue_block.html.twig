@@ -5,35 +5,54 @@
         <ol class="breadcrumb-arrow">
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
             <li><a href="{{ path('yb_members_my_venues') }}">Mes salles</a></li>
-            <li><a href="#">{{ venue.address.name }}</a></li>
-            <li class="active"><span>Edition</span></li>
+            <li class="active"><span>{{ config.venue.name }}</span></li>
+            <li class="active"><span>Ajout des blocs</span></li>
         </ol>
     </section>
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/configurations_edit.html.twig' '@App/YB/Form/block.html.twig'  ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/block.html.twig'  ':Form:jquery.collection.html.twig' %}
     {{ form_start(form) }}
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
         <div>
-            <h2>Ma configuration :
-                <select class="config">
+            <h2>Ma configuration : {{ config.name }}
+                <!--<select class="config">
                     <option value="-1">Sélectionner une configuration</option>
-                {% for config in venue.configurations %}
-                    {% if config.onlyStandup or config.hasFreeSeatingPolicy %}
-                        <option disabled value="{{ config.id }}">{{ config.name }}</option>
-                    {% else %}
-                        <option value="{{ config.id }}">{{ config.name }}</option>
-                    {% endif %}
-                {% endfor %}
-                </select>
+                {##}% for config in venue.configurations %}
+                    {##}% if config.onlyStandup or config.hasFreeSeatingPolicy %}
+                        <option disabled value="{##}{ config.id }}">{##}{ config.name }}</option>
+                    {##}% else %}
+                        <option value="{##}{ config.id }}">{##}{ config.name }}</option>
+                    {##}% endif %}
+                {##}% endfor %}
+                </select>-->
             </h2>
         </div>
         <div class="text-muted font-italic pb-2">
             C'est ici que vous allez préciser les configurations de vos salles, vous pourrez indiquer combien il y a de rangées, combien il y a de sièges par rangées, etc.
         </div>
-        {{ form_widget(form.configurations) }}
+        <div class="col-12">
+            {% if config.nbStandUp > 0 %}
+                <div>Nombre de place debout : {{ config.nbStandUp }}</div>
+            {% endif %}
+            {% if config.nbSeatedSeats > 0 %}
+                <div>Nombre de place assise (hors balcon) : {{ config.nbSeatedSeats }}</div>
+            {% endif %}
+            {% if config.nbBalconySeats > 0 %}
+                <div>Nombre de place assise (sur balcon) : {{ config.nbBalconySeats }}</div>
+            {% endif %}
+        </div>
+        <div class="col-12">
+            {{ form_widget(form.blocks) }}
+        </div>
+        <div class="text-muted font-italic pb-2">
+            Vous ne savez pas représenter votre salle entièrement car elle possède plusieurs blocs de sièges différents? Pas de soucis, ajoutez des blocs !
+        </div>
+        <div class="col-12">
+            <hr size="4" color="orange">
+        </div>
         {{ form_end(form) }}
     </section>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script type="text/javascript">
+    <!--<script type="text/javascript">
         $(document).ready(function(){
             window.onload = function() {
                 $('div.config').hide();
@@ -50,7 +69,7 @@
                 }
             });
         });
-    </script>
+    </script>-->
 {% endblock %}
 
 {% block additional_javascripts %}

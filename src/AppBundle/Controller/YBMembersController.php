@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\AppBundle;
+use AppBundle\Entity\Address;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Purchase;
@@ -39,6 +40,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -58,7 +60,7 @@ class YBMembersController extends BaseController
         $this->checkIfAuthorized($user);
 
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        if ($currentUser->isSuperAdmin()){
+        if ($currentUser->isSuperAdmin()) {
             $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
             $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllPastEvents();
         } else {
@@ -75,7 +77,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/organizations", name="yb_members_orgs")
      */
-    public function viewOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null){
+    public function viewOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null)
+    {
         $this->checkIfAuthorized($user);
         return $this->render('@App/YB/Members/orgs_list.html.twig');
     }
@@ -83,27 +86,25 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/new", name="yb_members_campaign_new")
      */
-    public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher, YBContractArtistType $flow) {
+    public function newCampaignAction(UserInterface $user = null, Request $request, EntityManagerInterface $em, MailDispatcher $mailDispatcher, YBContractArtistType $flow)
+    {
         /** @var \AppBundle\Entity\User $user */
         $this->checkIfAuthorized($user);
         $campaign = new YBContractArtist();
-    
+
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        if (!$currentUser->hasPrivateOrganization()){
+        if (!$currentUser->hasPrivateOrganization()) {
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
-        $venues = $em->getRepository('AppBundle:YB\VenueConfig')->findAllOpened();
-        usort($venues, function(VenueConfig $v1, VenueConfig $v2){
-            strtolower($v1->getDisplayName()) < strtolower($v2->getDisplayName());
-        });
-        $generic_options = ['creation' => true, 'userOrganizations' => $userOrganizations, 'venues' => $venues];
+        $venues = $this->getActiveVenue($em);
+        $generic_options = ['creation' => true, 'userOrganizations' => $userOrganizations, 'venues' => $venues, 'em' => $em, 'user' => $currentUser];
         $flow->setGenericFormOptions($generic_options);
 
         $flow->bind($campaign);
         $form = $flow->createForm();
 
-        if($flow->isValid($form)) {
+        if ($flow->isValid($form)) {
 
             $em->persist($campaign);
             $em->flush();
@@ -116,15 +117,13 @@ class YBMembersController extends BaseController
                 // form for the next step
                 try {
                     $mailDispatcher->sendYBReminderEventCreated($campaign);
-                }
-                catch(\Exception $e) {
+                } catch (\Exception $e) {
                 }
 
                 $this->addFlash('yb_notice', "La campagne a bien été créée. Pour qu'elle soit fonctionnelle, vous n'avez plus qu'à créer des tickets.");
 
                 $form = $flow->createForm();
-            }
-            else {
+            } else {
                 $flow->reset(); // remove step data from the session
                 $this->addFlash('yb_notice', 'La campagne a bien été créée.');
                 return $this->redirectToRoute('yb_members_dashboard');
@@ -139,34 +138,52 @@ class YBMembersController extends BaseController
     }
 
     /**
+     * @Route("/get-config-from-venue", name="campaign_venue_list_config")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getListOfConfigsForVenue(Request $request){
+        $em = $this->getDoctrine()->getManager();
+        $id = $request->get('venueid');
+        $venue = $em->getRepository('AppBundle:YB\Venue')->find($id);
+        $configs = $venue->getConfigurations();
+        $responseArray = array();
+        foreach($configs as $config){
+            $responseArray[] = array(
+                'id' => $config->getId(),
+                'name' => $config->getName(),
+            );
+        }
+        return new JsonResponse($responseArray);
+    }
+
+    /**
      * @Route("/campaign/{id}/update", name="yb_members_campaign_edit")
      */
-    public function editCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em, YBContractArtistType $flow) {
+    public function editCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em, YBContractArtistType $flow)
+    {
         $this->checkIfAuthorized($user, $campaign);
 
-        if(!$user->isSuperAdmin() && $campaign->isPassed()) {
+        if (!$user->isSuperAdmin() && $campaign->isPassed()) {
             $this->addFlash('yb_error', 'Cette campagne est passée. Il est donc impossible de la modifier.');
             return $this->redirectToRoute('yb_members_passed_campaigns');
         }
 
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        if (!$currentUser->hasPrivateOrganization()){
+        if (!$currentUser->hasPrivateOrganization()) {
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
 
-        $venues = $em->getRepository('AppBundle:YB\VenueConfig')->findAllOpened();
-        usort($venues, function(VenueConfig $v1, VenueConfig $v2){
-            strtolower($v1->getDisplayName()) < strtolower($v2->getDisplayName());
-        });
+        $venues = $this->getActiveVenue($em);
 
-        $flow->setGenericFormOptions(['creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId(), 'venues' => $venues]);
+        $flow->setGenericFormOptions(['creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId(), 'venues' => $venues, 'em' => $em]);
 
         $flow->bind($campaign);
         $form = $flow->createForm();
 
         //$form->handleRequest($request);
-        if($flow->isValid($form)) {
+        if ($flow->isValid($form)) {
 
             $flow->saveCurrentStepData($form);
             $em->persist($campaign);
@@ -180,12 +197,10 @@ class YBMembersController extends BaseController
                         $request->attributes->get('_route_params')), $flow);
 
                     return $this->redirect($this->generateUrl($request->attributes->get('_route'), $params));
-                }
-                else {
+                } else {
                     $form = $flow->createForm();
                 }
-            }
-            else {
+            } else {
                 $flow->reset(); // remove step data from the session
                 $this->addFlash('yb_notice', 'La campagne a bien été modifiée.');
                 return $this->redirectToRoute('yb_members_dashboard');
@@ -204,15 +219,16 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/crowdfunding", name="yb_members_campaign_crowdfunding")
      */
-    public function crowdfundingCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em, TicketingManager $ticketingManager, PaymentManager $paymentManager) {
+    public function crowdfundingCampaignAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em, TicketingManager $ticketingManager, PaymentManager $paymentManager)
+    {
         $this->checkIfAuthorized($user, $campaign);
 
         $form = $this->createForm(YBContractArtistCrowdType::class, $campaign);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
-            if($form->get('refund')->isClicked() && !$campaign->getRefunded()) {
+        if ($form->isSubmitted()) {
+            if ($form->get('refund')->isClicked() && !$campaign->getRefunded()) {
                 $campaign->setFailed(true);
                 $paymentManager->refundStripeAndYBContractArtist($campaign);
 
@@ -222,8 +238,8 @@ class YBMembersController extends BaseController
                 return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
             }
 
-            if($form->get('validate')->isClicked() && !$campaign->getTicketsSent()) {
-                foreach($campaign->getContractsFanPaid() as $cf) {
+            if ($form->get('validate')->isClicked() && !$campaign->getTicketsSent()) {
+                foreach ($campaign->getContractsFanPaid() as $cf) {
                     $ticketingManager->generateAndSendYBTickets($cf, true);
                 }
 
@@ -243,7 +259,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/orders", name="yb_members_campaign_orders")
      */
-    public function ordersCampaignAction(YBContractArtist $campaign, UserInterface $user = null) {
+    public function ordersCampaignAction(YBContractArtist $campaign, UserInterface $user = null)
+    {
 
         $this->checkIfAuthorized($user, $campaign);
 
@@ -259,7 +276,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/transactional-message", name="yb_members_campaign_transactional_message")
      */
-    public function transactionalMessageCampaignAction(YBContractArtist $campaign, Request $request, UserInterface $user = null) {
+    public function transactionalMessageCampaignAction(YBContractArtist $campaign, Request $request, UserInterface $user = null)
+    {
         $this->checkIfAuthorized($user, $campaign);
 
         $message = new YBTransactionalMessage($campaign);
@@ -269,7 +287,7 @@ class YBMembersController extends BaseController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($message);
             $this->em->flush();
 
@@ -290,7 +308,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoices", name="yb_members_invoices")
      */
-    public function invoicesViewListAction(EntityManagerInterface $em,UserInterface $user = null){
+    public function invoicesViewListAction(EntityManagerInterface $em, UserInterface $user = null)
+    {
         $this->checkIfAuthorized($user);
 
         /** @var \AppBundle\Repository\YB\YBContractArtistRepository $YBCARepository */
@@ -306,9 +325,10 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/generate", name="yb_members_invoice_generate")
      */
-    public function invoiceGenerateAction(YBContractArtist $campaign, EntityManagerInterface $em, UserInterface $user = null){
+    public function invoiceGenerateAction(YBContractArtist $campaign, EntityManagerInterface $em, UserInterface $user = null)
+    {
         //$this->checkIfAuthorized($user);
-        if ($user == null || !$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
 
@@ -318,10 +338,10 @@ class YBMembersController extends BaseController
 
         $cfs = $campaign->getContractsFanPaid();
         /** @var ContractFan $cf */
-        foreach ($cfs as $cf){
+        foreach ($cfs as $cf) {
             /** @var Purchase $purchase */
-            foreach ($cf->getPurchases() as $purchase){
-                if ($purchase->getInvoice() === null){
+            foreach ($cf->getPurchases() as $purchase) {
+                if ($purchase->getInvoice() === null) {
                     $purchase->setInvoice($invoice);
                     $em->persist($purchase);
                 }
@@ -335,7 +355,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/validate", name="yb_members_invoice_validate")
      */
-    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null){
+    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null)
+    {
         $this->checkIfAuthorized($user, $invoice->getCampaign());
 
         $invoice->validate();
@@ -347,9 +368,10 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/sold", name="yb_members_invoice_sold")
      */
-    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
+    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user)
+    {
         $campaign = $invoice->getCampaign();
-        if ($user == null || !$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()) {
             $this->checkIfAuthorized($user, $campaign);
         }
         $cfs = array_reverse($campaign->getContractsFanPaid());
@@ -357,9 +379,9 @@ class YBMembersController extends BaseController
 
         $tickets = array();
 
-        foreach ($cfs as $cf){
+        foreach ($cfs as $cf) {
             /** @var ContractFan $cf */
-            if ($cf->getPurchases()->first()->getInvoice() == $invoice){
+            if ($cf->getPurchases()->first()->getInvoice() == $invoice) {
                 $tickets = array_merge($tickets, $cf->getTickets()->toArray());
             }
         }
@@ -367,7 +389,7 @@ class YBMembersController extends BaseController
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildFromInvoice($invoice);
 
-        $counterparts = array_map(function ($purchase){
+        $counterparts = array_map(function ($purchase) {
             /** @var Purchase $purchase */
             return $purchase->getCounterpart();
         }, $invoice->getPurchases()->toArray());
@@ -384,9 +406,10 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/fee", name="yb_members_invoice_fee")
      */
-    public function invoiceFeeDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user){
+    public function invoiceFeeDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user)
+    {
         $campaign = $invoice->getCampaign();
-        if ($user == null || !$user->isSuperAdmin()){
+        if ($user == null || !$user->isSuperAdmin()) {
             $this->checkIfAuthorized($user, $campaign);
         }
 
@@ -394,12 +417,12 @@ class YBMembersController extends BaseController
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildFromInvoice($invoice);
 
-        $counterparts = array_map(function ($purchase){
+        $counterparts = array_map(function ($purchase) {
             /** @var Purchase $purchase */
             return $purchase->getCounterpart();
         }, $invoice->getPurchases()->toArray());
 
-        $cfs = array_map(function ($purchase){
+        $cfs = array_map(function ($purchase) {
             /** @var Purchase $purchase */
             return $purchase->getContractFan();
         }, $invoice->getPurchases()->toArray());
@@ -416,14 +439,15 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/sold", name="yb_members_campaign_sold")
      */
-    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
-        if ($user == null || !$user->isSuperAdmin()){
+    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null)
+    {
+        if ($user == null || !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
         //$this->checkIfAuthorized($user, $campaign);
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
-        $cfs = array_filter($cfs, function($cf){
+        $cfs = array_filter($cfs, function ($cf) {
             /** @var ContractFan $cf */
             /** @var Purchase $purchase */
             $purchase = $cf->getPurchases()->first();
@@ -431,7 +455,7 @@ class YBMembersController extends BaseController
         });
         $tickets = array();
 
-        foreach ($cfs as $cf){
+        foreach ($cfs as $cf) {
             /** @var ContractFan $cf */
             $tickets = array_merge($tickets, $cf->getTickets()->toArray());
         }
@@ -453,8 +477,9 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/fee", name="yb_members_campaign_fee")
      */
-    public function campaignFeeDetailsAction(YBContractArtist $campaign, UserInterface $user = null){
-        if ($user == null || !$user->isSuperAdmin()){
+    public function campaignFeeDetailsAction(YBContractArtist $campaign, UserInterface $user = null)
+    {
+        if ($user == null || !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
         //$this->checkIfAuthorized($user, $campaign);
@@ -475,13 +500,14 @@ class YBMembersController extends BaseController
     /**
      * @Route("/aide-facturation", name="yb_members_payment_options")
      */
-    public function paymentOptionsAction(UserInterface $user = null, Request $request) {
+    public function paymentOptionsAction(UserInterface $user = null, Request $request)
+    {
         $this->checkIfAuthorized($user, null);
 
         $form = $this->createForm(UserBankAccountType::class, $user);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->addFlash('yb_notice', "Vos données de facturation ont bien été mises à jour.");
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
@@ -498,7 +524,7 @@ class YBMembersController extends BaseController
     {
         $this->checkIfAuthorized($user);
 
-        if ($user->isSuperAdmin()){
+        if ($user->isSuperAdmin()) {
             $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllPastEvents();
         } else {
             $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
@@ -512,7 +538,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/excel", name="yb_members_campaign_excel")
      */
-    public function excelAction(YBContractArtist $campaign, UserInterface $user = null, StringHelper $strHelper) {
+    public function excelAction(YBContractArtist $campaign, UserInterface $user = null, StringHelper $strHelper)
+    {
         $this->checkIfAuthorized($user, $campaign);
 
         // ask the service for a Excel5
@@ -527,7 +554,7 @@ class YBMembersController extends BaseController
 
         $cfs = array_reverse($campaign->getContractsFanPaid());
 
-        if(count($cfs) > 0) {
+        if (count($cfs) > 0) {
 
             $colonnes = array(
                 'Numéro de commande',
@@ -541,14 +568,14 @@ class YBMembersController extends BaseController
 
             $lettre = "A";
 
-            foreach($colonnes as $colonne) {
+            foreach ($colonnes as $colonne) {
                 $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre . '1', $colonne);
                 $lettre++;
             }
 
             $chiffre = 2;
 
-            foreach($cfs as $cf) {
+            foreach ($cfs as $cf) {
                 /** @var ContractFan $cf */
                 $lettre = "A";
                 $colonnes = array(
@@ -562,13 +589,13 @@ class YBMembersController extends BaseController
                 );
 
 
-                foreach($colonnes as $key => $colonne) {
-                    $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre. "" . $chiffre, $colonne);
+                foreach ($colonnes as $key => $colonne) {
+                    $phpExcelObject->setActiveSheetIndex(0)->setCellValue($lettre . "" . $chiffre, $colonne);
 
                     // Date
-                    if($key == 2)
+                    if ($key == 2)
                         $phpExcelObject->getActiveSheet()
-                            ->getStyle($lettre. "" . $chiffre)
+                            ->getStyle($lettre . "" . $chiffre)
                             ->getNumberFormat()
                             ->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_DATE_DATETIME);
                     $lettre++;
@@ -579,7 +606,7 @@ class YBMembersController extends BaseController
 
         $phpExcelObject->getActiveSheet()->setTitle('Commandes');
 
-        if($campaign->getTicketsSent()) {
+        if ($campaign->getTicketsSent()) {
             $phpExcelObject->createSheet();
             $colonnes = array(
                 'Identifiant du ticket',
@@ -592,14 +619,14 @@ class YBMembersController extends BaseController
 
             $lettre = "A";
 
-            foreach($colonnes as $colonne) {
+            foreach ($colonnes as $colonne) {
                 $phpExcelObject->setActiveSheetIndex(1)->setCellValue($lettre . '1', $colonne);
                 $lettre++;
             }
 
             $chiffre = 2;
 
-            foreach($cfs as $cf) {
+            foreach ($cfs as $cf) {
                 /** @var ContractFan $cf */
 
                 foreach ($cf->getTickets() as $ticket) {
@@ -615,8 +642,8 @@ class YBMembersController extends BaseController
                         $ticket->getCounterPart()->__toString(),
                     );
 
-                    foreach($colonnes as $key => $colonne) {
-                        $phpExcelObject->setActiveSheetIndex(1)->setCellValue($lettre. "" . $chiffre, $colonne);
+                    foreach ($colonnes as $key => $colonne) {
+                        $phpExcelObject->setActiveSheetIndex(1)->setCellValue($lettre . "" . $chiffre, $colonne);
                         $lettre++;
                     }
                     $chiffre++;
@@ -650,7 +677,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/{code}remove-photo", name="yb_members_campaign_remove_photo")
      */
-    public function removePhotoAction(Request $request, YBContractArtist $campaign, $code) {
+    public function removePhotoAction(Request $request, YBContractArtist $campaign, $code)
+    {
 
         $this->checkCampaignCode($campaign, $code);
 
@@ -665,7 +693,7 @@ class YBMembersController extends BaseController
         $campaign->removeCampaignPhoto($photo);
 
         $filesystem = new Filesystem();
-        $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . YBContractArtist::getWebPath($photo));
+        $filesystem->remove($this->get('kernel')->getRootDir() . '/../web/' . YBContractArtist::getWebPath($photo));
 
         $em->persist($campaign);
         $em->flush();
@@ -676,7 +704,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("admin/campaigns/excel", name="yb_admin_excel_all_campaigns")
      */
-    public function adminExcelAllCampaigns(UserInterface $user = null){
+    public function adminExcelAllCampaigns(UserInterface $user = null)
+    {
         //$this->checkIfAuthorized($user);
 
         // ask the service for a Excel5
@@ -700,13 +729,14 @@ class YBMembersController extends BaseController
         return $response;
     }
 
-     /**
+    /**
      * @Route("/my-organizations", name="yb_members_my_organizations")
      */
-    public function myOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null, Request $request){
+    public function myOrganizationsAction(EntityManagerInterface $em, UserInterface $user = null, Request $request)
+    {
         $this->checkIfAuthorized($user);
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        if ($currentUser->isSuperAdmin()){
+        if ($currentUser->isSuperAdmin()) {
             $organizations = $em->getRepository('AppBundle:YB\Organization')->findAll();
             $organizationsToBeDisplayed = $this->fetchOrganizationsForSuperUser($currentUser, $organizations);
         } else {
@@ -715,7 +745,7 @@ class YBMembersController extends BaseController
         $organization = new Organization();
         $form = $this->createForm(OrganizationType::class, $organization);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->handleNewOrganizationRequest($organization, $currentUser, $em);
             return $this->redirectToRoute('yb_members_my_organizations');
         }
@@ -729,17 +759,18 @@ class YBMembersController extends BaseController
     /**
      * @Route("/quit-organization/{id}", name="yb_members_quit_organization")
      */
-    public function quitOrganizationAction(Organization $org, UserInterface $user = null, EntityManagerInterface $em){
+    public function quitOrganizationAction(Organization $org, UserInterface $user = null, EntityManagerInterface $em)
+    {
         $this->checkIfAuthorized($user);
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        if ($org->hasOnlyOneMember()){
-            if (!$this->hasPendingProjects($org, $em)){
+        if ($org->hasOnlyOneMember()) {
+            if (!$this->hasPendingProjects($org, $em)) {
                 $em->remove($org);
             } else {
                 $this->addFlash('error', 'Votre organisation a encore des projets et vous êtes le seul membre restant ! Vous ne pouvez pas quitter le navire en pleine mer !');
             }
         } else {
-            if ($org->hasAtLeastOneAdminLeft($currentUser)){
+            if ($org->hasAtLeastOneAdminLeft($currentUser)) {
                 $this->quitOrganization($em, $org, $currentUser);
             } else {
                 $this->addFlash('error', 'Si vous partez, il n\'y a plus de maître à bord ! Désigner d\'abord un administrateur avant de partir !');
@@ -752,7 +783,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/add-to-organization/{id}", name="yb_members_add_to_organization")
      */
-    public function addToOrganizationAction(Request $request, Organization $org, UserInterface $user = null, MailDispatcher $mailDispatcher, EntityManagerInterface $em){
+    public function addToOrganizationAction(Request $request, Organization $org, UserInterface $user = null, MailDispatcher $mailDispatcher, EntityManagerInterface $em)
+    {
         $this->checkIfAuthorized($user);
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         $form_add_user = $this->createFormBuilder()
@@ -760,8 +792,8 @@ class YBMembersController extends BaseController
             ->add('submit', SubmitType::class, ['label' => 'Ajouter'])
             ->getForm();
         $form_add_user->handleRequest($request);
-        if ($form_add_user->isSubmitted() && $form_add_user->isValid()){
-            if ($this->handleAddUserToOrganization($form_add_user, $mailDispatcher, $org, $currentUser, $em)){
+        if ($form_add_user->isSubmitted() && $form_add_user->isValid()) {
+            if ($this->handleAddUserToOrganization($form_add_user, $mailDispatcher, $org, $currentUser, $em)) {
                 return $this->redirectToRoute('yb_members_my_organizations');
             }
         }
@@ -774,11 +806,12 @@ class YBMembersController extends BaseController
     /**
      * @Route("/remove-from-organization/{organization_id}/{user_id}/", name="yb_members_remove_from_organization")
      */
-    public function removeFromOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null){
+    public function removeFromOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null)
+    {
         $this->checkIfAuthorized($user);
         $member = $em->getRepository('AppBundle:User')->find($request->get('user_id'));
         $organization = $em->getRepository('AppBundle:YB\Organization')->find($request->get('organization_id'));
-        if (!in_array($organization, $member->getOrganizations())){
+        if (!in_array($organization, $member->getOrganizations())) {
             $this->addFlash('error', 'Cet utilisateur ne fait pas partie de cette organisation.');
         } else if (!in_array($member, $organization->getMembers())) {
             $this->addFlash('error', 'Cet utilisateur ne fait pas partie de cette organisation.');
@@ -792,7 +825,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/make-admin/{organization_id}/{user_id}/", name="yb_members_make_admin")
      */
-    public function makeAdminAction(Request $request, EntityManagerInterface $em, UserInterface $user = null){
+    public function makeAdminAction(Request $request, EntityManagerInterface $em, UserInterface $user = null)
+    {
         $this->checkIfAuthorized($user);
         $this->changeAdminRight($request, $em, true);
         return $this->redirectToRoute('yb_members_my_organizations');
@@ -801,7 +835,8 @@ class YBMembersController extends BaseController
     /**
      * @Route("/unmake-admin/{organization_id}/{user_id}/", name="yb_members_unmake_admin")
      */
-    public function unmakeAdminAction(Request $request, EntityManagerInterface $em, UserInterface $user = null){
+    public function unmakeAdminAction(Request $request, EntityManagerInterface $em, UserInterface $user = null)
+    {
         $this->checkIfAuthorized($user);
         $this->changeAdminRight($request, $em, false);
         return $this->redirectToRoute('yb_members_my_organizations');
@@ -810,11 +845,12 @@ class YBMembersController extends BaseController
     /**
      * @Route("/confirm-joining-organization/{id}", name="yb_members_confirm_joining_organization")
      */
-    public function confirmJoiningOrganization(Organization $org, UserInterface $user = null, EntityManagerInterface $em){
+    public function confirmJoiningOrganization(Organization $org, UserInterface $user = null, EntityManagerInterface $em)
+    {
         $this->checkIfAuthorized($user);
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         $request = $em->getRepository('AppBundle:YB\OrganizationJoinRequest')->findByUserAndOrga($org, $currentUser);
-        if ($request !== null){
+        if ($request !== null) {
             $participation = $this->createNewParticipation($org, $currentUser, false);
             $em->persist($participation);
             $em->remove($request);
@@ -826,15 +862,16 @@ class YBMembersController extends BaseController
     /**
      * @Route("rename_organization/{id}", name="yb_members_rename_organization")
      */
-    public function renameOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null, Organization $organization){
+    public function renameOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null, Organization $organization)
+    {
         $this->checkIfAuthorized($user);
         $form = $this->createFormBuilder()
             ->add('new_name', TextType::class, ['label' => 'Nouveau nom'])
             ->add('submit', SubmitType::class, ['label' => 'Valider'])
             ->getForm();
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            if ($this->handleRenameOrganization($form, $organization, $em)){
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->handleRenameOrganization($form, $organization, $em)) {
                 return $this->redirectToRoute('yb_members_my_organizations');
             }
         }
@@ -851,20 +888,37 @@ class YBMembersController extends BaseController
         $this->checkIfAuthorized($user);
         $venue = new Venue();
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        if (!$currentUser->hasPrivateOrganization()){
+        if (!$currentUser->hasPrivateOrganization()) {
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
         $form = $this->createForm(VenueType::class, $venue, ['creation' => true, 'userOrganizations' => $userOrganizations, 'block' => false]);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $em->persist($venue);
-            $em->flush();
-            $this->addFlash('yb_notice', 'La salle a bien été créée.');
-            if($venue->isOnlyFreeSeating()){
-                return $this->redirectToRoute('yb_members_my_venues');
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->isExistingAddress($em, $venue->getAddress())) {
+                $this->addFlash('error', "Il y a déjà une salle à cette adresse ! Peut-être votre salle existe-elle déjà ?!");
+                return $this->redirectToRoute('yb_members_venues_new');
             } else {
-                return $this->redirectToRoute('yb_members_add_venue_block', ['venue' => $venue->getId()]);
+                $em->persist($venue);
+                $em->flush();
+                if ($form->get('addBlocks')->isClicked()){
+                    return $this->redirectToRoute('yb_members_venue_add_configs', ['venue' => $venue->getId()]);
+                } else {
+                    $venue->createDefaultConfig();
+                    return $this->redirectToRoute('yb_members_my_venues');
+                }
+                /*if (count($venue->getConfigurations()) === 0){
+                    $this->addFlash('yb_notice', "Vous n'avez pas renseigner de configurations. Une configuration par défaut a été créée avec la capacité par défaut de votre salle. Elle ne comprend que des places debout non-numérotées.");
+                }
+                $venue->createDefaultConfig();
+                $em->persist($venue);
+                $em->flush();
+                $this->addFlash('yb_notice', 'La salle a bien été créée.');
+                if ($venue->isOnlyFreeSeating()) {
+                    return $this->redirectToRoute('yb_members_my_venues');
+                } else {
+                    return $this->redirectToRoute('yb_members_add_venue_block', ['venue' => $venue->getId()]);
+                }*/
             }
         }
         return $this->render('@App/YB/Members/venue_new.html.twig', [
@@ -875,47 +929,96 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/venue/{venue}/add-blocks", name="yb_members_add_venue_block")
+     * @Route("/venue/{venue}/add-config", name="yb_members_venue_add_configs")
      */
-    public function addBlocksAction(Venue $venue, Request $request, EntityManagerInterface $em){
-        $form = $this->createForm(VenueType::class, $venue, ['block' => true]);
+    public function addConfigsAction(UserInterface $user = null, Venue $venue, Request $request, EntityManagerInterface $em){
+        if (!$user->isSuperAdmin()) $this->checkIfAuthorizedVenue($user, $venue);
+        $config = new VenueConfig();
+        $form = $this->createForm(VenueConfigType::class, $config);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
+            $venue->addConfiguration($config);
+            $em->flush();
+            if ($config->hasFreeSeatingPolicy() || $config->isOnlyStandup()){
+                return $this->redirectToRoute('yb_members_my_venues');
+            } else {
+                return $this->redirectToRoute('yb_members_add_venue_block', ['config' => $config->getId()]);
+            }
+        }
+        return $this->render('@App/YB/Members/venue_add_config.html.twig', [
+            'venue' => $venue,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/venue/{config}/add-blocks", name="yb_members_add_venue_block")
+     */
+    public function addBlocksAction(UserInterface $user = null, VenueConfig $config, Request $request, EntityManagerInterface $em){
+        if (!$user->isSuperAdmin()) $this->checkIfAuthorizedVenueConfig($user, $config);
+        $form = $this->createForm(VenueConfigType::class, $config, ['block' => true]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             //$this->refreshRows($venue, $em);
-            $venue->generateRows();
-            $em->persist($venue);
+            $config->generateRows();
+            $em->flush();
+            if ($config->hasUnsquaredBlock()){
+                return $this->redirectToRoute('yb_members_add_rows_in_unsquared_block', ['config' => $config->getId()]);
+            } else {
+                $this->addFlash('yb_notice', 'La salle a bien été configurée.');
+                return $this->redirectToRoute('yb_members_my_venues');
+            }
+        }
+        return $this->render('@App/YB/Members/add_venue_block.html.twig', [
+            'form' => $form->createView(),
+            'config' => $config,
+        ]);
+    }
+
+    /**
+     * @Route("venue/{config}/add-rows", name="yb_members_add_rows_in_unsquared_block")
+     */
+    public function addRowsAction(VenueConfig $config, Request $request, EntityManagerInterface $em, UserInterface $user = null){
+        if (!$user->isSuperAdmin()) $this->checkIfAuthorizedVenueConfig($user, $config);
+        $unsquaredBlocks = $config->getUnsquaredBlocks();
+        $form = $this->createForm(VenueConfigType::class, $config, ['row' => true]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
             $em->flush();
             $this->addFlash('yb_notice', 'La salle a bien été configurée.');
             return $this->redirectToRoute('yb_members_my_venues');
         }
-        return $this->render('@App/YB/Members/add_venue_block.html.twig', [
+        return $this->render('@App/YB/Members/configure_block.html.twig', [
+            'blocks' => $unsquaredBlocks,
+            'config' => $config,
             'form' => $form->createView(),
-            'venue' => $venue,
         ]);
     }
 
     /**
      * @Route("/venue/{id}/update", name="yb_members_venue_edit")
      */
-    public function editVenueAction(Venue $venue, UserInterface $user = null, Request $request, EntityManagerInterface $em){
-        if (!$user->isSuperAdmin()){
+    public function editVenueAction(Venue $venue, UserInterface $user = null, Request $request, EntityManagerInterface $em)
+    {
+        if (!$user->isSuperAdmin()) {
             $this->checkIfAuthorizedVenue($user, $venue);
         }
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
-        if (!$currentUser->hasPrivateOrganization()){
+        if (!$currentUser->hasPrivateOrganization()) {
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
         $form = $this->createForm(VenueType::class, $venue, ['admin' => $user->isSuperAdmin(), 'userOrganizations' => $userOrganizations]);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $em->persist($venue);
-            $em->flush();
-            if($venue->isOnlyFreeSeating()){
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->isExistingAddress($em, $venue->getAddress())) {
+                $this->addFlash('error', "Il y a déjà une salle à cette adresse ! Peut-être votre salle existe-elle déjà ?!");
+                return $this->redirectToRoute('yb_members_venues_new');
+            } else {
+                $em->persist($venue);
+                $em->flush();
                 $this->addFlash('yb_notice', 'La salle a bien été modifiée.');
                 return $this->redirectToRoute('yb_members_my_venues');
-            } else {
-                return $this->redirectToRoute('yb_members_add_venue_block', ['venue' => $venue->getId()]);
             }
         }
         return $this->render('@App/YB/Members/venue_new.html.twig', [
@@ -926,9 +1029,33 @@ class YBMembersController extends BaseController
     }
 
     /**
+     * @Route("/venue/config/{id}/update", name="yb_members_config_edit")
+     */
+    public function editConfigurationAction(VenueConfig $config, UserInterface $user = null, Request $request, EntityManagerInterface $em){
+        if (!$user->isSuperAdmin()) {
+            $this->checkIfAuthorizedVenueConfig($user, $config);
+        }
+        $form = $this->createForm(VenueConfigType::class, $config);
+        $form->handleRequest();
+        if ($form->isSubmitted() && $form->isValid()){
+            $em->flush();
+            if ($config->hasFreeSeatingPolicy() || $config->isOnlyStandup()){
+                return $this->redirectToRoute('yb_members_my_venues');
+            } else {
+                return $this->redirectToRoute('yb_members_add_venue_block', ['config' => $config->getId()]);
+            }
+        }
+        return $this->render('@App/YB/Members/venue_add_config.html.twig', [
+            'venue' => $config->getVenue(),
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * @Route("/my-venues", name="yb_members_my_venues")
      */
-    public function myVenuesAction(UserInterface $user = null, Request $request, EntityManagerInterface $em){
+    public function myVenuesAction(UserInterface $user = null, Request $request, EntityManagerInterface $em)
+    {
         $this->checkIfAuthorized($user);
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         if ($currentUser->isSuperAdmin()) {
@@ -946,22 +1073,30 @@ class YBMembersController extends BaseController
     /**
      * @Route("/venue/{id}/close", name="yb_members_close_venue")
      */
-    public function closeVenueAction(Venue $venue, UserInterface $user = null, Request $request, EntityManagerInterface $em){
-        $this->checkIfAuthorized($user);
-        // TODO : check if an event is still planned in this venue
-        $em->remove($venue);
-        $em->flush();
+    public function closeVenueAction(Venue $venue, UserInterface $user = null, Request $request, EntityManagerInterface $em)
+    {
+        $this->checkIfAuthorizedVenue($user, $venue);
+        if ($this->isVenueStillHostingEvent($em, $venue)) {
+            $this->addFlash('error', 'Il y a au moins un événement planifié dans cette salle ! Supprimez-là quand l\'événement est fini !');
+        } else {
+            $em->remove($venue);
+            $em->flush();
+        }
         return $this->redirectToRoute('yb_members_my_venues');
     }
 
     /**
      * @Route("/config/{id}/close", name="yb_members_delete_config")
      */
-    public function deleteConfiguration(VenueConfig $config, UserInterface $user = null, Request $request, EntityManagerInterface $em){
-        $this->checkIfAuthorized($user);
-        // TODO : check if an event is still planned in this venue
-        $em->remove($config);
-        $em->flush();
+    public function deleteConfiguration(VenueConfig $config, UserInterface $user = null, Request $request, EntityManagerInterface $em)
+    {
+        $this->checkIfAuthorizedVenueConfig($user);
+        if ($this->isConfigStillUsedForEvent($em, $config)) {
+            $this->addFlash('error', 'Il y a au moins un événement planifié dans cette salle avec cette configuration-là ! Supprimez-là quand l\'événement est fini !');
+        } else {
+            $em->remove($config);
+            $em->flush();
+        }
         return $this->redirectToRoute('yb_members_my_venues');
     }
 
@@ -969,19 +1104,42 @@ class YBMembersController extends BaseController
      * @Route("/config/block/{id}/configure-row", name="yb_members_configure_block")
      */
     public function configureBlockAction(Block $block, UserInterface $user, Request $request, EntityManagerInterface $em){
-        $this->checkIfAuthorized($user);
+        $this->checkIfAuthorizedVenueBlock($user);
         $form = $this->createForm(BlockType::class, $block, ['row' => true]);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            $em->persist($block);
-            $em->flush();
-            $this->addFlash('Les rangées ont bien été ajoutées.');
-            return $this->redirectToRoute('yb_members_my_venues');
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$block->isValidCustomRow()){
+                $this->addFlash('error', 'Le nombre de sièges calculés avec vos rangées ne correspond pas à la capacité totale du bloc');
+                return $this->redirectToRoute('yb_members_configure_block', ['id' => $block->getId()]);
+            } else {
+                $em->persist($block);
+                $em->flush();
+                $this->addFlash('yb_notice','Les rangées ont bien été ajoutées.');
+                return $this->redirectToRoute('yb_members_my_venues');
+            }
         }
-        return $this->render('@App/YB/Members/configure_block.html.twig', [
+        return $this->render('@App/YB/Members/update_unsquared_rows.html.twig', [
             'block' => $block,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/change-blk-capacity", name="change_blk_capacity")
+     * @param Request $request
+     */
+    public function changeBlockCapacity(Request $request){
+        $em = $this->getDoctrine()->getManager();
+        $blockId = $request->get('blockid');
+        $newCapacity = $request->get('capacity');
+        $blk = $em->getRepository('AppBundle:YB\Block')->find($blockId);
+        $blk->setCapacity($newCapacity);
+        $em->flush();
+        $responseArray = array();
+        $responseArray[] = array(
+            'capacity' => $newCapacity
+        );
+        return new JsonResponse($responseArray);
     }
 
 
@@ -1036,7 +1194,8 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @return bool
      */
-    private function hasPendingProjects(Organization $organization, EntityManagerInterface $em){
+    private function hasPendingProjects(Organization $organization, EntityManagerInterface $em)
+    {
         $pendingProjects = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingEvents($organization);
         return count($pendingProjects) !== 0;
     }
@@ -1049,7 +1208,8 @@ class YBMembersController extends BaseController
      * @param Organization $org
      * @param User $member
      */
-    private function quitOrganization(EntityManagerInterface $em, Organization $org, User $member){
+    private function quitOrganization(EntityManagerInterface $em, Organization $org, User $member)
+    {
         $em->remove($member->getParticipationToOrganization($org));
     }
 
@@ -1060,7 +1220,8 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @param $isAdmin
      */
-    private function changeAdminRight(Request $request, EntityManagerInterface $em, $isAdmin){
+    private function changeAdminRight(Request $request, EntityManagerInterface $em, $isAdmin)
+    {
         $member = $em->getRepository('AppBundle:User')->find($request->get('user_id'));
         $org = $em->getRepository('AppBundle:YB\Organization')->find($request->get('organization_id'));
         $participation = $member->getParticipationToOrganization($org);
@@ -1079,10 +1240,11 @@ class YBMembersController extends BaseController
      * @param User $currentUser
      * @param EntityManagerInterface $em
      */
-    private function handleNewOrganizationRequest(Organization $organization, User $currentUser, EntityManagerInterface $em){
-        if ($organization->getName() === $currentUser->getDisplayName()){
+    private function handleNewOrganizationRequest(Organization $organization, User $currentUser, EntityManagerInterface $em)
+    {
+        if ($organization->getName() === $currentUser->getDisplayName()) {
             $this->addFlash('error', 'Une organisation ne peut porter le même nom que son administrateur !');
-        } elseif ($this->organizationNameExist($em, $organization->getName())){
+        } elseif ($this->organizationNameExist($em, $organization->getName())) {
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
         } else {
             $this->createNewParticipation($organization, $currentUser, true);
@@ -1108,11 +1270,12 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    private function handleAddUserToOrganization(FormInterface $form_add_user, MailDispatcher $mailDispatcher, Organization $org, User $user, EntityManagerInterface $em){
+    private function handleAddUserToOrganization(FormInterface $form_add_user, MailDispatcher $mailDispatcher, Organization $org, User $user, EntityManagerInterface $em)
+    {
         $data = $form_add_user->getData();
         if ($form_add_user->get('submit')->isClicked()) {
             $guest = $em->getRepository('AppBundle:User')->findOneBy(['username' => $data['email_address']]);
-            if ($guest !== null && $org->hasMember($guest)){
+            if ($guest !== null && $org->hasMember($guest)) {
                 $this->addFlash('error', 'Cet utilisateur est déjà dans votre organisation !');
                 return false;
             } else {
@@ -1133,7 +1296,8 @@ class YBMembersController extends BaseController
      * @param OrganizationJoinRequest $invitation
      * @param MailDispatcher $mailDispatcher
      */
-    private function sendInvitation(OrganizationJoinRequest $invitation, MailDispatcher $mailDispatcher){
+    private function sendInvitation(OrganizationJoinRequest $invitation, MailDispatcher $mailDispatcher)
+    {
         $email = $invitation->getEmail();
         $organization = $invitation->getOrganization();
         $demander = $invitation->getDemander();
@@ -1148,7 +1312,8 @@ class YBMembersController extends BaseController
      * @param $isAdmin
      * @return Membership
      */
-    private function createNewParticipation(Organization $org, User $user, $isAdmin){
+    private function createNewParticipation(Organization $org, User $user, $isAdmin)
+    {
         $participation = new Membership();
         $participation->setAdmin($isAdmin);
         $user->addParticipation($participation);
@@ -1164,7 +1329,8 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @param User $currentUser
      */
-    private function createPrivateOrganization(EntityManagerInterface $em, User $currentUser){
+    private function createPrivateOrganization(EntityManagerInterface $em, User $currentUser)
+    {
         $ownNameOrg = new Organization();
         $ownNameOrg->setName($currentUser->getDisplayName());
         $ownNameOrg->setIsPrivate(true);
@@ -1180,9 +1346,10 @@ class YBMembersController extends BaseController
      * @param $newName
      * @return bool
      */
-    private function organizationNameExist(EntityManagerInterface $em, $newName){
+    private function organizationNameExist(EntityManagerInterface $em, $newName)
+    {
         $selfNamedOrg = $em->getRepository('AppBundle:YB\Organization')->findBy(['name' => $newName]);
-        if (count($selfNamedOrg) === 0){
+        if (count($selfNamedOrg) === 0) {
             return false;
         } else {
             return !$this->areAllDeleted($selfNamedOrg);
@@ -1197,9 +1364,10 @@ class YBMembersController extends BaseController
      * @param $newName
      * @return bool
      */
-    private function isNameOfMember(Organization $organization, $newName){
-        foreach ($organization->getMembers() as $member){
-            if ($member->getDisplayName() === $newName){
+    private function isNameOfMember(Organization $organization, $newName)
+    {
+        foreach ($organization->getMembers() as $member) {
+            if ($member->getDisplayName() === $newName) {
                 return true;
             }
         }
@@ -1216,12 +1384,13 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @return bool
      */
-    private function handleRenameOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
+    private function handleRenameOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em)
+    {
         $new_name = $form->getData()['new_name'];
-        if ($this->organizationNameExist($em, $new_name)){
+        if ($this->organizationNameExist($em, $new_name)) {
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
             return false;
-        } elseif($this->isNameOfMember($organization, $new_name)){
+        } elseif ($this->isNameOfMember($organization, $new_name)) {
             $this->addFlash('error', 'L\'organisation ne peut avoir le même nom qu\'un de ses membres. Essayez un autre nom !');
             return false;
         } else {
@@ -1242,14 +1411,15 @@ class YBMembersController extends BaseController
      * @param User $currentUser
      * @return array
      */
-    private function getOrganizationsFromUser(User $currentUser){
-        if ($currentUser->isSuperAdmin()){
+    private function getOrganizationsFromUser(User $currentUser)
+    {
+        if ($currentUser->isSuperAdmin()) {
             $userOrganizations = $this->getDoctrine()->getManager()->getRepository('AppBundle:YB\Organization')->findAll();
             $userOrganizations = $this->fetchOrganizationsForSuperUser($currentUser, $userOrganizations);
         } else {
             $userOrganizations = $currentUser->getOrganizations();
         }
-        usort($userOrganizations, function($organization1, $organization2){
+        usort($userOrganizations, function ($organization1, $organization2) {
             return strtolower($organization1->getName()) > strtolower($organization2->getName());
         });
         return $userOrganizations;
@@ -1261,22 +1431,24 @@ class YBMembersController extends BaseController
      * @param $orgs
      * @return bool
      */
-    private function areAllDeleted($orgs){
-        foreach ($orgs as $org){
-            if (!$org->isDeleted()){
+    private function areAllDeleted($orgs)
+    {
+        foreach ($orgs as $org) {
+            if (!$org->isDeleted()) {
                 return false;
             }
         }
         return true;
     }
 
-    private function fetchOrganizationsForSuperUser($currentUser, $organizations){
-        $organizations = array_filter($organizations, function($org){
+    private function fetchOrganizationsForSuperUser($currentUser, $organizations)
+    {
+        $organizations = array_filter($organizations, function ($org) {
             return !$org->isDeleted();
         });
         $organizationsToBeDisplayed = [];
-        foreach ($organizations as $org){
-            if ($org->hasMember($currentUser)){
+        foreach ($organizations as $org) {
+            if ($org->hasMember($currentUser)) {
                 array_unshift($organizationsToBeDisplayed, $org);
             } else {
                 array_push($organizationsToBeDisplayed, $org);
@@ -1285,23 +1457,76 @@ class YBMembersController extends BaseController
         return $organizationsToBeDisplayed;
     }
 
-    private function removeClosedVenues($venues){
-        $venues = array_filter($venues, function($venue){
+    private function removeClosedVenues($venues)
+    {
+        $venues = array_filter($venues, function ($venue) {
             return !$venue->isDeleted();
         });
-        usort($venues, function(Venue $v1, Venue $v2){
-           return strtolower($v1->getAddress()->getName()) > strtolower($v2->getAddress()->getName());
+        usort($venues, function (Venue $v1, Venue $v2) {
+            return strtolower($v1->getAddress()->getName()) > strtolower($v2->getAddress()->getName());
         });
         return $venues;
     }
 
-    private function refreshRows(Venue $venue, EntityManagerInterface $em) {
-        $rows = $em->getRepository('AppBundle:YB\BlockRow')->getRowsFromVenue($venue->getId());
-        foreach ($rows as $row){
-            $row;
-            $em->remove($row);
-            $em->flush();
+    private function isExistingAddress(EntityManagerInterface $em, Address $a)
+    {
+        $addresses = $em->getRepository('AppBundle:Address')->findAll();
+        foreach ($addresses as $address) {
+            if ($a->equals($address)) {
+                return true;
+            }
         }
+        return false;
     }
+
+    private function isVenueStillHostingEvent(EntityManagerInterface $em, Venue $venue)
+    {
+        $currentEvents = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
+        foreach ($currentEvents as $currentEvent) {
+            if ($currentEvent->getVenue() === $venue) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function isConfigStillUsedForEvent(EntityManagerInterface $em, VenueConfig $config)
+    {
+        $currentEvents = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
+        foreach ($currentEvents as $currentEvent) {
+            if ($currentEvent->getConfig() === $config) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function getActiveVenueConfig(EntityManagerInterface $em)
+    {
+        $venues = $em->getRepository('AppBundle:YB\Venue')->findAll();
+        $configs = [];
+        foreach ($venues as $venue) {
+            if (!$venue->isDeleted() && !$venue->getAcceptVenueTemp()) {
+                foreach ($venue->getConfigurations() as $configuration) {
+                    array_push($configs, $configuration);
+                }
+            }
+        }
+        return $configs;
+    }
+
+    private function getActiveVenue(EntityManagerInterface $em){
+        $venues = $em->getRepository('AppBundle:YB\Venue')->findAll();
+        $activeVenues = [];
+        foreach ($venues as $venue) {
+            if (!$venue->isDeleted() && !$venue->getAcceptVenueTemp()) {
+                array_push($activeVenues, $venue);
+            }
+        }
+        return $activeVenues;
+    }
+
+
+
 
 }

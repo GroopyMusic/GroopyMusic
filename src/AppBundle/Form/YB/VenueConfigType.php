@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -33,7 +34,30 @@ class VenueConfigType extends AbstractType {
                     'by_reference' => false,
                     'prototype' => true,
                     'attr' => ['class' => 'second-collection'],
-                ));
+                ))
+                ->add('submit', SubmitType::class, array(
+                    'label' => 'Enregistrer',
+                ))
+            ;
+        } elseif ($options['row']) {
+            $builder
+                ->add('blocks', CollectionType::class, array(
+                    'label' => 'Ajout de bloc',
+                    'entry_type' => BlockType::class,
+                    'entry_options' => array(
+                        'label' => false,
+                        'row' => true,
+                    ),
+                    'allow_add' => false,
+                    'allow_delete' => false,
+                    'by_reference' => false,
+                    'prototype' => true,
+                    'attr' => ['class' => 'second-collection'],
+                ))
+                ->add('submit', SubmitType::class, array(
+                    'label' => 'Enregistrer',
+                ))
+            ;
         } else {
             $builder
                 ->add('name', TextType::class, array(
@@ -57,7 +81,7 @@ class VenueConfigType extends AbstractType {
                 ))
                 ->add('nbSeatedSeats', IntegerType::class, array(
                     'required' => false,
-                    'label' => "Nombre de places assises (gradins)",
+                    'label' => "Nombre de places assises (hors balcon)",
                 ))
                 ->add('nbBalconySeats', IntegerType::class, array(
                     'required' => false,
@@ -83,6 +107,9 @@ class VenueConfigType extends AbstractType {
                     'label' => 'Plan de salle',
                     'required' => false,
                 ))
+                ->add('submit', SubmitType::class, array(
+                    'label' => 'Enregistrer'
+                ))
             ;
         }
     }
@@ -95,6 +122,7 @@ class VenueConfigType extends AbstractType {
             $venueConfig->setNbBalconySeats(0);
             $venueConfig->setNbSeatedSeats(0);
             $venueConfig->setNbStandUp($venueConfig->getMaxCapacity());
+            $venueConfig->setHasFreeSeatingPolicy(true);
         } else {
             if ($venueConfig->getNbStandUp() === null){
                 $venueConfig->setNbStandUp(0);
@@ -127,6 +155,7 @@ class VenueConfigType extends AbstractType {
                 new Assert\Callback(array($this, 'validate'))
             ),
             'block' => false,
+            'row' => false,
         ]);
     }
 

@@ -20,6 +20,7 @@ class VenueConfig {
     }
 
     public function __construct(){
+        $this->isDefault = false;
         $this->maxCapacity = 0;
         $this->nbStandUp = 0;
         $this->nbSeatedSeats = 0;
@@ -27,32 +28,53 @@ class VenueConfig {
         $this->blocks = new ArrayCollection();
     }
 
-    public function isValidCapacityUp(){
-        $nbStandUp = 0;
-        $nbSeated = 0;
-        $nbBalcony = 0;
+    public function __toString(){
+        return $this->name;
+    }
+
+    public function constructDefault(Venue $v){
+        $this->name = 'Config par défaut';
+        $this->maxCapacity = $v->getDefaultCapacity();
+        $this->onlyStandup = true;
+        $this->nbStandUp = $this->maxCapacity;
+        $this->nbSeatedSeats = 0;
+        $this->nbBalconySeats = 0;
+        $this->pmrAccessible = false;
+        $this->emailAddressPMR = null;
+        $this->phoneNumberPMR = null;
+        $this->hasFreeSeatingPolicy = true;
+        $this->venue = $v;
+        $this->photo = null;
+        $this->isDefault = true;
+    }
+
+    public function generateRows(){
         foreach ($this->blocks as $block){
-            if ($block->isValidCapacity()){
-                switch ($block->getType()){
-                    case 'Debout' :
-                        $nbStandUp += $block->getNbSeatsOfBlock();
-                        break;
-                    case 'Assis' :
-                        $nbSeated += $block->getNbSeatsOfBlock();
-                        break;
-                    default :
-                        $nbBalcony += $block->getNbSeatsOfBlock();
-                        break;
-                }
-                return $nbStandUp === $this->nbStandUp && $nbSeated === $this->nbSeatedSeats && $nbBalcony === $this->nbBalconySeats;
+            if ($block->isNotSquared()){
+                // TODO
             } else {
-                return false;
+                $block->generateSeats();
             }
         }
     }
 
-    public function getAddress(){
-        return $this->venue->getAddress();
+    public function hasUnsquaredBlock(){
+        foreach ($this->blocks as $block){
+            if ($block->isNotSquared()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getUnsquaredBlocks(){
+        $unsquaredBlocks = array();
+        foreach ($this->blocks as $block){
+            if ($block->isNotSquared()){
+                array_push($unsquaredBlocks, $block);
+            }
+        }
+        return $unsquaredBlocks;
     }
 
     /**
@@ -146,6 +168,11 @@ class VenueConfig {
      * @ORM\JoinColumn(nullable=true)
      */
     protected $photo;
+
+    /**
+     * @ORM\Column(name="is_default", type="boolean")
+     */
+    private $isDefault;
 
     /**
      * @return mixed
@@ -382,6 +409,22 @@ class VenueConfig {
     public function setPhoto($photo)
     {
         $this->photo = $photo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isDefault()
+    {
+        return $this->isDefault;
+    }
+
+    /**
+     * @param mixed $isDefault
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
     }
 
 

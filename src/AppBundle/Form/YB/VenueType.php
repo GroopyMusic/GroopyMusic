@@ -5,6 +5,7 @@ namespace AppBundle\Form\YB;
 use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Form\PhotoType;
+use Sonata\AdminBundle\Form\Type\Filter\NumberType;
 use Symfony\Component\Form\AbstractType;
 use AppBundle\Form\AddressType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -14,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use AppBundle\Entity\YB\Organization;
@@ -61,23 +63,18 @@ class VenueType extends AbstractType
                     'required' => false,
                     'label' => "Lieu de l'événement",
                 ))
-                ->add('submit', SubmitType::class, array(
-                    'label' => 'Enregistrer',
+                ->add('defaultCapacity', IntegerType::class, array(
+                    'required' => true,
+                    'label' => 'La capacité, par défaut, de la salle'
                 ))
-                ->add('configurations', CollectionType::class, array(
-                    'label' => 'Configurations différentes de la salle',
-                    'entry_type' => VenueConfigType::class,
-                    'entry_options' => array(
-                        'label' => false,
-                    ),
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-                    'prototype' => true,
-                    'attr' => ['class' => 'collection'],
+                ->add('submit', SubmitType::class, array(
+                    'label' => 'Terminer',
                 ));
             if ($options['creation']) {
                 $builder
+                    ->add('addBlocks', SubmitType::class, array(
+                        'label' => 'Ajouter une configuration'
+                    ))
                     ->add('acceptConditions', CheckboxType::class, array(
                         'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Ticked-it!",
                         'required' => true,
@@ -96,16 +93,18 @@ class VenueType extends AbstractType
         }
     }
 
-    public function validate(Venue $venue, ExecutionContextInterface $context)
-    {
+    public function validate(Venue $venue, ExecutionContextInterface $context) {
         if (!$venue->getAcceptBeingResponsible() && !$venue->getAcceptVenueTemp()){
             $context->addViolation("Soit vous êtes gestionnaire de la salle et vous accepter qu'elle soit enregistrée dans le système, soit vous acceptez que la salle soit supprimée après votre événement.");
         }
         if ($venue->getAcceptBeingResponsible() && $venue->getAcceptVenueTemp()){
             $context->addViolation("Soit vous êtes gestionnaire de la salle et vous accepter qu'elle soit enregistrée dans le système, soit vous acceptez que la salle soit supprimée après votre événement.");
         }
-        if (count($venue->getConfigurations()) === 0) {
-            $context->addViolation("Vous devez enregistrer au moins 1 configuration !");
+        if ($venue->getAddress() !== null){
+            $venue->setName($venue->getAddress()->getName());
+        }
+        if ($venue->getDefaultCapacity() <= 0){
+            $context->addViolation("La capacité par défaut de la salle doit être supérieure à 0 !");
         }
     }
 

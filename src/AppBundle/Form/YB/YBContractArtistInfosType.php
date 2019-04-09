@@ -3,12 +3,10 @@
 namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\Organization;
-use AppBundle\Entity\YB\YBSubEvent;
-use AppBundle\Form\AddressType;
-use AppBundle\Form\CounterPartType;
 use AppBundle\Form\PhotoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -16,22 +14,17 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\PercentType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\Common\Collections\ArrayCollection;
-use Craue\FormFlowBundle\Form\FormFlow;
-use Craue\FormFlowBundle\Form\FormFlowInterface;
 
-class YBContractArtistInfosType extends AbstractType
-{
+class YBContractArtistInfosType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -80,12 +73,11 @@ class YBContractArtistInfosType extends AbstractType
                 },
                 'choice_label' => 'name',
             ])
-            ->add('venue', EntityType::class, [
-                'class' => VenueConfig::class,
-                'label' => 'Salle',
-                'choices' => $options['venues'],
-                'choice_label' => 'displayName',
-            ])
+            ->add('confirmVenue', CheckboxType::class, array(
+                'mapped' => false,
+                'label' => 'Je certifie avoir l\'accord du gestionnaire de la salle pour utiliser celle-ci.',
+                'required' => true,
+            ))
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
@@ -125,13 +117,6 @@ class YBContractArtistInfosType extends AbstractType
                 'attr' => ['class' => 'collection']
                 //'required' => false,
                 //'label' => 'Montant fixe minimum',
-            ))
-            ->add('address', AddressType::class, array(
-                'required' => true,
-                'label' => "Lieu de l'événement",
-                'constraints' => [
-                    new Assert\Valid(),
-                ]
             ))
             ->add('translations', TranslationsType::class, [
                 'locales' => ['fr'],
@@ -188,7 +173,8 @@ class YBContractArtistInfosType extends AbstractType
                 ))
             ;
         }
-
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
@@ -229,11 +215,50 @@ class YBContractArtistInfosType extends AbstractType
             'venues' => null,
             'campaign_id' => null,
             'has_sub_events' => false,
+            'em' => null,
+            'user' => null,
         ]);
     }
 
     public function getBlockPrefix()
     {
         return 'app_bundle_ybcontract_artist_type';
+    }
+
+    protected function addElements(FormInterface $form, Venue $venue = null){
+        $form->add('venue', EntityType::class, [
+            'label' => 'Salle',
+            'required' => true,
+            'choices' => $form->getConfig()->getOptions()['venues'],
+            'data' => $venue,
+            'placeholder' => 'Sélectionner une salle',
+            'class' => Venue::class,
+        ]);
+        $configs = array();
+        if ($venue){
+            $configs = $venue->getConfigurations();
+        }
+        $form->add('config', EntityType::class, [
+            'label' => 'Configuration',
+            'required' => true,
+            'choices' => $configs,
+            'placeholder' => 'Sélectionner une configuration de salle',
+            'class' => VenueConfig::class,
+        ]);
+    }
+
+    function onPreSubmit(FormEvent $event){
+        $form = $event->getForm();
+        $data = $event->getData();
+        $em = $event->getForm()->getConfig()->getOptions()['em'];
+        $venue = $em->getRepository('AppBundle:YB\Venue')->find($data['venue']);
+        $this->addElements($form, $venue);
+    }
+
+    function onPreSetData(FormEvent $event){
+        $campaign = $event->getData();
+        $form = $event->getForm();
+        $venue = $campaign->getVenue() ? $campaign->getVenue() : null;
+        $this->addElements($form, $venue);
     }
 }

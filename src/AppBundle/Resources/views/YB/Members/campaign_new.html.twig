@@ -82,11 +82,21 @@
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Salle où se déroule l'événement </h2>
             <div class="row">
+                {% if form.venue is defined %}
                 <div class="col-12 col-md-12">
                     {{ form_row(form.venue) }}
                 </div>
-            </div>
+                {% endif %}
+                {% if form.config is defined %}
+                    <div class="col-12 col-md-12">
+                        {{ form_row(form.config) }}
+                    </div>
+                {% endif %}
+            </div> <br>
             <p>Votre salle n'est pas dans la liste ? <a class="link-secondary" href="{{ path('yb_members_venues_new') }}" >Créez-la ici !</a></p>
+            <div class="col-12 col-md-12">
+                {{ form_widget(form.confirmVenue) }}
+            </div>
         </section>
 
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
@@ -111,18 +121,6 @@
                 <div class="col-12 col-md-6">
                     {{ form_row(form.dateClosure) }}
                 </div>
-            </div>
-        </section>
-
-        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
-            <h2>Adresse</h2>
-            <div class="row">
-                <div class="col-12">{{ form_row(form.address.name) }}</div>
-                <div class="col-12 col-md-10">{{ form_row(form.address.street) }}</div>
-                <div class="col-12 col-md-2">{{ form_row(form.address.number) }}</div>
-                <div class="col-12 col-md-4">{{ form_row(form.address.zipcode) }}</div>
-                <div class="col-12 col-md-8">{{ form_row(form.address.city) }}</div>
-                <div class="col-12">{{ form_row(form.address.country) }}</div>
             </div>
         </section>
 
@@ -242,6 +240,17 @@
         <div class="text-muted font-italic pb-2">Nombre maximum de tickets pouvant être vendus, tous tickets confondus.</div>
         {{ form_errors(form.globalSoldout) }}
         {{ form_widget(form.globalSoldout) }}
+        {% if form.globalSoldout is defined and campaign.id is not null %}
+            {% if form.vars.data.globalSoldout > campaign.config.maxCapacity %}
+                <div class="error-capacity" style="display: block">
+                    <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
+                </div>
+            {% else %}
+                <div class="error-capacity" style="display: none">
+                    <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
+                </div>
+            {% endif %}
+        {% endif %}
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <p>Pour vendre des tickets, il vous faut au moins en créer un ci-dessous.</p>
@@ -266,9 +275,32 @@
 
 {% block additional_javascripts %}
     {{ parent() }}
+    <script>
+        $('#app_bundle_ybcontract_artist_type_venue').change(function(){
+            var venueSelector = $(this);
+            $.ajax({
+                url: "{{ path('campaign_venue_list_config') }}",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    venueid: venueSelector.val()
+                },
+                success: function(configs){
+                    var configSelect = $('#app_bundle_ybcontract_artist_type_config');
+                    configSelect.html('');
+                    configSelect.append('<option value> Selectionne une configuration de la salle ' + venueSelector.find("option:selected").text() + ' ...</option>')
+                    $.each(configs, function(key, config){
+                        configSelect.append('<option value="' + config.id + '">' + config.name + '</option>')
+                    });
+                },
+                error: function(err){
+                    alert("Problème lors du chargement ...");
+                }
+            })
+        });
+    </script>
     <script type="text/javascript">
         $(function() {
-
             yb_second_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une commission</a>',
                 remove:'<div class="input-group"><a class="btn btn-danger" href="#">Supprimer cette commission</a></div>'
@@ -308,6 +340,22 @@
                 $(this).closest('.counterpart-row').find('.counter-part-price').toggle(!this.checked);
             });
             $('.free-price-checkbox').trigger('change');
+
+            $('.give-access-everywhere').attr('checked','checked');
+
+            $('.give-access-everywhere').on('change', function () {
+                $(this).closest('.counterpart-row').find('.blocks-selection').toggle(!this.checked);
+            });
+            $('.give-access-everywhere').trigger('change');
+            $('#app_bundle_ybcontract_artist_type_globalSoldout').change(function(){
+                {% if campaign.id is not null %}
+                    if ($('#app_bundle_ybcontract_artist_type_globalSoldout').val() > {{ campaign.config.maxCapacity }}){
+                        $('.error-capacity').css('display', 'block');
+                    } else {
+                        $('.error-capacity').css('display', 'none');
+                    }
+                {% endif %}
+            });
 
             {% if campaign.id is not null %}
                 var $dropzone = $("div.dropzone");

@@ -109,19 +109,14 @@ class BlockType extends AbstractType {
             if ($block->getFreeSeating()){
                 $block->constructFreeSeating();
             } else {
-                $computedCapacity = $block->getNbSeatsOfBlock();//$block->getNbRows() * $block->getNbSeatsPerRow();
+                $computedCapacity = $block->getNbSeatsOfBlock();
                 if ($block->getCapacity() !== $computedCapacity){
-                    $context->addViolation('La capacité globale et le nombre de siège ne correspondent pas ! '.$block->getCapacity().' != '.$computedCapacity);
-                } else if ($block->getNbRows() > 26 && $block->getRowLabel() === 1){
-                    $context->addViolation('Il n\'y a que 26 lettres dans l\'alphabet, donc maximum 26 rangées possible!');
-                } else if ($block->getNbSeatsPerRow() > 26 && $block->getSeatLabel() === 1){
-                    $context->addViolation('Il n\'y a que 26 lettres dans l\'alphabet, donc maximum 26 sièges par rangée possible!');
-                } else {
-                    if ($block->getNbRows() === null || $block->getNbSeatsPerRow() === null){
-                        $context->addViolation("Vous devez renseigner des rangées et des sièges !");
-                    }
+                    $context->addViolation('La capacité globale et le nombre de siège ne correspondent pas !');
                 }
             }
+        }
+        if ($block->isNotSquared()){
+            $block->constructNotSquare();
         }
     }
 

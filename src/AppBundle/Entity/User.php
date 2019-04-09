@@ -259,9 +259,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     public function getVenuesHandled(){
         $venues = [];
         foreach ($this->participations as $participation){
-            array_merge($venues, $participation->getOrganization()->getVenues());
+            foreach ($participation->getOrganization()->getVenues() as $venue){
+                array_push($venues, $venue);
+            }
         }
-        return venues;
+        return $venues;
     }
 
 

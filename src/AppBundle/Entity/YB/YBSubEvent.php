@@ -40,7 +40,7 @@ class YBSubEvent {
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CounterPart", inversedBy="sub_events")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CounterPart", mappedBy="sub_events")
      */
     private $counterparts;
 

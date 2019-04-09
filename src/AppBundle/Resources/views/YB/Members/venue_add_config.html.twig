@@ -1,6 +1,17 @@
-{% block app_bundle_venue_config_type_row %}
-    <div class="row counterpart-row">
-        <h3>Configuration</h3>
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('yb_members_my_venues') }}">Mes salles</a></li>
+            <li class="active"><span>{{ venue.name }}</span></li>
+            <li class="active"><span>Ajout d'une configuration</span></li>
+        </ol>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Ajout d'une configuration </h2>
         <div class="row">
             <div class="col-12">
                 {{ form_row(form.name) }}
@@ -33,52 +44,44 @@
                     {{ form_row(form.emailAddressPMR) }}
                 </div>
             </div>
-            <div class="col-12">
-                <h4>Image</h4>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <p style="color: darkgreen"><b>{{ form_label(form.photo) }}</b></p>
-                        <div class="text-text-muted font-italic pb-2">
-                            Vous pouvez rajouter une photo de votre plan de salle afin de permettre aux acheteurs de
-                            visualiser plus facilement l'agencement de votre salle.
-                        </div>
-                        {{ form_errors(form.photo) }}
-                        {{ form_widget(form.photo) }}
-                    </div>
-                    {% if form.vars.data is not null %}
-                        {% if form.vars.data.id is not null and form.vars.data.photo is not null %}
-                            <div class="col-12 col-md-6">
-                                <img class="img-fluid" src="{{ yb_asset(form.vars.data.webPath(form.vars.data.photo)) }}"/>
-                            </div>
-                        {% endif %}
-                    {% endif %}
+        </div>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Image</h2>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <p style="color: darkgreen"><b>{{ form_label(form.photo) }}</b></p>
+                <div class="text-text-muted font-italic pb-2">
+                    Vous pouvez rajouter une photo de votre plan de salle afin de permettre aux acheteurs de
+                    visualiser plus facilement l'agencement de votre salle.
                 </div>
+                {{ form_errors(form.photo) }}
+                {{ form_widget(form.photo) }}
             </div>
+            {% if form.vars.data is not null %}
+                {% if form.vars.data.id is not null and form.vars.data.photo is not null %}
+                    <div class="col-12 col-md-6">
+                        <img class="img-fluid" src="{{ yb_asset(form.vars.data.webPath(form.vars.data.photo)) }}"/>
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
-        <div class="col-12">
-            <hr size="4" color="orange">
-        </div>
-    </div>
+    </section>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
     <script type="text/javascript">
-        /*$(function() {
-            if ($('#yb_venue_has_only_free_seating input[type="checkbox"]').is(':checked')){
-                $(this).closest('.counterpart-row').find('.yb_free_seat_only').toggle(!this.checked);
-            } else {
-                $(this).closest('.counterpart-row').find('.yb_free_seat_only').toggle(this.checked);
-            }
-        });*/
         $('#yb_venue_has_only_free_seating input[type="checkbox"]').attr('checked', 'checked');
-        yb_second_collection({
-            add: '<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un bloc</a>',
-            remove: '<div class="input-group"><a class="btn btn-danger" href="#">Supprimer</a></div>'
-        });
         $('#yb_venue_has_only_free_seating input[type="checkbox"]').on('change', function () {
-            $(this).closest('.counterpart-row').find('.yb_free_seat_only').toggle(!this.checked);
+            $('.yb_free_seat_only').toggle(!this.checked);
         });
         $('#yb_venue_has_only_free_seating input[type="checkbox"]').trigger('change');
         $('#yb_venue_has_pmr_zone input[type="checkbox"]').on('change', function () {
-            $(this).closest('.counterpart-row').find('.yb_pmr_zone').toggle(this.checked);
+            $('.yb_pmr_zone').toggle(this.checked);
         });
         $('#yb_venue_has_pmr_zone input[type="checkbox"]').trigger('change');
     </script>
 {% endblock %}
+
