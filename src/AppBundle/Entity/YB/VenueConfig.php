@@ -51,9 +51,9 @@ class VenueConfig {
     public function generateRows(){
         foreach ($this->blocks as $block){
             if ($block->isNotSquared()){
-                // TODO
+                // do nothing
             } else {
-                $block->generateSeats();
+                $block->generateRows();
             }
         }
     }

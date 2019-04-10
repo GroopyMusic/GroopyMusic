@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
         {% stylesheets filter='scssphp, cssrewrite' output="css/compiled/yb/layout.min.css"
             "yb/yb.scss"
+            "yb/jquery.seat-charts.css"
             %}
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
@@ -179,9 +180,10 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
 
     {% javascripts filter='jsqueeze' output='js/compiled/yb/main.js'
-    'yb/js/yb.js'
-    'yb/js/dropzone.js'
-    'yb/js/jplist.min.js'
+        'yb/js/yb.js'
+        'yb/js/dropzone.js'
+        'yb/js/jplist.min.js'
+        'yb/js/jquery.seat-charts.min.js'
     %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}

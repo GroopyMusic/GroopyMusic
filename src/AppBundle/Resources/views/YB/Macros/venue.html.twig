@@ -7,19 +7,22 @@
                 <h3 class="name">{{ venue.address.name }}</h3>
             </div>
             <div class="col-12 col-md-3">
-                <a class="link-secondary" href="{{ path('yb_members_venue_edit', {'id': venue.id}) }}">
+                <a class="btn btn-outline-secondary" href="{{ path('yb_members_venue_edit', {'id': venue.id}) }}">
+                    <i class="fas fa-pen"></i>
                     Modifier la salle...
                 </a>
             </div>
             <div class="col-12 col-md-3">
-                <a class="link-secondary"
-                   href="#">Ajouter une configuration...
+                <a class="btn btn-outline-secondary"
+                   href="{{ path('yb_members_venue_add_configs', {'venue': venue.id}) }}">
+                    <i class="fa fa-plus-square"></i> Ajouter une configuration...
                 </a>
             </div>
             <div class="col-12 col-md-3">
                 {% if venue.isHandledByUser(currentUser) %}
                     <p>
-                        <a class="link-secondary" data-toggle="modal" href="#quitModal{{ venue.id }}">
+                        <a class="btn btn-outline-secondary" data-toggle="modal" href="#quitModal{{ venue.id }}">
+                            <i class="fa fa-ban"></i>
                             Supprimer cette salle...
                         </a>
                     </p>
@@ -39,6 +42,7 @@
                             <p>
                                 <a class="btn-outline-warning btn"
                                    href="{{ path('yb_members_config_edit', {'id': config.id}) }}">
+                                    <i class="fas fa-pen"></i>
                                     Modifier la configuration...
                                 </a>
                             </p>
@@ -49,6 +53,7 @@
                             <p>
                                 <a class="btn-outline-warning btn" data-toggle="modal"
                                    href="#deleteConfModal{{ config.id }}">
+                                    <i class="fa fa-ban"></i>
                                     Supprimer la configuration...
                                 </a>
                             </p>
@@ -71,6 +76,7 @@
                                     <div class="col-12 col-md-3">
                                         <a class="btn-outline-info btn"
                                            href="{{ path('yb_members_configure_block', {'id' : block.id}) }}">
+                                            <i class="fas fa-pen"></i>
                                             Modifier le bloc
                                         </a>
                                     </div>

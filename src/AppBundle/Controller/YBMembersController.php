@@ -940,6 +940,7 @@ class YBMembersController extends BaseController
             $venue->addConfiguration($config);
             $em->flush();
             if ($config->hasFreeSeatingPolicy() || $config->isOnlyStandup()){
+                $this->addFlash('yb_notice', 'La salle a bien été configurée.');
                 return $this->redirectToRoute('yb_members_my_venues');
             } else {
                 return $this->redirectToRoute('yb_members_add_venue_block', ['config' => $config->getId()]);
@@ -969,7 +970,7 @@ class YBMembersController extends BaseController
                 return $this->redirectToRoute('yb_members_my_venues');
             }
         }
-        return $this->render('@App/YB/Members/add_venue_block.html.twig', [
+        return $this->render('@App/YB/Members/venue_add_block.html.twig', [
             'form' => $form->createView(),
             'config' => $config,
         ]);
@@ -988,7 +989,7 @@ class YBMembersController extends BaseController
             $this->addFlash('yb_notice', 'La salle a bien été configurée.');
             return $this->redirectToRoute('yb_members_my_venues');
         }
-        return $this->render('@App/YB/Members/configure_block.html.twig', [
+        return $this->render('@App/YB/Members/venue_configure_block.html.twig', [
             'blocks' => $unsquaredBlocks,
             'config' => $config,
             'form' => $form->createView(),
@@ -1036,7 +1037,7 @@ class YBMembersController extends BaseController
             $this->checkIfAuthorizedVenueConfig($user, $config);
         }
         $form = $this->createForm(VenueConfigType::class, $config);
-        $form->handleRequest();
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $em->flush();
             if ($config->hasFreeSeatingPolicy() || $config->isOnlyStandup()){
@@ -1118,7 +1119,7 @@ class YBMembersController extends BaseController
                 return $this->redirectToRoute('yb_members_my_venues');
             }
         }
-        return $this->render('@App/YB/Members/update_unsquared_rows.html.twig', [
+        return $this->render('@App/YB/Members/venue_update_unsquared_rows.html.twig', [
             'block' => $block,
             'form' => $form->createView(),
         ]);
@@ -1141,6 +1142,38 @@ class YBMembersController extends BaseController
         );
         return new JsonResponse($responseArray);
     }
+
+    /**
+     * @Route("/venue-help", name="help_venue")
+     */
+    public function openHelpCreateVenue(){
+        return $this->render('@App/YB/Members/venue_help.html.twig');
+    }
+
+    /**
+     * @Route("/pick-seats", name="pick_seats")
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function pickSeatsAction(EntityManagerInterface $em){
+        /** @var ContractFan $contractFan */
+        $contractFan = $em->getRepository('AppBundle:ContractFan')->find(885);
+        $purchases = $contractFan->getPurchases();
+        $campaignID = $contractFan->getContractArtist()->getId();
+        /** @var YBContractArtist $campaign */
+        $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find($campaignID);
+        $counterpart = $campaign->getCounterParts();
+        $config = $campaign->getConfig();
+        $blocks = $config->getBlocks();
+        return $this->render('@App/YB/pick_seats.html.twig', [
+            'purchases' => $purchases,
+            'counterpart' => $counterpart,
+            'campaign' => $campaign,
+            'config' => $config,
+            'blocks' => $blocks,
+        ]);
+    }
+
 
 
 

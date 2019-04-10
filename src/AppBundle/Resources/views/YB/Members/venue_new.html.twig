@@ -12,6 +12,9 @@
             {% endif %}
         </ol>
     </section>
+    <div class="px-0 mt-3 container" style="text-align: right">
+        <a class="btn btn-info" href="{{ path('help_venue') }}#sectionCreateVenue" target="_blank"><i class="fa fa-info-circle"></i> Aide</a>
+    </div>
     {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/configurations.html.twig' ':Form:jquery.collection.html.twig' %}
     {{ form_start(form) }}
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">

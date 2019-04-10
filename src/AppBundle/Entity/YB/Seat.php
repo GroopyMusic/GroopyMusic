@@ -26,15 +26,20 @@ class Seat {
 
     /**
      * @var
-     * @ORM\Column(name="name", type="string", length=3)
+     * @ORM\Column(name="name", type="string", length=5)
      */
     private $name;
 
     /**
-     * @var Block
+     * @var BlockRow
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\BlockRow", inversedBy="seats")
      */
     private $row;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="seat", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     */
+    private $reservations;
 
     /**
      * @return int
@@ -74,6 +79,22 @@ class Seat {
     public function setRow($row)
     {
         $this->row = $row;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReservations()
+    {
+        return $this->reservations;
+    }
+
+    /**
+     * @param mixed $reservations
+     */
+    public function setReservations($reservations)
+    {
+        $this->reservations = $reservations;
     }
 
 

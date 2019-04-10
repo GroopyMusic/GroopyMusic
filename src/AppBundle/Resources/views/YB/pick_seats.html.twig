@@ -1,0 +1,43 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+        <h2>Sélection de siège</h2>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+        <h2>{{ purchases|first }}</h2>
+        {{ purchases|first.counterpart.venueBlocks|first  }}
+        <div id="seat-map">
+            <div class="front-indicator">Front</div>
+        </div>
+    </section>
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var sc = $('#seat-map').seatCharts({
+                map : {{ purchases|first.counterpart.venueBlocks|first.generateSeatChart|json_encode|raw }},
+                seats: {
+                    f : {
+                        price : {{ purchases|first.counterpart.price }},
+
+                    }
+                },
+                rows: {{ purchases|first.counterpart.venueBlocks|first.getSeatChartRow|json_encode|raw }},
+                click: function(){
+                    if (this.status() == 'available'){
+                        console.log(this.settings.id);
+                        return 'selected';
+                    } else if (this.status() == 'selected') {
+                        //seat has been vacated
+                        return 'available';
+                    } else if (this.status() == 'unavailable') {
+                        //seat has been already booked
+                        return 'unavailable';
+                    } else {
+                        return this.style();
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

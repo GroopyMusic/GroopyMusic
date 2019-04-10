@@ -10,6 +10,9 @@
             <li class="active"><span>Ajout d'une configuration</span></li>
         </ol>
     </section>
+    <div class="px-0 mt-3 container" style="text-align: right">
+        <a class="btn btn-info" href="{{ path('help_venue') }}#sectionAddConfig" target="_blank"><i class="fa fa-info-circle"></i> Aide</a>
+    </div>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section">
         <h2>Ajout d'une configuration </h2>
         <div class="row">
@@ -73,7 +76,9 @@
 {% block additional_javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        $('#yb_venue_has_only_free_seating input[type="checkbox"]').attr('checked', 'checked');
+        {% if form.vars.data.id is null %}
+            $('#yb_venue_has_only_free_seating input[type="checkbox"]').attr('checked', 'checked');
+        {% endif %}
         $('#yb_venue_has_only_free_seating input[type="checkbox"]').on('change', function () {
             $('.yb_free_seat_only').toggle(!this.checked);
         });

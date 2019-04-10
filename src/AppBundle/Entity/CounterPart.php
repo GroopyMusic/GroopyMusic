@@ -200,6 +200,11 @@ class CounterPart implements TranslatableInterface
     private $access_everywhere;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Reservation", mappedBy="counterpart", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     */
+    private $reservations;
+
+    /**
      * Get id
      *
      * @return int
@@ -514,6 +519,24 @@ class CounterPart implements TranslatableInterface
     {
         $this->access_everywhere = $access_everywhere;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getReservations()
+    {
+        return $this->reservations;
+    }
+
+    /**
+     * @param mixed $reservations
+     */
+    public function setReservations($reservations)
+    {
+        $this->reservations = $reservations;
+    }
+
+
 
 
 }

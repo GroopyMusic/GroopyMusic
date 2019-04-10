@@ -21,6 +21,47 @@ class BlockRow {
         return '' . $this->id . '-' . $this->name;
     }
 
+    public function generateSeats(){
+        if ($this->numerotationSystem === '2'){
+            for ($i = 0; $i < $this->nbSeats; $i++){
+                $name = ''.$i+1;
+                $seat = new Seat($name, $this);
+                $this->addSeat($seat);
+            }
+        } else {
+            $alphabet = $this->generateAlphabet();
+            for ($i = 0; $i < $this->nbSeats; $i++){
+                $seat = new Seat($alphabet[$i], $this);
+                $this->addSeat($seat);
+            }
+        }
+    }
+
+    private function refreshSeats(){
+        if (count($this->seats) > 0){
+            foreach ($this->seats as $seat){
+                $this->removeSeat($seat);
+            }
+        }
+    }
+
+    private function generateAlphabet(){
+        $letters = array();
+        $letter = 'A';
+        while ($letter !== 'AAA') {
+            $letters[] = $letter++;
+        }
+        return $letters;
+    }
+
+    public function generateSeatCharRow(){
+        $aRow = '';
+        for ($i = 0; $i < $this->nbSeats; $i++){
+            $aRow = $aRow . 'f';
+        }
+        return $aRow;
+    }
+
     /**
      * @var int
      *

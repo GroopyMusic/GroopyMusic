@@ -21,7 +21,7 @@ class Block {
         return $this->name;
     }
 
-    public function generateSeats(){
+    public function generateRows(){
         $alphabet = $this->generateAlphabet();
         if (count($this->rows) > 0){
             foreach ($this->rows as $row){
@@ -31,7 +31,8 @@ class Block {
         for ($i = 0; $i < $this->nbRows; $i++){
             $row = new BlockRow();
             if ($this->rowLabel === 2){
-                $row->setName($i);
+                $name = ''.$i+1;
+                $row->setName($name);
             } else {
                 $row->setName($alphabet[$i]);
             }
@@ -99,6 +100,22 @@ class Block {
             $nb += $row->getNbSeats();
         }
         return $nb;
+    }
+
+    public function generateSeatChart(){
+        $seatChart = array();
+        foreach ($this->rows as $row){
+            $seatChart[] = $row->generateSeatCharRow();
+        }
+        return $seatChart;
+    }
+
+    public function getSeatChartRow(){
+        $seatChartRow = array();
+        foreach ($this->rows as $row) {
+            $seatChartRow[] = $row->getName();
+        }
+        return $seatChartRow;
     }
 
     /**
