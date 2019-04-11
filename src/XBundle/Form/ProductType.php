@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use XBundle\Entity\Product;
 use XBundle\Form\ImageType;
+use XBundle\Form\OptionProductType;
 
 class ProductType extends AbstractType
 {
@@ -41,7 +42,7 @@ class ProductType extends AbstractType
                 ]
             ))
             ->add('supply', IntegerType::class, array(
-                'label' => 'Nombre en stock au total',
+                'label' => 'Stock global',
             ))
             ->add('maxAmountPerPurchase', IntegerType::class, array(
                 'label' => 'Nombre maximum par achat',
@@ -68,12 +69,23 @@ class ProductType extends AbstractType
                 'attr' => ['class' => 'is-ticket-checkbox'],
                 'required' => false
             ))
+            ->add('options', CollectionType::class, array(
+                'entry_type' => OptionProductType::class,
+                'entry_options' => array(
+                    'label' => false,
+                ),
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'attr' => ['class' => 'options-collection'],
+            ))
         ;
 
         if ($options['creation'] || $options['is_edit']) {
             $builder
                 ->add('submit', SubmitType::class, array(
-                'label' => 'Enregistrer'
+                    'label' => 'Enregistrer'
                 ))
             ;
         }

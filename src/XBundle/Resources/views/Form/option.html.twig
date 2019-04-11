@@ -1,0 +1,28 @@
+{% block xbundle_option_product_type_row %}
+    <div class="row product-row">
+        <div class="col-12">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col-12">
+            {{ form_widget(form.choices) }}
+        </div>
+    <div>
+
+    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
+    <script type="text/javascript">
+        function x_choices_collection(options) {
+            $('.choices-collection').collection($.extend({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>'//,
+                //prefix: 'choices-collection'
+            }, options));
+        }
+
+        x_choices_collection({
+            add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un choix</a>',
+            remove:'<a class="btn btn-danger" href="#">Supprimer ce choix</a>'
+        });
+    </script>
+{% endblock %}

@@ -93,6 +93,9 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const X_CONFIRMED_PROJECT = 'XBundle:Mail/Public:project_confirmed.txt.twig';
     const X_REFUNDED_PROJECT = 'XBundle:Mail/Public:project_refunded.txt.twig';
 
+    const X_TRANSACTIONAL_MESSAGE = 'XBundle:Mail/Communication:transactional_message.txt.twig';
+    const X_TRANSACTIONAL_MESSAGE_COPY = 'XBundle:Mail/Communication:transactional_message_copy.txt.twig';
+
 
     /**
      * @see Azine\EmailBundle\Services\AzineTemplateProvider::getParamArrayFor()

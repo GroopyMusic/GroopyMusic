@@ -259,16 +259,16 @@
         },
         {
             "name": "clue/stream-filter",
-            "version": "v1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/clue/php-stream-filter.git",
-                "reference": "d80fdee9b3a7e0d16fc330a22f41f3ad0eeb09d0"
+                "reference": "5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clue/php-stream-filter/zipball/d80fdee9b3a7e0d16fc330a22f41f3ad0eeb09d0",
-                "reference": "d80fdee9b3a7e0d16fc330a22f41f3ad0eeb09d0",
+                "url": "https://api.github.com/repos/clue/php-stream-filter/zipball/5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71",
+                "reference": "5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71",
                 "shasum": ""
             },
             "require": {
@@ -283,7 +283,7 @@
                     "Clue\\StreamFilter\\": "src/"
                 },
                 "files": [
-                    "src/functions.php"
+                    "src/functions_include.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -307,7 +307,7 @@
                 "stream_filter_append",
                 "stream_filter_register"
             ],
-            "time": "2017-08-18T09:54:01+00:00"
+            "time": "2019-04-09T12:31:48+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -7204,12 +7204,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "b93d2bf9415c790347d677adee268865bc786fe1"
+                "reference": "32c448f63944b34c8cf9eb39b07264e7ec03254b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/b93d2bf9415c790347d677adee268865bc786fe1",
-                "reference": "b93d2bf9415c790347d677adee268865bc786fe1",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/32c448f63944b34c8cf9eb39b07264e7ec03254b",
+                "reference": "32c448f63944b34c8cf9eb39b07264e7ec03254b",
                 "shasum": ""
             },
             "require": {
@@ -7351,7 +7351,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2019-04-08T16:15:54+00:00"
+            "time": "2019-04-10T16:18:38+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",

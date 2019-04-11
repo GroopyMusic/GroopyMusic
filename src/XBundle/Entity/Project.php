@@ -24,6 +24,9 @@ class Project
 {
     use ORMBehaviors\Sluggable\Sluggable;
 
+    const DAYS_BEFORE_WAY_PASSED_EVENT = 15;
+    const DAYS_BEFORE_WAY_PASSED = 30;
+
     const PHOTOS_DIR = 'x/images/projects/';
 
     public function __construct() {
@@ -36,8 +39,6 @@ class Project
         $this->failed = false;
         $this->refunded = false;
         $this->noThreshold = true;
-        $this->nbDonations = 0;
-        $this->nbSales = 0;
         $this->code = uniqid('x');
         $this->projectPhotos = new ArrayCollection();
         $this->handlers = new ArrayCollection();
@@ -47,6 +48,7 @@ class Project
         $this->acceptConditions = false;
         $this->contributions= new ArrayCollection();
         $this->notifSent = 0;
+        $this->transactionalMessages = new ArrayCollection();
     }
 
     public function getSluggableFields() {
@@ -122,12 +124,12 @@ class Project
         $this->collectedAmount += $amount;
     }
 
-    public function addNbDonations() {
-        $this->nbDonations++;
+    public function getNbDonations() {
+        return count($this->getDonationsPaid());
     }
 
-    public function addNbSales() {
-        $this->nbSales++;
+    public function getNbSales() {
+        return count($this->getSalesPaid());
     }
 
     // count contributors, once if a contributors paid several times
@@ -148,6 +150,13 @@ class Project
 
     public function isEvent() {
         return $this->dateEvent != null;
+    }
+
+    public function isWayPassed() {
+        if ($this->isEvent()) {
+            $this->dateEvent->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED_EVENT;
+        }
+        return $this->dateEnd->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
     }
 
     // Get donations paid
@@ -212,6 +221,26 @@ class Project
             return $cf->getPhysicalPerson();
         }, $this->getContributionsPaid());
     }
+
+    private $contributionsPaidAndRefunded = null;
+    public function getContributionsPaidAndRefunded() {
+        if($this->contributionsPaidAndRefunded == null) {
+            $this->contributionsPaidAndRefunded = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                return $contribution->getPaid();
+            });
+        }
+        return $this->contributionsPaidAndRefunded;
+    }
+
+    public function getWideContributors() {
+        if($this->getContributionsPaidAndRefunded() == null || empty($this->getContributionsPaidAndRefunded())) {
+            return [];
+        }
+        return array_map(function (XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getContributionsPaidAndRefunded());
+    }
+
 
 
     // To get only artists that creator owns (form only)
@@ -346,20 +375,6 @@ class Project
     private $noThreshold;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="nb_donations", type="integer")
-     */
-    private $nbDonations;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="nb_sales", type="integer")
-     */
-    private $nbSales;
-
-    /**
      * @ORM\OneToOne(targetEntity="\XBundle\Entity\Image", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
@@ -419,6 +434,11 @@ class Project
      * @ORM\JoinColumn(nullable=true)
      */
     private $address;
+
+    /**
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\XTransactionalMessage", cascade={"remove"}, mappedBy="project")
+     */
+    private $transactionalMessages;
 
 
 
@@ -877,54 +897,6 @@ class Project
     }
 
     /**
-     * Set nbDonations
-     *
-     * @param integer $nbDonations
-     *
-     * @return Project
-     */
-    public function setNbDonations($nbDonations)
-    {
-        $this->nbDonations = $nbDonations;
-
-        return $this;
-    }
-
-    /**
-     * Get nbDonations
-     *
-     * @return int
-     */
-    public function getNbDonations()
-    {
-        return $this->nbDonations;
-    }
-
-    /**
-     * Set nbSales
-     *
-     * @param integer $nbSales
-     *
-     * @return Project
-     */
-    public function setNbSales($nbSales)
-    {
-        $this->nbSales = $nbSales;
-
-        return $this;
-    }
-
-    /**
-     * Get nbSales
-     *
-     * @return int
-     */
-    public function getNbSales()
-    {
-        return $this->nbSales;
-    }
-
-    /**
      * Set coverpic
      *
      * @param Image $coverpic
@@ -1246,5 +1218,39 @@ class Project
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Add transactionalMessage
+     *
+     * @param \XBundle\Entity\XTransactionalMessage $transactionalMessage
+     *
+     * @return Project
+     */
+    public function addTransactionalMessage(\XBundle\Entity\XTransactionalMessage $transactionalMessage)
+    {
+        $this->transactionalMessages[] = $transactionalMessage;
+
+        return $this;
+    }
+
+    /**
+     * Remove transactionalMessage
+     *
+     * @param \XBundle\Entity\XTransactionalMessage $transactionalMessage
+     */
+    public function removeTransactionalMessage(\XBundle\Entity\XTransactionalMessage $transactionalMessage)
+    {
+        $this->transactionalMessages->removeElement($transactionalMessage);
+    }
+
+    /**
+     * Get transactionalMessages
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTransactionalMessages()
+    {
+        return $this->transactionalMessages;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace XBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use XBundle\Entity\Image;
 use XBundle\Entity\Project;
@@ -24,6 +25,7 @@ class Product
         $this->validated = false;
         $this->deleted = false;
         $this->isTicket = false;
+        $this->options = new ArrayCollection();
     }
 
     public static function getWebPath(Image $image) {
@@ -35,7 +37,7 @@ class Product
         return '' . $this->getName();
     }
 
-    public function addProductsSold($quantity) {
+    public function updateProductsSold($quantity) {
         $this->productsSold += $quantity;
     }
 
@@ -145,6 +147,11 @@ class Product
      * @ORM\Column(name="deleted", type="boolean")
      */
     private $deleted;
+
+    /**
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\OptionProduct", mappedBy="product", cascade={"all"})
+     */
+    private $options;
 
 
     /**
@@ -469,5 +476,39 @@ class Product
     public function getIsTicket()
     {
         return $this->isTicket;
+    }
+
+    /**
+     * Add option
+     *
+     * @param \XBundle\Entity\OptionProduct $option
+     *
+     * @return Product
+     */
+    public function addOption(\XBundle\Entity\OptionProduct $option)
+    {
+        $option->setProduct($this);
+        $this->options[] = $option;
+        return $this;
+    }
+
+    /**
+     * Remove option
+     *
+     * @param \XBundle\Entity\OptionProduct $option
+     */
+    public function removeOption(\XBundle\Entity\OptionProduct $option)
+    {
+        $this->options->removeElement($option);
+    }
+
+    /**
+     * Get options
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }

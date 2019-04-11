@@ -416,13 +416,20 @@ class XPublicController extends BaseController
 
             $project->addAmount($contribution->getAmount());
 
-            if ($contribution->getIsDonation()) {
+            /*if ($contribution->getIsDonation()) {
                 $project->addNbDonations();
             } else {
                 $project->addNbSales();
                 foreach($contribution->getPurchases() as $purchase) {
                     $product = $purchase->getProduct();
                     $product->addProductsSold($purchase->getQuantity());
+                    $em->persist($product);
+                }
+            }*/
+            if (!$contribution->getIsDonation()) {
+                foreach($contribution->getPurchases() as $purchase) {
+                    $product = $purchase->getProduct();
+                    $product->updateProductsSold($purchase->getQuantity());
                     $em->persist($product);
                 }
             }

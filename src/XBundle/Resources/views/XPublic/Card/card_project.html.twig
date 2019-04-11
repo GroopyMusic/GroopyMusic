@@ -30,15 +30,15 @@
             <!-- for several tags -->
             {#<span class="d-none project-tag">{% for genre in artist.genres %}{% if not loop.first %} {% endif %}<span class="jplist-{{ genre|slug }}">{{ genre }}</span>{% endfor %}</span>#}
             <p>
-                <strong>{{ project.collectedAmount }} €</strong> {% if project.hasThreshold %}sur {{ project.threshold }} €{% else %}récoltés {% endif %}
+                <b>{{ project.collectedAmount }} €</b> {% if project.hasThreshold %}sur {{ project.threshold }} €{% else %}récoltés {% endif %}
                 - 
                 {% if project.isPassed %}
-                    <strong>{{ project.dateEnd|date('d/m/Y') }}</strong> date de fin
+                    <b>{{ project.dateEnd|date('d/m/Y') }}</b> date de fin
                 {% else %}
-                    <strong>{{ project.remainingTime }}</strong>
+                    <b>{{ project.remainingTime }}</b>
                 {% endif %}
                 -
-                <strong>{{ project.nbContributors }}</strong> contributeur(s)
+                <b>{{ project.nbContributors }}</b> contributeur(s)
             </p>
             {% if project.hasThreshold %}
                  <div class="progress">

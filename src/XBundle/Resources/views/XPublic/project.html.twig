@@ -83,17 +83,17 @@
 
                             <div class="row">
                                 <div class="col-8 col-sm-4 col-lg-4">
-                                    <strong>{{ project.collectedAmount }} €</strong>{% if project.hasThreshold %} sur {{ project.threshold }} €{% else %} récoltés{% endif %}
+                                    <b>{{ project.collectedAmount }} €</b>{% if project.hasThreshold %} sur {{ project.threshold }} €{% else %} récoltés{% endif %}
                                 </div>
                                 <div class="col-8 col-sm-4 col-lg-4">
                                     {% if project.isPassed %}
-                                        <strong>{{ project.dateEnd|date('d/m/Y') }}</strong> date de fin
+                                        <b>{{ project.dateEnd|date('d/m/Y') }}</b> date de fin
                                     {% else %}
-                                        <strong>{{ project.remainingTime }}</strong>
+                                        <b>{{ project.remainingTime }}</b>
                                     {% endif %}
                                 </div>
                                 <div class="col-8 col-sm-4 col-lg-4">
-                                    <strong>{{ project.nbContributors }}</strong> contributeur(s)
+                                    <b>{{ project.nbContributors }}</b> contributeur(s)
                                 </div>
                             </div>
     
@@ -105,7 +105,7 @@
                             {% endif %}
 
                             {% if project.isPassed and not project.isPending and project.successful %}
-                                <br><p class="text-center" style="color: green;"><strong>Réussite</strong>&nbsp;<i class="fas fa-check-circle"></i></p>
+                                <br><p class="text-center" style="color: green;"><b>Réussite</b>&nbsp;<i class="fas fa-check-circle"></i></p>
                             {% endif %}
                         </div>
                     </div>
@@ -116,9 +116,9 @@
                 <div class="mt-5">
                     <div class="card">
                         <div class="card-body">
-                            <p>Date de l'évènement : <strong>{{ project.dateEvent|date('d/m/Y \\à H:i') }}</strong></p>
+                            <p>Date de l'évènement : <b>{{ project.dateEvent|date('d/m/Y \\à H:i') }}</b></p>
                             {% if project.address is not null %}
-                                <p>Adresse : <strong>{{ project.address }}</strong></p>
+                                <p>Adresse : <b>{{ project.address }}</b></p>
                                 {#<div class="embed-responsive embed-responsive-16by9">
                                     <iframe
                                         class="embed-responsive-item"
@@ -165,60 +165,72 @@
                         
                         {% for purchase in form_purchase.purchases %}
                             {% set product = purchase.vars.value.product %}
-                            {#<div class="card-body contribution" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>#}
-                                <div class="container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
-                                    {{ form_errors(purchase) }}
+                            <div class="container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
+                                {{ form_errors(purchase) }}
 
-                                    <h5><strong>{{ product.name }}</strong>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
+                                <h5><b>{{ product.name }}</b>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
                                     
-                                    <div class="row">
-                                        <div class="col-7 col-sm-9 col-lg-8">
-                                            <p class="text-muted font-italic">{{ product.description | bbcode_filter('my_default_filter') | raw }}</p>
-                                            <p>Disponibilité : <strong>{{ product.disponibility }}</strong>/{{ product.supply }}</p>
-                                            <p>Maximum <strong>{{ product.maxAmountPerPurchase }}</strong> par commande</p>
-                                        </div>
-                                        {% if product.photo is not null %}
-                                        <div class="col-5 col-sm-3 col-lg-4">
-                                            <img src="{{ asset(product.webPath(product.photo)) }}" width="100" height="100" />
-                                        </div>
+                                <div class="row">
+                                    <div class="col-7 col-sm-9 col-lg-8">
+                                        <p class="text-muted font-italic">{{ product.description | bbcode_filter('my_default_filter') | raw }}</p>
+                                        <p>Disponibilité : <b>{{ product.disponibility }}</b>/{{ product.supply }}</p>
+                                        <p>Maximum <b>{{ product.maxAmountPerPurchase }}</b> par commande</p>
+                                    </div>
+                                    {% if product.photo is not null %}
+                                    <div class="col-5 col-sm-3 col-lg-4">
+                                        <img src="{{ asset(product.webPath(product.photo)) }}" width="100" height="100" />
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-7 col-sm-9 col-lg-7">
+                                        {% if product.freePrice %}
+                                            <div class="w-90 position-relative mb-2">
+                                                {{ form_widget(purchase.freePrice, {'attr':  {'min': product.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
+                                                </div>
+                                        {% else %}
+                                            Prix : <b>{{ product.price }} €</b>
                                         {% endif %}
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-7 col-sm-9 col-lg-7">
-                                            {% if product.freePrice %}
-                                                <div class="w-90 position-relative mb-2">
-                                                    {{ form_widget(purchase.freePrice, {'attr':  {'min': product.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
-                                                </div>
-                                            {% else %}
-                                                Prix : <strong>{{ product.price }} €</strong>
-                                            {% endif %}
-                                        </div>
-
-                                        {% set max = product.maxAmountPerPurchase %}
-                                        <div class="col-5 col-sm-3 col-lg-5">
-                                                {% if product.disponibility == 0 %}
-                                                    <p>PLUS DISPONIBLE</p>
-                                                    {% do purchase.setRendered(purchase.quantity) %}
-                                                {% else %}
-                                                    <div class="input-group">
-                                                        <span class="input-group-btn">
-                                                            <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
-                                                                <i class="text-white fas fa-minus"></i>
-                                                            </button>
-                                                        </span>
-                                                        {{ form_widget(purchase.quantity) }}
-                                                        <span class="input-group-btn">
-                                                            <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max }}" data-field="">
-                                                                <i class="text-white fas fa-plus"></i>
-                                                            </button>
-                                                        </span>
-                                                    </div>
-                                                {% endif %}
-                                        </div>
+                                    {% set max = product.maxAmountPerPurchase %}
+                                    <div class="col-5 col-sm-3 col-lg-5">
+                                        {% if product.disponibility == 0 %}
+                                            <p>PLUS DISPONIBLE</p>
+                                            {% do purchase.setRendered(purchase.quantity) %}
+                                        {% else %}
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
+                                                        <i class="text-white fas fa-minus"></i>
+                                                    </button>
+                                                </span>
+                                                {{ form_widget(purchase.quantity) }}
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max }}" data-field="">
+                                                        <i class="text-white fas fa-plus"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
-                            {#</div>#}
+
+                                {#% if product.options is not empty %}
+                                <div class="row">
+                                    % for option in product.options %}
+                                        <div class="col-7 col-sm-9 col-lg-7">
+                                            {{ option.name }}
+                                        </div>
+                                        <div class="col-5 col-sm-3 col-lg-5">
+                                            {{ form_widget(purchase.options) }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %#}
+
+                            </div>
 
                         {% endfor %}
 

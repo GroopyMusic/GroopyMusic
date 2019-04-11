@@ -34,6 +34,7 @@ use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
 use XBundle\Entity\XContact;
 use XBundle\Entity\XContractFan;
+use XBundle\Entity\XTransactionalMessage;
 
 
 class MailDispatcher
@@ -92,6 +93,7 @@ class MailDispatcher
         $bcc_chunks = array();
         // CASE 1 : Only "to"s chunked by locale
         if (empty($bcc_emails) && !empty($to)) {
+            file_put_contents('test.txt', 'passe CASE 1 ', FILE_APPEND);
             foreach ($this->locales as $locale) {
                 $tos[$locale] = $this->extract_locale($locale, $to);
                 if (!empty($tos[$locale])) {
@@ -921,5 +923,59 @@ class MailDispatcher
         $attachments = ['chapots-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
         $this->sendEmail(MailTemplateProvider::X_TICKETS, $subject, $params, $subject_params, [], $attachments, $recipient, $recipientName, $reply_to, $reply_to_name);
     }
+
+
+    public function sendXTransactionalMessageWithCopy(XTransactionalMessage $message, $contributors) {
+        $this->sendXTransactionalMessage($message, $contributors);
+        try { $this->sendXTransactionalMessageCopy($message); }
+        catch(\Throwable $exception) {
+            //$this->logger->error("Echec lors de l'envoi de la copie d'un message transactionnel aux gestionnaires du projet : " . $exception->getMessage());
+            file_put_contents('test.txt', $exception->getMessage() . ' ', FILE_APPEND);
+        }
+    }
+
+    public function sendXTransactionalMessage(XTransactionalMessage $message, $contributors) {
+        $project = $message->getProject();
+
+        $contributors_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $contributors));
+
+        $to = [];
+
+        foreach($contributors_emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['project' => $project, 'message' => $message];
+        $subject = 'Nouveau message pour le projet "' . $project->getTitle() . '"';
+
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_TRANSACTIONAL_MESSAGE, $subject, $params, $subject_params, $to);
+    }
+
+    public function sendXTransactionalMessageCopy(XTransactionalMessage $message) {
+        $project = $message->getProject();
+        $handlers = $project->getHandlers();
+
+        $handlers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $handlers->toArray()));
+
+        $to = self::ADMIN_TO;
+
+        foreach($handlers_emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['project' => $project, 'message' => $message];
+        $subject = 'Votre message pour le projet "' . $project->getTitle() . '"';
+
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_TRANSACTIONAL_MESSAGE_COPY, $subject, $params, $subject_params, $to);
+    }
+
 
 }

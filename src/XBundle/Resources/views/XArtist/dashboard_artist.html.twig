@@ -38,7 +38,6 @@
             {% if current_projects is not empty %}
                 {% for project in current_projects %}
                     {{ macros.project_row(project) }}
-                    <hr>
                 {% endfor %}
             {% else %}
                 <p>Vous n'avez pas de projet en cours. Pour en lancer un, cliquez <a href="{{ path('x_artist_project_new') }}">ici</a> !</p>
@@ -50,7 +49,6 @@
             {% if other_current_projects is not empty %}
                 {% for project in other_current_projects %}
                     {{ macros.project_row(project) }}
-                    <hr>
                 {% endfor %}
             {% else %}
                 <p>Aucun autre projet n'a encore été lancé !</p>

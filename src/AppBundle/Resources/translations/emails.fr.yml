@@ -438,3 +438,31 @@ x:
       Veuillez trouver vos tickets pour "%project%" en pièce jointe.
 
       Passez une excellente journée,
+  transactional_message: |
+    Vous avez reçu un nouveau message concernant le projet "%project%" pour lequel vous avez contribué sur Chapots.
+    Ce message a été envoyé par le gestionnaire du projet le %date%.
+
+    Titre :
+    ------------------------------
+      %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+      %content%
+    ------------------------------
+  transactional_message_copy: |
+    Votre message concernant le projet "%project%" a bien été transmis aux contributeurs.
+    Ce message a été envoyé le %date%.
+
+    Titre :
+    ------------------------------
+       %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+       %content%
+    ------------------------------

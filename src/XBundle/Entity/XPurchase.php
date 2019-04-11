@@ -2,6 +2,7 @@
 
 namespace XBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,6 +17,7 @@ class XPurchase
     public function __construct()
     {
         $this->quantity = 0;
+        $this->choices = new ArrayCollection();
     }
 
 
@@ -42,12 +44,13 @@ class XPurchase
         }
     }
 
-    /**
-     * @return Project
-     */
     public function getProject()
     {
         return $this->product->getProject();
+    }
+
+    public function getOptions() {
+        return $this->product->getOptions();
     }
 
 
@@ -85,6 +88,11 @@ class XPurchase
      * @ORM\Column(name="free_price", type="float", nullable=true)
      */
     private $freePrice;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="XBundle\Entity\ChoiceOption")
+     */
+    private $choices;
 
 
     /**
@@ -191,5 +199,39 @@ class XPurchase
     public function getProduct()
     {
         return $this->product;
+    }
+
+    /**
+     * Add choice
+     *
+     * @param \XBundle\Entity\ChoiceOption $choice
+     *
+     * @return XPurchase
+     */
+    public function addChoice(\XBundle\Entity\ChoiceOption $choice)
+    {
+        $this->choices[] = $choice;
+
+        return $this;
+    }
+
+    /**
+     * Remove choice
+     *
+     * @param \XBundle\Entity\ChoiceOption $choice
+     */
+    public function removeChoice(\XBundle\Entity\ChoiceOption $choice)
+    {
+        $this->choices->removeElement($choice);
+    }
+
+    /**
+     * Get choices
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getChoices()
+    {
+        return $this->choices;
     }
 }

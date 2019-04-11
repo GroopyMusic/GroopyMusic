@@ -1,21 +1,22 @@
 {% macro project_row(project) %}
 
+    <hr>
     <div class="row mt-4" {% if not project.validated %} disabled="disabled" {% endif %}>
         <div class="col-12">
-            <h3><strong>{{ project.title }}</strong></h3>
-            <h5>Artiste associé : <strong>{{ project.artist.artistname }}</strong></h5>
+            <h3><b>{{ project.title }}</b></h3>
+            <h5>Artiste associé : <b>{{ project.artist.artistname }}</b></h5>
             <div class="mt-2">
-                 <h4><strong>{{ project.collectedAmount }} €</strong>{% if project.hasThreshold %} sur {{ project.threshold }} € {% else %} récoltés{% endif %}</h4>
+                 <h4><b>{{ project.collectedAmount }} €</b>{% if project.hasThreshold %} sur {{ project.threshold }} € {% else %} récoltés{% endif %}</h4>
             </div>
             <div class="mt-2">
-                Clotûre du financement : {% if not project.isPassed %}<strong>{{ project.remainingTime }}</strong>{% else %}<strong>{{ project.dateEnd|date('d/m/Y \\à H:i') }}</strong>{% endif %}
+                Clotûre du financement : {% if not project.isPassed %}<b>{{ project.remainingTime }}</b>{% else %}<b>{{ project.dateEnd|date('d/m/Y \\à H:i') }}</b>{% endif %}
             </div>
         </div>
 
         <div class="col-12 col-md-2 mt-2">
-            <strong>{{ project.nbDonations }}</strong> don(s)<br />
-            <strong>{{ project.nbSales }}</strong> vente(s)<br />
-            <strong>{{ project.nbContributors }}</strong> contributeur(s)
+            <b>{{ project.nbDonations }}</b> don(s)<br />
+            <b>{{ project.nbSales }}</b> vente(s)<br />
+            <b>{{ project.nbContributors }}</b> contributeur(s)
         </div>
 
         <div class="col-12 col-md-2 mt-2">
@@ -29,7 +30,7 @@
         {% endif %}
 
         <div class="col-12 col-md-2">
-            <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_contributions_details', {'id': project.id}) }}">Détails des dons et des ventes</a>
+            <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_contributions', {'id': project.id}) }}">Détails des dons et des ventes</a>
         </div>
 
         <div class="col-12 col-md-2">
@@ -37,19 +38,54 @@
         </div>
 
         <div class="col-12 col-md-2">
-            <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="#">Envoyer un message transactionnel</a>
+            <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="{{ path('x_artist_project_transactional_message', {'id': project.id}) }}">Envoyer un message transactionnel</a>
         </div>
 
         {% if project.hasThreshold %}
             <div class="col-12 mt-2">
-                Progression : <strong>{{ project.progressPercent }}%</strong>
+                Progression : <b>{{ project.progressPercent }}%</b>
                 <div class="progress">
                     <div class="progress-bar {% if project.isPassed and project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         {% endif %}
 
-        {% if project.isPassed and project.isPending %}
+        {% if project.collectedAmount == 0 %}
+            <div class="col-12 mt-4">
+                <div class="text-muted font-italic pb-2">
+                    Tant que le montant récolté est de 0 €, vous avez la possibilité de supprimer le projet.
+                </div>
+
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                    Supprimer le projet
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Supprimer le projet</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Vous êtes sur le point de supprimer ce projet. Êtes-vous sûr de continuer ?
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{{ path('x_artist_project_delete', {'id': project.id}) }}">
+                                    <input class="btn btn-danger" type="submit" value="Supprimer"/>
+                                </form>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if project.isPassed and project.isPending and project.collectedAmount > 0 %}
             <div class="col-12 mt-4">
 
                 <div class="text-muted font-italic pb-2">
@@ -115,7 +151,7 @@
 
         {% if project.isPassed and not project.isPending %}
             <div class="col-12 mt-4 text-center">
-                <h5>État du projet : {% if project.successful %}<strong style="color: green;">Réussite</strong> {% elseif project.failed %}<strong style="color: red;">Échec</strong>{% endif %}</h5>
+                <h5>État du projet : {% if project.successful %}<b style="color: green;">Réussite</b> {% elseif project.failed %}<b style="color: red;">Échec</b>{% endif %}</h5>
             </div>
         {% endif %}
         

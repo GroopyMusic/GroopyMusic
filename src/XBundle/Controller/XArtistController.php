@@ -17,8 +17,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use XBundle\Entity\Product;
 use XBundle\Entity\Project;
+use XBundle\Entity\OptionProduct;
+use XBundle\Entity\ChoiceOption;
+use XBundle\Entity\XTransactionalMessage;
 use XBundle\Form\ProductType;
 use XBundle\Form\ProjectType;
+use XBundle\Form\XTransactionalMessageType;
 
 
 class XArtistController extends BaseController
@@ -137,16 +141,83 @@ class XArtistController extends BaseController
 
 
     /**
-     * @Route("/project/{id}/contributions-details", name="x_artist_contributions_details")
+     * @Route("/project/{id}/confirm", name="x_artist_project_confirm")
      */
-    public function contributionsDetailsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
+    public function confirmProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager)
+    {
+        $this->checkIfArtistAuthorized($user);
+
+        //$mailDispatcher->sendConfirmedProject($project);
+
+        // Generate and send tickets
+        /*foreach($project->getSalesPaid() as $sale) {
+            if(!empty($sale->getTicketsPurchases())) {
+                $ticketingManager->generateAndSendXTickets($sale);
+            }
+        }*/
+
+        $ticketingManager->ticketingTest();
+
+        //$project->setSuccessful(true);
+        //$em->flush();
+
+        $this->addFlash('x_notice', "Le projet a bien été confirmé. Les contributeurs ont été avertis et les éventuels tickets vendus ont été envoyés");
+        return $this->redirectToRoute('x_artist_dashboard');
+    }
+
+
+    /**
+     * @Route("/project/{id}/refund", name="x_artist_project_refund")
+     */
+    public function refundProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null, PaymentManager $paymentManager)
+    {
+        $this->checkIfArtistAuthorized($user);
+
+        $project->setFailed(true);
+        $paymentManager->refundStripeAndProject($project);
+        $em->flush();
+
+        $this->addFlash('x_notice', 'Le projet a bien été annulé. Les éventuels contributeurs ont été avertis et remboursés.');
+        return $this->redirectToRoute('x_artist_dashboard');
+    }
+
+
+    /**
+     * @Route("/project/{id}/delete", name="x_artist_project_delete")
+     */
+    public function deleteProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null)
+    {
+        $this->checkIfArtistAuthorized($user);
+
+        if($project->getCollectedAmount() == 0) {
+            $project->setDeleted(true);
+            $project->setFailed(true);
+
+            foreach ($project->getProducts() as $product) {
+                $product->setDeleted(true);
+            }
+
+            $em->flush();
+            $this->addFlash('x_notice', 'Le projet a bien été supprimé');
+        } else {
+            $this->addFlash('yb_error', 'Ce projet ne peut être supprimé car le montant collecté est supérieur à 0 €.');
+        }
+        return $this->redirectToRoute('x_artist_dashboard');
+
+    }
+
+
+    /**
+     * @Route("/project/{id}/contributions", name="x_artist_project_contributions")
+     */
+    public function contributionsProjectAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
     {
         $this->checkIfArtistAuthorized($user, $project);
 
         $donations = $project->getDonationsPaid();
         $sales = $project->getSalesPaid();
 
-        return $this->render('@X/XArtist/contributions_details.html.twig', array(
+        return $this->render('@X/XArtist/project_contributions.html.twig', array(
             'project' => $project,
             'donations' => $donations,
             'sales' => $sales
@@ -157,7 +228,7 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/products", name="x_artist_project_products")
      */
-    public function viewProductsAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
+    public function productsProjectAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
     {
         $this->checkIfArtistAuthorized($user, $project);
 
@@ -227,6 +298,79 @@ class XArtistController extends BaseController
         ));
     }
 
+    /**
+     * @Route("/project/{id}/product/{idProd}/delete", name="x_artist_product_delete")
+     */
+    public function deleteProductAction(EntityManagerInterface $em, UserInterface $user = null, Project $project, Product $product)
+    {
+        $this->checkIfArtistAuthorized($user, $project);
+
+        if($product->getProductsSold() == 0) {
+            $product->setDeleted(true);
+            $em->flush();
+            $this->addFlash('x_notice', 'L\'article a bien été supprimé');
+        } else {
+            $this->addFlash('yb_error', 'L\'article ne peut être supprimé car il a déjà été vendu un certain nombre');
+        }
+        return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
+
+    }
+
+
+    /**
+     * @Route("/project/{id}/transactional-message", name="x_artist_project_transactional_message")
+     */
+    public function transactionalMessageProjectAction(Request $request, UserInterface $user = null, Project $project)
+    {
+        $this->checkIfArtistAuthorized($user, $project);
+
+        $message = new XTransactionalMessage($project);
+        $oldMessages = $project->getTransactionalMessages();
+
+        $form = $this->createForm(XTransactionalMessageType::class, $message);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if(!empty($project->getDonators()) && !empty($project->getBuyers())) {
+                if ($form->get('toDonators')->getData() == true && $form->get('toBuyers')->getData() == false) {
+                    $message->setToDonators(true);
+                    $contributors = $project->getDonators();
+                } elseif ($form->get('toDonators')->getData() == false && $form->get('toBuyers')->getData() == true) {
+                    $message->setToBuyers(true);
+                    $contributors = $project->getBuyers();
+                } else {
+                    $message->setToDonators(true);
+                    $message->setToBuyers(true);
+                    $contributors = $project->getContributors();
+                }
+            } else {
+                if(!empty($project->getDonators())){
+                    $message->setToDonators(true);
+                    $contributors = $project->getDonators();
+                } elseif(!empty($project->getBuyers())) {
+                    $message->setToBuyers(true);
+                    $contributors = $project->getBuyers();
+                }
+            }
+
+            $this->em->persist($message);
+            $this->em->flush();
+
+            $this->mailDispatcher->sendXTransactionalMessageWithCopy($message, $contributors);
+
+            $this->addFlash('x_notice', 'Votre message a bien été envoyé.');
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
+        }
+
+        return $this->render('@X/XArtist/project_transactional_message.html.twig', [
+            'form' => $form->createView(),
+            'project' => $project,
+            'old_messages' => $oldMessages,
+        ]);
+
+    }
+
 
     /**
      * @Route("/project/{id}/{code}remove-photo", name="x_artist_project_remove_photo")
@@ -248,44 +392,7 @@ class XArtistController extends BaseController
     }
 
 
-    /**
-     * @Route("/project/{id}/confirm", name="x_artist_project_confirm")
-     */
-    public function confirmProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager)
-    {
-        $this->checkIfArtistAuthorized($user);
 
-        //$mailDispatcher->sendConfirmedProject($project);
-
-        // Generate and send tickets
-        foreach($project->getSalesPaid() as $sale) {
-            if(!empty($sale->getTicketsPurchases())) {
-                $ticketingManager->generateAndSendXTickets($sale);
-            }
-        }
-
-        //$project->setSuccessful(true);
-        //$em->flush();
-
-        $this->addFlash('x_notice', "Le projet a bien été confirmé. Les contributeurs ont été avertis et les éventuels tickets vendus ont été envoyés");
-        return $this->redirectToRoute('x_artist_dashboard');
-    }
-
-
-    /**
-     * @Route("/project/{id}/refund", name="x_artist_project_refund")
-     */
-    public function refundProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null, PaymentManager $paymentManager)
-    {
-        $this->checkIfArtistAuthorized($user);
-
-        $project->setFailed(true);
-        $paymentManager->refundStripeAndProject($project);
-        $em->flush();
-
-        $this->addFlash('x_notice', 'Le projet a bien été annulé. Les éventuels contributeurs ont été avertis et remboursés.');
-        return $this->redirectToRoute('x_artist_dashboard');
-    }
 
 
 }

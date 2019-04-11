@@ -187,8 +187,6 @@ class ProjectType extends AbstractType
 
         if($project->hasThreshold() && $project->getThreshold() <= 0) {
             $context->addViolation('Puisque le projet à un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0.');
-        } else {
-            $project->setThreshold(null);
         }
         
     }
