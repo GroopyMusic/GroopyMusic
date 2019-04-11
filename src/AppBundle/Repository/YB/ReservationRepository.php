@@ -28,4 +28,13 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository{
             ->getQuery()
             ->getResult();
     }
+
+    public function getTimedoutReservations(){
+        return $this->createQueryBuilder('rsv')
+            ->where('rsv.bookingDate < :delay')
+            ->andWhere('rsv.isBooked = 0')
+            ->setParameter('delay', (new \DateTime())->modify('-20 minutes'))
+            ->getQuery()
+            ->getResult();
+    }
 }

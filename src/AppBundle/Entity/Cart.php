@@ -227,6 +227,11 @@ class Cart
     private $yb_order;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Reservation", mappedBy="cart", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     */
+    private $reservations;
+
+    /**
      * Get id
      *
      * @return int
@@ -462,4 +467,22 @@ class Cart
     {
         return $this->finalized;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getReservations()
+    {
+        return $this->reservations;
+    }
+
+    /**
+     * @param mixed $reservations
+     */
+    public function setReservations($reservations)
+    {
+        $this->reservations = $reservations;
+    }
+
+
 }

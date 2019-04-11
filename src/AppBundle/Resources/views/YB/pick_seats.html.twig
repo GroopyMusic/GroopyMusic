@@ -12,92 +12,154 @@
         {% endif %}
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
-        {% for block in purchase.counterpart.venueBlocks %}
+        {% for block in blocks %}
             <h2>{{ block.name }}</h2>
-            <div align-text="center" id="seat-map{{ block.id }}"></div>
+            {% if not block.isNotNumbered %}
+                <div align-text="center" id="seat-map{{ block.id }}"></div>
+            {% else %}
+                <div>
+                    Nombre de ticket voulu dans ce bloc :
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-left-minus btn btn-dark btn-number retreat-quantity">
+                                <i class="text-white fas fa-minus"></i>
+                            </button>
+                        </span>
+                        <input type="number" style="width: 100px; text-align: center;" id="quantity-tix" value="0" readonly>
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-right-plus btn btn-dark btn-number add-quantity">
+                                <i class="text-white fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <p>Vous pouvez encore avoir <span id="remainingTix" style="font-size: 20px">{{ purchase.quantity }}</span> ticket(s) dans ce bloc.</p>
+                </div>
+            {% endif %}
         {% endfor %}
-        <h2><button class="btn-secondary btn book">Réserver</button></h2>
+        <br>
+        <h2>
+            <button class="btn-secondary btn book">Réserver</button>
+        </h2>
     </section>
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
+        $(document).ready(function () {
             var qtyMax = {{ purchase.quantity }};
             var i = 0;
+            var remainingTicket = qtyMax;
             var selected = [];
-            {% for block in purchase.counterpart.venueBlocks %}
-                var sc = $('#seat-map{{ block.id }}').seatCharts({
-                    map: {{ block.generateSeatChart|json_encode|raw }},
-                    rows: {{ block.getSeatChartRow|json_encode|raw }},
-                    seats: {
-                        f: {
-                            price: {{ purchase.counterpart.price }},
-                        }
-                    },
-                    click: function(){
-                        if (this.status() == 'available'){
-                            if (i < qtyMax){
-                                var fullName = this.settings.id + "_" + {{ block.id }};
-                                selected.push(fullName);
-                                console.log(selected);
-                                i++;
-                                return 'selected';
-                            } else {
-                                return this.style();
-                            }
-                        } else if (this.status() == 'selected') {
-                            if (i > 0){
-                                var j;
-                                for (j = 0; j < selected.length; j++){
-                                    var fullName = this.settings.id + "_" + {{ block.id }};
-                                    if (selected[j] === fullName){
-                                        console.log('j : '+selected[j]);
-                                        console.log('this : '+fullName);
-                                        selected.splice(j, 1);
-                                    }
-                                }
-                                console.log(selected);
-                                i--;
-                            }
-                            return 'available';
-                        } else if (this.status() == 'unavailable') {
-                            //seat has been already booked
-                            return 'unavailable';
+            {% for block in blocks %}
+            {% if not block.isNotNumbered %}
+            var sc = $('#seat-map{{ block.id }}').seatCharts({
+                map: {{ block.generateSeatChart|json_encode|raw }},
+                rows: {{ block.getSeatChartRow|json_encode|raw }},
+                seats: {
+                    f: {
+                        price: {{ purchase.counterpart.price }},
+                    }
+                },
+                click: function () {
+                    if (this.status() == 'available') {
+                        if (i < qtyMax) {
+                            var fullName = this.settings.id + "_" + {{ block.id }};
+                            selected.push(fullName);
+                            remainingTicket--;
+                            $('#remainingTix').text(remainingTicket);
+                            i++;
+                            return 'selected';
                         } else {
                             return this.style();
                         }
+                    } else if (this.status() == 'selected') {
+                        if (i > 0) {
+                            var j;
+                            for (j = 0; j < selected.length; j++) {
+                                var fullName = this.settings.id + "_" + {{ block.id }};
+                                if (selected[j] === fullName) {
+                                    selected.splice(j, 1);
+                                }
+                            }
+                            remainingTicket++;
+                            $('#remainingTix').text(remainingTicket);
+                            i--;
+                        }
+                        return 'available';
+                    } else if (this.status() == 'unavailable') {
+                        //seat has been already booked
+                        return 'unavailable';
+                    } else {
+                        return this.style();
                     }
-                });
-                {% for bookedSeat in block.bookedSeatList %}
-                    sc.status("{{ bookedSeat }}", 'unavailable');
-                {% endfor %}
-                //$('.seatCharts-space').css('display', 'none');
-                $('.seatCharts-header').css('display', 'none');
+                }
+            });
+            {% for bookedSeat in block.bookedSeatList %}
+            sc.status("{{ bookedSeat }}", 'unavailable');
+            {% endfor %}
+            //$('.seatCharts-space').css('display', 'none');
+            $('.seatCharts-header').css('display', 'none');
+            {% else %}
+
+            {% endif %}
             {% endfor %}
 
-            $('.book').click(function(){
-                console.log(selected);
-                $.ajax({
-                    url: "{{ path('book-seats') }}",
-                    type: "POST",
-                    data: {
-                        seats: selected,
-                        purchase: {{ purchase.id }},
-                        purchaseIndex: {{ purchaseIndex }} + 1,
-                    },
-                    success: function(response){
-                        console.log(response);
-                        location.href = response;
-                    },
-                    error: function(err){
-                        console.log('Error')
-                    }
-                });
+            $('.book').click(function () {
+                if (selected.length == qtyMax) {
+                    $.ajax({
+                        url: "{{ path('book-seats') }}",
+                        type: "POST",
+                        data: {
+                            seats: selected,
+                            purchase: {{ purchase.id }},
+                            purchaseIndex: {{ purchaseIndex }} +1,
+                        },
+                        success: function (response) {
+                            location.href = response;
+                        },
+                        error: function (err) {
+                            console.log('Error');
+                        }
+                    });
+                } else {
+                    alert("Vous n'avez pas sélectionné assez de places !")
+                }
+
             });
-        })
-        function arrayRemove(arr, value) {
-            return /*arr.filter(function(ele){
-                return ele != value;
-            });*/ new Array();
+            setInterval(refreshSeats, 120000);
+            $('.retreat-quantity').click(function(){
+                var value = $('#quantity-tix').val();
+                if (value > 0){
+                    value = value - 1;
+                    remainingTicket++;
+                    $('#remainingTix').text(remainingTicket);
+                    $('#quantity-tix').val(value);
+                }
+            });
+            $('.add-quantity').click(function(){
+                var value = $('#quantity-tix').val();
+                if (value <= remainingTicket){
+                    var decimal = parseInt((value + '').replace(/[^01]/gi, ''), 2);
+                    decimal = decimal + 1;
+                    remainingTicket--;
+                    $('#remainingTix').text(remainingTicket);
+                    $('#quantity-tix').val(decimal);
+                }
+            })
+        });
+
+        function refreshSeats() {
+            $.ajax({
+                url: "{{ path('refresh_seats') }}",
+                type: "POST",
+                data: {
+                    code: {{ code|json_encode|raw }}
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (err) {
+                    console.log('Error');
+                }
+            })
         }
     </script>
 {% endblock %}

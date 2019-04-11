@@ -114,6 +114,16 @@ class CounterPart implements TranslatableInterface
         return $this->maximum_amount > $this->getBlkCapacity();
     }
 
+    public function hasOnlyFreeSeatingBlocks(){
+        /** @var Block $blk */
+        foreach ($this->venue_blocks as $blk){
+            if (!$blk->isNotNumbered()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * @var int
      *

@@ -147,6 +147,10 @@ class Block {
         }
     }
 
+    public function isNotNumbered(){
+        return $this->type === 'Debout' || $this->getFreeSeating();
+    }
+
     /**
      * @var int
      *

@@ -10,6 +10,7 @@ use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\Block;
 use AppBundle\Entity\YB\BlockRow;
+use AppBundle\Entity\YB\Reservation;
 use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBCommission;
@@ -37,6 +38,7 @@ use AppBundle\Services\PaymentManager;
 use AppBundle\Services\StringHelper;
 use AppBundle\Services\TicketingManager;
 use cspoo\Swiftmailer\MailgunBundle\DependencyInjection\Configuration;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -1160,34 +1162,51 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/pick-seats/{cf}/{purchaseIndex}", name="pick_seats")
+     * @Route("/pick-seats/{cf}/{purchaseIndex}/{code}", name="pick_seats")
      */
-    public function pickSeatsAction(EntityManagerInterface $em, ContractFan $cf, int $purchaseIndex){
+    public function pickSeatsAction(EntityManagerInterface $em, ContractFan $cf, int $purchaseIndex, $code){
         $purchases = $cf->getPurchases();
         $campaignID = $cf->getContractArtist()->getId();
         /** @var YBContractArtist $campaign */
         $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find($campaignID);
         $config = $campaign->getConfig();
-        if ($purchaseIndex < count($purchases)){
-            $purchase = $purchases[$purchaseIndex];
-            foreach ($purchase->getCounterpart()->getVenueBlocks() as $blk){
-                $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsForEventAndBlock(750031, $blk->getId());
-                $bookedSeat = array();
-                foreach ($rsv as $r){
-                    $row = $blk->getRows()[$r->getRowIndex() - 1];
-                    $seat = $row->getSeats()[$r->getSeatIndex() - 1];
-                    array_push($bookedSeat, $seat->getSeatChartName());
-                }
-                $blk->setBookedSeatList($bookedSeat);
-            }
-            return $this->render('@App/YB/pick_seats.html.twig', [
-                'purchaseIndex' => $purchaseIndex,
-                'purchase' => $purchase,
-                'campaign' => $campaign,
-                'config' => $config,
-            ]);
+        if ($config->isOnlyStandup() || $config->hasFreeSeatingPolicy()){
+            // on skip le choix des sièges
+            // TODO return 'yb_checkout'
         } else {
-            return null;
+            if ($purchaseIndex < count($purchases)){
+                /** @var Purchase $purchase */
+                $purchase = $purchases[$purchaseIndex];
+                /** @var Collection|Block[] $bloks */
+                $blocks = $this->getBlocksFromPurchase($purchase, $config);
+                $onlyNumberedBlocks = $this->filterBlocks($blocks);
+                if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks()){
+                    // on skip le choix des sièges
+                    // TODO return 'yb_checkout'
+                } else {
+                    foreach($onlyNumberedBlocks as $blk){
+                        $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsForEventAndBlock($campaignID, $blk->getId());
+                        $bookedSeat = array();
+                        foreach ($rsv as $r){
+                            $row = $blk->getRows()[$r->getRowIndex() - 1];
+                            $seat = $row->getSeats()[$r->getSeatIndex() - 1];
+                            array_push($bookedSeat, $seat->getSeatChartName());
+                        }
+                        $blk->setBookedSeatList($bookedSeat);
+                    }
+                    return $this->render('@App/YB/pick_seats.html.twig', [
+                        'purchaseIndex' => $purchaseIndex,
+                        'purchase' => $purchase,
+                        'campaign' => $campaign,
+                        'config' => $config,
+                        'code' => $code,
+                        'blocks' => $config->getBlocks(),
+                    ]);
+                }
+            } else {
+                // on n'a fini, on doit renvoyer vers le checkout
+                // TODO return 'yb_checkout'
+            }
         }
     }
 
@@ -1198,15 +1217,44 @@ class YBMembersController extends BaseController
         $seats = $request->get('seats');
         $purchaseIndex = $request->get('purchaseIndex');
         $purchaseID = $request->get('purchase');
+        /** @var Purchase $purchase */
         $purchase = $em->getRepository('AppBundle:Purchase')->find($purchaseID);
+        $this->bookListSeats($seats, $em, $purchase->getCounterpart(), $purchase->getContractFan()->getCart());
         $url = $this->generateUrl('pick_seats', [
             'cf' => $purchase->getContractFan()->getId(),
             'purchaseIndex' => $purchaseIndex,
         ]);
-        file_put_contents('myFIle.txt', $url);
-        $dataResponse = array("url" => $url);
         return new Response($url);
     }
+
+    /**
+     * @Route("/refresh-seats", name="refresh_seats")
+     */
+    public function refreshSeatsAction(Request $request, EntityManagerInterface $em){
+        $code = $request->get('code');
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+        if ($cart == null) {
+            throw $this->createNotFoundException("Pas de panier,... Pas de panier !");
+        }
+        $timedOutSession = $em->getRepository('AppBundle:YB\Reservation')->getTimedoutReservations();
+        $isRelatedToUser = false;
+        if (count($timedOutSession) !== 0){
+            foreach ($timedOutSession as $reservation){
+                if ($reservation->getCart() === $cart){
+                    $isRelatedToUser = true;
+                }
+                $em->remove($reservation);
+            }
+        }
+        if ($isRelatedToUser){
+            $response = 'salut ca va';
+        } else {
+            $response = 'ok';
+        }
+        return new Response($response);
+    }
+
+
 
 
 
@@ -1592,6 +1640,39 @@ class YBMembersController extends BaseController
             }
         }
         return $activeVenues;
+    }
+
+    private function bookListSeats($seats, EntityManagerInterface $em, CounterPart $cp, Cart $cart){
+        $i = 0;
+        foreach ($seats as $seat){
+            $arr = explode('_', $seat);
+            $block = $em->getRepository('AppBundle:YB\Block')->find($arr[2]);
+            $rowIndex = $arr[0];
+            $seatIndex = $arr[1];
+            $rsv = new Reservation($block, $rowIndex, $seatIndex, $cp, $cart);
+            $em->persist($rsv);
+            $i++;
+        }
+        $em->flush();
+    }
+
+    private function getBlocksFromPurchase(Purchase $purchase, VenueConfig $config){
+        if ($purchase->getCounterpart()->getAccessEverywhere()){
+            return $config->getBlocks();
+        } else {
+            return $purchase->getCounterpart()->getVenueBlocks();
+        }
+    }
+
+    private function filterBlocks($blocks){
+        $filtered = [];
+        /** @var Block $block */
+        foreach($blocks as $block){
+            if (!$block->isNotNumbered()){
+                array_push($filtered, $block);
+            }
+        }
+        return $filtered;
     }
 
 }
