@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\YB;
 
+use AppBundle\Entity\CounterPart;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,6 +14,30 @@ class Seat {
     public function __construct($name, $row){
         $this->name = $name;
         $this->row = $row;
+    }
+
+    public function __toString(){
+        return '('.$this->id.') '.'row : '.$this->row->getName().' - seat : '.$this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeatChartName(){
+        if ($this->row->getNumerotationSystem() === 2){
+            return $this->row->getRowNumber() . '_' . $this->name;
+        } else {
+            return $this->row->getRowNumber() . '_' . $this->getSeatNumber();
+        }
+
+    }
+
+    private function getSeatNumber(){
+        for ($i=0; $i<count($this->row->getSeats()); $i++){
+            if ($this->row->getSeats()[$i] === $this){
+                return $i + 1;
+            }
+        }
     }
 
     /**
@@ -35,11 +60,6 @@ class Seat {
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\BlockRow", inversedBy="seats")
      */
     private $row;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="seat", cascade={"persist", "remove"}, orphanRemoval=TRUE)
-     */
-    private $reservations;
 
     /**
      * @return int

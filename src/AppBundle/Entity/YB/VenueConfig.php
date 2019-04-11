@@ -77,6 +77,10 @@ class VenueConfig {
         return $unsquaredBlocks;
     }
 
+    public function generateSeatChart(int $maxRowLength){
+
+    }
+
     /**
      * @var int
      *

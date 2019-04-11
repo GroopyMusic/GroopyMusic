@@ -9,6 +9,7 @@ use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\Block;
+use AppBundle\Entity\YB\BlockRow;
 use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBCommission;
@@ -960,7 +961,6 @@ class YBMembersController extends BaseController
         $form = $this->createForm(VenueConfigType::class, $config, ['block' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            //$this->refreshRows($venue, $em);
             $config->generateRows();
             $em->flush();
             if ($config->hasUnsquaredBlock()){
@@ -1009,12 +1009,13 @@ class YBMembersController extends BaseController
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
+        $savedAddress = $venue->getAddress();
         $form = $this->createForm(VenueType::class, $venue, ['admin' => $user->isSuperAdmin(), 'userOrganizations' => $userOrganizations]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->isExistingAddress($em, $venue->getAddress())) {
+            if ($savedAddress !== $venue->getAddress() && $this->isExistingAddress($em, $venue->getAddress())) {
                 $this->addFlash('error', "Il y a déjà une salle à cette adresse ! Peut-être votre salle existe-elle déjà ?!");
-                return $this->redirectToRoute('yb_members_venues_new');
+                return $this->redirectToRoute('yb_members_venue_edit', ['id' => $venue->getId()]);
             } else {
                 $em->persist($venue);
                 $em->flush();
@@ -1035,6 +1036,10 @@ class YBMembersController extends BaseController
     public function editConfigurationAction(VenueConfig $config, UserInterface $user = null, Request $request, EntityManagerInterface $em){
         if (!$user->isSuperAdmin()) {
             $this->checkIfAuthorizedVenueConfig($user, $config);
+        }
+        if ($this->isVenueStillHostingEvent($em, $config->getVenue())){
+            $this->addFlash('error', 'Vous ne pouvez pas modifier l\'agencement d\'une configuration alors qu\'il y a encore au moins un événement de prévu. Attendez que la configuration ne soit plus utilisée pour la modifier.');
+            return $this->redirectToRoute('yb_members_my_venues');
         }
         $form = $this->createForm(VenueConfigType::class, $config);
         $form->handleRequest($request);
@@ -1105,7 +1110,11 @@ class YBMembersController extends BaseController
      * @Route("/config/block/{id}/configure-row", name="yb_members_configure_block")
      */
     public function configureBlockAction(Block $block, UserInterface $user, Request $request, EntityManagerInterface $em){
-        $this->checkIfAuthorizedVenueBlock($user);
+        $this->checkIfAuthorizedVenueBlock($user, $block);
+        if ($this->isVenueStillHostingEvent($em, $block->getConfig()->getVenue())){
+            $this->addFlash('error', 'Vous ne pouvez pas modifier l\'agencement d\'un bloc alors qu\'il y a encore au moins un événement de prévu. Attendez que la configuration ne soit plus utilisée pour le modifier.');
+            return $this->redirectToRoute('yb_members_my_venues');
+        }
         $form = $this->createForm(BlockType::class, $block, ['row' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1151,28 +1160,54 @@ class YBMembersController extends BaseController
     }
 
     /**
-     * @Route("/pick-seats", name="pick_seats")
-     * @param EntityManagerInterface $em
-     * @return Response
+     * @Route("/pick-seats/{cf}/{purchaseIndex}", name="pick_seats")
      */
-    public function pickSeatsAction(EntityManagerInterface $em){
-        /** @var ContractFan $contractFan */
-        $contractFan = $em->getRepository('AppBundle:ContractFan')->find(885);
-        $purchases = $contractFan->getPurchases();
-        $campaignID = $contractFan->getContractArtist()->getId();
+    public function pickSeatsAction(EntityManagerInterface $em, ContractFan $cf, int $purchaseIndex){
+        $purchases = $cf->getPurchases();
+        $campaignID = $cf->getContractArtist()->getId();
         /** @var YBContractArtist $campaign */
         $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find($campaignID);
-        $counterpart = $campaign->getCounterParts();
         $config = $campaign->getConfig();
-        $blocks = $config->getBlocks();
-        return $this->render('@App/YB/pick_seats.html.twig', [
-            'purchases' => $purchases,
-            'counterpart' => $counterpart,
-            'campaign' => $campaign,
-            'config' => $config,
-            'blocks' => $blocks,
-        ]);
+        if ($purchaseIndex < count($purchases)){
+            $purchase = $purchases[$purchaseIndex];
+            foreach ($purchase->getCounterpart()->getVenueBlocks() as $blk){
+                $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsForEventAndBlock(750031, $blk->getId());
+                $bookedSeat = array();
+                foreach ($rsv as $r){
+                    $row = $blk->getRows()[$r->getRowIndex() - 1];
+                    $seat = $row->getSeats()[$r->getSeatIndex() - 1];
+                    array_push($bookedSeat, $seat->getSeatChartName());
+                }
+                $blk->setBookedSeatList($bookedSeat);
+            }
+            return $this->render('@App/YB/pick_seats.html.twig', [
+                'purchaseIndex' => $purchaseIndex,
+                'purchase' => $purchase,
+                'campaign' => $campaign,
+                'config' => $config,
+            ]);
+        } else {
+            return null;
+        }
     }
+
+    /**
+     * @Route("/book-seats", name="book-seats")
+     */
+    public function bookSeatsAction(EntityManagerInterface $em, Request $request){
+        $seats = $request->get('seats');
+        $purchaseIndex = $request->get('purchaseIndex');
+        $purchaseID = $request->get('purchase');
+        $purchase = $em->getRepository('AppBundle:Purchase')->find($purchaseID);
+        $url = $this->generateUrl('pick_seats', [
+            'cf' => $purchase->getContractFan()->getId(),
+            'purchaseIndex' => $purchaseIndex,
+        ]);
+        file_put_contents('myFIle.txt', $url);
+        $dataResponse = array("url" => $url);
+        return new Response($url);
+    }
+
 
 
 
@@ -1558,8 +1593,5 @@ class YBMembersController extends BaseController
         }
         return $activeVenues;
     }
-
-
-
 
 }

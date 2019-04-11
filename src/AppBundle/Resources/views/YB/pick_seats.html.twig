@@ -2,42 +2,102 @@
 
 {% block body %}
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
-        <h2>Sélection de siège</h2>
+        <h2>{{ campaign.getTitle }}</h2>
+        <h2 style="font-size: 20px">Sélection de siège : {{ purchase }}</h2>
+        {% if config.photo is not null %}
+            <h2 style="font-size: 18px">Plan de salle :</h2>
+            <div class="col-12">
+                <h2><img class="img-fluid" src="{{ yb_asset(config.webPath(config.photo)) }}"/></h2>
+            </div>
+        {% endif %}
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
-        <h2>{{ purchases|first }}</h2>
-        {{ purchases|first.counterpart.venueBlocks|first  }}
-        <div id="seat-map">
-            <div class="front-indicator">Front</div>
-        </div>
+        {% for block in purchase.counterpart.venueBlocks %}
+            <h2>{{ block.name }}</h2>
+            <div align-text="center" id="seat-map{{ block.id }}"></div>
+        {% endfor %}
+        <h2><button class="btn-secondary btn book">Réserver</button></h2>
     </section>
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            var sc = $('#seat-map').seatCharts({
-                map : {{ purchases|first.counterpart.venueBlocks|first.generateSeatChart|json_encode|raw }},
-                seats: {
-                    f : {
-                        price : {{ purchases|first.counterpart.price }},
+            var qtyMax = {{ purchase.quantity }};
+            var i = 0;
+            var selected = [];
+            {% for block in purchase.counterpart.venueBlocks %}
+                var sc = $('#seat-map{{ block.id }}').seatCharts({
+                    map: {{ block.generateSeatChart|json_encode|raw }},
+                    rows: {{ block.getSeatChartRow|json_encode|raw }},
+                    seats: {
+                        f: {
+                            price: {{ purchase.counterpart.price }},
+                        }
+                    },
+                    click: function(){
+                        if (this.status() == 'available'){
+                            if (i < qtyMax){
+                                var fullName = this.settings.id + "_" + {{ block.id }};
+                                selected.push(fullName);
+                                console.log(selected);
+                                i++;
+                                return 'selected';
+                            } else {
+                                return this.style();
+                            }
+                        } else if (this.status() == 'selected') {
+                            if (i > 0){
+                                var j;
+                                for (j = 0; j < selected.length; j++){
+                                    var fullName = this.settings.id + "_" + {{ block.id }};
+                                    if (selected[j] === fullName){
+                                        console.log('j : '+selected[j]);
+                                        console.log('this : '+fullName);
+                                        selected.splice(j, 1);
+                                    }
+                                }
+                                console.log(selected);
+                                i--;
+                            }
+                            return 'available';
+                        } else if (this.status() == 'unavailable') {
+                            //seat has been already booked
+                            return 'unavailable';
+                        } else {
+                            return this.style();
+                        }
+                    }
+                });
+                {% for bookedSeat in block.bookedSeatList %}
+                    sc.status("{{ bookedSeat }}", 'unavailable');
+                {% endfor %}
+                //$('.seatCharts-space').css('display', 'none');
+                $('.seatCharts-header').css('display', 'none');
+            {% endfor %}
 
+            $('.book').click(function(){
+                console.log(selected);
+                $.ajax({
+                    url: "{{ path('book-seats') }}",
+                    type: "POST",
+                    data: {
+                        seats: selected,
+                        purchase: {{ purchase.id }},
+                        purchaseIndex: {{ purchaseIndex }} + 1,
+                    },
+                    success: function(response){
+                        console.log(response);
+                        location.href = response;
+                    },
+                    error: function(err){
+                        console.log('Error')
                     }
-                },
-                rows: {{ purchases|first.counterpart.venueBlocks|first.getSeatChartRow|json_encode|raw }},
-                click: function(){
-                    if (this.status() == 'available'){
-                        console.log(this.settings.id);
-                        return 'selected';
-                    } else if (this.status() == 'selected') {
-                        //seat has been vacated
-                        return 'available';
-                    } else if (this.status() == 'unavailable') {
-                        //seat has been already booked
-                        return 'unavailable';
-                    } else {
-                        return this.style();
-                    }
-                }
-            })
+                });
+            });
         })
+        function arrayRemove(arr, value) {
+            return /*arr.filter(function(ele){
+                return ele != value;
+            });*/ new Array();
+        }
     </script>
 {% endblock %}

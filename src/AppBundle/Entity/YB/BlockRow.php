@@ -22,7 +22,7 @@ class BlockRow {
     }
 
     public function generateSeats(){
-        if ($this->numerotationSystem === '2'){
+        if ($this->numerotationSystem == '2'){
             for ($i = 0; $i < $this->nbSeats; $i++){
                 $name = ''.$i+1;
                 $seat = new Seat($name, $this);
@@ -60,6 +60,14 @@ class BlockRow {
             $aRow = $aRow . 'f';
         }
         return $aRow;
+    }
+
+    public function getRowNumber(){
+        for ($i=0; $i < count($this->block->getRows()); $i++){
+            if ($this->block->getRows()[$i] === $this){
+                return $i + 1;
+            }
+        }
     }
 
     /**

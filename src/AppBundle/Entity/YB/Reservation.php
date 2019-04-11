@@ -7,10 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Reservation
  * @package AppBundle\Entity\YB
  * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\ReservationRepository")
- * @ORM\Table(name="yb_reservations",
-    uniqueConstraints={
-        @ORM\UniqueConstraint(name="reservation_unique", columns={"seat_id", "counterpart_id"})
-    })
+ * @ORM\Table(name="yb_reservations")
  */
 class Reservation {
 
@@ -22,10 +19,20 @@ class Reservation {
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Seat", inversedBy="reservations")
-     * @ORM\JoinColumn(name="seat_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="Block", inversedBy="reservations")
+     * @ORM\JoinColumn(name="block_id", referencedColumnName="id", nullable=FALSE)
      */
-    private $seat;
+    private $block;
+
+    /**
+     * @ORM\Column(type="integer", name="row_index")
+     */
+    private $rowIndex;
+
+    /**
+     * @ORM\Column(type="integer", name="seat_index")
+     */
+    private $seatIndex;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CounterPart", inversedBy="reservations")
@@ -49,17 +56,17 @@ class Reservation {
     /**
      * @return mixed
      */
-    public function getSeat()
+    public function getBlock()
     {
-        return $this->seat;
+        return $this->block;
     }
 
     /**
-     * @param mixed $seat
+     * @param mixed $block
      */
-    public function setSeat($seat)
+    public function setBlock($block)
     {
-        $this->seat = $seat;
+        $this->block = $block;
     }
 
     /**
@@ -92,6 +99,38 @@ class Reservation {
     public function setCounterpart($counterpart)
     {
         $this->counterpart = $counterpart;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowIndex()
+    {
+        return $this->rowIndex;
+    }
+
+    /**
+     * @param mixed $rowIndex
+     */
+    public function setRowIndex($rowIndex)
+    {
+        $this->rowIndex = $rowIndex;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSeatIndex()
+    {
+        return $this->seatIndex;
+    }
+
+    /**
+     * @param mixed $seatIndex
+     */
+    public function setSeatIndex($seatIndex)
+    {
+        $this->seatIndex = $seatIndex;
     }
 
 

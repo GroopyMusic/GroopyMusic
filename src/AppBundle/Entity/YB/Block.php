@@ -41,6 +41,13 @@ class Block {
             $row->setNumerotationSystem($this->getSeatLabel());
             $this->addRow($row);
         }
+        $this->generateSeats();
+    }
+
+    public function generateSeats(){
+        foreach ($this->rows as $row){
+            $row->generateSeats();
+        }
     }
 
     private function generateAlphabet(){
@@ -118,6 +125,28 @@ class Block {
         return $seatChartRow;
     }
 
+    public function getSeatAt($rowNb, $seatNb){
+        $rowIndex = $rowNb - 1;
+        /** @var BlockRow $row */ $row = $this->rows[$rowIndex];
+        $seatIndex = $seatNb - 1;
+        $seat = $row->getSeats()[$seatIndex];
+        return $seat;
+    }
+
+    public function getMaxSeatsOnRow(){
+        if (!$this->isNotSquared()){
+            return $this->nbSeatsPerRow;
+        } else {
+            $max = 0;
+            foreach ($this->rows as $row) {
+                if ($row->getNbSeats() > $max) {
+                    $max = $row->getNbSeats();
+                }
+            }
+            return $max;
+        }
+    }
+
     /**
      * @var int
      *
@@ -186,6 +215,13 @@ class Block {
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CounterPart", mappedBy="venue_blocks")
      */
     private $counterparts;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="seat", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     */
+    private $reservations;
+
+    private $bookedSeatList;
 
     /**
      * @return int
@@ -392,6 +428,22 @@ class Block {
     public function setCounterparts($counterparts)
     {
         $this->counterparts = $counterparts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBookedSeatList()
+    {
+        return $this->bookedSeatList;
+    }
+
+    /**
+     * @param mixed $bookedSeatList
+     */
+    public function setBookedSeatList($bookedSeatList)
+    {
+        $this->bookedSeatList = $bookedSeatList;
     }
 
 
