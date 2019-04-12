@@ -166,6 +166,8 @@ class YBMembersController extends BaseController
         $flow->setAllowDynamicStepNavigation(true);
         $flow->setAllowRedirectAfterSubmit(true);
 
+        $flow->bind($campaign);
+        $form = $flow->createForm();
         //$form->handleRequest($request);
         if($flow->isValid($form)) {
 
@@ -317,6 +319,10 @@ class YBMembersController extends BaseController
             throw new YBAuthenticationException();
         }
 
+        if(!$campaign->isFacturable()) {
+            throw $this->createNotFoundException();
+        }
+
         $invoice = new YBInvoice();
         $invoice->setCampaign($campaign);
         $em->persist($invoice);
@@ -326,9 +332,9 @@ class YBMembersController extends BaseController
         foreach ($cfs as $cf){
             /** @var Purchase $purchase */
             foreach ($cf->getPurchases() as $purchase){
-                if ($purchase->getInvoice() === null){
-                    $purchase->setInvoice($invoice);
-                    $em->persist($purchase);
+                if($cf->getInvoice() === null) {
+                    $cf->setInvoice($invoice);
+                    $em->persist($cf);
                 }
             }
         }
@@ -443,6 +449,10 @@ class YBMembersController extends BaseController
     public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null, $format = 'pdf', PDFWriter $writer){
         if ($user == null || !$user->isSuperAdmin()){
             throw new YBAuthenticationException();
+        }
+
+        if(!$campaign->isFacturable()) {
+            throw $this->createNotFoundException();
         }
 
         $cfs = array_reverse($campaign->getContractsFanPaid());

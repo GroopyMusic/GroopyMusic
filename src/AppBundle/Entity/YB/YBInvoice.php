@@ -38,7 +38,7 @@ class YBInvoice
 
     private $purchases = [];
     public function getPurchases() {
-        if(count($this->purchasees) == 0) {
+        if(count($this->purchases) == 0) {
             $purchases = [];
             foreach($this->contracts_fan as $cf) {
                 foreach($cf->getPurchases() as $purchase)
@@ -153,7 +153,7 @@ class YBInvoice
      * @return ArrayCollection
      */
     public function getContractsFan(){
-        return $this->contract_fans;
+        return $this->contracts_fan;
     }
 
     public function addContractFan(ContractFan $contract_fan) {

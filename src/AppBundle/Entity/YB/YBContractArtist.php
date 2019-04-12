@@ -54,6 +54,7 @@ class YBContractArtist extends BaseContractArtist
         $this->sub_events = new ArrayCollection();
         $this->no_sub_events = true;
         $this->date_event = new \DateTime();
+        $this->external_invoice = 0;
     }
 
     public function getBuyers() {
@@ -214,6 +215,31 @@ class YBContractArtist extends BaseContractArtist
         }, $this->sub_events->toArray());
     }
 
+    public function isFacturable() {
+        if($this->external_invoice)
+            return false;
+
+        if($this->isBroker() && $this->vat_number == null)
+            return false;
+
+        if($this->commissions == null || count($this->commissions) == 0)
+            return false;
+
+        if(count($this->getContractsFanPaid()) == 0)
+            return false;
+
+        return $this->contractsFanPaid[count($this->contractsFanPaid) - 1]->getInvoice() == null;
+    }
+
+    // Commissionnaire
+    public function isCommissionary() {
+        return $this->vat == 0 || $this->vat == null;
+    }
+    // Courtier 
+    public function isBroker() {
+        return !$this->isCommissionary();
+    }
+
     /**
      * @var integer
      * @ORM\Column(name="sold_counterparts", type="float")
@@ -291,6 +317,12 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBInvoice", cascade={"all"}, mappedBy="campaign")
      */
     private $invoices;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="external_invoice", type="boolean")
+     */
+    private $external_invoice;
 
     /**
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
@@ -693,5 +725,21 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->no_sub_events = $no_sub_events;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExternalInvoice()
+    {
+        return $this->external_invoice;
+    }
+
+    /**
+     * @param bool $external_invoice
+     */
+    public function setExternalInvoice($external_invoice)
+    {
+        $this->external_invoice = $external_invoice;
     }
 }

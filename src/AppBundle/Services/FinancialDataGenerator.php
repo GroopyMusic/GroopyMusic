@@ -33,23 +33,19 @@ class FinancialDataGenerator{
         $cfs = array_reverse($this->campaign->getContractsFanPaid());
         $this->ticketData = array();
 
-        if($this->campaign->getTicketsSent()) {
+        foreach($cfs as $cf) {
+            /** @var ContractFan $cf */
 
-            foreach($cfs as $cf) {
-                /** @var ContractFan $cf */
-
-                $purchases = $cf->getPurchases();
-                /** @var Purchase $purchase */
-                foreach ($purchases as $purchase){
-                    if ($purchase->getInvoice() == null){
-                        $this->processPurchase($purchase);
-                    }
-
+            $purchases = $cf->getPurchases();
+            /** @var Purchase $purchase */
+            foreach ($purchases as $purchase){
+                if ($purchase->getInvoice() == null){
+                    $this->processPurchase($purchase);
                 }
 
             }
-        }
 
+        }
     }
 
     /**
@@ -99,6 +95,8 @@ class FinancialDataGenerator{
         $purchaseUnitPriceNoVAT = $this->calculateNoVATPrice($purchaseUnitPrice);
         $purchaseUnitPriceNoCom = $this->calculateNoCommissionPrice($purchaseUnitPriceNoVAT);
         $commissionValue = $purchaseUnitPriceNoVAT - $purchaseUnitPriceNoCom;
+        $commissionRaw = 0.79 * $commissionValue;
+        $commissionVAT = $commissionValue - $commissionRaw;
 
         $counterPart = "" . $purchase->getCounterpart();
         if ($purchase->getFreePriceValue() != null){
@@ -110,6 +108,8 @@ class FinancialDataGenerator{
             'unitPriceRaw' => $purchaseUnitPriceNoVAT,
             'unitPriceNoCom' => $purchaseUnitPriceNoCom,
             'commission' => $commissionValue,
+            'commissionRaw' => $commissionRaw,
+            'commissionVAT' => $commissionVAT,
             'name' => $counterPart,
             'qty' => 0
         );

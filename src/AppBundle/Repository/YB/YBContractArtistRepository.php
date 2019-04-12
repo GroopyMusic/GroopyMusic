@@ -176,11 +176,10 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('c');
             if (!$user->isSuperAdmin()){
                 $qb->join('c.handlers', 'u')
-                    ->orderBy('c.date_closure', 'DESC')
                     ->where('u.id = :id')
                     ->setParameter('id', $user->getId());
             }
-            return $qb->getQuery()
+            return $qb->orderBy('c.date_closure', 'DESC')->getQuery()
             ->getResult();
     }
 }
