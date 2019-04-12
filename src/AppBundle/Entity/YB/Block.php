@@ -101,6 +101,20 @@ class Block {
         }
     }
 
+    public function getComputedCapacity(){
+        if ($this->type === 'Debout'){
+            return $this->capacity;
+        }
+        if ($this->getFreeSeating()){
+            return $this->capacity;
+        }
+        if (!$this->isNotSquared()){
+            return $this->nbRows * $this->nbSeatsPerRow;
+        } else {
+            return $this->getNbSeatsCustomRow();
+        }
+    }
+
     private function getNbSeatsCustomRow(){
         $nb = 0;
         foreach ($this->rows as $row){
@@ -149,6 +163,24 @@ class Block {
 
     public function isNotNumbered(){
         return $this->type === 'Debout' || $this->getFreeSeating();
+    }
+
+    public function isOutOfStockEvent(YBContractArtist $event){
+        $nb = 0;
+        /** @var Reservation $rsv */
+        foreach ($this->reservations as $rsv){
+            /** @var Booking $booking */
+            foreach ($rsv->getBookings() as $booking){
+                if ($booking->getPurchase()->getContractFan()->getContractArtist() === $event){
+                    $nb++;
+                }
+            }
+        }
+        if ($nb < $this->getComputedCapacity()){
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -221,7 +253,7 @@ class Block {
     private $counterparts;
 
     /**
-     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="seat", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="block", cascade={"persist", "remove"}, orphanRemoval=TRUE)
      */
     private $reservations;
 

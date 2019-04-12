@@ -6,35 +6,16 @@ use AppBundle\Entity\YB\YBContractArtist;
 
 class ReservationRepository extends \Doctrine\ORM\EntityRepository{
 
-    public function getReservationsForEvent($campaignID){
+    public function getReservationsFromBlockRowSeat($blk, $row, $seat){
         return $this->createQueryBuilder('rsv')
-            ->join('rsv.counterpart', 'cp')
-            ->join('cp.contractArtist', 'campaign')
-            ->where('campaign.id = :id')
-            ->setParameter('id', $campaignID)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getReservationsForEventAndBlock($campaignID, $blockID){
-        return $this->createQueryBuilder('rsv')
-            ->join('rsv.counterpart', 'cp')
-            ->join('cp.contractArtist', 'campaign')
             ->join('rsv.block', 'blk')
-            ->where('campaign.id = :id')
-            ->andWhere('blk.id = :blkid')
-            ->setParameter('id', $campaignID)
-            ->setParameter('blkid', $blockID)
+            ->where('blk.id = :blk')
+            ->andWhere('rsv.rowIndex = :row')
+            ->andWhere('rsv.seatIndex = :seat')
+            ->setParameter('blk', $blk)
+            ->setParameter('row', $row)
+            ->setParameter('seat', $seat)
             ->getQuery()
-            ->getResult();
-    }
-
-    public function getTimedoutReservations(){
-        return $this->createQueryBuilder('rsv')
-            ->where('rsv.bookingDate < :delay')
-            ->andWhere('rsv.isBooked = 0')
-            ->setParameter('delay', (new \DateTime())->modify('-20 minutes'))
-            ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 }

@@ -175,6 +175,18 @@ class YBContractArtist extends BaseContractArtist
         }
     }
 
+    public function isOutOfStockCp(CounterPart $cp){
+        if ($this->getNbPurchasable($cp) === 0){
+            return true;
+        }
+        foreach ($cp->getVenueBlocks() as $block) {
+            if (!$block->isOutOfStockEvent($this)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function getTotalNbAvailable() {
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
     }

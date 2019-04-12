@@ -37,6 +37,24 @@
             {% endif %}
         {% endfor %}
         <br>
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Erreur</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Vous n'avez pas sélectionné assez de places</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <h2>
             <button class="btn-secondary btn book">Réserver</button>
         </h2>
@@ -44,68 +62,69 @@
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            var charts = new Map();
             var qtyMax = {{ purchase.quantity }};
-            var i = 0;
             var remainingTicket = qtyMax;
+            var soldTicket = 0;
             var selected = [];
             {% for block in blocks %}
-            {% if not block.isNotNumbered %}
-            var sc = $('#seat-map{{ block.id }}').seatCharts({
-                map: {{ block.generateSeatChart|json_encode|raw }},
-                rows: {{ block.getSeatChartRow|json_encode|raw }},
-                seats: {
-                    f: {
-                        price: {{ purchase.counterpart.price }},
-                    }
-                },
-                click: function () {
-                    if (this.status() == 'available') {
-                        if (i < qtyMax) {
-                            var fullName = this.settings.id + "_" + {{ block.id }};
-                            selected.push(fullName);
-                            remainingTicket--;
-                            $('#remainingTix').text(remainingTicket);
-                            i++;
-                            return 'selected';
-                        } else {
-                            return this.style();
-                        }
-                    } else if (this.status() == 'selected') {
-                        if (i > 0) {
-                            var j;
-                            for (j = 0; j < selected.length; j++) {
-                                var fullName = this.settings.id + "_" + {{ block.id }};
-                                if (selected[j] === fullName) {
-                                    selected.splice(j, 1);
-                                }
+                {% if not block.isNotNumbered %}
+                    var sc = $('#seat-map{{ block.id }}').seatCharts({
+                        map: {{ block.generateSeatChart|json_encode|raw }},
+                        rows: {{ block.getSeatChartRow|json_encode|raw }},
+                        seats: {
+                            f: {
+                                price: {{ purchase.counterpart.price }},
                             }
-                            remainingTicket++;
-                            $('#remainingTix').text(remainingTicket);
-                            i--;
+                        },
+                        click: function () {
+                            if (this.status() == 'available') {
+                                if (remainingTicket > 0) {
+                                    var fullName = this.settings.id + "_" + {{ block.id }};
+                                    selected.push(fullName);
+                                    remainingTicket--;
+                                    soldTicket++;
+                                    $('#remainingTix').text(remainingTicket);
+                                    return 'selected';
+                                } else {
+                                    return this.style();
+                                }
+                            } else if (this.status() == 'selected') {
+                                if (soldTicket > 0) {
+                                    var j;
+                                    for (j = 0; j < selected.length; j++) {
+                                        var fullName = this.settings.id + "_" + {{ block.id }};
+                                        if (selected[j] === fullName) {
+                                            selected.splice(j, 1);
+                                        }
+                                    }
+                                    remainingTicket++;
+                                    soldTicket--;
+                                    $('#remainingTix').text(remainingTicket);
+                                }
+                                return 'available';
+                            } else if (this.status() == 'unavailable') {
+                                //seat has been already booked
+                                return 'unavailable';
+                            } else {
+                                return this.style();
+                            }
                         }
-                        return 'available';
-                    } else if (this.status() == 'unavailable') {
-                        //seat has been already booked
-                        return 'unavailable';
-                    } else {
-                        return this.style();
-                    }
-                }
-            });
-            {% for bookedSeat in block.bookedSeatList %}
-            sc.status("{{ bookedSeat }}", 'unavailable');
-            {% endfor %}
-            //$('.seatCharts-space').css('display', 'none');
-            $('.seatCharts-header').css('display', 'none');
-            {% else %}
-
-            {% endif %}
+                    });
+                    {% for bookedSeat in block.bookedSeatList %}
+                        sc.status("{{ bookedSeat }}", 'unavailable');
+                    {% endfor %}
+                    charts.set({{ block.id }}, sc);
+                    $('.seatCharts-header').css('display', 'none');
+                {% else %}
+                    // TODO
+                {% endif %}
             {% endfor %}
 
             $('.book').click(function () {
                 if (selected.length == qtyMax) {
                     $.ajax({
-                        url: "{{ path('book-seats') }}",
+                        url: "{{ path('yb_book_seats') }}",
                         type: "POST",
                         data: {
                             seats: selected,
@@ -120,41 +139,67 @@
                         }
                     });
                 } else {
-                    alert("Vous n'avez pas sélectionné assez de places !")
+                    $('.modal').modal();
                 }
-
             });
-            setInterval(refreshSeats, 120000);
+
+            setInterval(checkForAbortedBooking, 120000);
+
             $('.retreat-quantity').click(function(){
                 var value = $('#quantity-tix').val();
-                if (value > 0){
+                if (soldTicket > 0){
                     value = value - 1;
                     remainingTicket++;
+                    soldTicket--;
                     $('#remainingTix').text(remainingTicket);
                     $('#quantity-tix').val(value);
                 }
             });
+
             $('.add-quantity').click(function(){
                 var value = $('#quantity-tix').val();
-                if (value <= remainingTicket){
+                if (remainingTicket > 0){
                     var decimal = parseInt((value + '').replace(/[^01]/gi, ''), 2);
                     decimal = decimal + 1;
                     remainingTicket--;
+                    soldTicket++
                     $('#remainingTix').text(remainingTicket);
                     $('#quantity-tix').val(decimal);
                 }
-            })
-        });
+            });
 
-        function refreshSeats() {
+            setInterval(function(){checkForOccupiedSeats(charts)}, 7000);
+        });
+        function checkForAbortedBooking() {
             $.ajax({
-                url: "{{ path('refresh_seats') }}",
+                url: "{{ path('yb_refresh_seats') }}",
                 type: "POST",
                 data: {
                     code: {{ code|json_encode|raw }}
                 },
                 success: function (response) {
                     console.log(response);
+                },
+                error: function (err) {
+                    console.log('Error');
+                }
+            })
+        }
+        function checkForOccupiedSeats(charts){
+            $.ajax({
+                url: "{{ path('yb_occupied_seats') }}",
+                type: "POST",
+                data: {
+                    purchase: {{ purchase.id }},
+                    config: {{ config.id }}
+                },
+                success: function (bookedSeat) {
+                    for(var i=0; i<bookedSeat.length; i++){
+                        var arr = bookedSeat[i].split('_');
+                        var blkToInt = parseInt(arr[2], 10);
+                        var scbis = charts.get(blkToInt);
+                        scbis.status(arr[0]+'_'+arr[1], 'unavailable');
+                    }
                 },
                 error: function (err) {
                     console.log('Error');

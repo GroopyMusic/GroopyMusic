@@ -5,6 +5,11 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\Purchase;
+use AppBundle\Entity\YB\Block;
+use AppBundle\Entity\YB\Booking;
+use AppBundle\Entity\YB\Reservation;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
@@ -16,6 +21,7 @@ use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,13 +47,13 @@ class YBController extends BaseController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
-           if(!$captchaManager->verify()) {
-               $this->addFlash('error', 'Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !');
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$captchaManager->verify()) {
+                $this->addFlash('error', 'Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !');
                 return $this->render('@App/YB/home.html.twig', [
                     'form' => $form->createView(),
                 ]);
-           }
+            }
 
             // DB save
             $em->persist($contact);
@@ -69,9 +75,10 @@ class YBController extends BaseController
     /**
      * @Route("/campaign/{id}/{slug}", name="yb_campaign")
      */
-    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, Request $request, ValidatorInterface $validator, $slug = null) {
+    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, Request $request, ValidatorInterface $validator, $slug = null)
+    {
 
-        if($slug != null && $c->getSlug() != $slug) {
+        if ($slug != null && $c->getSlug() != $slug) {
             return $this->redirectToRoute('yb_campaign', ['id' => $c->getId(), 'slug' => $c->getSlug()]);
         }
 
@@ -83,8 +90,8 @@ class YBController extends BaseController
 
             $cart = new Cart(false);
 
-            foreach($cf->getPurchases() as $purchase) {
-                if($purchase->getQuantity() == 0) {
+            foreach ($cf->getPurchases() as $purchase) {
+                if ($purchase->getQuantity() == 0) {
                     $cf->removePurchase($purchase);
                 }
             }
@@ -98,7 +105,16 @@ class YBController extends BaseController
             $em->persist($cart);
             $em->flush();
 
-            return $this->redirectToRoute('yb_checkout', ['code' => $cart->getBarcodeText()]);
+            if ($c->getConfig()->isOnlyStandup() || $c->getConfig()->hasFreeSeatingPolicy()){
+                // on skip le choix des sièges
+                return $this->redirectToRoute('yb_checkout', ['code' => $cart->getBarcodeText()]);
+            } else {
+                return $this->redirectToRoute('yb_pick_seats', [
+                    'cf' => $cf->getId(),
+                    'purchaseIndex' => 0,
+                    'code' => $cart->getBarcodeText(),
+                ]);
+            }
         }
 
         return $this->render('@App/YB/campaign.html.twig', [
@@ -108,9 +124,54 @@ class YBController extends BaseController
     }
 
     /**
+     * @Route("/pick-seats/{cf}/{purchaseIndex}/{code}", name="yb_pick_seats")
+     */
+    public function pickSeatsAction(EntityManagerInterface $em, ContractFan $cf, int $purchaseIndex, $code)
+    {
+        $purchases = $cf->getPurchases();
+        $campaignID = $cf->getContractArtist()->getId();
+        /** @var YBContractArtist $campaign */
+        $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find($campaignID);
+        $config = $campaign->getConfig();
+        if ($purchaseIndex < count($purchases)) {
+            /** @var Purchase $purchase */
+            $purchase = $purchases[$purchaseIndex];
+            /** @var Collection|Block[] $bloks */
+            $blocks = $this->getBlocksFromPurchase($purchase, $config);
+            $onlyNumberedBlocks = $this->filterBlocks($blocks);
+            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks()) {
+                return $this->redirectToRoute('yb_checkout', ['code' => $code]);
+            } else {
+                foreach ($onlyNumberedBlocks as $blk) {
+                    $bookings = $em->getRepository('AppBundle:YB\Booking')->getBookingForEventAndBlock($campaignID, $blk->getId());
+                    $bookedSeat = array();
+                    foreach ($bookings as $booking) {
+                        $row = $blk->getRows()[$booking->getReservation()->getRowIndex() - 1];
+                        $seat = $row->getSeats()[$booking->getReservation()->getSeatIndex() - 1];
+                        array_push($bookedSeat, $seat->getSeatChartName());
+                    }
+                    $blk->setBookedSeatList($bookedSeat);
+                }
+                return $this->render('@App/YB/pick_seats.html.twig', [
+                    'purchaseIndex' => $purchaseIndex,
+                    'purchase' => $purchase,
+                    'campaign' => $campaign,
+                    'config' => $config,
+                    'code' => $code,
+                    'blocks' => $onlyNumberedBlocks,
+                ]);
+            }
+        } else {
+            return $this->redirectToRoute('yb_checkout', ['code' => $code]);
+        }
+
+    }
+
+    /**
      * @Route("/conditions", name="yb_terms")
      */
-    public function termsAction() {
+    public function termsAction()
+    {
 
         return $this->render('@App/YB/terms.html.twig', [
 
@@ -120,7 +181,8 @@ class YBController extends BaseController
     /**
      * @Route("/checkout/{code}", name="yb_checkout")
      */
-    public function checkoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, $code) {
+    public function checkoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, $code)
+    {
 
 
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
@@ -133,7 +195,7 @@ class YBController extends BaseController
 
             $amount = intval($_POST['amount']);
             // We set an explicit test for amount changes as it has legal impacts
-            if (floatval($amount) !=  floatval($cart->getAmount() * 100)) {
+            if (floatval($amount) != floatval($cart->getAmount() * 100)) {
                 $this->addFlash('error', 'errors.order_changed');
                 return $this->render('@App/YB/checkout.html.twig', array(
                     'cart' => $cart,
@@ -141,7 +203,7 @@ class YBController extends BaseController
                 ));
             }
 
-            if($cart->getYbOrder() == null) {
+            if ($cart->getYbOrder() == null) {
                 $first_name = $_POST['first_name'];
                 $last_name = $_POST['last_name'];
                 $email = $_POST['email'];
@@ -150,20 +212,18 @@ class YBController extends BaseController
                 $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
 
                 $errors = $validator->validate($order);
-                if(count($errors) > 0) {
+                if (count($errors) > 0) {
                     $this->addFlash('error', 'errors.order_coords');
                     return $this->render('@App/YB/checkout.html.twig', array(
                         'cart' => $cart,
                         'error_conditions' => false,
                     ));
                 }
-            }
-
-            else {
+            } else {
                 $order = $cart->getYbOrder();
             }
 
-            foreach($cart->getContracts() as $cf) {
+            foreach ($cart->getContracts() as $cf) {
                 /** @var ContractFan $cf */
                 /** @var YBContractArtist $contract_artist */
                 $contract_artist = $cf->getContractArtist();
@@ -192,9 +252,10 @@ class YBController extends BaseController
 
             // Charge the user's card:
             try {
-                foreach($cart->getContracts() as $contract) {
+                foreach ($cart->getContracts() as $contract) {
                     /** @var ContractFan $contract
-                     * @var YBContractArtist $contract_artist */
+                     * @var YBContractArtist $contract_artist
+                     */
                     $contract->calculatePromotions();
                 }
 
@@ -270,7 +331,8 @@ class YBController extends BaseController
     /**
      * @Route("/payment/success/{code}", name="yb_payment_success")
      */
-    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request, $code) {
+    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request, $code)
+    {
 
         /** @var Cart $cart */
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
@@ -280,16 +342,24 @@ class YBController extends BaseController
 
         // Send order recap
         $mailDispatcher->sendYBOrderRecap($cart);
-
-        foreach($cart->getContracts() as $contract) {
+        /** @var ContractFan $contract */
+        foreach ($cart->getContracts() as $contract) {
             /** @var YBContractArtist $campaign */
             $campaign = $contract->getContractArtist();
 
             $campaign->addAmount($contract->getAmount());
             $campaign->updateCounterPartsSold($contract);
 
+            /** @var Purchase $purchase */
+            foreach ($contract->getPurchases() as $purchase){
+                /** @var Booking $booking */
+                foreach ($purchase->getBookings() as $booking){
+                    $booking->setIsBooked(true);
+                }
+            }
+
             // Need to also send tickets
-            if($campaign->isEvent() && ($campaign->getSuccessful() || $campaign->getTicketsSent() || $campaign->hasNoThreshold())) {
+            if ($campaign->isEvent() && ($campaign->getSuccessful() || $campaign->getTicketsSent() || $campaign->hasNoThreshold())) {
                 $ticketingManager->generateAndSendYBTickets($contract);
             }
 
@@ -307,12 +377,13 @@ class YBController extends BaseController
     /**
      * @Route("/ticked-it-order/{code}", name="yb_order")
      */
-    public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager) {
+    public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager)
+    {
 
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
 
-        foreach($cart->getContracts() as $cf) {
-            if(!$cf->getcounterpartsSent())
+        foreach ($cart->getContracts() as $cf) {
+            if (!$cf->getcounterpartsSent())
                 $ticketingManager->generateAndSendYBTickets($cf);
         }
 
@@ -324,7 +395,8 @@ class YBController extends BaseController
     /**
      * @Route("/ticked-it-tickets/{code}", name="yb_get_tickets")
      */
-    public function getTicketsAction(EntityManagerInterface $em, TicketingManager $ticketingManager, $code) {
+    public function getTicketsAction(EntityManagerInterface $em, TicketingManager $ticketingManager, $code)
+    {
 
         $contract = $em->getRepository('AppBundle:ContractFan')->findOneBy(['barcode_text' => $code]);
 
@@ -364,7 +436,8 @@ class YBController extends BaseController
     /**
      * @Route("/api/submit-order-coordinates", name="yb_ajax_post_order")
      */
-    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator, MailDispatcher $mailDispatcher) {
+    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator, MailDispatcher $mailDispatcher)
+    {
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
@@ -379,13 +452,13 @@ class YBController extends BaseController
         $order = new YBOrder();
         $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
         $cart->setYbOrder($order);
-        
+
         $errors = $validator->validate($order);
-        if($errors->count() > 0) {
+        if ($errors->count() > 0) {
             throw new \Exception($errors->offsetGet(0));
         }
 
-        if($cart->isFree()) {
+        if ($cart->isFree()) {
             $cart->setPaid(true);
             $mailDispatcher->sendYBOrderRecap($cart);
         }
@@ -402,7 +475,7 @@ class YBController extends BaseController
      */
     public function loginAction(Request $request, CsrfTokenManagerInterface $tokenManager = null, UserInterface $user = null)
     {
-        if($user != null) {
+        if ($user != null) {
             //$this->addFlash('yb_notice', "Vous êtes bien connecté !");
             return $this->redirectToRoute('yb_members_dashboard');
         }
@@ -444,7 +517,8 @@ class YBController extends BaseController
     /**
      * @Route("/signout", name="yb_logout")
      */
-    public function logoutAction(Request $request, TokenStorageInterface $tokenStorage) {
+    public function logoutAction(Request $request, TokenStorageInterface $tokenStorage)
+    {
         $tokenStorage->setToken(null);
         $session = $request->getSession();
         $session->invalidate();
@@ -458,6 +532,138 @@ class YBController extends BaseController
         }
         $this->addFlash('yb_notice', "Vous êtes bien déconnecté.");
         return $response;
+    }
+
+    /**
+     * @Route("/book-seats", name="yb_book_seats")
+     */
+    public function bookSeatsAction(EntityManagerInterface $em, Request $request)
+    {
+        $seats = $request->get('seats');
+        $purchaseIndex = $request->get('purchaseIndex');
+        $purchaseID = $request->get('purchase');
+        /** @var Purchase $purchase */
+        $purchase = $em->getRepository('AppBundle:Purchase')->find($purchaseID);
+        $this->bookListSeats($seats, $em, $purchase);
+        $response = $this->generateUrl('yb_pick_seats', [
+            'cf' => $purchase->getContractFan()->getId(),
+            'purchaseIndex' => $purchaseIndex,
+            'code' => $purchase->getContractFan()->getCart()->getBarcodeText(),
+        ]);
+        return new Response($response);
+    }
+
+    /**
+     * @Route("/refresh-seats", name="yb_refresh_seats")
+     */
+    public function refreshSeatsAction(Request $request, EntityManagerInterface $em)
+    {
+        $code = $request->get('code');
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+        if ($cart == null) {
+            throw $this->createNotFoundException("Pas de panier,... Pas de panier !");
+        }
+        $timedOutSession = $em->getRepository('AppBundle:YB\Booking')->getTimedoutReservations();
+        $isRelatedToUser = false;
+        if (count($timedOutSession) !== 0) {
+            /** @var Booking $reservation */
+            foreach ($timedOutSession as $booking) {
+                if ($booking->getPurchase()->getContractFan()->getCart() === $cart) {
+                    $isRelatedToUser = true;
+                }
+                $em->remove($booking);
+            }
+        }
+        if ($isRelatedToUser) {
+            $response = 'salut ca va';
+        } else {
+            $response = 'ok';
+        }
+        return new Response($response);
+    }
+
+    /**
+     * @Route("/get-occupied-seats", name="yb_occupied_seats")
+     */
+    public function getOccupiedSeats(Request $request, EntityManagerInterface $em){
+        $purchase = $em->getRepository('AppBundle:Purchase')->find($request->get('purchase'));
+        $config = $em->getRepository('AppBundle:YB\VenueConfig')->find($request->get('config'));
+        $blocks = $this->getBlocksFromPurchase($purchase, $config);
+        $onlyNumberedBlocks = $this->filterBlocks($blocks);
+        $bookedSeat = array();
+        foreach ($onlyNumberedBlocks as $blk) {
+            $bookings = $em->getRepository('AppBundle:YB\Booking')->getBookingForEventAndBlock($config->getId(), $blk->getId());
+            foreach ($bookings as $booking) {
+                $row = $blk->getRows()[$booking->getReservation()->getRowIndex() - 1];
+                $seat = $row->getSeats()[$booking->getReservation()->getSeatIndex() - 1];
+                $seatSCName = $seat->getSeatChartName() . "_" . $blk->getId();
+                array_push($bookedSeat, $seatSCName);
+            }
+        }
+        return new JsonResponse($bookedSeat);
+    }
+
+    private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase)
+    {
+        if ($purchase->getQuantity() === count($purchase->getBookings())) {
+            foreach ($purchase->getBookings() as $booking) {
+                $em->remove($booking);
+            }
+        }
+        foreach ($seats as $seat) {
+            $arr = explode('_', $seat);
+            $block = $em->getRepository('AppBundle:YB\Block')->find($arr[2]);
+            $rowIndex = $arr[0];
+            $seatIndex = $arr[1];
+            $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsFromBlockRowSeat($block, $rowIndex, $seatIndex);
+            if ($rsv === null) $rsv = new Reservation($block, $rowIndex, $seatIndex);
+            // TODO : if booking exist deja renvoyer une exception
+            $booking = new Booking($rsv, $purchase);
+            $em->persist($booking);
+        }
+        $em->flush();
+    }
+
+    private function getBlocksFromPurchase(Purchase $purchase, VenueConfig $config)
+    {
+        if ($purchase->getCounterpart()->getAccessEverywhere()) {
+            return $config->getBlocks();
+        } else {
+            return $purchase->getCounterpart()->getVenueBlocks();
+        }
+    }
+
+    private function filterBlocks($blocks)
+    {
+        $filtered = [];
+        /** @var Block $block */
+        foreach ($blocks as $block) {
+            if (!$block->isNotNumbered()) {
+                array_push($filtered, $block);
+            }
+        }
+        return $filtered;
+    }
+
+    private function isPurchaseOutOfStock(Purchase $purchase, EntityManagerInterface $em)
+    {
+        $contractArtist = $purchase->getContractFan()->getContractArtist();
+        $nbCpAvailable = $contractArtist->getNbPurchasable($purchase->getCounterpart());
+        if ($nbCpAvailable === 0) return true;
+        foreach ($purchase->getCounterpart()->getVenueBlocks() as $block) {
+            if (!$this->isBlockSoldout($block, $contractArtist, $em)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function getRemainingSeatsInVenue(VenueConfig $config, EntityManagerInterface $em)
+    {
+        $totalSeats = $config->getTotalCapacity();
+        $listOfBooking = $em->getRepository('AppBundle:YB\Booking')->getBookingSeatsForConfig($config->getId());
+        $nbOfBooking = count($listOfBooking);
+        return $totalSeats - $nbOfBooking;
     }
 
 }

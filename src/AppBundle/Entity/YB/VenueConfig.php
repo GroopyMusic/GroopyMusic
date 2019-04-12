@@ -77,8 +77,18 @@ class VenueConfig {
         return $unsquaredBlocks;
     }
 
-    public function generateSeatChart(int $maxRowLength){
-
+    public function getTotalCapacity(){
+        if ($this->venue->isOnlyFreeSeating() || $this->isDefault()){
+            return $this->venue->getDefaultCapacity();
+        }
+        if ($this->isOnlyStandup() || $this->hasFreeSeatingPolicy()){
+            return $this->getMaxCapacity();
+        }
+        $capacity = 0;
+        foreach ($this->blocks as $block){
+            $capacity += $block->getComputedCapacity();
+        }
+        return $capacity;
     }
 
     /**
@@ -163,7 +173,7 @@ class VenueConfig {
     private $blocks;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBContractArtist", mappedBy="venue", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\YBContractArtist", mappedBy="config", cascade={"all"})
      */
     private $events;
 

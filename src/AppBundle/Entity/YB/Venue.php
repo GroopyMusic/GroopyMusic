@@ -127,7 +127,7 @@ class Venue {
 
     /**
      * @var Organization
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="venue", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Organization", inversedBy="venues", cascade={"persist"})
      */
     private $organization;
 

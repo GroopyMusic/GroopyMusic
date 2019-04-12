@@ -37,7 +37,7 @@ class BookSeatTimeOutCommand extends ContainerAwareCommand{
      */
     protected function execute(InputInterface $input, OutputInterface $output){
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $timedOutSession = $em->getRepository('AppBundle:YB\Reservation')->getTimedoutReservations();
+        $timedOutSession = $em->getRepository('AppBundle:YB\Booking')->getTimedoutReservations();
         $cptTimedoutSession = 0;
         if (count($timedOutSession) !== 0){
             foreach ($timedOutSession as $reservation){

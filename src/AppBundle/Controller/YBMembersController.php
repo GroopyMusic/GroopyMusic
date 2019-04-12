@@ -10,6 +10,7 @@ use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\Block;
 use AppBundle\Entity\YB\BlockRow;
+use AppBundle\Entity\YB\Booking;
 use AppBundle\Entity\YB\Reservation;
 use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\VenueConfig;
@@ -910,18 +911,6 @@ class YBMembersController extends BaseController
                     $venue->createDefaultConfig();
                     return $this->redirectToRoute('yb_members_my_venues');
                 }
-                /*if (count($venue->getConfigurations()) === 0){
-                    $this->addFlash('yb_notice', "Vous n'avez pas renseigner de configurations. Une configuration par défaut a été créée avec la capacité par défaut de votre salle. Elle ne comprend que des places debout non-numérotées.");
-                }
-                $venue->createDefaultConfig();
-                $em->persist($venue);
-                $em->flush();
-                $this->addFlash('yb_notice', 'La salle a bien été créée.');
-                if ($venue->isOnlyFreeSeating()) {
-                    return $this->redirectToRoute('yb_members_my_venues');
-                } else {
-                    return $this->redirectToRoute('yb_members_add_venue_block', ['venue' => $venue->getId()]);
-                }*/
             }
         }
         return $this->render('@App/YB/Members/venue_new.html.twig', [
@@ -1161,98 +1150,7 @@ class YBMembersController extends BaseController
         return $this->render('@App/YB/Members/venue_help.html.twig');
     }
 
-    /**
-     * @Route("/pick-seats/{cf}/{purchaseIndex}/{code}", name="pick_seats")
-     */
-    public function pickSeatsAction(EntityManagerInterface $em, ContractFan $cf, int $purchaseIndex, $code){
-        $purchases = $cf->getPurchases();
-        $campaignID = $cf->getContractArtist()->getId();
-        /** @var YBContractArtist $campaign */
-        $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find($campaignID);
-        $config = $campaign->getConfig();
-        if ($config->isOnlyStandup() || $config->hasFreeSeatingPolicy()){
-            // on skip le choix des sièges
-            // TODO return 'yb_checkout'
-        } else {
-            if ($purchaseIndex < count($purchases)){
-                /** @var Purchase $purchase */
-                $purchase = $purchases[$purchaseIndex];
-                /** @var Collection|Block[] $bloks */
-                $blocks = $this->getBlocksFromPurchase($purchase, $config);
-                $onlyNumberedBlocks = $this->filterBlocks($blocks);
-                if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks()){
-                    // on skip le choix des sièges
-                    // TODO return 'yb_checkout'
-                } else {
-                    foreach($onlyNumberedBlocks as $blk){
-                        $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsForEventAndBlock($campaignID, $blk->getId());
-                        $bookedSeat = array();
-                        foreach ($rsv as $r){
-                            $row = $blk->getRows()[$r->getRowIndex() - 1];
-                            $seat = $row->getSeats()[$r->getSeatIndex() - 1];
-                            array_push($bookedSeat, $seat->getSeatChartName());
-                        }
-                        $blk->setBookedSeatList($bookedSeat);
-                    }
-                    return $this->render('@App/YB/pick_seats.html.twig', [
-                        'purchaseIndex' => $purchaseIndex,
-                        'purchase' => $purchase,
-                        'campaign' => $campaign,
-                        'config' => $config,
-                        'code' => $code,
-                        'blocks' => $config->getBlocks(),
-                    ]);
-                }
-            } else {
-                // on n'a fini, on doit renvoyer vers le checkout
-                // TODO return 'yb_checkout'
-            }
-        }
-    }
 
-    /**
-     * @Route("/book-seats", name="book-seats")
-     */
-    public function bookSeatsAction(EntityManagerInterface $em, Request $request){
-        $seats = $request->get('seats');
-        $purchaseIndex = $request->get('purchaseIndex');
-        $purchaseID = $request->get('purchase');
-        /** @var Purchase $purchase */
-        $purchase = $em->getRepository('AppBundle:Purchase')->find($purchaseID);
-        $this->bookListSeats($seats, $em, $purchase->getCounterpart(), $purchase->getContractFan()->getCart());
-        $url = $this->generateUrl('pick_seats', [
-            'cf' => $purchase->getContractFan()->getId(),
-            'purchaseIndex' => $purchaseIndex,
-        ]);
-        return new Response($url);
-    }
-
-    /**
-     * @Route("/refresh-seats", name="refresh_seats")
-     */
-    public function refreshSeatsAction(Request $request, EntityManagerInterface $em){
-        $code = $request->get('code');
-        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
-        if ($cart == null) {
-            throw $this->createNotFoundException("Pas de panier,... Pas de panier !");
-        }
-        $timedOutSession = $em->getRepository('AppBundle:YB\Reservation')->getTimedoutReservations();
-        $isRelatedToUser = false;
-        if (count($timedOutSession) !== 0){
-            foreach ($timedOutSession as $reservation){
-                if ($reservation->getCart() === $cart){
-                    $isRelatedToUser = true;
-                }
-                $em->remove($reservation);
-            }
-        }
-        if ($isRelatedToUser){
-            $response = 'salut ca va';
-        } else {
-            $response = 'ok';
-        }
-        return new Response($response);
-    }
 
 
 
@@ -1642,37 +1540,6 @@ class YBMembersController extends BaseController
         return $activeVenues;
     }
 
-    private function bookListSeats($seats, EntityManagerInterface $em, CounterPart $cp, Cart $cart){
-        $i = 0;
-        foreach ($seats as $seat){
-            $arr = explode('_', $seat);
-            $block = $em->getRepository('AppBundle:YB\Block')->find($arr[2]);
-            $rowIndex = $arr[0];
-            $seatIndex = $arr[1];
-            $rsv = new Reservation($block, $rowIndex, $seatIndex, $cp, $cart);
-            $em->persist($rsv);
-            $i++;
-        }
-        $em->flush();
-    }
 
-    private function getBlocksFromPurchase(Purchase $purchase, VenueConfig $config){
-        if ($purchase->getCounterpart()->getAccessEverywhere()){
-            return $config->getBlocks();
-        } else {
-            return $purchase->getCounterpart()->getVenueBlocks();
-        }
-    }
-
-    private function filterBlocks($blocks){
-        $filtered = [];
-        /** @var Block $block */
-        foreach($blocks as $block){
-            if (!$block->isNotNumbered()){
-                array_push($filtered, $block);
-            }
-        }
-        return $filtered;
-    }
 
 }

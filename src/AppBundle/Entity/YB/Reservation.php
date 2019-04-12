@@ -11,21 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Reservation {
 
-    /**
-     * Reservation constructor.
-     * @param $block
-     * @param $rowIndex
-     * @param $seatIndex
-     * @param $counterpart
-     */
-    public function __construct($block, $rowIndex, $seatIndex, $counterpart, $cart){
+    public function __construct($block, $rowIndex, $seatIndex){
         $this->block = $block;
         $this->rowIndex = $rowIndex;
         $this->seatIndex = $seatIndex;
-        $this->counterpart = $counterpart;
-        $this->isBooked = false;
-        $this->bookingDate = new \DateTime();
-        $this->cart = $cart;
     }
 
     public function __toString(){
@@ -56,27 +45,9 @@ class Reservation {
     private $seatIndex;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CounterPart", inversedBy="reservations")
-     * @ORM\JoinColumn(name="counterpart_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Booking", mappedBy="reservation", cascade={"persist", "remove"}, orphanRemoval=TRUE)
      */
-    private $counterpart;
-
-    /**
-     * @ORM\Column(type="boolean", name="isBooked")
-     */
-    protected $isBooked;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(name="booking_date", type="datetime", nullable=true)
-     */
-    private $bookingDate;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Cart", inversedBy="reservations")
-     * @ORM\JoinColumn(name="cart_id", referencedColumnName="id")
-     */
-    private $cart;
+    private $bookings;
 
     /**
      * @return mixed
@@ -100,38 +71,6 @@ class Reservation {
     public function setBlock($block)
     {
         $this->block = $block;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function isBooked()
-    {
-        return $this->isBooked;
-    }
-
-    /**
-     * @param boolean $isBooked
-     */
-    public function setIsBooked($isBooked)
-    {
-        $this->isBooked = $isBooked;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCounterpart()
-    {
-        return $this->counterpart;
-    }
-
-    /**
-     * @param mixed $counterpart
-     */
-    public function setCounterpart($counterpart)
-    {
-        $this->counterpart = $counterpart;
     }
 
     /**
@@ -167,38 +106,19 @@ class Reservation {
     }
 
     /**
-     * @return \DateTime
-     */
-    public function getBookingDate()
-    {
-        return $this->bookingDate;
-    }
-
-    /**
-     * @param \DateTime $bookingDate
-     */
-    public function setBookingDate($bookingDate)
-    {
-        $this->bookingDate = $bookingDate;
-    }
-
-    /**
      * @return mixed
      */
-    public function getCart()
+    public function getBookings()
     {
-        return $this->cart;
+        return $this->bookings;
     }
 
     /**
-     * @param mixed $cart
+     * @param mixed $bookings
      */
-    public function setCart($cart)
+    public function setBookings($bookings)
     {
-        $this->cart = $cart;
+        $this->bookings = $bookings;
     }
-
-
-
 
 }
