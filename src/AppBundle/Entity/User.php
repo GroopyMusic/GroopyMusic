@@ -141,6 +141,8 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
+    /* Doesn't return all accepted conditions, for some unknown reason
+        Todo */
     public function getAcceptedConditions()
     {
         return array_map(function (User_Conditions $uc) {
@@ -150,7 +152,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
 
     public function hasAccepted(Conditions $conditions)
     {
-        return in_array($conditions->getId(), array_map(function ($elem) {
+        return in_array($conditions->getId(), array_map(function (Conditions $elem) {
             return $elem->getId();
         }, $this->getAcceptedConditions()));
     }
@@ -978,7 +980,7 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
      */
     public function addUserCondition(\AppBundle\Entity\User_Conditions $userCondition)
     {
-        $this->user_conditions[] = $userCondition;
+        $this->user_conditions->add($userCondition);
 
         return $this;
     }

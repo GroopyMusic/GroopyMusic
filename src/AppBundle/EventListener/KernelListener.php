@@ -6,16 +6,21 @@ use AppBundle\Controller\ConditionsController;
 use AppBundle\Controller\YBController;
 use AppBundle\Controller\YBMembersController;
 use AppBundle\Entity\User;
+use AppBundle\Exception\UMAuthenticationException;
 use AppBundle\Exception\YBAuthenticationException;
+use AppBundle\Services\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Controller\SecurityController;
 use FOS\UserBundle\FOSUserBundle;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
@@ -39,8 +44,11 @@ class KernelListener implements EventSubscriberInterface
     private $router;
     private $XPublicController;
     private $XArtistController;
+    private $userManager;
+    private $logger;
+    private $yb = false;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, YBMembersController $YBMembersController, YBController $YBController, RouterInterface $router, $session_name, $remember_me_name, XArtistController $XArtistController, XPublicController $XPublicController)
+    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em, ConditionsController $conditionsController, SecurityController $securityController, YBMembersController $YBMembersController, YBController $YBController, RouterInterface $router, $session_name, $remember_me_name, XArtistController $XArtistController, XPublicController $XPublicController, UserManager $userManager, LoggerInterface $logger, RequestStack $requestStack)
     {
         $this->tokenStorage = $tokenStorage;
         $this->em = $em;
@@ -53,20 +61,53 @@ class KernelListener implements EventSubscriberInterface
         $this->router = $router;
         $this->XArtistController = $XArtistController;
         $this->XPublicController = $XPublicController;
+        $this->userManager = $userManager;
+        $this->logger = $logger;
     }
-
     public static function getSubscribedEvents() {
         return [
             KernelEvents::CONTROLLER => 'onController',
             KernelEvents::RESPONSE => 'onResponse',
             KernelEvents::EXCEPTION => 'onException',
+            KernelEvents::REQUEST => [['onRequest', 3000]],
         ];
+    }
+
+    public function onRequest(GetResponseEvent $event) {
+        $request = $event->getRequest();
+        if ($request->get('_route') == 'fos_user_security_check_yb' || $request->get('_route') == 'yb_login') {
+            $this->yb = true;
+            $this->userManager->setYB(true);
+            $this->em->getRepository('AppBundle:User')->setYB(true);
+        }
+        $this->logger->log('critical', $request->get('_route'));
     }
 
     public function onException(GetResponseForExceptionEvent $event) {
         $exception = $event->getException();
         $request = $event->getRequest();
         $session = $request->getSession();
+
+        if($exception instanceof UMAuthenticationException) {
+            // Logging user out.
+            $this->tokenStorage->setToken(null);
+
+            // Invalidating the session.
+            $session->invalidate();
+
+            $cookieNames = [
+                $this->session_name,
+                $this->remember_me_name,
+            ];
+
+            $response = new RedirectResponse($this->router->generate($request->get('_route'), $request->get('_route_params')));
+
+            foreach ($cookieNames as $cookieName) {
+                $response->headers->clearCookie($cookieName);
+            }
+
+            $event->setResponse($response);
+        }
 
         // YB
         if($exception instanceof YBAuthenticationException) {
@@ -140,24 +181,37 @@ class KernelListener implements EventSubscriberInterface
         $callable = $event->getController();
 
         $yb = false;
-        if(is_array($callable) && $callable[0] == $this->YBMembersController) {
-            $this->em->getRepository('AppBundle:User')->yb = 1;
+        if((is_array($callable) && ($callable[0] == $this->YBMembersController || $callable[0] == $this->YBController) || $request->get('_route') == 'fos_user_security_check_yb') || $request->get('_route') == 'yb_login') {
             $yb = true;
+            $this->yb = true;
+        }
+        $this->em->getRepository('AppBundle:User')->setYB($this->yb);
+        $this->userManager->setYB($this->yb);
+
+        $this->logger->log('critical', 'Voici la route : ' . $request->get('_route') . ' et le YB : ' . $yb);
+
+        $token = $this->tokenStorage->getToken();
+
+        if($token == null) {
+            return;
+        }
+        $user = $token->getUser();
+
+        if(!$user instanceof User) {
+            return;
+        }
+
+        if($user->isYB() != $yb) {
+            // Logging user out.
+            $this->tokenStorage->setToken(null);
+
+            // Invalidating the session.
+            $session->invalidate();
+
+            throw new UMAuthenticationException();
         }
 
         if(!$yb) {
-            $token = $this->tokenStorage->getToken();
-
-            if($token == null) {
-                return;
-            }
-            $user = $token->getUser();
-
-            if(!$user instanceof User) {
-                return;
-            }
-
-
             $controller = $this->conditionsController;
 
             if(is_array($callable) && $callable[0] == $controller)
@@ -166,7 +220,11 @@ class KernelListener implements EventSubscriberInterface
             $user->setPreferredLocale($request->getLocale());
             $last_conditions = $this->em->getRepository('AppBundle:Conditions')->findLast();
 
-            if(($last_conditions == null) || $user->hasAccepted($last_conditions))
+            if(($last_conditions == null))
+                return;
+
+            $has_accepted = $this->em->getRepository('AppBundle:User_Conditions')->findBy(['conditions' => $last_conditions, 'user' => $user]);
+            if(count($has_accepted) > 0)
                 return;
 
             $event->setController(array($controller, 'acceptLastAction'));

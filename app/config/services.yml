@@ -80,7 +80,7 @@ services:
         $session_name: '%session.name%'
         $remember_me_name: '%session.remember_me.name%'
       tags:
-        - {name: kernel.event_subscriber }
+        - {name: kernel.event_subscriber, priority: 3000 }
 
     AppBundle\Services\:
       resource: '../../src/AppBundle/Services/*'

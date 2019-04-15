@@ -116,6 +116,9 @@ abstract class BaseController extends Controller
         if(!$user || !$user instanceof User) {
             throw new YBAuthenticationException();
         }
+        if(!$user->isYB()) {
+            throw new YBAuthenticationException();
+        }
         if($campaign != null && (!$user->ownsYBCampaign($campaign) && !$user->isSuperAdmin())) {
             throw new YBAuthenticationException();
         }

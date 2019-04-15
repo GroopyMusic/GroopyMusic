@@ -5,6 +5,7 @@ fos_user:
     user_class: AppBundle\Entity\User
     service:
         mailer: azine_email.default.template_twig_swift_mailer
+        user_manager: AppBundle\Services\UserManager
     registration:
         form:
             type: AppBundle\Form\RegistrationType

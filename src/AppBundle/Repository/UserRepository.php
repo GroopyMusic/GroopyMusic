@@ -5,10 +5,26 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use FOS\UserBundle\Model\UserInterface;
+use FOS\UserBundle\Model\UserManagerInterface;
 
-class UserRepository extends EntityRepository
+class UserRepository extends OptimizedRepository
 {
-    public $yb = 0;
+    protected $yb;
+
+    public function setYB($yb) {
+        $this->yb = $yb;
+        return $this;
+    }
+
+    public function getYB() {
+        return $this->yb;
+    }
+
+    public function initShortName()
+    {
+        $this->short_name = 'u';
+    }
 
     public function baseQueryBuilder()
     {

@@ -55,8 +55,11 @@ abstract class OptimizedRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->baseQueryBuilder();
 
+        $i = 0;
         foreach($criteria as $key => $criterion) {
-            $qb->andWhere($this->short_name . '.' . $key . ' = ' . $criterion);
+            $qb->andWhere($this->short_name . '.' . $key . ' = :criterion'.$i)
+                ->setParameter('criterion'.$i, $criterion);
+            $i++;
         }
 
         if($orderBy != null) {
@@ -79,8 +82,11 @@ abstract class OptimizedRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->baseQueryBuilder();
 
+        $i = 0;
         foreach($criteria as $key => $criterion) {
-            $qb->andWhere($this->short_name . '.' . $key . ' = ' . $criterion);
+            $qb->andWhere($this->short_name . '.' . $key . ' = :criterion'.$i)
+            ->setParameter('criterion'.$i, $criterion);
+            $i++;
         }
 
         if($orderBy != null) {
