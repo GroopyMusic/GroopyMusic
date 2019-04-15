@@ -331,14 +331,30 @@ class TicketingManager
             foreach ($cf->getPurchases() as $purchase) {
                 /** @var Purchase $purchase */
                 $counterPart = $purchase->getCounterpart();
-
-                for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
-                    $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice()));
-                    $j++;
-                }
-                for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                    $cf->addTicket(new Ticket($cf, $counterPart, $j, 0));
-                    $j++;
+                if (count($purchase->getBookings()) === 0){
+                    // TODO rajouter le siège
+                    for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice(), null, null, 'Placement libre'));
+                        $j++;
+                    }
+                    for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, 0, null, null, 'Placement libre' ));
+                        $j++;
+                    }
+                } else {
+                    $z = 0;
+                    for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
+                        $seat = $purchase->getBookings()[$z];
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice(), null, null, $seat));
+                        $j++;
+                        $z++;
+                    }
+                    for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
+                        $seat = $purchase->getBookings()[$z];
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, 0, null, null, $seat));
+                        $j++;
+                        $z++;
+                    }
                 }
             }
 

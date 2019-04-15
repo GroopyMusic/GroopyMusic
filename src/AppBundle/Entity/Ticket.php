@@ -13,13 +13,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null)
+    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $seat)
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;
         $this->setPrice($price);
         $this->validated = false;
         $this->rewards = new ArrayCollection();
+        $this->seat = $seat;
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
@@ -135,6 +136,11 @@ class Ticket
      * @ORM\Column(name="paidInCash", type="boolean")
      */
     private $paidInCash = false;
+
+    /**
+     * @ORM\Column(name="seatLabel", type="string")
+     */
+    private $seat;
 
     /**
      * Get id
@@ -395,6 +401,22 @@ class Ticket
     public function setPaidInCash($paidInCash)
     {
         $this->paidInCash = $paidInCash;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSeat()
+    {
+        return $this->seat;
+    }
+
+    /**
+     * @param mixed $seat
+     */
+    public function setSeat($seat)
+    {
+        $this->seat = $seat;
     }
 
 

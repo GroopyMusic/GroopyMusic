@@ -138,11 +138,10 @@ class YBController extends BaseController
             $purchase = $purchases[$purchaseIndex];
             /** @var Collection|Block[] $bloks */
             $blocks = $this->getBlocksFromPurchase($purchase, $config);
-            $onlyNumberedBlocks = $this->filterBlocks($blocks);
             if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks()) {
                 return $this->redirectToRoute('yb_checkout', ['code' => $code]);
             } else {
-                foreach ($onlyNumberedBlocks as $blk) {
+                foreach ($blocks as $blk) {
                     $bookings = $em->getRepository('AppBundle:YB\Booking')->getBookingForEventAndBlock($campaignID, $blk->getId());
                     $bookedSeat = array();
                     foreach ($bookings as $booking) {
@@ -158,7 +157,7 @@ class YBController extends BaseController
                     'campaign' => $campaign,
                     'config' => $config,
                     'code' => $code,
-                    'blocks' => $onlyNumberedBlocks,
+                    'blocks' => $blocks,
                 ]);
             }
         } else {

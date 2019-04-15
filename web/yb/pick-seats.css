@@ -1,0 +1,10 @@
+.pick-seats-sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #53d9f0;
+}
+
+.pick-seats-sticky + .pick-seats-content {
+    padding-top: 102px;
+}

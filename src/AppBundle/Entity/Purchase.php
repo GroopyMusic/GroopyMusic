@@ -25,6 +25,7 @@ class Purchase
         $this->reducedPrice = 0;
         $this->purchase_promotions = new ArrayCollection();
         $this->ticket_rewards = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     public function __toString()

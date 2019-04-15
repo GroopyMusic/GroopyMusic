@@ -3,6 +3,7 @@
 namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use AppBundle\Entity\User;
 use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContractArtist;
@@ -225,7 +226,7 @@ class YBContractArtistInfosType extends AbstractType {
         return 'app_bundle_ybcontract_artist_type';
     }
 
-    protected function addElements(FormInterface $form, Venue $venue = null){
+    protected function addElements(FormInterface $form, Venue $venue = null, User $user = null){
         $form->add('venue', EntityType::class, [
             'label' => 'Salle',
             'required' => true,
@@ -233,6 +234,7 @@ class YBContractArtistInfosType extends AbstractType {
             'data' => $venue,
             'placeholder' => 'Sélectionner une salle',
             'class' => Venue::class,
+            'choice_label' => 'displayName'
         ]);
         $configs = array();
         if ($venue){
@@ -252,13 +254,15 @@ class YBContractArtistInfosType extends AbstractType {
         $data = $event->getData();
         $em = $event->getForm()->getConfig()->getOptions()['em'];
         $venue = $em->getRepository('AppBundle:YB\Venue')->find($data['venue']);
-        $this->addElements($form, $venue);
+        $user = $event->getForm()->getConfig()->getOptions()['user'];
+        $this->addElements($form, $venue, $user);
     }
 
     function onPreSetData(FormEvent $event){
         $campaign = $event->getData();
         $form = $event->getForm();
         $venue = $campaign->getVenue() ? $campaign->getVenue() : null;
-        $this->addElements($form, $venue);
+        $user = $event->getForm()->getConfig()->getOptions()['user'];
+        $this->addElements($form, $venue, $user);
     }
 }

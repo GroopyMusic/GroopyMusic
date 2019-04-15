@@ -21,6 +21,12 @@ class Booking {
         $this->isBooked = false;
     }
 
+    public function getSeat(){
+        $blk = $this->reservation->getBlock();
+        $seat = $blk->getSeatAt($this->reservation->getRowIndex(), $this->reservation->getSeatIndex());
+        return $seat;
+    }
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

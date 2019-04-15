@@ -101,7 +101,7 @@ class YBMembersController extends BaseController
             $this->createPrivateOrganization($em, $currentUser);
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
-        $venues = $this->getActiveVenue($em);
+        $venues = $this->getActiveVenue($em, $currentUser);
         $generic_options = ['creation' => true, 'userOrganizations' => $userOrganizations, 'venues' => $venues, 'em' => $em, 'user' => $currentUser];
         $flow->setGenericFormOptions($generic_options);
 
@@ -179,7 +179,7 @@ class YBMembersController extends BaseController
         }
         $userOrganizations = $this->getOrganizationsFromUser($currentUser);
 
-        $venues = $this->getActiveVenue($em);
+        $venues = $this->getActiveVenue($em, $currentUser);
 
         $flow->setGenericFormOptions(['creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId(), 'venues' => $venues, 'em' => $em]);
 
@@ -903,12 +903,13 @@ class YBMembersController extends BaseController
                 $this->addFlash('error', "Il y a déjà une salle à cette adresse ! Peut-être votre salle existe-elle déjà ?!");
                 return $this->redirectToRoute('yb_members_venues_new');
             } else {
+                $venue->createDefaultConfig();
                 $em->persist($venue);
                 $em->flush();
                 if ($form->get('addBlocks')->isClicked()){
                     return $this->redirectToRoute('yb_members_venue_add_configs', ['venue' => $venue->getId()]);
                 } else {
-                    $venue->createDefaultConfig();
+                    $this->addFlash('yb_notice', 'La salle a bien été créée.');
                     return $this->redirectToRoute('yb_members_my_venues');
                 }
             }
@@ -1515,21 +1516,7 @@ class YBMembersController extends BaseController
         return false;
     }
 
-    private function getActiveVenueConfig(EntityManagerInterface $em)
-    {
-        $venues = $em->getRepository('AppBundle:YB\Venue')->findAll();
-        $configs = [];
-        foreach ($venues as $venue) {
-            if (!$venue->isDeleted() && !$venue->getAcceptVenueTemp()) {
-                foreach ($venue->getConfigurations() as $configuration) {
-                    array_push($configs, $configuration);
-                }
-            }
-        }
-        return $configs;
-    }
-
-    private function getActiveVenue(EntityManagerInterface $em){
+    private function getActiveVenue(EntityManagerInterface $em, User $user){
         $venues = $em->getRepository('AppBundle:YB\Venue')->findAll();
         $activeVenues = [];
         foreach ($venues as $venue) {
@@ -1537,7 +1524,21 @@ class YBMembersController extends BaseController
                 array_push($activeVenues, $venue);
             }
         }
-        return $activeVenues;
+        return $this->sortVenues($activeVenues, $user);
+    }
+
+    private function sortVenues($venues, User $user){
+        $sortedVenues = [];
+        foreach ($venues as $v){
+            if ($user->ownsYBVenue($v)){
+                $v->setDisplayName($v->getName().' --- (MA SALLE)');
+                array_unshift($sortedVenues, $v);
+            } else {
+                $v->setDisplayName($v->getName());
+                array_push($sortedVenues, $v);
+            }
+        }
+        return $sortedVenues;
     }
 
 

@@ -94,7 +94,6 @@ class Venue {
         $config = new VenueConfig();
         $config->constructDefault($this);
         $this->addConfiguration($config);
-        //$this->setDefaultConfig($config);
     }
 
     /**
@@ -164,6 +163,8 @@ class Venue {
      * @var VenueConfig
      */
     private $defaultConfig;
+
+    private $displayName;
 
     // getters & setters
 
@@ -349,6 +350,18 @@ class Venue {
     public function setDefaultConfig($defaultConfig)
     {
         $this->defaultConfig = $defaultConfig;
+    }
+
+    /**
+     * @param mixed $displayName
+     */
+    public function setDisplayName($displayName)
+    {
+        $this->displayName = $displayName;
+    }
+
+    public function getDisplayName(){
+        return $this->displayName;
     }
 
 }

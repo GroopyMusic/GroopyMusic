@@ -11,7 +11,10 @@
             </div>
         {% endif %}
     </section>
-    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations" id="myHeader" style="margin-left: 70px">
+        <h2 style="font-size: 22px; background-color: white; height: 40px">Vous pouvez encore prendre <span id="remainingTix" style="font-size: 24px">{{ purchase.quantity }}</span> ticket(s).</h2>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations pick-seats-content">
         {% for block in blocks %}
             <h2>{{ block.name }}</h2>
             {% if not block.isNotNumbered %}
@@ -32,7 +35,6 @@
                             </button>
                         </span>
                     </div>
-                    <p>Vous pouvez encore avoir <span id="remainingTix" style="font-size: 20px">{{ purchase.quantity }}</span> ticket(s) dans ce bloc.</p>
                 </div>
             {% endif %}
         {% endfor %}
@@ -62,6 +64,9 @@
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            var header = document.getElementById("myHeader");
+            var sticky = header.offsetTop;
+            window.onscroll = function(){stickToTop(header, sticky)};
             var charts = new Map();
             var qtyMax = {{ purchase.quantity }};
             var remainingTicket = qtyMax;
@@ -205,6 +210,13 @@
                     console.log('Error');
                 }
             })
+        }
+        function stickToTop(header, sticky){
+            if (window.pageYOffset > sticky) {
+                header.classList.add("pick-seats-sticky");
+            } else {
+                header.classList.remove("pick-seats-sticky");
+            }
         }
     </script>
 {% endblock %}
