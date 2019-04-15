@@ -63,6 +63,9 @@ class KernelListener implements EventSubscriberInterface
         $this->XPublicController = $XPublicController;
         $this->userManager = $userManager;
         $this->logger = $logger;
+        $request = $requestStack->getParentRequest();
+
+
     }
     public static function getSubscribedEvents() {
         return [
@@ -75,7 +78,9 @@ class KernelListener implements EventSubscriberInterface
 
     public function onRequest(GetResponseEvent $event) {
         $request = $event->getRequest();
-        if ($request->get('_route') == 'fos_user_security_check_yb' || $request->get('_route') == 'yb_login') {
+        $event->getRequest()->getUri();
+        $this->logger->log('critical', $event->getRequest()->getUri());
+        if(strpos($event->getRequest()->getUri(), '/yb/') !== false || strpos($event->getRequest()->getUri(), 'ticked-it.be') !== false) {
             $this->yb = true;
             $this->userManager->setYB(true);
             $this->em->getRepository('AppBundle:User')->setYB(true);
@@ -187,6 +192,9 @@ class KernelListener implements EventSubscriberInterface
         }
         $this->em->getRepository('AppBundle:User')->setYB($this->yb);
         $this->userManager->setYB($this->yb);
+
+        $yb_text = $yb ? 'true':'false';
+        $session->set('yb', $yb_text);
 
         $this->logger->log('critical', 'Voici la route : ' . $request->get('_route') . ' et le YB : ' . $yb);
 
