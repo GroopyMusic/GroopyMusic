@@ -115,6 +115,21 @@ class Block {
         }
     }
 
+    public function getSeatedCapacity(){
+        if ($this->type === 'Debout'){
+            return 0;
+        } else {
+            if ($this->getFreeSeating()){
+                return $this->capacity;
+            }
+            if (!$this->isNotSquared()){
+                return $this->nbRows * $this->nbSeatsPerRow;
+            } else {
+                return $this->getNbSeatsCustomRow();
+            }
+        }
+    }
+
     private function getNbSeatsCustomRow(){
         $nb = 0;
         foreach ($this->rows as $row){
@@ -165,7 +180,7 @@ class Block {
         return $this->type === 'Debout' || $this->getFreeSeating();
     }
 
-    public function isOutOfStockEvent(YBContractArtist $event){
+    public function getSoldTicketInBlock(YBContractArtist $event){
         $nb = 0;
         /** @var Reservation $rsv */
         foreach ($this->reservations as $rsv){
@@ -176,11 +191,7 @@ class Block {
                 }
             }
         }
-        if ($nb < $this->getComputedCapacity()){
-            return false;
-        } else {
-            return true;
-        }
+        return $nb;
     }
 
     /**

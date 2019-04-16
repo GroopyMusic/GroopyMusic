@@ -541,9 +541,10 @@ class YBController extends BaseController
         $seats = $request->get('seats');
         $purchaseIndex = $request->get('purchaseIndex');
         $purchaseID = $request->get('purchase');
+        $map = $request->get('map');
         /** @var Purchase $purchase */
         $purchase = $em->getRepository('AppBundle:Purchase')->find($purchaseID);
-        $this->bookListSeats($seats, $em, $purchase);
+        $this->bookListSeats($seats, $em, $purchase, $map);
         $response = $this->generateUrl('yb_pick_seats', [
             'cf' => $purchase->getContractFan()->getId(),
             'purchaseIndex' => $purchaseIndex,
@@ -602,7 +603,7 @@ class YBController extends BaseController
         return new JsonResponse($bookedSeat);
     }
 
-    private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase)
+    private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase, $map)
     {
         if ($purchase->getQuantity() === count($purchase->getBookings())) {
             foreach ($purchase->getBookings() as $booking) {
@@ -617,6 +618,12 @@ class YBController extends BaseController
             $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsFromBlockRowSeat($block, $rowIndex, $seatIndex);
             if ($rsv === null) $rsv = new Reservation($block, $rowIndex, $seatIndex);
             // TODO : if booking exist deja renvoyer une exception
+            $booking = new Booking($rsv, $purchase);
+            $em->persist($booking);
+        }
+        foreach ($map as $pass){
+            $block = $em->getRepository('AppBundle:YB\Block')->find($pass);
+            $rsv = new Reservation($block, 0, 0);
             $booking = new Booking($rsv, $purchase);
             $em->persist($booking);
         }

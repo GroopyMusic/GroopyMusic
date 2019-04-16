@@ -30,11 +30,24 @@
                 {{ ticket.barCodeText }}
             </p>
             <p>
-                {{ ticket.counterPart.getName }} - {{ ticket.price }} € - {{ ticket.name }}
+                {{ ticket.counterPart.getName }} - {{ ticket.price }} € - {{ ticket.name }} - {{ ticket.seat }}
             </p>
-
+            {% if ticket.seat == 'Placement libre' %}
+                {% if ticket.counterPart.getAccessEverywhere()  %}
+                    <p>Ce ticket donne accès à l'entièreté de la salle !</p>
+                {% else %}
+                    <p>
+                        Ce ticket donne accès au(x) bloc(s) suivant(s) :
+                        {% for block in ticket.counterPart.venueBlocks %}
+                            {{ block.name }} {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            {% endif %}
+            {% if ticket.counterPart.contractArtist.config.photo is not null %}
+                <h2><img src="{{ yb_asset(ticket.counterPart.contractArtist.config.webPath(ticket.counterPart.contractArtist.config.photo)) }}"/></h2>
+            {% endif %}
             <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }}</p>
-
             {% if campaign.address is not null %}
                 <p>Adresse de l'événement : {{ campaign.address }}</p>
                 {% set base64 = base64("https://maps.googleapis.com/maps/api/staticmap?center=" ~ campaign.address|url_encode ~ "&zoom=13&size=600x300&maptype=roadmap&key=AIzaSyAjWpC8y-sy07JHTBAexmdCT4cQaC84y8U") %}

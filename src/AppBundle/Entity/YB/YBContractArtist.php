@@ -176,16 +176,67 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isOutOfStockCp(CounterPart $cp){
-        if ($this->getNbPurchasable($cp) === 0){
-            return true;
+        // cas où la salle n'est que en placement libre
+        if ($this->config->isOnlyStandup() || $this->config->hasFreeSeatingPolicy()){
+            return ($this->getNbPurchasable($cp) === 0);
         }
-        foreach ($cp->getVenueBlocks() as $block) {
-            if (!$block->isOutOfStockEvent($this)){
-                return false;
+        // si les blocs concernés par le CP sont en placement libre
+        else if ($cp->hasOnlyFreeSeatingBlocks()){
+            return ($this->getNbPurchasable($cp) === 0);
+        }
+        // si les blocs ne sont que assis
+        else if ($cp->hasOnlySeatedBlock()) {
+            $totalSeatedCapacity = 0;
+            $totalSold = 0;
+            /** @var Block $block */
+            foreach ($cp->getVenueBlocks() as $block) {
+                $totalSeatedCapacity += $block->getSeatedCapacity();
+                $totalSold += $block->getSoldTicketInBlock($cp->getContractArtist());
             }
+            $realCapacity = min($totalSeatedCapacity, $cp->getMaximumAmount());
+            return $totalSold === $realCapacity;
+        }
+        else {
+            // mix des 2 (assis et debout)
+            $cpCapacity = $cp->getMaximumAmount();
+            $totalSoldSeated = 0;
+            // on regarde d'abord les blocs assis
+            /** @var Block $block */
+            foreach ($cp->getVenueBlocks() as $block) {
+                $blkCapacity = $block->getComputedCapacity();
+                $soldInBlock = $block->getSoldTicketInBlock();
+                $realCapacity = min($cpCapacity, $blkCapacity);
+                if ($block->getType() === 'Balcon' || $block->getType() === 'Assis') {
+                    if ($soldInBlock < $realCapacity) {
+                        // on sait qu'on peut encore mettre au moins 1 personne dans ce bloc
+                        return true;
+                    }
+                }
+                $totalSoldSeated += $soldInBlock;
+            }
+            // on est arrivé à la fin de la boucle : tous les blocs assis sont soldout
+            // on regarde pour les debout
+            $purchasable = $cpCapacity - $totalSoldSeated;
+            return $purchasable === 0;
+        }
+    }
+
+
+
+
+
+
+        /*$cpCapacity = $cp->getMaximumAmount();
+        $soldAmount = 0;
+        foreach ($cp->getVenueBlocks() as $block) {
+            $alreadySoldInBlock = $block->getSoldTicketInBlock($cp->getContractArtist());
+            $soldAmount += $alreadySoldInBlock;
+        }
+        if ($cp->hasOnlySeatedBlock()){
+            foreach ($cp->getVenueBlocks() as $block) {
         }
         return true;
-    }
+    }*/
 
     public function getTotalNbAvailable() {
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();

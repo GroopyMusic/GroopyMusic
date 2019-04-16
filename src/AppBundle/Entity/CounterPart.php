@@ -102,14 +102,6 @@ class CounterPart implements TranslatableInterface
         }
     }
 
-    public function getBlkCapacity(){
-        $capacity = 0;
-        foreach ($this->venue_blocks as $blk){
-            $capacity += $blk->getCapacity();
-        }
-        return $capacity;
-    }
-
     public function isCapacityMaxReach(){
         return $this->maximum_amount > $this->getBlkCapacity();
     }
@@ -122,6 +114,40 @@ class CounterPart implements TranslatableInterface
             }
         }
         return true;
+    }
+
+    public function hasOnlySeatedBlock(){
+        /** @var Block $blk */
+        foreach ($this->venue_blocks as $blk){
+            if ($blk->getType() === 'Debout'){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function getSeatedCapacity(){
+        /** @var Block $block */
+        $capacity = 0;
+        foreach($this->venue_blocks as $block){
+            $capacity += $block->getComputedCapacity();
+        }
+        return $capacity;
+    }
+
+    public function getStandUpCapacity(){
+        $capacity = 0;
+        /** @var Block $block */
+        foreach($this->venue_blocks as $block){
+            if ($block->getType === 'Debout'){
+                $capacity += $block->getCapacity();
+            }
+        }
+        return $capacity;
+    }
+
+    public function getDifferenceBetweenPhysicalAndTicketCapacity(){
+        return $this->maximum_amount - $this->getSeatedCapacity() - $this->getStandUpCapacity();
     }
 
     /**

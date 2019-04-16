@@ -20,22 +20,26 @@
             {% if not block.isNotNumbered %}
                 <div align-text="center" id="seat-map{{ block.id }}"></div>
             {% else %}
-                <div>
-                    Nombre de ticket voulu dans ce bloc :
-                    <div class="input-group">
+                {% if block.type != 'Debout' and block.getSoldTicketInBlock(campaign) === block.capacity %}
+                    Ce bloc est sold-out...
+                {% else %}
+                    <div>
+                        Nombre de ticket voulu dans ce bloc :
+                        <div class="input-group">
                         <span class="input-group-btn">
                             <button type="button" class="quantity-left-minus btn btn-dark btn-number retreat-quantity">
                                 <i class="text-white fas fa-minus"></i>
                             </button>
                         </span>
-                        <input type="number" style="width: 100px; text-align: center;" id="quantity-tix" value="0" readonly>
-                        <span class="input-group-btn">
+                            <input type="number" style="width: 100px; text-align: center;" class="quantity-tix" id="quantity-tix{{ block.id }}" value="0" readonly>
+                            <span class="input-group-btn">
                             <button type="button" class="quantity-right-plus btn btn-dark btn-number add-quantity">
                                 <i class="text-white fas fa-plus"></i>
                             </button>
                         </span>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endif %}
         {% endfor %}
         <br>
@@ -72,6 +76,7 @@
             var remainingTicket = qtyMax;
             var soldTicket = 0;
             var selected = [];
+            var unordered = [];
             {% for block in blocks %}
                 {% if not block.isNotNumbered %}
                     var sc = $('#seat-map{{ block.id }}').seatCharts({
@@ -87,6 +92,7 @@
                                 if (remainingTicket > 0) {
                                     var fullName = this.settings.id + "_" + {{ block.id }};
                                     selected.push(fullName);
+                                    console.log(selected);
                                     remainingTicket--;
                                     soldTicket++;
                                     $('#remainingTix').text(remainingTicket);
@@ -103,6 +109,7 @@
                                             selected.splice(j, 1);
                                         }
                                     }
+                                    console.log(selected);
                                     remainingTicket++;
                                     soldTicket--;
                                     $('#remainingTix').text(remainingTicket);
@@ -122,12 +129,42 @@
                     charts.set({{ block.id }}, sc);
                     $('.seatCharts-header').css('display', 'none');
                 {% else %}
-                    // TODO
+                    $('.retreat-quantity').click(function(){
+                        var value = $('#quantity-tix{{ block.id }}').val();
+                        if (soldTicket > 0){
+                            value = value - 1;
+                            remainingTicket++;
+                            soldTicket--;
+                            for (j = 0; j < unordered.length; j++) {
+                                if (unordered[j] === {{ block.id }}) {
+                                    unordered.splice(j, 1);
+                                }
+                            }
+                            console.log(unordered);
+                            $('#remainingTix').text(remainingTicket);
+                            $('#quantity-tix{{ block.id }}').val(value);
+                        }
+                    });
+
+                    $('.add-quantity').click(function(){
+                        var value = $('#quantity-tix{{ block.id }}').val();
+                        if (remainingTicket > 0){
+                            var decimal = parseInt((value + '').replace(/[^01]/gi, ''), 2);
+                            decimal = decimal + 1;
+                            remainingTicket--;
+                            soldTicket++;
+                            unordered.push({{ block.id }});
+                            console.log(unordered);
+                            $('#remainingTix').text(remainingTicket);
+                            $('#quantity-tix{{ block.id }}').val(decimal);
+                        }
+                    });
                 {% endif %}
             {% endfor %}
 
             $('.book').click(function () {
-                if (selected.length == qtyMax) {
+                console.log(selected);
+                if (remainingTicket == 0) {
                     $.ajax({
                         url: "{{ path('yb_book_seats') }}",
                         type: "POST",
@@ -135,6 +172,7 @@
                             seats: selected,
                             purchase: {{ purchase.id }},
                             purchaseIndex: {{ purchaseIndex }} +1,
+                            map: unordered,
                         },
                         success: function (response) {
                             location.href = response;
@@ -149,29 +187,6 @@
             });
 
             setInterval(checkForAbortedBooking, 120000);
-
-            $('.retreat-quantity').click(function(){
-                var value = $('#quantity-tix').val();
-                if (soldTicket > 0){
-                    value = value - 1;
-                    remainingTicket++;
-                    soldTicket--;
-                    $('#remainingTix').text(remainingTicket);
-                    $('#quantity-tix').val(value);
-                }
-            });
-
-            $('.add-quantity').click(function(){
-                var value = $('#quantity-tix').val();
-                if (remainingTicket > 0){
-                    var decimal = parseInt((value + '').replace(/[^01]/gi, ''), 2);
-                    decimal = decimal + 1;
-                    remainingTicket--;
-                    soldTicket++
-                    $('#remainingTix').text(remainingTicket);
-                    $('#quantity-tix').val(decimal);
-                }
-            });
 
             setInterval(function(){checkForOccupiedSeats(charts)}, 7000);
         });
