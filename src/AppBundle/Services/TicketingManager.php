@@ -366,7 +366,7 @@ class TicketingManager
     // ------------------------ X
 
     public function generateAndSendXTickets(XContractFan $cf) {
-        //if (!$cf->getTicketsSent()) {
+        if (!$cf->getTicketsSent()) {
             $cf->generateBarCode();
 
             // TODO enhance this process, tickets shouldn't be removed & re-built (or should they ?)
@@ -387,15 +387,14 @@ class TicketingManager
 
             try {
                 $this->writer->writeXTickets($cf->getTicketsPath(), $cf->getTickets());
-                //$this->mailDispatcher->sendXTickets($cf);
-                //$this->em->persist($cf);
-                //$cf->setTicketsSent(true);
+                $this->mailDispatcher->sendXTickets($cf);
+                $this->em->persist($cf);
+                $cf->setTicketsSent(true);
             } catch (\Exception $e) {
                 $this->logger->error('Erreur lors de la génération de tickets pour la contribution ' . $cf->getId() . ' : ' . $e->getMessage());
-                file_put_contents('test.txt', 'Erreur génération ticket ' . $cf->getId() . ' : ' . $e->getMessage());
                 return $e;
             }
-        //}
+        }
         $this->em->flush();
         return null;
     }

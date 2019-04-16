@@ -38,9 +38,9 @@ class NotifyProjectToConfirmCommand extends ContainerAwareCommand
             $projects = $em->getRepository('XBundle:Project')->findPendingProjects();
 
             foreach($projects as $project) {
-                if (!$project->getNotifSent()) {
+                if (!$project->getNotifEndSent()) {
                     $mailDispatcher->sendProjectToConfirm($project);
-                    $project->setNotifSent(true);
+                    $project->setNotifEndSent(true);
                 }
             }
             $em->flush();

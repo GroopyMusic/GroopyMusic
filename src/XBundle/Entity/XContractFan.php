@@ -23,7 +23,7 @@ class XContractFan
         $this->purchases = new ArrayCollection();
 
         foreach($p->getProducts() as $product) {
-            if($product->getValidated()) {
+            if($product->getValidated() && $product->getDeletedAt() == null) {
                 $purchase = new XPurchase();
                 $purchase->setProduct($product);
                 $this->addPurchase($purchase);

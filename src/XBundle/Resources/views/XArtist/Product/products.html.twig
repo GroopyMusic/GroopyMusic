@@ -37,19 +37,47 @@
                         {% endif %}
                         <div class="col-4 col-md-1 my-2">
                             {% if product.freePrice %}
-                                <p>Prix libre</p>{{ product.minimumPrice }} € (prix minimum)
+                                <p>Prix libre</p><b>{{ product.minimumPrice }} €</b> (prix minimum)
                             {% else %}
-                                {{ product.price }} €
+                                <b>{{ product.price }} €</b>
                             {% endif %}
                         </div>
-                        <div class="col-4 col-md-1 my-2">{{ product.supply }} en stock</div>
-                        <div class="col-4 col-md-1 my-2">{{ product.productsSold }} vendus(s)</div>
+                        <div class="col-4 col-md-1 my-2"><b>{{ product.supply }}</b> en stock</div>
+                        <div class="col-4 col-md-1 my-2"><b>{{ product.productsSold }}</b> vendus(s)</div>
                     </div>
 
                     {% if not project.isPassed %}
                     <div class="col-12 my-2">
                         {% if product.validated %}
                             <a class="btn btn-primary" href="{{ path('x_artist_product_update', {'id': project.id, 'idProd': product.id}) }}">Modifier</a>
+                            {% if product.productsSold == 0 %}
+                                &nbsp;<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ product.id }}">
+                                    Supprimer
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Supprimer l'article "{{ product }}"</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Vous êtes sur le point de supprimer cet article. Êtes-vous sûr de continuer ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="{{ path('x_artist_product_delete', {'id': project.id, 'idProd': product.id}) }}">
+                                                    <input class="btn btn-danger" type="submit" value="Supprimer"/>
+                                                </form>
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% else %}
                             <div class="text-muted font-italic pb-2">
                                 En cours de validation

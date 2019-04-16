@@ -9,7 +9,7 @@
         <h3 class="text-center">TOUS LES PROJETS</h3><br>
 
         <!-- Filtre -->
-        {#<div>
+        {#<div class="jplist-panel">
             <!-- ios button: show/hide panel -->
             <div class="jplist-ios-button">
                 <i class="fa fa-sort"></i>
@@ -19,7 +19,7 @@
             <!-- panel -->
             <div class="jplist-panel box panel-top">
                 <!-- sort dropdown -->
-                <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">Trier par</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
+                {#<div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">Trier par</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
                     <ul>
                         <li class="active"><span data-path=".project-title" data-order="asc" data-type="text">A-Z</span></li>
                         <li><span data-path=".project-title" data-order="desc" data-type="text">Z-A</span></li>
@@ -44,7 +44,16 @@
                     <!--[if lt IE 10]>
                     <div class="jplist-label">{{ 'catalog_artists.filtering.search_name'|trans }}</div>
                     <![endif]-->
-                    <input data-path=".project-name" type="text" value="" placeholder="Chercher..." data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
+                    <!--<input data-path=".project-title" type="text" value="" placeholder="Chercher..." data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">-->
+                    <input
+                            data-path=".project-title"
+                            type="text"
+                            value=""
+                            placeholder="Chercher..."
+                            data-control-type="textbox"
+                            data-control-name="title-filter"
+                            data-control-action="filter"
+                    />
                 </div>
 
             </div>
@@ -77,5 +86,5 @@
 				,panelPath: '.jplist-panel'	
 			});
 		});
-	</script>
+	</script
 {% endblock %}

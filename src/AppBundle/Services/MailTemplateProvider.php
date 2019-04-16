@@ -74,7 +74,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const YB_NOTIFY_JOIN_ORGANIZATION_CANCEL = 'AppBundle:Mail/YB/Notifications:request_to_join_orga_cancelled.txt.twig';
 
     // X
-    const X_ADMIN_CONTACT = 'XBundle:Mail/Admin:contact.txt.twig';
+    const X_ADMIN_CONTACT = 'XBundle:Mail/Contact:contact.txt.twig';
+    const X_CONTACT_COPY = 'XBundle:Mail/Contact:copy.txt.twig';
     
     const X_ADMIN_NEW_PROJECT = 'XBundle:Mail/Admin:new_project.txt.twig';
     const X_PROJECT_VALIDATED = 'XBundle:Mail/Artist:project_validated.txt.twig';

@@ -14,7 +14,7 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('prod')
             ->join('prod.project', 'proj')
             ->where('proj.id = :id')
-            ->andWhere('prod.deleted = 0')
+            ->andWhere('prod.deletedAt IS NULL')
             ->orderBy('prod.name', 'ASC')
             ->setParameter('id', $project->getId())
             ->getQuery()
@@ -22,15 +22,4 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    public function getVisibleProductsForProject($project) {
-        return $this->createQueryBuilder('prod')
-            ->join('prod.project', 'proj')
-            ->where('proj.id = :id')
-            ->andWhere('prod.validated = 1')
-            ->orderBy('prod.name', 'ASC')
-            ->setParameter('id', $project->getId())
-            ->getQuery()
-            ->getResult()
-        ;
-    }
 }

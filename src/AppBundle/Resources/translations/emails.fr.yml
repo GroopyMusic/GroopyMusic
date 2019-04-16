@@ -375,6 +375,16 @@ yb:
 
 
 x:
+  contact:
+    copy: |
+      Votre message sur Chapots a bien été reçu! Nous vous répondrons le plus rapidement possible.
+
+      Voici une copie de votre message :
+
+      -- Name: %name%
+      -- Email: %email%
+      -- Message:
+
   project:
     validated: |
       Le projet que vous avez créé sur Chapots (titre : %project%) a bien été validé par un administrateur d'Un-Mute.

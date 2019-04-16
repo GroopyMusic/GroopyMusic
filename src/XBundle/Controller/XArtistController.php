@@ -10,7 +10,6 @@ use Doctrine\ORM\EntityManagerInterface;
 //use Ob\HighchartsBundle\Highcharts\Highchart;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +30,7 @@ class XArtistController extends BaseController
     /**
      * @Route("/dashboard", name="x_artist_dashboard")
      */
-    public function dashboardAction(EntityManagerInterface $em, UserInterface $user = null, Request $request)
+    public function dashboardAction(EntityManagerInterface $em, UserInterface $user = null)
     {
         $this->checkIfArtistAuthorized($user);
 
@@ -145,21 +144,23 @@ class XArtistController extends BaseController
      */
     public function confirmProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
 
-        //$mailDispatcher->sendConfirmedProject($project);
+        if ($project == null || $project->getCollectedAmount() == 0 || $project->getSuccessful()) {
+            throw $this->createNotFoundException("Pas possible de confirmer le projet");
+        }
+
+        $mailDispatcher->sendConfirmedProject($project);
 
         // Generate and send tickets
-        /*foreach($project->getSalesPaid() as $sale) {
+        foreach($project->getSalesPaid() as $sale) {
             if(!empty($sale->getTicketsPurchases())) {
                 $ticketingManager->generateAndSendXTickets($sale);
             }
-        }*/
+        }
 
-        $ticketingManager->ticketingTest();
-
-        //$project->setSuccessful(true);
-        //$em->flush();
+        $project->setSuccessful(true);
+        $em->flush();
 
         $this->addFlash('x_notice', "Le projet a bien été confirmé. Les contributeurs ont été avertis et les éventuels tickets vendus ont été envoyés");
         return $this->redirectToRoute('x_artist_dashboard');
@@ -171,7 +172,11 @@ class XArtistController extends BaseController
      */
     public function refundProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null, PaymentManager $paymentManager)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
+
+        if ($project == null || $project->getCollectedAmount() == 0 || $project->getFailed() || $project->getRefunded()) {
+            throw $this->createNotFoundException("Pas possible d'annuler le projet");
+        }
 
         $project->setFailed(true);
         $paymentManager->refundStripeAndProject($project);
@@ -187,21 +192,34 @@ class XArtistController extends BaseController
      */
     public function deleteProjectAction(EntityManagerInterface $em, Project $project, UserInterface $user = null)
     {
-        $this->checkIfArtistAuthorized($user);
+        $this->checkIfArtistAuthorized($user, $project);
 
-        if($project->getCollectedAmount() == 0) {
-            $project->setDeleted(true);
-            $project->setFailed(true);
-
-            foreach ($project->getProducts() as $product) {
-                $product->setDeleted(true);
-            }
-
-            $em->flush();
-            $this->addFlash('x_notice', 'Le projet a bien été supprimé');
-        } else {
-            $this->addFlash('yb_error', 'Ce projet ne peut être supprimé car le montant collecté est supérieur à 0 €.');
+        if ($project == null || $project->getCollectedAmount() > 0 || $project->getDeletedAt() != null) {
+            throw $this->createNotFoundException("Pas possible de supprimer le projet");
         }
+
+        // Remove products and photos products
+        foreach ($project->getProducts() as $product) {
+            $this->removePhotos($em, $product);
+            $em->remove($product);
+        }
+        $this->removePhotos($em, $project);
+
+        // Remove tags
+        foreach ($project->getTags() as $tag) {
+            $project->removeTag($tag);
+        }
+
+        // Remove handlers
+        foreach ($project->getHandlers() as $handler) {
+            $project->removeHandler($handler);
+        }
+
+        $em->persist($project);
+        $em->remove($project);
+        $em->flush();
+
+        $this->addFlash('x_notice', 'Le projet a bien été supprimé');
         return $this->redirectToRoute('x_artist_dashboard');
 
     }
@@ -288,7 +306,7 @@ class XArtistController extends BaseController
             $em->flush();
 
             $this->addFlash('x_notice', 'L\'article a bien été modifié.');
-            return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
+            return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
 
         return $this->render('@X/XArtist/Product/product_add.html.twig', array(
@@ -301,19 +319,32 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/product/{idProd}/delete", name="x_artist_product_delete")
      */
-    public function deleteProductAction(EntityManagerInterface $em, UserInterface $user = null, Project $project, Product $product)
+    public function deleteProductAction(EntityManagerInterface $em, UserInterface $user = null, Project $project, $idProd)
     {
         $this->checkIfArtistAuthorized($user, $project);
 
-        if($product->getProductsSold() == 0) {
-            $product->setDeleted(true);
-            $em->flush();
-            $this->addFlash('x_notice', 'L\'article a bien été supprimé');
-        } else {
-            $this->addFlash('yb_error', 'L\'article ne peut être supprimé car il a déjà été vendu un certain nombre');
-        }
-        return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
+        $product = $em->getRepository('XBundle:Product')->find($idProd);
 
+        if($project == null || $product == null || $product->getProductsSold() > 0 || $product->getDeletedAt() != null) {
+            throw $this->createNotFoundException("Pas possible de supprimer le produit");
+        }
+
+        if ($product->getPhoto() != null) {
+            $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $product->getPhoto()->getFilename()]);
+            $product->setPhoto(null);
+            $em->remove($photo);
+            $filesystem = new Filesystem();
+            $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Product::getWebPath($photo));
+        }
+        //$this->removePhotos($em, $product);
+        //$project->removeProduct($product);
+        //$product->setProject(null);
+        $em->remove($product);
+        //$em->persist($project);
+        $em->flush();
+
+        $this->addFlash('x_notice', 'L\'article a bien été supprimé');
+        return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
     }
 
 
@@ -389,6 +420,30 @@ class XArtistController extends BaseController
         $em->persist($project);
         $em->flush();
         return new Response();
+    }
+
+
+    private function removePhotos(EntityManagerInterface $em, Project $project = null, Product $product = null) {
+        if($project != null && $project->getCoverpic() != null) {
+            $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $project->getCoverpic()->getFilename()]);
+            $em->remove($photo);
+            $project->setCoverpic(null);
+            $filesystem = new Filesystem();
+            $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Project::getWebPath($photo));
+            $em->flush();
+        }
+        if ($product != null && $product->getPhoto() != null) {
+            $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $product->getPhoto()->getFilename()]);
+            $em->remove($photo);
+            $product->setPhoto(null);
+            $filesystem = new Filesystem();
+            $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Product::getWebPath($photo));
+            $em->flush();
+        }
+
+
+
+
     }
 
 

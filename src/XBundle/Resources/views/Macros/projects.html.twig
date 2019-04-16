@@ -50,22 +50,22 @@
             </div>
         {% endif %}
 
-        {% if project.collectedAmount == 0 %}
+        {% if project.validated and project.collectedAmount == 0 %}
             <div class="col-12 mt-4">
                 <div class="text-muted font-italic pb-2">
                     Tant que le montant récolté est de 0 €, vous avez la possibilité de supprimer le projet.
                 </div>
 
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ project.id }}">
                     Supprimer le projet
                 </button>
 
                 <!-- Modal -->
-                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModal{{ project.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel">Supprimer le projet</h5>
+                                <h5 class="modal-title" id="deleteModalLabel">Supprimer le projet "{{ project }}"</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -92,16 +92,16 @@
                     La date de clotûre du financement du projet est arrivé à son terme {% if project.hasThreshold %} mais le montant visé n'a pas été atteint{% endif %}. Voulez-vous {% if project.hasThreshold %}tout de même{% endif %} confirmer le projet ?
                 </div>
 
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ project.id }}">
                     Confirmer le projet
                 </button>&nbsp;
 
                 <!-- Modal -->
-                <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal fade" id="confirmModal{{ project.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="confirmModalLabel">Confirmer le projet</h5>
+                                <h5 class="modal-title" id="confirmModalLabel">Confirmer le projet "{{ project }}"</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -119,16 +119,16 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#refundModal">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#refundModal{{ project.id }}">
                     Annuler le projet
                 </button>
 
                 <!-- Modal -->
-                <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundModalLabel" aria-hidden="true">
+                <div class="modal fade" id="refundModal{{ project.id }}" tabindex="-1" role="dialog" aria-labelledby="refundModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="refundModalLabel">Annuler le projet</h5>
+                                <h5 class="modal-title" id="refundModalLabel">Annuler le projet "{{ project }}"</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

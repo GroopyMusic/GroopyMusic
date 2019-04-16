@@ -6,14 +6,12 @@ use AppBundle\Entity\Artist;
 use AppBundle\Form\AddressType;
 use AppBundle\Repository\ArtistRepository;
 use Doctrine\ORM\EntityRepository;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -23,11 +21,11 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use XBundle\Entity\Project;
 use XBundle\Entity\Product;
 use XBundle\Entity\Tag;
 use XBundle\Entity\XCategory;
+use XBundle\Form\XAddressType;
 use XBundle\Form\ImageType;
 use XBundle\Form\TagType;
 
@@ -73,12 +71,12 @@ class ProjectType extends AbstractType
                 'required' => false,
                 'label' => "Date de l'événement"
             ))
-            ->add('address', AddressType::class, array(
+            ->add('address', XAddressType::class, array(
                 'required' => false,
                 'label' => "Lieu de l'événement",
-                'constraints' => [
+                /*'constraints' => [
                     new Assert\Valid(),
-                ]
+                ]*/
             ))
             ->add('threshold', IntegerType::class, array(
                 'label' => 'Montant à atteindre (en €)',
@@ -181,8 +179,19 @@ class ProjectType extends AbstractType
             $context->addViolation('La date de clôture du financement du projet doit être dans le futur.');
         }
 
-        if($project->getDateEvent() != null && $project->getDateEvent() < $project->getDateEnd()) {
-            $context->addViolation('La date de l\'évènement doit être postérieur à celle de clôture du financement du projet.');
+        if($project->getCategory()->getName() == "Évènement") {
+            if($project->getDateEvent() == null) {
+                $context->addViolation('Il faut renseigner une date pour l\'évènement');
+            }
+            if($project->getDateEvent() != null && $project->getDateEvent() < $project->getDateEnd()) {
+                $context->addViolation('La date de l\'évènement doit être postérieur à celle de clôture du financement du projet.');
+            }
+            if($project->getAddress() == null) {
+                $context->addViolation('Il faut renseigner une adresse pour le lieu de l\'évènement');
+            }
+        } else {
+            $project->setDateEvent(null);
+            $project->setAddress(null);
         }
 
         if($project->hasThreshold() && $project->getThreshold() <= 0) {

@@ -5,8 +5,8 @@ namespace XBundle\Controller;
 use AppBundle\Controller\BaseAdminController;
 use XBundle\Entity\Product;
 use AppBundle\Services\MailDispatcher;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -68,8 +68,8 @@ class ProductAdminController extends BaseAdminController
         }
 
         return $this->render('@X/Admin/Product/action_validate_product.html.twig', array(
+            'form' => $form->createView(),
             'product' => $product,
-            'form' => $form->createView()
         ));
         
 
@@ -86,7 +86,7 @@ class ProductAdminController extends BaseAdminController
         }
 
 
-        if ($product->getDeleted()) {
+        if ($product->getDeletedAt() != null) {
             $this->addFlash('sonata_flash_error', 'La mise en vente de cet article a déjà été refusée.');
 
             return new RedirectResponse($this->admin->generateUrl('list'));
@@ -99,7 +99,7 @@ class ProductAdminController extends BaseAdminController
             ))
             ->add('confirm', SubmitType::class, array(
                 'label' => 'Refuser la mise en vente de cet article',
-                'attr' => array('class' => 'btn btn-success')
+                'attr' => array('class' => 'btn btn-danger')
             ))
             ->add('cancel', SubmitType::class, array(
                 'label' => 'Annuler',
@@ -117,12 +117,23 @@ class ProductAdminController extends BaseAdminController
                 $reason = $form->get('reason')->getData();
                 
                 $em = $this->getDoctrine()->getManager();
-                $product->setDeleted(true);
-                $em->persist($product);
+                //$project = $product->getProject();
+                //$project->removeProduct($product);
+                //$em->persist($project);
+
+                // Remove photo
+                /*if ($product->getPhoto() != null) {
+                    $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $product->getPhoto()->getFilename()]);
+                    $product->setPhoto(null);
+                    $em->remove($photo);
+                    //$filesystem = new Filesystem();
+                    //$filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Product::getWebPath($photo));
+                }*/
+
+                $em->remove($product);
                 $em->flush();
 
                 $message = "La mise en vente de l'article a été refusée et un mail a été envoyé aux gestionnaires du projet pour leur expliquer les raisons de ce refus";
-
                 try {
                     $this->get(MailDispatcher::class)->sendProductRefused($product, $reason);
                 }
@@ -137,8 +148,8 @@ class ProductAdminController extends BaseAdminController
         }
 
         return $this->render('@X/Admin/Product/action_refuse_product.html.twig', array(
+            'form' => $form->createView(),
             'product' => $product,
-            'form' => $form->createView()
         ));
     }
 

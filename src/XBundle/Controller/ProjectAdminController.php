@@ -4,9 +4,9 @@ namespace XBundle\Controller;
 
 use AppBundle\Controller\BaseAdminController;
 use XBundle\Entity\Project;
+use XBundle\Entity\Product;
 use AppBundle\Services\MailDispatcher;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -68,8 +68,8 @@ class ProjectAdminController extends BaseAdminController
         }
 
         return $this->render('@X/Admin/action_validate_project.html.twig', array(
+            'form' => $form->createView(),
             'project' => $project,
-            'form' => $form->createView()
         ));
         
 
@@ -85,10 +85,8 @@ class ProjectAdminController extends BaseAdminController
             throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $project->getId()));
         }
 
-
-        if ($project->getDeleted()) {
+        if ($project->getDeletedAt() != null) {
             $this->addFlash('sonata_flash_error', 'Ce projet a déjà été refusé.');
-
             return new RedirectResponse($this->admin->generateUrl('list'));
         }
 
@@ -99,7 +97,7 @@ class ProjectAdminController extends BaseAdminController
             ))
             ->add('confirm', SubmitType::class, array(
                 'label' => 'Refuser le projet',
-                'attr' => array('class' => 'btn btn-success')
+                'attr' => array('class' => 'btn btn-danger')
             ))
             ->add('cancel', SubmitType::class, array(
                 'label' => 'Annuler',
@@ -117,18 +115,16 @@ class ProjectAdminController extends BaseAdminController
                 $reason = $form->get('reason')->getData();
                 
                 $em = $this->getDoctrine()->getManager();
-                $project->setDeleted(true);
 
                 foreach($project->getProducts() as $product) {
-                    $product->setDeleted(true);
-                    $em->persist($product);
+                    $em->remove($product);
                 }
 
-                $em->persist($project);
+                $em->remove($project);
+
                 $em->flush();
 
                 $message = "Le projet a été refusé et un mail a été envoyé aux gestionnaires du projet pour leur expliquer les raisons de ce refus";
-
                 try {
                     $this->get(MailDispatcher::class)->sendProjectRefused($project, $reason);
                 }
@@ -139,12 +135,12 @@ class ProjectAdminController extends BaseAdminController
                     $this->addFlash('sonata_flash_success', $message);
                     return new RedirectResponse($this->admin->generateUrl('list'));
                 }
-            }            
+            }
         }
 
         return $this->render('@X/Admin/action_refuse_project.html.twig', array(
+            'form' => $form->createView(),
             'project' => $project,
-            'form' => $form->createView()
         ));
     }
 

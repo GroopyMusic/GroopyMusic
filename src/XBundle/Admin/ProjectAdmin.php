@@ -35,7 +35,7 @@ class ProjectAdmin extends BaseAdmin
             ->add('validated', null, array(
                 'label'=> 'Validé'
             ))
-            ->add('deleted', null, array(
+            ->add('deleted', 'boolean', array(
                 'label' => 'Supprimé'
             ))
             ->add('_action', 'actions', array(

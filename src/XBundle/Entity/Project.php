@@ -23,6 +23,7 @@ use XBundle\Entity\XCategory;
 class Project
 {
     use ORMBehaviors\Sluggable\Sluggable;
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
 
     const DAYS_BEFORE_WAY_PASSED_EVENT = 15;
     const DAYS_BEFORE_WAY_PASSED = 30;
@@ -34,7 +35,6 @@ class Project
         $this->dateEnd = new \DateTime();
         $this->collectedAmount = 0;
         $this->validated= false;
-        $this->deleted = false;
         $this->successful = false;
         $this->failed = false;
         $this->refunded = false;
@@ -47,7 +47,8 @@ class Project
         $this->points = 0;
         $this->acceptConditions = false;
         $this->contributions= new ArrayCollection();
-        $this->notifSent = 0;
+        $this->notifEndSent = 0;
+        $this->notifSuccessSent = 0;
         $this->transactionalMessages = new ArrayCollection();
     }
 
@@ -241,9 +242,16 @@ class Project
         }, $this->getContributionsPaidAndRefunded());
     }
 
+    public function hasValidatedProducts() {
+        $validatedProducts = array_filter($this->getProducts()->toArray(), function(Product $product) {
+                                return $product->getValidated() && $product->getDeletedAt() == null;
+                            });
+        return count($validatedProducts) > 0;
+    }
 
 
-    // To get only artists that creator owns (form only)
+
+    // To get only artists that project creator owns (form only)
     private $creator;
 
     // Conditions approval (form only)
@@ -341,13 +349,6 @@ class Project
 
     /**
      * @var bool
-     * 
-     * @ORM\Column(name="deleted", type="boolean")
-     */
-    private $deleted;
-
-    /**
-     * @var bool
      *
      * @ORM\Column(name="successful", type="boolean")
      */
@@ -417,9 +418,16 @@ class Project
     /**
      * @var boolean
      * 
-     * @ORM\Column(name="notif_sent", type="boolean")
+     * @ORM\Column(name="notif_end_sent", type="boolean")
      */
-    private $notifSent;
+    private $notifEndSent;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="notif_success_sent", type="boolean")
+     */
+    private $notifSuccessSent;
 
     /**
      * @var \DateTime
@@ -777,30 +785,6 @@ class Project
     }
 
     /**
-     * Set deleted
-     * 
-     * @param boolean $deleted
-     * 
-     * @return Project
-     */
-    public function setDeleted($deleted)
-    {
-        $this->deleted = $deleted;
-
-        return $this;
-    }
-
-    /**
-     * Get deleted
-     * 
-     * @return boolean
-     */
-    public function getDeleted()
-    {
-        return $this->deleted;
-    }
-
-    /**
      * Set successful
      *
      * @param boolean $successful
@@ -1149,27 +1133,27 @@ class Project
     }
 
     /**
-     * Set notifSent
+     * Set notifEndSent
      *
-     * @param boolean $notifSent
+     * @param boolean $notifEndSent
      *
      * @return Project
      */
-    public function setNotifSent($notifSent)
+    public function setNotifEndSent($notifEndSent)
     {
-        $this->notifSent = $notifSent;
+        $this->notifEndSent = $notifEndSent;
 
         return $this;
     }
 
     /**
-     * Get notifSent
+     * Get notifEndSent
      *
      * @return boolean
      */
-    public function getNotifSent()
+    public function getNotifEndSent()
     {
-        return $this->notifSent;
+        return $this->notifEndSent;
     }
 
     /**
@@ -1252,5 +1236,44 @@ class Project
     public function getTransactionalMessages()
     {
         return $this->transactionalMessages;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * Set notifSuccessSent
+     *
+     * @param boolean $notifSuccessSent
+     *
+     * @return Project
+     */
+    public function setNotifSuccessSent($notifSuccessSent)
+    {
+        $this->notifSuccessSent = $notifSuccessSent;
+
+        return $this;
+    }
+
+    /**
+     * Get notifSuccessSent
+     *
+     * @return boolean
+     */
+    public function getNotifSuccessSent()
+    {
+        return $this->notifSuccessSent;
     }
 }

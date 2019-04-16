@@ -35,6 +35,9 @@
                 {{ form_row(form.tags) }}
             </div>
             <div class="col-12 col-md-6">
+                <div class="text-muted font-italic pb-2">
+                    Attention! Vous ne pourrez plus changer cette date.
+                </div>
                 {{ form_row(form.dateEnd) }}
             </div>
             <div class="col-12 col-md-6" id="project_date_event" style="display: none;">
@@ -197,6 +200,10 @@
 
             {% if project.id is null %}
                 displayDateEventAndAddress();
+                if($('#project_category select').val() === 'Évènement'){
+                    $('#project_date_event').show();
+                    $('#project_address').show();
+                }
             {% else %}
                 {% if project.category.name is same as('Évènement') %}
                     $('#project_date_event').show();

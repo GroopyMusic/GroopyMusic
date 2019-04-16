@@ -28,7 +28,7 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
 
     public function findValidatedProjects() {
         return $this->baseQueryBuilder()
-            ->where('p.deleted = 0 AND p.validated = 1')
+            ->where('p.validated = 1 AND p.deletedAt IS NULL')
             ->andWhere('p.successful = 1 OR (p.successful = 0 AND p.failed = 0)')
             ->orderBy('p.dateEnd', 'ASC')
             ->getQuery()
@@ -38,7 +38,7 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
 
     public function findPendingProjects() {
         return $this->baseQueryBuilder()
-            ->where('p.deleted = 0 AND p.validated = 1')
+            ->where('p.validated = 1 AND p.deletedAt IS NULL')
             ->andWhere('p.successful = 0 AND p.failed = 0 AND p.refunded = 0')
             ->andWhere('p.dateEnd < :now')
             ->setParameter('now', new \DateTime())
@@ -52,8 +52,8 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('p')
             ->join('p.handlers', 'u')
             ->where('u.id = :id')
+            ->andWhere('p.deletedAt IS NULL')
             ->andwhere('p.dateEnd >= :now OR (p.successful = 0 AND p.failed = 0)')
-            ->andWhere('p.deleted = 0')
             ->orderBy('p.dateEnd', 'ASC')
             ->setParameter('id', $user->getId())
             ->setParameter('now', new \DateTime())
@@ -66,8 +66,8 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('p')
             ->join('p.handlers', 'u')
             ->where('u.id != :id')
+            ->andWhere('p.deletedAt IS NULL')
             ->andwhere('p.dateEnd >= :now OR (p.successful = 0 AND p.failed = 0)')
-            ->andWhere('p.deleted = 0')
             ->orderBy('p.dateEnd', 'ASC')
             ->setParameter('id', $user->getId())
             ->setParameter('now', new \DateTime())
@@ -82,9 +82,9 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
             ->join('p.handlers', 'u')
             ->orderBy('p.dateEnd', 'DESC')
             ->where('u.id = :id')
-            ->andWhere('p.dateEnd < :now')
-            ->andWhere('p.validated = 1 AND p.deleted = 0')
+            ->andWhere('p.validated = 1 AND p.deletedAt IS NULL')
             ->andWhere('p.successful = 1 OR p.failed = 1')
+            ->andWhere('p.dateEnd < :now')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime()
@@ -99,9 +99,9 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
             ->join('p.handlers', 'u')
             ->orderBy('p.dateEnd', 'DESC')
             ->where('u.id != :id')
-            ->andWhere('p.dateEnd < :now')
-            ->andWhere('p.validated = 1 AND p.deleted = 0')
+            ->andWhere('p.validated = 1 AND p.deletedAt IS NULL')
             ->andWhere('p.successful = 1 OR p.failed = 1')
+            ->andWhere('p.dateEnd < :now')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime()

@@ -4,6 +4,7 @@ namespace XBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use XBundle\Entity\Image;
 use XBundle\Entity\Project;
 
@@ -16,6 +17,8 @@ use XBundle\Entity\Project;
 class Product
 {
 
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
+
     const PHOTOS_DIR = 'x/images/projects/';
 
     public function __construct() {
@@ -23,7 +26,7 @@ class Product
         $this->minimumPrice = 1;
         $this->productsSold = 0;
         $this->validated = false;
-        $this->deleted = false;
+        //$this->deleted = false;
         $this->isTicket = false;
         $this->options = new ArrayCollection();
     }
@@ -146,7 +149,7 @@ class Product
      * 
      * @ORM\Column(name="deleted", type="boolean")
      */
-    private $deleted;
+    //private $deleted;
 
     /**
      * @ORM\OneToMany(targetEntity="XBundle\Entity\OptionProduct", mappedBy="product", cascade={"all"})
@@ -435,7 +438,7 @@ class Product
      * 
      * @return Product
      */
-    public function setDeleted($deleted)
+    /*public function setDeleted($deleted)
     {
         $this->deleted = $deleted;
 
@@ -447,10 +450,10 @@ class Product
      * 
      * @return boolean
      */
-    public function getDeleted()
+    /*public function getDeleted()
     {
         return $this->deleted;
-    }
+    }*/
 
 
 
@@ -510,5 +513,20 @@ class Product
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
     }
 }

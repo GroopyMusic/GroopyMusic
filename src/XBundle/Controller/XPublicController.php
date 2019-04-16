@@ -7,8 +7,6 @@ use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +26,6 @@ use XBundle\Entity\XCategory;
 use XBundle\Entity\XContact;
 use XBundle\Entity\XOrder;
 use XBundle\Entity\XPayment;
-use XBundle\Entity\Tag;
 use XBundle\Form\XContractFanType;
 use XBundle\Form\XContactType;
 use XBundle\Form\DonationType;
@@ -46,6 +43,7 @@ class XPublicController extends BaseController
         
         $contact = new XContact();
         $form = $this->createForm(XContactType::class, $contact, ['action' => $this->generateUrl('x_homepage') . '#contact']);
+        $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
             if(!$captchaManager->verify()) {
@@ -54,18 +52,17 @@ class XPublicController extends BaseController
                      'form' => $form->createView(),
                  ]);
             }
+
+            $em->persist($contact);
+            $em->flush();
  
-             // DB save
-             $em->persist($contact);
-             $em->flush();
+            // Mail
+            $mailDispatcher->sendAdminXContact($contact);
+            $mailDispatcher->sendXContactCopy($contact);
  
-             // Mail
-             //$mailDispatcher->sendXContactCopy($contact);
-             $mailDispatcher->sendAdminXContact($contact);
- 
-             $this->addFlash('x_notice', 'Merci pour votre message. Nous vous recontacterons aussi vite que possible.');
-             return $this->redirectToRoute('x_homepage');
-         }
+            $this->addFlash('x_notice', 'Merci pour votre message. Nous vous recontacterons aussi vite que possible.');
+            return $this->redirectToRoute('x_homepage');
+        }
         
         return $this->render('@X/XPublic/home.html.twig', array(
             'form' => $form->createView(),
@@ -98,9 +95,11 @@ class XPublicController extends BaseController
             return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
         }
 
-        // To know if at least one product is validated
-        // -> p-e remplacer ça par une function dans Project pour savoir si au moins un produits est valide
-        $products = $em->getRepository('XBundle:Product')->getVisibleProductsForProject($project);
+        if($project->getDeletedAt() != null) {
+            return $this->redirectToRoute('x_homepage');
+        }
+
+        $hasProducts = $project->hasValidatedProducts();
 
         $contribution = new XContractFan($project);
 
@@ -135,7 +134,7 @@ class XPublicController extends BaseController
             return $this->redirectToRoute('x_payment_checkout', ['code' => $cart->getBarcodeText()]);
         }
 
-        // PURCHASE SUMIT
+        // PURCHASE SUBMIT
         if($formPurchase->isSubmitted() && $formPurchase->isValid()) {
 
             $cart = new XCart();
@@ -168,22 +167,22 @@ class XPublicController extends BaseController
             'form' => $form->createView(),
             'form_purchase' => $formPurchase->createView(),
             'project' => $project,
-            'products' => $products,
+            'has_products' => $hasProducts,
         ));
     }
 
     /**
      * @Route("/order/{code}", name="x_order")
      */
-    public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager) {
+    public function orderAction(EntityManagerInterface $em, TicketingManager $ticketingManager, $code) {
 
         $cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
 
+        // Send tickets if not done when payment is succesful
         /*foreach($cart->getContracts() as $cf) {
-            if(!$cf->getcounterpartsSent())
+            if(!$cf->getTicketsSent())
                 $ticketingManager->generateAndSendYBTickets($cf);
         }*/
-        // barcode généré qd on appelle generateAndSendYBTickets
         
         $cart->setFinalized(true);
         $em->flush();
@@ -191,75 +190,6 @@ class XPublicController extends BaseController
         return $this->render('XBundle:XPublic:order.html.twig', [
             'cart' => $cart,
         ]);
-    }
-
-
-    /**
-     * @Route("/signin", name="x_login")
-     */
-    public function loginAction(Request $request, CsrfTokenManagerInterface $tokenManager = null, UserInterface $user = null)
-    {
-        // à changer pcq tenir aussi compte contributeur!
-        if($user != null) {
-            if($user->isSuperAdmin() || $user->isArtistOwner()) {
-                return $this->redirectToRoute('x_artist_dashboard');
-            } else {
-                return $this->redirectToRoute('x_homepage');
-            }
-        }
-
-        /** @var $session Session */
-        $session = $request->getSession();
-
-        $authErrorKey = Security::AUTHENTICATION_ERROR;
-        $lastUsernameKey = Security::LAST_USERNAME;
-
-        if ($request->attributes->has($authErrorKey)) {
-            $error = $request->attributes->get($authErrorKey);
-        } elseif (null !== $session && $session->has($authErrorKey)) {
-            $error = $session->get($authErrorKey);
-            $session->remove($authErrorKey);
-        } else {
-            $error = null;
-        }
-
-        if (!$error instanceof AuthenticationException) {
-            $error = null; // The value does not come from the security component.
-        }
-
-        // last username entered by the user
-        $lastUsername = (null === $session) ? '' : $session->get($lastUsernameKey);
-
-        $csrfToken = $tokenManager
-            ? $tokenManager->getToken('authenticate')->getValue()
-            : null;
-
-        return $this->render('@X/XPublic/login.html.twig', array(
-            'last_username' => $lastUsername,
-            'error' => $error,
-            'csrf_token' => $csrfToken,
-        ));
-    }
-
-
-    /**
-     * @Route("/signout", name="x_logout")
-     */
-    public function logoutAction(Request $request, TokenStorageInterface $tokenStorage)
-    {
-        $tokenStorage->setToken(null);
-        $session = $request->getSession();
-        $session->invalidate();
-        $response = new RedirectResponse($this->generateUrl('x_homepage'));
-        $cookieNames = [
-            $this->getParameter('session_name'),
-            $this->getParameter('remember_me_name'),
-        ];
-        foreach ($cookieNames as $cookieName) {
-            $response->headers->clearCookie($cookieName);
-        }
-        //$this->addFlash('x_notice', "Vous êtes bien déconnecté.");
-        return $response;
     }
 
 
@@ -273,9 +203,7 @@ class XPublicController extends BaseController
 
 
 
-
     ///////////////////////// PAYMENT /////////////////////////
-
 
     /**
 	 * @Route("/payment/{code}", name="x_payment_checkout")
@@ -416,16 +344,6 @@ class XPublicController extends BaseController
 
             $project->addAmount($contribution->getAmount());
 
-            /*if ($contribution->getIsDonation()) {
-                $project->addNbDonations();
-            } else {
-                $project->addNbSales();
-                foreach($contribution->getPurchases() as $purchase) {
-                    $product = $purchase->getProduct();
-                    $product->addProductsSold($purchase->getQuantity());
-                    $em->persist($product);
-                }
-            }*/
             if (!$contribution->getIsDonation()) {
                 foreach($contribution->getPurchases() as $purchase) {
                     $product = $purchase->getProduct();
@@ -434,17 +352,19 @@ class XPublicController extends BaseController
                 }
             }
 
-            if ($project->hasThreshold() && $project->getCollectedAmount() >= $project->getThreshold()) {
+            // Check if threshold is reached
+            if ($project->hasThreshold() && $project->getCollectedAmount() >= $project->getThreshold() && !$project->getNotifSuccessSent()) {
                 $project->setSuccessful(true);
                 $mailDispatcher->sendProjectThresholdConfirmed($project);
+                $project->setNotifSuccessSent(true);
             }
 
-            // Need to also send tickets if project is succesful
-            /*if($project->getSuccessful() && !$project->isPassed()) {
+            // Need to also send tickets
+            if($project->isEvent() && $project->getSuccessful() && !$project->isPassed()) {
                 if(!empty($contribution->getTicketsPurchases())) {
                     $ticketingManager->generateAndSendXTickets($contribution);
                 }
-            }*/
+            }
 
             $em->persist($project);
         }
@@ -458,6 +378,79 @@ class XPublicController extends BaseController
 
     }
 
+
+    ///////////////////////// CONNEXION / DECONNEXION /////////////////////////
+
+    /**
+     * @Route("/signin", name="x_login")
+     */
+    public function loginAction(Request $request, CsrfTokenManagerInterface $tokenManager = null, UserInterface $user = null)
+    {
+        // à changer pcq tenir aussi compte contributeur!
+        if($user != null) {
+            if($user->isSuperAdmin() || $user->isArtistOwner()) {
+                return $this->redirectToRoute('x_artist_dashboard');
+            } else {
+                return $this->redirectToRoute('x_homepage');
+            }
+        }
+
+        /** @var $session Session */
+        $session = $request->getSession();
+
+        $authErrorKey = Security::AUTHENTICATION_ERROR;
+        $lastUsernameKey = Security::LAST_USERNAME;
+
+        if ($request->attributes->has($authErrorKey)) {
+            $error = $request->attributes->get($authErrorKey);
+        } elseif (null !== $session && $session->has($authErrorKey)) {
+            $error = $session->get($authErrorKey);
+            $session->remove($authErrorKey);
+        } else {
+            $error = null;
+        }
+
+        if (!$error instanceof AuthenticationException) {
+            $error = null; // The value does not come from the security component.
+        }
+
+        // last username entered by the user
+        $lastUsername = (null === $session) ? '' : $session->get($lastUsernameKey);
+
+        $csrfToken = $tokenManager
+            ? $tokenManager->getToken('authenticate')->getValue()
+            : null;
+
+        return $this->render('@X/XPublic/login.html.twig', array(
+            'last_username' => $lastUsername,
+            'error' => $error,
+            'csrf_token' => $csrfToken,
+        ));
+    }
+
+
+    /**
+     * @Route("/signout", name="x_logout")
+     */
+    public function logoutAction(Request $request, TokenStorageInterface $tokenStorage)
+    {
+        $tokenStorage->setToken(null);
+        $session = $request->getSession();
+        $session->invalidate();
+        $response = new RedirectResponse($this->generateUrl('x_homepage'));
+        $cookieNames = [
+            $this->getParameter('session_name'),
+            $this->getParameter('remember_me_name'),
+        ];
+        foreach ($cookieNames as $cookieName) {
+            $response->headers->clearCookie($cookieName);
+        }
+        //$this->addFlash('x_notice', "Vous êtes bien déconnecté.");
+        return $response;
+    }
+
+
+    ///////////////////////// AJAX /////////////////////////
 	
 	/**
 	 * @Route("/api/submit-order-coordinates", name="x_ajax_post_order")
@@ -489,6 +482,7 @@ class XPublicController extends BaseController
 
         return new Response(' ', 200);
     }
+
 
 
 

@@ -19,7 +19,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
             integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
             crossorigin="anonymous"></script>
-    {% javascripts filter='jsqueeze' output='js/compiled/x/catalog.js'
+    {#% javascripts filter='jsqueeze' output='js/compiled/x/catalog.js'
         'js/jplist/jplist.core.min.js'
         'js/jplist/jplist.filter-toggle-bundle.min.js'
         'js/jplist/jplist.history-bundle.min.js'
@@ -30,5 +30,12 @@
         'js/jplist/jplist.filter-dropdown-bundle.min.js'
     %}
         <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    {% endjavascripts %#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.pagination-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.filter-toggle-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.textbox-filter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.sort-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.jquery-ui-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplist/5.2.0/js/jplist.filter-dropdown-bundle.min.js"></script>
 {% endblock %}

@@ -93,7 +93,6 @@ class MailDispatcher
         $bcc_chunks = array();
         // CASE 1 : Only "to"s chunked by locale
         if (empty($bcc_emails) && !empty($to)) {
-            file_put_contents('test.txt', 'passe CASE 1 ', FILE_APPEND);
             foreach ($this->locales as $locale) {
                 $tos[$locale] = $this->extract_locale($locale, $to);
                 if (!empty($tos[$locale])) {
@@ -779,6 +778,18 @@ class MailDispatcher
         $this->sendAdminEmail(MailTemplateProvider::X_ADMIN_CONTACT, $subject, $params, $subject_params, [], $reply_to, $reply_to_name);
     }
 
+    public function sendXContactCopy(XContact $contact) {
+        $subject = 'Formulaire de contact Chapots';
+        $params = ['contact' => $contact];
+        $subject_params = [];
+        $recipient = [$contact->getEmail() => $this->translator->getLocale()];
+        $recipientName = $contact->getName();
+        $reply_to = "info@chapots.be";
+        $reply_to_name = "Chapots";
+
+        $this->sendEmail(MailTemplateProvider::X_CONTACT_COPY, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
     public function sendAdminNewProject(Project $project) {
         $params = ['project' => $project];
         $subject = 'Nouveau projet créé sur Chapots';
@@ -929,8 +940,7 @@ class MailDispatcher
         $this->sendXTransactionalMessage($message, $contributors);
         try { $this->sendXTransactionalMessageCopy($message); }
         catch(\Throwable $exception) {
-            //$this->logger->error("Echec lors de l'envoi de la copie d'un message transactionnel aux gestionnaires du projet : " . $exception->getMessage());
-            file_put_contents('test.txt', $exception->getMessage() . ' ', FILE_APPEND);
+            $this->logger->error("Echec lors de l'envoi de la copie d'un message transactionnel aux gestionnaires du projet : " . $exception->getMessage());
         }
     }
 
