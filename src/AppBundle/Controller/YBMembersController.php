@@ -1531,7 +1531,7 @@ class YBMembersController extends BaseController
         $sortedVenues = [];
         foreach ($venues as $v){
             if ($user->ownsYBVenue($v)){
-                $v->setDisplayName($v->getName().' --- (MA SALLE)');
+                $v->setDisplayName($v->getName().Venue::OWN_VENUE);
                 array_unshift($sortedVenues, $v);
             } else {
                 $v->setDisplayName($v->getName());

@@ -21,6 +21,14 @@ class Booking {
         $this->isBooked = false;
     }
 
+    public function hasNoNumberedSeat(){
+        return $this->reservation->getRowIndex() === -1 && $this->reservation->getSeatIndex() === -1;
+    }
+
+    public function getBlock(){
+        return $this->reservation->getBlock();
+    }
+
     public function getSeat(){
         $blk = $this->reservation->getBlock();
         $seat = $blk->getSeatAt($this->reservation->getRowIndex(), $this->reservation->getSeatIndex());

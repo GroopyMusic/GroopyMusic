@@ -344,13 +344,21 @@ class TicketingManager
                 } else {
                     $z = 0;
                     for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
-                        $seat = $purchase->getBookings()[$z]->getSeat();
+                        if ($purchase->getBookings()[$z]->hasNoNumberedSeat()){
+                            $seat = 'Placement libre dans le bloc : ' . $purchase->getBookings()[$z]->getBlock();
+                        } else {
+                            $seat = $purchase->getBookings()[$z]->getSeat();
+                        }
                         $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice(), null, null, $seat));
                         $j++;
                         $z++;
                     }
                     for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                        $seat = $purchase->getBookings()[$z]->getSeat();
+                        if ($purchase->getBookings()[$z]->hasNoNumberedSeat()){
+                            $seat = 'Placement libre dans le bloc : ' . $purchase->getBookings()[$z]->getBlock();
+                        } else {
+                            $seat = $purchase->getBookings()[$z]->getSeat();
+                        }
                         $cf->addTicket(new Ticket($cf, $counterPart, $j, 0, null, null, $seat));
                         $j++;
                         $z++;

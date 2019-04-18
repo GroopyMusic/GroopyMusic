@@ -559,6 +559,7 @@ class YBController extends BaseController
     public function refreshSeatsAction(Request $request, EntityManagerInterface $em)
     {
         $code = $request->get('code');
+        $campaign = $request->get('campaign');
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
         if ($cart == null) {
             throw $this->createNotFoundException("Pas de panier,... Pas de panier !");
@@ -575,6 +576,11 @@ class YBController extends BaseController
             }
         }
         if ($isRelatedToUser) {
+            $this->addFlash('error', 'Vous avez mis trop de temps à finaliser votre commande. Celle-ci a été annulée. Si vous voulez des tickets, passez une nouvelle commande.');
+            $response = $this->generateUrl('yb_campaign', [
+                'id' => $campaign,
+            ]);
+            file_put_contents('file.txt', $response);
             $response = 'salut ca va';
         } else {
             $response = 'ok';
@@ -603,29 +609,31 @@ class YBController extends BaseController
         return new JsonResponse($bookedSeat);
     }
 
-    private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase, $map)
-    {
+    private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase, $map){
         if ($purchase->getQuantity() === count($purchase->getBookings())) {
             foreach ($purchase->getBookings() as $booking) {
                 $em->remove($booking);
             }
         }
-        foreach ($seats as $seat) {
-            $arr = explode('_', $seat);
-            $block = $em->getRepository('AppBundle:YB\Block')->find($arr[2]);
-            $rowIndex = $arr[0];
-            $seatIndex = $arr[1];
-            $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsFromBlockRowSeat($block, $rowIndex, $seatIndex);
-            if ($rsv === null) $rsv = new Reservation($block, $rowIndex, $seatIndex);
-            // TODO : if booking exist deja renvoyer une exception
-            $booking = new Booking($rsv, $purchase);
-            $em->persist($booking);
+        if ($seats !== null){
+            foreach ($seats as $seat) {
+                $arr = explode('_', $seat);
+                $block = $em->getRepository('AppBundle:YB\Block')->find($arr[2]);
+                $rowIndex = $arr[0];
+                $seatIndex = $arr[1];
+                $rsv = $em->getRepository('AppBundle:YB\Reservation')->getReservationsFromBlockRowSeat($block, $rowIndex, $seatIndex);
+                if ($rsv === null) $rsv = new Reservation($block, $rowIndex, $seatIndex);
+                $booking = new Booking($rsv, $purchase);
+                $em->persist($booking);
+            }
         }
-        foreach ($map as $pass){
-            $block = $em->getRepository('AppBundle:YB\Block')->find($pass);
-            $rsv = new Reservation($block, 0, 0);
-            $booking = new Booking($rsv, $purchase);
-            $em->persist($booking);
+        if ($map !== null){
+            foreach ($map as $pass){
+                $block = $em->getRepository('AppBundle:YB\Block')->find($pass);
+                $rsv = new Reservation($block, -1, -1);
+                $booking = new Booking($rsv, $purchase);
+                $em->persist($booking);
+            }
         }
         $em->flush();
     }
@@ -649,27 +657,6 @@ class YBController extends BaseController
             }
         }
         return $filtered;
-    }
-
-    private function isPurchaseOutOfStock(Purchase $purchase, EntityManagerInterface $em)
-    {
-        $contractArtist = $purchase->getContractFan()->getContractArtist();
-        $nbCpAvailable = $contractArtist->getNbPurchasable($purchase->getCounterpart());
-        if ($nbCpAvailable === 0) return true;
-        foreach ($purchase->getCounterpart()->getVenueBlocks() as $block) {
-            if (!$this->isBlockSoldout($block, $contractArtist, $em)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private function getRemainingSeatsInVenue(VenueConfig $config, EntityManagerInterface $em)
-    {
-        $totalSeats = $config->getTotalCapacity();
-        $listOfBooking = $em->getRepository('AppBundle:YB\Booking')->getBookingSeatsForConfig($config->getId());
-        $nbOfBooking = count($listOfBooking);
-        return $totalSeats - $nbOfBooking;
     }
 
 }

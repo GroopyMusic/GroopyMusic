@@ -206,18 +206,17 @@ class YBContractArtist extends BaseContractArtist
                 $blkCapacity = $block->getComputedCapacity();
                 $soldInBlock = $block->getSoldTicketInBlock();
                 $realCapacity = min($cpCapacity, $blkCapacity);
-                if ($block->getType() === 'Balcon' || $block->getType() === 'Assis') {
+                if ($block->getType() === Block::BALCONY || $block->getType() === Block::SEATED) {
                     if ($soldInBlock < $realCapacity) {
                         // on sait qu'on peut encore mettre au moins 1 personne dans ce bloc
-                        return true;
+                        return false;
                     }
                 }
                 $totalSoldSeated += $soldInBlock;
             }
             // on est arrivé à la fin de la boucle : tous les blocs assis sont soldout
             // on regarde pour les debout
-            $purchasable = $cpCapacity - $totalSoldSeated;
-            return $purchasable === 0;
+            return ($this->getNbPurchasable($cp) === 0);
         }
     }
 

@@ -20,7 +20,7 @@
             {% if not block.isNotNumbered %}
                 <div align-text="center" id="seat-map{{ block.id }}"></div>
             {% else %}
-                {% if block.type != 'Debout' and block.getSoldTicketInBlock(campaign) === block.capacity %}
+                {% if block.type != 'Debout' and block.getSoldTicketInBlock(campaign) == block.capacity %}
                     Ce bloc est sold-out...
                 {% else %}
                     <div>
@@ -43,20 +43,21 @@
             {% endif %}
         {% endfor %}
         <br>
-        <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal modal-dialog modal-attention" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Erreur</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                    <div class="modal-header text-center">
+                        <div class="icon-box">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body text-center">
+                        <h4>Attention !</h4>
                         <p>Vous n'avez pas sélectionné assez de places</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button class="btn btn-success" data-dismiss="modal">
+                            <span>Retour </span><i class="far fa-arrow-alt-circle-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -186,7 +187,7 @@
                 }
             });
 
-            setInterval(checkForAbortedBooking, 120000);
+            setInterval(checkForAbortedBooking, 900000);
 
             setInterval(function(){checkForOccupiedSeats(charts)}, 7000);
         });
@@ -195,7 +196,8 @@
                 url: "{{ path('yb_refresh_seats') }}",
                 type: "POST",
                 data: {
-                    code: {{ code|json_encode|raw }}
+                    code: {{ code|json_encode|raw }},
+                    campaign: {{ campaign|json_encode|raw }}
                 },
                 success: function (response) {
                     console.log(response);

@@ -96,7 +96,7 @@ class CounterPart implements TranslatableInterface
 
     public function canOverpassVenueCapacity(){
         foreach ($this->venue_blocks as $blk){
-            if ($blk->getType() === 'Debout') {
+            if ($blk->getType() === Block::UP) {
                 return true;
             }
         }
@@ -119,7 +119,7 @@ class CounterPart implements TranslatableInterface
     public function hasOnlySeatedBlock(){
         /** @var Block $blk */
         foreach ($this->venue_blocks as $blk){
-            if ($blk->getType() === 'Debout'){
+            if ($blk->getType() === Block::UP){
                 return false;
             }
         }
@@ -139,7 +139,7 @@ class CounterPart implements TranslatableInterface
         $capacity = 0;
         /** @var Block $block */
         foreach($this->venue_blocks as $block){
-            if ($block->getType === 'Debout'){
+            if ($block->getType === Block::UP){
                 $capacity += $block->getCapacity();
             }
         }

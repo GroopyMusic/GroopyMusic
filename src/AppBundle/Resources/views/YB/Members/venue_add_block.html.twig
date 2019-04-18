@@ -16,18 +16,7 @@
     {{ form_start(form) }}
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
         <div>
-            <h2>Ma configuration : {{ config.name }}
-                <!--<select class="config">
-                    <option value="-1">Sélectionner une configuration</option>
-                {##}% for config in venue.configurations %}
-                    {##}% if config.onlyStandup or config.hasFreeSeatingPolicy %}
-                        <option disabled value="{##}{ config.id }}">{##}{ config.name }}</option>
-                    {##}% else %}
-                        <option value="{##}{ config.id }}">{##}{ config.name }}</option>
-                    {##}% endif %}
-                {##}% endfor %}
-                </select>-->
-            </h2>
+            <h2>Ma configuration : {{ config.name }}</h2>
         </div>
         <div class="text-muted font-italic pb-2">
             C'est ici que vous allez préciser les configurations de vos salles, vous pourrez indiquer combien il y a de rangées, combien il y a de sièges par rangées, etc.
@@ -55,24 +44,6 @@
         {{ form_end(form) }}
     </section>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <!--<script type="text/javascript">
-        $(document).ready(function(){
-            window.onload = function() {
-                $('div.config').hide();
-            };
-            $("select.config").change(function(){
-                var selectedConfig = $(this).children("option:selected").val();
-                if (selectedConfig === '-1'){
-                    $('div.config').hide();
-                } else {
-                    var id = "#".concat(selectedConfig);
-                    $('div.config').not(id).hide();
-                    var x = "div.config".concat(id);
-                    $(x).show();
-                }
-            });
-        });
-    </script>-->
 {% endblock %}
 
 {% block additional_javascripts %}
@@ -89,10 +60,10 @@
                     }
                 );
             });
-            yb_collection({
+            /*yb_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un bloc</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer le bloc</a>'
-            });
+            });*/
             yb_second_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un bloc</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer le bloc</a>'

@@ -259,7 +259,7 @@
     {% endif %}
 
     <section class="container my-4 py-2 my-md-5 btns">
-        <button type="button" onclick="hideCustomButton()" class="btn btn-secondary maxCapacityCheckBtn" style="display: none">Save 'em tix</button> <br>
+        <button type="button" onclick="hideCustomButton()" class="btn btn-warning maxCapacityCheckBtn" style="display: none">Attention !</button> <br>
         {% include '@CraueFormFlow/FormFlow/buttons.html.twig' with {
         craue_formflow_button_class_next: 'btn btn-secondary',
         craue_formflow_button_class_finish: 'btn btn-secondary finishBtn',
@@ -271,22 +271,23 @@
         } %}
     </section>
 
-    <div class="modal" tabindex="-1" role="dialog">
+    <div class="modal modal-dialog modal-attention" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmation</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header text-center">
+                    <div class="icon-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body text-center">
+                    <h4>Confirmation</h4>
                     {% if campaign.id is not null and campaign.config is not null %}
                         <p>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }}). Ce n'est pas contraignant. Si vous désirez tout de même valider les tickets, appuyer sur "Enregistrer les tickets".</p>
                     {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">J'ai compris !</button>
+                    <button class="btn btn-success" data-dismiss="modal">
+                        <span>J'ai compris ! </span><i class="far fa-arrow-alt-circle-right"></i>
+                    </button>
                 </div>
             </div>
         </div>

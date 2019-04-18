@@ -13,6 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Block {
 
+    const UP = 'Debout';
+    const SEATED = 'Assis';
+    const BALCONY = 'Balcon';
+
     public function __construct(){
         $this->rows = new ArrayCollection();
     }
@@ -88,7 +92,7 @@ class Block {
     }
 
     public function getNbSeatsOfBlock(){
-        if ($this->type === 'Debout'){
+        if ($this->type === self::UP){
             return $this->capacity;
         }
         if ($this->getFreeSeating()){
@@ -102,7 +106,7 @@ class Block {
     }
 
     public function getComputedCapacity(){
-        if ($this->type === 'Debout'){
+        if ($this->type === self::UP){
             return $this->capacity;
         }
         if ($this->getFreeSeating()){
@@ -116,7 +120,7 @@ class Block {
     }
 
     public function getSeatedCapacity(){
-        if ($this->type === 'Debout'){
+        if ($this->type === self::UP){
             return 0;
         } else {
             if ($this->getFreeSeating()){
@@ -177,7 +181,7 @@ class Block {
     }
 
     public function isNotNumbered(){
-        return $this->type === 'Debout' || $this->getFreeSeating();
+        return $this->type === self::UP || $this->getFreeSeating();
     }
 
     public function getSoldTicketInBlock(YBContractArtist $event){

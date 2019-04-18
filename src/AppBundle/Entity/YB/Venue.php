@@ -18,6 +18,8 @@ class Venue {
 
     use ORMBehaviors\SoftDeletable\SoftDeletable;
 
+    const OWN_VENUE =  '--- (MA SALLE)';
+
     public function __construct(){
         $this->configurations = new ArrayCollection();
     }

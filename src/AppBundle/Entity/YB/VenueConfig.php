@@ -14,9 +14,14 @@ use AppBundle\Entity\Photo;
 class VenueConfig {
 
     const PHOTOS_DIR = 'images/campaigns/';
+    const PHOTOS_DIR_YB = 'yb/images/campaigns/';
 
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
+    public static function getYBWebPath(Photo $photo){
+        return self::PHOTOS_DIR_YB . $photo->getFilename();
     }
 
     public function __construct(){

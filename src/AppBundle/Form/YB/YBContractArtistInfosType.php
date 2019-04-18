@@ -234,7 +234,14 @@ class YBContractArtistInfosType extends AbstractType {
             'data' => $venue,
             'placeholder' => 'Sélectionner une salle',
             'class' => Venue::class,
-            'choice_label' => 'displayName'
+            'group_by' => function(Venue $v){
+                if (strpos($v->getDisplayName(), Venue::OWN_VENUE)){
+                    return 'Mes salles';
+                } else {
+                    return 'Autres salles';
+                }
+            },
+            'choice_label' => 'name'
         ]);
         $configs = array();
         if ($venue){
