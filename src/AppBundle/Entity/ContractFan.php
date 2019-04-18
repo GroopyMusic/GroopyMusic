@@ -198,6 +198,17 @@ class ContractFan
         }, $this->purchases->toArray()));
     }
 
+    public function getPurchaseWithNoBookingQuantity(){
+        $quantity = 0;
+        /** @var Purchase $purchase */
+        foreach ($this->purchases as $purchase){
+            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks()){
+                $quantity += $purchase->getQuantity();
+            }
+        }
+        return $quantity;
+    }
+
     public function getCounterPartsQuantityOrganic()
     {
         return $this->getCounterPartsQuantity() - $this->getCounterPartsQuantityPromotional();

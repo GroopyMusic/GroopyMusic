@@ -35,7 +35,7 @@ class BookingRepository extends \Doctrine\ORM\EntityRepository{
         return $this->createQueryBuilder('b')
             ->where('b.bookingDate < :delay')
             ->andWhere('b.isBooked = 0')
-            ->setParameter('delay', (new \DateTime())->modify('-20 minutes'))
+            ->setParameter('delay', (new \DateTime())->modify('-15 minutes'))
             ->getQuery()
             ->getResult();
     }
@@ -47,6 +47,17 @@ class BookingRepository extends \Doctrine\ORM\EntityRepository{
             ->join('blk.config', 'config')
             ->where('config = :id')
             ->setParameter('id', $config)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getBookingOfPurchase($cartID){
+        return $this->createQueryBuilder('b')
+            ->join('b.purchase', 'p')
+            ->join('p.contractFan', 'cf')
+            ->join('cf.cart', 'c')
+            ->where('c.id = :id')
+            ->setParameter('id', $cartID)
             ->getQuery()
             ->getResult();
     }

@@ -442,10 +442,14 @@ class YBController extends BaseController
         $email = $_POST['email'];
         $cart_code = $_POST['cart_code'];
 
+
         /** @var Cart $cart */
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $cart_code]);
         if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
+        }
+        if (!$this->arePurchasesStillValid($cart, $em)){
+            return new Response("Vous n'avez pas été assez rapide dans votre commande et la commande a été annulée. Veuillez recommencer le processus.", 403);
         }
 
         $order = new YBOrder();
@@ -541,10 +545,10 @@ class YBController extends BaseController
         $seats = $request->get('seats');
         $purchaseIndex = $request->get('purchaseIndex');
         $purchaseID = $request->get('purchase');
-        $map = $request->get('map');
+        $passes = $request->get('passes');
         /** @var Purchase $purchase */
         $purchase = $em->getRepository('AppBundle:Purchase')->find($purchaseID);
-        $this->bookListSeats($seats, $em, $purchase, $map);
+        $this->bookListSeats($seats, $em, $purchase, $passes);
         $response = $this->generateUrl('yb_pick_seats', [
             'cf' => $purchase->getContractFan()->getId(),
             'purchaseIndex' => $purchaseIndex,
@@ -580,10 +584,8 @@ class YBController extends BaseController
             $response = $this->generateUrl('yb_campaign', [
                 'id' => $campaign,
             ]);
-            file_put_contents('file.txt', $response);
-            $response = 'salut ca va';
         } else {
-            $response = 'ok';
+            $response = 'remain on page';
         }
         return new Response($response);
     }
@@ -609,7 +611,7 @@ class YBController extends BaseController
         return new JsonResponse($bookedSeat);
     }
 
-    private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase, $map){
+    private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase, $passes){
         if ($purchase->getQuantity() === count($purchase->getBookings())) {
             foreach ($purchase->getBookings() as $booking) {
                 $em->remove($booking);
@@ -627,8 +629,8 @@ class YBController extends BaseController
                 $em->persist($booking);
             }
         }
-        if ($map !== null){
-            foreach ($map as $pass){
+        if ($passes !== null){
+            foreach ($passes as $pass){
                 $block = $em->getRepository('AppBundle:YB\Block')->find($pass);
                 $rsv = new Reservation($block, -1, -1);
                 $booking = new Booking($rsv, $purchase);
@@ -638,8 +640,7 @@ class YBController extends BaseController
         $em->flush();
     }
 
-    private function getBlocksFromPurchase(Purchase $purchase, VenueConfig $config)
-    {
+    private function getBlocksFromPurchase(Purchase $purchase, VenueConfig $config){
         if ($purchase->getCounterpart()->getAccessEverywhere()) {
             return $config->getBlocks();
         } else {
@@ -647,8 +648,7 @@ class YBController extends BaseController
         }
     }
 
-    private function filterBlocks($blocks)
-    {
+    private function filterBlocks($blocks){
         $filtered = [];
         /** @var Block $block */
         foreach ($blocks as $block) {
@@ -657,6 +657,39 @@ class YBController extends BaseController
             }
         }
         return $filtered;
+    }
+
+    private function arePurchasesStillValid(Cart $cart, EntityManagerInterface $em){
+        $this->checkForTimeoutPurchase($em, $cart);
+        $valid = true;
+        $bookings = $em->getRepository('AppBundle:YB\Booking')->getBookingOfPurchase($cart->getId());
+        /** @var ContractFan $cf */
+        foreach ($cart->getContracts() as $cf){
+            /** @var YBContractArtist $campaign */
+            $campaign = $cf->getContractArtist();
+            $config = $campaign->getConfig();
+            if ($config->isOnlyStandup() || $config->hasFreeSeatingPolicy()){
+                // do nothing
+            } else {
+                $quantityPurchased = $cf->getCounterPartsQuantity();
+                $quantityPurchasedWithNoBooking = $cf->getPurchaseWithNoBookingQuantity();
+                $computedBookings = $quantityPurchased - $quantityPurchasedWithNoBooking;
+                if ($computedBookings != count($bookings)){
+                    $valid = false;
+                }
+            }
+        }
+        return $valid;
+    }
+
+    private function checkForTimeoutPurchase(EntityManagerInterface $em, Cart $cart){
+        $timedOutSession = $em->getRepository('AppBundle:YB\Booking')->getTimedoutReservations();
+        if (count($timedOutSession) !== 0) {
+            /** @var Booking $reservation */
+            foreach ($timedOutSession as $booking) {
+                $em->remove($booking);
+            }
+        }
     }
 
 }

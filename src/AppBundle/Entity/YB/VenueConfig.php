@@ -96,6 +96,16 @@ class VenueConfig {
         return $capacity;
     }
 
+    public function hasOnlySeatedBlocks(){
+        /** @var Block $block */
+        foreach ($this->getBlocks() as $block){
+            if ($block->getType() === Block::UP){
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * @var int
      *

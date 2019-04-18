@@ -140,7 +140,11 @@ class YBContractArtist extends BaseContractArtist
             return $this->state = self::STATE_FAILED;
 
         if ($this->no_threshold) {
-            if ($this->getNbCounterPartsPaid() >= $max_cp) {
+            if ($this->getConfig()->hasOnlySeatedBlocks()){
+                if ($this->getNbCounterPartsPaid() >= $this->getConfig()->getTotalCapacity()){
+                    return $this->state = self::STATE_SOLD_OUT;
+                }
+            } else if ($this->getNbCounterPartsPaid() >= $max_cp) {
                 return $this->state = self::STATE_SOLD_OUT;
             }
 

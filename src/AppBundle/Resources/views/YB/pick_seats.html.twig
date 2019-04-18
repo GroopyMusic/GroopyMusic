@@ -12,7 +12,7 @@
         {% endif %}
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations" id="myHeader" style="margin-left: 70px">
-        <h2 style="font-size: 22px; background-color: white; height: 40px">Vous pouvez encore prendre <span id="remainingTix" style="font-size: 24px">{{ purchase.quantity }}</span> ticket(s).</h2>
+        <h2 style="font-size: 22px;  height: 40px; margin-top: 15px">Vous pouvez encore prendre <span id="remainingTix" style="font-size: 24px">{{ purchase.quantity }}</span> ticket(s).</h2>
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations pick-seats-content">
         {% for block in blocks %}
@@ -173,7 +173,7 @@
                             seats: selected,
                             purchase: {{ purchase.id }},
                             purchaseIndex: {{ purchaseIndex }} +1,
-                            map: unordered,
+                            passes: unordered,
                         },
                         success: function (response) {
                             location.href = response;
@@ -187,7 +187,7 @@
                 }
             });
 
-            setInterval(checkForAbortedBooking, 900000);
+            setInterval(checkForAbortedBooking, 60000);
 
             setInterval(function(){checkForOccupiedSeats(charts)}, 7000);
         });
@@ -197,9 +197,14 @@
                 type: "POST",
                 data: {
                     code: {{ code|json_encode|raw }},
-                    campaign: {{ campaign|json_encode|raw }}
+                    campaign: {{ campaign.id }}
                 },
                 success: function (response) {
+                    if (response === 'remain on page'){
+                        // do nothing
+                    } else {
+                        location.href = response;
+                    }
                     console.log(response);
                 },
                 error: function (err) {

@@ -66,6 +66,25 @@
                     </div>
                 </div>
 
+                <div class="modal modal-dialog modal-attention" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <div class="icon-box">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <h4>Attention !</h4>
+                                <p id="modal-text"></p>
+                                <button class="btn btn-success" data-dismiss="modal">
+                                    <span>Retour </span><i class="far fa-arrow-alt-circle-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {% if cart.amount == 0 %}
                     <div class="checkout-payment-form card card-info mt-2">
@@ -353,7 +372,13 @@
                         on3DSSource(result);
                     });
                 })
-                    .fail(function () {
+                    .fail(function (response) {
+                        if (response.status == 403){
+                            displayForm();
+                            console.log(response.responseText);
+                            $('#modal-text').text(response.responseText);
+                            $('.modal').modal();
+                        }
                         displayForm();
                         displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
                     });

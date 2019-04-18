@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\YB;
 
+use AppBundle\Entity\Purchase;
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\YB\EnumRole;
 
@@ -19,6 +20,10 @@ class Booking {
         $this->purchase = $purchase;
         $this->bookingDate = new \DateTime();
         $this->isBooked = false;
+    }
+
+    public function __toString(){
+        return $this->reservation . ' ' . $this->purchase;
     }
 
     public function hasNoNumberedSeat(){
@@ -96,7 +101,7 @@ class Booking {
     }
 
     /**
-     * @param mixed $purchase
+     * @param Purchase $purchase
      */
     public function setPurchase($purchase)
     {
@@ -112,7 +117,7 @@ class Booking {
     }
 
     /**
-     * @param mixed $reservation
+     * @param Reservation $reservation
      */
     public function setReservation($reservation)
     {
