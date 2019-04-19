@@ -85,6 +85,11 @@ class KernelListener implements EventSubscriberInterface
             $this->userManager->setYB(true);
             $this->em->getRepository('AppBundle:User')->setYB(true);
         }
+        else {
+            $this->yb = false;
+            $this->userManager->setYB(false);
+            $this->em->getRepository('AppBundle:User')->setYB(false);
+        }
         $this->logger->log('critical', $request->get('_route'));
     }
 
@@ -196,7 +201,7 @@ class KernelListener implements EventSubscriberInterface
         $yb_text = $yb ? 'true':'false';
         $session->set('yb', $yb_text);
 
-        $this->logger->log('critical', 'Voici la route : ' . $request->get('_route') . ' et le YB : ' . $yb);
+        $this->logger->log('critical', 'Voici la route : ' . $request->get('_route') . ' et le YB : ' . $yb_text);
 
         $token = $this->tokenStorage->getToken();
 
