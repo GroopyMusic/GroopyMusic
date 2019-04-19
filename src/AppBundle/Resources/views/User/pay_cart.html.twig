@@ -107,6 +107,9 @@
 
             <h3 class="mb-5 text-center">{{ 'pay_cart.title'|trans|raw }}</h3>
 
+            <p>Une maintenance est en cours. Nous sommes en train de mettre notre système de paiement à jour.
+            La plateforme sera rétablie dans quelques heures. </p>
+            {#
             <div class="row">
                 <div class="col-12 col-md-8 order-2 order-md-1">
                     {% if app.user %}
@@ -351,6 +354,8 @@
                 </div>
             </div>
         </div>
+        #}
+
     {% endblock %}
 
         {% block javascripts %}
@@ -463,13 +468,13 @@
                     });
                 });
 
-                function onToken(result) {
-                    if (result.token) {
+                function onToken(status, result) {
+                    if (!result.error) {
                         Stripe.source.create({
                             type: 'card',
-                            token: result.token.id
+                            token: result.id
                         }, onCardSource);
-                    } else if (result.error) {
+                    } else {
                         displayForm();
                         displayError(result.error.message);
                     }
@@ -482,6 +487,7 @@
                     }
 
                     if (result.card.three_d_secure == 'required') {
+                        alert('3DS oblig');
                         displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
                         stripe.createSource({
                             type: 'three_d_secure',
@@ -498,6 +504,7 @@
                         });
                     }
                     else {
+                        alert('3D non oblig');
                         stripeTokenHandler(result);
                     }
                 }
