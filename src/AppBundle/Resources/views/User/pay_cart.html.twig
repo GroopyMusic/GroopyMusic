@@ -107,9 +107,6 @@
 
             <h3 class="mb-5 text-center">{{ 'pay_cart.title'|trans|raw }}</h3>
 
-            <p>Une maintenance est en cours. Nous sommes en train de mettre notre système de paiement à jour.
-            La plateforme sera rétablie dans quelques heures. </p>
-            {#
             <div class="row">
                 <div class="col-12 col-md-8 order-2 order-md-1">
                     {% if app.user %}
@@ -354,8 +351,6 @@
                 </div>
             </div>
         </div>
-        #}
-
     {% endblock %}
 
         {% block javascripts %}
@@ -418,10 +413,6 @@
                     invalid: 'invalid'
                 };
 
-                // set publishable key for V2
-                Stripe.setPublishableKey('{{ stripe_api_public }}');
-
-
                 var cardNumberElement = elements.create('cardNumber', {
                     style: style,
                     classes: elementClasses,
@@ -479,13 +470,11 @@
                         displayError(result.error.message);
                     }
                 }
-
                 function onCardSource(status, result) {
                     if (result.error) {
                         displayForm();
                         displayError(result.error.message);
                     }
-
                     if (result.card.three_d_secure == 'required') {
                         alert('3DS oblig');
                         displayLoader("{{ 'pay_cart.proceed.bancontact.pending'|trans|raw }}");
@@ -508,7 +497,6 @@
                         stripeTokenHandler(result);
                     }
                 }
-
                 function on3DSSource(result) {
                     if (result.error) {
                         displayError("{{ 'pay_cart.proceed.threeds.error'|trans|raw }}");
@@ -517,11 +505,9 @@
                         hideError();
                         displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
                         window.location.replace(result.source.redirect.url);
-
                         $('#payment-intro').hide();
                     }
                 }
-
                 function onChargeable3DS(status, source) {
                     if (source.status == 'chargeable') {
                         stripeTokenHandler(source);
@@ -545,8 +531,61 @@
                         name: '{{ app.user.displayName }}',
                         email: '{{ app.user.username }}'
                     };
-                    stripe.createToken(cardNumberElement, extraDetails).then(onToken);
+                    // stripe.createToken(cardNumberElement, extraDetails).then(onToken);
+                    stripe.createPaymentMethod(
+                        'card',
+                        cardNumberElement, {
+                            billing_details: extraDetails
+                        }
+                    ).then(function (result) {
+                        if (result.error) {
+                            // Show error in payment form
+                        } else {
+                            // Send paymentMethod.id to server
+                            $.ajax({
+                                type: 'post',
+                                url: '{{ url('user_cart_payment_stripe_post', {'id': cart.id}) }}',
+                                data: {
+                                    payment_method_id: result.paymentMethod.id,
+                                    amount: amount
+                                },
+                                dataType: 'json',
+                                success: function (result2) {
+                                    handleServerResponse(result2);
+                                }
+                            });
+                        }
+                    });
                 });
+
+                function handleServerResponse(response) {
+                    if (response.error) {
+                        // Show error from server on payment form
+                    } else if (response.requires_action) {
+                        // Use Stripe.js to handle required card action
+                        stripe.handleCardAction(
+                            response.payment_intent_client_secret
+                        ).then(function(result) {
+                            if (result.error) {
+                                displayError(result.errors)
+                            } else {
+                                // The card action has been handled
+                                // The PaymentIntent can be confirmed again on the server
+                                $.post('{{ url('user_cart_payment_3DS_stripe_post', {'id': cart.id}) }}', {
+                                        payment_intent_id: result.paymentIntent.id,
+                                        amount: amount
+                                    },
+                                    function(data) {
+                                        handleServerResponse(data);
+                                    },
+                                    'json');
+                            }
+                        });
+                    } else if (response.success) {
+                        var location = "{{ url('user_cart_payment_stripe_success')}}";
+                        window.location = location + '?cart_code=' + response.barcode;
+                    }
+                }
 
                 function scrollToLoader() {
                     $('html, body').animate({
@@ -644,6 +683,5 @@
                 {% endif %}
 
                 fbq('track', 'InitiateCheckout');
-
             </script>
         {% endblock %}
