@@ -43,7 +43,8 @@ confirmed: Festival confirmé !
 or: ou
 loading: Chargement....
 stillselling: Tickets en vente
-doors_opening: Ouverture des portes
+foodtrucks_opening: Foodtrucks & bar extérieur (accès gratuit)
+doors_opening: Ouverture des portes de la salle
 
 notice:
   title: Merci !

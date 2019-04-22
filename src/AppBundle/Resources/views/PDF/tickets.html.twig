@@ -64,7 +64,7 @@
                                 <div>
                                     <b>{{ ('Days ' ~ festivalday.date|date('w'))|trans }} {{ festivalday.date|date('j') }} {{ ('months.' ~ festivalday.date|date('m'))|trans }}</b>
                                     <br />{{ 'doors_opening'|trans }} : {{ festivalday.date|date('H:i') }}
-                                    {% for performance in festivalday.performances %}
+                                    {% for performance in festivalday.performancesAsc %}
                                         <br />{{ performance.time|date('H:i') }} - {{ performance.timeEnd|date('H:i') }} : {{ performance.artist }}
                                     {% endfor %}
                                 </div>

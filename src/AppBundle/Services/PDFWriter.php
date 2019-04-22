@@ -70,10 +70,9 @@ class PDFWriter
         $this->write(self::ORDER_TEMPLATE, $pdfpath, ['cart' => $cart]);//, 'user_rewards' => $cart->getUserRewards()]);
     }
 
-    public function writeTickets($path, $tickets, $agenda = []) {
-        if(!empty($tickets)) {
+    public function writeTickets($path, ContractFan $cf, $tickets, $agenda = []) {
+        if(isset($tickets[0])) {
             // We know all tickets are for same event
-            $cf = $tickets[0]->getContractFan();
             $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'cf' => $cf]);
         }
     }
@@ -87,9 +86,9 @@ class PDFWriter
 
     public function writeTicketPreview(ContractFan $cf, $agenda = []) {
         $tickets = $cf->getTickets();
-
+        $cf = $tickets[0]->getContractFan();
         if(!empty($tickets)) {
-            $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda], 'D');
+            $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda, 'cf' => $cf], 'D');
         }
     }
 

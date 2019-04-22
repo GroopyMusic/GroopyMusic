@@ -100,9 +100,15 @@
                                         <td>
                                             {{ day.date|date('H:i') }}
                                         </td>
+                                        <td>{{ 'foodtrucks_opening'|trans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{ day.date|date('H:i') }}
+                                        </td>
                                         <td>{{ 'doors_opening'|trans }}</td>
                                     </tr>
-                                    {% for performance in day.performances %}
+                                    {% for performance in day.performancesAsc %}
                                             <tr>
                                                 <td>{{ performance.time|date('H:i') }}</td>
                                                 <td>
@@ -111,6 +117,12 @@
                                             </tr>
                                     {% endfor %}
                                 {% else %}
+                                    <tr>
+                                        <td class="contract-info-title text-left">{{ 'foodtrucks_opening'|trans }}</td>
+                                        <td>
+                                            {{ day.date|date('H:i') }}
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class="contract-info-title text-left">{{ 'doors_opening'|trans }}</td>
                                         <td>
