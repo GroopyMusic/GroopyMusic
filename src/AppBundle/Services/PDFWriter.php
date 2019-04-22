@@ -70,7 +70,7 @@ class PDFWriter
         $this->write(self::ORDER_TEMPLATE, $pdfpath, ['cart' => $cart]);//, 'user_rewards' => $cart->getUserRewards()]);
     }
 
-    public function writeTickets($path, ContractFan $cf, $tickets, $agenda = []) {
+    public function writeTickets($path, $cf, $tickets, $agenda = []) {
         if(isset($tickets[0])) {
             // We know all tickets are for same event
             $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'cf' => $cf]);

@@ -104,7 +104,7 @@ class TicketingManager
             if (!empty($tickets)) {
                 $agenda = $this->getAgenda($tickets[0]);
                 // Write PDF file
-                $this->writer->writeTickets($path, $tickets, $agenda);
+                $this->writer->writeTickets($path, null, $tickets, $agenda);
                 // And send it
                 $this->mailDispatcher->sendTicketsForPhysicalPerson($physicalPerson, $contractArtist, $path);
             }
