@@ -135,29 +135,6 @@ class YBController extends BaseController
             ));
         }
 
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
-        $email = $_POST['email'];
-        if($cart->getYbOrder() == null) {
-            $order = new YBOrder();
-            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-            $cart->setYbOrder($order);
-        }
-        else {
-            $order = $cart->getYbOrder();
-            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name);
-            $em->persist($order);
-        }
-
-        $errors = $validator->validate($order);
-        if(count($errors) > 0) {
-            $this->addFlash('error', 'errors.order_coords');
-            return $this->render('@App/YB/checkout.html.twig', array(
-                'cart' => $cart,
-                'error_conditions' => false,
-            ));
-        }
-
         foreach($cart->getContracts() as $cf) {
             /** @var ContractFan $cf */
             /** @var YBContractArtist $contract_artist */
@@ -175,7 +152,6 @@ class YBController extends BaseController
             }
         }
 
-        $em->persist($order);
         $em->flush();
         // Set your secret key: remember to change this to your live secret key in production
         // See your keys here: https://dashboard.stripe.com/account/apikeys
@@ -269,31 +245,6 @@ class YBController extends BaseController
             ));
         }
 
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
-        $email = $_POST['email'];
-
-        if($cart->getYbOrder() == null) {
-            $order = new YBOrder();
-            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-            $cart->setYbOrder($order);
-        }
-
-        else {
-            $order = $cart->getYbOrder();
-            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-            $em->persist($order);
-        }
-
-        $errors = $validator->validate($order);
-        if(count($errors) > 0) {
-            $this->addFlash('error', 'errors.order_coords');
-            return $this->render('@App/YB/checkout.html.twig', array(
-                'cart' => $cart,
-                'error_conditions' => false,
-            ));
-        }
-
         foreach($cart->getContracts() as $cf) {
             /** @var ContractFan $cf */
             /** @var YBContractArtist $contract_artist */
@@ -311,7 +262,6 @@ class YBController extends BaseController
             }
         }
 
-        $em->persist($order);
         $em->flush();
         // Set your secret key: remember to change this to your live secret key in production
         // See your keys here: https://dashboard.stripe.com/account/apikeys
