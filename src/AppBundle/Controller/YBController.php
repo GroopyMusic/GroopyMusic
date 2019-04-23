@@ -135,26 +135,27 @@ class YBController extends BaseController
             ));
         }
 
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $email = $_POST['email'];
         if($cart->getYbOrder() == null) {
-            $first_name = $_POST['first_name'];
-            $last_name = $_POST['last_name'];
-            $email = $_POST['email'];
-
             $order = new YBOrder();
             $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-
-            $errors = $validator->validate($order);
-            if(count($errors) > 0) {
-                $this->addFlash('error', 'errors.order_coords');
-                return $this->render('@App/YB/checkout.html.twig', array(
-                    'cart' => $cart,
-                    'error_conditions' => false,
-                ));
-            }
+            $cart->setYbOrder($order);
         }
-
         else {
             $order = $cart->getYbOrder();
+            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name);
+            $em->persist($order);
+        }
+
+        $errors = $validator->validate($order);
+        if(count($errors) > 0) {
+            $this->addFlash('error', 'errors.order_coords');
+            return $this->render('@App/YB/checkout.html.twig', array(
+                'cart' => $cart,
+                'error_conditions' => false,
+            ));
         }
 
         foreach($cart->getContracts() as $cf) {
@@ -268,26 +269,29 @@ class YBController extends BaseController
             ));
         }
 
-        if($cart->getYbOrder() == null) {
-            $first_name = $_POST['first_name'];
-            $last_name = $_POST['last_name'];
-            $email = $_POST['email'];
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $email = $_POST['email'];
 
+        if($cart->getYbOrder() == null) {
             $order = new YBOrder();
             $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-
-            $errors = $validator->validate($order);
-            if(count($errors) > 0) {
-                $this->addFlash('error', 'errors.order_coords');
-                return $this->render('@App/YB/checkout.html.twig', array(
-                    'cart' => $cart,
-                    'error_conditions' => false,
-                ));
-            }
+            $cart->setYbOrder($order);
         }
 
         else {
             $order = $cart->getYbOrder();
+            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
+            $em->persist($order);
+        }
+
+        $errors = $validator->validate($order);
+        if(count($errors) > 0) {
+            $this->addFlash('error', 'errors.order_coords');
+            return $this->render('@App/YB/checkout.html.twig', array(
+                'cart' => $cart,
+                'error_conditions' => false,
+            ));
         }
 
         foreach($cart->getContracts() as $cf) {
@@ -536,9 +540,16 @@ class YBController extends BaseController
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
 
-        $order = new YBOrder();
-        $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-        $cart->setYbOrder($order);
+        if($cart->getYbOrder() == null) {
+            $order = new YBOrder();
+            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
+            $cart->setYbOrder($order);
+        }
+        else {
+            $order = $cart->getYbOrder();
+            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name);
+            $em->persist($order);
+        }
         
         $errors = $validator->validate($order);
         if($errors->count() > 0) {
