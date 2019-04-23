@@ -182,6 +182,7 @@ class YBController extends BaseController
 
             $payment->setChargeId($charge->id);
             $em->persist($payment);
+            $cart->setPaid(true);
 
             $em->persist($cart);
             return $this->redirectToRoute('yb_payment_success', array('code' => $cart->getBarcodeText())); //, 'sponsorship' => $sponsorship));
