@@ -53,6 +53,10 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
                                 </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('x_my_contributions') }}">Mes contributions</a>
+                                </li>
                             {% endif %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('x_logout') }}">Déconnexion</a>
@@ -87,9 +91,32 @@
             {% endif %}
         {% endblock %}
 
-        <!-- Infos -->
-        {% block infos %}
-            {% include ":patterns:infos.html.twig" %}
+        <!-- Warnings -->
+        {% block warnings %}
+            {% set warning_bag = app.request.session.flashbag.get('x_warning') %}
+            {% if warning_bag is not empty %}
+                {% for message in warning_bag %}
+                    <!-- Modal HTML -->
+                    <div class="modal-warning modal fade in">
+                        <div class="modal-dialog modal-confirm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="icon-box">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <p>{{ message }}</p>
+                                    <button class="btn btn-success" data-dismiss="modal">
+                                        <span>Retour</span><i class="far fa-arrow-alt-circle-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
         {% endblock %}
 
         <!-- Notices -->
@@ -192,6 +219,9 @@
             Dropzone.prototype.defaultOptions.dictRemoveFile = "{{ 'dictRemoveFile'|trans({}, 'dropzone') }}";
             Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "{{ 'dictMaxFilesExceeded'|trans({}, 'dropzone') }}";
         </script>
+
+        <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
+
         
         {% block additional_javascripts %}{% endblock %}
     

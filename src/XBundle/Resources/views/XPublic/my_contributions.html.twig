@@ -1,0 +1,92 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    {% if app.user.isArtistOwner or app.user.isSuperAdmin %}
+        <section class="container px-0 mt-4">
+            <nav class="breadcrumb">
+                <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+                <span class="breadcrumb-item active">Mes contributions</span>
+            </nav>
+        </section>
+    {% else %}
+        <div class="container py-5">
+            <div class="text-center">
+                <h3 class="text-center">Mes contributions</h3>
+            </div>
+         </div>
+     {% endif %}
+
+    <section class="container {% if app.user.isArtistOwner or app.user.isSuperAdmin %}my-4 py-2 my-md-4{% endif %}">
+        <ul class="nav nav-pills" id="my-contributions-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link{% if carts_purchase is empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="donations-details-tab" data-toggle="pill" href="#donations-details" role="tab" aria-controls="donations-details">Mes dons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link{% if carts_purchase is not empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="purchases-details-tab" data-toggle="pill" href="#purchases-details" role="tab" aria-controls="purchases-details">Mes achats</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="my-contributions-tab-content">
+            <div class="tab-pane fade{% if carts_purchase is empty %} show active{% endif %}" id="donations-details" role="tabpanel" aria-labelledby="donations-details-tab">
+                {% if carts_donation is empty %}
+                    <div class="my-3 px-2">Pas de dons pour le moment</div>
+                {% else %}
+                    <div class= "donations-row my-3 px-2">
+                        <div class="row">
+                            <div class="col-4 col-md-3"><b>Date</b></div>
+                            <div class="col-4 col-md-3"><b>Projet</b></div>
+                            <div class="col-4 col-md-3"><b>Montant</b></div>
+                            <div class="col-4 col-md-3"><b>État</b></div>
+                        </div>
+                    </div>
+                    {% for cart in carts_donation %}
+                        {% for donation in cart.contracts %}
+                        <div class= "donations-row border my-3 px-2">
+                            <div class="row">
+                                <div class="col-4 col-md-3">{{ donation.date|date('d/m/Y \\à H:i') }}</div>
+                                <div class="col-4 col-md-3"><a href="{{ path('x_project', {'id':donation.project.id, 'slug':donation.project.slug}) }}" target="_blank">{{ donation.project.title }}</a></div>
+                                <div class="col-4 col-md-3">{{ donation.amount }} €</div>
+                                <div class="col-4 col-md-3">{{ cart.state }}</div>
+                            </div>
+                            <br /><div class="w-100 text-left"><a class="text-secondary font-italic" href="{{ path('x_order', {code: donation.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir le récapitulatif</a></div>
+                        </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="tab-pane fade show{% if carts_purchase is not empty %} active{% endif %}" id="purchases-details" role="tabpanel" aria-labelledby="purchases-details-tab">
+                {% if carts_purchase is empty %}
+                    <div class="my-3 px-2">Pas d'achats pour le moment</div>
+                {% else %}
+                    <div class= "purchases-row my-3 px-2">
+                        <div class="row">
+                            <div class="col-3 col-md-2 my-2"><b>Date</b></div>
+                            <div class="col-3 col-md-2 my-2"><b>Projet</b></div>
+                            <div class="col-3 col-md-2 my-2"><b>Montant total</b></div>
+                            <div class="col-3 col-md-4 my-2"><b>Achat(s)</b></div>
+                            <div class="col-3 col-md-2 my-2"><b>État</b></div>
+                        </div>
+                    </div>
+                    {% for cart in carts_purchase %}
+                        {% for purchase in cart.contracts %}
+                        <div class= "purchases-row border my-3 px-2">
+                            <div class="row">
+                                <div class="col-3 col-md-2 my-2">{{ purchase.date|date('d/m/Y \\à H:i') }}</div>
+                                <div class="col-3 col-md-2 my-2"><a href="{{ path('x_project', {'id':purchase.project.id, 'slug':purchase.project.slug}) }}" target="_blank">{{ purchase.project.title }}</a></div>
+                                <div class="col-3 col-md-2 my-2">{{ purchase.amount }} €</div>
+                                <div class="col-3 col-md-4 my-2">{{ purchase|nl2br }}</div>
+                                <div class="col-3 col-md-2 my-2">{{ cart.state }}</div>
+                            </div>
+                            <br /><div class="w-100 text-left"><a class="text-secondary font-italic" href="{{ path('x_order', {code: purchase.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir le récapitulatif</a></div>
+                        </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}

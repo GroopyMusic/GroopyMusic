@@ -2,6 +2,9 @@
 
 namespace XBundle\Repository;
 
+use AppBundle\Entity\User;
+use XBundle\Entity\Project;
+
 /**
  * XCartRepository
  *
@@ -10,7 +13,37 @@ namespace XBundle\Repository;
  */
 class XCartRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getProjectCarts($project) {
+
+    public function findUserDonations(User $user) {
+        return $this->createQueryBuilder('xc')
+            ->join('xc.contracts', 'cf')
+            ->join('xc.order', 'xo')
+            ->orderBy('cf.date', 'desc')
+            ->where('xo.email = :email')
+            ->andWhere('xc.confirmed = 1 AND xc.paid = 1')
+            ->andWhere('cf.isDonation = 1')
+            ->setParameter('email', $user->getEmail())
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findUserPurchases(User $user) {
+        return $this->createQueryBuilder('xc')
+            ->join('xc.contracts', 'cf')
+            ->join('xc.order', 'xo')
+            ->orderBy('cf.date', 'desc')
+            ->where('xo.email = :email')
+            ->andWhere('xc.confirmed = 1 AND xc.paid = 1')
+            ->andWhere('cf.isDonation = 0')
+            ->setParameter('email', $user->getEmail())
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+    public function getProjectCarts(Project $project) {
         return $this->createQueryBuilder('xc')
             ->join('xc.project', 'p')
             ->where('p.id = :id')
@@ -19,4 +52,5 @@ class XCartRepository extends \Doctrine\ORM\EntityRepository
             ->getResult()
         ;
     }
+
 }

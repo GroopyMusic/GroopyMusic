@@ -39,7 +39,7 @@ class XPublicController extends BaseController
     public function indexAction(EntityManagerInterface $em, Request $request, MailDispatcher $mailDispatcher, CaptchaManager $captchaManager)
     {
         // à changer pour afficher que les populaires et courant
-        $projects = $em->getRepository('XBundle:Project')->findValidatedProjects();
+        $projects = $em->getRepository('XBundle:Project')->findOngoingProjects();
         
         $contact = new XContact();
         $form = $this->createForm(XContactType::class, $contact, ['action' => $this->generateUrl('x_homepage') . '#contact']);
@@ -74,14 +74,20 @@ class XPublicController extends BaseController
     /**
      * @Route("/projects", name="x_projects")
      */
-    public function projectsAction(EntityManagerInterface $em)
+    public function projectsAction(EntityManagerInterface $em, Request $request)
     {
-        $projects = $em->getRepository('XBundle:Project')->findValidatedProjects();
+        //$projects = $em->getRepository('XBundle:Project')->findVisibleProjects();
+        $projectsOngoing = $em->getRepository('XBundle:Project')->findOngoingProjects();
+        $projectsSuccessful = $em->getRepository('XBundle:Project')->findSuccessfulProjects();
         $categories = $em->getRepository('XBundle:XCategory')->findAll();
 
         return $this->render('@X/XPublic/catalog_projects.html.twig', array(
-            'projects' => $projects,
-            'categories' => $categories
+            //'projects' => $projects,
+            'projects_ongoing' => $projectsOngoing,
+            'projects_successful' => $projectsSuccessful,
+            'categories' => $categories,
+            'ongoing_checked' => $request->get('ongoing', false),
+            'successful_checked' => $request->get('successful', false)
         ));
     }
 
@@ -95,7 +101,7 @@ class XPublicController extends BaseController
             return $this->redirectToRoute('x_project', ['id' => $project->getId(), 'slug' => $project->getSlug()]);
         }
 
-        if($project->getDeletedAt() != null) {
+        if($project == null || $project->getDeletedAt() != null) {
             return $this->redirectToRoute('x_homepage');
         }
 
@@ -174,16 +180,10 @@ class XPublicController extends BaseController
     /**
      * @Route("/order/{code}", name="x_order")
      */
-    public function orderAction(EntityManagerInterface $em, TicketingManager $ticketingManager, $code) {
+    public function orderAction(EntityManagerInterface $em, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, $code) {
 
         $cart = $em->getRepository('XBundle:XCart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
 
-        // Send tickets if not done when payment is succesful
-        /*foreach($cart->getContracts() as $cf) {
-            if(!$cf->getTicketsSent())
-                $ticketingManager->generateAndSendYBTickets($cf);
-        }*/
-        
         $cart->setFinalized(true);
         $em->flush();
 
@@ -202,6 +202,24 @@ class XPublicController extends BaseController
     }
 
 
+    /**
+     * @Route("/my-contributions", name="x_my_contributions")
+     */
+    public function myContributionsAction(EntityManagerInterface $em, UserInterface $user = null)
+    {
+        if ($user == null) {
+          return $this->redirectToRoute('x_login');
+        }
+
+        $cartsDonation = $em->getRepository('XBundle:XCart')->findUserDonations($user);
+        $cartsPurchase = $em->getRepository('XBundle:XCart')->findUserPurchases($user);
+
+        return $this->render('@X/XPublic/my_contributions.html.twig', [
+            'carts_donation' => $cartsDonation,
+            'carts_purchase' => $cartsPurchase,
+        ]);
+    }
+
 
     ///////////////////////// PAYMENT /////////////////////////
 
@@ -217,7 +235,7 @@ class XPublicController extends BaseController
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
         
-		if($request->getMethod() == 'POST' /*&& isset($_POST['accept_conditions']) && $_POST['accept_conditions']*/) {
+		if($request->getMethod() == 'POST' && isset($_POST['accept_conditions']) && $_POST['accept_conditions']) {
 
             $amount = intval($_POST['amount']);
 
@@ -227,10 +245,7 @@ class XPublicController extends BaseController
                 $email = $_POST['email'];
 
                 $order = new XOrder();
-                $order->setEmail($email)
-                       ->setFirstName($firstName)
-                       ->setLastName($lastName)
-                       ->setCart($cart);
+                $order->setEmail($email)->setFirstName($firstName)->setLastName($lastName)->setCart($cart);
             } else {
                 $order = $cart->getOrder();
             }
@@ -352,14 +367,24 @@ class XPublicController extends BaseController
                 }
             }
 
-            // Check if threshold is reached
+            // Check if threshold is reached -> to do only once
             if ($project->hasThreshold() && $project->getCollectedAmount() >= $project->getThreshold() && !$project->getNotifSuccessSent()) {
                 $project->setSuccessful(true);
                 $mailDispatcher->sendProjectThresholdConfirmed($project);
+
+                // Notify project confirmed to contributors
+                $mailDispatcher->sendConfirmedProject($project);
+                // Generate and send tickets to buyers
+                foreach($project->getSalesPaid() as $sale) {
+                    if(!empty($sale->getTicketsPurchases())) {
+                        $ticketingManager->generateAndSendXTickets($sale);
+                    }
+                }
+
                 $project->setNotifSuccessSent(true);
             }
 
-            // Need to also send tickets
+            // Need to also send tickets if project is success ongoing
             if($project->isEvent() && $project->getSuccessful() && !$project->isPassed()) {
                 if(!empty($contribution->getTicketsPurchases())) {
                     $ticketingManager->generateAndSendXTickets($contribution);

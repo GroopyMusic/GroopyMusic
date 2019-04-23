@@ -15,7 +15,7 @@
                 </div>
             </div>
             <form id="payment-form" method="post">
-                <div class="checkout-order-form card card-info">
+                <div class="checkout-order-form card card-info" {#% if app.user %}disabled="disabled"{% endif %#}>
                     <div class="card-header">
                         Vos coordonnées
                     </div>
@@ -24,14 +24,14 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="first_name">Prénom</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" value="" required>
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" value="{% if app.user %}{{ app.user.firstName }}{% endif %}" required>
                                 <div class="invalid-feedback">
                                     Veuillez renseigner un prénom valide.
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="last_name">Nom</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" value="" required>
+                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" value="{% if app.user %}{{ app.user.lastName }}{% endif %}" required>
                                 <div class="invalid-feedback">
                                     Veuillez renseigner un nom valide.
                                 </div>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="" value="{% if app.user %}{{ app.user.email }}{% endif %}" required>
                             <div class="invalid-feedback">
                                 Veuillez renseigner un email valide.
                             </div>

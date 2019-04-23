@@ -31,6 +31,10 @@
                     {% if passed_projects|length > 0 or other_passed_projects|length > 0 %}<a href="{{ path('x_artist_passed_projects') }}">{% endif %}<i class="far fa-clock"></i> Projets passés{% if passed_projects|length > 0 or other_passed_projects|length > 0 %}</a>{% endif %}
                     <div class="text-muted">Retrouvez toutes les informations des projets qui ont été lancés par le passé et qui sont terminés.</div>
                 </li>
+                <li class="list-group-item">
+                    <a href="{{ path('x_my_contributions') }}"><i class="fas fa-cart-plus"></i> Mes contributions</a>
+                    <div class="text-muted">Retrouvez tous les détails de vos contributions.</div>
+                </li>
             </ul>
         </section>
 

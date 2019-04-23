@@ -196,6 +196,11 @@ class ProjectType extends AbstractType
 
         if($project->hasThreshold() && $project->getThreshold() <= 0) {
             $context->addViolation('Puisque le projet à un seuil de validation, il faut préciser ce seuil, qui doit être supérieur à 0.');
+        } else {
+            // In case project is noThreshold but artist owner forgets to clear threshold field
+            if($project->getNoThreshold()) {
+                $project->setThreshold(null);
+            }
         }
         
     }

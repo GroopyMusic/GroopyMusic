@@ -15,13 +15,13 @@
             {{ block('header') }}
             {{ block('footer') }}
 
-            <h2>Je suis votre ticket Chapots</h2>
+            <h2>Je suis votre ticket <img src="{{ absolute_url(asset('x/images/ticket.png')) }}" height="30" alt="Chapots" /> Chapots</h2>
 
             <p>
                 Je donne accès à l'événement <a href="{{ url('x_project', {'id': project.id, 'slug': project.slug}) }}" target="_blank">{{ project.title }}</a>.
-            {% if project.isEvent %}
-                <br />Date de l'événement : {{ project.dateEvent|fancy_date }}
-            {% endif %}
+                {% if project.isEvent %}
+                    <br />Date de l'événement : {{ project.dateEvent|fancy_date }}
+                {% endif %}
             </p>
 
             <qrcode value="{{ ticket.barcodeText }}" ec="H"

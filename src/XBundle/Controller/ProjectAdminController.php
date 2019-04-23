@@ -6,6 +6,7 @@ use AppBundle\Controller\BaseAdminController;
 use XBundle\Entity\Project;
 use XBundle\Entity\Product;
 use AppBundle\Services\MailDispatcher;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,12 +117,14 @@ class ProjectAdminController extends BaseAdminController
                 
                 $em = $this->getDoctrine()->getManager();
 
+                // Remove products
                 foreach($project->getProducts() as $product) {
                     $em->remove($product);
+                    //$em->persist($product);
                 }
 
                 $em->remove($project);
-
+                //$em->persist($project);
                 $em->flush();
 
                 $message = "Le projet a été refusé et un mail a été envoyé aux gestionnaires du projet pour leur expliquer les raisons de ce refus";

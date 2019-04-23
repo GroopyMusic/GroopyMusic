@@ -42,6 +42,7 @@ $('document').ready(function() {
 
     $('.modal-notice').modal('show');
     $('.modal-error').modal('show');
+    $('.modal-warning').modal('show');
 
     $('.quantity-right-plus').click(function(e){
         e.preventDefault();

@@ -26,7 +26,6 @@ class Product
         $this->minimumPrice = 1;
         $this->productsSold = 0;
         $this->validated = false;
-        //$this->deleted = false;
         $this->isTicket = false;
         $this->options = new ArrayCollection();
     }

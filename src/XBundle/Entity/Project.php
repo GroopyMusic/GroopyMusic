@@ -118,7 +118,8 @@ class Project
      * Calculates the percentage of project funding progress
      */
     public function getProgressPercent() {
-        return min(floor(($this->getCollectedAmount() / max(1, $this->getThreshold())) * 100), 100);
+        //return min(floor(($this->getCollectedAmount() / max(1, $this->getThreshold())) * 100), 100);
+        return floor(($this->getCollectedAmount() / $this->getThreshold()) * 100);
     }
 
     public function addAmount($amount) {
@@ -147,6 +148,10 @@ class Project
 
     public function isPending() {
         return !$this->successful && !$this->failed && !$this->refunded;
+    }
+
+    public function isOngoing() {
+        return !$this->successful && !$this->failed && !$this->refunded && !$this->isPassed();
     }
 
     public function isEvent() {

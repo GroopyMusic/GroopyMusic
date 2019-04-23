@@ -4,6 +4,8 @@ namespace XBundle\Admin;
 
 use AppBundle\Admin\BaseAdmin;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use AppBundle\AppBundle;
+use CG\Tests\Proxy\Fixture\Entity;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -35,8 +37,17 @@ class ProjectAdmin extends BaseAdmin
             ->add('validated', null, array(
                 'label'=> 'Validé'
             ))
-            ->add('deleted', 'boolean', array(
+            ->add('deletedAt', 'boolean', array(
                 'label' => 'Supprimé'
+            ))
+            ->add('successful', null, array(
+                'label' => 'Réussite'
+            ))
+            ->add('failed', null, array(
+                'label' => 'Échec'
+            ))
+            ->add('refunded', null, array(
+                'label' => 'Remboursé'
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(
@@ -73,7 +84,7 @@ class ProjectAdmin extends BaseAdmin
             ->end()
             ->with('Description')
                 ->add('description', null, array(
-                    'label' => 'A propos du projet',
+                    'label' => 'À propos du projet',
                     'template' => 'XBundle:Admin:description.html.twig'
                 ))
                 ->add('motivations', null, array(
@@ -86,8 +97,8 @@ class ProjectAdmin extends BaseAdmin
                 ))
             ->end()
             ->with('Financement participatif')
-                ->add('noThreshold', 'boolean', array(
-                    'label' => 'Pas de seuil de validation'
+                ->add('hasThreshold', 'boolean', array(
+                    'label' => 'A de seuil de validation'
                 ))
                 ->add('collectedAmount', null, array(
                     'label' => 'Montant récolté'
@@ -101,19 +112,19 @@ class ProjectAdmin extends BaseAdmin
                 ))
             ->end()
             ->with('État')
-                ->add('validated', 'boolean', array(
+                ->add('validated', null, array(
                     'label' => 'Validé par un administrateur Un-Mute'
                 ))
-                ->add('deleted', 'boolean', array(
+                ->add('deletedAt', 'boolean', array(
                     'label' => 'Supprimé ou refusé'
                 ))
-                ->add('successful', 'boolean', array(
+                ->add('successful', null, array(
                     'label' => 'Réussite'
                 ))
-                ->add('failed', 'boolean', array(
+                ->add('failed', null, array(
                     'label' => 'Échec'
                 ))
-                ->add('refunded', 'boolean', array(
+                ->add('refunded', null, array(
                     'label' => 'Remboursé'
                 ))
             ->end()

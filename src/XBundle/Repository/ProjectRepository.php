@@ -26,18 +26,33 @@ class ProjectRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    public function findValidatedProjects() {
+    public function findOngoingProjects() {
         return $this->baseQueryBuilder()
             ->where('p.validated = 1 AND p.deletedAt IS NULL')
-            ->andWhere('p.successful = 1 OR (p.successful = 0 AND p.failed = 0)')
+            ->andWhere('p.successful = 1 OR (p.successful = 0 AND p.failed = 0 AND p.refunded = 0)')
+            ->andWhere('p.dateEnd >= :now')
             ->orderBy('p.dateEnd', 'ASC')
+            ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
 
-    public function findPendingProjects() {
+    public function findSuccessfulProjects() {
         return $this->baseQueryBuilder()
+            ->where('p.validated = 1 AND p.deletedAt IS NULL')
+            ->andWhere('p.successful = 1')
+            ->andWhere('p.dateEnd < :now')
+            ->orderBy('p.dateEnd', 'DESC')
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+
+    public function findPendingProjects() {
+        return $this->createQueryBuilder('p')
             ->where('p.validated = 1 AND p.deletedAt IS NULL')
             ->andWhere('p.successful = 0 AND p.failed = 0 AND p.refunded = 0')
             ->andWhere('p.dateEnd < :now')

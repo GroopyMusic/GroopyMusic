@@ -83,17 +83,20 @@
 
                             <div class="row">
                                 <div class="col-8 col-sm-4 col-lg-4">
-                                    <b>{{ project.collectedAmount }} €</b>{% if project.hasThreshold %} sur {{ project.threshold }} €{% else %} récoltés{% endif %}
+                                    <div><b>{{ project.collectedAmount }} €</b></div>
+                                    <div>{% if project.hasThreshold %}sur {{ project.threshold }} €{% else %} récoltés{% endif %}</div>
                                 </div>
                                 <div class="col-8 col-sm-4 col-lg-4">
                                     {% if project.isPassed %}
-                                        <b>{{ project.dateEnd|date('d/m/Y') }}</b> date de fin
+                                        <div><b>{{ project.dateEnd|date('d/m/Y') }}</b></div>
+                                        <div>date de fin</div>
                                     {% else %}
                                         <b>{{ project.remainingTime }}</b>
                                     {% endif %}
                                 </div>
                                 <div class="col-8 col-sm-4 col-lg-4">
-                                    <b>{{ project.nbContributors }}</b> contributeur(s)
+                                    <div><b>{{ project.nbContributors }}</b></div>
+                                    <div>contributeur(s)</div>
                                 </div>
                             </div>
     
@@ -166,7 +169,7 @@
                         {% for purchase in form_purchase.purchases %}
                             {% set product = purchase.vars.value.product %}
                             <div class="container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
-                                {{ form_errors(purchase) }}
+                                {#{ form_errors(purchase) }#}
 
                                 <h5><b>{{ product.name }}</b>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
                                     
@@ -176,16 +179,21 @@
                                         <p>Disponibilité : <b>{{ product.disponibility }}</b>/{{ product.supply }}</p>
                                         <p>Maximum <b>{{ product.maxAmountPerPurchase }}</b> par commande</p>
                                     </div>
-                                    {% if product.photo is not null %}
                                     <div class="col-5 col-sm-3 col-lg-4">
-                                        <img src="{{ asset(product.webPath(product.photo)) }}" width="100" height="100" />
+                                        {% if product.isTicket %}
+                                            <img src="{{ asset('x/images/ticket.png') }}" width="100" height="100" />
+                                        {% else %}
+                                            {% if product.photo is not null %}
+                                                <img src="{{ asset(product.webPath(product.photo)) }}" width="100" height="100" />
+                                            {% endif %}
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
                                 </div>
 
                                 <div class="row">
                                     <div class="col-7 col-sm-9 col-lg-7">
                                         {% if product.freePrice %}
+                                            {{ form_errors(purchase.freePrice) }}
                                             <div class="w-90 position-relative mb-2">
                                                 {{ form_widget(purchase.freePrice, {'attr':  {'min': product.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
                                                 </div>
@@ -200,6 +208,7 @@
                                             <p>PLUS DISPONIBLE</p>
                                             {% do purchase.setRendered(purchase.quantity) %}
                                         {% else %}
+                                            {{ form_errors(purchase.quantity) }}
                                             <div class="input-group">
                                                 <span class="input-group-btn">
                                                     <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">

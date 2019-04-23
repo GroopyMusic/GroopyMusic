@@ -6,6 +6,13 @@
         a:hover {
             text-decoration: none;
         }
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 90px;
+            height: 90px;
+        }
     </style>
 
     <section class="container px-0 mt-4">
@@ -23,18 +30,25 @@
             {% for product in products %}
                 <div class="products-row border my-3 px-2">
                     <div class="row">
-                        <div class="col-4 col-md-2 my-2">{% if product.photo is not null %}<img src="{{ asset(product.webPath(product.photo)) }}" width="90px" height="90px"/>{% endif %}</div>
-                        <div class="col-4 col-md-1 my-2"><b>{{ product.name }}</b></div>
+                        <div class="col-4 col-md-2 my-2">
+                            {% if product.isTicket %}
+                                <img src="{{ asset('x/images/ticket.png') }}"/>
+                            {% else %}
+                                {% if product.photo is not null %}
+                                    <img src="{{ asset(product.webPath(product.photo)) }}"/>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col-4 col-md-2 my-2"><b>{{ product.name }}</b></div>
                         <div class="col-4 col-md-3 my-2">{{ product.description | bbcode_filter('my_default_filter') }}</div>
-                        {% if product.options is not empty %}
-
+                        {#% if product.options is not empty %}
                         <div class="col-4 col-md-2 my-2">
                         <p>Option(s)</p>
                             {% for option in product.options %}
                                 <p>{{ option }}<p>
                             {% endfor %}
                         </div>
-                        {% endif %}
+                        {% endif %#}
                         <div class="col-4 col-md-1 my-2">
                             {% if product.freePrice %}
                                 <p>Prix libre</p><b>{{ product.minimumPrice }} €</b> (prix minimum)

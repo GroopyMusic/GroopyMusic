@@ -22,7 +22,7 @@ class XCart
         $this->confirmed = false;
         $this->paid = false;
         $this->finalized = false;
-        $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contracts = new ArrayCollection();
     }
 
     public function generateBarCode()

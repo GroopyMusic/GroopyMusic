@@ -36,7 +36,7 @@ class ProductAdmin extends BaseAdmin
             ->add('validated', null, array(
                 'label'=> 'Validé'
             ))
-            ->add('deleted', 'boolean', array(
+            ->add('deletedAt', 'boolean', array(
                 'label' => 'Supprimé'
             ))
             ->add('_action', 'actions', array(
@@ -74,10 +74,10 @@ class ProductAdmin extends BaseAdmin
                 ))
             ->end()
             ->with('État')
-                ->add('validated', 'boolean', array(
+                ->add('validated', null, array(
                     'label' => 'Validé par un administrateur Un-Mute'
                 ))
-                ->add('deleted', 'boolean', array(
+                ->add('deletedAt', 'boolean', array(
                     'label' => 'Supprimé ou refusé'
                 ))
             ->end()

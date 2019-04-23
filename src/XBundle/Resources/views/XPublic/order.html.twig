@@ -7,7 +7,7 @@
         <p>
             Numéro: <span class="text-muted">{{ cart.barcodeText }}</span>
             <br />Date de la contribution : {{ cart.dateCreation|date('d/m/Y \\à H:i') }}
-            <br />Etat de la contribution : {{ cart.state }}
+            <br />État de la contribution : {{ cart.state }}
         </p>
 
         {% for contract in cart.contracts %}

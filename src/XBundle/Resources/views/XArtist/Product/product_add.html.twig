@@ -15,23 +15,19 @@
         </nav>
     </section>
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@X/Form/option.html.twig' '@X/Form/choice.html.twig' ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@X/Form/option.html.twig' ':Form:jquery.collection.html.twig' %}
 
     {{ form_start(form) }}
 
     <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Article</h2><hr>
         <div class="row">
-            {% if product.id is null %}
-                <div class="col-12">
-                    <div class="text-muted font-italic">
-                        Précisez d'abord si l'article mis en vente est un ticket ou non en cochant la mention ci-dessous. Ce comportement ne pourra plus être modifié une fois l'article créé.
-                    </div>
-                    {{ form_widget(form.isTicket) }}
+            <div class="col-12" {% if product.id is not null %}style="display: none"{% endif %}>
+                <div class="text-muted font-italic">
+                    Précisez d'abord si l'article mis en vente est un ticket ou non en cochant la mention ci-dessous. Ce comportement ne pourra plus être modifié une fois l'article créé.
                 </div>
-            {% else %}
-                {% do form.isTicket.setRendered %}
-            {% endif %}
+                {{ form_widget(form.isTicket) }}
+            </div>
             <div class="col-12 col-md-6">
                 {{ form_row(form.name) }}
             </div>
@@ -45,12 +41,22 @@
                 {{ form_row(form.maxAmountPerPurchase) }}
             </div>
             <div class="col-12">
-                {{ form_widget(form.freePrice) }}
+                <div{% if product.id is not null and product.productsSold > 0 %} style="display:none;"{% endif %}>
+                    {{ form_widget(form.freePrice) }}
+                </div>
                 <div class="free-price-min" style="display:none;">
                     {{ form_row(form.minimumPrice) }}
+                    {{ form_errors(form.minimumPrice) }}
+                    <div{% if product.id is not null and product.productsSold > 0 %} disabled="disabled"{% endif %}>
+                        {{ form_widget(form.minimumPrice) }}
+                    </div>
                 </div>
                 <div class="price">
-                    {{ form_row(form.price) }}
+                    {{ form_label(form.price) }}
+                    {{ form_errors(form.price) }}
+                    <div{% if product.id is not null and product.productsSold > 0 %} disabled="disabled"{% endif %}>
+                        {{ form_widget(form.price) }}
+                    </div>
                 </div>
             </div>
             {% if product.id is not null%}
@@ -73,12 +79,12 @@
             {% endif %}
         </div>
     </section>
-    
-    <section class="container my-4 py-2 my-md-5 project-section">
+
+    {#<section class="container my-4 py-2 my-md-5 project-section">
         <h2>Options</h2><hr>
         <div class="text-muted font-italic pb-2">Vous pouvez ajouter des options pour les articles que vous mettez en vente.</div>
         {{ form_widget(form.options) }}
-    </section>
+    </section>#}
     
     {{ form_end(form) }}
 
@@ -87,24 +93,22 @@
 {% block additional_javascripts %}
     {{ parent() }}
 
-    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
-
     <script type="text/javascript">
-        function x_options_collection(options) {
+        {#function x_options_collection(options) {
             $('.options-collection').collection($.extend({
                 up: '',
                 down: '',
                 add_at_the_end: true,
-                add: '<a href="#">Ajouter</a>'//,
-                //prefix: 'options-collection'
+                add: '<a href="#">Ajouter</a>',
+                prefix: 'options-collection'
             }, options));
-        }
+        }#}
 
         $(function() {
-            x_options_collection({
+            {#x_options_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une option</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer cette option</a>'
-            });
+            });#}
             
             {% if product.id is null %}
                 $('.is-ticket-checkbox').on('change', function() {

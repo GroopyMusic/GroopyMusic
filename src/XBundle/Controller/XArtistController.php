@@ -116,8 +116,8 @@ class XArtistController extends BaseController
     {
         $this->checkIfArtistAuthorized($user, $project);
 
-        if($project->isPassed()) {
-            // addFlash('x_error')
+        if($project == null || $project->isPassed()) {
+            $this->addFlash('x_warning', "Pas possible de modifier le projet");
             return $this->redirectToRoute('x_artist_passed_projets');
         }
         
@@ -147,7 +147,9 @@ class XArtistController extends BaseController
         $this->checkIfArtistAuthorized($user, $project);
 
         if ($project == null || $project->getCollectedAmount() == 0 || $project->getSuccessful()) {
-            throw $this->createNotFoundException("Pas possible de confirmer le projet");
+            $this->addFlash('x_warning', "Pas possible de confirmer le projet");
+            return $this->redirectToRoute('x_artist_dashboard');
+            //throw $this->createNotFoundException("Pas possible de confirmer le projet");
         }
 
         $mailDispatcher->sendConfirmedProject($project);
@@ -175,7 +177,9 @@ class XArtistController extends BaseController
         $this->checkIfArtistAuthorized($user, $project);
 
         if ($project == null || $project->getCollectedAmount() == 0 || $project->getFailed() || $project->getRefunded()) {
-            throw $this->createNotFoundException("Pas possible d'annuler le projet");
+            $this->addFlash('x_warning', "Pas possible d'annuler le projet");
+            return $this->redirectToRoute('x_artist_dashboard');
+            //throw $this->createNotFoundException("Pas possible d'annuler le projet");
         }
 
         $project->setFailed(true);
@@ -195,28 +199,18 @@ class XArtistController extends BaseController
         $this->checkIfArtistAuthorized($user, $project);
 
         if ($project == null || $project->getCollectedAmount() > 0 || $project->getDeletedAt() != null) {
-            throw $this->createNotFoundException("Pas possible de supprimer le projet");
+            $this->addFlash('x_warning', "Pas possible de supprimer le projet.");
+            return $this->redirectToRoute('x_artist_dashboard');
+            //throw $this->createNotFoundException("Pas possible de supprimer le projet");
         }
 
         // Remove products and photos products
         foreach ($project->getProducts() as $product) {
-            $this->removePhotos($em, $product);
             $em->remove($product);
         }
-        $this->removePhotos($em, $project);
 
-        // Remove tags
-        foreach ($project->getTags() as $tag) {
-            $project->removeTag($tag);
-        }
-
-        // Remove handlers
-        foreach ($project->getHandlers() as $handler) {
-            $project->removeHandler($handler);
-        }
-
-        $em->persist($project);
         $em->remove($project);
+        //em->persist($project);
         $em->flush();
 
         $this->addFlash('x_notice', 'Le projet a bien été supprimé');
@@ -232,8 +226,13 @@ class XArtistController extends BaseController
     {
         $this->checkIfArtistAuthorized($user, $project);
 
-        $donations = $project->getDonationsPaid();
-        $sales = $project->getSalesPaid();
+        if($project == null) {
+            $this->addFlash('x_warning', "Le projet n'existe pas");
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
+
+        $donations = array_reverse($project->getDonationsPaid());
+        $sales = array_reverse($project->getSalesPaid());
 
         return $this->render('@X/XArtist/project_contributions.html.twig', array(
             'project' => $project,
@@ -250,6 +249,11 @@ class XArtistController extends BaseController
     {
         $this->checkIfArtistAuthorized($user, $project);
 
+        if($project == null) {
+            $this->addFlash('x_warning', "Le projet n'existe pas");
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
+
         $products = $em->getRepository('XBundle:Product')->getProductsForProject($project);
         
         return $this->render('@X/XArtist/Product/products.html.twig', array(
@@ -265,6 +269,11 @@ class XArtistController extends BaseController
     public function addProductAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Project $project, MailDispatcher $mailDispatcher)
     {
         $this->checkIfArtistAuthorized($user, $project);
+
+        if($project == null || $project->isPassed()) {
+            $this->addFlash('x_warning', "Pas possible d'ajouter un article");
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
         
         $product = new Product();
         
@@ -298,6 +307,11 @@ class XArtistController extends BaseController
 
         $product = $em->getRepository('XBundle:Product')->find($idProd);
 
+        if ($project == null || $project->isPassed() || $product == null) {
+            $this->addFlash('x_warning', "Pas possible de modifier l'article");
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
+
         $form = $this->createForm(ProductType::class, $product, ['is_edit' => true]);
         $form->handleRequest($request);
 
@@ -316,6 +330,7 @@ class XArtistController extends BaseController
         ));
     }
 
+
     /**
      * @Route("/project/{id}/product/{idProd}/delete", name="x_artist_product_delete")
      */
@@ -323,22 +338,18 @@ class XArtistController extends BaseController
     {
         $this->checkIfArtistAuthorized($user, $project);
 
+        if ($project == null || $project->getCollectedAmount() > 0 || $project->getDeletedAt() != null) {
+            $this->addFlash('x_warning', "Pas possible de supprimer le projet.");
+            return $this->redirectToRoute('x_artist_dashboard');
+            //throw $this->createNotFoundException("Pas possible de supprimer le projet");
+        }
+
         $product = $em->getRepository('XBundle:Product')->find($idProd);
 
         if($project == null || $product == null || $product->getProductsSold() > 0 || $product->getDeletedAt() != null) {
             throw $this->createNotFoundException("Pas possible de supprimer le produit");
         }
 
-        if ($product->getPhoto() != null) {
-            $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $product->getPhoto()->getFilename()]);
-            $product->setPhoto(null);
-            $em->remove($photo);
-            $filesystem = new Filesystem();
-            $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Product::getWebPath($photo));
-        }
-        //$this->removePhotos($em, $product);
-        //$project->removeProduct($product);
-        //$product->setProject(null);
         $em->remove($product);
         //$em->persist($project);
         $em->flush();
@@ -351,12 +362,17 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/transactional-message", name="x_artist_project_transactional_message")
      */
-    public function transactionalMessageProjectAction(Request $request, UserInterface $user = null, Project $project)
+    public function transactionalMessageProjectAction(EntityManagerInterface $em, Request $request, UserInterface $user = null, Project $project)
     {
         $this->checkIfArtistAuthorized($user, $project);
 
+        if($project == null) {
+            $this->addFlash('x_warning', "Le projet n'existe pas");
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
+
         $message = new XTransactionalMessage($project);
-        $oldMessages = $project->getTransactionalMessages();
+        $oldMessages = array_reverse($project->getTransactionalMessages()->toArray());
 
         $form = $this->createForm(XTransactionalMessageType::class, $message);
         $form->handleRequest($request);
@@ -385,8 +401,10 @@ class XArtistController extends BaseController
                 }
             }
 
-            $this->em->persist($message);
-            $this->em->flush();
+            //$this->em->persist($message);
+            //$this->em->flush();
+            $em->persist($message);
+            $em->flush();
 
             $this->mailDispatcher->sendXTransactionalMessageWithCopy($message, $contributors);
 
@@ -421,33 +439,6 @@ class XArtistController extends BaseController
         $em->flush();
         return new Response();
     }
-
-
-    private function removePhotos(EntityManagerInterface $em, Project $project = null, Product $product = null) {
-        if($project != null && $project->getCoverpic() != null) {
-            $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $project->getCoverpic()->getFilename()]);
-            $em->remove($photo);
-            $project->setCoverpic(null);
-            $filesystem = new Filesystem();
-            $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Project::getWebPath($photo));
-            $em->flush();
-        }
-        if ($product != null && $product->getPhoto() != null) {
-            $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $product->getPhoto()->getFilename()]);
-            $em->remove($photo);
-            $product->setPhoto(null);
-            $filesystem = new Filesystem();
-            $filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Product::getWebPath($photo));
-            $em->flush();
-        }
-
-
-
-
-    }
-
-
-
 
 
 }

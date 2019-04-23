@@ -48,7 +48,7 @@ class ProductType extends AbstractType
                 'label' => 'Nombre maximum par achat',
             ))
             ->add('price', NumberType::class, array(
-                'label' => 'Prix (en euros)',
+                'label' => 'Prix (en euros) (non modifiable une fois que l\'article a été vendu au moins une fois)',
                 'required' => false
             ))
             ->add('freePrice', CheckboxType::class, array(
@@ -57,7 +57,7 @@ class ProductType extends AbstractType
                 'required' => false,
             ))
             ->add('minimumPrice', NumberType::class, array(
-                'label' => "Prix minimum (en euros) (1 € ou plus)",
+                'label' => "Prix minimum (en euros) (1 € ou plus) (non modifiable une fois que l'article a été vendu au moins une fois)",
                 'required' => false,
             ))
             ->add('photo', ImageType::class, array(
@@ -67,9 +67,9 @@ class ProductType extends AbstractType
             ->add('isTicket', CheckboxType::class, array(
                 'label' => 'L\'article mis en vente est un ticket',
                 'attr' => ['class' => 'is-ticket-checkbox'],
-                'required' => false
+                'required' => false,
             ))
-            ->add('options', CollectionType::class, array(
+            /*->add('options', CollectionType::class, array(
                 'entry_type' => OptionProductType::class,
                 'entry_options' => array(
                     'label' => false,
@@ -79,7 +79,7 @@ class ProductType extends AbstractType
                 'by_reference' => false,
                 'prototype' => true,
                 'attr' => ['class' => 'options-collection'],
-            ))
+            ))*/
         ;
 
         if ($options['creation'] || $options['is_edit']) {
@@ -89,6 +89,15 @@ class ProductType extends AbstractType
                 ))
             ;
         }
+
+        /*if ($options['creation']) {
+            $builder->add('isTicket', CheckboxType::class, array(
+                'label' => 'L\'article mis en vente est un ticket',
+                'attr' => ['class' => 'is-ticket-checkbox'],
+                'required' => false
+                ))
+            ;
+        }*/
     }
     
 
@@ -97,14 +106,19 @@ class ProductType extends AbstractType
         if($product->getSupply() < 1) {
             $context->addViolation('Le nombre en stock au total doit être minimum de 1');
         }
+
+        if($product->getSupply() < $product->getProductsSold()) {
+            $context->addViolation('Le nombre en stock ne peut être inférieur au nombre d\'articles qui ont été vendus');
+        }
         
-        if($product->getMaxAmountPerPurchase() < 1) {
-            $context->addViolation('La quantité max de chaque article par achat doit être minimum de 1');
+        if($product->getMaxAmountPerPurchase() < 1 || $product->getMaxAmountPerPurchase() > 10000) {
+            $context->addViolation('La quantité max de chaque article par achat doit être minimum de 1 et de maximum 10000');
         }
 
         if($product->getFreePrice()) {
             if($product->getMinimumPrice() == null || $product->getMinimumPrice() < 1) {
-                $context->addViolation('Si le prix est libre, il doit être de minimum 1 €');         }
+                $context->addViolation('Si le prix est libre, il doit être de minimum 1 €');
+            }
             $product->setPrice($product->getMinimumPrice());
         } else {
             if ($product->getPrice() == null || $product->getPrice() < 1) {

@@ -22,10 +22,8 @@ class ProductAdminController extends BaseAdminController
             throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $product->getId()));
         }
 
-
         if ($product->getValidated()) {
             $this->addFlash('sonata_flash_error', 'La mise en vente de cet article est déjà validée.');
-
             return new RedirectResponse($this->admin->generateUrl('list'));
         }
 
@@ -117,18 +115,6 @@ class ProductAdminController extends BaseAdminController
                 $reason = $form->get('reason')->getData();
                 
                 $em = $this->getDoctrine()->getManager();
-                //$project = $product->getProject();
-                //$project->removeProduct($product);
-                //$em->persist($project);
-
-                // Remove photo
-                /*if ($product->getPhoto() != null) {
-                    $photo = $em->getRepository('XBundle:Image')->findOneBy(['filename' => $product->getPhoto()->getFilename()]);
-                    $product->setPhoto(null);
-                    $em->remove($photo);
-                    //$filesystem = new Filesystem();
-                    //$filesystem->remove($this->get('kernel')->getRootDir().'/../web/' . Product::getWebPath($photo));
-                }*/
 
                 $em->remove($product);
                 $em->flush();
