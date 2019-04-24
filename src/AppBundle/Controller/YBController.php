@@ -633,6 +633,15 @@ class YBController extends BaseController
         return new JsonResponse($bookedSeat);
     }
 
+    /**
+     * Book all the seat for one purchase
+     * A "Seat" is considered as a numbered seat (special row, special seat in a specific block)
+     * A "Pass" is considered as a free access to a specific block
+     * @param $seats
+     * @param EntityManagerInterface $em
+     * @param Purchase $purchase
+     * @param $passes
+     */
     private function bookListSeats($seats, EntityManagerInterface $em, Purchase $purchase, $passes){
         if ($purchase->getQuantity() === count($purchase->getBookings())) {
             foreach ($purchase->getBookings() as $booking) {
@@ -662,6 +671,14 @@ class YBController extends BaseController
         $em->flush();
     }
 
+    /**
+     * A Purchase is related to a specific Counterpart
+     * If the counterpart gives access to the all venue, we retrieve the blocks from the venue
+     * Else, we retrieve the blocks to which the counterparts give access to
+     * @param Purchase $purchase
+     * @param VenueConfig $config
+     * @return mixed
+     */
     private function getBlocksFromPurchase(Purchase $purchase, VenueConfig $config){
         if ($purchase->getCounterpart()->getAccessEverywhere()) {
             return $config->getBlocks();
@@ -670,6 +687,11 @@ class YBController extends BaseController
         }
     }
 
+    /**
+     * Retrieve all the blocks that have numbered seat from a list of blocks
+     * @param $blocks
+     * @return array
+     */
     private function filterBlocks($blocks){
         $filtered = [];
         /** @var Block $block */
@@ -681,6 +703,14 @@ class YBController extends BaseController
         return $filtered;
     }
 
+    /**
+     * Checks if a purchase is still valid.
+     * Once the process of purchasing has started, the user has 15min to complete it.
+     * Once the delay passed, the purchase is canceled.
+     * @param Cart $cart
+     * @param EntityManagerInterface $em
+     * @return bool
+     */
     private function arePurchasesStillValid(Cart $cart, EntityManagerInterface $em){
         $this->checkForTimeoutPurchase($em, $cart);
         $valid = true;
@@ -704,6 +734,12 @@ class YBController extends BaseController
         return $valid;
     }
 
+    /**
+     * Retrieve in the DB all the purchase that are timedout (purchase that have been inactive for at least 15min)
+     * Remove all those inactive purchase from the DB
+     * @param EntityManagerInterface $em
+     * @param Cart $cart
+     */
     private function checkForTimeoutPurchase(EntityManagerInterface $em, Cart $cart){
         $timedOutSession = $em->getRepository('AppBundle:YB\Booking')->getTimedoutReservations();
         if (count($timedOutSession) !== 0) {
@@ -714,6 +750,14 @@ class YBController extends BaseController
         }
     }
 
+    /**
+     * A ContractFan is composed of several purchase
+     * Here we retrieve the time of the oldest purchase of a ContractFan
+     * @param EntityManagerInterface $em
+     * @param ContractFan $cf
+     * @return int|null
+     * @throws \Exception
+     */
     private function getOldestBookingTime (EntityManagerInterface $em, ContractFan $cf){
         $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
         $timeStamp = 0;

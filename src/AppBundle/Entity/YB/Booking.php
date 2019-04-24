@@ -26,14 +26,26 @@ class Booking {
         return $this->reservation . ' ' . $this->purchase;
     }
 
+    /**
+     * Check if the booking is not related to a numbered seat
+     * @return bool
+     */
     public function hasNoNumberedSeat(){
         return $this->reservation->getRowIndex() === -1 && $this->reservation->getSeatIndex() === -1;
     }
 
+    /**
+     * Get the block of the booking
+     * @return Block
+     */
     public function getBlock(){
         return $this->reservation->getBlock();
     }
 
+    /**
+     * Returns a string representing the seat concerned by the booking
+     * @return string
+     */
     public function getSeat(){
         $blk = $this->reservation->getBlock();
         if ($this->hasNoNumberedSeat()){

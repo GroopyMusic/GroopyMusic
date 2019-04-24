@@ -25,6 +25,9 @@ class Block {
         return $this->name;
     }
 
+    /**
+     * Remove all the row from the block
+     */
     public function refreshRows(){
         if (count($this->rows) > 0){
             foreach ($this->rows as $row){
@@ -33,6 +36,10 @@ class Block {
         }
     }
 
+    /**
+     * Generates all the rows of a block
+     * And for each row, we generate the seats as well
+     */
     public function generateRows(){
         $alphabet = $this->generateAlphabet();
         $this->refreshRows();
@@ -52,12 +59,20 @@ class Block {
         $this->generateSeats();
     }
 
+    /**
+     * Generates for each rows, the seats
+     */
     public function generateSeats(){
         foreach ($this->rows as $row){
             $row->generateSeats();
         }
     }
 
+    /**
+     * Generates the alphabet
+     * Once we have reached Z, we start over at AA, AB, AC,... until ZZ.
+     * @return array
+     */
     private function generateAlphabet(){
         $letters = array();
         $letter = 'A';
@@ -67,6 +82,9 @@ class Block {
         return $letters;
     }
 
+    /**
+     * Creates the block if the block is of type "UP"
+     */
     public function constructAllUp(){
         $this->freeSeating = true;
         $this->notSquared = false;
@@ -76,6 +94,10 @@ class Block {
         $this->seatLabel = 1;
     }
 
+    /**
+     * Creates the block if the block has a free seating policy
+     * The participants can seat wherever they want
+     */
     public function constructFreeSeating(){
         $this->notSquared = false;
         $this->nbRows = 0;
@@ -84,6 +106,9 @@ class Block {
         $this->seatLabel = 1;
     }
 
+    /**
+     * Creates a block if the block is unsquared (has uneven rows)
+     */
     public function constructNotSquare(){
         $this->nbRows = 0;
         $this->nbSeatsPerRow = 0;
@@ -91,10 +116,19 @@ class Block {
         $this->seatLabel = 1;
     }
 
+    /**
+     * Used when the block is not squared : checks if the computed number of seats fits the block capacity
+     * @return bool
+     */
     public function isValidCustomRow(){
         return $this->capacity === $this->getNbSeatsCustomRow();
     }
 
+    /**
+     * Compute the number of seats in the block
+     * Unsquared block are not taken into account
+     * @return float|int
+     */
     public function getNbSeatsOfBlock(){
         if ($this->type === self::UP){
             return $this->capacity;
@@ -109,6 +143,11 @@ class Block {
         }
     }
 
+    /**
+     * Compute the number of seats in the block
+     * Unsquared block are taken into account
+     * @return float|int
+     */
     public function getComputedCapacity(){
         if ($this->type === self::UP){
             return $this->capacity;
@@ -123,6 +162,10 @@ class Block {
         }
     }
 
+    /**
+     * Get the seated capacity of a block
+     * @return float|int
+     */
     public function getSeatedCapacity(){
         if ($this->type === self::UP){
             return 0;
@@ -138,6 +181,10 @@ class Block {
         }
     }
 
+    /**
+     * Computes the number of seats in the case of an unsquared block
+     * @return int
+     */
     private function getNbSeatsCustomRow(){
         $nb = 0;
         foreach ($this->rows as $row){
@@ -146,6 +193,16 @@ class Block {
         return $nb;
     }
 
+    /**
+     * For the plugin 'JQuery Seat Chart', we have to transform the block in a 2d array of char
+     * Here, we creates this array that looks like this :
+     * fffffffff
+     * fffffffff
+     * fffffffff
+     * for a block of 3 rows of 9 seats
+     * 
+     * @return array
+     */
     public function generateSeatChart(){
         $seatChart = array();
         foreach ($this->rows as $row){
@@ -154,6 +211,11 @@ class Block {
         return $seatChart;
     }
 
+    /**
+     * We retrieve the name of the row (either a letter or a number)
+     * This name will be displayed and used by the plugin 'JQuery Seat Chart'
+     * @return array
+     */
     public function getSeatChartRow(){
         $seatChartRow = array();
         foreach ($this->rows as $row) {
@@ -162,6 +224,12 @@ class Block {
         return $seatChartRow;
     }
 
+    /**
+     * Get the seat in the given row at the given index
+     * @param $rowNb
+     * @param $seatNb
+     * @return Seat
+     */
     public function getSeatAt($rowNb, $seatNb){
         $rowIndex = $rowNb - 1;
         /** @var BlockRow $row */ $row = $this->rows[$rowIndex];
@@ -170,7 +238,7 @@ class Block {
         return $seat;
     }
 
-    public function getMaxSeatsOnRow(){
+    /*public function getMaxSeatsOnRow(){
         if (!$this->isNotSquared()){
             return $this->nbSeatsPerRow;
         } else {
@@ -182,12 +250,21 @@ class Block {
             }
             return $max;
         }
-    }
+    }*/
 
+    /**
+     * Checks if a block is not numbered (if it is not composed of numbered seat)
+     * @return bool
+     */
     public function isNotNumbered(){
         return $this->type === self::UP || $this->getFreeSeating();
     }
 
+    /**
+     * Checks in all the reservations of en event and retrieve all the tickets booked in the block
+     * @param YBContractArtist $event
+     * @return int
+     */
     public function getSoldTicketInBlock(YBContractArtist $event){
         $nb = 0;
         /** @var Reservation $rsv */
@@ -202,10 +279,13 @@ class Block {
         return $nb;
     }
 
-    public function refreshSeats(){
+    /**
+     * Remove all the seats from the block
+     */
+    public function removeSeats(){
         /** @var BlockRow $row */
         foreach ($this->rows as $row){
-            $row->refreshSeats();
+            $row->removeSeats();
         }
     }
 

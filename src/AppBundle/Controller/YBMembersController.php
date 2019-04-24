@@ -1115,7 +1115,7 @@ class YBMembersController extends BaseController
                 $this->addFlash('error', 'Le nombre de sièges calculés avec vos rangées ne correspond pas à la capacité totale du bloc');
                 return $this->redirectToRoute('yb_members_configure_block', ['id' => $block->getId()]);
             } else {
-                $block->refreshSeats();
+                $block->removeSeats();
                 $block->generateSeats();
                 $em->persist($block);
                 $em->flush();
@@ -1153,55 +1153,6 @@ class YBMembersController extends BaseController
     public function openHelpCreateVenue(){
         return $this->render('@App/YB/Members/venue_help.html.twig');
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // ------------------ private functions -------------------- //
 
@@ -1459,6 +1410,12 @@ class YBMembersController extends BaseController
         return true;
     }
 
+    /**
+     * Fetches all the organizations to be displayed if the user is a Super Admin
+     * @param $currentUser
+     * @param $organizations
+     * @return array
+     */
     private function fetchOrganizationsForSuperUser($currentUser, $organizations)
     {
         $organizations = array_filter($organizations, function ($org) {
@@ -1475,6 +1432,11 @@ class YBMembersController extends BaseController
         return $organizationsToBeDisplayed;
     }
 
+    /**
+     * Remove all the closed venues (venues that have been soft deleted)
+     * @param $venues
+     * @return array
+     */
     private function removeClosedVenues($venues)
     {
         $venues = array_filter($venues, function ($venue) {
@@ -1486,6 +1448,12 @@ class YBMembersController extends BaseController
         return $venues;
     }
 
+    /**
+     * Checks in the DB if the given address already exists.
+     * @param EntityManagerInterface $em
+     * @param Address $a
+     * @return bool
+     */
     private function isExistingAddress(EntityManagerInterface $em, Address $a)
     {
         $addresses = $em->getRepository('AppBundle:Address')->findAll();
@@ -1497,6 +1465,12 @@ class YBMembersController extends BaseController
         return false;
     }
 
+    /**
+     * Checks if there is still at least one event (YBContractArtist) planned in the venue
+     * @param EntityManagerInterface $em
+     * @param Venue $venue
+     * @return bool
+     */
     private function isVenueStillHostingEvent(EntityManagerInterface $em, Venue $venue)
     {
         $currentEvents = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
@@ -1508,6 +1482,12 @@ class YBMembersController extends BaseController
         return false;
     }
 
+    /**
+     * Checks if there is still at least one event (YBContractArtist) planned in the venue with the given configurations
+     * @param EntityManagerInterface $em
+     * @param VenueConfig $config
+     * @return bool
+     */
     private function isConfigStillUsedForEvent(EntityManagerInterface $em, VenueConfig $config)
     {
         $currentEvents = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
@@ -1519,6 +1499,12 @@ class YBMembersController extends BaseController
         return false;
     }
 
+    /**
+     * Fetches in the DB all the venues that are not closed or not temporary
+     * @param EntityManagerInterface $em
+     * @param User $user
+     * @return array
+     */
     private function getActiveVenue(EntityManagerInterface $em, User $user){
         $venues = $em->getRepository('AppBundle:YB\Venue')->findAll();
         $activeVenues = [];
@@ -1530,6 +1516,15 @@ class YBMembersController extends BaseController
         return $this->sortVenues($activeVenues, $user);
     }
 
+    /**
+     * Sorts the list of venues.
+     * First, the venues that are handled by the given user
+     * Then, all the others venue
+     * If the venue is handled by the user, we add a suffix to its name.
+     * @param $venues
+     * @param User $user
+     * @return array
+     */
     private function sortVenues($venues, User $user){
         $sortedVenues = [];
         foreach ($venues as $v){

@@ -21,6 +21,9 @@ class BlockRow {
         return '' . $this->id . '-' . $this->name;
     }
 
+    /**
+     * Generates all the seats of the row
+     */
     public function generateSeats(){
         if ($this->numerotationSystem == '2'){
             for ($i = 0; $i < $this->nbSeats; $i++){
@@ -37,7 +40,10 @@ class BlockRow {
         }
     }
 
-    public function refreshSeats(){
+    /**
+     * Removes all the seats from the row
+     */
+    public function removeSeats(){
         if (count($this->seats) > 0){
             foreach ($this->seats as $seat){
                 $this->removeSeat($seat);
@@ -45,6 +51,11 @@ class BlockRow {
         }
     }
 
+    /**
+     * Generates the alphabet
+     * Once we have reached Z, we start over at AA, AB, AC,... until ZZ.
+     * @return array
+     */
     private function generateAlphabet(){
         $letters = array();
         $letter = 'A';
@@ -54,6 +65,12 @@ class BlockRow {
         return $letters;
     }
 
+    /**
+     * Used for the plugin 'JQuery Seat Chart'
+     * Generates a string representing the row
+     * A row of 4 seats will look like this : ffff (4 f for 4 seats)
+     * @return string
+     */
     public function generateSeatCharRow(){
         $aRow = '';
         for ($i = 0; $i < $this->nbSeats; $i++){
@@ -62,6 +79,10 @@ class BlockRow {
         return $aRow;
     }
 
+    /**
+     * Get the row number (index in the block list)
+     * @return int
+     */
     public function getRowNumber(){
         for ($i=0; $i < count($this->block->getRows()); $i++){
             if ($this->block->getRows()[$i] === $this){

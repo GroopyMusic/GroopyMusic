@@ -37,6 +37,10 @@ class VenueConfig {
         return $this->name;
     }
 
+    /**
+     * Creates a default configuration
+     * @param Venue $v
+     */
     public function constructDefault(Venue $v){
         $this->name = 'Config par défaut';
         $this->maxCapacity = $v->getDefaultCapacity();
@@ -53,6 +57,9 @@ class VenueConfig {
         $this->isDefault = true;
     }
 
+    /**
+     * Generates all the row for the configurations
+     */
     public function generateRows(){
         foreach ($this->blocks as $block){
             if ($block->isNotSquared()){
@@ -63,6 +70,10 @@ class VenueConfig {
         }
     }
 
+    /**
+     * Checks if the configuration has some blocks that are not squared
+     * @return bool
+     */
     public function hasUnsquaredBlock(){
         foreach ($this->blocks as $block){
             if ($block->isNotSquared()){
@@ -72,6 +83,10 @@ class VenueConfig {
         return false;
     }
 
+    /**
+     * Retrieves all the blocks that are not squared
+     * @return array
+     */
     public function getUnsquaredBlocks(){
         $unsquaredBlocks = array();
         foreach ($this->blocks as $block){
@@ -82,15 +97,22 @@ class VenueConfig {
         return $unsquaredBlocks;
     }
 
+    /**
+     * Generates all the seats for unsquared blocks
+     */
     public function generateSeatForUnsquareRows(){
         $unsquaredRows = $this->getUnsquaredBlocks();
         /** @var Block $blk */
         foreach ($unsquaredRows as $blk){
-            $blk->refreshRows();
+            $blk->removeRows();
             $blk->generateSeats();
         }
     }
 
+    /**
+     * Get the total capacity of the configuration
+     * @return int|mixed
+     */
     public function getTotalCapacity(){
         if ($this->venue->isOnlyFreeSeating() || $this->isDefault()){
             return $this->venue->getDefaultCapacity();
@@ -105,6 +127,10 @@ class VenueConfig {
         return $capacity;
     }
 
+    /**
+     * Checks if the configuration has only blocks where the people have to stand/sit at a specific seat.
+     * @return bool
+     */
     public function hasOnlySeatedBlocks(){
         /** @var Block $block */
         foreach ($this->getBlocks() as $block){

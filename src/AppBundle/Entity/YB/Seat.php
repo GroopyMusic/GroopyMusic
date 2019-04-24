@@ -21,6 +21,9 @@ class Seat {
     }
 
     /**
+     * For the plugin 'JQuery Seat Chart' :
+     * Get a string representing the seat
+     * The seat no 5 at the row 6 will give a string like '6_5'
      * @return string
      */
     public function getSeatChartName(){
@@ -32,6 +35,10 @@ class Seat {
 
     }
 
+    /**
+     * Gives the index of the seat in its row
+     * @return int
+     */
     private function getSeatNumber(){
         for ($i=0; $i<count($this->row->getSeats()); $i++){
             if ($this->row->getSeats()[$i] === $this){
@@ -40,6 +47,10 @@ class Seat {
         }
     }
 
+    /**
+     * Retrieve the block to whom the seat belongs
+     * @return Block
+     */
     private function getBlock(){
         return $this->row->getBlock();
     }

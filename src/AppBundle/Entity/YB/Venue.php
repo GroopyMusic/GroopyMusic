@@ -28,24 +28,45 @@ class Venue {
         return $this->name;
     }
 
+    /**
+     * Add a configuration to the venue
+     * @param VenueConfig $config
+     */
     public function addConfiguration(VenueConfig $config){
         $config->setVenue($this);
         $this->configurations->add($config);
     }
 
+    /**
+     * Remove the given configuration from the venue
+     * @param VenueConfig $config
+     */
     public function removeConfiguration(VenueConfig $config){
         $config->setVenue(null);
         $this->configurations->removeElement($config);
     }
 
+    /**
+     * Get all the users that are members of the organization in charged of the venue
+     * @return array
+     */
     public function getHandlers(){
         return $this->organization->getMembers();
     }
 
+    /**
+     * Checks if the given user is in charged of the venue
+     * @param User $user
+     * @return bool
+     */
     public function isHandledByUser(User $user){
         return in_array($user, $this->organization->getMembers());
     }
 
+    /**
+     * Gets all the rows of the venue
+     * @return array
+     */
     public function getRows(){
         $rows = [];
         foreach ($this->configurations as $config){
@@ -58,11 +79,15 @@ class Venue {
         return $rows;
     }
 
+    /**
+     * Generates the rows for each block that is squared.
+     * If the block is not squared, it does nothing
+     */
     public function generateRows(){
         foreach ($this->configurations as $config){
             foreach ($config->getBlocks() as $block){
                 if ($block->isNotSquared()){
-                    // TODO
+                    // nothing
                 } else {
                     $block->generateSeats();
                 }
@@ -70,6 +95,10 @@ class Venue {
         }
     }
 
+    /**
+     * Checks if the venue has a free seating policy (people can stand/sit wherever they want)
+     * @return bool
+     */
     public function isOnlyFreeSeating(){
         foreach ($this->configurations as $configuration){
             if (!$configuration->isOnlyStandup()){
@@ -82,6 +111,10 @@ class Venue {
         return true;
     }
 
+    /**
+     * Retrieve all the configurations from the venue except its default configuration
+     * @return array
+     */
     public function getNotDefaultConfig(){
         $nonDefault = [];
         foreach ($this->configurations as $configuration){
@@ -92,6 +125,9 @@ class Venue {
         return $nonDefault;
     }
 
+    /**
+     * Generates a default configuration for the venue
+     */
     public function createDefaultConfig(){
         $config = new VenueConfig();
         $config->constructDefault($this);

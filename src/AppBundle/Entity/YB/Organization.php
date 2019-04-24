@@ -30,6 +30,11 @@ class Organization {
 
     // METHODS
 
+    /**
+     * Add a member to the organization
+     * @param Membership $participation
+     * @return $this
+     */
     public function addParticipation(\AppBundle\Entity\YB\Membership $participation){
         if (!$this->participations->contains($participation)){
             $this->participations->add($participation);
@@ -38,6 +43,11 @@ class Organization {
         return $this;
     }
 
+    /**
+     * Remove a member from the organization
+     * @param Membership $participation
+     * @return $this
+     */
     public function removeParticipation(\AppBundle\Entity\YB\Membership $participation){
         if ($this->participations->contains($participation)){
             $this->participations->removeElement($participation);
@@ -46,6 +56,10 @@ class Organization {
         return $this;
     }
 
+    /**
+     * Get the list of the members
+     * @return array
+     */
     public function getMembers(){
         return array_map(
             function ($participation){
@@ -55,10 +69,19 @@ class Organization {
         );
     }
 
+    /**
+     * Checks if the organization has at most one member
+     * @return bool
+     */
     public function hasOnlyOneMember(){
         return count($this->getMembers()) <= 1;
     }
 
+    /**
+     * Checks if the organization has at least one admin
+     * @param User $quittingMember
+     * @return bool
+     */
     public function hasAtLeastOneAdminLeft(User $quittingMember){
         foreach ($this->participations as $part){
             if ($part->getMember() !== $quittingMember && $part->isAdmin()){
@@ -68,14 +91,30 @@ class Organization {
         return false;
     }
 
+    /**
+     * Checks if the given user is a member of the organization
+     * @param User $member
+     * @return bool
+     */
     public function hasMember(User $member){
         return in_array($member, $this->getMembers());
     }
 
+    /**
+     * Checks if the organization has pending request
+     * A pending request is generate when a member invites another user in the organization
+     * and that user has still not confirmed its membership
+     * @return bool
+     */
     public function hasPendingRequest(){
         return count($this->getJoinOrganizationRequest()) > 0;
     }
 
+    /**
+     * Checks if the given venue is handled by the organization
+     * @param Venue $venue
+     * @return bool
+     */
     public function handleVenue(Venue $venue){
         return in_array($venue, $this->venues);
     }
