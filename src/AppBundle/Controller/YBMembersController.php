@@ -6,6 +6,7 @@ use AppBundle\AppBundle;
 use AppBundle\Entity\Address;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\Photo;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\Block;
@@ -1039,6 +1040,7 @@ class YBMembersController extends BaseController
         if ($form->isSubmitted() && $form->isValid()){
             $em->flush();
             if ($config->hasFreeSeatingPolicy() || $config->isOnlyStandup()){
+                $this->addFlash('yb_notice', 'La configuration a bien été modifiée');
                 return $this->redirectToRoute('yb_members_my_venues');
             } else {
                 return $this->redirectToRoute('yb_members_add_venue_block', ['config' => $config->getId()]);
@@ -1538,7 +1540,5 @@ class YBMembersController extends BaseController
         }
         return $sortedVenues;
     }
-
-
 
 }

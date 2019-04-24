@@ -50,9 +50,9 @@
                     </p>
                 {% endif %}
             {% endif %}
-            {% if ticket.counterPart.contractArtist.config is not null and ticket.counterPart.contractArtist.config.photo is not null %}
+            {% if ticket.counterPart.contractArtist.config is not null and ticket.counterPart.contractArtist.config.updatedAt is not null %}
                 <div id="venue-photo">
-                    <img style="border:2px solid black" src="{{ absolute_url(asset(ticket.getVenueConfig().getYBWebPath(ticket.getVenueConfig().getPhoto()))) }}" height="150" width="200">
+                    <img style="border:2px solid black" src="{{ absolute_url(asset(ticket.getVenueConfig().getYBWebPath(ticket.getVenueConfig().getImage()))) }}" height="150" width="200">
                 </div>
             {% endif %}
             {% if campaign.address is not null %}

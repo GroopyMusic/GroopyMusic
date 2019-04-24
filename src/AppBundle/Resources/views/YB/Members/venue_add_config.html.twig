@@ -53,18 +53,19 @@
         <h2>Image</h2>
         <div class="row">
             <div class="col-12 col-md-6">
-                <p style="color: darkgreen"><b>{{ form_label(form.photo) }}</b></p>
+                <p style="color: darkgreen"><b>{{ form_label(form.imageFile) }}</b></p>
                 <div class="text-text-muted font-italic pb-2">
                     Vous pouvez rajouter une photo de votre plan de salle afin de permettre aux acheteurs de
                     visualiser plus facilement l'agencement de votre salle.
                 </div>
-                {{ form_errors(form.photo) }}
-                {{ form_widget(form.photo) }}
+                {{ form_errors(form.imageFile) }}
+                {{ form_widget(form.imageFile) }}
             </div>
             {% if form.vars.data is not null %}
-                {% if form.vars.data.id is not null and form.vars.data.photo is not null %}
+                {% if form.vars.data.id is not null and form.vars.data.updatedAt is not null %}
                     <div class="col-12 col-md-6">
-                        <img class="img-fluid" src="{{ yb_asset(form.vars.data.webPath(form.vars.data.photo)) }}"/>
+                        <p>{{ form.vars.data.image }}</p>
+                        <img class="img-fluid" src="{{ yb_asset(form.vars.data.webPath(form.vars.data.image)) }}"/>
                     </div>
                 {% endif %}
             {% endif %}

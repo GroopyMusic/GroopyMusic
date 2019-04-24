@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class VenueConfigType extends AbstractType {
 
@@ -103,10 +104,14 @@ class VenueConfigType extends AbstractType {
                     'required' => false,
                     'label' => 'Toutes les places de cette configuration sont en placement libre (non-numérotées)',
                 ))
-                ->add('photo', PhotoType::class, array(
+                ->add('imageFile', VichImageType::class, [
                     'label' => 'Plan de salle',
                     'required' => false,
-                ))
+                    'download_link' => false,
+                    'download_uri' => false,
+                    'image_uri' => true,
+                    'allow_delete' => false,
+                ])
                 ->add('submit', SubmitType::class, array(
                     'label' => 'Enregistrer'
                 ))

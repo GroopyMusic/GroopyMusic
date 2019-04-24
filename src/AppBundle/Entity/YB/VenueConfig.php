@@ -5,19 +5,23 @@ namespace AppBundle\Entity\YB;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Photo;
+use Vich\UploaderBundle\Entity\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Class Venue
  * @ORM\table(name="yb_venues_config")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\VenueConfigRepository")
+ * @Vich\Uploadable
  */
 class VenueConfig {
 
-    const PHOTOS_DIR = 'images/campaigns/';
-    const PHOTOS_DIR_YB = 'yb/images/campaigns/';
+    const PHOTOS_DIR = 'images/venues/';
+    const PHOTOS_DIR_YB = 'yb/images/venues/';
 
-    public static function getWebPath(Photo $photo) {
-        return self::PHOTOS_DIR . $photo->getFilename();
+    public static function getWebPath(/*Photo $photo*/$image) {
+        //return self::PHOTOS_DIR . $photo->getFilename();
+        return self::PHOTOS_DIR . $image;
     }
 
     public static function getYBWebPath(Photo $photo){
@@ -31,6 +35,8 @@ class VenueConfig {
         $this->nbSeatedSeats = 0;
         $this->nbBalconySeats = 0;
         $this->blocks = new ArrayCollection();
+        $this->photo = null;
+        $this->image = '';
     }
 
     public function __toString(){
@@ -55,6 +61,7 @@ class VenueConfig {
         $this->venue = $v;
         $this->photo = null;
         $this->isDefault = true;
+        $this->image = '';
     }
 
     /**
@@ -237,6 +244,24 @@ class VenueConfig {
      * @ORM\Column(name="is_default", type="boolean")
      */
     private $isDefault;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
+    private $image;
+
+    /**
+     * @Vich\UploadableField(mapping="yb_venue_header", fileNameProperty="image")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTime
+     */
+    private $updatedAt;
 
     /**
      * @return mixed
@@ -490,6 +515,62 @@ class VenueConfig {
     {
         $this->isDefault = $isDefault;
     }
+
+    /**
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File $imageFile
+     */
+    public function setImageFile($imageFile)
+    {
+        $this->imageFile = $imageFile;
+        if ($imageFile){
+            $this->updatedAt = new \DateTime('now');
+            if ($this->photo){
+                $this->generatePhoto();
+            }
+        }
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+
 
 
 
