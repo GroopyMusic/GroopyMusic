@@ -215,7 +215,7 @@ class YBController extends BaseController
     /**
      * @Route("/cart/{code}/payment/3ds/post", name="yb_payment_3DS_stripe_post")
      */
-    public function cart3DSPostAction(Request $request, $code, UserInterface $user, EntityManagerInterface $em) {
+    public function cart3DSPostAction(Request $request, $code, EntityManagerInterface $em) {
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
         $payment_intent_id = $request->get('payment_intent_id');
 
@@ -229,7 +229,7 @@ class YBController extends BaseController
     /**
      * @Route("/cart/{code}/payment/post", name="yb_cart_payment_stripe_post")
      */
-    public function cartPostAction(Request $request, $code, UserInterface $user, ValidatorInterface $validator) {
+    public function cartPostAction(Request $request, $code, ValidatorInterface $validator) {
 
         $amount = intval($request->get('amount'));
         $payment_method_id = $request->get('payment_method_id');
@@ -278,7 +278,7 @@ class YBController extends BaseController
                 'currency' => 'eur',
                 'confirmation_method' => 'manual',
                 'confirm' => true,
-                "description" => "Un-Mute - payment " . $cart->getId(),
+                "description" => "Ticked-it - payment " . $cart->getId(),
             ]);
 
             $cart->generateBarCode();
@@ -308,6 +308,7 @@ class YBController extends BaseController
             $this->addFlash('error', 'errors.stripe.other');
             $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
         }
+        return $this->json([]);
     }
 
     function generatePaymentResponse(PaymentIntent $intent, Cart $cart) {
