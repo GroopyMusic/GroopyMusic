@@ -88,20 +88,37 @@ class CounterPartType extends AbstractType
         if ($options['has_venue']){
             $config = $options['config'];
             $blks = $config->getBlocks();
-            $builder
-                ->add('accessEverywhere', CheckboxType::class, array(
-                    'required' => false,
-                    'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
-                    'attr' => ['class' => 'give-access-everywhere'],
-                ))
-                ->add('venueBlocks', EntityType::class, array(
-                    'required' => false,
-                    'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
-                    'multiple' => true,
-                    'expanded' => true,
-                    'class' => 'AppBundle\Entity\YB\Block',
-                    'choices' => $blks,
-                ));
+            if ($options['creation']){
+                $builder
+                    ->add('accessEverywhere', CheckboxType::class, array(
+                        'required' => false,
+                        'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
+                        'attr' => ['class' => 'give-access-everywhere give-access-everywhere-cb'],
+                    ))
+                    ->add('venueBlocks', EntityType::class, array(
+                        'required' => false,
+                        'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
+                        'multiple' => true,
+                        'expanded' => true,
+                        'class' => 'AppBundle\Entity\YB\Block',
+                        'choices' => $blks,
+                    ));
+            } else {
+                $builder
+                    ->add('accessEverywhere', CheckboxType::class, array(
+                        'required' => false,
+                        'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
+                        'attr' => ['class' => 'give-access-everywhere'],
+                    ))
+                    ->add('venueBlocks', EntityType::class, array(
+                        'required' => false,
+                        'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
+                        'multiple' => true,
+                        'expanded' => true,
+                        'class' => 'AppBundle\Entity\YB\Block',
+                        'choices' => $blks,
+                    ));
+            }
         }
     }
 
@@ -149,6 +166,7 @@ class CounterPartType extends AbstractType
             'has_sub_events' => false,
             'has_venue' => false,
             'config' => null,
+            'creation' => false,
         ]);
     }
 

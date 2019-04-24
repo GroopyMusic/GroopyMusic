@@ -36,7 +36,11 @@ class Booking {
 
     public function getSeat(){
         $blk = $this->reservation->getBlock();
-        $seat = $blk->getSeatAt($this->reservation->getRowIndex(), $this->reservation->getSeatIndex());
+        if ($this->hasNoNumberedSeat()){
+            return 'Placement libre dans le bloc : '.$blk;
+        } else {
+            $seat = $blk->getSeatAt($this->reservation->getRowIndex(), $this->reservation->getSeatIndex());
+        }
         return $seat;
     }
 

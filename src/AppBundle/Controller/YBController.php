@@ -138,8 +138,19 @@ class YBController extends BaseController
             $purchase = $purchases[$purchaseIndex];
             /** @var Collection|Block[] $bloks */
             $blocks = $this->getBlocksFromPurchase($purchase, $config);
-            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks()) {
-                return $this->redirectToRoute('yb_checkout', ['code' => $code]);
+            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks($config->getBlocks())) {
+                if ($purchase === end($purchases)){
+                    // c'est la fin, on peut aller au checkout
+                    return $this->redirectToRoute('yb_checkout', ['code' => $code]);
+                } else {
+                    // on doit encore traiter les autres purchase
+                    return $this->redirectToRoute('yb_pick_seats', [
+                       'cf' => $cf->getId(),
+                       'purchaseIndex' => $purchaseIndex + 1,
+                       'code' => $code,
+                    ]);
+                }
+
             } else {
                 foreach ($blocks as $blk) {
                     $bookings = $em->getRepository('AppBundle:YB\Booking')->getBookingForEventAndBlock($campaignID, $blk->getId());
@@ -151,7 +162,11 @@ class YBController extends BaseController
                     }
                     $blk->setBookedSeatList($bookedSeat);
                 }
+                $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
+                $timeStamp = 0;
+                $timeStamp = $this->getOldestBookingTime($em, $cf);
                 return $this->render('@App/YB/pick_seats.html.twig', [
+                    'endTime' => $timeStamp,
                     'purchaseIndex' => $purchaseIndex,
                     'purchase' => $purchase,
                     'campaign' => $campaign,
@@ -182,8 +197,6 @@ class YBController extends BaseController
      */
     public function checkoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, $code)
     {
-
-
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
 
         /** @var Cart $cart */
@@ -299,9 +312,17 @@ class YBController extends BaseController
             }
         }
 
+        if (count($cart->getContracts()) === 1){
+            $timeStamp = $this->getOldestBookingTime($em, $cart->getContracts()[0]);
+        } else {
+            $timeStamp = 0;
+        }
+
         return $this->render('@App/YB/checkout.html.twig', [
             'cart' => $cart,
             'error_conditions' => isset($_POST['accept_conditions']) && !$_POST['accept_conditions'],
+            'code' => $code,
+            'endTime' => $timeStamp,
         ]);
     }
 
@@ -579,6 +600,7 @@ class YBController extends BaseController
                 $em->remove($booking);
             }
         }
+        $em->flush();
         if ($isRelatedToUser) {
             $this->addFlash('error', 'Vous avez mis trop de temps à finaliser votre commande. Celle-ci a été annulée. Si vous voulez des tickets, passez une nouvelle commande.');
             $response = $this->generateUrl('yb_campaign', [
@@ -689,6 +711,20 @@ class YBController extends BaseController
             foreach ($timedOutSession as $booking) {
                 $em->remove($booking);
             }
+        }
+    }
+
+    private function getOldestBookingTime (EntityManagerInterface $em, ContractFan $cf){
+        $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
+        $timeStamp = 0;
+        if (count($oldestBooking)>0){
+            $oldestBookingTime = $oldestBooking[0]->getBookingDate();
+            $runTimeMax = new \DateTime($oldestBookingTime->format('Y-m-d H:i:s'));
+            $runTimeMax = $runTimeMax->modify('+15 minutes');
+            $timeStamp = $runTimeMax->getTimestamp();
+            return $timeStamp;
+        } else {
+            return null;
         }
     }
 

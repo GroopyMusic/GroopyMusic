@@ -1,10 +1,11 @@
 div.seatCharts-container {
-	/*min-width: 700px;*/
+	min-width: 700px;
+	overflow-x: scroll;
+	overflow-y: scroll;
 }
 div.seatCharts-cell {
-
-	height: 24px;
-	width: 24px;
+	height: 16px;
+	width: 16px;
 	margin: 3px;
 	float: left;
 	text-align: center;

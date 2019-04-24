@@ -137,7 +137,7 @@ abstract class BaseController extends Controller
         if(!$user || !$user instanceof User) {
             throw new YBAuthenticationException();
         }
-        if($config != null && !$user->ownsYBVenue($config->getVenue())) {
+        if($config != null && !$user->ownsYBVenue($config->getVenue()) && !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
     }
@@ -146,7 +146,7 @@ abstract class BaseController extends Controller
         if(!$user || !$user instanceof User) {
             throw new YBAuthenticationException();
         }
-        if($blk != null && !$user->ownsYBVenue($blk->getConfig()->getVenue())) {
+        if($blk != null && !$user->ownsYBVenue($blk->getConfig()->getVenue()) && !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
     }

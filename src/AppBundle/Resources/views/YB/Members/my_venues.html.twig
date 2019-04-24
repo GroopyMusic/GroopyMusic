@@ -40,11 +40,13 @@
                 </div>
             </div>
         </div>
+        <hr color="orange" size="3"/>
         <br>
         {% if venues|length > 0 %}
             <div data-jplist-group="group1">
                 {% for venue in venues %}
                     {{ macros.venue_row(venue, currentUser) }}
+                    <hr color="orange" size="3"/>
                 {% endfor %}
                 <div data-jplist-control="no-results" data-group="group1" data-name="no-results">
                     Aucun résultat trouvé...

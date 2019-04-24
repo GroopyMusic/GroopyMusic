@@ -1,6 +1,11 @@
 {% extends "@App/YB/Members/base.html.twig" %}
 
 {% block body %}
+    <style>
+        .pick-seats-content{
+            min-width: 700px;
+        }
+    </style>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
         <h2>{{ campaign.getTitle }}</h2>
         <h2 style="font-size: 20px">Sélection de siège : {{ purchase }}</h2>
@@ -11,7 +16,8 @@
             </div>
         {% endif %}
     </section>
-    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations" id="myHeader" style="margin-left: 70px">
+    <div id="sticky-anchor" style="width: 100%; margin: auto"></div>
+    <section style="text-align: center" id="myHeader">
         <h2 style="font-size: 22px;  height: 40px; margin-top: 15px">Vous pouvez encore prendre <span id="remainingTix" style="font-size: 24px">{{ purchase.quantity }}</span> ticket(s).</h2>
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations pick-seats-content">
@@ -54,7 +60,7 @@
                     </div>
                     <div class="modal-body text-center">
                         <h4>Attention !</h4>
-                        <p>Vous n'avez pas sélectionné assez de places</p>
+                        <p id="modal-text"></p>
                         <button class="btn btn-success" data-dismiss="modal">
                             <span>Retour </span><i class="far fa-arrow-alt-circle-right"></i>
                         </button>
@@ -72,6 +78,7 @@
             var header = document.getElementById("myHeader");
             var sticky = header.offsetTop;
             window.onscroll = function(){stickToTop(header, sticky)};
+            var runtimeMax = new Date( {{ endTime|json_encode|raw }} );
             var charts = new Map();
             var qtyMax = {{ purchase.quantity }};
             var remainingTicket = qtyMax;
@@ -183,13 +190,16 @@
                         }
                     });
                 } else {
+                    $('#modal-text').text('Vous n\'avez pas sélectionné assez de places');
                     $('.modal').modal();
                 }
             });
 
-            setInterval(checkForAbortedBooking, 60000);
+            setInterval(checkForAbortedBooking, 120000);
 
             setInterval(function(){checkForOccupiedSeats(charts)}, 7000);
+
+            setInterval(function(){checkTwoMinutesWarning(runtimeMax)}, 60000);
         });
         function checkForAbortedBooking() {
             $.ajax({
@@ -234,10 +244,27 @@
             })
         }
         function stickToTop(header, sticky){
-            if (window.pageYOffset > sticky) {
-                header.classList.add("pick-seats-sticky");
+            /*if (window.pageYOffset > sticky) {
+                header.classList.add("sticky");
+                header.style.display = 'block';
             } else {
-                header.classList.remove("pick-seats-sticky");
+                header.style.display = 'none';
+                header.classList.remove("sticky");
+            }*/
+
+            var window_top = $(window).scrollTop();
+            var div_top = $('#sticky-anchor').offset().top;
+            if (window_top > div_top)
+                $('#myHeader').addClass('sticky');
+            else
+                $('#myHeader').removeClass('sticky');
+        }
+        function checkTwoMinutesWarning(dateMax){
+            var now = new Date().getTime();
+            var difference = (dateMax - now) / 60000;
+            if (difference < 3 && difference >= 2){
+                $('#modal-text').text('Il vous reste environ 2 minutes pour finir votre commande !');
+                $('.modal').modal();
             }
         }
     </script>

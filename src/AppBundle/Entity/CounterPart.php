@@ -106,48 +106,99 @@ class CounterPart implements TranslatableInterface
         return $this->maximum_amount > $this->getBlkCapacity();
     }
 
-    public function hasOnlyFreeSeatingBlocks(){
-        /** @var Block $blk */
-        foreach ($this->venue_blocks as $blk){
-            if (!$blk->isNotNumbered()){
-                return false;
+    public function hasOnlyFreeSeatingBlocks($blocks){
+        if ($blocks === null){
+            return true;
+        }
+        if ($this->getAccessEverywhere()){
+            foreach ($blocks as $blk){
+                if (!$blk->isNotNumbered()){
+                    return false;
+                }
             }
-        }
-        return true;
-    }
-
-    public function hasOnlySeatedBlock(){
-        /** @var Block $blk */
-        foreach ($this->venue_blocks as $blk){
-            if ($blk->getType() === Block::UP){
-                return false;
+            return true;
+        } else {
+            foreach ($this->venue_blocks as $blk){
+                if (!$blk->isNotNumbered()){
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
     }
 
-    public function getSeatedCapacity(){
-        /** @var Block $block */
-        $capacity = 0;
-        foreach($this->venue_blocks as $block){
-            $capacity += $block->getComputedCapacity();
+    public function hasOnlySeatedBlock($blocks){
+        if ($blocks === null){
+            return true;
         }
-        return $capacity;
-    }
-
-    public function getStandUpCapacity(){
-        $capacity = 0;
-        /** @var Block $block */
-        foreach($this->venue_blocks as $block){
-            if ($block->getType === Block::UP){
-                $capacity += $block->getCapacity();
+        if ($this->getAccessEverywhere()){
+            foreach ($blocks as $blk){
+                if (!$blk->isNotNumbered()){
+                    return false;
+                }
             }
+            return true;
+        } else {
+            /** @var Block $blk */
+            foreach ($this->venue_blocks as $blk) {
+                if ($blk->getType() === Block::UP) {
+                    return false;
+                }
+            }
+            return true;
         }
-        return $capacity;
     }
 
-    public function getDifferenceBetweenPhysicalAndTicketCapacity(){
-        return $this->maximum_amount - $this->getSeatedCapacity() - $this->getStandUpCapacity();
+    public function getSeatedCapacity($blocks){
+        if ($blocks === null){
+            return true;
+        }
+        if ($this->getAccessEverywhere()){
+            $capacity = 0;
+            foreach ($blocks as $blk){
+                if ($blk->getType === Block::SEATED || $blk->getType === Block::BALCONY) {
+                    $capacity += $blk->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        } else {
+            /** @var Block $block */
+            $capacity = 0;
+            foreach($this->venue_blocks as $block){
+                if ($block->getType === Block::SEATED || $block->getType === Block::BALCONY) {
+                    $capacity += $block->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        }
+    }
+
+    public function getStandUpCapacity($blocks){
+        if ($blocks === null){
+            return true;
+        }
+        if ($this->getAccessEverywhere()){
+            $capacity = 0;
+            foreach ($blocks as $blk){
+                if ($blk->getType === Block::UP) {
+                    $capacity += $blk->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        } else {
+            /** @var Block $block */
+            $capacity = 0;
+            foreach($this->venue_blocks as $block){
+                if ($block->getType === Block::UP) {
+                    $capacity += $block->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        }
+    }
+
+    public function getDifferenceBetweenPhysicalAndTicketCapacity($blocks){
+        return $this->maximum_amount - $this->getSeatedCapacity($blocks) - $this->getStandUpCapacity($blocks);
     }
 
     /**

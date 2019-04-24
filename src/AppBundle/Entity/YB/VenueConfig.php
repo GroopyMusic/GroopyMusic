@@ -82,6 +82,15 @@ class VenueConfig {
         return $unsquaredBlocks;
     }
 
+    public function generateSeatForUnsquareRows(){
+        $unsquaredRows = $this->getUnsquaredBlocks();
+        /** @var Block $blk */
+        foreach ($unsquaredRows as $blk){
+            $blk->refreshRows();
+            $blk->generateSeats();
+        }
+    }
+
     public function getTotalCapacity(){
         if ($this->venue->isOnlyFreeSeating() || $this->isDefault()){
             return $this->venue->getDefaultCapacity();

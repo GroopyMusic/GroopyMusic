@@ -25,13 +25,17 @@ class Block {
         return $this->name;
     }
 
-    public function generateRows(){
-        $alphabet = $this->generateAlphabet();
+    public function refreshRows(){
         if (count($this->rows) > 0){
             foreach ($this->rows as $row){
                 $this->removeRow($row);
             }
         }
+    }
+
+    public function generateRows(){
+        $alphabet = $this->generateAlphabet();
+        $this->refreshRows();
         for ($i = 0; $i < $this->nbRows; $i++){
             $row = new BlockRow();
             if ($this->rowLabel === 2){
@@ -196,6 +200,13 @@ class Block {
             }
         }
         return $nb;
+    }
+
+    public function refreshSeats(){
+        /** @var BlockRow $row */
+        foreach ($this->rows as $row){
+            $row->refreshSeats();
+        }
     }
 
     /**

@@ -140,7 +140,7 @@ class YBContractArtist extends BaseContractArtist
             return $this->state = self::STATE_FAILED;
 
         if ($this->no_threshold) {
-            if ($this->getConfig()->hasOnlySeatedBlocks()){
+            if ($this->config !== null && $this->getConfig()->hasOnlySeatedBlocks()){
                 if ($this->getNbCounterPartsPaid() >= $this->getConfig()->getTotalCapacity()){
                     return $this->state = self::STATE_SOLD_OUT;
                 }
@@ -180,16 +180,20 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isOutOfStockCp(CounterPart $cp){
+        $blocks = null;
+        if ($cp->getContractArtist()->getConfig() !== null){
+            $blocks = $cp->getContractArtist()->getConfig()->getBlocks();
+        }
         // cas où la salle n'est que en placement libre
         if ($this->config->isOnlyStandup() || $this->config->hasFreeSeatingPolicy()){
             return ($this->getNbPurchasable($cp) === 0);
         }
         // si les blocs concernés par le CP sont en placement libre
-        else if ($cp->hasOnlyFreeSeatingBlocks()){
+        else if ($cp->hasOnlyFreeSeatingBlocks($blocks)){
             return ($this->getNbPurchasable($cp) === 0);
         }
         // si les blocs ne sont que assis
-        else if ($cp->hasOnlySeatedBlock()) {
+        else if ($cp->hasOnlySeatedBlock($blocks)) {
             $totalSeatedCapacity = 0;
             $totalSold = 0;
             /** @var Block $block */
@@ -208,7 +212,7 @@ class YBContractArtist extends BaseContractArtist
             /** @var Block $block */
             foreach ($cp->getVenueBlocks() as $block) {
                 $blkCapacity = $block->getComputedCapacity();
-                $soldInBlock = $block->getSoldTicketInBlock();
+                $soldInBlock = $block->getSoldTicketInBlock($this);
                 $realCapacity = min($cpCapacity, $blkCapacity);
                 if ($block->getType() === Block::BALCONY || $block->getType() === Block::SEATED) {
                     if ($soldInBlock < $realCapacity) {

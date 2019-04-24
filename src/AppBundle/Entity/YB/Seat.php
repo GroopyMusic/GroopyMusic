@@ -17,7 +17,6 @@ class Seat {
     }
 
     public function __toString(){
-
         return 'bloc : '.$this->getBlock().' - rangée : '.$this->row->getName().' - siège : '.$this->name;
     }
 

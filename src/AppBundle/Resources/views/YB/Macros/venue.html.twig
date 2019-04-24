@@ -2,7 +2,7 @@
     {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
 <div data-jplist-item>
     <div class="row">
-        <div class="col-12 row" style="border: orange solid 2px; padding: 7px">
+        <div class="col-12 row" style="padding: 7px">
             <div class="col-12 col-md-3">
                 <h3 class="name">{{ venue.address.name }}</h3>
             </div>
@@ -29,69 +29,70 @@
                 {% endif %}
             </div>
         </div>
-        <div class="col-12 row" style="border: orange solid 2px; padding: 7px">
+        <div class="col-12 row" style="padding: 7px">
             {% for config in venue.getNotDefaultConfig() %}
-                <div class="row mt-4">
-                    <div class="col-12 col-md-4">
-                        <h4 style="color: orange">
-                            Configuration : {{ config.name }}
-                        </h4>
-                    </div>
-                    {% if venue.isHandledByUser(currentUser) %}
-                        <div class="col-12 col-md-4">
-                            <p>
+                <table class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th scope="col"><p style="font-size: 20px; color: orangered">Configuration : {{ config.name }}</p></th>
+                        <th scope="col">
+                            {% if venue.isHandledByUser(currentUser) %}
                                 <a class="btn-outline-warning btn"
                                    href="{{ path('yb_members_config_edit', {'id': config.id}) }}">
                                     <i class="fas fa-pen"></i>
                                     Modifier la configuration...
                                 </a>
-                            </p>
-                        </div>
-                    {% endif %}
-                    {% if venue.isHandledByUser(currentUser) %}
-                        <div class="col-12 col-md-4">
-                            <p>
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if venue.isHandledByUser(currentUser) %}
                                 <a class="btn-outline-warning btn" data-toggle="modal"
                                    href="#deleteConfModal{{ config.id }}">
                                     <i class="fa fa-ban"></i>
                                     Supprimer la configuration...
                                 </a>
-                            </p>
-                        </div>
-                    {% endif %}
-                    <div class="col-12">
-                        capacité maximale : {{ config.maxCapacity }} <br>
-                        {{ config.nbStandUp }} places debout <br>
-                        {{ config.nbSeatedSeats }} places assises (hors balcon) <br>
-                        {{ config.nbBalconySeats }} places balcon
-                        <hr color="grey" size="3"/>
-                    </div>
-                    {% if config.blocks|length > 0 %}
-                        {% for block in config.blocks %}
-                            <div class="col-12 row">
-                                <div class="col-12 col-md-3">Bloc : {{ block.name }}</div>
-                                <div class="col-12 col-md-3">Type : {{ block.type }}</div>
-                                <div class="col-12 col-md-3">Capacité : {{ block.capacity }}</div>
-                                {% if block.notSquared %}
-                                    <div class="col-12 col-md-3">
-                                        <a class="btn-outline-info btn"
-                                           href="{{ path('yb_members_configure_block', {'id' : block.id}) }}">
-                                            <i class="fas fa-pen"></i>
-                                            Modifier le bloc
-                                        </a>
+                            {% endif %}</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                capacité maximale : {{ config.maxCapacity }} <br>
+                                {{ config.nbStandUp }} places debout <br>
+                                {{ config.nbSeatedSeats }} places assises (hors balcon) <br>
+                                {{ config.nbBalconySeats }} places balcon
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% if config.blocks|length > 0 %}
+                            {% for block in config.blocks %}
+                                <tr>
+                                    <td>Bloc : {{ block.name }}</td>
+                                    <td>Type : {{ block.type }}</td>
+                                    <td>Capacité : {{ block.capacity }}</td>
+                                    <td>
+                                        {% if block.notSquared %}
+                                            <a class="btn-outline-info btn" href="{{ path('yb_members_configure_block', {'id' : block.id}) }}">
+                                                <i class="fas fa-pen"></i>Modifier le bloc
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4">
+                                    <div class="col-12 font-italic text-muted">
+                                        Votre salle n'a aucun bloc. C'est le cas, si le placement est libre ou si vous ne possédez que des places debout.
                                     </div>
-                                {% endif %}
-                                <div class="col-12">
-                                    <hr color="grey" size="3"/>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="col-12 font-italic text-muted">
-                            Votre salle n'a aucun bloc. C'est le cas, si le placement est libre ou si vous ne possédez que des places debout.
-                        </div>
-                    {% endif %}
-                </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
                 <div class="modal modal-dialog modal-confirmation" id="deleteConfModal{{ config.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

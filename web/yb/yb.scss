@@ -83,7 +83,7 @@ h2 {
 .modal-attention {
   color: #434e65;
   width: 525px;
-  margin-top: -480px;
+  position: absolute;
 }
 .modal-attention .modal-content {
   padding: 20px;
@@ -171,7 +171,12 @@ h2 {
 .modal-confirmation {
   color: #434e65;
   width: 525px;
-  margin-top: -380px;
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .modal-confirmation .modal-content {
   padding: 20px;

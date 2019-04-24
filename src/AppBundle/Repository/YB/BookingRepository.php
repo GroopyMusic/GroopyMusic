@@ -61,4 +61,17 @@ class BookingRepository extends \Doctrine\ORM\EntityRepository{
             ->getQuery()
             ->getResult();
     }
+
+    public function getOldestBookingForContractFan($cfID){
+        return $this->createQueryBuilder('b')
+            ->join('b.purchase', 'p')
+            ->join('p.contractFan', 'cf')
+            ->where('cf.id = :id')
+            ->andWhere('b.isBooked = 0')
+            ->setParameter('id', $cfID)
+            ->orderBy('b.bookingDate', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -46,6 +46,7 @@ class YBContractArtistTicketsType extends AbstractType
                     'config' => $options['data']->getConfig(),
                     'has_sub_events' => $options['data']->hasSubEvents(),
                     'has_venue' => $options['data']->getVenue() !== null,
+                    'creation' => $options['creation'],
             ),
                 'allow_add' => true,
                 'allow_delete' => true,

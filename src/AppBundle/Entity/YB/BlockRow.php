@@ -37,7 +37,7 @@ class BlockRow {
         }
     }
 
-    private function refreshSeats(){
+    public function refreshSeats(){
         if (count($this->seats) > 0){
             foreach ($this->seats as $seat){
                 $this->removeSeat($seat);

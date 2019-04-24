@@ -977,6 +977,7 @@ class YBMembersController extends BaseController
         $form = $this->createForm(VenueConfigType::class, $config, ['row' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
+            $config->generateSeatForUnsquareRows();
             $em->flush();
             $this->addFlash('yb_notice', 'La salle a bien été configurée.');
             return $this->redirectToRoute('yb_members_my_venues');
@@ -1103,10 +1104,10 @@ class YBMembersController extends BaseController
      */
     public function configureBlockAction(Block $block, UserInterface $user, Request $request, EntityManagerInterface $em){
         $this->checkIfAuthorizedVenueBlock($user, $block);
-        if ($this->isVenueStillHostingEvent($em, $block->getConfig()->getVenue())){
+        /*if ($this->isVenueStillHostingEvent($em, $block->getConfig()->getVenue())){
             $this->addFlash('error', 'Vous ne pouvez pas modifier l\'agencement d\'un bloc alors qu\'il y a encore au moins un événement de prévu. Attendez que la configuration ne soit plus utilisée pour le modifier.');
             return $this->redirectToRoute('yb_members_my_venues');
-        }
+        }*/
         $form = $this->createForm(BlockType::class, $block, ['row' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1114,6 +1115,8 @@ class YBMembersController extends BaseController
                 $this->addFlash('error', 'Le nombre de sièges calculés avec vos rangées ne correspond pas à la capacité totale du bloc');
                 return $this->redirectToRoute('yb_members_configure_block', ['id' => $block->getId()]);
             } else {
+                $block->refreshSeats();
+                $block->generateSeats();
                 $em->persist($block);
                 $em->flush();
                 $this->addFlash('yb_notice','Les rangées ont bien été ajoutées.');
