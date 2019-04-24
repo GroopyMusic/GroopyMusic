@@ -681,7 +681,8 @@
 
                 displaySignIn();
                 {% endif %}
-
-                fbq('track', 'InitiateCheckout');
             </script>
         {% endblock %}
+{% block fb_pixel_events %}
+    fbq('track', 'InitiateCheckout');
+{% endblock %}
