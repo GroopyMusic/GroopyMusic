@@ -25,6 +25,7 @@
 !/web/pdf/viptickets
 !/web/pdf/phtickets
 /web/yb/images/campaigns/*
+/web/yb/images/venues/*
 /web/yb/tickets/*
 !/web/yb/tickets
 !web/yb/images/campaigns
