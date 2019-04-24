@@ -54,6 +54,7 @@ class YBContractArtist extends BaseContractArtist
         $this->sub_events = new ArrayCollection();
         $this->no_sub_events = true;
         $this->date_event = new \DateTime();
+        $this->external_invoice = 0;
     }
 
     public function getBuyers() {
@@ -75,8 +76,9 @@ class YBContractArtist extends BaseContractArtist
         }, $this->getContractsFanPaidAndRefunded());
     }
 
+    /** @deprecated */
     public function isEvent() {
-        return $this->getDateEvent() != null;
+        return true;
     }
 
     public function isUncrowdable() {
@@ -100,7 +102,7 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isWayPassed() {
-        return $this->isPassed() && $this->date_event->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
+        return $this->isPassed() && $this->getDateEvent()->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
     }
 
     public function isOngoing() {
@@ -116,9 +118,16 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isToday(){
-        $dateOfEvent = $this->date_event->format('m/d/Y');
+        $dates = [];
+        if(!$this->hasSubEvents())
+            $dates[] = $this->date_event->format('m/d/Y');
+        else {
+            foreach($this->sub_events as $se) {
+                $dates[] = $se->getDate()->format('m/d/Y');
+            }
+        }
         $today = (new \DateTime())->format('m/d/Y');
-        return $dateOfEvent === $today;
+        return in_array($today, $dates);
     }
 
     public function getState()
@@ -140,11 +149,7 @@ class YBContractArtist extends BaseContractArtist
             return $this->state = self::STATE_FAILED;
 
         if ($this->no_threshold) {
-            if ($this->config !== null && $this->getConfig()->hasOnlySeatedBlocks()){
-                if ($this->getNbCounterPartsPaid() >= $this->getConfig()->getTotalCapacity()){
-                    return $this->state = self::STATE_SOLD_OUT;
-                }
-            } else if ($this->getNbCounterPartsPaid() >= $max_cp) {
+            if ($this->getNbCounterPartsPaid() >= $max_cp) {
                 return $this->state = self::STATE_SOLD_OUT;
             }
 
@@ -162,17 +167,18 @@ class YBContractArtist extends BaseContractArtist
 
                     return $this->state = self::STATE_SUCCESS_PENDING;
                 }
-                if ($this->dateEnd >= $today) {
-                    return $this->state = self::STATE_ONGOING;
-                } else {
-                    if ($this->successful) {
-                        return $this->state = self::STATE_SUCCESS_ONGOING;
-                    }
-                    // if($this->getNbCounterPartsPaid() >= $max_cp) {
-                    //     return $this->state = self::STATE_SOLD_OUT_PENDING;
-                    // }
-                    return $this->state = self::STATE_PENDING;
+
+                if ($this->successful) {
+                    return $this->state = self::STATE_SUCCESS_ONGOING;
                 }
+                // if($this->getNbCounterPartsPaid() >= $max_cp) {
+                //     return $this->state = self::STATE_SOLD_OUT_PENDING;
+                // }
+
+                if($this->dateEnd > $today) {
+                    return $this->state = self::STATE_ONGOING;
+                }
+                return $this->state = self::STATE_PENDING;
             } else {
                 return $this->state = self::STATE_PASSED;
             }
@@ -228,33 +234,59 @@ class YBContractArtist extends BaseContractArtist
         }
     }
 
-
-
-
-
-
-        /*$cpCapacity = $cp->getMaximumAmount();
-        $soldAmount = 0;
-        foreach ($cp->getVenueBlocks() as $block) {
-            $alreadySoldInBlock = $block->getSoldTicketInBlock($cp->getContractArtist());
-            $soldAmount += $alreadySoldInBlock;
-        }
-        if ($cp->hasOnlySeatedBlock()){
-            foreach ($cp->getVenueBlocks() as $block) {
-        }
-        return true;
-    }*/
-
+    /**
+     * @return float|int
+     */
     public function getTotalNbAvailable() {
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
     }
 
+    /**
+     * @return string
+     */
     public function getOrganizationName() {
         return $this->organization->getName();
     }
 
+    /**
+     * @return bool
+     */
     public function hasSubEvents() {
         return !$this->no_sub_events;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubEventsDates() {
+        return array_map(function(YBSubEvent $subEvent) {
+            return $subEvent->getDate();
+        }, $this->sub_events->toArray());
+    }
+
+    public function isFacturable() {
+        if($this->external_invoice)
+            return false;
+
+        if($this->isBroker() && $this->vat_number == null)
+            return false;
+
+        if($this->commissions == null || count($this->commissions) == 0)
+            return false;
+
+        if(count($this->getContractsFanPaid()) == 0)
+            return false;
+
+        return $this->contractsFanPaid[count($this->contractsFanPaid) - 1]->getInvoice() == null;
+    }
+
+    // Commissionnaire
+    public function isCommissionary() {
+        return $this->vat == 0 || $this->vat == null;
+    }
+    // Courtier
+    public function isBroker() {
+        return !$this->isCommissionary();
     }
 
     /**
@@ -348,6 +380,12 @@ class YBContractArtist extends BaseContractArtist
     private $invoices;
 
     /**
+     * @var bool
+     * @ORM\Column(name="external_invoice", type="boolean")
+     */
+    private $external_invoice;
+
+    /**
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
      */
     private $transactional_messages;
@@ -433,8 +471,9 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getDateEvent()
     {
+        // For compatibility, this function returns the last event date when event is multidates
         if($this->hasSubEvents() && count($this->sub_events) > 0) {
-            return $this->sub_events->first()->getDate();
+            return $this->sub_events->last()->getDate();
         }
 
         return $this->date_event;
@@ -539,7 +578,7 @@ class YBContractArtist extends BaseContractArtist
     /**
      * Get handlers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getHandlers()
     {
@@ -573,12 +612,9 @@ class YBContractArtist extends BaseContractArtist
     /**
      * @return Address
      */
-    public function getAddress(){
-        if ($this->venue === null){
-            return $this->address;
-        } else {
-            return $this->venue->getAddress();
-        }
+    public function getAddress()
+    {
+        return $this->address;
     }
 
     /**
@@ -645,7 +681,9 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getInvoices()
     {
-        return $this->invoices;
+        return array_filter($this->invoices->toArray(), function(YBInvoice $invoice) {
+            return !$invoice->isDeleted();
+        });
     }
 
     /**
@@ -663,7 +701,7 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->transactional_messages = $transactional_messages;
     }
-   
+
     public function getOrganization(){
         return $this->organization;
     }
@@ -679,7 +717,7 @@ class YBContractArtist extends BaseContractArtist
             $this->bank_account = $organization->getBankAccount();
         }
     }
-    
+
     public function getOrganizers(){
         return $this->organization->getMembers();
     }
@@ -750,16 +788,30 @@ class YBContractArtist extends BaseContractArtist
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isExternalInvoice()
+    {
+        return $this->external_invoice;
+    }
+
+    /**
+     * @param bool $external_invoice
+     */
+    public function setExternalInvoice($external_invoice)
+    {
+        $this->external_invoice = $external_invoice;
+    }
+
     public function getConfig()
     {
         return $this->config;
     }
-
     public function setConfig($config)
     {
         $this->config = $config;
     }
-
     /**
      * @return Venue
      */
@@ -767,7 +819,6 @@ class YBContractArtist extends BaseContractArtist
     {
         return $this->venue;
     }
-
     /**
      * @param Venue $venue
      */
@@ -775,5 +826,4 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->venue = $venue;
     }
-
 }

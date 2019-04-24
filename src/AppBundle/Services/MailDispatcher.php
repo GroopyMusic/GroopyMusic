@@ -20,6 +20,7 @@ use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\OrganizationJoinRequest;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Repository\SuggestionTypeEnumRepository;
 use Azine\EmailBundle\Services\AzineTwigSwiftMailer;
@@ -439,7 +440,7 @@ class MailDispatcher
     {
         $params = ['content' => $content];
         $this->sendEmail(MailTemplateProvider::MAIL_FROM_ADMIN_TEMPLATE, $subject,
-            $params, [], [], [], $emails, [], self::REPLY_TO, self::REPLY_TO_NAME);
+            $params, [], $emails);
     }
 
     public function sendSponsorshipInvitationEmail(SponsorshipInvitation $sponsorshipInvitation, $content)
@@ -572,6 +573,14 @@ class MailDispatcher
         $reply_to_name = $contact->getName();
 
         $this->sendAdminEmail(MailTemplateProvider::YB_ADMIN_CONTACT, $subject, $params, $subject_params, [], $reply_to, $reply_to_name);
+    }
+
+    public function sendAdminYBInvoiceValidated(YBInvoice $invoice) {
+        $subject = 'subjects.yb.invoice.validated.admin';
+        $params = ['campaign' => $invoice->getCampaign()];
+        $subject_params = [];
+
+        $this->sendAdminEmail(MailTemplateProvider::YB_ADMIN_INVOICE_VALIDATED, $subject, $params, $subject_params);
     }
 
     public function sendYBContactCopy(YBContact $contact) {
@@ -758,6 +767,28 @@ class MailDispatcher
         $this->sendEmail(MailTemplateProvider::YB_TRANSACTIONAL_MESSAGE_COPY, $subject, $params, $subject_params, $to);
     }
     
+    public function sendYBInvoiceGenerated(YBInvoice $invoice) {
+        $campaign = $invoice->getCampaign();
+        $organizers = $campaign->getHandlers();
+
+        $organizers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $organizers));
+
+        $to = self::ADMIN_TO;
+
+        foreach($organizers_emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $subject = 'subjects.yb.invoice.generated';
+        $subject_params = [];
+
+        $params = ['campaign' => $campaign];
+
+        $this->sendEmail(MailTemplateProvider::YB_INVOICE_GENERATED, $subject, $params, $subject_params, $to);
+
+    }
 
 
     // ------------------------ X

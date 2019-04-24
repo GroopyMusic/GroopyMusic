@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+      {{ email_content('yb.invoice.validated.admin', {
+                '%event%': campaign.getTitle,
+                '%link%': 'l\'espace facturation',
+            })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include '@App/Mail/YB/Invoices/admin_validated.html.twig' %}
+{% endblock %}

@@ -38,7 +38,7 @@
                                  style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                         </div>
                         <div class="text-right mt-1 small font-weight-bold text-uppercase{% if contractArtist.state in contractArtist.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                            {{ progress_100 }}% récoltés<br/>{{ ('event.'~contractArtist.state)|trans|raw }}
+                            {{ progress_100 }}% des tickets nécessaires à la validation de l'événement<br/>{{ ('event.'~contractArtist.state)|trans({'%soldout_percentage%':contractArtist.percentSoldOutRelativeToObjective})|raw }}
                         </div>
                     </div>
                 </div>
@@ -78,18 +78,26 @@
                                 </div>
 
                                 <div class="col-6 col-md-3 py-2 my-auto">
-                                    <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
-                                        <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                        {{ form_widget(purchase.quantity) }}
-                                        <a class="incr-btn" data-action="increase"
-                                           data-max="{{ contractArtist.nbAvailable(counterpart) }}"
-                                           href="#">&plus;</a>
-                                    </div>
-                                    {% if counterpart.potentialArtists is not empty %}
-                                        <div class="select2-artists">
-                                            Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
-                                            {{ form_widget(purchase.artists) }}
+                                    {% if counterpart.disabled %}
+                                        {% do purchase.setRendered(true) %}
+                                        <p><i>Pas disponible pour l'instant</i></p>
+                                    {% elseif contractArtist.nbAvailable(counterpart) == 0 %}
+                                        {% do purchase.setRendered(true) %}
+                                        <p><i>SOLD OUT</i></p>
+                                    {% else %}
+                                        <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
+                                            <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                            {{ form_widget(purchase.quantity) }}
+                                            <a class="incr-btn" data-action="increase"
+                                               data-max="{{ contractArtist.nbAvailable(counterpart) }}"
+                                               href="#">&plus;</a>
                                         </div>
+                                        {% if counterpart.potentialArtists is not empty %}
+                                            <div class="select2-artists">
+                                                Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
+                                                {{ form_widget(purchase.artists) }}
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>

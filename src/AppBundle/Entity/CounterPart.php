@@ -29,6 +29,7 @@ class CounterPart implements TranslatableInterface
         $this->disabled = 0;
         $this->price = 0;
         $this->sub_events = new ArrayCollection();
+        $this->maximum_amount_per_purchase = 1000;
     }
 
     public function __call($method, $arguments)
@@ -271,7 +272,7 @@ class CounterPart implements TranslatableInterface
     private $disabled;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", inversedBy="counterparts")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", inversedBy="counterparts", cascade={"persist"})
      */
     private $sub_events;
 
@@ -548,11 +549,13 @@ class CounterPart implements TranslatableInterface
             $this->sub_events = new ArrayCollection();
         }
         $this->sub_events->add($se);
+        $se->addCounterpart($this);
         return $this;
     }
 
     public function removeSubEvent(YBSubEvent $se) {
         $this->sub_events->remove($se);
+        $se->removeCounterpart($this);
         return $this;
     }
 

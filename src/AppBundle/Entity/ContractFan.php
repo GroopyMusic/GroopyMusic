@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -308,6 +309,10 @@ class ContractFan
         return $this->getPayment()->getChargeId();
     }
 
+    public function getChargeId() {
+        return $this->getPayment()->getChargeId();
+    }
+
     public function getContractArtistExport() {
         return $this->getContractArtist()->__toString();
     }
@@ -405,6 +410,13 @@ class ContractFan
      * @ORM\JoinColumn(name="contract_fan_refund_request")
      */
     private $asking_refund;
+
+    /**
+     * @var YBInvoice
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\YBInvoice", inversedBy="contracts_fan")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $invoice;
 
     /**
      * Get id
@@ -787,5 +799,23 @@ class ContractFan
     public function getAskingRefund()
     {
         return $this->asking_refund;
+    }
+
+    /**
+     * @return YBInvoice
+     */
+    public function getInvoice()
+    {
+        return $this->invoice;
+    }
+
+    /**
+     * @param YBInvoice $invoice
+     * @return $this
+     */
+    public function setInvoice(YBInvoice $invoice)
+    {
+        $this->invoice = $invoice;
+        return $this;
     }
 }

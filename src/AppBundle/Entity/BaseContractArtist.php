@@ -229,6 +229,13 @@ class BaseContractArtist implements TranslatableInterface
         return max(0, $nb);
     }
 
+    public function getNbPurchasesPaid() {
+        $contractsFanPaid = $this->getContractsFanPaid();
+        return array_sum(array_map(function(ContractFan $cf) {
+            return count($cf->getPurchases());
+        }, $contractsFanPaid));
+    }
+
     protected $contractsFanPaid = null;
     public function getContractsFanPaid() {
         if($this->contractsFanPaid == null) {
@@ -369,6 +376,21 @@ class BaseContractArtist implements TranslatableInterface
 
     public function removeCounterPartsSold($quantity) {
         $this->counterparts_sold -= $quantity;
+    }
+
+    public function getPercentObjective() {
+        return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
+    }
+
+    public function getPercentSoldOutRelativeToObjective() {
+        if($this->no_threshold || $this->threshold == 0) {
+            return 100;
+        }
+        return ($this->getGlobalSoldout() / $this->threshold) * 100;
+    }
+
+    public function getTotalBookedTickets() {
+        return max(0, $this->counterparts_sold);
     }
 
     // Unmapped

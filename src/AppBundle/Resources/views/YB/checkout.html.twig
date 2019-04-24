@@ -482,18 +482,91 @@
             }
 
             $('#payment-form').submit(function (e) {
+
+
                 e.preventDefault();
                 // Disable the submit button to prevent repeat
                 $('input[type="submit"]').prop('disabled', true);
 
-                displayLoader();
+                displayLoader("");
                 scrollToLoader();
+
+                var $first_name = $('#first_name');
+                var $last_name = $('#last_name');
+                var $email = $('#email');
                 var extraDetails = {
                     name: $('#first_name').val + ' ' + $('#last_name').val(),
                     email: $('#email').val()
                 };
-                stripe.createToken(cardNumberElement, extraDetails).then(onToken);
+
+                $.post('{{ url('yb_ajax_post_order') }}', {
+                    'first_name': $first_name.val(),
+                    'last_name': $last_name.val(),
+                    'email': $email.val(),
+                    'cart_code': "{{ cart.barcodeText }}"
+                }, function () {
+                    displayLoader("");
+                    scrollToLoader();
+
+                     stripe.createPaymentMethod(
+                        'card',
+                        cardNumberElement, {
+                            billing_details: extraDetails
+                        }
+                    ).then(function (result) {
+                        if (result.error) {
+                            // Show error in payment form
+                        } else {
+                            // Send paymentMethod.id to server
+                            $.ajax({
+                                type: 'post',
+                                url: '{{ url('yb_cart_payment_stripe_post', {'code': cart.barcodeText}) }}',
+                                data: {
+                                    payment_method_id: result.paymentMethod.id,
+                                    amount: amount
+                                },
+                                dataType: 'json',
+                                success: function (result2) {
+                                    handleServerResponse(result2);
+                                }
+                            });
+                        }
+                    });
+                })
+                    .fail(function () {
+                        displayForm();
+                        displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
+                    });
             });
+
+            function handleServerResponse(response) {
+                    if (response.error) {
+                        // Show error from server on payment form
+                    } else if (response.requires_action) {
+                        // Use Stripe.js to handle required card action
+                        stripe.handleCardAction(
+                            response.payment_intent_client_secret
+                        ).then(function(result) {
+                            if (result.error) {
+                                displayError(result.errors)
+                            } else {
+                                // The card action has been handled
+                                // The PaymentIntent can be confirmed again on the server
+                                $.post('{{ url('yb_payment_3DS_stripe_post', {'code': cart.barcodeText}) }}', {
+                                        payment_intent_id: result.paymentIntent.id,
+                                        amount: amount
+                                    },
+                                    function(data) {
+                                        handleServerResponse(data);
+                                    },
+                                    'json');
+                            }
+                        });
+                    } else if (response.success) {
+                        var location = "{{ url('yb_payment_success', {'code': cart.barcodeText})}}";
+                        window.location = location;
+                    }
+                }
 
             function stripeTokenHandler(source) {
 

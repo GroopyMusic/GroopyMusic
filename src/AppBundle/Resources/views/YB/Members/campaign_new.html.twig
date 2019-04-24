@@ -11,12 +11,23 @@
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
 
             {% if campaign.id is null %}
-                <li><a href="{{ path('yb_members_campaign_new') }}">Nouvelle campagne</a></li>
+                <li class="active"><span>Nouvelle campagne (étape {{ flow.currentStepNumber }} - {{ flow.currentStepLabel }})</span></li>
             {% else %}
                 <li><a target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">{{ campaign.getTitle }}</a></li>
+                {% for stepLabel in flow.getStepLabels() %}
+                    <li {% if loop.index == flow.currentStepNumber %}class="active"{% endif %}>
+                        {%- if craue_isStepLinkable(flow, loop.index) -%}
+                            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all
+                            | merge(app.request.attributes.get('_route_params'))
+                            | craue_addDynamicStepNavigationParameters(flow, loop.index)) }}">
+                                {{ stepLabel }}
+                            </a>
+                        {%- else -%}
+                            <span>{{ stepLabel }}</span>
+                        {%- endif -%}
+                    </li>
+                {% endfor %}
             {% endif %}
-            <li><span class="{% if flow.currentStepNumber == 1 %}font-weight-bold text-primary active{% else %}text-muted{% endif %}">Infos de l'événement</span></li>
-            <li><span class="{% if flow.currentStepNumber == 2 %}font-weight-bold text-primary active{% else %}text-muted{% endif %}">Tickets</span></li>
         </ol>
     </section>
 
@@ -28,47 +39,14 @@
         craue_formflow_button_class_next: 'btn btn-secondary',
         craue_formflow_button_class_finish: 'btn btn-secondary',
         craue_formflow_button_class_back: 'btn mr-2',
-        craue_formflow_button_label_next: 'Enregistrer les infos générales',
-        craue_formflow_button_label_finish: 'Enregistrer',
-        craue_formflow_button_label_back: 'Retour aux infos générales',
+        craue_formflow_button_label_next: 'Enregistrer et passer à l\'étape suivante',
+        craue_formflow_button_label_finish: 'Enregistrer la campagne',
+        craue_formflow_button_label_back: 'Retour à l\'étape précédente',
         craue_formflow_button_render_reset: false,
         } %}
     </section>
 
     {% if flow.getCurrentStepNumber() == 1 %}
-        {% if is_granted('ROLE_ADMIN') and form.vat is defined %}
-        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
-            <h2>Commissions et TVA</h2>
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.vat) }}
-                </div>
-            </div>
-            <p>
-                Note: Si pour une ligne donnée,
-                le montant fixe et le pourcentage sont tous les 2 inclus,
-                la commission sera la somme de ces 2 éléments
-            </p>
-            <p>Pour avoir une tranche par défaut, laisser le montant minimum à 0</p>
-            <div class="col-12">
-                {{ form_widget(form.commissions) }}
-            </div>
-
-            {% for commission in form.commissions %}
-            <div class="row">
-                <div class="col-4">
-                    {{ form_row(commission.minimumThreshold) }}
-                </div>
-                <div class="col-4">
-                    {{ form_row(commission.fixedAmount) }}
-                </div>
-                <div class="col-4">
-                    {{ form_row(commission.percentageAmount) }}
-                </div>
-            </div>
-            {% endfor %}
-        </section>
-        {% endif %}
 
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Organisation en charge de l'événement </h2>
@@ -124,6 +102,7 @@
             </div>
         </section>
 
+<<<<<<< HEAD
         {% if campaign.id is not null %}
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Informations de facturation</h2>
@@ -146,6 +125,19 @@
             </div>
         </section>
         {% endif %}
+=======
+        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <h2>Adresse</h2>
+            <div class="row">
+                <div class="col-12">{{ form_row(form.address.name) }}</div>
+                <div class="col-12 col-md-10">{{ form_row(form.address.street) }}</div>
+                <div class="col-12 col-md-2">{{ form_row(form.address.number) }}</div>
+                <div class="col-12 col-md-4">{{ form_row(form.address.zipcode) }}</div>
+                <div class="col-12 col-md-8">{{ form_row(form.address.city) }}</div>
+                <div class="col-12">{{ form_row(form.address.country) }}</div>
+            </div>
+        </section>
+>>>>>>> master
 
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Images </h2>
@@ -233,29 +225,85 @@
             </section>
         {% endif %}
 
-    {% else %}
-    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
-        <h2>Tickets</h2>
-        {{ form_label(form.globalSoldout) }}
-        <div class="text-muted font-italic pb-2">Nombre maximum de tickets pouvant être vendus, tous tickets confondus.</div>
-        {{ form_errors(form.globalSoldout) }}
-        {{ form_widget(form.globalSoldout) }}
-        {% if form.globalSoldout is defined and campaign.id is not null %}
-            {% if form.vars.data.globalSoldout > campaign.config.maxCapacity %}
-                <div class="error-capacity" style="display: block">
-                    <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
-                </div>
-            {% else %}
-                <div class="error-capacity" style="display: none">
-                    <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
-                </div>
+    {% elseif flow.currentStepNumber == 2 %}
+        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <h2>Tickets</h2>
+            {{ form_label(form.globalSoldout) }}
+            <div class="text-muted font-italic pb-2">Nombre maximum de tickets pouvant être vendus, tous tickets confondus.</div>
+            {{ form_errors(form.globalSoldout) }}
+            {{ form_widget(form.globalSoldout) }}
+            {% if form.globalSoldout is defined and campaign.id is not null %}
+                {% if form.vars.data.globalSoldout > campaign.config.maxCapacity %}
+                    <div class="error-capacity" style="display: block">
+                        <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
+                    </div>
+                {% else %}
+                    <div class="error-capacity" style="display: none">
+                        <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
+                    </div>
+                {% endif %}
             {% endif %}
+        </section>
+        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <p>Pour vendre des tickets, il vous faut au moins en créer un ci-dessous.</p>
+            {{ form_widget(form.counterParts) }}
+        </section>
+    {% elseif flow.currentStepNumber == 3 %}
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+            <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <h2>Commissions (ADMIN)</h2>
+            <p>
+                Note: Si pour une ligne donnée,
+                le montant fixe et le pourcentage sont tous les 2 inclus,
+                la commission sera la somme de ces 2 éléments
+            </p>
+            <p>Pour avoir une tranche par défaut, laisser le montant minimum à 0</p>
+            <div class="col-12">
+                {{ form_widget(form.commissions) }}
+            </div>
+
+            {% for commission in form.commissions %}
+                <div class="row">
+                    <div class="col-4">
+                        {{ form_row(commission.minimumThreshold) }}
+                    </div>
+                    <div class="col-4">
+                        {{ form_row(commission.fixedAmount) }}
+                    </div>
+                    <div class="col-4">
+                        {{ form_row(commission.percentageAmount) }}
+                    </div>
+                </div>
+            {% endfor %}
+            </section>
         {% endif %}
-    </section>
-    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
-        <p>Pour vendre des tickets, il vous faut au moins en créer un ci-dessous.</p>
-        {{ form_widget(form.counterParts) }}
-    </section>
+
+        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <h2>Informations de facturation</h2>
+            <div class="mt-3">
+                {{ form_label(form.bankAccount) }}
+                <p class="text-muted">
+                    Introduisez votre numéro de compte ci-dessous pour nous permettre de vous verser, en cas de réussite de campagne, le fruit de celle-ci.
+                </p>
+                {{ form_errors(form.bankAccount) }}
+                {{ form_widget(form.bankAccount) }}
+            </div>
+
+            <div class="mt-3">
+                {{ form_label(form.vatNumber) }}
+                <p class="text-muted">
+                    Introduisez votre numéro de TVA ci-dessous (obligatoire !).
+                </p>
+                {{ form_errors(form.vatNumber) }}
+                {{ form_widget(form.vatNumber) }}
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {{ form_row(form.vat) }}
+                </div>
+            </div>
+        </section>
     {% endif %}
 
     <section class="container my-4 py-2 my-md-5 btns">
@@ -264,9 +312,9 @@
         craue_formflow_button_class_next: 'btn btn-secondary',
         craue_formflow_button_class_finish: 'btn btn-secondary finishBtn',
         craue_formflow_button_class_back: 'btn mr-2',
-        craue_formflow_button_label_next: 'Enregistrer les infos générales',
-        craue_formflow_button_label_finish: 'Enregistrer les tickets',
-        craue_formflow_button_label_back: 'Retour aux infos générales',
+        craue_formflow_button_label_next: 'Enregistrer et passer à l\'étape suivante',
+        craue_formflow_button_label_finish: 'Enregistrer la campagne',
+        craue_formflow_button_label_back: 'Retour à l\'étape précédente',
         craue_formflow_button_render_reset: false,
         } %}
     </section>

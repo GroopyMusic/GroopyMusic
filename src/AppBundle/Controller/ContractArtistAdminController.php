@@ -2,15 +2,13 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Form\ContractArtistPreValidationType;
 use AppBundle\Form\ContractArtistValidationType;
+use AppBundle\Form\ContractArtistSendTicketsType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\TicketingManager;
-use Sonata\AdminBundle\Controller\CRUDController as Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;

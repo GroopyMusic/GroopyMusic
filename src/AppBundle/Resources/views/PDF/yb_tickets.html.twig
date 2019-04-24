@@ -20,8 +20,10 @@
 
             <p>
                 Je donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
-            {% if campaign.isEvent %}
-                <br />Date de l'événement : {{ campaign.dateEvent|fancy_date }}
+            {% if ticket.dates|length > 0 %}
+                {% set dates = ticket.dates %}
+                <br />
+                    Date{% if dates|length > 1 %}s{% endif %} : {% for date in dates %}{% if not loop.first %}, {% endif %}{{ date|fancy_date(true) }}{% endfor %}
             {% endif %}
             </p>
 

@@ -43,7 +43,19 @@ class UserRepository extends EntityRepository
         $qb = $this->baseQueryBuilder();
 
         foreach ($roles as $role) {
-            $qb->orWhere('u.roles LIKE :role')
+            $qb->orWhere('u.roles LIKE :role') // TODO Why "OR" ?
+                ->setParameter('role', '%' . $role . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findUsersWithRolesMandatory(array $roles)
+    {
+        $qb = $this->baseQueryBuilder();
+
+        foreach ($roles as $role) {
+            $qb->andWhere('u.roles LIKE :role')
                 ->setParameter('role', '%' . $role . '%');
         }
 
@@ -219,6 +231,8 @@ class UserRepository extends EntityRepository
                   LEFT JOIN c.contracts cf
                   LEFT JOIN cf.contractArtist ca
                   WHERE u.yb = 0 
+                  AND c.paid = 1
+                  and cf.refunded = 0
                   AND ca.id = ?1
                 
                   ')

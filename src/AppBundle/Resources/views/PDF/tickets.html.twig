@@ -51,9 +51,9 @@
                     <td>
                     </td>
                     <td colspan="2" style="width:130mm">
-                        <div class="text-center ticket-title text-bold">{{ ticket.contractArtist.title }}
-                            <br/>{% for date in ticket.contractArtist.festivalDates %}{% if not loop.first %} - {% endif %}{{ (date|date('d') ~ ' ' ~ ('months.' ~ date|date('m'))|trans ~ ' ' ~ date|date('Y'))|upper }}{% endfor %}
-                        </div>
+                        <div class="text-center ticket-title text-bold">{{ ticket.contractArtist.getTitle() }}
+                            {#<br/>{% for date in ticket.contractArtist.festivalDates %}{% if not loop.first %} - {% endif %}{{ (date|date('d') ~ ' ' ~ ('months.' ~ date|date('m'))|trans ~ ' ' ~ date|date('Y'))|upper }}{% endfor %}
+                        #}</div>
                     </td>
                 </tr>
                 <tr>
@@ -64,7 +64,7 @@
                                 <div>
                                     <b>{{ ('Days ' ~ festivalday.date|date('w'))|trans }} {{ festivalday.date|date('j') }} {{ ('months.' ~ festivalday.date|date('m'))|trans }}</b>
                                     <br />{{ 'doors_opening'|trans }} : {{ festivalday.date|date('H:i') }}
-                                    {% for performance in festivalday.performances %}
+                                    {% for performance in festivalday.performancesAsc %}
                                         <br />{{ performance.time|date('H:i') }} - {{ performance.timeEnd|date('H:i') }} : {{ performance.artist }}
                                     {% endfor %}
                                 </div>
@@ -117,15 +117,17 @@
         </page>
     {% endfor %}
 
-    {% for topping in cf.toppings %}
-        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
-        {{ block('header') }}
-        {{ block('footer') }}
+    {% if cf is not null %}
+        {% for topping in cf.toppings %}
+            <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            {{ block('header') }}
+            {{ block('footer') }}
 
-            <h2>{{ topping }}</h2>
+                <h2>{{ topping }}</h2>
 
-            <qrcode value="{{ topping.barCodeText }}" ec="H"
-                    style="width: 30mm; background-color: white; color: black;"></qrcode>
-        </page>
-    {% endfor %}
+                <qrcode value="{{ topping.barCodeText }}" ec="H"
+                        style="width: 30mm; background-color: white; color: black;"></qrcode>
+            </page>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

@@ -74,6 +74,31 @@ class FestivalDay
         $this->tickets_sold -= $quantity;
     }
 
+    public static function sortPerformancesAsc($performances) {
+        if( count( $performances) < 2 ) {
+            return $performances;
+        }
+        $left = $right = array( );
+        reset( $performances);
+
+        $pivot_key  = key( $performances );
+        $pivot  = array_shift( $performances );
+
+        foreach( $performances as $k => $v ) {
+            if($pivot->getTime() == null || $v->getTime() < $pivot->getTime() )
+                $left[$k] = $v;
+            else
+                $right[$k] = $v;
+        }
+        return array_merge(self::sortPerformancesAsc($left), array($pivot_key => $pivot), self::sortPerformancesAsc($right));
+    }
+
+
+    public function getPerformancesAsc() {
+        $performances = $this->performances->toArray();
+        return self::sortPerformancesAsc($performances);
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

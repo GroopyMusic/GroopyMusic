@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBSubEvent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -67,6 +68,35 @@ class Ticket
 
     public function hasFreeSeatingSeat(){
         return $this->seat === 'Placement libre';
+    }
+
+    /**
+     * @return array
+     */
+    public function getDates() {
+        $campaign = $this->getContractArtist();
+        if($campaign->isYB()) {
+            /** @var YBContractArtist $campaign */
+            if($campaign->hasSubEvents()) {
+                if(count($this->counterPart->getSubEvents()) == 0) {
+                    return $campaign->getSubEventsDates();
+                }
+                else {
+                    return array_map(function(YBSubEvent $se) {
+                        return $se->getDate();
+                    }, $this->counterPart->getSubEvents()->toArray());
+                }
+            }
+            else {
+                return [$campaign->getDateEvent()];
+            }
+        }
+        else {
+            /**
+             * @var ContractArtist $campaign
+             */
+            return $campaign->getFestivalDates();
+        }
     }
 
     /**

@@ -1,0 +1,18 @@
+{% extends 'AppBundle:Mail/YB:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('yb.invoice.generated', {
+        '%event%': campaign.getTitle,
+        '%link%': 'espace facturation',
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include '@App/Mail/YB/Invoices/generated.html.twig' %}
+{% endblock %}

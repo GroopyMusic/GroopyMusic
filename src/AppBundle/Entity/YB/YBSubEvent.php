@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\YB;
 
+use AppBundle\Entity\CounterPart;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -85,6 +86,23 @@ class YBSubEvent {
     public function setCounterparts(ArrayCollection $counterparts)
     {
         $this->counterparts = $counterparts;
+    }
+
+    /**
+     * @param CounterPart $counterPart
+     * @return $this
+     */
+    public function addCounterpart(CounterPart $counterPart) {
+        if($this->counterparts == null) {
+            $this->counterparts = new ArrayCollection();
+        }
+        $this->counterparts->add($counterPart);
+
+        return $this;
+    }
+
+    public function removeCounterpart(CounterPart $counterPart) {
+        $this->counterparts->remove($counterPart);
     }
 
     /**

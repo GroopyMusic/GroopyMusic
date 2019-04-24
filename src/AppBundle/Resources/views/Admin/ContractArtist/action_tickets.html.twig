@@ -6,7 +6,7 @@
         <div class="content-box-content">
             <h2>Envoi des tickets pour {{ contract }}</h2>
 
-            <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.artist.slug}) }}">Voir la page de l'événement.</a></p>
+            <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.slug}) }}">Voir la page de l'événement.</a></p>
 
             {% if not contract.successful %}
                 <p>

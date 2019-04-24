@@ -42,6 +42,11 @@ subjects:
       join_organization_cancelled: Votre invitation à %email_address% pour rejoindre votre organisation %organization% a expirée !
     transactional_message: Nouveau message pour l'événement "%event%"
     transactional_message_copy: Votre message pour l'événement "%event%"
+    invoice:
+      generated: Nouvelle facture sur Ticked-it
+      validated:
+        admin: Facture validée sur Ticked-it
+
 
 others:
   message_from_artist: "Message de l'artiste :"
@@ -372,7 +377,16 @@ yb:
     ------------------------------
        %content%
     ------------------------------
+  invoice:
+    generated: |
+      Une nouvelle facture est disponible dans votre %link%. Elle concerne la campagne %event%.
 
+      Merci de la vérifier et la valider afin de nous donner votre feu vert pour le virement de votre dû pour cette campagne.
+    validated:
+      admin: |
+        Une facture a été validée. Elle concerne la campagne %event%.
+
+        Direction %link% pour la télécharger !
 
 x:
   project:

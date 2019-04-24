@@ -165,7 +165,8 @@
                     {% endif %}
                 {% endfor %}
 
-                {% for i in 0..toppings|length - 1 %}
+                {# Second test in condition is necessary to avoid array error#}
+                {% for i in 0..(toppings|length - 1) if toppings is not empty %}
                     <tr>
                         <td>
                             {{ toppings['_'~i] }}

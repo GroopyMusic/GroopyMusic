@@ -44,6 +44,8 @@ class YBContractArtistType extends FormFlow
                 'label' => 'Tickets',
                 'form_type' => YBContractArtistTicketsType::class,
             ),
+            array('label' => 'Facturation',
+                'form_type' => YBContractArtistFacturationType::class)
         );
     }
 
