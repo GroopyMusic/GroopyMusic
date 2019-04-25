@@ -3,6 +3,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\Purchase;
+use AppBundle\Entity\YB\Booking;
+use AppBundle\Entity\YB\Reservation;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
@@ -229,6 +233,7 @@ class YBController extends BaseController
             $em->persist($payment);
             $cart->setPaid(true);
             $em->persist($cart);
+            $em->flush();
             return $this->redirectToRoute('yb_payment_success', array('code' => $cart->getBarcodeText())); //, 'sponsorship' => $sponsorship));
         } catch (\Stripe\Error\Card $e) {
             $this->addFlash('error', 'errors.stripe.card');

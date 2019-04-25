@@ -258,3 +258,96 @@ h2 {
   float: right;
 }
 
+.modal-overflow-error .modal-header {
+  background: red;
+}
+.modal-overflow-error {
+  color: #434e65;
+  width: 525px;
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.modal-overflow-error .modal-content {
+  padding: 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+}
+.modal-overflow-error .modal-header {
+  border-bottom: none;
+  position: relative;
+  text-align: center;
+  margin: -20px -20px 0;
+  border-radius: 5px 5px 0 0;
+  padding: 35px;
+}
+.modal-overflow-error h4 {
+  text-align: center;
+  font-size: 36px;
+  margin: 10px 0;
+}
+.modal-overflow-error .btn {
+  min-height: 40px;
+  border-radius: 3px;
+}
+.modal-overflow-error .close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: #fff;
+  text-shadow: none;
+  opacity: 0.5;
+}
+.modal-overflow-error .close:hover {
+  opacity: 0.8;
+}
+.modal-overflow-error .icon-box {
+  color: #fff;
+  width: 95px;
+  height: 95px;
+  display: inline-block;
+  z-index: 9;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 15px;
+  text-align: center;
+}
+.modal-overflow-error .icon-box i {
+  font-size: 64px;
+  margin: -4px 0 0 -4px;
+}
+.modal-overflow-error .modal-dialog {
+  margin-top: 80px;
+}
+.modal-overflow-error .btn {
+  color: #fff;
+  border-radius: 4px;
+  background: #eeb711;
+  text-decoration: none;
+  transition: all 0.4s;
+  line-height: normal;
+  border-radius: 30px;
+  margin-top: 10px;
+  padding: 6px 20px;
+  border: none;
+}
+.modal-overflow-error .btn:hover, .modal-attention .btn:focus {
+  background: #eda645;
+  outline: none;
+}
+.modal-overflow-error .btn span {
+  margin: 1px 3px 0;
+  float: left;
+}
+.modal-overflow-error .btn i {
+  margin-left: 1px;
+  font-size: 20px;
+  float: right;
+}
+

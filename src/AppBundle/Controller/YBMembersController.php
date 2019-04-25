@@ -2,27 +2,30 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\AppBundle;
 use AppBundle\Entity\ContractFan;
-use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
-use AppBundle\Entity\YB\YBCommission;
 use AppBundle\Entity\User;
+use AppBundle\Entity\YB\Block;
+use AppBundle\Entity\YB\Membership;
+use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\OrganizationJoinRequest;
+use AppBundle\Entity\YB\Venue;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBInvoice;
 use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Exception\YBAuthenticationException;
-use AppBundle\Entity\YB\Organization;
-use AppBundle\Entity\YB\Membership;
 use AppBundle\Form\UserBankAccountType;
+use AppBundle\Form\YB\BlockType;
+use AppBundle\Form\YB\OrganizationType;
+use AppBundle\Form\YB\VenueConfigType;
+use AppBundle\Form\YB\VenueType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
-use AppBundle\Services\AdminExcelCreator;
 use AppBundle\Form\YB\YBTransactionalMessageType;
+use AppBundle\Services\AdminExcelCreator;
 use AppBundle\Services\FinancialDataGenerator;
-use AppBundle\Form\YB\OrganizationType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\PDFWriter;
@@ -31,15 +34,16 @@ use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Routing\Annotation\Route;
 
 class YBMembersController extends BaseController
 {
@@ -1006,10 +1010,10 @@ class YBMembersController extends BaseController
     public function configureBlockAction(Block $block, UserInterface $user, Request $request, EntityManagerInterface $em)
     {
         $this->checkIfAuthorizedVenueBlock($user, $block);
-        /*if ($this->isVenueStillHostingEvent($em, $block->getConfig()->getVenue())){
+        if ($this->isVenueStillHostingEvent($em, $block->getConfig()->getVenue())){
             $this->addFlash('error', 'Vous ne pouvez pas modifier l\'agencement d\'un bloc alors qu\'il y a encore au moins un événement de prévu. Attendez que la configuration ne soit plus utilisée pour le modifier.');
             return $this->redirectToRoute('yb_members_my_venues');
-        }*/
+        }
         $form = $this->createForm(BlockType::class, $block, ['row' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1017,11 +1021,11 @@ class YBMembersController extends BaseController
                 $this->addFlash('error', 'Le nombre de sièges calculés avec vos rangées ne correspond pas à la capacité totale du bloc');
                 return $this->redirectToRoute('yb_members_configure_block', ['id' => $block->getId()]);
             } else {
-                $block->removeSeats();
+                $this->removeSeatsFromDB($block, $em);
                 $block->generateSeats();
                 $em->persist($block);
                 $em->flush();
-                $this->addFlash('yb_notice', 'Les rangées ont bien été ajoutées.');
+                $this->addFlash('yb_notice', 'Les rangées ont bien été ajoutées/modifiées.');
                 return $this->redirectToRoute('yb_members_my_venues');
             }
         }
@@ -1457,5 +1461,12 @@ class YBMembersController extends BaseController
             );
         }
         return new JsonResponse($responseArray);
+    }
+
+    private function removeSeatsFromDB(Block $block, EntityManagerInterface $em){
+        $seats = $em->getRepository('AppBundle:YB\Seat')->getSeatFromBlock($block->getId());
+        foreach ($seats as $s){
+            $em->remove($s);
+        }
     }
 }

@@ -31,11 +31,11 @@
         </div>
         <div class="col-12 row" style="padding: 7px">
             {% for config in venue.getNotDefaultConfig() %}
-                <table class="table table-bordered table-responsive">
+                <table class="table table-responsive" style="margin-left: 22px;">
                     <thead>
                     <tr>
-                        <th scope="col"><p style="font-size: 20px; color: orangered">Configuration : {{ config.name }}</p></th>
-                        <th scope="col">
+                        <th scope="col" style="border: none"><p style="font-size: 20px; color: orangered">Configuration : {{ config.name }}</p></th>
+                        <th scope="col" style="border: none">
                             {% if venue.isHandledByUser(currentUser) %}
                                 <a class="btn-outline-warning btn"
                                    href="{{ path('yb_members_config_edit', {'id': config.id}) }}">
@@ -44,7 +44,7 @@
                                 </a>
                             {% endif %}
                         </th>
-                        <th scope="col">
+                        <th scope="col" style="border: none">
                             {% if venue.isHandledByUser(currentUser) %}
                                 <a class="btn-outline-warning btn" data-toggle="modal"
                                    href="#deleteConfModal{{ config.id }}">
@@ -52,28 +52,27 @@
                                     Supprimer la configuration...
                                 </a>
                             {% endif %}</th>
-                        <th scope="col"></th>
+
                     </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
+                            <td style="border: none">
                                 capacité maximale : {{ config.maxCapacity }} <br>
                                 {{ config.nbStandUp }} places debout <br>
                                 {{ config.nbSeatedSeats }} places assises (hors balcon) <br>
                                 {{ config.nbBalconySeats }} places balcon
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td style="border: none"></td>
+                            <td style="border: none"></td>
                         </tr>
                         {% if config.blocks|length > 0 %}
                             {% for block in config.blocks %}
                                 <tr>
-                                    <td>Bloc : {{ block.name }}</td>
-                                    <td>Type : {{ block.type }}</td>
-                                    <td>Capacité : {{ block.capacity }}</td>
-                                    <td>
+                                    <td style="border: none">Bloc : {{ block.name }}</td>
+                                    <td style="border: none">Type : {{ block.type }}</td>
+                                    <td style="border: none">Capacité : {{ block.capacity }}</td>
+                                    <td style="border: none">
                                         {% if block.notSquared %}
                                             <a class="btn-outline-info btn" href="{{ path('yb_members_configure_block', {'id' : block.id}) }}">
                                                 <i class="fas fa-pen"></i>Modifier le bloc
@@ -84,7 +83,7 @@
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" style="border: none">
                                     <div class="col-12 font-italic text-muted">
                                         Votre salle n'a aucun bloc. C'est le cas, si le placement est libre ou si vous ne possédez que des places debout.
                                     </div>
@@ -117,6 +116,9 @@
                         </div>
                     </div>
                 </div>
+                {% if not loop.last %}
+                <div class="col-12"><hr color="grey" size="3"/></div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

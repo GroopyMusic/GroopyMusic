@@ -173,6 +173,7 @@
             $('.book').click(function () {
                 console.log(selected);
                 if (remainingTicket == 0) {
+                    $('.book').prop('disabled', true); // avoid repeating request
                     $.ajax({
                         url: "{{ path('yb_book_seats') }}",
                         type: "POST",
@@ -183,9 +184,11 @@
                             passes: unordered,
                         },
                         success: function (response) {
+                            $('.book').prop('disabled', false);
                             location.href = response;
                         },
                         error: function (err) {
+                            $('.book').prop('disabled', false);
                             console.log('Error');
                         }
                     });

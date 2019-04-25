@@ -64,21 +64,22 @@
                     Enregistrer
                 </button>
             </div>
-            <div class="modal fade" id="createOrgaModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal modal-dialog modal-confirmation" id="createOrgaModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header text-center">
+                            <div class="icon-box">
+                                <i class="fa fa-question-circle"></i>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body text-center">
                             <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            Vous êtes sur le point de créer une organisation. Êtes vous sûr ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                            <p>Vous êtes sur le point de créer une organisation. Êtes vous sûr ?</p>
                             {{ form_widget(form.save) }}
+                            <button class="btn btn-success" data-dismiss="modal">
+                                <span>Annuler </span><i class="fas fa-ban"></i>
+                            </button>
                         </div>
                     </div>
                 </div>

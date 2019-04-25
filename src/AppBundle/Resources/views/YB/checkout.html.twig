@@ -263,7 +263,8 @@
 {% block additional_javascripts %}
     <script>
         hideError();
-        var runtimeMax = new Date( {{ endTime|json_encode|raw }} );
+        var endTime = {{ endTime }} * 1000;
+        var runtimeMax = new Date(endTime);
         setInterval(checkForAbortedBooking, 120000);
         setInterval(function(){checkTwoMinutesWarning(runtimeMax)}, 60000);
 

@@ -19,13 +19,12 @@ class VenueConfig {
     const PHOTOS_DIR = 'images/venues/';
     const PHOTOS_DIR_YB = 'yb/images/venues/';
 
-    public static function getWebPath(/*Photo $photo*/$image) {
-        //return self::PHOTOS_DIR . $photo->getFilename();
+    public static function getWebPath($image) {
         return self::PHOTOS_DIR . $image;
     }
 
-    public static function getYBWebPath(Photo $photo){
-        return self::PHOTOS_DIR_YB . $photo->getFilename();
+    public static function getYBWebPath($image){
+        return self::PHOTOS_DIR_YB . $image;
     }
 
     public function __construct(){
@@ -548,9 +547,6 @@ class VenueConfig {
         $this->imageFile = $imageFile;
         if ($imageFile){
             $this->updatedAt = new \DateTime('now');
-            if ($this->photo){
-                $this->generatePhoto();
-            }
         }
     }
 

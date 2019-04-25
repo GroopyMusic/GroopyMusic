@@ -39,6 +39,7 @@
     <script>
         $('.change-capacity').click(function(){
             var newCapacity = $('#newCapacity').val();
+            $('.change-capacity').prop('disabled', true);
             $.ajax({
                 url: "{{ path('change_blk_capacity') }}",
                 type: "POST",
@@ -48,11 +49,13 @@
                     capacity: newCapacity,
                 },
                 success: function() {
+                    $('.change-capacity').prop('disabled', false);
                     var newText = 'Capacité : ';
                     $('.capacity-value').text(newText.concat(newCapacity));
                     $('#confirmModal').modal('toggle');
                 },
                 error: function(err) {
+                    $('.change-capacity').prop('disabled', false);
                     alert("Problème lors du chargement ...");
                     $('#confirmModal').modal('toggle');
                 }

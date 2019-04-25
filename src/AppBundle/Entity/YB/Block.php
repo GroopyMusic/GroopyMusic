@@ -289,6 +289,18 @@ class Block {
         }
     }
 
+    public function retrieveSeats(){
+        $seats = [];
+        for ($i = 0; $i < count($this->rows); $i++){
+            /** @var BlockRow $row */ $row = $this->rows[$i];
+            $ss = $row->getSeats();
+            foreach ($ss as $s){
+                $seats[] = $s;
+            }
+        }
+        return $seats;
+    }
+
     /**
      * @var int
      *

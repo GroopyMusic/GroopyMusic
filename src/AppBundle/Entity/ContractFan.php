@@ -201,9 +201,10 @@ class ContractFan
 
     public function getPurchaseWithNoBookingQuantity(){
         $quantity = 0;
+        /** @var YBContractArtist $campaign */ $campaign = $this->contractArtist;
         /** @var Purchase $purchase */
         foreach ($this->purchases as $purchase){
-            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks()){
+            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks($campaign->getConfig()->getBlocks())){
                 $quantity += $purchase->getQuantity();
             }
         }
