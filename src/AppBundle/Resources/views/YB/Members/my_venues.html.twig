@@ -22,7 +22,7 @@
     <section class="container py-5">
         <h2>Mes salles</h2>
         <div align="center">
-            <div class="input-group mb-3" style="width:500px;">
+            <div class="input-group mb-3">
                 <input
                         type="text"
                         class="form-control"
@@ -46,7 +46,6 @@
             <div data-jplist-group="group1">
                 {% for venue in venues %}
                     {{ macros.venue_row(venue, currentUser) }}
-                    <hr color="orange" size="3"/>
                 {% endfor %}
                 <div data-jplist-control="no-results" data-group="group1" data-name="no-results">
                     Aucun résultat trouvé...

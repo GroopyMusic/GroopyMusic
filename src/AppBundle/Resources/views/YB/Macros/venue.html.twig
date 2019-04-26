@@ -1,5 +1,5 @@
 {% macro venue_row(venue, currentUser) %}
-    {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
+{% import '@App/YB/Macros/organization_member.html.twig' as macros %}
 <div data-jplist-item>
     <div class="row">
         <div class="col-12 row" style="padding: 7px">
@@ -31,7 +31,7 @@
         </div>
         <div class="col-12 row" style="padding: 7px">
             {% for config in venue.getNotDefaultConfig() %}
-                <table class="table table-responsive" style="margin-left: 22px;">
+                <table class="table table-responsive" style="margin-left: 10px;">
                     <thead>
                     <tr>
                         <th scope="col" style="border: none"><p style="font-size: 20px; color: orangered">Configuration : {{ config.name }}</p></th>
@@ -147,7 +147,9 @@
             </div>
         </div>
     </div>
-    {% endmacro %}
+    <div><hr color="orange" size="3"/></div>
+</div>
+{% endmacro %}
 
 
 
