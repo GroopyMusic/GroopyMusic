@@ -14,7 +14,7 @@ use XBundle\Entity\XPurchase;
  */
 class XContractFan
 {
-    //const X_ORDERS_DIRECTORY = 'x/orders/';
+
     const X_TICKETS_DIRECTORY = 'x/tickets/';
 
     public function __construct(Project $p)
@@ -118,15 +118,18 @@ class XContractFan
         return $this->ticketsPurchases;
     }
 
-    /*public function getOrderFileName()
-    {
-        return $this->getBarcodeText() . '.pdf';
-    }
 
-    public function getPdfPath()
-    {
-        return self::X_ORDERS_DIRECTORY . $this->getOrderFileName();
-    }*/
+    private $purchasesForProduct = null;
+    public function getPurchasesForProduct(Product $product) {
+        if($this->purchasesForProduct == null) {
+            foreach ($this->purchases as $purchase) {
+                if ($purchase->getProduct() == $product) {
+                    $this->purchasesForProduct[] = $purchase;
+                }
+            }
+        }
+        return $this->purchasesForProduct;
+    }
 
 
     /**

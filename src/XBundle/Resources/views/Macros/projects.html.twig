@@ -85,7 +85,7 @@
             </div>
         {% endif %}
 
-        {% if project.isPassed and project.isPending and project.collectedAmount > 0 %}
+        {% if project.isPending and project.collectedAmount > 0 %}
             <div class="col-12 mt-4">
 
                 <div class="text-muted font-italic pb-2">
@@ -149,7 +149,7 @@
             </div>
         {% endif %}
 
-        {% if project.isPassed and not project.isPending %}
+        {% if project.isClosed %}
             <div class="col-12 mt-4 text-center">
                 <h5>État du projet : {% if project.successful %}<b style="color: green;">Réussite</b> {% elseif project.failed %}<b style="color: red;">Échec</b>{% endif %}</h5>
             </div>

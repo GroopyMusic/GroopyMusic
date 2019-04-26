@@ -13,7 +13,7 @@
             <div class="project-artistname search-filter">
                 {{ project.artist.artistname }}
             </div>
-            {% if project.isPassed and not project.isPending %}
+            {% if project.isClosed %}
                 {% if project.successful %}
                     <div class="project-successful">
                         réussite&nbsp;<i class="fas fa-check-circle"></i>
@@ -24,14 +24,11 @@
             {% endif %}
         </div>
 
-        <!-- this is the content of the card with an optionnal span for ⭐ -->
         <div class="x-card-content">
             {% set category_slug = "jplist-" ~ project.category.name|slug %}
             <h5 class="project-title search-filter">{{ project.title }}</h5>
             <div class="badge badge-warning project-category {{ category_slug }}">{{ project.category.name }}</div>
-            <!-- for several tags -->
-            {#<span class="d-none search-filter">{% for tag in project.tags %}{% if not loop.first %} {% endif %}<span class="jplist-{{ tag }}">{{ tag }}</span>{% endfor %}</span>#}
-
+            <div class="d-none search-filter">{% for tag in project.tags %}{% if not loop.first %} {% endif %}<div class="badge badge-info jplist-{{ tag }}">{{ tag }}</div>{% endfor %}</div>
             <p>
                 <b>{{ project.collectedAmount }} €</b> {% if project.hasThreshold %}sur {{ project.threshold }} €{% else %}récoltés {% endif %}
                 &nbsp;
@@ -60,5 +57,6 @@
 
         <!-- this is the link that the card need to take to -->
         <a class="x-card-link" href="{{ path('x_project', {'id': project.id, 'slug': project.slug}) }}"></a>
+
     </div>
 {% endblock %}

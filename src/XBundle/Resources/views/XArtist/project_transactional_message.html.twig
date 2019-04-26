@@ -12,7 +12,7 @@
 
     <section class="container p-5">
         <p>
-            Vous pouvez ici envoyer un message transactionnel aux contributeurs de votre projet "{{ project.title }}".
+            Vous pouvez ici envoyer un message transactionnel aux contributeurs de votre projet "{{ project.title }}".<br>
             Attention : un message <b>transactionnel</b> ne peut pas être à vocation commerciale. Il doit s'agir d'informations organisationnelles uniquement, dont les consommateurs ont réellement besoin.
         </p>
 
@@ -39,13 +39,17 @@
                 <div class="col-12 col-md-4">
                     {{ form_widget(form.toDonators) }}
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-4" id="to_buyers_checkbox">
                     {{ form_widget(form.toBuyers) }}
+                </div>
+                <div class="col-12 col-md-4 products_select">
+                    {{ form_row(form.product) }}
                 </div>
             </div>
             {% else %}
                 {% do form.toDonators.setRendered %}
                 {% do form.toBuyers.setRendered %}
+                {% do form.product.setRendered %}
             {% endif %}
 
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">
@@ -86,7 +90,7 @@
                     <div class="card card-body my-3 py-2">
                         <h4>{{ message.title }}</h4>
                         <p class="small text-secondary">
-                            Envoyé le {{ message.date|date('d/m/Y \\à H:i') }} en destination des {% if message.toDonators and message.toBuyers %}donateurs et acheteurs.{% elseif message.toDonators and not message.toBuyers %}donateurs.{% else %}acheteurs.{% endif %}
+                            Envoyé le {{ message.date|date('d/m/Y \\à H:i') }} en destination des {% if message.toDonators and message.toBuyers %}donateurs et acheteurs{% elseif message.toDonators and not message.toBuyers %}donateurs{% else %}acheteurs{% if message.product is not null %} de "{{ message.product }}"{% endif %}{% endif %}
                         </p>
                         <p>
                             {{ message.content }}
@@ -97,4 +101,16 @@
         </section>
     {% endif %}
 
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            var $chckbx = $('#to_buyers_checkbox input[type="checkbox"]');
+            $chckbx.on('change', function() {
+                $('.products_select').toggle(this.checked);
+            });
+            $chckbx.trigger("change");
+        });
+    </script>
 {% endblock %}

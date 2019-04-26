@@ -81,6 +81,14 @@ class ProjectAdmin extends BaseAdmin
                     'format' => 'd/m/Y',
                     'locale' => 'fr'
                 ))
+                ->add('dateEvent', null, array(
+                    'label' => "Date de l'évènement",
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr'
+                ))
+                ->add('address', null, array(
+                    'label' => "Lieu de l'évènement"
+                ))
             ->end()
             ->with('Description')
                 ->add('description', null, array(

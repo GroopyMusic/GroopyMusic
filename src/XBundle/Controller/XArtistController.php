@@ -241,6 +241,26 @@ class XArtistController extends BaseController
         ));
     }
 
+    /**
+     * @Route("/project/{id}/contributions/sales-recap", name="x_artist_project_contributions_sales_recap")
+     */
+    public function salesRecapProjectAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
+    {
+        $this->checkIfArtistAuthorized($user, $project);
+
+        if($project == null) {
+            $this->addFlash('x_warning', "Le projet n'existe pas");
+            return $this->redirectToRoute('x_artist_dashboard');
+        }
+
+        $sales = array_reverse($project->getSalesPaid());
+
+        return $this->render('@X/XArtist/project_sales_recap.html.twig', array(
+            'project' => $project,
+            'sales' => $sales,
+        ));
+    }
+
 
     /**
      * @Route("/project/{id}/products", name="x_artist_project_products")
@@ -385,7 +405,11 @@ class XArtistController extends BaseController
                     $contributors = $project->getDonators();
                 } elseif ($form->get('toDonators')->getData() == false && $form->get('toBuyers')->getData() == true) {
                     $message->setToBuyers(true);
-                    $contributors = $project->getBuyers();
+                    if ($form->get('product')->getData() == null) {
+                        $contributors = $project->getBuyers();
+                    } else {
+                        $contributors = $project->getProductBuyers($form->get('product')->getData());
+                    }
                 } else {
                     $message->setToDonators(true);
                     $message->setToBuyers(true);
@@ -401,8 +425,6 @@ class XArtistController extends BaseController
                 }
             }
 
-            //$this->em->persist($message);
-            //$this->em->flush();
             $em->persist($message);
             $em->flush();
 

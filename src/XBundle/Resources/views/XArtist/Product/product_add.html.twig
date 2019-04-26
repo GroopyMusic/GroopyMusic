@@ -91,10 +91,11 @@
 {% endblock %}
 
 {% block additional_javascripts %}
-    {{ parent() }}
+
+    {#<script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>#}
 
     <script type="text/javascript">
-        {#function x_options_collection(options) {
+        /*function x_options_collection(options) {
             $('.options-collection').collection($.extend({
                 up: '',
                 down: '',
@@ -102,13 +103,13 @@
                 add: '<a href="#">Ajouter</a>',
                 prefix: 'options-collection'
             }, options));
-        }#}
+        }*/
 
         $(function() {
-            {#x_options_collection({
+            /*x_options_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une option</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer cette option</a>'
-            });#}
+            });*/
             
             {% if product.id is null %}
                 $('.is-ticket-checkbox').on('change', function() {

@@ -107,8 +107,13 @@
                                 </div>
                             {% endif %}
 
-                            {% if project.isPassed and not project.isPending and project.successful %}
-                                <br><p class="text-center" style="color: green;"><b>Réussite</b>&nbsp;<i class="fas fa-check-circle"></i></p>
+                            {% if project.isClosed %}
+                                <br>
+                                {% if project.successful %}
+                                    <p class="text-center" style="color: green;"><b>Réussite</b>&nbsp;<i class="fas fa-check-circle"></i></p>
+                                {% elseif project.failed and project.refunded %}
+                                    <p class="text-center" style="color: red;"><b>Échec</b>&nbsp;<i class="fas fa-times-circle"></i></p>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -168,7 +173,7 @@
                         
                         {% for purchase in form_purchase.purchases %}
                             {% set product = purchase.vars.value.product %}
-                            <div class="container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
+                            <div class="purchase-form container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
                                 {#{ form_errors(purchase) }#}
 
                                 <h5><b>{{ product.name }}</b>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
@@ -198,7 +203,7 @@
                                                 {{ form_widget(purchase.freePrice, {'attr':  {'min': product.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
                                                 </div>
                                         {% else %}
-                                            Prix : <b>{{ product.price }} €</b>
+                                            Prix : <b class="product-price">{{ product.price }} €</b>
                                         {% endif %}
                                     </div>
 
@@ -243,10 +248,13 @@
 
                         {% endfor %}
 
-                        {{ form_widget(form_purchase.submit) }}
-
-                        {{ form_end(form_purchase) }}
+                        <div class="text-center pr-2" id="totals">
+                            TOTAL : <span id="cart-total">0</span> € pour <span id="quantity-total">0</span> article(s)
                         </div>
+                        <div class="text-center pr-2">
+                            {{ form_end(form_purchase) }}
+                        </div>
+
                     </div>
                 </div>
                 {% endif %}
@@ -262,5 +270,60 @@
         {% if project.isPassed %}
             $('.contribution').attr("disabled", true);
         {% endif %}
+
+        /*function rectifyQuantities($q) {
+            var $displayer = $q.closest('.counterpart-form').find('.quantity-error-display');
+
+            var max = parseInt($q.closest('.counterpart-form').find('.quantity-right-plus').data('max'));
+            var quantity = parseInt($q.val());
+            if (quantity > max) {
+                var s = max > 1 ? 's' : '';
+                $displayer.text('Vous ne pouvez pas dépasser ' + max + " exemplaire"+s+" de ce ticket dans votre commande.");
+                $displayer.show();
+                $q.val(max);
+            }
+            else if(quantity < 0) {
+                $displayer.text('Vous ne pouvez pas commander un nombre négatif de tickets.');
+                $displayer.show();
+                $q.val(0);
+            }
+            else {
+                $displayer.hide();
+            }
+            calculateTickets();
+        }*/
+
+        $('input.quantity').change(function() {
+            //rectifyQuantities($(this));
+            calculateTotal();
+        });
+
+        $('input.quantity').each(function() {
+            //rectifyQuantities($(this));
+            calculateTotal();
+        });
+
+        function calculateTotal() {
+            var tp = 0;
+            var q = 0;
+            $('.quantity.form-control').each(function() {
+                var qval = parseFloat($(this).val());
+                q += qval;
+                var $priceElem = $(this).closest('.purchase-form').find('.product-price');
+                var price = isNaN(parseFloat($priceElem.val())) ? parseFloat($priceElem.text()) : parseFloat($priceElem.val());
+                tp += price * qval;
+            });
+
+            if(tp === 0 && q === 0) {
+               $('#totals').hide();
+            }
+
+            else {
+                $('#cart-total').text(tp);
+                $('#quantity-total').text(q);
+                $('#totals').show();
+            }
+        }
+
     </script>
 {% endblock %}

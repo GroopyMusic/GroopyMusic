@@ -179,11 +179,12 @@
 
     <!-- Javascript -->
     {% block javascripts %}
-        <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
-        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-
         <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
-         
+
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+                integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+                crossorigin="anonymous"></script>
+
          <script type="text/javascript"
                  src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
                  integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
@@ -199,6 +200,9 @@
                 integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" 
                 crossorigin="anonymous">
         </script>
+
+        <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
         
         {% javascripts filter='jsqueeze' output='js/compiled/x/main.js'
         'x/js/x.js'
@@ -220,7 +224,7 @@
             Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "{{ 'dictMaxFilesExceeded'|trans({}, 'dropzone') }}";
         </script>
 
-        <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
+        {#<script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>#}
 
         
         {% block additional_javascripts %}{% endblock %}

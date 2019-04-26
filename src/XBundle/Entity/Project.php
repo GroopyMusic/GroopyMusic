@@ -44,7 +44,6 @@ class Project
         $this->handlers = new ArrayCollection();
         $this->products = new ArrayCollection();
         $this->tags = new ArrayCollection();
-        $this->points = 0;
         $this->acceptConditions = false;
         $this->contributions= new ArrayCollection();
         $this->notifEndSent = 0;
@@ -134,7 +133,7 @@ class Project
         return count($this->getSalesPaid());
     }
 
-    // count contributors, once if a contributors paid several times
+    // count contributors; once a contributor who has paid several times
     public function getNbContributors() {
         $nbContributors = array_unique(array_map(function(XOrder $person) {
             return $person->getEmail();
@@ -147,11 +146,15 @@ class Project
     }
 
     public function isPending() {
-        return !$this->successful && !$this->failed && !$this->refunded;
+        return !$this->successful && !$this->failed && !$this->refunded && $this->isPassed();
     }
 
     public function isOngoing() {
         return !$this->successful && !$this->failed && !$this->refunded && !$this->isPassed();
+    }
+
+    public function isClosed() {
+        return $this->isPassed() && ($this->successful or ($this->failed && $this->refunded));
     }
 
     public function isEvent() {
@@ -164,6 +167,7 @@ class Project
         }
         return $this->dateEnd->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
     }
+
 
     // Get donations paid
     private $donationsPaid = null;
@@ -186,6 +190,31 @@ class Project
         }, $this->getDonationsPaid());
     }
 
+
+    // Get sales paid for a product
+    private $productSalesPaid = null;
+    public function getProductSalesPaid(Product $product) {
+        if ($this->productSalesPaid == null) {
+            foreach ($this->contributions as $contribution) {
+                if(!empty($contribution->getPurchasesForProduct($product))) {
+                    $this->productSalesPaid[] = $contribution;
+                }
+            }
+        }
+        return $this->productSalesPaid;
+    }
+
+    // Get product buyers
+    public function getProductBuyers(Product $product) {
+        if($this->getProductSalesPaid($product) == null || empty($this->getProductSalesPaid($product))) {
+            return [];
+        }
+        return array_map(function(XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $this->getProductSalesPaid($product));
+    }
+
+
     // Get sales paid
     private $salesPaid = null;
     public function getSalesPaid() {
@@ -206,6 +235,7 @@ class Project
             return $cf->getPhysicalPerson();
         }, $this->getSalesPaid());
     }
+
 
     // Get all contributions paid
     private $contributionsPaid = null;
@@ -228,6 +258,7 @@ class Project
         }, $this->getContributionsPaid());
     }
 
+
     private $contributionsPaidAndRefunded = null;
     public function getContributionsPaidAndRefunded() {
         if($this->contributionsPaidAndRefunded == null) {
@@ -247,13 +278,13 @@ class Project
         }, $this->getContributionsPaidAndRefunded());
     }
 
+
     public function hasValidatedProducts() {
         $validatedProducts = array_filter($this->getProducts()->toArray(), function(Product $product) {
                                 return $product->getValidated() && $product->getDeletedAt() == null;
                             });
         return count($validatedProducts) > 0;
     }
-
 
 
     // To get only artists that project creator owns (form only)
@@ -406,13 +437,6 @@ class Project
      * @ORM\Column(name="code", type="string", length=255)
      */
     private $code;
-
-    /**
-     * @var int
-     * 
-     * @ORM\Column(name="points", type="integer")
-     */
-    private $points;
 
     /**
      * @var ArrayCollection
@@ -1001,27 +1025,6 @@ class Project
     public function getCode()
     {
         return $this->code;
-    }
-
-    /**
-     * Set points
-     * 
-     * @return Project
-     */
-    public function setPoints($points)
-    {
-        $this->points = $points;
-        
-        return $this;
-    }
-
-    /**
-     * Get points
-     * 
-     * @return int
-     */
-    public function getPoints(){
-        return $this->points;
     }
 
     

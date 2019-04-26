@@ -27,6 +27,11 @@ class ProductAdminController extends BaseAdminController
             return new RedirectResponse($this->admin->generateUrl('list'));
         }
 
+        if (!$product->getProject()->getValidated()) {
+            $this->addFlash('sonata_flash_error', 'Le projet doit d\'abord être validé avant la validation de la mise en vente de l\'article.');
+            return new RedirectResponse($this->admin->generateUrl('list'));
+        }
+
         $form = $this->createFormBuilder()
             ->add('confirm', SubmitType::class, array(
                 'label' => 'Valider la mise en vente de l\'article',

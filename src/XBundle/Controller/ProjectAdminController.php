@@ -3,10 +3,10 @@
 namespace XBundle\Controller;
 
 use AppBundle\Controller\BaseAdminController;
+use XBundle\Admin\ProductAdmin;
 use XBundle\Entity\Project;
 use XBundle\Entity\Product;
 use AppBundle\Services\MailDispatcher;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

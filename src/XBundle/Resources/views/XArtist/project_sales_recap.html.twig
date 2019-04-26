@@ -1,0 +1,41 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    <div class="container py-5" id="sales-recap">
+        <h2>Récapitulatif des ventes</h2>
+        {% for product in project.products %}
+            {% if product.deletedAt is null %}
+            <div class="my-3 py-2">
+                <h3>{{ product.name }}</h3>
+                <p><b>{{ product.productsSold }}</b> commande(s) au total</p>
+                {% if product.productsSold > 0 %}
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-4 col-md-4"><b>Nom de l'acheteur</b></div>
+                                <div class="col-4 col-md-4"><b>Email</b></div>
+                                <div class="col-4 col-md-4"><b>Quantité commandée</b></div>
+                            </div>
+                        </li>
+                        {% for sale in sales %}
+                            {% for purchase in sale.purchases %}
+                                {% if purchase.product == product %}
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-4 col-md-4">{{ sale.displayName }}</div>
+                                            <div class="col-4 col-md-4">{{ sale.email }}</div>
+                                            <div class="col-4 col-md-4">{{ purchase.quantity }}</div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    <div>
+
+{% endblock %}

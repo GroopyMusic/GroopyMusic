@@ -49,6 +49,9 @@
                 {% if sales is empty %}
                     <div class="my-3 px-2">Pas de ventes pour le moment</div>
                 {% else %}
+                    <div class="my-3 px-2 text-right">
+                        <a target="_blank" href="{{ path('x_artist_project_contributions_sales_recap', {'id': project.id}) }}">Récapitulatif des ventes</a>
+                    </div>
                     <div class= "sales-row my-3 px-2">
                         <div class="row">
                             <div class="col-4 col-md-3 my-2"><b>Date</b></div>
