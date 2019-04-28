@@ -16,6 +16,7 @@ use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\Membership;
+use AppBundle\Form\CounterPartType;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\YBContractArtistCrowdType;
 use AppBundle\Form\YB\YBContractArtistType;
@@ -31,6 +32,7 @@ use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -206,6 +208,109 @@ class YBMembersController extends BaseController
             'flow' => $flow,
             'campaign' => $campaign,
         ]);
+    }
+
+    /**
+     * @Route("/tickets/list/{id}", name="yb_members_get_tickets_list")
+     */
+    public function getTicketsListAction(YBContractArtist $campaign, UserInterface $user = null, Request $request) {
+        $cps = $campaign->getCounterParts();
+        $this->checkIfAuthorized($user, $campaign);
+
+        return new Response($this->renderView('@App/YB/Members/tickets_list.html.twig', [
+            'cps' => $cps,
+            'campaign' => $campaign,
+        ]));
+    }
+
+    /**
+     * @Route("/tickets/update/{id}", name="yb_members_update_ticket")
+     */
+    public function ticketUpdateAction(CounterPart $cp, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+        $campaign = $cp->getContractArtist();
+        $this->checkIfAuthorized($user, $campaign);
+        $class_attr = $campaign->hasSubEvents() ? '' : 'no-sub-events';
+        $form = $this->createForm(CounterPartType::class, $cp,  [
+            'attr' => ['class' => $class_attr],
+            'label' => false,
+            'campaign_id' => $cp->getContractArtist()->getId(),
+            'has_sub_events' => $cp->getContractArtist()->hasSubEvents(),
+            'sold' => $cp->hasBeenSold()
+        ]);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($cp);
+            $em->flush();
+            return new Response('OK');
+        }
+        else {
+            return new Response($this->renderView('@App/YB/Form/counterpart_update.html.twig', [
+                'cp' => $cp,
+                'form' => $form->createView(),
+                'sold' => $cp->hasBeenSold(),
+                'campaign' => $campaign,
+            ]));
+        }
+    }
+
+    /**
+     * @Route("/tickets/create/{id}", name="yb_members_create_ticket")
+     */
+    public function ticketCreateAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+        $cp = new CounterPart();
+        $cp->setContractArtist($campaign);
+        $this->checkIfAuthorized($user, $campaign);
+        $class_attr = $campaign->hasSubEvents() ? '' : 'no-sub-events';
+
+        $form = $this->createForm(CounterPartType::class, $cp,  [
+            'attr' => ['class' => $class_attr],
+            'label' => false,
+            'campaign_id' => $cp->getContractArtist()->getId(),
+            'has_sub_events' => $cp->getContractArtist()->hasSubEvents(),
+            'sold' => false
+        ]);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($cp);
+            $em->flush();
+            return new Response('OK');
+        }
+        else {
+            return new Response($this->renderView('@App/YB/Form/counterpart_create.html.twig', [
+                'cp' => $cp,
+                'form' => $form->createView(),
+                'campaign' => $campaign,
+                'sold' => false,
+            ]));
+        }
+    }
+
+    /**
+     * @Route("/tickets/delete/{id}", name="yb_members_delete_ticket")
+     */
+    public function ticketDeleteAction(CounterPart $cp, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+        $campaign = $cp->getContractArtist();
+        $this->checkIfAuthorized($user, $campaign);
+
+        if($request->getMethod() == 'POST') {
+            if(!$cp->hasBeenSold()) {
+                $em->remove($cp);
+                $em->flush();
+            }
+            return new Response('OK');
+        }
+
+        else {
+            return new Response($this->renderView('@App/YB/Form/counterpart_delete.html.twig', [
+                'cp' => $cp,
+                'campaign' => $campaign,
+            ]));
+        }
+
     }
 
     /**

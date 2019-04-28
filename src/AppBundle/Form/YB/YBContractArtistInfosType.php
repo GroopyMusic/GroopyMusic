@@ -55,10 +55,7 @@ class YBContractArtistInfosType extends AbstractType
                     new Assert\GreaterThanOrEqual(['value' => 0]),
                 ]
             ))
-            ->add('dateEnd', DateTimeType::class, array(
-                'required' => false,
-                'label' => 'Date de validation',
-            ))
+
             ->add('dateClosure', DateTimeType::class, array(
                 'required' => true,
                 'label' => 'Fin des ventes',
@@ -89,7 +86,7 @@ class YBContractArtistInfosType extends AbstractType
                 //'label' => 'Montant fixe minimum',
             ))
             ->add('address', AddressType::class, array(
-                'required' => true,
+                'required' => false,
                 'label' => "Lieu de l'événement",
                 'constraints' => [
                     new Assert\Valid(),
@@ -124,6 +121,13 @@ class YBContractArtistInfosType extends AbstractType
                 'required' => false,
             ))
         ;
+
+        if($options['creation'] || ($options['data'] != null && !$options['data']->hasSoldAtLeastOne())) {
+            $builder->add('dateEnd', DateTimeType::class, array(
+                'required' => false,
+                'label' => 'Date de validation',
+            ));
+        }
 
         if($options['creation']) {
             $builder
