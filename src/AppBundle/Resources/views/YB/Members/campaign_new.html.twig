@@ -31,7 +31,7 @@
         </ol>
     </section>
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/counterpart.html.twig' '@App/YB/Form/commission.html.twig'  ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/commission.html.twig'  ':Form:jquery.collection.html.twig' %}
 
     {{ form_start(form) }}
     <section class="container my-4 py-2 my-md-5">
@@ -162,14 +162,17 @@
                                 Dans le cas où l'objectif (le seuil) est atteint à cette date, vous ne pourrez plus annuler l'événement mais devrez acter sa validation.
                             </div>
 
-                            {{ form_errors(form.dateEnd) }}
-                            {{ form_widget(form.dateEnd) }}
+                            {% if campaign.hasSoldAtLeastOne %}
+                                {{ campaign.dateEnd|fancy_date }} (vous ne pouvez pas le modifier car il y a déjà eu des tickets vendus)
+                            {% else %}
+                                {{ form_errors(form.dateEnd) }}
+                                {{ form_widget(form.dateEnd) }}
+                            {% endif %}
                         </div>
                     </div>
                 {% else %}
                     <p>Pas applicable à cette campagne.</p>
                     {% do form.threshold.setRendered %}
-                    {% do form.dateEnd.setRendered %}
                 {% endif %}
             <!--/div-->
         </section>
@@ -189,8 +192,32 @@
             {{ form_widget(form.globalSoldout) }}
         </section>
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
-            <p>Pour vendre des tickets, il vous faut au moins en créer un ci-dessous.</p>
-            {{ form_widget(form.counterParts) }}
+            <p>Pour vendre des tickets, il vous faut au moins en créer un.</p>
+
+
+            <div id="counterPartsModal" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Gestion des tickets</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="loader">{{ hidden_loader(false, false) }}</div>
+                        <div id="counterPartsModalBody" class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-secondary create-ticket" data-url="{{ path('yb_members_create_ticket', {'id': campaign.id}) }}"><i class="fas fa-plus-circle"></i> Créer</button>
+
+            <div id="counterparts-container">
+                {{ render(controller('AppBundle:YBMembers:getTicketsList', {'id': campaign.id})) }}
+            </div>
         </section>
     {% elseif flow.currentStepNumber == 3 %}
         {% if is_granted('ROLE_SUPER_ADMIN') %}
@@ -269,23 +296,15 @@
     {{ parent() }}
     <script type="text/javascript">
         $(function() {
-
             yb_second_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une commission</a>',
                 remove:'<div class="input-group"><a class="btn btn-danger" href="#">Supprimer cette commission</a></div>'
             });
 
-            {% if flow.getCurrentStepNumber() == 1 %}
-                yb_collection({
-                    add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une date</a>',
-                    remove:'<a class="btn btn-danger" href="#">Supprimer cette date</a>'
-                });
-            {% else %}
-                yb_collection({
-                    add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un ticket</a>',
-                    remove:'<a class="btn btn-danger" href="#">Supprimer ce ticket</a>'
-                });
-            {% endif %}
+            yb_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une date</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer cette date</a>'
+            });
 
             var $chckbx = $('#yb_no_threshold_checkbox input[type="checkbox"]');
             {% if campaign.id is null %}
