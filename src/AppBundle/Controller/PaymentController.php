@@ -301,7 +301,7 @@ class PaymentController extends BaseController
             ]);
         } else {
             # Invalid status
-            return $this->json(['error' => 'Invalid PaymentIntent status']);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
         }
     }
 
