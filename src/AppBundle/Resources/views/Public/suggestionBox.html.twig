@@ -41,27 +41,6 @@
                 </div>
             </div>
         </div>
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="suggestionmodal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="login-header-title">
-                                <h5 class="mb-3">{{ 'contact.nomail.title'|trans|raw }}</h5>
-                                <p>
-                                    {{ 'contact.nomail.explanation'|trans|raw }}
-                                </p>
-                            </div>
-                        </div>
-                        <a id="validate-sb-send" class="btn btn-primary text-uppercase pull-left" href="#">{{ 'contact.nomail.confirm'|trans|raw }}</a>
-                        <a id="cancel-sb-send" class="btn btn-secondary pull-right" data-dismiss="modal" href="#">{{ 'contact.nomail.cancel'|trans|raw }}</a>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 
     <section id="sessions" class="container px-4 pt-2 position-relative">
@@ -142,56 +121,4 @@
         </div>
     </section>
     <div class="separating-waves colored high prior"></div>
-{% endblock %}
-
-
-{% block additional_javascripts %}
-    <script>
-        $('#suggestionmodal').modal({'show': false});
-
-        $('#validate-sb-send').click(function(e) {
-            e.preventDefault();
-           ajaxSendForm();
-            $('#suggestionmodal').modal('hide');
-        });
-
-        function displayLoader() {
-            $('.content-box .loader').show();
-            $('#suggestionbox_form').hide();
-        }
-
-        function hideLoader() {
-            $('.content-box .loader').hide();
-            $('#suggestionbox_form').show();
-        }
-
-        function ajaxSendForm() {
-            var url = "{{ path('suggestionBox_form') }}";
-            var formSerialize = $('form.suggestionBoxForm').serialize();
-
-            displayLoader();
-
-            $.post(url, formSerialize, function(response) {
-                hideLoader();
-                $('#suggestionbox_form').html(response);
-                initform();
-            }, 'HTML');
-        }
-
-        function initform() {
-            $('.suggestionBoxForm').submit(function(e) {
-                e.preventDefault();
-
-                if($('#suggestion_form_email').length && !$('#suggestion_form_email').find('input').val()) {
-                    $('#suggestionmodal').modal('show');
-                }
-
-                else {
-                    ajaxSendForm();
-                }
-            });
-        }
-
-        initform();
-    </script>
 {% endblock %}

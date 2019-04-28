@@ -81,10 +81,6 @@ class SuggestionBoxType extends AbstractType
             ->add('mailCopy', CheckboxType::class, array(
                 'label' => 'labels.suggestionbox.mailcopy',
                 'required' => false,
-            ))
-            ->add('submit', SubmitType::class, array(
-                'attr' => ['class' => 'btn btn-primary'],
-                'label' => 'labels.suggestionbox.submit',
             ));
     }
 
