@@ -648,12 +648,14 @@ class YBContractArtist extends BaseContractArtist
     public function setOrganization($organization){
         $this->organization = $organization;
 
-        if($this->vat_number == null) {
-            $this->vat_number = $organization->getVatNumber();
-        }
+        if($this->organization != null) {
+            if($this->vat_number == null) {
+                $this->vat_number = $organization->getVatNumber();
+            }
 
-        if($this->bank_account == null) {
-            $this->bank_account = $organization->getBankAccount();
+            if($this->bank_account == null) {
+                $this->bank_account = $organization->getBankAccount();
+            }
         }
     }
     

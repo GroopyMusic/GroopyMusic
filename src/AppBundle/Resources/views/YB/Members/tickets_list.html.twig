@@ -1,0 +1,66 @@
+<table class="table">
+    {% for cp in cps %}
+        <tr>
+            <td>{{ cp.getName }}</td>
+            <td><button class="btn btn-secondary edit-ticket" data-url="{{ path('yb_members_update_ticket', {'id': cp.id}) }}"><i class="fas fa-marker"></i> Editer</button></td>
+            {% if not cp.hasBeenSold() %}<td><button class="btn btn-danger delete-ticket" data-url="{{ path('yb_members_delete_ticket', {'id': cp.id}) }}"><i class="fas fa-trash"></i> Supprimer</button></td>{% endif %}
+        </tr>
+    {% endfor %}
+</table>
+<script>
+    $('#loader').hide();
+    $('.edit-ticket').click(function(e) {
+        e.preventDefault();
+
+        loader();
+        $('#counterPartsModal').modal();
+
+        $.get($(this).data('url'), function(data) {
+            hideLoader();
+            $('#counterPartsModalBody').html(data);
+        });
+    });
+
+    $('.create-ticket').click(function(e) {
+        e.preventDefault();
+
+        loader();
+        $('#counterPartsModal').modal();
+
+        $.get($(this).data('url'), function(data) {
+            hideLoader();
+            $('#counterPartsModalBody').html(data);
+        });
+    });
+
+    $('.delete-ticket').click(function(e) {
+        e.preventDefault();
+
+        loader();
+        $('#counterPartsModal').modal();
+        $.get($(this).data('url'), function(data) {
+            hideLoader();
+            $('#counterPartsModalBody').html(data);
+        });
+    });
+
+    $('.really-delete-ticket').click(function(e) {
+        e.preventDefault();
+
+        loader();
+
+        $.get($(this).data('url'), function(data) {
+            hideLoader();
+            refreshCounterPartsContainer();
+        });
+    });
+
+    function loader() {
+       $('#loader').show();
+       $('#counterPartsModalBody').html('');
+
+    }
+    function hideLoader() {
+        $('#loader').hide();
+    }
+</script>

@@ -393,6 +393,23 @@ class BaseContractArtist implements TranslatableInterface
         return max(0, $this->counterparts_sold);
     }
 
+    public function hasSoldAtLeastOne() {
+        return $this->getContractsFanPaid() != null && count($this->getContractsFanPaid()) > 0;
+    }
+
+    public function hasSoldCounterPart(CounterPart $cp) {
+        foreach($this->getContractsFanPaid() as $cf) {
+            /** @var ContractFan $cf */
+            foreach($cf->getPurchases() as $purchase) {
+                /** @var Purchase $purchase */
+                if($cp->getId() == $purchase->getCounterPart()->getId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Unmapped
     protected $state;
 
