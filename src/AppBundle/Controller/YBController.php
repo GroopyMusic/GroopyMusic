@@ -189,27 +189,27 @@ class YBController extends BaseController
 
         } catch (\Stripe\Error\Card $e) {
             $this->addFlash('error', 'errors.stripe.card');
-            // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+             $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
         } catch (\Stripe\Error\RateLimit $e) {
             $this->addFlash('error', 'errors.stripe.rate_limit');
-            // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
         } catch (\Stripe\Error\InvalidRequest $e) {
             $this->addFlash('error', 'errors.stripe.invalid_request');
-            // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
         } catch (\Stripe\Error\Authentication $e) {
             $this->addFlash('error', 'errors.stripe.authentication');
-            // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
         } catch (\Stripe\Error\ApiConnection $e) {
             $this->addFlash('error', 'errors.stripe.api_connection');
-            // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
         } catch (\Stripe\Error\Base $e) {
             $this->addFlash('error', 'errors.stripe.generic');
-            // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
         } catch (\Exception $e) {
             $this->addFlash('error', 'errors.stripe.other');
-            // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
         }
-        return $this->json([]);
+        return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
     }
 
     /**
@@ -287,28 +287,33 @@ class YBController extends BaseController
 
             return $this->generatePaymentResponse($intent, $cart);
         } catch (\Stripe\Error\Card $e) {
-            $this->addFlash('error', 'errors.stripe.card');
-            $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.card')]);
         } catch (\Stripe\Error\RateLimit $e) {
-            $this->addFlash('error', 'errors.stripe.rate_limit');
-            $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.rate_limit')]);
+
         } catch (\Stripe\Error\InvalidRequest $e) {
-            $this->addFlash('error', 'errors.stripe.invalid_request');
-            $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.invalid_request')]);
+
         } catch (\Stripe\Error\Authentication $e) {
-            $this->addFlash('error', 'errors.stripe.authentication');
-            $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.authentication')]);
+
         } catch (\Stripe\Error\ApiConnection $e) {
-            $this->addFlash('error', 'errors.stripe.api_connection');
-            $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.api_connection')]);
+
         } catch (\Stripe\Error\Base $e) {
-            $this->addFlash('error', 'errors.stripe.generic');
-            $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.generic')]);
+
         } catch (\Exception $e) {
-            $this->addFlash('error', 'errors.stripe.other');
-            $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
         }
-        return $this->json([]);
+        return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
     }
 
     function generatePaymentResponse(PaymentIntent $intent, Cart $cart) {
@@ -327,7 +332,11 @@ class YBController extends BaseController
             $payment = new Payment();
             $payment->setDate(new \DateTime())->setUser($cart->getUser())
                 ->setCart($cart)->setRefunded(false)->setAmount($cart->getAmount());
-            $payment->setChargeId($intent->id);
+            try {
+                $payment->setChargeId($intent->charges->data[0]->id);
+            } catch(\Throwable $exception) {
+                $payment->setChargeId($intent->id);
+            }
             $this->em->persist($cart);
             $this->em->persist($payment);
             $this->em->flush();
@@ -337,7 +346,7 @@ class YBController extends BaseController
             ]);
         } else {
             # Invalid status
-            return $this->json(['error' => 'Invalid PaymentIntent status']);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
         }
     }
 

@@ -5,7 +5,7 @@
 {% block subject %}{{ subject }}{% endblock %}
 
 {% block content %}
-   Erreur lors d'un paiement. Utilisateur : {{ user.displayName }} (id {{ user.id }}), numéro du panier : {{ cart.id }}. Infos de l'erreur Stripe :
+                Erreur lors d'un paiement. {% if user is not null %}Utilisateur : {{ user.displayName }} (id {{ user.id }}),{% endif %} numéro du panier : {{ cart.id }}. Infos de l'erreur Stripe :
 
    *** Message : {{ stripe_error.message }}
    *** Date d'envoi de ce message : {{ 'now'|date('d/m/Y H:i:s') }}

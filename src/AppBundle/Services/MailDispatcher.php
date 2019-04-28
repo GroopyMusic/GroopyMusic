@@ -545,7 +545,7 @@ class MailDispatcher
         $this->sendAdminEmail(MailTemplateProvider::ADMIN_ENORMOUS_PAYER_TEMPLATE, $subject, $params, $subject_params);
     }
 
-    public function sendAdminStripeError(\Exception $e, User $user, Cart $cart)
+    public function sendAdminStripeError(\Exception $e, $user, Cart $cart)
     {
         $subject = "Erreur lors d'un paiement Stripe";
         $params = ['stripe_error' => $e, 'user' => $user, 'cart' => $cart];
