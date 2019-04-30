@@ -69,7 +69,7 @@ class ProductType extends AbstractType
                 'attr' => ['class' => 'is-ticket-checkbox'],
                 'required' => false,
             ))
-            /*->add('options', CollectionType::class, array(
+            ->add('options', CollectionType::class, array(
                 'entry_type' => OptionProductType::class,
                 'entry_options' => array(
                     'label' => false,
@@ -79,7 +79,7 @@ class ProductType extends AbstractType
                 'by_reference' => false,
                 'prototype' => true,
                 'attr' => ['class' => 'options-collection'],
-            ))*/
+            ))
         ;
 
         if ($options['creation'] || $options['is_edit']) {

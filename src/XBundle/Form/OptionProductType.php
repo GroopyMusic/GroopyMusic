@@ -21,17 +21,18 @@ class OptionProductType extends AbstractType
             ->add('name', TextType::class, array(
                 'label' => "Nom de l'option"
             ))
-            /*->add('choices', CollectionType::class, array(
+            ->add('choices', CollectionType::class, array(
                 'entry_type' => ChoiceOptionType::class,
                 'entry_options' => array(
                     'label' => false,
                 ),
+                'label' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
                 'attr' => ['class' => 'choices-collection'],
-            ))*/
+            ))
         ;
     }
     

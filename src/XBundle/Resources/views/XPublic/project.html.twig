@@ -229,20 +229,26 @@
                                             </div>
                                         {% endif %}
                                     </div>
+
                                 </div>
 
-                                {#% if product.options is not empty %}
-                                <div class="row">
-                                    % for option in product.options %}
-                                        <div class="col-7 col-sm-9 col-lg-7">
-                                            {{ option.name }}
+                                {% if product.options is not empty %}
+                                    <div class="row">
+                                        <div class="col-12 my-2 text-muted font-italic" style="font-size: 13px;">
+                                            N'oubliez pas de sélectionner parmi les options proposées
                                         </div>
-                                        <div class="col-5 col-sm-3 col-lg-5">
-                                            {{ form_widget(purchase.options) }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                {% endif %#}
+                                        {% for option in product.options %}
+                                            <div class="col-6 col-sm-6 col-lg-6">
+                                                {{ option.name }}
+                                                <select class="form-control" name="{{ option.name }}" id="option-{{ option.id }}">
+                                                    {% for choice in option.choices %}
+                                                        <option value="{{ choice.id }}">{{ choice.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
 
                             </div>
 

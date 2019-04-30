@@ -45,24 +45,7 @@ class XPurchaseType extends AbstractType
                     'required' => false
                 ));
             }
-            /*if(!empty($purchase->getProduct()->getOptions())) {
-                foreach ($purchase->getProduct()->getOptions() as $option) {
-                    $event->getForm()->add('options', CollectionType::class, array(
-                        'label' => false,
-                        'allow_add' => false,
-                        'entry_type' => XPurchaseChoiceType::class,
-                        'entry_options' => [
-                            'option' => $option,
-                        ],
-                    ));
-                }
-            }*/
 
-            /*$event->getForm()->add('choices', EntityType::class, array(
-                    'class' => ChoiceOption::class,
-                    'placeholder' => '',
-                    'empty_data' => null,
-                ));*/
         });
 
     }

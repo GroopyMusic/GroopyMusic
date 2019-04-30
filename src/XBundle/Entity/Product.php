@@ -144,14 +144,7 @@ class Product
     private $validated;
 
     /**
-     * @var bool
-     * 
-     * @ORM\Column(name="deleted", type="boolean")
-     */
-    //private $deleted;
-
-    /**
-     * @ORM\OneToMany(targetEntity="XBundle\Entity\OptionProduct", mappedBy="product", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\OptionProduct", mappedBy="product", cascade={"all"}, orphanRemoval=true)
      */
     private $options;
 
@@ -430,31 +423,6 @@ class Product
         return $this->validated;
     }
 
-    /**
-     * Set deleted
-     * 
-     * @param boolean $deleted
-     * 
-     * @return Product
-     */
-    /*public function setDeleted($deleted)
-    {
-        $this->deleted = $deleted;
-
-        return $this;
-    }
-
-    /**
-     * Get deleted
-     * 
-     * @return boolean
-     */
-    /*public function getDeleted()
-    {
-        return $this->deleted;
-    }*/
-
-
 
     /**
      * Set isTicket
@@ -501,6 +469,7 @@ class Product
      */
     public function removeOption(\XBundle\Entity\OptionProduct $option)
     {
+        $option->setProduct(null);
         $this->options->removeElement($option);
     }
 

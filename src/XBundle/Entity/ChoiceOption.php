@@ -36,7 +36,7 @@ class ChoiceOption
     
     /**
      * @ORM\ManyToOne(targetEntity="XBundle\Entity\OptionProduct", inversedBy="choices")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $option;
 

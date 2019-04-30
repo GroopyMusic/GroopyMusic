@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use XBundle\Entity\ChoiceOption;
 use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
 use XBundle\Entity\XContractFan;
@@ -150,6 +151,12 @@ class XPublicController extends BaseController
                     $contribution->removePurchase($purchase);
                 } else {
                     $purchase->setContractFan($contribution);
+                    if(!empty($purchase->getOptions())) {
+                        foreach ($purchase->getOptions() as $option) {
+                            $choice = $em->getRepository('XBundle:ChoiceOption')->find(intval($request->request->get($option->getName())));
+                            $purchase->addChoice($choice);
+                        }
+                    }
                     $em->persist($purchase);
                 }
             }

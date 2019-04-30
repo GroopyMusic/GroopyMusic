@@ -53,12 +53,12 @@ class OptionProduct
 
     /**
      * @ORM\ManyToOne(targetEntity="XBundle\Entity\Product", inversedBy="options")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $product;
 
     /**
-     * @ORM\OneToMany(targetEntity="XBundle\Entity\ChoiceOption", mappedBy="option", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\ChoiceOption", mappedBy="option", cascade={"all"}, orphanRemoval=true)
      */
     private $choices;
 
@@ -142,6 +142,7 @@ class OptionProduct
      */
     public function removeChoice(\XBundle\Entity\ChoiceOption $choice)
     {
+        $choice->setOption(null);
         $this->choices->removeElement($choice);
     }
 

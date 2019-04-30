@@ -27,6 +27,17 @@ class XPurchase
 
         $str .= $this->product . ' (x' . $this->quantity . ') - ' . $this->getAmount() . ' €';
 
+        if(count($this->choices) > 0) {
+            $str .= ' - (';
+            for ($i=0; $i < count($this->choices); $i++) {
+                $str .= $this->choices[$i];
+                if ($i != count($this->choices)-1) {
+                    $str .= '/';
+                }
+            }
+            $str .= ')';
+        }
+
         return $str;
     }
 

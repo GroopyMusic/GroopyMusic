@@ -15,7 +15,7 @@
                 </div>
             </div>
             <form id="payment-form" method="post">
-                <div class="checkout-order-form card card-info" {#% if app.user %}disabled="disabled"{% endif %#}>
+                <div class="checkout-order-form card card-info">
                     <div class="card-header">
                         Vos coordonnées
                     </div>
@@ -170,8 +170,12 @@
                                     <div>
                                         <h4 class="my-0">{{ purchase.product }}</h4>
                                         <small class="text-muted">
-                                            {{ purchase.product.description }}<br />
                                             Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.product.freePrice %} (choisi librement){% endif %}
+                                            {% if purchase.choices is not empty %}
+                                                {% for choice in purchase.choices %}
+                                                    <br>{{ choice.option.name }} : {{ choice.name }}
+                                                {% endfor %}
+                                            {% endif %}
                                         </small>
                                     </div>
                                     <span class="text-muted">{{ purchase.amount }}€</span>

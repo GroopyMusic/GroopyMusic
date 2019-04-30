@@ -10,8 +10,8 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
-            width: 90px;
-            height: 90px;
+            width: 120px;
+            height: 120px;
         }
     </style>
 
@@ -29,8 +29,9 @@
         {% else %}
             {% for product in products %}
                 <div class="products-row border my-3 px-2">
-                    <div class="row">
-                        <div class="col-4 col-md-2 my-2">
+                    <div class="row my-3">
+
+                        <div class="col-3 col-sm-3 col-lg-3">
                             {% if product.isTicket %}
                                 <img src="{{ asset('x/images/ticket.png') }}"/>
                             {% else %}
@@ -39,25 +40,36 @@
                                 {% endif %}
                             {% endif %}
                         </div>
-                        <div class="col-4 col-md-2 my-2"><b>{{ product.name }}</b></div>
-                        <div class="col-4 col-md-3 my-2">{{ product.description | bbcode_filter('my_default_filter') }}</div>
-                        {#% if product.options is not empty %}
-                        <div class="col-4 col-md-2 my-2">
-                        <p>Option(s)</p>
-                            {% for option in product.options %}
-                                <p>{{ option }}<p>
-                            {% endfor %}
+
+                        <div class="col-3 col-sm-3 col-lg-3">
+                            <p><b>{{ product.name }}</b></p>
+                            <p class="text-muted font-italic">{{ product.description | bbcode_filter('my_default_filter') | raw }}</p>
                         </div>
-                        {% endif %#}
-                        <div class="col-4 col-md-1 my-2">
+
+                        <div class="col-3 col-sm-3 col-lg-3">
                             {% if product.freePrice %}
-                                <p>Prix libre</p><b>{{ product.minimumPrice }} €</b> (prix minimum)
+                                <p>Prix libre : <b>{{ product.minimumPrice }} €</b> (prix minimum)</p>
                             {% else %}
-                                <b>{{ product.price }} €</b>
+                                <p>Prix : <b>{{ product.price }} €</b></p>
+                            {% endif %}
+                            {% if product.options is not empty %}
+                                <div>
+                                    Option(s):
+                                    <ul>
+                                        {% for option in product.options %}
+                                            <li>{{ option|nl2br }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             {% endif %}
                         </div>
-                        <div class="col-4 col-md-1 my-2"><b>{{ product.supply }}</b> en stock</div>
-                        <div class="col-4 col-md-1 my-2"><b>{{ product.productsSold }}</b> vendus(s)</div>
+
+                        <div class="col-3 col-sm-3 col-lg-3">
+                            <p><b>{{ product.supply }}</b> en stock</p>
+                            <p><b>{{ product.productsSold }}</b> vendus(s</p>
+                            <p>Maximum <b>{{ product.maxAmountPerPurchase }}</b> par commande</p>
+                        </div>
+
                     </div>
 
                     {% if not project.isPassed %}
@@ -96,7 +108,7 @@
                             <div class="text-muted font-italic pb-2">
                                 En cours de validation
                             </div>
-                        {% endif %}    
+                        {% endif %}
                     </div>
                     {% endif %}
 

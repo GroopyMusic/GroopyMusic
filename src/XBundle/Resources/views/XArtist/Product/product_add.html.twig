@@ -15,7 +15,7 @@
         </nav>
     </section>
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@X/Form/option.html.twig' ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
 
     {{ form_start(form) }}
 
@@ -80,11 +80,16 @@
         </div>
     </section>
 
-    {#<section class="container my-4 py-2 my-md-5 project-section">
+    <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Options</h2><hr>
-        <div class="text-muted font-italic pb-2">Vous pouvez ajouter des options pour les articles que vous mettez en vente.</div>
-        {{ form_widget(form.options) }}
-    </section>#}
+        {% if product.id is not null and product.options is empty and product.productsSold > 0 %}
+            <div class="text-muted font-italic pb-2">Vous ne pouvez plus ajouter d'options pour cet article car il a déjà été vendu au moins une fois.</div>
+            {% do form.options.setRendered %}
+        {% else %}
+            <div class="text-muted font-italic pb-2">Vous pouvez ajouter des options pour les articles que vous mettez en vente.</div>
+            {{ form_widget(form.options) }}
+        {% endif %}
+    </section>
     
     {{ form_end(form) }}
 
@@ -92,10 +97,10 @@
 
 {% block additional_javascripts %}
 
-    {#<script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>#}
+    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
 
     <script type="text/javascript">
-        /*function x_options_collection(options) {
+        function x_options_collection(options) {
             $('.options-collection').collection($.extend({
                 up: '',
                 down: '',
@@ -103,13 +108,28 @@
                 add: '<a href="#">Ajouter</a>',
                 prefix: 'options-collection'
             }, options));
-        }*/
+        }
+
+        function x_choices_collection(options) {
+            $('.choices-collection').collection($.extend({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>',
+                prefix: 'choices-collection'
+            }, options));
+        }
 
         $(function() {
-            /*x_options_collection({
+            x_options_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une option</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer cette option</a>'
-            });*/
+            });
+
+            x_choices_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un choix</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer ce choix</a>'
+            });
             
             {% if product.id is null %}
                 $('.is-ticket-checkbox').on('change', function() {
