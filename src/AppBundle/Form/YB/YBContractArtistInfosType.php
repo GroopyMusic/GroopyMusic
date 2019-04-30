@@ -34,38 +34,6 @@ class YBContractArtistInfosType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if($options['admin']){
-            $builder
-                ->add('commissions', CollectionType::class, array(
-                    'label' => 'Commissions',
-                    'entry_type' => YBCommissionType::class,
-                    'entry_options' => array(
-                        'label' => false,
-                    ),
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-                    'prototype' => true,
-                    'attr' => ['class' => 'second-collection']
-                    //'required' => false,
-                    //'label' => 'Montant fixe minimum',
-                ))
-                ->add('vat', ChoiceType::class, array(
-                    'required' => false,
-                    'label' => 'Taux de TVA',
-                    'choices' => array(
-                        "0%" => 0,
-                        "6%" => 0.06,
-                        "12%" => 0.12,
-                        "21%" => 0.21),
-                    'constraints' => [
-                        new Assert\GreaterThanOrEqual(['value' => 0]),
-                        new Assert\LessThanOrEqual(['value' => 1])
-                    ]
-                ))
-            ;
-        }
-
         $builder
             ->add('organization', EntityType::class, [
                 'class' => Organization::class,
@@ -87,10 +55,7 @@ class YBContractArtistInfosType extends AbstractType
                     new Assert\GreaterThanOrEqual(['value' => 0]),
                 ]
             ))
-            ->add('dateEnd', DateTimeType::class, array(
-                'required' => false,
-                'label' => 'Date de validation',
-            ))
+
             ->add('dateClosure', DateTimeType::class, array(
                 'required' => true,
                 'label' => 'Fin des ventes',
@@ -121,7 +86,7 @@ class YBContractArtistInfosType extends AbstractType
                 //'label' => 'Montant fixe minimum',
             ))
             ->add('address', AddressType::class, array(
-                'required' => true,
+                'required' => false,
                 'label' => "Lieu de l'événement",
                 'constraints' => [
                     new Assert\Valid(),
@@ -157,6 +122,13 @@ class YBContractArtistInfosType extends AbstractType
             ))
         ;
 
+        if($options['creation'] || ($options['data'] != null && !$options['data']->hasSoldAtLeastOne())) {
+            $builder->add('dateEnd', DateTimeType::class, array(
+                'required' => false,
+                'label' => 'Date de validation',
+            ));
+        }
+
         if($options['creation']) {
             $builder
                 ->add('noThreshold', CheckboxType::class, array(
@@ -170,19 +142,7 @@ class YBContractArtistInfosType extends AbstractType
                         new Assert\NotBlank(),
                     )
                 ));
-        } else {
-            $builder
-                ->add('bankAccount', TextType::class, array(
-                    'label' => 'Numéro de compte en banque IBAN',
-                    'required' => false
-                ))
-                ->add('vatNumber', TextType::class, array(
-                    'label' => 'Numéro de TVA',
-                    'required' => false
-                ))
-            ;
         }
-
     }
 
     public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
@@ -227,6 +187,6 @@ class YBContractArtistInfosType extends AbstractType
 
     public function getBlockPrefix()
     {
-        return 'app_bundle_ybcontract_artist_type';
+        return 'app_bundle_ybcontract_artist_infos_type';
     }
 }

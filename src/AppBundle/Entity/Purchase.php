@@ -194,6 +194,10 @@ class Purchase
         return $toppings;
     }
 
+    public function getInvoice(){
+        return $this->getContractFan()->getInvoice();
+    }
+
     /**
      * @var int
      *
@@ -261,12 +265,6 @@ class Purchase
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Artist")
      */
     private $artists;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\YBInvoice", inversedBy="purchases")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $invoice;
 
     /**
      * Get id
@@ -537,14 +535,5 @@ class Purchase
     public function getArtists()
     {
         return $this->artists;
-    }
-
-    public function getInvoice(){
-        return $this->invoice;
-    }
-
-    public function setInvoice(YB\YBInvoice $invoice)
-    {
-        $this->invoice = $invoice;
     }
 }

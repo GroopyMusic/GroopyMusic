@@ -112,11 +112,14 @@ abstract class BaseController extends Controller
     ///////////////////////////////////////////////
     ///YB                                //////////
     ///////////////////////////////////////////////
-    protected function checkIfAuthorized($user, YBContractArtist $campaign = null) {
+    protected function checkIfAuthorized($user, YBContractArtist $campaign = null, $mustBeSuperAdmin = false) {
         if(!$user || !$user instanceof User) {
             throw new YBAuthenticationException();
         }
         if($campaign != null && (!$user->ownsYBCampaign($campaign) && !$user->isSuperAdmin())) {
+            throw new YBAuthenticationException();
+        }
+        if($mustBeSuperAdmin && !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
     }

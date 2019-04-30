@@ -26,7 +26,7 @@
                          style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
                 </div>
                 <div class="pt-2 pr-2 text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                    {{ progress_100 }}% récoltés<br/>{{ ('event.'~state)|trans|raw }}
+                    {{ progress_100 }}% des tickets nécessaires à la validation de l'événement<br/>{{ ('event.'~state)|trans({'%soldout_percentage%':contract.percentSoldOutRelativeToObjective})|raw }}
                 </div>
             </div>
             <div class="overlay"></div>

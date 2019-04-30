@@ -43,7 +43,8 @@ confirmed: Festival confirmé !
 or: ou
 loading: Chargement....
 stillselling: Tickets en vente
-doors_opening: Ouverture des portes
+foodtrucks_opening: Foodtrucks & bar extérieur (accès gratuit)
+doors_opening: Ouverture des portes de la salle
 
 notice:
   title: Merci !
@@ -326,9 +327,9 @@ event:
     see_profile: Voir le profil
   state:
     success:
-      pending: Objectif de campagne atteint - tickets en vente jusqu'au sold out
+      pending: "Prochain objectif : le sold out, qui est à %soldout_percentage% % !"
       passed: Objectif atteint
-      ongoing: Objectif de campagne atteint - tickets en vente jusqu'au sold out
+      ongoing: "Prochain objectif : le sold out, qui est à %soldout_percentage% % !"
       closed:  Objectif atteint
       soldout:
         soldout: Objectif atteint (SOLD OUT)

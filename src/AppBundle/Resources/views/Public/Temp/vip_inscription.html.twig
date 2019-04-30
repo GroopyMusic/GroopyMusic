@@ -11,10 +11,28 @@
 
         <div class="content-box">
             <div class="content-box-content">
-                {{ form(form) }}
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                 <div class="text-center">
+                        <button type="submit"  name="g-recaptcha-response"
+                                class="g-recaptcha btn btn-primary submit"
+                                data-sitekey="6LfklYEUAAAAAMj_B1O7c8RvimKn5GFunxRPyiBz" data-callback="onrecaptcha"><i class="fa fa-paper-plane" aria-hidden="true"></i> Envoyer</button>
+                    </div>
+
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
 
     <div class="separating-waves colored high prior"></div>
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script src='https://www.google.com/recaptcha/api.js' async defer></script>
+    <script async defer>
+        function onrecaptcha() {
+            $('form').submit();
+        }
+    </script>
 {% endblock %}

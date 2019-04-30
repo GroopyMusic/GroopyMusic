@@ -49,7 +49,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function getPassedYBCampaigns(User $user) {
         return $this->createQueryBuilder('c')
             ->join('c.handlers', 'u')
-            ->orderBy('c.date_event', 'DESC')
+            ->orderBy('c.date_closure', 'DESC')
             ->where('u.id = :id')
             ->andWhere('c.date_closure < :now OR c.failed = 1')
             ->setParameters([
@@ -68,7 +68,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('part.member', 'u')
             ->where('u.id = :id')
             ->andWhere('c.date_closure >= :now AND c.failed = 0')
-            ->orderBy('c.date_event', 'ASC')
+            ->orderBy('c.date_closure', 'ASC')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime(),
@@ -82,7 +82,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('c.organization', 'org')
             ->where('org.id = :id')
             ->andWhere('c.date_closure >= :now AND c.failed = 0')
-            ->orderBy('c.date_event', 'ASC')
+            ->orderBy('c.date_closure', 'ASC')
             ->setParameters([
                 'id' => $organization->getId(),
                 'now' => new \DateTime(),
@@ -98,7 +98,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('part.member', 'u')
             ->where('u.id = :id')
             ->andWhere('c.date_closure < :now OR c.failed = 1')
-            ->orderBy('c.date_event', 'DESC')
+            ->orderBy('c.date_closure', 'DESC')
             ->setParameters([
                 'id' => $user->getId(),
                 'now' => new \DateTime(),
@@ -113,7 +113,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('org.participations', 'part')
             ->join('part.member', 'u')
             ->where('u.id = :id')
-            ->orderBy('c.date_event', 'DESC')
+            ->orderBy('c.date_closure', 'DESC')
             ->setParameter('id',$user->getId())
             ->getQuery()
             ->getResult();
@@ -126,7 +126,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->join('part.member', 'u')
             ->where('u.id = :id')
             ->andWhere('c.failed = 0')
-            ->orderBy('c.date_event', 'DESC')
+            ->orderBy('c.date_closure', 'DESC')
             ->setParameter('id',$user->getId())
             ->getQuery()
             ->getResult();
@@ -142,7 +142,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function getAllOnGoingEvents(){
         return $this->createQueryBuilder('c')
             ->where('c.date_closure >= :now AND c.failed = 0')
-            ->orderBy('c.date_event', 'ASC')
+            ->orderBy('c.date_closure', 'ASC')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();
@@ -151,7 +151,7 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
     public function getAllPastEvents(){
         return $this->createQueryBuilder('c')
             ->where('c.date_closure < :now OR c.failed = 1')
-            ->orderBy('c.date_event', 'DESC')
+            ->orderBy('c.date_closure', 'DESC')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();
@@ -176,11 +176,10 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('c');
             if (!$user->isSuperAdmin()){
                 $qb->join('c.handlers', 'u')
-                    ->orderBy('c.date_event', 'DESC')
                     ->where('u.id = :id')
                     ->setParameter('id', $user->getId());
             }
-            return $qb->getQuery()
+            return $qb->orderBy('c.date_closure', 'DESC')->getQuery()
             ->getResult();
     }
 }

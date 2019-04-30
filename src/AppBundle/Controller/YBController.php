@@ -14,8 +14,10 @@ use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Stripe\PaymentIntent;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,7 +94,6 @@ class YBController extends BaseController
             $cf->initAmount();
 
             $cart->addContract($cf);
-            $cart->setConfirmed(true);
             $cart->generateBarCode();
 
             $em->persist($cart);
@@ -118,125 +119,247 @@ class YBController extends BaseController
     }
 
     /**
+     * @Route("/checkout/bancontact/{code}", name="yb_bancontact_checkout")
+     */
+    public function bancontactCheckoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, $code) {
+
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+
+        $amount = intval($_POST['amount']);
+        // We set an explicit test for amount changes as it has legal impacts
+        if (floatval($amount) !=  floatval($cart->getAmount() * 100)) {
+            $this->addFlash('error', 'errors.order_changed');
+            return $this->render('@App/YB/checkout.html.twig', array(
+                'cart' => $cart,
+                'error_conditions' => false,
+            ));
+        }
+
+        foreach($cart->getContracts() as $cf) {
+            /** @var ContractFan $cf */
+            /** @var YBContractArtist $contract_artist */
+            $contract_artist = $cf->getContractArtist();
+            if ($contract_artist->isUncrowdable()) {
+                $this->addFlash('error', 'errors.event_uncrowdable');
+                return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
+            }
+
+            foreach ($cf->getPurchases() as $purchase) {
+                if ($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
+                    $this->addFlash('error', 'errors.order_max');
+                    return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
+                }
+            }
+        }
+
+        $em->flush();
+        // Set your secret key: remember to change this to your live secret key in production
+        // See your keys here: https://dashboard.stripe.com/account/apikeys
+        \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
+
+        // Token is created using Stripe.js or Checkout!
+        // Get the payment token submitted by the form:
+        $source = $_POST['stripeSource'];
+
+        // Charge the user's card:
+        try {
+            foreach($cart->getContracts() as $contract) {
+                /** @var ContractFan $contract
+                 * @var YBContractArtist $contract_artist */
+                $contract->calculatePromotions();
+            }
+
+            $payment = new Payment();
+            $payment->setDate(new \DateTime())->setUser(null)
+                ->setCart($cart)->setRefunded(false)->setAmount($cart->getAmount());
+
+            $charge = \Stripe\Charge::create(array(
+                "amount" => $amount,
+                "currency" => "eur",
+                "description" => "Ticked-it - payment " . $cart->getId(),
+                "source" => $source,
+            ));
+
+            $payment->setChargeId($charge->id);
+            $em->persist($payment);
+            $cart->setPaid(true);
+
+            $em->persist($cart);
+            return $this->redirectToRoute('yb_payment_success', array('code' => $cart->getBarcodeText())); //, 'sponsorship' => $sponsorship));
+
+        } catch (\Stripe\Error\Card $e) {
+            $this->addFlash('error', 'errors.stripe.card');
+             $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+        } catch (\Stripe\Error\RateLimit $e) {
+            $this->addFlash('error', 'errors.stripe.rate_limit');
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+        } catch (\Stripe\Error\InvalidRequest $e) {
+            $this->addFlash('error', 'errors.stripe.invalid_request');
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+        } catch (\Stripe\Error\Authentication $e) {
+            $this->addFlash('error', 'errors.stripe.authentication');
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+        } catch (\Stripe\Error\ApiConnection $e) {
+            $this->addFlash('error', 'errors.stripe.api_connection');
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+        } catch (\Stripe\Error\Base $e) {
+            $this->addFlash('error', 'errors.stripe.generic');
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'errors.stripe.other');
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+        }
+        return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
+    }
+
+    /**
+     * @Route("/cart/{code}/payment/3ds/post", name="yb_payment_3DS_stripe_post")
+     */
+    public function cart3DSPostAction(Request $request, $code, EntityManagerInterface $em) {
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+        $payment_intent_id = $request->get('payment_intent_id');
+
+        \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
+        $intent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
+        $intent->confirm();
+
+        return $this->generatePaymentResponse($intent, $cart);
+    }
+
+    /**
+     * @Route("/cart/{code}/payment/post", name="yb_cart_payment_stripe_post")
+     */
+    public function cartPostAction(Request $request, $code, ValidatorInterface $validator) {
+
+        $amount = intval($request->get('amount'));
+        $payment_method_id = $request->get('payment_method_id');
+
+        $em = $this->em;
+        $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
+
+        // We set an explicit test for amount changes as it has legal impacts
+        if (floatval($amount) !=  floatval($cart->getAmount() * 100)) {
+            $this->addFlash('error', 'errors.order_changed');
+            return $this->render('@App/YB/checkout.html.twig', array(
+                'cart' => $cart,
+                'error_conditions' => false,
+            ));
+        }
+
+        foreach($cart->getContracts() as $cf) {
+            /** @var ContractFan $cf */
+            /** @var YBContractArtist $contract_artist */
+            $contract_artist = $cf->getContractArtist();
+            if ($contract_artist->isUncrowdable()) {
+                $this->addFlash('error', 'errors.event_uncrowdable');
+                return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
+            }
+
+            foreach ($cf->getPurchases() as $purchase) {
+                if ($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
+                    $this->addFlash('error', 'errors.order_max');
+                    return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
+                }
+            }
+        }
+
+        $em->flush();
+        // Set your secret key: remember to change this to your live secret key in production
+        // See your keys here: https://dashboard.stripe.com/account/apikeys
+        \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
+
+        try {
+            $intent = null;
+
+            # Create the PaymentIntent
+            $intent = \Stripe\PaymentIntent::create([
+                'payment_method' => $payment_method_id,
+                'amount' => $amount,
+                'currency' => 'eur',
+                'confirmation_method' => 'manual',
+                'confirm' => true,
+                "description" => "Ticked-it - payment " . $cart->getId(),
+            ]);
+
+            $cart->generateBarCode();
+            $em->persist($cart);
+            $em->flush();
+
+            return $this->generatePaymentResponse($intent, $cart);
+        } catch (\Stripe\Error\Card $e) {
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.card')]);
+        } catch (\Stripe\Error\RateLimit $e) {
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.rate_limit')]);
+
+        } catch (\Stripe\Error\InvalidRequest $e) {
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.invalid_request')]);
+
+        } catch (\Stripe\Error\Authentication $e) {
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.authentication')]);
+
+        } catch (\Stripe\Error\ApiConnection $e) {
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.api_connection')]);
+
+        } catch (\Stripe\Error\Base $e) {
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.generic')]);
+
+        } catch (\Exception $e) {
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
+        }
+        return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
+    }
+
+    function generatePaymentResponse(PaymentIntent $intent, Cart $cart) {
+        if ($intent->status == 'requires_action' &&
+            $intent->next_action->type == 'use_stripe_sdk') {
+            # Tell the client to handle the action
+            return $this->json([
+                'requires_action' => true,
+                'barcode' => $cart->getBarcodeText(),
+                'payment_intent_client_secret' => $intent->client_secret
+            ]);
+        } else if ($intent->status == 'succeeded') {
+            # The payment didn’t need any additional actions and completed!
+            # Handle post-payment fulfillment
+            $cart->setPaid(true);
+            $payment = new Payment();
+            $payment->setDate(new \DateTime())->setUser($cart->getUser())
+                ->setCart($cart)->setRefunded(false)->setAmount($cart->getAmount());
+            try {
+                $payment->setChargeId($intent->charges->data[0]->id);
+            } catch(\Throwable $exception) {
+                $payment->setChargeId($intent->id);
+            }
+            $this->em->persist($cart);
+            $this->em->persist($payment);
+            $this->em->flush();
+            return $this->json([
+                "success" => true,
+                'barcode' => $cart->getBarcodeText(),
+            ]);
+        } else {
+            # Invalid status
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
+        }
+    }
+
+
+    /**
      * @Route("/checkout/{code}", name="yb_checkout")
      */
     public function checkoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, $code) {
-
-
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
 
         /** @var Cart $cart */
         if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
-        }
-        if ($request->getMethod() == 'POST' && isset($_POST['accept_conditions']) && $_POST['accept_conditions']) {
-
-            $amount = intval($_POST['amount']);
-            // We set an explicit test for amount changes as it has legal impacts
-            if (floatval($amount) !=  floatval($cart->getAmount() * 100)) {
-                $this->addFlash('error', 'errors.order_changed');
-                return $this->render('@App/YB/checkout.html.twig', array(
-                    'cart' => $cart,
-                    'error_conditions' => false,
-                ));
-            }
-
-            if($cart->getYbOrder() == null) {
-                $first_name = $_POST['first_name'];
-                $last_name = $_POST['last_name'];
-                $email = $_POST['email'];
-
-                $order = new YBOrder();
-                $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-
-                $errors = $validator->validate($order);
-                if(count($errors) > 0) {
-                    $this->addFlash('error', 'errors.order_coords');
-                    return $this->render('@App/YB/checkout.html.twig', array(
-                        'cart' => $cart,
-                        'error_conditions' => false,
-                    ));
-                }
-            }
-
-            else {
-                $order = $cart->getYbOrder();
-            }
-
-            foreach($cart->getContracts() as $cf) {
-                /** @var ContractFan $cf */
-                /** @var YBContractArtist $contract_artist */
-                $contract_artist = $cf->getContractArtist();
-                if ($contract_artist->isUncrowdable()) {
-                    $this->addFlash('error', 'errors.event_uncrowdable');
-                    return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
-                }
-
-                foreach ($cf->getPurchases() as $purchase) {
-                    if ($contract_artist->getNbAvailable($purchase->getCounterpart()) < $purchase->getQuantityOrganic()) {
-                        $this->addFlash('error', 'errors.order_max');
-                        return $this->redirectToRoute('yb_campaign', ['id' => $contract_artist->getId(), 'slug' => $contract_artist->getSlug()]);
-                    }
-                }
-            }
-
-            $em->persist($order);
-            $em->flush();
-            // Set your secret key: remember to change this to your live secret key in production
-            // See your keys here: https://dashboard.stripe.com/account/apikeys
-            \Stripe\Stripe::setApiKey($this->getParameter('stripe_api_secret'));
-
-            // Token is created using Stripe.js or Checkout!
-            // Get the payment token submitted by the form:
-            $source = $_POST['stripeSource'];
-
-            // Charge the user's card:
-            try {
-                foreach($cart->getContracts() as $contract) {
-                    /** @var ContractFan $contract
-                     * @var YBContractArtist $contract_artist */
-                    $contract->calculatePromotions();
-                }
-
-                $payment = new Payment();
-                $payment->setDate(new \DateTime())->setUser(null)
-                    ->setCart($cart)->setRefunded(false)->setAmount($cart->getAmount());
-
-                $charge = \Stripe\Charge::create(array(
-                    "amount" => $amount,
-                    "currency" => "eur",
-                    "description" => "Ticked-it - payment " . $cart->getId(),
-                    "source" => $source,
-                ));
-
-                $payment->setChargeId($charge->id);
-                $em->persist($payment);
-
-                $em->persist($cart);
-                return $this->redirectToRoute('yb_payment_success', array('code' => $cart->getBarcodeText())); //, 'sponsorship' => $sponsorship));
-
-            } catch (\Stripe\Error\Card $e) {
-                $this->addFlash('error', 'errors.stripe.card');
-                // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            } catch (\Stripe\Error\RateLimit $e) {
-                $this->addFlash('error', 'errors.stripe.rate_limit');
-                // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            } catch (\Stripe\Error\InvalidRequest $e) {
-                $this->addFlash('error', 'errors.stripe.invalid_request');
-                // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            } catch (\Stripe\Error\Authentication $e) {
-                $this->addFlash('error', 'errors.stripe.authentication');
-                // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            } catch (\Stripe\Error\ApiConnection $e) {
-                $this->addFlash('error', 'errors.stripe.api_connection');
-                // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            } catch (\Stripe\Error\Base $e) {
-                $this->addFlash('error', 'errors.stripe.generic');
-                // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'errors.stripe.other');
-                // $this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
-            }
         }
 
         return $this->render('@App/YB/checkout.html.twig', [
@@ -268,13 +391,14 @@ class YBController extends BaseController
     }
 
     /**
-     * @Route("/payment/success/{code}", name="yb_payment_success")
+     * @Route("/payment/success", name="yb_payment_success")
      */
-    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request, $code) {
+    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request) {
 
+        $code = $request->get('code');
         /** @var Cart $cart */
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
-        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
+        if ($cart == null || count($cart->getContracts()) == 0 || $cart->getFinalized() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
 
@@ -296,7 +420,7 @@ class YBController extends BaseController
             $em->persist($campaign);
         }
 
-        $cart->setPaid(true);
+        $cart->setFinalized(true);
         $em->flush();
 
         $this->addFlash('yb_notice', 'Paiement bien reçu ! Votre commande est validée. Vous devriez avoir reçu un récapitulatif par e-mail.');
@@ -312,7 +436,8 @@ class YBController extends BaseController
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
 
         foreach($cart->getContracts() as $cf) {
-            if(!$cf->getcounterpartsSent())
+            /** @var ContractFan $cf */
+            if($cf->getContractArtist()->getTicketsSent() && !$cf->getcounterpartsSent())
                 $ticketingManager->generateAndSendYBTickets($cf);
         }
 
@@ -376,9 +501,16 @@ class YBController extends BaseController
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
 
-        $order = new YBOrder();
-        $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
-        $cart->setYbOrder($order);
+        if($cart->getYbOrder() == null) {
+            $order = new YBOrder();
+            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name)->setCart($cart);
+            $cart->setYbOrder($order);
+        }
+        else {
+            $order = $cart->getYbOrder();
+            $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name);
+            $em->persist($order);
+        }
         
         $errors = $validator->validate($order);
         if($errors->count() > 0) {

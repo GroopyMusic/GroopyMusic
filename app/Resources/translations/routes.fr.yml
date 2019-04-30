@@ -159,7 +159,7 @@ user_cart_payment_pending: '/zone-securisee/paiement-en-attente/{cart_code}'
 user_cart_payment_stripe: /zone-securisee/panier/paiement
 
 # Desc: /secure-zone/cart/payment/success/{id}
-user_cart_payment_stripe_success: '/zone-securisee/panier/paiement-reussi/{cart_code}'
+user_cart_payment_stripe_success: '/zone-securisee/panier/paiement-reussi'
 
 # Desc: /secure-zone/cart/send-recap-{id}
 user_cart_send_order_recap: '/secure-zone/cart/send-recap-{cart_code}'

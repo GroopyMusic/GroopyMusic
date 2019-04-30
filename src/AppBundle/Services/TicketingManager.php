@@ -30,17 +30,15 @@ class TicketingManager
 
     private $writer;
     private $mailDispatcher;
-    private $notificationDispatcher;
     private $logger;
     private $em;
     private $agenda = [];
     private $rewardSpendingService;
 
-    public function __construct(PDFWriter $writer, MailDispatcher $mailDispatcher, NotificationDispatcher $notificationDispatcher, LoggerInterface $logger, EntityManagerInterface $em, RewardSpendingService $rewardSpendingService)
+    public function __construct(PDFWriter $writer, MailDispatcher $mailDispatcher, LoggerInterface $logger, EntityManagerInterface $em, RewardSpendingService $rewardSpendingService)
     {
         $this->writer = $writer;
         $this->mailDispatcher = $mailDispatcher;
-        $this->notificationDispatcher = $notificationDispatcher;
         $this->logger = $logger;
         $this->em = $em;
         $this->rewardSpendingService = $rewardSpendingService;
@@ -110,7 +108,7 @@ class TicketingManager
             if (!empty($tickets)) {
                 $agenda = $this->getAgenda($tickets[0]);
                 // Write PDF file
-                $this->writer->writeTickets($path, $tickets, $agenda);
+                $this->writer->writeTickets($path, null, $tickets, $agenda);
                 // And send it
                 $this->mailDispatcher->sendTicketsForPhysicalPerson($physicalPerson, $contractArtist, $path);
             }
@@ -163,7 +161,6 @@ class TicketingManager
             try {
                 $this->sendTicketsForContractFan($cf);
                 $cf->setcounterpartsSent(true);
-                $this->sendNotificationTicketsSent([$cf->getUser()], $cf->getContractArtist());
             } catch (\Exception $e) {
                 $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
                 return $e;
@@ -190,7 +187,7 @@ class TicketingManager
             /** @var ContractFan $cf */
             if (!$cf->getcounterpartsSent()) {
                 try {
-                    $this->sendTicketsForContractFan($cf);
+                    $this->sendUnSentTicketsForContractFan($cf);
                     $cf->setcounterpartsSent(true);
                     $users[] = $cf->getUser();
                 } catch (\Exception $e) {
@@ -201,12 +198,6 @@ class TicketingManager
         }
 
         $this->em->flush();
-
-        try {
-            $this->sendNotificationTicketsSent($users, $contractArtist);
-        } catch (\Exception $e) {
-            $this->logger->error("Erreur lors de l'envoi de notifications pour les tickets du contrat d'artiste " . $contractArtist->getId());
-        }
 
         return null;
     }
@@ -235,23 +226,11 @@ class TicketingManager
         $tickets = $cf->getTickets()->toArray();
         if(count($tickets) > 0) {
             $agenda = $this->getAgenda(current($tickets));
-            $this->writer->writeTickets($cf->getTicketsPath(), $tickets, $agenda);
+            $this->writer->writeTickets($cf->getTicketsPath(), $cf, $tickets, $agenda);
             $this->mailDispatcher->sendTicketsForContractFan($cf, $cf->getContractArtist());
             $this->em->persist($cf);
         }
     }
-
-    /**
-     * Adds a notification to all $users that their tickets for $contractArtist are ready
-     *
-     * @param array $users
-     * @param $contractArtist
-     */
-    protected function sendNotificationTicketsSent(array $users, $contractArtist)
-    {
-        $this->notificationDispatcher->notifyTickets($users, $contractArtist);
-    }
-
 
     /**
      * Returns an array of data corresponding to $ticket
