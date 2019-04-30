@@ -4,9 +4,15 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\PhysicalPerson;
+use AppBundle\Entity\YB\CustomTicket;
+use AppBundle\Entity\YB\PublicTransportStation;
+use AppBundle\Entity\YB\VenueConfig;
+use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Form\PhysicalPersonTicketType;
 use AppBundle\Services\TicketingManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\UserBundle\Model\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketingController extends BaseController
 {
+
     /**
      * @Route("/", name="ticketing_index")
      */

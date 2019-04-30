@@ -4,7 +4,9 @@ use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\Purchase;
+use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\Booking;
+use AppBundle\Entity\YB\CustomTicket;
 use AppBundle\Entity\YB\Reservation;
 use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContact;
@@ -88,7 +90,9 @@ class YBController extends BaseController
             $em->flush();
             if ($c->getConfig()->isOnlyStandup() || $c->getConfig()->hasFreeSeatingPolicy()){
                 // on skip le choix des sièges
-                return $this->redirectToRoute('yb_checkout', ['code' => $cart->getBarcodeText()]);
+                return $this->redirectToRoute('yb_checkout', [
+                    'code' => $cart->getBarcodeText(),
+                ]);
             } else {
                 return $this->redirectToRoute('yb_pick_seats', [
                     'cf' => $cf->getId(),
@@ -121,7 +125,9 @@ class YBController extends BaseController
             if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks($config->getBlocks())) {
                 if ($purchase === end($purchases)){
                     // c'est la fin, on peut aller au checkout
-                    return $this->redirectToRoute('yb_checkout', ['code' => $code]);
+                    return $this->redirectToRoute('yb_checkout', [
+                        'code' => $code,
+                    ]);
                 } else {
                     // on doit encore traiter les autres purchase
                     return $this->redirectToRoute('yb_pick_seats', [
@@ -155,7 +161,9 @@ class YBController extends BaseController
                 ]);
             }
         } else {
-            return $this->redirectToRoute('yb_checkout', ['code' => $code]);
+            return $this->redirectToRoute('yb_checkout', [
+                'code' => $code,
+            ]);
         }
     }
 
@@ -169,7 +177,7 @@ class YBController extends BaseController
     }
 
     /**
-     * @Route("/checkout/bancontact/{code}", name="yb_bancontact_checkout")
+     * @Route("/checkout/bancontact/{code}/", name="yb_bancontact_checkout")
      */
     public function bancontactCheckoutAction(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, $code)
     {
@@ -397,6 +405,7 @@ class YBController extends BaseController
         if ($cart == null || count($cart->getContracts()) == 0 || $cart->getPaid() || $cart->isRefunded()) {
             throw $this->createNotFoundException("Pas de panier, pas de paiement !");
         }
+
         if (count($cart->getContracts()) === 1){
             $timeStamp = $this->getOldestBookingTime($em, $cart->getContracts()[0]);
         } else {
@@ -818,7 +827,20 @@ class YBController extends BaseController
             $timeStamp = $runTimeMax->getTimestamp();
             return $timeStamp;
         } else {
-            return null;
+            return (new \DateTime())->modify("+15 minutes")->getTimestamp();
         }
+    }
+
+    /**
+     * @Route("show-ticket/{ticket}", name="show_ticket")
+     * @param Ticket $ticket
+     * @return Response
+     */
+    public function showTicket(Ticket $ticket){
+        $tickets = [];
+        $tickets[] = $ticket;
+        return $this->render('@App/PDF/yb_tickets.html.twig', [
+            'tickets' => $tickets,
+        ]);
     }
 }

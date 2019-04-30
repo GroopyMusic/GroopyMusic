@@ -2,14 +2,17 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Address;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\Block;
+use AppBundle\Entity\YB\CustomTicket;
 use AppBundle\Entity\YB\Membership;
 use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\OrganizationJoinRequest;
+use AppBundle\Entity\YB\PublicTransportStation;
 use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContractArtist;
@@ -18,6 +21,7 @@ use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\BlockType;
+use AppBundle\Form\YB\CustomTicketType;
 use AppBundle\Form\YB\OrganizationType;
 use AppBundle\Form\YB\VenueConfigType;
 use AppBundle\Form\YB\VenueType;
@@ -31,6 +35,7 @@ use AppBundle\Services\PaymentManager;
 use AppBundle\Services\PDFWriter;
 use AppBundle\Services\StringHelper;
 use AppBundle\Services\TicketingManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -47,6 +52,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class YBMembersController extends BaseController
 {
+
     /**
      * @Route("/dashboard", name="yb_members_dashboard")
      */
@@ -123,7 +129,7 @@ class YBMembersController extends BaseController
                 return $this->redirect($this->generateUrl($request->attributes->get('_route'), $params));
             } else {
                 $flow->reset(); // remove step data from the session
-                $this->addFlash('yb_notice', 'La campagne a bien été créée.');
+                $this->addFlash('yb_notice', 'La campagne a bien été créée. Vous pouvez personnaliser vos tickets depuis votre dashboard !');
                 return $this->redirectToRoute('yb_members_dashboard');
             }
         }
@@ -804,6 +810,7 @@ class YBMembersController extends BaseController
                 return $this->redirectToRoute('yb_members_venues_new');
             } else {
                 $venue->createDefaultConfig();
+                if ($venue->isLocatedInBelgium()) $this->setCoordinates($venue);
                 $em->persist($venue);
                 $em->flush();
                 if ($form->get('addBlocks')->isClicked()) {
@@ -913,6 +920,9 @@ class YBMembersController extends BaseController
                 $this->addFlash('error', "Il y a déjà une salle à cette adresse ! Peut-être votre salle existe-elle déjà ?!");
                 return $this->redirectToRoute('yb_members_venue_edit', ['id' => $venue->getId()]);
             } else {
+                if ($savedAddress !== $venue->getAddress() && $venue->isLocatedInBelgium()){
+                    $this->setCoordinates($venue);
+                }
                 $em->persist($venue);
                 $em->flush();
                 $this->addFlash('yb_notice', 'La salle a bien été modifiée.');
@@ -1060,6 +1070,65 @@ class YBMembersController extends BaseController
     public function openHelpCreateVenue()
     {
         return $this->render('@App/YB/Members/venue_help.html.twig');
+    }
+
+    /**
+     * @Route("/customize-ticket/{id}", name="yb_customize_ticket")
+     */
+    public function customizeTicketAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em){
+        $this->checkIfAuthorized($user, $campaign);
+        $customTicket = $em->getRepository('AppBundle:YB\CustomTicket')->findByYBContractArtist($campaign->getId());
+        if ($customTicket === null){
+            $customTicket = new CustomTicket($campaign);
+        }
+        $form = $this->createForm(CustomTicketType::class, $customTicket);
+        $form->handleRequest($request);
+        $stations = new ArrayCollection();
+        if ($form->isSubmitted() && $form->isValid()){
+            if ($customTicket->isCommuteAdded()) {
+                if ($customTicket->isCommuteSTIBAdded()) {
+                    $stationsSTIB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::STIB, $em);
+                    if (is_array($stations)){
+                        $stations = array_merge($stations, $stationsSTIB);
+                    } else {
+                        $stations = array_merge($stations->toArray(), $stationsSTIB);
+                    }
+                }
+                if ($customTicket->isCommuteSNCBAdded()) {
+                    $stationsSNCB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::SNCB, $em);
+                    if (is_array($stations)){
+                        $stations = array_merge($stations, $stationsSNCB);
+                    } else {
+                        $stations = array_merge($stations->toArray(), $stationsSNCB);
+                    }
+                }
+                if ($customTicket->isCommuteTECAdded()) {
+                    $stationsTEC = $this->getTECStop($campaign->getVenue()->getAddress());
+                    if (is_array($stations)){
+                        $stations = array_merge($stations, $stationsTEC);
+                    } else {
+                        $stations = array_merge($stations->toArray(), $stationsTEC);
+                    }
+                }
+                $customTicket->setStations($stations);
+                if (count($stations) > 0){
+                    $mapUrl = $customTicket->getMapQuestUrl($this->getParameter('mapquest_key'));
+                    $imgPath = 'yb/images/custom-tickets/campaign' . $customTicket->getCampaign()->getId() . '.jpg';
+                    $customTicket->setMapsImagePath($imgPath);
+                    file_put_contents($imgPath, file_get_contents($mapUrl));
+                } else {
+                    $customTicket->setMapsImagePath(null);
+                }
+            }
+            $em->persist($customTicket);
+            $em->flush();
+            $this->addFlash('yb_notice', 'Vos préférences ont bien été enregistrées !');
+            return $this->redirectToRoute('yb_members_dashboard');
+        }
+        return $this->render('@App/YB/Members/customize_ticket.html.twig', [
+            'campaign' => $campaign,
+            'form' => $form->createView(),
+        ]);
     }
 
     // ------------------ private functions -------------------- //
@@ -1468,5 +1537,148 @@ class YBMembersController extends BaseController
         foreach ($seats as $s){
             $em->remove($s);
         }
+    }
+
+    private function setCoordinates(Venue $venue){
+        $url = $this->generateLocationIQUrl($venue);
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($curl);
+        $r = json_decode($result, true);
+        $lat = $r[0]["lat"];
+        $lon = $r[0]["lon"];
+        curl_close($curl);
+        $venue->getAddress()->setLatitude($lat);
+        $venue->getAddress()->setLongitude($lon);
+    }
+
+    public function generateLocationIQUrl(Venue $v){
+        $key = $this->getParameter('location_iq_token');
+        $baseUrl = 'https://eu1.locationiq.com/v1/search.php?key='. $key . '&q=';
+        $formattedAddress = str_replace(' ', '%20', $v->getAddress()->getNaturalWithCountry());
+        $url = $baseUrl . $formattedAddress;
+        $url .= '&format=json';
+        return $url;
+    }
+
+    private function getPublicTransportStations($lat, $lon, $transportType, EntityManagerInterface $em, $distance = 1000)
+    {
+        $url = 'https://opendata.bruxelles.be/api/records/1.0/search/?dataset=' . $transportType . '&geofilter.distance=' . $lat . '%2C' . $lon . '%2C' . $distance;
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($curl);
+        $resultArray = json_decode($result, true);
+        $stations = [];
+        if (isset($resultArray['records'])) {
+            foreach ($resultArray['records'] as $station) {
+                $stationName = $station['fields']['name'];
+                $stationLat = $station['fields']['latitude'];
+                $stationLon = $station['fields']['longitude'];
+                $distance = ($station['fields']['dist']) / 1000;
+                $stations[] = $this->getStationsFromInfos($stationName, $stationLat, $stationLon, $transportType, $distance, $em);
+            }
+        }
+        curl_close($curl);
+        $stations = $this->sortStations($stations);
+        return $stations;
+    }
+
+    private function getStationsFromInfos($stationName, $stationLat, $stationLon, $transportType, $distance, EntityManagerInterface $em){
+        $station = $em->getRepository('AppBundle:YB\PublicTransportStation')->getStationsFromInfos($stationName, $stationLat, $stationLon, $this->getCorrespondingType($transportType), $distance);
+        if ($station === null){
+            $station = new PublicTransportStation($stationName, $stationLat, $stationLon, $transportType, $distance);
+        }
+        return $station;
+    }
+
+    private function getCorrespondingType($string){
+        if ($string === PublicTransportStation::SNCB){
+            return 'SNCB';
+        } else if ($string === PublicTransportStation::STIB) {
+            return 'STIB';
+        } else {
+            return '';
+        }
+    }
+
+    private function getTECStop(Address $address){
+        $city = $address->getCity();
+        $lat = $address->getLatitude();
+        $lon = $address->getLongitude();
+        $handle = fopen("stops.txt", "r");
+        $infos = [];
+        while (($line = fgets($handle)) !== false) {
+            if (strpos($line, strtoupper($city)) !== false){
+                $infos[] = $line;
+            }
+        }
+        fclose($handle);
+        $stops = $this->getStopFromLine($lat, $lon, $infos);
+        $stops = $this->sortStations($stops);
+        return $stops;
+    }
+
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2) {
+        if (($lat1 == $lat2) && ($lon1 == $lon2)) {
+            return 0;
+        } else {
+            $theta = $lon1 - $lon2;
+            $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            return ($miles * 1.609344);
+        }
+    }
+
+    private function getStopFromLine($addressLat, $addressLon, $lines){
+        $stops = [];
+        foreach ($lines as $line){
+            $infos = explode(',', $line);
+            $lat = $infos[4];
+            $lon = $infos[5];
+            $distance = $this->calculateDistance($addressLat, $addressLon, $lat, $lon);
+            if ($distance <= 1){
+                $stops [] = new PublicTransportStation($infos[2], $lat, $lon, 'TEC', $distance);
+            }
+        }
+        return $stops;
+    }
+
+    private function sortStations($stations){
+        usort($stations, function(PublicTransportStation $s1, PublicTransportStation $s2){
+            if ($s1->getDistance() === $s2->getDistance()){
+                return 0;
+            } else if ($s1->getDistance() < $s2->getDistance()){
+                return -1;
+            } else {
+                return 1;
+            }
+        });
+        $stations = array_slice($stations, 0, 5);
+        return $stations;
+    }
+
+    /**
+     * @Route("/gmaps", name="gmaps")
+     */
+    public function getUrl(){
+        /*$url = 'http://opendata.tec-wl.be/Current%20GTFS/TEC-GTFS.zip';
+        file_put_contents('yb/file-from-tec.zip', file_get_contents($url));
+        $zip = new \ZipArchive();
+        $res = $zip->open('yb/file-from-tec.zip');
+        if ($res === true){
+            $zip->extractTo('yb/file-from-tec/');
+            $zip->close();
+        }*/
+        $dir = new \DirectoryIterator('sdnijsdnm');
+        foreach ($dir as $file){
+            if (!$file->isDot() && $file->getFilename() !== 'stops.txt'){
+                unlink('yb/file-from-tec/'.$file);
+            }
+        }
+        return new JsonResponse('hello');
     }
 }

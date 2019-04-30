@@ -35,11 +35,16 @@ class YBContractArtist extends BaseContractArtist
     const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
 
     const PHOTOS_DIR = 'images/campaigns/';
+    const PHOTOS_DIR_YB = 'yb/images/campaigns/';
 
     const DAYS_BEFORE_WAY_PASSED = 60;
 
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
+    public static function getYBWebPath(Photo $photo){
+        return self::PHOTOS_DIR_YB . $photo->getFilename();
     }
 
     public function __construct()
@@ -403,6 +408,12 @@ class YBContractArtist extends BaseContractArtist
     private $vat_number;
 
     /**
+     * @var
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\CustomTicket", mappedBy="campaign")
+     */
+    private $customTicket;
+
+    /**
      * Set ticketsSent
      *
      * @param boolean $ticketsSent
@@ -614,7 +625,11 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getAddress()
     {
-        return $this->address;
+        if ($this->venue !== null){
+            return $this->venue->getAddress();
+        } else {
+            return $this->address;
+        }
     }
 
     /**
@@ -826,4 +841,21 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->venue = $venue;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomTicket()
+    {
+        return $this->customTicket;
+    }
+
+    /**
+     * @param mixed $customTicket
+     */
+    public function setCustomTicket($customTicket)
+    {
+        $this->customTicket = $customTicket;
+    }
+
 }

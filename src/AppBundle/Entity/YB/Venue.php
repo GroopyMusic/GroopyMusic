@@ -28,6 +28,10 @@ class Venue {
         return $this->name;
     }
 
+    public function isLocatedInBelgium(){
+        return $this->address->getCountry() === 'BE';
+    }
+
     /**
      * Add a configuration to the venue
      * @param VenueConfig $config

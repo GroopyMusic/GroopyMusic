@@ -29,6 +29,14 @@ class Address
         return $string;
     }
 
+    public function getNaturalWithCountry($parenthesis = null){
+        $string = $this->street . ' ' . $this->number . ', ' . $this->zipcode . ' ' . $this->city . ' ' . $this->country;
+        if ($parenthesis != null){
+            $string .= ' (' . $parenthesis . ')';
+        }
+        return $string;
+    }
+
     public function __toString()
     {
         $name = $this->name != null ? $this->name . ', ' : '';
@@ -52,6 +60,10 @@ class Address
             return false;
         }
         return true;
+    }
+
+    public function isGeolocalizable(){
+        return $this->latitude !== null && $this->longitude !== null;
     }
 
     /**
@@ -102,6 +114,18 @@ class Address
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     private $name;
+
+    /**
+     * @var
+     * @ORM\Column(name="latitude", type="decimal", precision=15, scale=10, nullable=true)
+     */
+    private $latitude;
+
+    /**
+     * @var
+     * @ORM\Column(name="longitude", type="decimal", precision=15, scale=10, nullable=true)
+     */
+    private $longitude;
 
     /**
      * Get id
@@ -248,4 +272,38 @@ class Address
     {
         $this->name = $name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * @param mixed $latitude
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * @param mixed $longitude
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+    }
+
+
 }

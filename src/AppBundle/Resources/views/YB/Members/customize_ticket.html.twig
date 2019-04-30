@@ -1,0 +1,132 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li class="active"><span>{{ campaign.title }}</span></li>
+            <li class="active"><span>Personnalisation des tickets</span></li>
+        </ol>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Personnalisation des tickets</h2>
+        <div class="row">
+            <div class="col-12">
+                {{ form_widget(form.imageAdded) }}
+                <div class="text-muted font-italic pb-2">
+                    Le fichier image sera celui que vous avez associé à la campagne (si vous en avez associé un).
+                </div>
+            </div>
+            <div class="col-12">
+                <hr color="orange" size="2">
+            </div>
+            <div class="col-12">
+                {{ form_widget(form.venueMapAdded) }}
+                <div class="text-muted font-italic pb-2">
+                    Seulement affiché si la salle a ajouté un plan de salle.
+                </div>
+            </div>
+            <div class="col-12">
+                <hr color="orange" size="2">
+            </div>
+            <div class="col-12">
+                {{ form_widget(form.commuteAdded) }}
+                <div class="transport-type" style="margin-left: 30px">
+                    {{ form_widget(form.commuteSNCBAdded) }}
+                    {{ form_widget(form.commuteSTIBAdded) }}
+                    {{ form_widget(form.commuteTECAdded) }}
+                </div>
+                <div class="text-muted font-italic pb-2">
+                    Seulement applicable pour les salles situées en Belgique.
+                </div>
+            </div>
+            <div class="col-12">
+                <hr color="orange" size="2">
+            </div>
+            <div class="col-12">
+                {{ form_widget(form.publicTransportTextInfosAdded) }}
+                <div class="text-muted font-italic pb-2">
+                    Cette option est purement textuelle et peut être affichée en parallèle de l'option précédente.
+                </div>
+                <div class="transport-text" style="margin-left: 30px">
+                    {{ form_row(form.publicTransportTextInfos) }}
+                    <p style="font-size: 12px; text-align: right;"><span id="transport-wc">300</span> caractères restants</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <hr color="orange" size="2">
+            </div>
+            <div class="col-12">
+                {{ form_widget(form.customInfosAdded) }}
+                <div class="text-muted font-italic pb-2">
+                    Ce peut-être des informations sur l'événement, sur vous ou votre organisation.
+                </div>
+                <div class="custom-text" style="margin-left: 30px">
+                    {{ form_row(form.customInfos) }}
+                    <p style="font-size: 12px; text-align: right;"><span id="custom-wc">300</span> caractères restants</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <hr color="orange" size="2">
+            </div>
+            <div class="col-12 text-center">
+                <!--<a class="btn btn-success" href="#">Prévisualiser</a>-->
+                {{ form_row(form.submit) }}
+            </div>
+        </div>
+    </section>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $('input#app_bundle_custom_ticket_type_commuteAdded').on('change', function(){
+           $('.transport-type').toggle(this.checked);
+        });
+        $('input#app_bundle_custom_ticket_type_commuteAdded').trigger('change');
+
+        $('input#app_bundle_custom_ticket_type_publicTransportTextInfosAdded').on('change', function(){
+            $('.transport-text').toggle(this.checked);
+        });
+        $('input#app_bundle_custom_ticket_type_publicTransportTextInfosAdded').trigger('change');
+
+        $('input#app_bundle_custom_ticket_type_customInfosAdded').on('change', function(){
+            $('.custom-text').toggle(this.checked);
+        });
+        $('input#app_bundle_custom_ticket_type_customInfosAdded').trigger('change');
+
+        var maxChar = 300;
+
+        counterCustom = function(){
+            var text = $('textarea#app_bundle_custom_ticket_type_customInfos').val();
+            var wc = text.length;
+            var remaining = maxChar - wc;
+            if (wc > maxChar - 1){
+                $('textarea#app_bundle_custom_ticket_type_customInfos').val(
+                    $('textarea#app_bundle_custom_ticket_type_customInfos').val().substring(0, maxChar)
+                );
+                $('#custom-wc').html(0);
+            } else {
+                $('#custom-wc').html(remaining);
+            }
+        }
+        $('textarea#app_bundle_custom_ticket_type_customInfos').keyup(counterCustom);
+
+        counterTransport = function(){
+            var text = $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val();
+            var wc = text.length;
+            var remaining = maxChar - wc;
+            if (wc > maxChar - 1){
+                $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val(
+                    $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val().substring(0, maxChar)
+                );
+                $('#transport-wc').html(0);
+            } else {
+                $('#transport-wc').html(remaining);
+            }
+        }
+        $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').keyup(counterTransport);
+    </script>
+{% endblock %}
