@@ -15,6 +15,7 @@ abstract class Topping {
 
     public function __construct()
     {
+        $this->validated = false;
     }
 
     /**
@@ -43,6 +44,12 @@ abstract class Topping {
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Purchase_Promotion", inversedBy="toppings")
      */
     protected $purchase_promotion;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="validated", type="boolean")
+     */
+    protected $validated;
 
     /**
      * @return int
@@ -89,5 +96,22 @@ abstract class Topping {
     {
         $this->purchase_promotion = $purchase_promotion;
         return $this;
+    }
+
+    public function getValidated() {
+        return $this->validated;
+    }
+
+    public function isValidated() {
+        return $this->getValidated();
+    }
+
+    public function setValidated($validated) {
+        $this->validated = $validated;
+        return $this;
+    }
+
+    public function validate() {
+        $this->setValidated(true);
     }
 }
