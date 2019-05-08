@@ -1,7 +1,7 @@
 {% macro project_row(project) %}
 
     <hr>
-    <div class="row mt-4" {% if not project.validated %} disabled="disabled" {% endif %}>
+    <div class="row mt-4"{#% if not project.validated %} disabled="disabled" {% endif %#}>
         <div class="col-12">
             <h3><b>{{ project.title }}</b></h3>
             <h5>Artiste associé : <b>{{ project.artist.artistname }}</b></h5>
@@ -47,6 +47,12 @@
                 <div class="progress">
                     <div class="progress-bar {% if project.isPassed and project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+            </div>
+        {% endif %}
+
+        {% if not project.validated %}
+            <div class="col-12 mt-3 text-muted font-italic pb-2">
+                Ce projet doit être validadé par les administrateurs de Un-Mute pour être visible par le public
             </div>
         {% endif %}
 

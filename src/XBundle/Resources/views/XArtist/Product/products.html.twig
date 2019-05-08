@@ -35,8 +35,8 @@
                             {% if product.isTicket %}
                                 <img src="{{ asset('x/images/ticket.png') }}"/>
                             {% else %}
-                                {% if product.photo is not null %}
-                                    <img src="{{ asset(product.webPath(product.photo)) }}"/>
+                                {% if product.image is not null %}
+                                    <img src="{{ asset(product.webPath(product.image)) }}"/>
                                 {% endif %}
                             {% endif %}
                         </div>

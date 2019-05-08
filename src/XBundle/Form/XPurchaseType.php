@@ -2,11 +2,7 @@
 
 namespace XBundle\Form;
 
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,8 +11,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use XBundle\Entity\Project;
 use XBundle\Entity\XPurchase;
-use XBundle\Entity\ChoiceOption;
-use XBundle\Form\XPurchaseChoiceType;
+
 
 class XPurchaseType extends AbstractType
 {
@@ -40,6 +35,7 @@ class XPurchaseType extends AbstractType
                 $event->getForm()->add('freePrice', NumberType::class, array(
                     'attr' => [
                         'class' => 'free-price-value product-price',
+                        'value' => $purchase->getProduct()->getMinimumPrice(),
                     ],
                     'label' => false,
                     'required' => false

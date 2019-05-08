@@ -2,22 +2,19 @@
 
 namespace XBundle\Form;
 
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 use XBundle\Entity\Product;
-use XBundle\Form\ImageType;
 use XBundle\Form\OptionProductType;
 
 class ProductType extends AbstractType
@@ -60,9 +57,17 @@ class ProductType extends AbstractType
                 'label' => "Prix minimum (en euros) (1 € ou plus) (non modifiable une fois que l'article a été vendu au moins une fois)",
                 'required' => false,
             ))
-            ->add('photo', ImageType::class, array(
+            /*->add('photo', ImageType::class, array(
                 'label' => 'Photo',
                 'required' => false
+            ))*/
+            ->add('imageFile', VichImageType::class, array(
+                'label' => 'Photo',
+                'required' => false,
+                'download_link' => false,
+                'download_uri' => false,
+                'image_uri' => true,
+                'allow_delete' => false,
             ))
             ->add('isTicket', CheckboxType::class, array(
                 'label' => 'L\'article mis en vente est un ticket',

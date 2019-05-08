@@ -7,7 +7,6 @@ use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\TicketingManager;
 use Doctrine\ORM\EntityManagerInterface;
-//use Ob\HighchartsBundle\Highcharts\Highchart;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,8 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use XBundle\Entity\Product;
 use XBundle\Entity\Project;
-use XBundle\Entity\OptionProduct;
-use XBundle\Entity\ChoiceOption;
 use XBundle\Entity\XTransactionalMessage;
 use XBundle\Form\ProductType;
 use XBundle\Form\ProjectType;
@@ -61,9 +58,10 @@ class XArtistController extends BaseController
         $this->checkIfArtistAuthorized($user);
 
         $project = new Project();
-        $project->setCreator($user);
 
-        $form = $this->createForm(ProjectType::class, $project, ['creation' => true]);
+        $artistsUser = $em->getRepository('AppBundle:Artist')->findForUser($user);
+
+        $form = $this->createForm(ProjectType::class, $project, ['creation' => true, 'artists_user' => $artistsUser]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -79,10 +77,12 @@ class XArtistController extends BaseController
             $em->persist($project);
             $em->flush();
 
-            $message = 'Le projet "' . $project->getTitle() . '" a bien été créé. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible par le public sur Chapots';
-            $this->addFlash('x_notice', $message);
-            $mailDispatcher->sendAdminNewProject($project); 
-            return $this->redirectToRoute('x_artist_dashboard');
+            $mailDispatcher->sendAdminNewProject($project);
+            $message = 'Le projet "' . $project->getTitle() . '" a bien été créé. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible par le public sur Chapots. Vous pouvez passer à la mise en vente d\'articles';
+            //$this->addFlash('x_notice', $message);
+            $this->addFlash('x_notice_success_project', $message);
+            //return $this->redirectToRoute('x_artist_dashboard');
+            return $this->redirectToRoute('x_artist_product_add', ['id' => $project->getId()]);
         }
 
         return $this->render('@X/XArtist/project_new.html.twig', array(
@@ -120,8 +120,10 @@ class XArtistController extends BaseController
             $this->addFlash('x_warning', "Pas possible de modifier le projet");
             return $this->redirectToRoute('x_artist_passed_projets');
         }
+
+        $artistsUser = $em->getRepository('AppBundle:Artist')->findForUser($user);
         
-        $form = $this->createForm(ProjectType::class, $project, ['is_edit' => true]);
+        $form = $this->createForm(ProjectType::class, $project, ['is_edit' => true, 'artists_user' => $artistsUser]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {

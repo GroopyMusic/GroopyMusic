@@ -70,7 +70,7 @@ class Project
     }
 
     /**
-     * Calculate number of remaining days for project funding
+     * Calculates the number of remaining days for project funding
      */
     public function getRemainingDays()
     {
@@ -78,7 +78,7 @@ class Project
     }
 
     /**
-     * Calculate number of remaining hours for project funding
+     * Calculates the number of remaining hours for project funding
      */
     public function getRemainingHours()
     {
@@ -87,7 +87,7 @@ class Project
     }
 
     /**
-     * Calculate number of remaining minutes for project funding
+     * Calculates the number of remaining minutes for project funding
      */
     public function getRemainingMinutes()
     {
@@ -114,36 +114,26 @@ class Project
     }
 
     /**
-     * Calculate percentage of project funding progress
+     * Calculates the percentage of project funding progress
      */
     public function getProgressPercent() {
+        //return min(floor(($this->getCollectedAmount() / max(1, $this->getThreshold())) * 100), 100);
         return floor(($this->getCollectedAmount() / $this->getThreshold()) * 100);
     }
 
-    /**
-     * Update collected amount
-     */
     public function addAmount($amount) {
         $this->collectedAmount += $amount;
     }
 
-    /**
-     * Count number of donations
-     */
     public function getNbDonations() {
         return count($this->getDonationsPaid());
     }
 
-    /**
-     * Count number of sales
-     */
     public function getNbSales() {
         return count($this->getSalesPaid());
     }
 
-    /**
-     * Count contributors; once a contributor who has paid several times
-     */
+    // count contributors; once a contributor who has paid several times
     public function getNbContributors() {
         $nbContributors = array_unique(array_map(function(XOrder $person) {
             return $person->getEmail();
@@ -164,27 +154,22 @@ class Project
     }
 
     public function isClosed() {
-        return $this->isPassed() && ($this->successful || ($this->failed && $this->refunded));
+        return $this->isPassed() && ($this->successful or ($this->failed && $this->refunded));
     }
 
     public function isEvent() {
         return $this->dateEvent != null;
     }
 
-    /**
-     * Check if project is way passed to send transactional message
-     */
     public function isWayPassed() {
-        $date = new \DateTime();
         if ($this->isEvent()) {
-            return $date > $this->dateEvent && $this->dateEvent->diff($date)->days > self::DAYS_BEFORE_WAY_PASSED_EVENT;
+            $this->dateEvent->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED_EVENT;
         }
-        return $date > $this->dateEnd && $this->dateEnd->diff($date)->days > self::DAYS_BEFORE_WAY_PASSED;
+        return $this->dateEnd->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
     }
 
-    /**
-     * Get donations paid
-     */
+
+    // Get donations paid
     private $donationsPaid = null;
     public function getDonationsPaid() {
         if($this->donationsPaid == null) {
@@ -195,9 +180,7 @@ class Project
         return $this->donationsPaid;
     }
 
-    /**
-     * Get donators
-     */
+    // Get all donators
     public function getDonators() {
         if($this->getDonationsPaid() == null || empty($this->getDonationsPaid())) {
             return [];
@@ -207,9 +190,8 @@ class Project
         }, $this->getDonationsPaid());
     }
 
-    /**
-     * Get sales paid for a product
-     */
+
+    // Get sales paid for a product
     private $productSalesPaid = null;
     public function getProductSalesPaid(Product $product) {
         if ($this->productSalesPaid == null) {
@@ -222,9 +204,7 @@ class Project
         return $this->productSalesPaid;
     }
 
-    /**
-     * Get product buyers
-     */
+    // Get product buyers
     public function getProductBuyers(Product $product) {
         if($this->getProductSalesPaid($product) == null || empty($this->getProductSalesPaid($product))) {
             return [];
@@ -234,9 +214,8 @@ class Project
         }, $this->getProductSalesPaid($product));
     }
 
-    /**
-     * Get sales paid
-     */
+
+    // Get sales paid
     private $salesPaid = null;
     public function getSalesPaid() {
         if($this->salesPaid == null) {
@@ -247,9 +226,7 @@ class Project
         return $this->salesPaid;
     }
 
-    /**
-     * Get buyers
-     */
+    // Get all buyers
     public function getBuyers() {
         if($this->getSalesPaid() == null || empty($this->getSalesPaid())) {
             return [];
@@ -259,9 +236,8 @@ class Project
         }, $this->getSalesPaid());
     }
 
-    /**
-     * Get all contributions paid
-     */
+
+    // Get all contributions paid
     private $contributionsPaid = null;
     public function getContributionsPaid() {
         if($this->contributionsPaid == null) {
@@ -272,9 +248,7 @@ class Project
         return $this->contributionsPaid;
     }
 
-    /**
-     * Get all contributors
-     */
+    // Get all contributors
     public function getContributors() {
         if($this->getContributionsPaid() == null || empty($this->getContributionsPaid())) {
             return [];
@@ -284,9 +258,7 @@ class Project
         }, $this->getContributionsPaid());
     }
 
-    /**
-     * Get all contributions paid and refunded
-     */
+
     private $contributionsPaidAndRefunded = null;
     public function getContributionsPaidAndRefunded() {
         if($this->contributionsPaidAndRefunded == null) {
@@ -306,61 +278,7 @@ class Project
         }, $this->getContributionsPaidAndRefunded());
     }
 
-    /**
-     * Get all contributions before date validation
-     */
-    private $contributionsBeforeDateValidation = null;
-    public function getContributionsBeforeDateValidation() {
-        if ($this->contributionsBeforeDateValidation == null) {
-            $this->contributionsBeforeDateValidation = array_filter($this->contributions->toArray(), function(XContractFan $cf) {
-                return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation
-                    && $cf->getPaid() && ($this->failed || !$cf->getRefunded());
-            });
-        }
-        return $this->contributionsBeforeDateValidation;
-    }
 
-    /**
-     * Get all contributors before date validation
-     */
-    public function getContributorsBeforeDateValidation() {
-        if ($this->getContributionsBeforeDateValidation() == null || empty($this->getContributionsBeforeDateValidation())) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $this->getContributionsBeforeDateValidation());
-    }
-
-    /**
-     * Get all contributions after date validation
-     */
-    private $contributionsAfterDateValidation = null;
-    public function getContributionsAfterDateValidation() {
-        if ($this->contributionsAfterDateValidation == null) {
-            $this->contributionsAfterDateValidation = array_filter($this->contributions->toArray(), function(XContractFan $cf) {
-                return $this->dateValidation != null && $cf->getPayment()->getDate() > $this->dateValidation
-                    && $cf->getPaid() && ($this->failed || !$cf->getRefunded());
-            });
-        }
-        return $this->contributionsAfterDateValidation;
-    }
-
-    /**
-     * Get all contributors after date validation
-     */
-    public function getContributorsAfterDateValidation() {
-        if ($this->getContributionsAfterDateValidation() == null || empty($this->getContributionsAfterDateValidation())) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $this->getContributionsAfterDateValidation());
-    }
-
-    /**
-     * Check if project has validated products
-     */
     public function hasValidatedProducts() {
         $validatedProducts = array_filter($this->getProducts()->toArray(), function(Product $product) {
                                 return $product->getValidated() && $product->getDeletedAt() == null;
@@ -368,24 +286,8 @@ class Project
         return count($validatedProducts) > 0;
     }
 
-    /**
-     * Count for sales recap
-     */
-    public function getNbPerChoice(Product $product, ChoiceOption $choice){
-        $count = 0;
-        foreach ($this->contributions as $contribution) {
-            $purchase = $contribution->getPurchaseForProductWithChoice($product, $choice);
-            if($purchase != null) {
-                $count += $purchase->getQuantity();
-            }
-        }
-        return $count;
-    }
 
-
-    /**
-     * Conditions approval (form only)
-     */
+    // Conditions approval (form only)
     private $acceptConditions;
 
 
@@ -792,30 +694,6 @@ class Project
     public function getDateEnd()
     {
         return $this->dateEnd;
-    }
-
-    /**
-     * Set dateValidation
-     *
-     * @param \DateTime $dateValidation
-     *
-     * @return Project
-     */
-    public function setDateValidation($dateValidation)
-    {
-        $this->dateValidation = $dateValidation;
-
-        return $this;
-    }
-
-    /**
-     * Get dateValidation
-     *
-     * @return \DateTime
-     */
-    public function getDateValidation()
-    {
-        return $this->dateValidation;
     }
 
     /**
@@ -1363,6 +1241,4 @@ class Project
     {
         return $this->notifSuccessSent;
     }
-
-
 }

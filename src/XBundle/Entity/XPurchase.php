@@ -64,6 +64,10 @@ class XPurchase
         return $this->product->getOptions();
     }
 
+    public function hasChoiceOption(ChoiceOption $choice) {
+        return $this->choices->contains($choice);
+    }
+
 
     /**
      * @var int

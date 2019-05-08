@@ -3,12 +3,11 @@
 namespace XBundle\Admin;
 
 use AppBundle\Admin\BaseAdmin;
-use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use XBundle\Entity\Project;
+
 
 class ProductAdmin extends BaseAdmin
 {
@@ -71,6 +70,14 @@ class ProductAdmin extends BaseAdmin
                 ))
                 ->add('supply', null, array(
                     'label' => 'Stock'
+                ))
+                ->add('photo', null, array(
+                    'label' => 'Photo',
+                    'template' => 'XBundle:Admin/Product:photo.html.twig'
+                ))
+                ->add('options', null, array(
+                    'label' => 'Option(s)',
+                    'template' => 'XBundle:Admin/Product:options.html.twig'
                 ))
             ->end()
             ->with('État')

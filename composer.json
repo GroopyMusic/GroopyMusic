@@ -64,7 +64,6 @@
         "liuggio/excelbundle": "^2.1",
         "egeloen/ckeditor-bundle": "4.*",
         "helios-ag/fm-bbcode-bundle": "^7.0",
-        "ob/highcharts-bundle": "^1.6",
         "friendsofsymfony/rest-bundle": "^2.5",
         "jms/serializer-bundle": "^2.4",
         "nelmio/cors-bundle": "^1.5",

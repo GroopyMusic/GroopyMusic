@@ -49,4 +49,5 @@ web/css/compiled/*
 !/vendor/tecnickcom/tcpdf/fonts/montserrat.z
 !/vendor/tecnickcom/tcpdf/fonts/montserrat.php
 /web/x/images/projects
+/web/x/images/products
 /web/x/tickets

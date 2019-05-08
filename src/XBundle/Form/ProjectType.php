@@ -3,9 +3,6 @@
 namespace XBundle\Form;
 
 use AppBundle\Entity\Artist;
-use AppBundle\Form\AddressType;
-use AppBundle\Repository\ArtistRepository;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -16,14 +13,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use XBundle\Entity\Project;
-use XBundle\Entity\Product;
-use XBundle\Entity\Tag;
 use XBundle\Entity\XCategory;
 use XBundle\Form\XAddressType;
 use XBundle\Form\ImageType;
@@ -39,6 +32,18 @@ class ProjectType extends AbstractType
         $builder
             ->add('title', TextType::class, array(
                 'label' => 'Titre du projet',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ]
+            ))
+            ->add('artist', EntityType::class, array(
+                'class' => Artist::class,
+                'label' => 'Artiste associé',
+                'choices' => $options['artists_user'],
+                'choice_label' => 'artistname',
+                'disabled' => $options['is_edit'],
+                'placeholder' => '',
+                'empty_data' => null,
                 'constraints' => [
                     new Assert\NotBlank(),
                 ]
@@ -113,32 +118,11 @@ class ProjectType extends AbstractType
 
         if ($options['creation']) {
             $builder
-                ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
-                    $project = $event->getData();
-                    $event->getForm()->add('artist', EntityType::class, array(
-                        'class' => Artist::class,
-                        'choice_label' => 'artistname',
-                        'query_builder' => function (ArtistRepository $ar) use ($project) {
-                            return $ar->baseQueryBuilder()
-                                ->innerJoin('a.artists_user', 'au')
-                                ->where('au.user = :user')
-                                ->setParameter('user', $project->getCreator())
-                                ->andWhere('a.deleted = 0')
-                                ->andWhere('a.validated = 1');
-                        },
-                        'label' => 'Artiste associé',
-                        'placeholder' => '',
-                        'empty_data' => null,
-                        'constraints' => [
-                            new Assert\NotBlank(),
-                        ]
-                    ));
-                })
                 ->add('noThreshold', CheckboxType::class, array(
                     'label' => 'Pas de seuil de validation',
                     'required' => false
                 ))
-                ->add('products', CollectionType::class, array(
+                /*->add('products', CollectionType::class, array(
                     'entry_type' => ProductType::class,
                     'entry_options' => array(
                         'label' => false,
@@ -148,25 +132,13 @@ class ProjectType extends AbstractType
                     'by_reference' => false,
                     'prototype' => true,
                     'attr' => ['class' => 'collection'],
-                ))
+                ))*/
                 ->add('acceptConditions', CheckboxType::class, array(
                     'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Chapots!",
                     'required' => true,
                     'constraints' => array(
                         new Assert\NotBlank(),
                     )
-                ))
-            ;
-        } else {
-            $builder
-                ->add('artist', EntityType::class, array(
-                    'label' => 'Artiste associé',
-                    'class' => Artist::class,
-                    'choice_label' => 'artistname',
-                    'disabled' => $options['is_edit'],
-                    'constraints' => [
-                        new Assert\NotBlank(),
-                    ]
                 ))
             ;
         }
@@ -218,6 +190,7 @@ class ProjectType extends AbstractType
             ),
             'creation' => false,
             'is_edit'=> false,
+            'artists_user' => null,
         ));
     }
 

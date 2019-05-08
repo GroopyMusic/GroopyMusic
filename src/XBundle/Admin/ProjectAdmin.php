@@ -3,14 +3,11 @@
 namespace XBundle\Admin;
 
 use AppBundle\Admin\BaseAdmin;
-use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
-use AppBundle\AppBundle;
-use CG\Tests\Proxy\Fixture\Entity;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use AppBundle\Entity\Artist;
+
 
 class ProjectAdmin extends BaseAdmin
 {
@@ -89,8 +86,6 @@ class ProjectAdmin extends BaseAdmin
                 ->add('address', null, array(
                     'label' => "Lieu de l'évènement"
                 ))
-            ->end()
-            ->with('Description')
                 ->add('description', null, array(
                     'label' => 'À propos du projet',
                     'template' => 'XBundle:Admin:description.html.twig'
@@ -102,6 +97,10 @@ class ProjectAdmin extends BaseAdmin
                 ->add('thresholdPurpose', null , array(
                     'label' => 'Objectif du financement',
                     'template' => 'XBundle:Admin:threshold_purpose.html.twig'
+                ))
+                ->add('coverpic', null , array(
+                    'label' => 'Photo de couverture',
+                    'template' => 'XBundle:Admin:coverpic.html.twig'
                 ))
             ->end()
             ->with('Financement participatif')

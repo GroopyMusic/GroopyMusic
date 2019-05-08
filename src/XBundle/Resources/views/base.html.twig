@@ -148,6 +148,37 @@
             {% endif %}
         {% endblock %}
 
+        {% block notice_success_project %}
+            {% set notice_bag = app.request.session.flashbag.get('x_notice_success_project') %}
+            {% if notice_bag is not empty %}
+                {% for message in notice_bag %}
+                    <!-- Modal HTML -->
+                    <div class="modal-notice modal fade in">
+                        <div class="modal-dialog modal-confirm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="icon-box">
+                                        <i class="far fa-check-circle"></i>
+                                    </div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <h4>Merci !</h4>
+                                    <p>{{ message }}</p>
+                                    <button class="btn btn-success" data-dismiss="modal">
+                                        <span>Ajouter un article</span>
+                                    </button>
+                                    <form action="{{ path('x_artist_dashboard') }}">
+                                        <input class="btn btn-success" type="submit" value="Passer cet étape"/>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+
         {% block body %}{% endblock %}
 
     </main>

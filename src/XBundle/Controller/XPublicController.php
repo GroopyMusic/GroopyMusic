@@ -18,12 +18,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use XBundle\Entity\ChoiceOption;
 use XBundle\Entity\Project;
 use XBundle\Entity\XCart;
 use XBundle\Entity\XContractFan;
-use XBundle\Entity\XPurchase;
-use XBundle\Entity\XCategory;
 use XBundle\Entity\XContact;
 use XBundle\Entity\XOrder;
 use XBundle\Entity\XPayment;
@@ -77,7 +74,7 @@ class XPublicController extends BaseController
      */
     public function projectsAction(EntityManagerInterface $em, Request $request)
     {
-        //$projects = $em->getRepository('XBundle:Project')->findVisibleProjects();
+
         $projectsOngoing = $em->getRepository('XBundle:Project')->findOngoingProjects();
         $projectsSuccessful = $em->getRepository('XBundle:Project')->findSuccessfulProjects();
         $categories = $em->getRepository('XBundle:XCategory')->findAll();
@@ -377,10 +374,12 @@ class XPublicController extends BaseController
             // Check if threshold is reached -> to do only once
             if ($project->hasThreshold() && $project->getCollectedAmount() >= $project->getThreshold() && !$project->getNotifSuccessSent()) {
                 $project->setSuccessful(true);
+                $project->setDateValidation(new \DateTime());
                 $mailDispatcher->sendProjectThresholdConfirmed($project);
 
                 // Notify project confirmed to contributors
                 $mailDispatcher->sendConfirmedProject($project);
+
                 // Generate and send tickets to buyers
                 foreach($project->getSalesPaid() as $sale) {
                     if(!empty($sale->getTicketsPurchases())) {

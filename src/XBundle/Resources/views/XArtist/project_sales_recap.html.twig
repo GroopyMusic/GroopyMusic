@@ -8,8 +8,21 @@
             {% if product.deletedAt is null %}
             <div class="my-3 py-2">
                 <h3>{{ product.name }}</h3>
-                <p><b>{{ product.productsSold }}</b> commande(s) au total</p>
+                <p><b>{{ product.productsSold }}</b> vendu(s) au total {% if product.productsSold > 0 and product.options is not empty %}dont:{% endif %}</p>
+
                 {% if product.productsSold > 0 %}
+                    {% if product.options is not empty %}
+                            {% for option in product.options %}
+                                <ul>
+                                    {% for choice in option.choices %}
+                                        <li><b>{{ project.getNbPerChoice(product, choice) }}</b> {{ choice }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endfor %}
+                    {% endif %}
+                {% endif %}
+
+                {#% if product.productsSold > 0 %}
                     <ul class="list-group">
                         <li class="list-group-item">
                             <div class="row">
@@ -32,7 +45,8 @@
                             {% endfor %}
                         {% endfor %}
                     </ul>
-                {% endif %}
+                {% endif %#}
+
             </div>
             {% endif %}
         {% endfor %}

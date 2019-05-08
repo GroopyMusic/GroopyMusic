@@ -5,7 +5,7 @@ namespace XBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
-use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Entity\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use XBundle\Entity\Project;
 
@@ -32,12 +32,8 @@ class Product
         $this->options = new ArrayCollection();
     }
 
-    /*public static function getWebPath(Image $image) {
+    public static function getWebPath(Image $image) {
         return self::PHOTOS_DIR . $image->getFilename();
-    }*/
-
-    public static function getWebPath(string $image) {
-        return self::PHOTOS_DIR . $image;
     }
 
     public function __toString()
@@ -98,7 +94,7 @@ class Product
      * @ORM\OneToOne(targetEntity="XBundle\Entity\Image", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
-    //private $photo;
+    private $photo;
 
     /**
      * @var int
@@ -291,22 +287,22 @@ class Product
      *
      * @return Product
      */
-    /*public function setPhoto($photo = null)
+    public function setPhoto($photo = null)
     {
         $this->photo = $photo;
 
         return $this;
-    }*/
+    }
 
     /**
      * Get photo
      *
      * @return Image
      */
-    /*public function getPhoto()
+    public function getPhoto()
     {
         return $this->photo;
-    }*/
+    }
 
     /**
      * Set stock
@@ -526,74 +522,4 @@ class Product
     {
         $this->deletedAt = $deletedAt;
     }
-
-    /**
-     * Set image
-     *
-     * @param string $image
-     *
-     * @return Product
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Get image
-     *
-     * @return string
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return Product
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param File $imageFile
-     */
-    public function setImageFile(File $imageFile = null)
-    {
-        $this->imageFile = $imageFile;
-
-        if ($imageFile){
-            $this->updatedAt = new \DateTimeImmutable();
-        }
-    }
-
-    /**
-     * @return File
-     */
-    public function getImageFile()
-    {
-        return $this->imageFile;
-    }
-
-
 }

@@ -172,8 +172,9 @@
                         {{ form_start(form_purchase) }}
                         
                         {% for purchase in form_purchase.purchases %}
+                            {% if loop.index > 1 %}<hr>{% endif %}
                             {% set product = purchase.vars.value.product %}
-                            <div class="purchase-form container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
+                            <div class="purchase-form container-fluid my-4"{#% if product.disponibility == 0 %}disabled="disabled"{% endif %#}>
                                 {#{ form_errors(purchase) }#}
 
                                 <h5><b>{{ product.name }}</b>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
@@ -188,8 +189,8 @@
                                         {% if product.isTicket %}
                                             <img src="{{ asset('x/images/ticket.png') }}" width="100" height="100" />
                                         {% else %}
-                                            {% if product.photo is not null %}
-                                                <img src="{{ asset(product.webPath(product.photo)) }}" width="100" height="100" />
+                                            {% if product.image is not null %}
+                                                <img src="{{ asset(product.webPath(product.image)) }}" width="100" height="100" />
                                             {% endif %}
                                         {% endif %}
                                     </div>
@@ -233,7 +234,7 @@
                                 </div>
 
                                 {% if product.options is not empty %}
-                                    <div class="row">
+                                    <div class="row select-options">
                                         <div class="col-12 my-2 text-muted font-italic" style="font-size: 13px;">
                                             N'oubliez pas de sélectionner parmi les options proposées
                                         </div>
@@ -274,7 +275,7 @@
     <script type="text/javascript">
         // Disable form when project is passed
         {% if project.isPassed %}
-            $('.contribution').attr("disabled", true);
+            $('.contribution').attr('disabled', 'disabled');
         {% endif %}
 
         /*function rectifyQuantities($q) {
@@ -318,16 +319,25 @@
                 var $priceElem = $(this).closest('.purchase-form').find('.product-price');
                 var price = isNaN(parseFloat($priceElem.val())) ? parseFloat($priceElem.text()) : parseFloat($priceElem.val());
                 tp += price * qval;
+
+                var $select_option = $(this).closest('.purchase-form').find('.select-options');
+                if(qval == 0) {
+                    $select_option.hide();
+                } else {
+                    $select_option.show();
+                }
             });
 
             if(tp === 0 && q === 0) {
                $('#totals').hide();
+               $('.submit-cart').attr('disabled', 'disabled');
             }
 
             else {
                 $('#cart-total').text(tp);
                 $('#quantity-total').text(q);
                 $('#totals').show();
+                $('.submit-cart').attr('disabled', null);
             }
         }
 
