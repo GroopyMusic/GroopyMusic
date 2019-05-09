@@ -135,6 +135,15 @@ class YBContractArtist extends BaseContractArtist
         return in_array($today, $dates);
     }
 
+    public function getTodaySubEvent(){
+        foreach ($this->sub_events as $se){
+            if ($se->getDate()->format('m/d/Y') === (new \DateTime())->format('m/d/Y')){
+                return $se;
+            }
+        }
+        return null;
+    }
+
     public function getState()
     {
         if ($this->state != null) {

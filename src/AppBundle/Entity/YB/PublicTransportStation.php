@@ -29,6 +29,20 @@ class PublicTransportStation {
         $this->distance = $distance;
     }
 
+    public function __toString(){
+        return $this->name . ' ' . $this->type . ' ' . $this->distance;
+    }
+
+    public function timeToWalk(){
+        $kmPerHour = 5; // https://en.wikipedia.org/wiki/Preferred_walking_speed
+        $minutes = (60 / $kmPerHour) * $this->distance;
+        if ($minutes < 1){
+            return "< 1min";
+        }
+        $minutes = round($minutes);
+        return $minutes . 'min';
+    }
+
     /**
      * @var int
      *

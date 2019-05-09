@@ -1,4 +1,5 @@
 {% extends "@App/YB/Members/base.html.twig" %}
+{% form_theme form ':Form:custom_submit_button.html.twig' %}
 
 {% block body %}
     {{ form_start(form) }}
@@ -71,7 +72,9 @@
                 <hr color="orange" size="2">
             </div>
             <div class="col-12 text-center">
-                <!--<a class="btn btn-success" href="#">Prévisualiser</a>-->
+                <button class="btn-warning btn preview">Prévisualiser <i class="far fa-file-pdf"></i></button>
+            </div>
+            <div class="col-12 text-center">
                 {{ form_row(form.submit) }}
             </div>
         </div>
@@ -97,15 +100,22 @@
         });
         $('input#app_bundle_custom_ticket_type_customInfosAdded').trigger('change');
 
-        var maxChar = 300;
+        var maxCharCustom = 300;
+        var maxCharTransport = 140;
+
+        var nbCharCustom = $('textarea#app_bundle_custom_ticket_type_customInfos').val().length;
+        $('#custom-wc').html(maxCharCustom - nbCharCustom);
+
+        var nbCharTransport = $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val().length;
+        $('#transport-wc').html(maxCharTransport - nbCharTransport);
 
         counterCustom = function(){
             var text = $('textarea#app_bundle_custom_ticket_type_customInfos').val();
             var wc = text.length;
-            var remaining = maxChar - wc;
-            if (wc > maxChar - 1){
+            var remaining = maxCharCustom - wc;
+            if (wc > maxCharCustom - 1){
                 $('textarea#app_bundle_custom_ticket_type_customInfos').val(
-                    $('textarea#app_bundle_custom_ticket_type_customInfos').val().substring(0, maxChar)
+                    $('textarea#app_bundle_custom_ticket_type_customInfos').val().substring(0, maxCharCustom)
                 );
                 $('#custom-wc').html(0);
             } else {
@@ -117,10 +127,10 @@
         counterTransport = function(){
             var text = $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val();
             var wc = text.length;
-            var remaining = maxChar - wc;
-            if (wc > maxChar - 1){
+            var remaining = maxCharTransport - wc;
+            if (wc > maxCharTransport - 1){
                 $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val(
-                    $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val().substring(0, maxChar)
+                    $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val().substring(0, maxCharTransport)
                 );
                 $('#transport-wc').html(0);
             } else {
@@ -128,5 +138,45 @@
             }
         }
         $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').keyup(counterTransport);
+
+        $('.preview').click(
+            previewTicket
+        );
+
+        function previewTicket(){
+            var imageAdded = $('input#app_bundle_custom_ticket_type_imageAdded').prop('checked');
+            console.log(imageAdded);
+            var venueMapAdded = $('input#app_bundle_custom_ticket_type_venueMapAdded').prop('checked');
+            var publicTransportTextInfosAdded = $('input#app_bundle_custom_ticket_type_publicTransportTextInfosAdded').prop('checked');
+            console.log(publicTransportTextInfosAdded);
+            var customInfosAdded = $('input#app_bundle_custom_ticket_type_customInfosAdded').prop('checked');
+            var publicTransportTextInfos = publicTransportTextInfosAdded ? $('textarea#app_bundle_custom_ticket_type_publicTransportTextInfos').val() : "";
+            var customInfos = customInfosAdded ? $('textarea#app_bundle_custom_ticket_type_customInfos').val() : "";
+            var commuteAdded = $('input#app_bundle_custom_ticket_type_commuteAdded').prop('checked');
+            $('.preview').prop('disabled', true); // avoid repeating request
+            $.ajax({
+                url: "{{ path('preview_pdf') }}",
+                type: "POST",
+                data: {
+                    imageAdded: imageAdded,
+                    venueMapAdded: venueMapAdded,
+                    publicTransportTextInfosAdded: publicTransportTextInfosAdded,
+                    customInfosAdded: customInfosAdded,
+                    publicTransportTextInfos: publicTransportTextInfos,
+                    customInfos: customInfos,
+                    commuteAdded: commuteAdded,
+                    campaign: {{ campaign.id }}
+                },
+                success: function (response) {
+                    $('.preview').prop('disabled', false);
+                    console.log(response);
+                    window.open(response, '_blank', 'clearcache=yes');
+                },
+                error: function (err) {
+                    $('.preview').prop('disabled', false);
+                    console.log('Error');
+                }
+            });
+        }
     </script>
 {% endblock %}

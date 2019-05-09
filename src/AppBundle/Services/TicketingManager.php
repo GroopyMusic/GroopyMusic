@@ -11,6 +11,8 @@ use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\VIPInscription;
+use AppBundle\Entity\YB\CustomTicket;
+use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -346,11 +348,12 @@ class TicketingManager
             }
 
             try {
-                $this->writer->writeYBTickets($cf->getTicketsPath(), $cf->getTickets(), []);
+                $this->writer->writeYBTickets($cf->getTicketsPath(), $cf->getTickets(), [], $cf->getContractArtist());
                 $this->mailDispatcher->sendYBTickets($cf, $newly_successful);
                 $this->em->persist($cf);
                 $cf->setcounterpartsSent(true);
             } catch (\Exception $e) {
+                print_r($e->getMessage());
                 $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
                 return $e;
             }
@@ -358,5 +361,17 @@ class TicketingManager
 
         $this->em->flush();
         return null;
+    }
+
+    public function generateYBTicketsPreview(ContractFan $cf, Ticket $ticket, CustomTicket $ct, $newly_successful = false){
+        try {
+            $timestamp = (new \DateTime())->getTimestamp();
+            $path = 'yb/preview-tickets/campaign'.$cf->getContractArtist()->getId().'-'.$timestamp.'.pdf';
+            $this->writer->writeYBTicketsPreview($path, $ticket, [], $ct);
+            return $path;
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
+            return $e;
+        }
     }
 }

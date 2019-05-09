@@ -499,7 +499,7 @@ class YBController extends BaseController
     {
         $contract = $em->getRepository('AppBundle:ContractFan')->findOneBy(['barcode_text' => $code]);
         if ($contract->isRefunded() || !$contract->getContractArtist()->getTicketsSent()) {
-            throw $this->createAccessDeniedException();
+            //throw $this->createAccessDeniedException();
         }
         $finder = new Finder();
         $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
@@ -819,7 +819,6 @@ class YBController extends BaseController
      */
     private function getOldestBookingTime (EntityManagerInterface $em, ContractFan $cf){
         $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
-        $timeStamp = 0;
         if (count($oldestBooking)>0){
             $oldestBookingTime = $oldestBooking[0]->getBookingDate();
             $runTimeMax = new \DateTime($oldestBookingTime->format('Y-m-d H:i:s'));
@@ -843,4 +842,5 @@ class YBController extends BaseController
             'tickets' => $tickets,
         ]);
     }
+
 }

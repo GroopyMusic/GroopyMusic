@@ -143,6 +143,9 @@ class ContractFan
     /** @return PhysicalPersonInterface */
     public function getPhysicalPerson() {
         if($this->getContractArtist() instanceof YBContractArtist) {
+            if ($this->getCart() === null){
+                return null;
+            }
             return $this->getCart()->getYbOrder();
         }
         else {

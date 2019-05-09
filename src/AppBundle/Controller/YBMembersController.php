@@ -38,6 +38,8 @@ use AppBundle\Services\TicketingManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -1110,6 +1112,7 @@ class YBMembersController extends BaseController
                         $stations = array_merge($stations->toArray(), $stationsTEC);
                     }
                 }
+                $stations = $this->avoidDuplicate($stations);
                 $customTicket->setStations($stations);
                 if (count($stations) > 0){
                     $mapUrl = $customTicket->getMapQuestUrl($this->getParameter('mapquest_key'));
@@ -1129,6 +1132,32 @@ class YBMembersController extends BaseController
             'campaign' => $campaign,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("preview-ticket-pdf", name="preview_pdf")
+     */
+    public function previewPDF(EntityManagerInterface $em, Request $request, TicketingManager $ticketingManager){
+        // creation of CUSTOM-TICKET
+        $imageAdded = $request->get('imageAdded');
+        $venueMapAdded = $request->get('venueMapAdded');
+        $publicTransportAdded = $request->get('publicTransportTextInfosAdded');
+        $publicTransportInfos = $request->get('publicTransportTextInfos');
+        $customInfosAdded = $request->get('customInfosAdded');
+        $customInfos = $request->get('customInfos');
+        $commuteAdded = $request->get('commuteAdded');
+        /** @var YBContractArtist $event */$event = $em->getRepository('AppBundle:YB\YBContractArtist')->find($request->get('campaign'));
+        /** @var CustomTicket $ct */ $ct = new CustomTicket($event);
+        $ct->constructor($imageAdded, $venueMapAdded, $publicTransportAdded, $publicTransportInfos, $customInfosAdded, $customInfos, $commuteAdded);
+        $ct->setPreviewMode(true);
+        $event->setCustomTicket($ct);
+        // creation of TICKET
+        $cf = new ContractFan($event);
+        $ticket = new Ticket($cf, $event->getCounterParts()[0], 'YVILHE7Y47YUBD', $event->getCounterParts()[0]->getPrice(), new User(), $event);
+        $path = $ticketingManager->generateYBTicketsPreview($cf, $ticket, $ct);
+        // passing the PDF url to the view
+        $url = $request->getBasePath() . '/' . $path;
+        return new Response($url);
     }
 
     // ------------------ private functions -------------------- //
@@ -1581,7 +1610,8 @@ class YBMembersController extends BaseController
             }
         }
         curl_close($curl);
-        $stations = $this->sortStations($stations);
+        $stops = array_slice($stations, 0, 10);
+        //$stations = $this->sortStations($stations);
         return $stations;
     }
 
@@ -1615,8 +1645,8 @@ class YBMembersController extends BaseController
             }
         }
         fclose($handle);
-        $stops = $this->getStopFromLine($lat, $lon, $infos);
-        $stops = $this->sortStations($stops);
+        $stops = $this->getStopFromLine($lat, $lon, $infos, $city);
+        //$stops = $this->sortStations($stops);
         return $stops;
     }
 
@@ -1633,7 +1663,7 @@ class YBMembersController extends BaseController
         }
     }
 
-    private function getStopFromLine($addressLat, $addressLon, $lines){
+    private function getStopFromLine($addressLat, $addressLon, $lines, $addressCity){
         $stops = [];
         foreach ($lines as $line){
             $infos = explode(',', $line);
@@ -1641,9 +1671,12 @@ class YBMembersController extends BaseController
             $lon = $infos[5];
             $distance = $this->calculateDistance($addressLat, $addressLon, $lat, $lon);
             if ($distance <= 1){
-                $stops [] = new PublicTransportStation($infos[2], $lat, $lon, 'TEC', $distance);
+                $name = str_replace('"', '', $infos[2]);
+                $name = str_replace(strtoupper($addressCity.' '), '', $name);
+                $stops [] = new PublicTransportStation($name, $lat, $lon, 'TEC', round($distance, 3));
             }
         }
+        $stops = array_slice($stops, 0, 10);
         return $stops;
     }
 
@@ -1657,28 +1690,43 @@ class YBMembersController extends BaseController
                 return 1;
             }
         });
-        $stations = array_slice($stations, 0, 5);
         return $stations;
     }
 
+    private function avoidDuplicate($stations){
+        $uniqueStations = array();
+        $stations = $this->sortStations($stations);
+        /** @var PublicTransportStation $station */
+        foreach ($stations as $station){
+            $id = $station->getName();
+            isset($uniqueStations[$id]) or $uniqueStations[$id] = $station;
+        }
+        $uniqueStations = array_slice($uniqueStations, 0, 5);
+        return $uniqueStations;
+    }
+
     /**
-     * @Route("/gmaps", name="gmaps")
+     * @Route("get-tec", name="get_tec")
+     * @return Response
      */
-    public function getUrl(){
-        /*$url = 'http://opendata.tec-wl.be/Current%20GTFS/TEC-GTFS.zip';
-        file_put_contents('yb/file-from-tec.zip', file_get_contents($url));
-        $zip = new \ZipArchive();
-        $res = $zip->open('yb/file-from-tec.zip');
-        if ($res === true){
-            $zip->extractTo('yb/file-from-tec/');
-            $zip->close();
-        }*/
-        $dir = new \DirectoryIterator('sdnijsdnm');
-        foreach ($dir as $file){
-            if (!$file->isDot() && $file->getFilename() !== 'stops.txt'){
-                unlink('yb/file-from-tec/'.$file);
+    public function getTec(){
+        $lat = 50.666046;
+        $lon = 4.618243;
+        $city = 'Louvain-la-Neuve';
+        $handle = fopen("stops.txt", "r");
+        $infos = [];
+        while (($line = fgets($handle)) !== false) {
+            if (strpos($line, strtoupper($city)) !== false){
+                $infos[] = $line;
             }
         }
-        return new JsonResponse('hello');
+        fclose($handle);
+        $stops = $this->getStopFromLine($lat, $lon, $infos, $city);
+        $stops = $this->avoidDuplicate($stops);
+        foreach ($stops as $s){
+            file_put_contents('tec.txt', $s . PHP_EOL, 8);
+        }
+        //$stops = $this->sortStations($stops);
+        return new JsonResponse('Hello');
     }
 }

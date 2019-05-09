@@ -13,14 +13,14 @@
 {% block page %}
     {% for ticket in tickets %}
         {% set campaign = ticket.contractArtist %}
-        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+        <page backtop="20mm" backbottom="7mm" backleft="10mm" backright="10mm">
             {{ block('header') }}
             {{ block('footer') }}
             {% block content %}
-            <table style="width: 600px; height:600px;">
-                <tr>
-                    <td style="width: 300px; height: 300px">
-                        <p>
+            <table style="width: 600px; height:600px; margin-left: -20px;" cellspacing="0" cellpadding="0">
+                <tr style="background-color: lightgoldenrodyellow; border-spacing: 0;">
+                    <td style="width: 300px; height: 300px; border-top: solid orange 2px; border-left: solid orange 2px; border-bottom: solid orange 2px;">
+                        <p style="text-align: justify">
                             Je donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
                             {% if ticket.dates|length > 0 %}
                                 {% set dates = ticket.dates %}
@@ -33,8 +33,9 @@
                                 <qrcode value="{{ ticket.barCodeText }}" ec="H" style="width: 30mm; background-color: white; color: black;"></qrcode>
                             </div>
                             <div style="width: 49%">
-                                {{ ticket.barCodeText }} <br>
-                                {{ ticket.counterPart.getName }} - {{ ticket.price }} € - {{ ticket.name }} <br>
+                                <span style="color: orangered">{{ ticket.barCodeText }}</span> <br>
+                                {{ ticket.name }}<br>
+                                {{ ticket.counterPart.getName }} - {{ ticket.price }} € <br>
                                 {{ ticket.seat }}
                             </div>
                         </div>
@@ -53,52 +54,68 @@
                             {% endif %}
                         {% endif %}
                     </td>
-                    <td  style="width: 300px; height: 300px; text-align: right">
-                        {% if ticket.counterPart.contractArtist.config is not null and ticket.counterPart.contractArtist.config.updatedAt is not null %}
-                            <div style="width: 300px; height: 300px">
-                                <img style="border:2px solid black; max-width: 100%" src="{{ absolute_url(asset(ticket.getVenueConfig().getYBWebPath(ticket.getVenueConfig().getImage()))) }}">
-                            </div>
+                    <td style="width: 300px; height: 300px; text-align: right; border-top: solid orange 2px; border-right: solid orange 2px; border-bottom: solid orange 2px;">
+                        {% if customTicket != null and customTicket.isImageAdded == 'true' %}
+                            {% if campaign.photo is not null %}
+                                <img style="border:2px solid black; max-height: 100%; max-width: 100%;" src="{{ absolute_url(asset(campaign.getYBWebPath(campaign.photo))) }}">
+                            {% else %}
+                                <img style="border:2px solid black; max-height: 100%; max-width: 100%;" src="{{ absolute_url(asset('yb/images/illustration-guitars.jpg')) }}">
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 300px; height: 300px">
-                        {% if campaign.customTicket != null %}
-                            {% if campaign.customTicket.isImageAdded() %}
-                                {% if campaign.photo is not null %}
-                                <div style="width: 300px; height: 300px">
-                                    {% if campaign.customTicket.isCustomInfosAdded() %}
-                                        <p style="font-size: 12px" align="justify">{{ campaign.customTicket.getCustomInfos() }}</p>
-                                    {% endif %}
-                                    <img style="border:2px solid black; max-height: 70%" src="{{ absolute_url(asset(campaign.getYBWebPath(campaign.photo))) }}">
+                    <td style="width: 300px; height: 300px;">
+                        <div style="width: 300px; height: 300px">
+                        {% if customTicket != null %}
+                            {% if customTicket.isCustomInfosAdded == 'true' %}
+                                <div style="border-bottom: dotted limegreen 2px">
+                                    <p style="font-size: 12px; text-align: justify">{{ customTicket.getCustomInfos() }}</p>
+                                    <br>
                                 </div>
+                                <br>
+                            {% endif %}
+                            {% if customTicket.isVenueMapAdded == 'true' %}
+                                {% if ticket.counterPart.contractArtist.config is not null and ticket.counterPart.contractArtist.config.updatedAt is not null %}
+                                    <div style="width: 300px; height: 300px">
+                                        <img style="border:2px solid black; max-height: 70%; " src="{{ absolute_url(asset(ticket.getVenueConfig().getYBWebPath(ticket.getVenueConfig().getImage()))) }}">
+                                    </div>
                                 {% endif %}
                             {% endif %}
-
                         {% endif %}
+                        </div>
                     </td>
-                    <td  style="width: 300px; height: 300px; text-align: right">
+                    <td  style="width: 300px; height: 300px; border: dotted limegreen 2px;">
                         <div style="width: 300px; height: 300px">
-                            {% if campaign.customTicket != null %}
-                                {% if campaign.customTicket.isPublicTransportTextInfosAdded() %}
-                                    <p style="font-size: 12px" align="justify">{{ campaign.customTicket.getPublicTransportTextInfos() }}</p>
+                            {% if customTicket != null %}
+                                {% if customTicket.isPublicTransportTextInfosAdded == 'true' %}
+                                    <div style="border-bottom: dotted limegreen 2px">
+                                        <p style="font-size: 12px; text-align: justify;">{{ customTicket.getPublicTransportTextInfos() }}</p> <br>
+                                    </div>
                                 {% endif %}
-                                {% if campaign.customTicket.isCommuteAdded() and campaign.address.isGeolocalizable() %}
-                                    <p style="font-size: 12px">Adresse de l'événement : {{ campaign.address }}</p>
-                                    {% set src = campaign.customTicket.getGMapsUrlToDisplay(maps_api_key, maps_secret_code) %}
-                                    <img style="max-height: 50%" src="{{ src }}" onerror="this.src='{{ absolute_url(asset('yb/images/white-square.png')) }}'" />
-                                    <p style="font-size: 11px">Les gares sont situé à moins de 1 km de la salle :
-                                        {% for station in campaign.customTicket.stations %}
-                                            {{ loop.index }}) {{ station.name }} ({{ station.type }}) {% if not loop.last %}, {% endif %}
-                                        {% endfor %}
-                                    </p>
+                                {% if customTicket.isCommuteAdded == 'true' %}
+                                    {% if campaign.address.isGeolocalizable() %}
+                                        <p style="font-size: 12px">Adresse de l'événement : {{ campaign.address }}</p>
+                                        {% if not customTicket.previewMode %}
+                                            {% if customTicket.stations|length > 0 %}
+                                                <img style="height:200px" src="{{ absolute_url(asset(customTicket.mapsImagePath)) }} "/>
+                                            {% else %}
+                                                <img style="height:200px" src="{{ absolute_url(asset('yb/images/white-square.png')) }} "/>
+                                            {% endif %}
+                                            <p style="font-size: 11px">Les gares sont situé à moins de 1 km de la salle :
+                                                {% for station in customTicket.getSortedStations() %}
+                                                    {{ loop.index }}) {{ station.name }} ({{ station.type }} - {{ station.timeToWalk() }}){% if not loop.last %}, {% endif %}
+                                                {% endfor %}
+                                            </p>
+                                        {% else %}
+                                            <img style="height:200px" src="{{ absolute_url(asset('yb/images/custom-tickets/test.jpg')) }}"/>
+                                            {% set msg = 'Les gares sont situé à moins de 1 km de la salle : 1) ARRET_1 (STIB - 1min), 2) ARRET_2 (TEC - 3min), 3) ARRET_3 (STIB - 4min), 4) ARRET_4 (SNCB - 11min)' %}
+                                            <p style="font-size: 11px; text-align: justify">{{ msg }}</p>
+                                        {% endif %}
+                                    {% endif %}
                                 {% else %}
                                     {% if campaign.address is not null %}
                                         <p>Adresse de l'événement : {{ campaign.address }}</p>
-                                        {% set base64 = base64("https://maps.googleapis.com/maps/api/staticmap?center=" ~ campaign.address|url_encode ~ "&zoom=13&size=600x300&maptype=roadmap&key=AIzaSyAjWpC8y-sy07JHTBAexmdCT4cQaC84y8U") %}
-                                        {% if base64 is not same as(false) %}
-                                            <img style="border:2px solid black; max-height: 50%" src="{{ base64 }}" />
-                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -106,7 +123,7 @@
                     </td>
                 </tr>
             </table>
-            <p style="font-size: 11px">{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }}</p>
+            <p style="font-size: 10px">{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }}</p>
             {% endblock %}
         </page>
     {% endfor %}

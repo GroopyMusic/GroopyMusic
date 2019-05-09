@@ -13,9 +13,45 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CustomTicket {
 
+    /**
+     * CustomTicket constructor.
+     * @param bool $imageAdded
+     * @param bool $venueMapAdded
+     * @param bool $publicTransportTextInfosAdded
+     * @param string $publicTransportTextInfos
+     * @param bool $customInfosAdded
+     * @param string $customInfos
+     * @param bool $commuteAdded
+     */
     public function __construct(YBContractArtist $campaign){
         $this->campaign = $campaign;
         $this->stations = new ArrayCollection();
+    }
+
+    public function __toString(){
+        return $this->id . ' ' . $this->campaign;
+    }
+
+    public function constructor($imageAdded, $venueMapAdded, $publicTransportTextInfosAdded, $publicTransportTextInfos, $customInfosAdded, $customInfos, $commuteAdded){
+        $this->imageAdded = $imageAdded;
+        $this->venueMapAdded = $venueMapAdded;
+        $this->publicTransportTextInfosAdded = $publicTransportTextInfosAdded;
+        $this->publicTransportTextInfos = $publicTransportTextInfos;
+        $this->customInfosAdded = $customInfosAdded;
+        $this->customInfos = $customInfos;
+        $this->commuteAdded = $commuteAdded;
+    }
+
+    public function toFullString(){
+        return
+            $this->imageAdded . ' ' .
+            $this->venueMapAdded . ' ' .
+            $this->publicTransportTextInfosAdded . ' ' .
+            $this->publicTransportTextInfos . ' ' .
+            $this->customInfosAdded . ' ' .
+            $this->customInfos . ' ' .
+            $this->commuteAdded . ' ' .
+            $this->previewMode;
     }
 
     public function getGMapsUrlToDisplay($maps_key, $maps_secret){
@@ -71,14 +107,15 @@ class CustomTicket {
 
     public function getMapQuestUrl($key){
         $mapsAdress = str_replace(' ', '+', $this->campaign->getVenue()->getAddress()->getNatural());
-        $base_url = 'https://www.mapquestapi.com/staticmap/v5/map?locations=';
+        $base_url = 'https://www.mapquestapi.com/staticmap/v5/map?center=' . $mapsAdress . '&locations=';
         $base_url = $base_url . $mapsAdress . '|marker-red';
+        $this->stations = array_values($this->stations);
         for ($i = 0; $i < count($this->stations); $i++){
             $color = $this->getColorFromType($this->stations[$i]->getType());
             $base_url = $base_url . '||' . $this->stations[$i]->getLatitude() . ',' . $this->stations[$i]->getLongitude() .
                 '|marker-' . ($i + 1) . '-' . $color;
         }
-        $url = $base_url . '&size=210,200&key=' . $key;
+        $url = $base_url . '&size=210,200&zoom=13&key=' . $key;
         return $url;
     }
 
@@ -88,6 +125,23 @@ class CustomTicket {
             case 'STIB' : return 'green';
             default : return 'black';
         }
+    }
+
+    /**
+     * @return array|ArrayCollection
+     */
+    public function getSortedStations(){
+        $stationsArr = $this->stations->toArray();
+        usort($stationsArr, function(PublicTransportStation $s1, PublicTransportStation $s2){
+            if ($s1->getDistance() === $s2->getDistance()){
+                return 0;
+            } else if ($s1->getDistance() < $s2->getDistance()){
+                return -1;
+            } else {
+                return 1;
+            }
+        });
+        return $stationsArr;
     }
 
     /**
@@ -178,7 +232,7 @@ class CustomTicket {
     private $commuteTECAdded;
 
     /**
-     * @var
+     * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\PublicTransportStation", cascade={"persist"})
      */
@@ -189,6 +243,12 @@ class CustomTicket {
      * @var string
      */
     private $mapsImagePath;
+
+    /**
+     * @var boolean
+     * @ORM\Column(name="previewMode", type="boolean")
+     */
+    private $previewMode = false;
 
     /**
      * @return int
@@ -404,6 +464,14 @@ class CustomTicket {
     public function setMapsImagePath($mapsImagePath)
     {
         $this->mapsImagePath = $mapsImagePath;
+    }
+
+    public function isPreviewMode(){
+        return $this->previewMode;
+    }
+
+    public function setPreviewMode($previewMode){
+        $this->previewMode = $previewMode;
     }
 
 }

@@ -1,0 +1,15 @@
+Rafeira TEC 0.24
+Gare TEC 0.398
+Hospice TEC 0.532
+Grand Place TEC 0.715
+Rue de la Chapelle TEC 0.792
+
+Calvaire TEC 0.156
+Mur du Château TEC 0.701
+Garage Naway TEC 0.744
+
+Galilée TEC 0.289
+Cyclotron TEC 0.316
+Gare d'Autobus TEC 0.416
+Aldi TEC 0.443
+Centre Commercial TEC 0.491

@@ -67,6 +67,15 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository {
             ->getResult();
     }
 
+    public function getTicketsForCounterpart($cpID){
+        return $this->createQueryBuilder('t')
+            ->join('t.counterPart', 'cp')
+            ->where('cp.id = :id')
+            ->setParameter('id', $cpID)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getDuplicates()
     {
         return $this->getEntityManager()->createQuery(
