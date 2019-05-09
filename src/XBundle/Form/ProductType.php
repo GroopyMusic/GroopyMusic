@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -57,10 +56,6 @@ class ProductType extends AbstractType
                 'label' => "Prix minimum (en euros) (1 € ou plus) (non modifiable une fois que l'article a été vendu au moins une fois)",
                 'required' => false,
             ))
-            /*->add('photo', ImageType::class, array(
-                'label' => 'Photo',
-                'required' => false
-            ))*/
             ->add('imageFile', VichImageType::class, array(
                 'label' => 'Photo',
                 'required' => false,
@@ -74,26 +69,10 @@ class ProductType extends AbstractType
                 'attr' => ['class' => 'is-ticket-checkbox'],
                 'required' => false,
             ))
-            ->add('options', CollectionType::class, array(
-                'entry_type' => OptionProductType::class,
-                'entry_options' => array(
-                    'label' => false,
-                ),
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'prototype' => true,
-                'attr' => ['class' => 'options-collection'],
+            ->add('submit', SubmitType::class, array(
+                'label' => 'Enregistrer'
             ))
         ;
-
-        if ($options['creation'] || $options['is_edit']) {
-            $builder
-                ->add('submit', SubmitType::class, array(
-                    'label' => 'Enregistrer'
-                ))
-            ;
-        }
 
         /*if ($options['creation']) {
             $builder->add('isTicket', CheckboxType::class, array(

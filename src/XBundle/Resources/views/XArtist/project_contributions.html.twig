@@ -49,9 +49,49 @@
                 {% if sales is empty %}
                     <div class="my-3 px-2">Pas de ventes pour le moment</div>
                 {% else %}
+                    <!-- sales recap modal -->
                     <div class="my-3 px-2 text-right">
-                        <a target="_blank" href="{{ path('x_artist_project_contributions_sales_recap', {'id': project.id}) }}">Récapitulatif des ventes</a>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#recapModal">
+                            Récapitulatif des ventes
+                        </button>
                     </div>
+                    <div class="modal fade" id="recapModal" tabindex="-1" role="dialog" aria-labelledby="recapModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title" id="exampleModalLabel">Récapitulatif des ventes</h3>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" style="padding-left: 80px;">
+                                    {% for product in project.products %}
+                                        {% if product.deletedAt is null %}
+                                        <div class="my-3 py-2">
+                                            <h5><b>{{ product.name }}</b></h5>
+                                            <p><b>{{ product.productsSold }}</b> vendu(s) au total {% if product.productsSold > 0 and product.options is not empty %}dont:{% endif %}</p>
+                                            {% if product.productsSold > 0 %}
+                                                {% if product.options is not empty %}
+                                                    {% for option in product.options %}
+                                                        <ul>
+                                                            {% for choice in option.choices %}
+                                                                <li><b>{{ project.getNbPerChoice(product, choice) }}</b> {{ choice }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn" data-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class= "sales-row my-3 px-2">
                         <div class="row">
                             <div class="col-4 col-md-3 my-2"><b>Date</b></div>

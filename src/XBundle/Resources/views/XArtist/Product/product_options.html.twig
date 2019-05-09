@@ -1,0 +1,34 @@
+<table class="table">
+    {% for option in product.options %}
+        <tr>
+            <td>{{ option }}</td>
+            {% if option.product.productsSold == 0 %}
+                <td><button class="btn btn-outline-secondary edit-option" data-url="{{ path('x_product_update_option', {'id': option.id}) }}"><i class="fas fa-marker"></i> Modifier</button></td>
+            {% endif %}
+            {% if option.product.productsSold == 0 %}
+                <td><button class="btn btn-outline-danger delete-option" data-url="{{ path('x_product_delete_option', {'id': option.id}) }}"}><i class="fas fa-trash"></i> Supprimer</button></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+<script>
+    $('#loader').hide();
+    $('.edit-option').click(function(e) {
+        e.preventDefault();
+        loader();
+        $('#optionsModal').modal();
+        $.get($(this).data('url'), function(data) {
+            hideLoader()
+            $('#optionsModalBody').html(data);
+        });
+    });
+    $('.delete-option').click(function(e) {
+        e.preventDefault();
+        loader();
+        $('#optionsModal').modal();
+        $.get($(this).data('url'), function(data) {
+            hideLoader();
+            $('#optionsModalBody').html(data);
+        });
+    });
+</script>

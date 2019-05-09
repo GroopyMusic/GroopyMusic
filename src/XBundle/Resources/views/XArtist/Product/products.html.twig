@@ -3,9 +3,6 @@
 {% block body %}
 
     <style>
-        a:hover {
-            text-decoration: none;
-        }
         img {
             display: block;
             margin-left: auto;
@@ -66,7 +63,7 @@
 
                         <div class="col-3 col-sm-3 col-lg-3">
                             <p><b>{{ product.supply }}</b> en stock</p>
-                            <p><b>{{ product.productsSold }}</b> vendus(s</p>
+                            <p><b>{{ product.productsSold }}</b> vendus(s)</p>
                             <p>Maximum <b>{{ product.maxAmountPerPurchase }}</b> par commande</p>
                         </div>
 
@@ -74,11 +71,11 @@
 
                     {% if not project.isPassed %}
                     <div class="col-12 my-2">
+                        <a class="btn btn-outline-primary" href="{{ path('x_artist_product_update', {'id': project.id, 'idProd': product.id}) }}"><i class="fas fa-marker"></i> Modifier</a>
                         {% if product.validated %}
-                            <a class="btn btn-primary" href="{{ path('x_artist_product_update', {'id': project.id, 'idProd': product.id}) }}">Modifier</a>
                             {% if product.productsSold == 0 %}
-                                &nbsp;<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ product.id }}">
-                                    Supprimer
+                                &nbsp;<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ product.id }}">
+                                    <i class="fas fa-trash"></i> Supprimer
                                 </button>
 
                                 <!-- Modal -->
@@ -105,7 +102,7 @@
                                 </div>
                             {% endif %}
                         {% else %}
-                            <div class="text-muted font-italic pb-2">
+                            <div class="text-muted text-right font-italic pb-2">
                                 En cours de validation
                             </div>
                         {% endif %}
@@ -117,7 +114,7 @@
         {% endif %}
 
         {% if not project.isPassed %}
-            <a href="{{ path('x_artist_product_add', {'id': project.id}) }}"><i class="far fa-plus-square"></i> Ajouter un article</a>
+            <a class="btn btn-primary" href="{{ path('x_artist_product_add', {'id': project.id}) }}"><i class="fas fa-plus-circle"></i> Ajouter un article</a>
         {% endif %}
 
     </section>

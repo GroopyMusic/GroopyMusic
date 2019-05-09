@@ -15,7 +15,7 @@
         </nav>
     </section>
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
     {{ form_start(form) }}
 
@@ -23,7 +23,7 @@
         <h2>Article</h2><hr>
         <div class="row">
             <div class="col-12 col-md-6 text-muted font-italic" {% if product.id is not null %}style="display: none"{% endif %}>
-                <p>Précisez d'abord si l'article mis en vente est un ticket ou non en cochant la mention ci-dessous. Ce comportement ne pourra plus être modifié une fois l'article créé.</p>
+                <p>Précisez d'abord si l'article mis en vente est un ticket ou non en cochant la mention ci-contre. Ce comportement ne pourra plus être modifié une fois l'article créé.</p>
             </div>
             <div class="col-12 col-md-6" {% if product.id is not null %}style="display: none"{% endif %}>
                 {{ form_widget(form.isTicket) }}
@@ -73,71 +73,115 @@
         </div>
     </section>
 
-    <section class="container my-4 py-2 my-md-5 project-section product-options">
+    {% if product.id is not null and not product.isTicket %}
+    <section class="container my-4 py-2 my-md-5 project-section">
         <h2>Options</h2><hr>
-        {% if product.id is not null and product.options is empty and product.productsSold > 0 %}
+        {% if product.productsSold > 0 %}
             <div class="text-muted font-italic pb-2">Vous ne pouvez plus ajouter d'options pour cet article car il a déjà été vendu au moins une fois.</div>
-            {% do form.options.setRendered %}
         {% else %}
             <div class="text-muted font-italic pb-2">Vous pouvez ajouter des options pour les articles que vous mettez en vente.</div>
-            {{ form_widget(form.options) }}
         {% endif %}
+        <div id="options-container">
+            {{ render(controller('XBundle:XArtist:getProductOptions', {'id': product.id})) }}
+        </div>
+        <div id="optionsModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Gestion des options</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="loader">{{ hidden_loader(false, false) }}</div>
+                    <div id="optionsModalBody" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div{% if product.productsSold > 0 %} style="display: none"{% endif %}>
+            <button class="btn btn-outline-primary create-option" data-url="{{ path('x_product_create_option', {'id': product.id}) }}"><i class="fas fa-plus-circle"></i> Ajouter une option</button>
+        </div>
     </section>
-    
+    {% endif %}
+
     {{ form_end(form) }}
+
+    <!-- Modal success add product -->
+    {% set notice_bag = app.request.session.flashbag.get('x_notice_success_product') %}
+    {% if notice_bag is not empty %}
+        {% for message in notice_bag %}
+            <!-- Modal HTML -->
+            <div class="modal-notice modal fade in">
+                <div class="modal-dialog modal-confirm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="icon-box">
+                                <i class="far fa-check-circle"></i>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h4>Merci !</h4>
+                            <p>{{ message }}</p>
+                            <button class="btn btn-success" data-dismiss="modal">
+                                <span>Ajouter des options</span>
+                            </button>
+                            <form action="{{ path('x_artist_project_products', {'id': project.id}) }}">
+                                <input class="btn btn-success" type="submit" value="Passer cet étape"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
 
 {% endblock %}
 
 
 {% block additional_javascripts %}
 
-    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
+    {{ parent() }}
 
     <script type="text/javascript">
-        function x_options_collection(options) {
-            $('.options-collection').collection($.extend({
-                up: '',
-                down: '',
-                add_at_the_end: true,
-                add: '<a href="#">Ajouter</a>',
-                prefix: 'options-collection'
-            }, options));
+
+        function loader() {
+            $('#loader').show();
+            $('#optionsModalBody').html('');
+        }
+        function hideLoader() {
+            $('#loader').hide();
         }
 
-        function x_choices_collection(options) {
-            $('.choices-collection').collection($.extend({
-                up: '',
-                down: '',
-                add_at_the_end: true,
-                add: '<a href="#">Ajouter</a>',
-                prefix: 'choices-collection'
-            }, options));
-        }
+        $('#loader').hide();
 
-        $(function() {
-            x_options_collection({
-                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une option</a>',
-                remove:'<a class="btn btn-danger" href="#">Supprimer cette option</a>'
+        $('.create-option').click(function(e) {
+            e.preventDefault();
+            loader();
+            $('#optionsModal').modal();
+            $.get($(this).data('url'), function(data) {
+                hideLoader();
+                $('#optionsModalBody').html(data);
             });
-
-            x_choices_collection({
-                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un choix</a>',
-                remove:'<a class="btn btn-danger" href="#">Supprimer ce choix</a>'
-            });
-            
-            {% if product.id is null %}
-                $('.is-ticket-checkbox').on('change', function() {
-                    $('.product-photo').toggle(!this.checked);
-                    $('.product-options').toggle(!this.checked);
-                });
-                $('.is-ticket-checkbox').on('change'),
-            {% endif %}
-
-            $('.free-price-checkbox').on('change', function() {
-                $('.free-price-min').toggle(this.checked);
-                $('.price').toggle(!this.checked);
-            });
-            $('.free-price-checkbox').trigger('change');
         });
+
+        {% if product.id is null %}
+            $('.is-ticket-checkbox').on('change', function() {
+                $('.product-photo').toggle(!this.checked);
+            });
+            $('.is-ticket-checkbox').on('change'),
+        {% endif %}
+
+        $('.free-price-checkbox').on('change', function() {
+            $('.free-price-min').toggle(this.checked);
+            $('.price').toggle(!this.checked);
+        });
+        $('.free-price-checkbox').trigger('change');
+
     </script>
 {% endblock %}

@@ -1,0 +1,30 @@
+<div>
+    <p>Êtes-vous sûr de vouloir supprimer cette option ?</p>
+    <div style="text-align: right"><button class="btn btn-danger really-delete-option">Supprimer</button></div>
+</div>
+
+<script>
+    $('.really-delete-option').click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            method: 'post',
+            url: "{{ path('x_product_delete_option', {'id': option.id}) }}",
+            beforeSend: function () {
+                loader();
+            },
+            success: function (data) {
+                if (data == 'OK') {
+                    $.get('{{ path('x_product_options', {'id': product.id}) }}', function (html_data) {
+                        $('#options-container').html(html_data);
+                    });
+                    hideLoader();
+                    $('#optionsModalBody').html("L'option a bien été supprimé.");
+                }
+                else {
+                    hideLoader();
+                    $('#optionsModalBody').html(data);
+                }
+            }
+        })
+    });
+</script>

@@ -1,7 +1,7 @@
 {% macro project_row(project) %}
 
     <hr>
-    <div class="row mt-4"{#% if not project.validated %} disabled="disabled" {% endif %#}>
+    <div class="row mt-4">
         <div class="col-12">
             <h3><b>{{ project.title }}</b></h3>
             <h5>Artiste associé : <b>{{ project.artist.artistname }}</b></h5>
@@ -52,7 +52,7 @@
 
         {% if not project.validated %}
             <div class="col-12 mt-3 text-muted font-italic pb-2">
-                Ce projet doit être validadé par les administrateurs de Un-Mute pour être visible par le public
+                Ce projet doit être validé par les administrateurs de Un-Mute pour être visible par le public
             </div>
         {% endif %}
 
@@ -63,7 +63,7 @@
                 </div>
 
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ project.id }}">
-                    Supprimer le projet
+                    <i class="fas fa-trash"></i> Supprimer le projet
                 </button>
 
                 <!-- Modal -->
@@ -71,7 +71,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel">Supprimer le projet "{{ project }}"</h5>
+                                <h5 class="modal-title" id="deleteModalLabel">Supprimer le projet <b>{{ project }}</b></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -99,7 +99,7 @@
                 </div>
 
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ project.id }}">
-                    Confirmer le projet
+                    <i class="fas fa-check-circle"></i> Confirmer le projet
                 </button>&nbsp;
 
                 <!-- Modal -->
@@ -107,7 +107,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="confirmModalLabel">Confirmer le projet "{{ project }}"</h5>
+                                <h5 class="modal-title" id="confirmModalLabel">Confirmer le projet <b>{{ project }}</b></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -126,7 +126,7 @@
                 </div>
 
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#refundModal{{ project.id }}">
-                    Annuler le projet
+                    <i class="fas fa-times-circle"></i> Annuler le projet
                 </button>
 
                 <!-- Modal -->
@@ -134,7 +134,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="refundModalLabel">Annuler le projet "{{ project }}"</h5>
+                                <h5 class="modal-title" id="refundModalLabel">Annuler le projet <b>{{ project }}</b></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -157,7 +157,7 @@
 
         {% if project.isClosed %}
             <div class="col-12 mt-4 text-center">
-                <h5>État du projet : {% if project.successful %}<b style="color: green;">Réussite</b> {% elseif project.failed %}<b style="color: red;">Échec</b>{% endif %}</h5>
+                <h5>État du projet : {% if project.successful %}<b style="color: green;">Réussite <i class="fas fa-check-circle"></i></b> {% elseif project.failed %}<b style="color: red;">Échec <i class="fas fa-times-circle"></i></b>{% endif %}</h5>
             </div>
         {% endif %}
         

@@ -13,9 +13,11 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
+use XBundle\Entity\OptionProduct;
 use XBundle\Entity\Product;
 use XBundle\Entity\Project;
 use XBundle\Entity\XTransactionalMessage;
+use XBundle\Form\OptionProductType;
 use XBundle\Form\ProductType;
 use XBundle\Form\ProjectType;
 use XBundle\Form\XTransactionalMessageType;
@@ -243,26 +245,6 @@ class XArtistController extends BaseController
         ));
     }
 
-    /**
-     * @Route("/project/{id}/contributions/sales-recap", name="x_artist_project_contributions_sales_recap")
-     */
-    public function salesRecapProjectAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
-    {
-        $this->checkIfArtistAuthorized($user, $project);
-
-        if($project == null) {
-            $this->addFlash('x_warning', "Le projet n'existe pas");
-            return $this->redirectToRoute('x_artist_dashboard');
-        }
-
-        $sales = array_reverse($project->getSalesPaid());
-
-        return $this->render('@X/XArtist/project_sales_recap.html.twig', array(
-            'project' => $project,
-            'sales' => $sales,
-        ));
-    }
-
 
     /**
      * @Route("/project/{id}/products", name="x_artist_project_products")
@@ -296,7 +278,7 @@ class XArtistController extends BaseController
             $this->addFlash('x_warning', "Pas possible d'ajouter un article");
             return $this->redirectToRoute('x_artist_dashboard');
         }
-        
+
         $product = new Product();
         
         $form = $this->createForm(ProductType::class, $product, ['creation' => true]);
@@ -307,9 +289,17 @@ class XArtistController extends BaseController
             $em->persist($product);
             $em->flush();
 
-            $this->addFlash('x_notice', 'La mise en vente de l\'article "' . $product->getName() . '" a bien été enregistrée! Elle doit maintenant être validé par l\'équipe d\'Un-Mute');
-            $mailDispatcher->sendAdminNewProduct($product); 
-            return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
+            $mailDispatcher->sendAdminNewProduct($product);
+            $message = "La mise en vente de l'article '" . $product->getName() . "' a bien été enregistrée! ";
+            if ($product->isTicket()) {
+                $message .= "Il doit maintenant être validé par les administrateurs d'Un-Mute";
+                $this->addFlash('x_notice', $message);
+                return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
+            } else {
+                $message .= "En attendant sa validation par les administrateurs d'Un-Mute, vous pouvez lui ajouter des options (ex: taille, couleur, ...)";
+                $this->addFlash('x_notice_success_product', $message);
+                return $this->redirectToRoute('x_artist_product_update', ['id' => $project->getId(), 'idProd' => $product->getId()]);
+            }
         }
 
         return $this->render('@X/XArtist/Product/product_add.html.twig', array(
@@ -373,11 +363,107 @@ class XArtistController extends BaseController
         }
 
         $em->remove($product);
-        //$em->persist($project);
         $em->flush();
 
         $this->addFlash('x_notice', 'L\'article a bien été supprimé');
         return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
+    }
+
+
+    /**
+     * @Route("/product/{id}/options", name="x_product_options")
+     */
+    public function getProductOptionsAction(UserInterface $user = null, Product $product)
+    {
+        $this->checkIfArtistAuthorized($user, $product->getProject());
+
+        return new Response($this->renderView('@X/XArtist/Product/product_options.html.twig', [
+            'product' => $product,
+        ]));
+    }
+
+
+    /**
+     * @Route("/product/{id}/create-option", name="x_product_create_option")
+     */
+    public function createOptionAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, Product $product)
+    {
+        $this->checkIfArtistAuthorized($user, $product->getProject());
+
+        $option = new OptionProduct();
+        $option->setProduct($product);
+
+        $form = $this->createForm(OptionProductType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $option->setName($form->get('name')->getData());
+            foreach ($form->get('choices')->getData() as $choice) {
+                $option->addChoice($choice);
+            }
+            $em->persist($option);
+            $em->flush();
+            return new Response('OK');
+        }
+        else {
+            return new Response($this->renderView('@X/Form/option_create.html.twig', [
+                'form' => $form->createView(),
+                'product' => $product,
+            ]));
+        }
+    }
+
+
+    /**
+     * @Route("/product/update-option/{id}", name="x_product_update_option")
+     */
+    public function updateOptionAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, OptionProduct $option)
+    {
+        $product = $option->getProduct();
+
+        $this->checkIfArtistAuthorized($user, $product->getProject());
+
+        $form = $this->createForm(OptionProductType::class, $option);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $option->setName($form->get('name')->getData());
+            foreach ($form->get('choices')->getData() as $choice) {
+                $option->addChoice($choice);
+            }
+            $em->persist($option);
+            $em->flush();
+            return new Response('OK');
+        }
+        else {
+            return new Response($this->renderView('@X/Form/option_update.html.twig', [
+                'form' => $form->createView(),
+                'product' => $product,
+                'option' => $option
+            ]));
+        }
+    }
+
+    /**
+     * @Route("/product/delete-option/{id}", name="x_product_delete_option")
+     */
+    public function deleteOptionAction(EntityManagerInterface $em, UserInterface $user = null, Request $request, OptionProduct $option)
+    {
+        $product = $option->getProduct();
+
+        $this->checkIfArtistAuthorized($user, $product->getProject());
+
+        if($request->getMethod() == 'POST') {
+            $em->remove($option);
+            $em->flush();
+            return new Response('OK');
+        }
+        else {
+            return new Response($this->renderView('@X/Form/option_delete.html.twig', [
+                'option' => $option,
+                'product' => $product
+            ]));
+        }
     }
 
 

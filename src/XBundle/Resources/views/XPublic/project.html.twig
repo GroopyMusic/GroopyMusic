@@ -107,6 +107,11 @@
                                 </div>
                             {% endif %}
 
+                            {% if not project.validated and project.deletedAt == null %}
+                                <br>
+                                <p class="text-muted text-center font-italic">En cours de validation</p>
+                            {% endif %}
+
                             {% if project.isClosed %}
                                 <br>
                                 {% if project.successful %}

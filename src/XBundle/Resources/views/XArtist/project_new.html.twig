@@ -14,7 +14,7 @@
         </nav>
     </section>
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@X/Form/product.html.twig' ':Form:jquery.collection.html.twig' %}
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
     {{ form_start(form) }}
 
@@ -134,15 +134,6 @@
         </div>
     </section>
 
-    <!-- Products Section -->
-    {#% if project.id is null %}
-    <section class="container my-4 py-2 my-md-5 project-section">
-        <h2>Articles mis en vente</h2><hr>
-        <div class="text-muted font-italic pb-2">Vous pouvez mettre des articles en vente afin d'aider le financement de votre projet.</div>
-        {{ form_widget(form.products) }}
-    </section>
-    {% endif %#}
-
     <!-- Accept Conditions Section -->
     {% if form.acceptConditions is defined %}
         <section class="container my-4 py-2 my-md-5 project-section">
@@ -158,9 +149,7 @@
 
 {% block additional_javascripts %}
     {{ parent() }}
-    
-    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
-    
+
     <script type="text/javascript" src="{{ absolute_url(asset('x/js/tagsinput.js')) }}"></script>
 
     <script type="text/javascript">
@@ -176,21 +165,8 @@
                 }
             });
         }
-        function x_collection(options) {
-            $('.collection').collection($.extend({
-                up: '',
-                down: '',
-                add_at_the_end: true,
-                add: '<a href="#">Ajouter</a>'
-            }, options));
-        }
 
         $(function() {
-            x_collection({
-                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un article</a>',
-                remove:'<a class="btn btn-danger" href="#">Supprimer cet article</a>'
-            });
-
             var $chckbx = $('#x_no_threshold_checkbox input[type="checkbox"]');
             {% if project.id is null %}
                 $chckbx.on('change', function() {

@@ -11,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -122,19 +121,8 @@ class ProjectType extends AbstractType
                     'label' => 'Pas de seuil de validation',
                     'required' => false
                 ))
-                /*->add('products', CollectionType::class, array(
-                    'entry_type' => ProductType::class,
-                    'entry_options' => array(
-                        'label' => false,
-                    ),
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-                    'prototype' => true,
-                    'attr' => ['class' => 'collection'],
-                ))*/
                 ->add('acceptConditions', CheckboxType::class, array(
-                    'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Chapots!",
+                    'label' => "J'ai lu et j'accepte les conditions d'utilisation de la plateforme Chapots.",
                     'required' => true,
                     'constraints' => array(
                         new Assert\NotBlank(),
