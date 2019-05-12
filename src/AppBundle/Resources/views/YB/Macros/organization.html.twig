@@ -30,7 +30,7 @@
             {% if not organization.isPrivate() %}
                 <p><a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">Rajouter un membre à cette organisation...</a></p>
             {% endif %}
-            <p><a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">Renommer votre organisation...</a></p>
+            <p><a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">Modifier votre organisation...</a></p>
         {% endif %}
         {% if organization.hasMember(currentUser) %}
             <p>

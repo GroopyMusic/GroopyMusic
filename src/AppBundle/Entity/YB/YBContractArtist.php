@@ -55,6 +55,7 @@ class YBContractArtist extends BaseContractArtist
         $this->no_sub_events = true;
         $this->date_event = new \DateTime();
         $this->external_invoice = 0;
+        $this->published = false;
     }
 
     public function getBuyers() {
@@ -340,6 +341,11 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
      */
     private $vat_number;
+
+    /**
+     * @ORM\Column(name="published", type="boolean")
+     */
+    private $published;
 
     /**
      * Set ticketsSent
@@ -743,5 +749,16 @@ class YBContractArtist extends BaseContractArtist
     public function setExternalInvoice($external_invoice)
     {
         $this->external_invoice = $external_invoice;
+    }
+
+    public function setPublished($published) {
+        $this->published = $published;
+        return $this;
+    }
+    public function getPublished() {
+        return $this->published;
+    }
+    public function isPublished() {
+        return $this->getPublished();
     }
 }

@@ -47,7 +47,7 @@ abstract class Topping {
 
     /**
      * @var bool
-     * @ORM\Column(name="validated", type="boolean")
+     * @ORM\Column(name="validated", type="boolean", nullable=true)
      */
     protected $validated;
 

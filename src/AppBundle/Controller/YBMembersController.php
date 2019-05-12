@@ -969,13 +969,10 @@ class YBMembersController extends BaseController
      */
     public function renameOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null, Organization $organization){
         $this->checkIfAuthorized($user);
-        $form = $this->createFormBuilder()
-            ->add('new_name', TextType::class, ['label' => 'Nouveau nom'])
-            ->add('submit', SubmitType::class, ['label' => 'Valider'])
-            ->getForm();
+        $form = $this->createForm(OrganizationType::class, $organization);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            if ($this->handleRenameOrganization($form, $organization, $em)){
+            if ($this->handleEditOrganization($form, $organization, $em)){
                 return $this->redirectToRoute('yb_members_my_organizations');
             }
         }
@@ -1174,8 +1171,8 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @return bool
      */
-    private function handleRenameOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
-        $new_name = $form->getData()['new_name'];
+    private function handleEditOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
+        $new_name = $form->getData()['name'];
         if ($this->organizationNameExist($em, $new_name)){
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
             return false;

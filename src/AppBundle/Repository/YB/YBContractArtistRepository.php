@@ -77,16 +77,26 @@ class YBContractArtistRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getOrganizationOnGoingEvents(Organization $organization){
+    public function getOrganizationEventsQB(Organization $organization) {
         return $this->createQueryBuilder('c')
             ->join('c.organization', 'org')
             ->where('org.id = :id')
-            ->andWhere('c.date_closure >= :now AND c.failed = 0')
             ->orderBy('c.date_closure', 'ASC')
-            ->setParameters([
-                'id' => $organization->getId(),
-                'now' => new \DateTime(),
-            ])
+            ->setParameter(
+                'id', $organization->getId()
+            );
+    }
+
+    public function getOrganizationOnGoingEvents(Organization $organization){
+        return $this->getOrganizationEventsQB($organization)
+            ->andWhere('c.date_closure >= :now AND c.failed = 0')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getOrganizationOnGoingPublishedEvents(Organization $organization) {
+        return $this->getOrganizationEventsQB($organization)
+            ->andWhere('c.date_closure >= :now AND c.failed = 0 AND published = 1')
             ->getQuery()
             ->getResult();
     }

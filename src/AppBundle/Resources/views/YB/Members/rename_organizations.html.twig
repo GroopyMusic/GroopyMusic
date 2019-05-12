@@ -6,14 +6,19 @@
         <ol class="breadcrumb-arrow">
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
             <li><a href="{{ path('yb_members_my_organizations') }}">Mes organisations</a></li>
-            <li class="active"><span>Renommer mon organisation</span></li>
+            <li class="active"><span>Modifier mon organisation</span></li>
         </ol>
     </section>
 
     <section class="container py-5">
-        <h2>Renommer l'organisation "{{ organization.getName }}"</h2>
-        Entrez le nouveau nom de votre organisation. Il doit être unique ! Un message vous informera si ce n'est pas le cas.
-        {{ form(form) }}
+        <h2>Modifier l'organisation "{{ organization.getName }}"</h2>
+        {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.vatNumber) }}
+            {{ form_row(form.bankAccount) }}
+            {{ form_row(form.published) }}
+            {{ form_row(form.save) }}
+        {{ form_end(form) }}
     </section>
 
 {% endblock body %}

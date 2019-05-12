@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
@@ -519,6 +520,7 @@ class YBController extends BaseController
 
         if($cart->isFree()) {
             $cart->setPaid(true);
+            $cart->setFinalized(true);
             $mailDispatcher->sendYBOrderRecap($cart);
         }
 
@@ -590,6 +592,32 @@ class YBController extends BaseController
         }
         $this->addFlash('yb_notice', "Vous êtes bien déconnecté.");
         return $response;
+    }
+
+    /**
+     * @Route("/organizer/{id}", name="yb_organization")
+     */
+    public function organizationAction(Organization $organization, EntityManagerInterface $em) {
+        if(!$organization->isPublished()) {
+            throw $this->createNotFoundException();
+        }
+
+        $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingPublishedEvents($organization);
+        return $this->render('@App/YB/Organizations/organization.html.twig', [
+            'organization' => $organization,
+            'events' => $events,
+        ]);
+    }
+    
+    /**
+     * @Route("/organizers", name="yb_organizations")
+     */
+    public function organizationsAction(EntityManagerInterface $em) {
+        $organizations = $em->getRepository('AppBundle:YB\Organization')->findPublished();
+
+        return $this->render('@App/YB/Organizations/all_organizations.html.twig', [
+            'organizations' => $organizations,
+        ]);
     }
 
 }

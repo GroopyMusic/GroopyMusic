@@ -26,6 +26,7 @@ class Organization {
     public function __construct(){
         $this->participations = new ArrayCollection();
         $this->campaigns = new ArrayCollection();
+        $this->published = false;
     }
 
     // METHODS
@@ -108,6 +109,11 @@ class Organization {
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\OrganizationJoinRequest", mappedBy="organization", cascade={"persist"})
      */
     private $join_organization_request;
+
+    /**
+     * @ORM\Column(name="published", type="boolean")
+     */
+    private $published;
 
     /**
      * @var bool
@@ -256,5 +262,16 @@ class Organization {
     public function setVatNumber(string $vat_number)
     {
         $this->vat_number = $vat_number;
+    }
+
+    public function setPublished($published) {
+        $this->published = $published;
+        return $this;
+    }
+    public function getPublished() {
+        return $this->published;
+    }
+    public function isPublished() {
+        return $this->getPublished();
     }
 }
