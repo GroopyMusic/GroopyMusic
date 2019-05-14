@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProjectAdminController extends BaseAdminController
 {
-    public function validateAction(Request $request) {
+    public function validateAction(Request $request, ProductAdmin $productAdmin) {
 
         /** @var Project $project */
         $project = $this->admin->getSubject();
@@ -53,17 +53,17 @@ class ProjectAdminController extends BaseAdminController
                 $em->persist($project);
                 $em->flush();
 
-                $message = "Le projet a été validé et un mail a été envoyé aux gestionnaires du projet";
+                $message = "Le projet a été validé et un mail a été envoyé aux gestionnaires du projet. Vous pouvez maintenant passer à la validation des articles du projet s'il y en a.";
 
                 try {
                     $this->get(MailDispatcher::class)->sendProjectValidated($project);
                 }
                 catch(\Exception $e) {
-                    $message = "Le projet a bien été validé mais le mail qui devait avertir les gestionnaires du projet n'est pas parti";
+                    $message = "Le projet a bien été validé mais le mail qui devait avertir les gestionnaires du projet n'est pas parti.";
                 }
                 finally {
                     $this->addFlash('sonata_flash_success', $message);
-                    return new RedirectResponse($this->admin->generateUrl('list'));
+                    return new RedirectResponse($productAdmin->generateUrl('list'));
                 }
             }            
         }

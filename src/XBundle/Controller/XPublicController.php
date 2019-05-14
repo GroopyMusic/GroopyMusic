@@ -150,7 +150,7 @@ class XPublicController extends BaseController
                     $purchase->setContractFan($contribution);
                     if(!empty($purchase->getOptions())) {
                         foreach ($purchase->getOptions() as $option) {
-                            $choice = $em->getRepository('XBundle:ChoiceOption')->find(intval($request->request->get($option->getName())));
+                            $choice = $em->getRepository('XBundle:ChoiceOption')->find(intval($request->request->get($option->getId())));
                             $purchase->addChoice($choice);
                         }
                     }

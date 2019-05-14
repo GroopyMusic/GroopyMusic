@@ -246,9 +246,9 @@
                                         {% for option in product.options %}
                                             <div class="col-6 col-sm-6 col-lg-6">
                                                 {{ option.name }}
-                                                <select class="form-control" name="{{ option.name }}" id="option-{{ option.id }}">
+                                                <select class="form-control" name="{{ option.id }}" id="option-{{ option.id }}">
                                                     {% for choice in option.choices %}
-                                                        <option value="{{ choice.id }}">{{ choice.name }}</option>
+                                                        <option value="{{ choice.id }}">{{ choice }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>

@@ -21,6 +21,9 @@
             %}
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
+
+        {% block additional_stylesheets %}{% endblock %}
+
     {% endblock %}
 
 </head>

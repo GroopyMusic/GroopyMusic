@@ -14,9 +14,11 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use XBundle\Repository\ProductRepository;
 use XBundle\Entity\Product;
 use XBundle\Entity\XTransactionalMessage;
+
 
 class XTransactionalMessageType extends AbstractType
 {
@@ -39,6 +41,10 @@ class XTransactionalMessageType extends AbstractType
                     new Length(['min' => 10]),
                 ]
             ))
+            ->add('beforeValidation', CheckboxType::class, array(
+                'label' => 'Avant validation',
+                'required' => false,
+            ))
             ->add('toDonators', CheckboxType::class, array(
                 'label' => 'Destiné uniquement aux donateurs',
                 'required' => false,
@@ -49,22 +55,14 @@ class XTransactionalMessageType extends AbstractType
             ))
             ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
                 $message = $event->getData();
-                $event->getForm()->add('product', EntityType::class, array(
-                    'class' => Product::class,
-                    'choice_label' => 'name',
-                    'query_builder' => function (ProductRepository $pr) use ($message) {
-                        return $pr->createQueryBuilder('prod')
-                            ->join('prod.project', 'proj')
-                            ->where('proj.id = :id')
-                            ->andWhere('prod.deletedAt IS NULL')
-                            ->andWhere('prod.productsSold > 0')
-                            ->setParameter('id', $message->getProject()->getId())
-                        ;
-                    },
+                $event->getForm()->add('products', Select2EntityType::class, array(
                     'required' => false,
                     'label' => false,
-                    'placeholder' => 'Articles en vente',
-                    'empty_data' => null,
+                    'multiple' => true,
+                    'remote_route' => 'select2_transactional_message_products',
+                    'remote_params' => ['project' => $message->getProject()->getId()],
+                    'class' => 'XBundle\Entity\Product',
+                    'primary_key' => 'id',
                 ));
             })
             ->add('submit', SubmitType::class, array(

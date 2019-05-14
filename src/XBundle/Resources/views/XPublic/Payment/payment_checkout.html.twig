@@ -168,7 +168,7 @@
                             {% for purchase in contract.purchases %}
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
-                                        <h4 class="my-0">{{ purchase.product }}</h4>
+                                        <h4 class="my-0">{{ purchase.product }} (x {{ purchase.quantity }})</h4>
                                         <small class="text-muted">
                                             Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.product.freePrice %} (choisi librement){% endif %}
                                             {% if purchase.choices is not empty %}

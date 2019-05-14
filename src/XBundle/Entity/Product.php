@@ -284,34 +284,11 @@ class Product
         return $this->project;
     }
 
-    /**
-     * Set photo
-     *
-     * @param Image $photo
-     *
-     * @return Product
-     */
-    /*public function setPhoto($photo = null)
-    {
-        $this->photo = $photo;
-
-        return $this;
-    }*/
 
     /**
-     * Get photo
-     *
-     * @return Image
-     */
-    /*public function getPhoto()
-    {
-        return $this->photo;
-    }*/
-
-    /**
-     * Set stock
+     * Set supply
      * 
-     * @param integer $stock
+     * @param integer $supply
      * 
      * @return Product
      */

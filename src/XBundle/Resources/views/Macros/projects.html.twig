@@ -9,6 +9,7 @@
                  <h4><b>{{ project.collectedAmount }} €</b>{% if project.hasThreshold %} sur {{ project.threshold }} € {% else %} récoltés{% endif %}</h4>
             </div>
             <div class="mt-2">
+                {% if project.dateValidation is not null %}Validé le <b>{{ project.dateValidation|date('d/m/Y \\à H:i') }}</b><br>{% endif %}
                 Clotûre du financement : {% if not project.isPassed %}<b>{{ project.remainingTime }}</b>{% else %}<b>{{ project.dateEnd|date('d/m/Y \\à H:i') }}</b>{% endif %}
             </div>
         </div>

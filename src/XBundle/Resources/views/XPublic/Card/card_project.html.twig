@@ -27,8 +27,10 @@
         <div class="x-card-content">
             {% set category_slug = "jplist-" ~ project.category.name|slug %}
             <h5 class="project-title search-filter">{{ project.title }}</h5>
-            <div class="badge badge-warning project-category {{ category_slug }}">{{ project.category.name }}</div>
-            <div class="d-none search-filter">{% for tag in project.tags %}{% if not loop.first %} {% endif %}<div class="badge badge-info jplist-{{ tag }}">{{ tag }}</div>{% endfor %}</div>
+            <div class="my-2">
+                <div class="badge badge-warning project-category {{ category_slug }}">{{ project.category.name }}</div>
+                <div class="badge badge-info search-filter">{% for tag in project.tags %}{% if not loop.first %} {% endif %}<div class="badge badge-info jplist-{{ tag }}">{{ tag }}</div>{% endfor %}</div>
+            </div>
             <p>
                 <b>{{ project.collectedAmount }} €</b> {% if project.hasThreshold %}sur {{ project.threshold }} €{% else %}récoltés {% endif %}
                 &nbsp;
@@ -46,13 +48,6 @@
                     <div class="progress-bar {% if project.isPassed and project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
                 </div>
             {% endif %}
-
-            <!--Bouton pour compter les points-->
-            {#<div id = "bt{{loop.index}}">   
-                <button type="button" id = "{{loop.index}}" style = "float:right; background-color: #ff3333; border-color: #ff3333; width: 45px; height: 45px;text-align: center; padding: 6px 0; margin-top: 10px; font-size: 20px; line-height: 1.428571429; border-radius: 22.5px;"class="btn btn-primary btn-circle points-given" {%if not app.user %}data-toggle="modal" data-target="#login-modal" {% endif %}><span class="fa fa-caret-up"></span> <span id = "points">{{ project.points }}</span></a>
-                    <input type = "hidden" value = "{{ project.id }}" id = "id"/>
-                </button>
-            </div>#}
         </div>
 
         <!-- this is the link that the card need to take to -->

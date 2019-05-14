@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 use XBundle\Entity\ChoiceOption;
 
 class ChoiceOptionType extends AbstractType
@@ -20,6 +21,14 @@ class ChoiceOptionType extends AbstractType
             ->add('name', TextType::class, array(
                 'label' => "Intitulé du choix"
             ))
+            /*->add('imageFile', VichImageType::class, array(
+                'label' => 'Photo',
+                'required' => false,
+                'download_link' => false,
+                'download_uri' => false,
+                'image_uri' => true,
+                'allow_delete' => false,
+            ))*/
         ;
     }
     

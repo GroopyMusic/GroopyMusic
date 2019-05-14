@@ -170,6 +170,26 @@
             });
         });
 
+        $('.edit-option').click(function(e) {
+            e.preventDefault();
+            loader();
+            $('#optionsModal').modal();
+            $.get($(this).data('url'), function(data) {
+                hideLoader()
+                $('#optionsModalBody').html(data);
+            });
+        });
+
+        $('.delete-option').click(function(e) {
+            e.preventDefault();
+            loader();
+            $('#optionsModal').modal();
+            $.get($(this).data('url'), function(data) {
+                hideLoader();
+                $('#optionsModalBody').html(data);
+            });
+        });
+
         {% if product.id is null %}
             $('.is-ticket-checkbox').on('change', function() {
                 $('.product-photo').toggle(!this.checked);

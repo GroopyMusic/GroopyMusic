@@ -80,10 +80,8 @@ class XArtistController extends BaseController
             $em->flush();
 
             $mailDispatcher->sendAdminNewProject($project);
-            $message = 'Le projet "' . $project->getTitle() . '" a bien été créé. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible par le public sur Chapots. Vous pouvez passer à la mise en vente d\'articles';
-            //$this->addFlash('x_notice', $message);
+            $message = 'Le projet "' . $project->getTitle() . '" a bien été créé. Il doit maintenant être validé par l\'équipe d\'Un-Mute pour être visible par le public sur Chapots. Vous pouvez passer à la mise en vente d\'articles ou passer cet étape';
             $this->addFlash('x_notice_success_project', $message);
-            //return $this->redirectToRoute('x_artist_dashboard');
             return $this->redirectToRoute('x_artist_product_add', ['id' => $project->getId()]);
         }
 
@@ -153,7 +151,6 @@ class XArtistController extends BaseController
         if ($project == null || $project->getCollectedAmount() == 0 || $project->getSuccessful()) {
             $this->addFlash('x_warning', "Pas possible de confirmer le projet");
             return $this->redirectToRoute('x_artist_dashboard');
-            //throw $this->createNotFoundException("Pas possible de confirmer le projet");
         }
 
         $mailDispatcher->sendConfirmedProject($project);
@@ -183,7 +180,6 @@ class XArtistController extends BaseController
         if ($project == null || $project->getCollectedAmount() == 0 || $project->getFailed() || $project->getRefunded()) {
             $this->addFlash('x_warning', "Pas possible d'annuler le projet");
             return $this->redirectToRoute('x_artist_dashboard');
-            //throw $this->createNotFoundException("Pas possible d'annuler le projet");
         }
 
         $project->setFailed(true);
@@ -205,16 +201,14 @@ class XArtistController extends BaseController
         if ($project == null || $project->getCollectedAmount() > 0 || $project->getDeletedAt() != null) {
             $this->addFlash('x_warning', "Pas possible de supprimer le projet.");
             return $this->redirectToRoute('x_artist_dashboard');
-            //throw $this->createNotFoundException("Pas possible de supprimer le projet");
         }
 
-        // Remove products and photos products
+        // Remove products
         foreach ($project->getProducts() as $product) {
             $em->remove($product);
         }
 
         $em->remove($project);
-        //em->persist($project);
         $em->flush();
 
         $this->addFlash('x_notice', 'Le projet a bien été supprimé');
@@ -226,7 +220,7 @@ class XArtistController extends BaseController
     /**
      * @Route("/project/{id}/contributions", name="x_artist_project_contributions")
      */
-    public function contributionsProjectAction(EntityManagerInterface $em, UserInterface $user = null, Project $project)
+    public function contributionsProjectAction(UserInterface $user = null, Project $project)
     {
         $this->checkIfArtistAuthorized($user, $project);
 
@@ -296,7 +290,7 @@ class XArtistController extends BaseController
                 $this->addFlash('x_notice', $message);
                 return $this->redirectToRoute('x_artist_project_products', ['id' => $project->getId()]);
             } else {
-                $message .= "En attendant sa validation par les administrateurs d'Un-Mute, vous pouvez lui ajouter des options (ex: taille, couleur, ...)";
+                $message .= "En attendant sa validation par les administrateurs d'Un-Mute, vous pouvez lui ajouter des options (ex: taille, couleur, ...) ou passer cette étape";
                 $this->addFlash('x_notice_success_product', $message);
                 return $this->redirectToRoute('x_artist_product_update', ['id' => $project->getId(), 'idProd' => $product->getId()]);
             }
@@ -353,7 +347,6 @@ class XArtistController extends BaseController
         if ($project == null || $project->getCollectedAmount() > 0 || $project->getDeletedAt() != null) {
             $this->addFlash('x_warning', "Pas possible de supprimer le projet.");
             return $this->redirectToRoute('x_artist_dashboard');
-            //throw $this->createNotFoundException("Pas possible de supprimer le projet");
         }
 
         $product = $em->getRepository('XBundle:Product')->find($idProd);
@@ -485,36 +478,69 @@ class XArtistController extends BaseController
         $form = $this->createForm(XTransactionalMessageType::class, $message);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
 
+        if ($form->isSubmitted() && $form->isValid()) {
             if(!empty($project->getDonators()) && !empty($project->getBuyers())) {
+                // if check donators
                 if ($form->get('toDonators')->getData() == true && $form->get('toBuyers')->getData() == false) {
-                    $message->setToDonators(true);
-                    $contributors = $project->getDonators();
-                } elseif ($form->get('toDonators')->getData() == false && $form->get('toBuyers')->getData() == true) {
-                    $message->setToBuyers(true);
-                    if ($form->get('product')->getData() == null) {
-                        $contributors = $project->getBuyers();
+                    if ($form->get('beforeValidation')->getData() ==  true) {
+                        $contributors = $project->getDonatorsBeforeDateValidation();
                     } else {
-                        $contributors = $project->getProductBuyers($form->get('product')->getData());
+                        $contributors = $project->getDonators();
                     }
-                } else {
-                    $message->setToDonators(true);
-                    $message->setToBuyers(true);
-                    $contributors = $project->getContributors();
                 }
-            } else {
-                if(!empty($project->getDonators())){
+                // if check buyers
+                elseif ($form->get('toDonators')->getData() == false && $form->get('toBuyers')->getData() == true) {
+                    if($form->get('beforeValidation')->getData() ==  true){
+                        if ($form->get('products')->getData() == null) {
+                            $contributors = $project->getBuyersBeforeDateValidation();
+                        } else {
+                            $contributors = $project->getProductBuyersBeforeDateValidation($form->get('products')->getData());
+                        }
+                    } else {
+                        if ($form->get('products')->getData() == null) {
+                            $contributors = $project->getBuyers();
+                        } else {
+                            $contributors = $project->getProductBuyers($form->get('products')->getData());
+                        }
+                    }
+                }
+                // else all contributors
+                else {
                     $message->setToDonators(true);
-                    $contributors = $project->getDonators();
-                } elseif(!empty($project->getBuyers())) {
                     $message->setToBuyers(true);
-                    $contributors = $project->getBuyers();
+                    if ($form->get('beforeValidation')->getData() ==  true) {
+                        $contributors = $project->getContributorsBeforeDateValidation();
+                    } else {
+                        $contributors = $project->getContributors();
+                    }
+                }
+            }
+            else {
+                // donators only
+                if(!empty($project->getDonators())){
+                    if ($form->get('beforeValidation')->getData()){
+                        $contributors = $project->getDonatorsBeforeDateValidation();
+                    } else {
+                        $contributors = $project->getDonators();
+                    }
+                }
+                // buyers only
+                elseif(!empty($project->getBuyers())) {
+                    if ($form->get('beforeValidation')->getData()){
+                        $contributors = $project->getBuyersBeforeDateValidation();
+                    } else {
+                        $contributors = $project->getBuyers();
+                    }
                 }
             }
 
             $em->persist($message);
             $em->flush();
+
+            /*foreach ($contributors as $person) {
+                file_put_contents('test.txt', $person->getDisplayName() . PHP_EOL, FILE_APPEND);
+            }*/
 
             $this->mailDispatcher->sendXTransactionalMessageWithCopy($message, $contributors);
 
@@ -549,7 +575,6 @@ class XArtistController extends BaseController
         $em->flush();
         return new Response();
     }
-
 
 }
 

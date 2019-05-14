@@ -2,6 +2,8 @@
 
 {% block body %}
 
+    {% import '@X/Macros/sales_recap.html.twig' as macros %}
+
     <section class="container px-0 mt-4">
         <nav class="breadcrumb">
             <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
@@ -20,6 +22,7 @@
             </li>
         </ul>
 
+        <!-- Donation section -->
         <div class="tab-content" id="contributions-tab-content">
             <div class="tab-pane fade{% if sales is empty %} show active{% endif %}" id="donations-details" role="tabpanel" aria-labelledby="donations-details-tab">
                 {% if donations is empty %}
@@ -45,6 +48,7 @@
                 {% endif %}
             </div>
 
+            <!-- Sales section -->
             <div class="tab-pane fade show{% if sales is not empty %} active{% endif %}" id="sales-details" role="tabpanel" aria-labelledby="sales-details-tab">
                 {% if sales is empty %}
                     <div class="my-3 px-2">Pas de ventes pour le moment</div>
@@ -69,18 +73,14 @@
                                         {% if product.deletedAt is null %}
                                         <div class="my-3 py-2">
                                             <h5><b>{{ product.name }}</b></h5>
-                                            <p><b>{{ product.productsSold }}</b> vendu(s) au total {% if product.productsSold > 0 and product.options is not empty %}dont:{% endif %}</p>
-                                            {% if product.productsSold > 0 %}
+                                            <p><b>{{ product.productsSold }}</b> vendu(s) au total {#% if product.productsSold > 0 and product.options is not empty %}dont:{% endif %#}</p>
+                                            {#% if product.productsSold > 0 %}
                                                 {% if product.options is not empty %}
                                                     {% for option in product.options %}
-                                                        <ul>
-                                                            {% for choice in option.choices %}
-                                                                <li><b>{{ project.getNbPerChoice(product, choice) }}</b> {{ choice }}</li>
-                                                            {% endfor %}
-                                                        </ul>
+                                                        {{ macros.sales_recap_row(project, product, option) }}
                                                     {% endfor %}
                                                 {% endif %}
-                                            {% endif %}
+                                            {% endif %#}
                                         </div>
                                         {% endif %}
                                     {% endfor %}

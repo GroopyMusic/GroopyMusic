@@ -1,0 +1,10 @@
+{% macro sales_recap_row(project, product, option) %}
+    <ul>
+        {% for choice in option.choices %}
+            {% set nb = project.getNbPerChoice(product, choice) %}
+            {% if nb > 0 %}
+                <li><b>{{ nb }}</b> {{ choice }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endmacro %}

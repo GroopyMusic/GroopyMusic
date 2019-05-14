@@ -120,13 +120,16 @@ class XContractFan
 
 
     private $purchasesForProduct = null;
-    public function getPurchasesForProduct(Product $product) {
+    public function getPurchasesForProduct($products) {
         if($this->purchasesForProduct == null) {
-            foreach ($this->purchases as $purchase) {
-                if ($purchase->getProduct() == $product) {
-                    $this->purchasesForProduct[] = $purchase;
+            foreach($products as $product) {
+                foreach ($this->purchases as $purchase) {
+                    if ($purchase->getProduct() == $product) {
+                        $this->purchasesForProduct[] = $purchase;
+                    }
                 }
             }
+            
         }
         return $this->purchasesForProduct;
     }

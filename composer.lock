@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "327730c7ec731d5c803d3be7746ed8fb",
+    "content-hash": "ee410a9d2f01d010ceb5eefa4a175886",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -308,54 +308,6 @@
                 "stream_filter_register"
             ],
             "time": "2019-04-09T12:31:48+00:00"
-        },
-        {
-            "name": "cmen/google-charts-bundle",
-            "version": "3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cmen/CMENGoogleChartsBundle.git",
-                "reference": "b07b2348f7f8883de8864cf67976bf42fa3415c5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cmen/CMENGoogleChartsBundle/zipball/b07b2348f7f8883de8864cf67976bf42fa3415c5",
-                "reference": "b07b2348f7f8883de8864cf67976bf42fa3415c5",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.6 || ^7.0",
-                "symfony/framework-bundle": "^2.7 || ^3.0 || ^4.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.9",
-                "phpunit/phpunit": "^5.7"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "CMEN\\GoogleChartsBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christophe Meneses"
-                }
-            ],
-            "description": "This Bundle provides a Twig extension and PHP objects to display Google charts in your Symfony application.",
-            "keywords": [
-                "chart",
-                "charts",
-                "google",
-                "graph",
-                "graphs",
-                "map"
-            ],
-            "time": "2019-03-02T09:54:25+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -956,16 +908,16 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "1.10.2",
+            "version": "1.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "1f99e6645030542079c57d4680601a4a8778a1bd"
+                "reference": "907dafe1ba73c4c3b0f0ae8cfc1b9958c002e58c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/1f99e6645030542079c57d4680601a4a8778a1bd",
-                "reference": "1f99e6645030542079c57d4680601a4a8778a1bd",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/907dafe1ba73c4c3b0f0ae8cfc1b9958c002e58c",
+                "reference": "907dafe1ba73c4c3b0f0ae8cfc1b9958c002e58c",
                 "shasum": ""
             },
             "require": {
@@ -1037,7 +989,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2019-02-06T13:18:04+00:00"
+            "time": "2019-04-04T08:03:53+00:00"
         },
         {
             "name": "doctrine/doctrine-cache-bundle",
@@ -2612,16 +2564,16 @@
         },
         {
             "name": "jms/serializer",
-            "version": "1.13.0",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "00863e1d55b411cc33ad3e1de09a4c8d3aae793c"
+                "reference": "ee96d57024af9a7716d56fcbe3aa94b3d030f3ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/00863e1d55b411cc33ad3e1de09a4c8d3aae793c",
-                "reference": "00863e1d55b411cc33ad3e1de09a4c8d3aae793c",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/ee96d57024af9a7716d56fcbe3aa94b3d030f3ca",
+                "reference": "ee96d57024af9a7716d56fcbe3aa94b3d030f3ca",
                 "shasum": ""
             },
             "require": {
@@ -2661,7 +2613,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-1.x": "1.13-dev"
+                    "dev-1.x": "1.14-dev"
                 }
             },
             "autoload": {
@@ -2692,7 +2644,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2018-07-25T13:58:54+00:00"
+            "time": "2019-04-17T08:12:16+00:00"
         },
         {
             "name": "jms/serializer-bundle",
@@ -3875,69 +3827,6 @@
             "time": "2018-07-01T15:06:12+00:00"
         },
         {
-            "name": "ob/highcharts-bundle",
-            "version": "1.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/marcaube/ObHighchartsBundle.git",
-                "reference": "22753f7b4036a31a46b7f720e03893bfc6150307"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/marcaube/ObHighchartsBundle/zipball/22753f7b4036a31a46b7f720e03893bfc6150307",
-                "reference": "22753f7b4036a31a46b7f720e03893bfc6150307",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.5 || ^7.0",
-                "symfony/config": "^2.8 || ^3.4 || ^4.0",
-                "symfony/dependency-injection": "^2.8 || ^3.4 || ^4.0",
-                "symfony/http-kernel": "^2.8 || ^3.4 || ^4.0",
-                "symfony/yaml": "^2.8 || ^3.4 || ^4.0",
-                "twig/twig": "^1.35 || ^2.4",
-                "zendframework/zend-json": "^2.3 || ^3.0"
-            },
-            "require-dev": {
-                "nyholm/symfony-bundle-test": "^1.2.3",
-                "symfony/framework-bundle": "^2.8 || ^3.4 || ^4.0",
-                "symfony/phpunit-bridge": "^3.3 || ^4.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.7.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Ob\\HighchartsBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marc Aubé"
-                }
-            ],
-            "description": "Symfony2 Bundle that ease the use of highcharts to display rich graph and charts in your app",
-            "homepage": "https://github.com/marcaube/ObHighchartsBundle",
-            "keywords": [
-                "Symfony2",
-                "chart",
-                "charting",
-                "charts",
-                "graph",
-                "graphs",
-                "highcharts",
-                "marcaube",
-                "ob"
-            ],
-            "time": "2017-12-27T14:37:46+00:00"
-        },
-        {
             "name": "ocramius/package-versions",
             "version": "1.2.0",
             "source": {
@@ -4466,16 +4355,16 @@
         },
         {
             "name": "php-http/httplug-bundle",
-            "version": "1.15.0",
+            "version": "1.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/HttplugBundle.git",
-                "reference": "8bcd1b180a3033631b7f06bff1aa27644fe0c2b7"
+                "reference": "35d281804a90f0359aa9da5b5b1f55c18aeafaf8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/HttplugBundle/zipball/8bcd1b180a3033631b7f06bff1aa27644fe0c2b7",
-                "reference": "8bcd1b180a3033631b7f06bff1aa27644fe0c2b7",
+                "url": "https://api.github.com/repos/php-http/HttplugBundle/zipball/35d281804a90f0359aa9da5b5b1f55c18aeafaf8",
+                "reference": "35d281804a90f0359aa9da5b5b1f55c18aeafaf8",
                 "shasum": ""
             },
             "require": {
@@ -4563,7 +4452,7 @@
                 "message",
                 "php-http"
             ],
-            "time": "2019-03-29T17:15:18+00:00"
+            "time": "2019-04-18T14:01:25+00:00"
         },
         {
             "name": "php-http/logger-plugin",
@@ -6196,16 +6085,16 @@
         },
         {
             "name": "sonata-project/exporter",
-            "version": "1.11.0",
+            "version": "1.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/exporter.git",
-                "reference": "63d1199e802ff8af2826d8410080093f949dcb92"
+                "reference": "a4925e3569fb3fa710fa7c6fecd85b6281c55f57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/63d1199e802ff8af2826d8410080093f949dcb92",
-                "reference": "63d1199e802ff8af2826d8410080093f949dcb92",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/a4925e3569fb3fa710fa7c6fecd85b6281c55f57",
+                "reference": "a4925e3569fb3fa710fa7c6fecd85b6281c55f57",
                 "shasum": ""
             },
             "require": {
@@ -6263,7 +6152,7 @@
                 "export",
                 "xls"
             ],
-            "time": "2019-01-10T19:05:17+00:00"
+            "time": "2019-04-17T21:05:17+00:00"
         },
         {
             "name": "sonata-project/formatter-bundle",
@@ -7128,16 +7017,16 @@
         },
         {
             "name": "symfony/security-acl",
-            "version": "v3.0.1",
+            "version": "v3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-acl.git",
-                "reference": "ab4dfe2d95e038cd367dd04604487b0a3359bcff"
+                "reference": "22928f6be80a37f301500c67e50f57f5b25ffaa8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-acl/zipball/ab4dfe2d95e038cd367dd04604487b0a3359bcff",
-                "reference": "ab4dfe2d95e038cd367dd04604487b0a3359bcff",
+                "url": "https://api.github.com/repos/symfony/security-acl/zipball/22928f6be80a37f301500c67e50f57f5b25ffaa8",
+                "reference": "22928f6be80a37f301500c67e50f57f5b25ffaa8",
                 "shasum": ""
             },
             "require": {
@@ -7185,7 +7074,7 @@
             ],
             "description": "Symfony Security Component - ACL (Access Control List)",
             "homepage": "https://symfony.com",
-            "time": "2017-07-21T06:01:18+00:00"
+            "time": "2018-12-13T16:51:15+00:00"
         },
         {
             "name": "symfony/swiftmailer-bundle",
@@ -7252,12 +7141,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "32c448f63944b34c8cf9eb39b07264e7ec03254b"
+                "reference": "00552848f8c4c5da7b4b4ffee306b66fd3de2c8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/32c448f63944b34c8cf9eb39b07264e7ec03254b",
-                "reference": "32c448f63944b34c8cf9eb39b07264e7ec03254b",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/00552848f8c4c5da7b4b4ffee306b66fd3de2c8f",
+                "reference": "00552848f8c4c5da7b4b4ffee306b66fd3de2c8f",
                 "shasum": ""
             },
             "require": {
@@ -7276,7 +7165,7 @@
                 "symfony/polyfill-mbstring": "~1.0",
                 "symfony/polyfill-php56": "~1.0",
                 "symfony/polyfill-php70": "~1.6",
-                "twig/twig": "^1.35|^2.4.4"
+                "twig/twig": "^1.40|^2.9"
             },
             "conflict": {
                 "phpdocumentor/reflection-docblock": "<3.0||>=3.2.0,<3.2.2",
@@ -7399,7 +7288,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2019-04-10T16:18:38+00:00"
+            "time": "2019-05-11T09:57:45+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -7618,16 +7507,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.7.4",
+            "version": "v2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "ed9c49220e09bfaeb1ba4d48077c08a7b09908dd"
+                "reference": "82a1c055c8ed4c4705023bfd0405f3c74db6e3ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ed9c49220e09bfaeb1ba4d48077c08a7b09908dd",
-                "reference": "ed9c49220e09bfaeb1ba4d48077c08a7b09908dd",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/82a1c055c8ed4c4705023bfd0405f3c74db6e3ae",
+                "reference": "82a1c055c8ed4c4705023bfd0405f3c74db6e3ae",
                 "shasum": ""
             },
             "require": {
@@ -7643,7 +7532,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev"
+                    "dev-master": "2.9-dev"
                 }
             },
             "autoload": {
@@ -7681,7 +7570,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-03-23T14:28:58+00:00"
+            "time": "2019-04-28T06:57:38+00:00"
         },
         {
             "name": "vich/uploader-bundle",
@@ -7915,16 +7804,16 @@
         },
         {
             "name": "yellowskies/qr-code-bundle",
-            "version": "1.2.6",
+            "version": "1.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AntoineTesson/QRcodeBundle.git",
-                "reference": "ff0d43177dd54900836fa3bc0fac7a673f5b1691"
+                "reference": "f80722ef88fcf7e3d9c2d57879c7ef227f1cca15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AntoineTesson/QRcodeBundle/zipball/ff0d43177dd54900836fa3bc0fac7a673f5b1691",
-                "reference": "ff0d43177dd54900836fa3bc0fac7a673f5b1691",
+                "url": "https://api.github.com/repos/AntoineTesson/QRcodeBundle/zipball/f80722ef88fcf7e3d9c2d57879c7ef227f1cca15",
+                "reference": "f80722ef88fcf7e3d9c2d57879c7ef227f1cca15",
                 "shasum": ""
             },
             "require": {
@@ -7966,7 +7855,7 @@
                 "symfony4",
                 "twig"
             ],
-            "time": "2018-07-29T12:09:17+00:00"
+            "time": "2019-05-11T13:37:53+00:00"
         },
         {
             "name": "zendframework/zend-code",
@@ -8074,56 +7963,6 @@
                 "zf2"
             ],
             "time": "2018-04-25T15:33:34+00:00"
-        },
-        {
-            "name": "zendframework/zend-json",
-            "version": "3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zendframework/zend-json.git",
-                "reference": "4dd940e8e6f32f1d36ea6b0677ea57c540c7c19c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/4dd940e8e6f32f1d36ea6b0677ea57c540c7c19c",
-                "reference": "4dd940e8e6f32f1d36ea6b0677ea57c540c7c19c",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.6 || ^7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7.23 || ^6.4.3",
-                "zendframework/zend-coding-standard": "~1.0.0",
-                "zendframework/zend-stdlib": "^2.7.7 || ^3.1"
-            },
-            "suggest": {
-                "zendframework/zend-json-server": "For implementing JSON-RPC servers",
-                "zendframework/zend-xml2json": "For converting XML documents to JSON"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.1.x-dev",
-                    "dev-develop": "3.2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Zend\\Json\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "provides convenience methods for serializing native PHP to JSON and decoding JSON to native PHP",
-            "keywords": [
-                "ZendFramework",
-                "json",
-                "zf"
-            ],
-            "time": "2018-01-04T17:51:34+00:00"
         }
     ],
     "packages-dev": [
@@ -9702,16 +9541,16 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v4.2.5",
+            "version": "v4.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "8796da921e4613352818b478e9bb0803ea0dbb9a"
+                "reference": "31f2e3c10bc9bd955ca1ae3e4da2bb489205714a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/8796da921e4613352818b478e9bb0803ea0dbb9a",
-                "reference": "8796da921e4613352818b478e9bb0803ea0dbb9a",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/31f2e3c10bc9bd955ca1ae3e4da2bb489205714a",
+                "reference": "31f2e3c10bc9bd955ca1ae3e4da2bb489205714a",
                 "shasum": ""
             },
             "require": {
@@ -9763,7 +9602,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2019-03-26T20:16:42+00:00"
+            "time": "2019-04-23T14:37:24+00:00"
         }
     ],
     "aliases": [

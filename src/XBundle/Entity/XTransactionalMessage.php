@@ -19,6 +19,8 @@ class XTransactionalMessage
         $this->project = $project;
         $this->toDonators = false;
         $this->toBuyers = false;
+        $this->beforeValidation = false;
+        $this->afterValidation = false;
     }
 
 
@@ -35,11 +37,6 @@ class XTransactionalMessage
      * @ORM\ManyToOne(targetEntity="XBundle\Entity\Project", inversedBy="transactionalMessages")
      */
     private $project;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Product")
-     */
-    private $product;
 
     /**
      * @var string
@@ -75,6 +72,18 @@ class XTransactionalMessage
      * @ORM\Column(name="to_buyers", type="boolean")
      */
     private $toBuyers;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="before_validation", type="boolean")
+     */
+    private $beforeValidation;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="XBundle\Entity\Product")
+     */
+    private $products;
 
 
 
@@ -233,26 +242,61 @@ class XTransactionalMessage
     }
 
     /**
-     * Set product
+     * Set beforeValidation
      *
-     * @param \XBundle\Entity\Product $product
+     * @param boolean $beforeValidation
      *
      * @return XTransactionalMessage
      */
-    public function setProduct(\XBundle\Entity\Product $product = null)
+    public function setBeforeValidation($beforeValidation)
     {
-        $this->product = $product;
+        $this->beforeValidation = $beforeValidation;
 
         return $this;
     }
 
     /**
-     * Get product
+     * Get beforeValidation
      *
-     * @return \XBundle\Entity\Product
+     * @return boolean
      */
-    public function getProduct()
+    public function getBeforeValidation()
     {
-        return $this->product;
+        return $this->beforeValidation;
+    }
+
+
+    /**
+     * Add product
+     *
+     * @param \XBundle\Entity\Product $product
+     *
+     * @return XTransactionalMessage
+     */
+    public function addProduct(\XBundle\Entity\Product $product)
+    {
+        $this->products[] = $product;
+
+        return $this;
+    }
+
+    /**
+     * Remove product
+     *
+     * @param \XBundle\Entity\Product $product
+     */
+    public function removeProduct(\XBundle\Entity\Product $product)
+    {
+        $this->products->removeElement($product);
+    }
+
+    /**
+     * Get products
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProducts()
+    {
+        return $this->products;
     }
 }
