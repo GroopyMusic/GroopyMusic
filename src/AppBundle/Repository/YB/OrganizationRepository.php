@@ -28,7 +28,7 @@ class OrganizationRepository extends \Doctrine\ORM\EntityRepository{
             ->andWhere('o.published = 1')
             ->leftJoin('o.campaigns', 'c')
             ->addSelect('c')
-            ->andWhere('c.date_closure >= :now AND c.failed = 0 AND published = 1')
+            ->andWhere('c.date_closure >= :now AND c.failed = 0 AND c.published = 1')
             ->getQuery()
             ->getResult();
     }

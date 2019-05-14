@@ -1,0 +1,42 @@
+{% extends 'yb/base.html.twig' %}
+{% trans_default_domain 'yb' %}
+
+{% block headtitle %}{{ organization.getName }}{% endblock %}
+{% block meta_description %}{{ organization.getDescription|slice(0,100) }}{% endblock %}
+
+{% block header_container %}
+    <header class="masthead campaign-masthead text-white" >
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 mx-auto">
+                    <h1 class="mb-5">{{ organization.getName }}</h1>
+                    <p class="white">{{ organization.getDescription }}</p>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <section>
+        {% for event in events %}
+            {% set photo = event.photo is not null ? event.photo : false %}
+            {% set src = photo ? event.webPath(photo) : 'images/illustration-guitars.jpg' %}
+            <div class="card">
+                <div class="row ">
+                    <div class="col-md-4">
+                        <img src="{{ yb_asset(src) }}" class="w-100">
+                    </div>
+                    <div class="col-md-8 px-3">
+                        <div class="card-block px-3">
+                            <h4 class="card-title">{{ event.getTitle }}</h4>
+                            <p class="card-text">{{ preview(event.getDescription|bbcode_filter('my_default_filter'), 400)|raw }}</p>
+                            <a href="{{ url('yb_campaign', {'id': event.id, 'slug': event.getSlug}) }}" class="btn btn-primary">Voir la page</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

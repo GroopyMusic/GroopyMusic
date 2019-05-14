@@ -32,6 +32,13 @@
             {% endif %}
             <p><a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">Modifier votre organisation...</a></p>
         {% endif %}
+
+        <p>
+            <a class="link-secondary" href="{{ path('yb_organization', {'id':organization.id}) }}">
+                {% if organization.isPublished %}Voir la page publique de l'organisation
+                {% else %}Pré-visualiser la page publique de l'organisation{% endif %}
+            </a>
+        </p>
         {% if organization.hasMember(currentUser) %}
             <p>
                 <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">

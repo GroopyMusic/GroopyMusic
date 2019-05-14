@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\User;
 use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
@@ -597,8 +598,9 @@ class YBController extends BaseController
     /**
      * @Route("/organizer/{id}", name="yb_organization")
      */
-    public function organizationAction(Organization $organization, EntityManagerInterface $em) {
-        if(!$organization->isPublished()) {
+    public function organizationAction(Organization $organization, UserInterface $user = null, EntityManagerInterface $em) {
+        /** @var User $user */
+        if(!$organization->isPublished() && !($user != null && ($user->isSuperAdmin() || $user->isInOrganization($organization)))) {
             throw $this->createNotFoundException();
         }
 

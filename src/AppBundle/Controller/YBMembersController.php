@@ -1135,11 +1135,20 @@ class YBMembersController extends BaseController
      * @param $newName
      * @return bool
      */
-    private function organizationNameExist(EntityManagerInterface $em, $newName){
+    private function organizationNameExist(EntityManagerInterface $em, $newName, $except = null){
         $selfNamedOrg = $em->getRepository('AppBundle:YB\Organization')->findBy(['name' => $newName]);
         if (count($selfNamedOrg) === 0){
             return false;
         } else {
+            $areAllSame = true;
+            foreach($selfNamedOrg as $org) {
+                if($except != null && $org->getId() != $except->getId()) {
+                    $areAllSame = false;
+                }
+            }
+            if($areAllSame) {
+                return false;
+            }
             return !$this->areAllDeleted($selfNamedOrg);
         }
     }
@@ -1172,17 +1181,17 @@ class YBMembersController extends BaseController
      * @return bool
      */
     private function handleEditOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
-        $new_name = $form->getData()['name'];
-        if ($this->organizationNameExist($em, $new_name)){
+        $new_name = $form->getData()->getName();
+        if ($this->organizationNameExist($em, $new_name, $organization)){
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
             return false;
-        } elseif($this->isNameOfMember($organization, $new_name)){
+        } elseif(!$organization->isPrivate() && $this->isNameOfMember($organization, $new_name)){
             $this->addFlash('error', 'L\'organisation ne peut avoir le même nom qu\'un de ses membres. Essayez un autre nom !');
             return false;
         } else {
             $organization->setName($new_name);
             $em->flush();
-            $this->addFlash('yb_notice', 'Le nom a bien été changé !');
+            $this->addFlash('yb_notice', "L'organisation a bien été modifiée !");
             return true;
         }
     }

@@ -10,16 +10,49 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Gedmo\Mapping\Annotations as Gedmo;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\OrganizationRepository")
  * @ORM\Table(name="yb_organization")
  **/
-class Organization {
-
+class Organization implements TranslatableInterface
+{
+    use ORMBehaviors\Translatable\Translatable;
     use ORMBehaviors\SoftDeletable\SoftDeletable;
+
+    public function __call($method, $arguments)
+    {
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch (\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
+    }
+
+    public function getDefaultLocale()
+    {
+        return 'fr';
+    }
+
+    public function __toString()
+    {
+        return '' . $this->getName();
+    }
+
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
+    }
+
 
     // CONSTRUCT
 
