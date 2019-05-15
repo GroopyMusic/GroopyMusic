@@ -375,10 +375,10 @@ class Project
     /**
      * Count for sales recap
      */
-    public function getNbPerChoice(Product $product, ChoiceOption $choice){
+    public function getNbPerChoice(Product $product, $comboChoices){
         $count = 0;
         foreach ($this->contributions as $contribution) {
-            $purchase = $contribution->getPurchaseForProductWithChoice($product, $choice);
+            $purchase = $contribution->getPurchaseForProductWithChoices($product, $comboChoices);
             if($purchase != null) {
                 $count += $purchase->getQuantity();
             }

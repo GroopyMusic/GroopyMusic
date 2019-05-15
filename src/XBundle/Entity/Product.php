@@ -32,10 +32,6 @@ class Product
         $this->options = new ArrayCollection();
     }
 
-    /*public static function getWebPath(Image $image) {
-        return self::PHOTOS_DIR . $image->getFilename();
-    }*/
-
     public static function getWebPath(string $image) {
         return self::PHOTOS_DIR . $image;
     }
@@ -55,6 +51,46 @@ class Product
 
     public function isTicket() {
         return $this->getIsTicket();
+    }
+
+    private function createCombinationOptions($arrays, $i = 0) {
+        if (!isset($arrays[$i])) {
+            return [];
+        }
+        if ($i == count($arrays)-1) {
+            return $arrays[$i];
+        }
+        $tmp = $this->createCombinationOptions($arrays, $i + 1);
+        $result = [];
+
+        foreach ($arrays[$i] as $v) {
+            foreach ($tmp as $t) {
+                $result[] = is_array($t) ? array_merge(array($v), $t) : array($v, $t);
+            }
+        }
+        return $result;
+    }
+
+    public function getCombinationOptions() {
+        $options = [];
+        foreach ($this->options as $option) {
+            $options[] = $option->getChoices()->toArray();
+        }
+        return $this->createcombinationOptions($options);
+    }
+
+    // Display combo
+    public function stringCombo($combo) {
+        if (is_array($combo)) {
+            $str = '';
+            for ($i=0; $i<count($combo); $i++) {
+                $str .= $combo[$i] . ' ';
+            }
+            return $str;
+        } else {
+            return $combo;
+        }
+        
     }
 
 
@@ -93,12 +129,6 @@ class Product
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;
-
-    /**
-     * @ORM\OneToOne(targetEntity="XBundle\Entity\Image", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    //private $photo;
 
     /**
      * @var int

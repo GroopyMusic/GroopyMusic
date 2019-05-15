@@ -187,7 +187,7 @@ admin :
       Pour voir ses infos et le valider, rendez-vous sur l'espace d'admin !
 
     new_product: |
-      Un nouvel article a été mis en vente par un artiste pour l'aider à financer son projet. L'intitulé de l'article: %product%
+      Un nouvel article a été mis en vente pour le projet "%project%". L'intitulé de l'article: %product%
 
       Pour voir ses infos et le valider, rendez-vous sur l'espace d'admin !
 
@@ -418,11 +418,11 @@ x:
       Vous allez être remboursé(e) de votre contribution de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
   product:
     validated: |
-      L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a bien été validé par un administrateur d'Un-Mute.
+      L'article "%product%" que vous avez mis en vente pour le project "%project%" a bien été validé par un administrateur d'Un-Mute.
 
       Il est à présent visible publiquement sur la plateforme.
     refused: |
-      L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a été refusé par un administrateur d'Un-Mute.
+      L'article "%product%" que vous avez mis en vente pour le project "%project%" a été refusé par un administrateur d'Un-Mute.
 
       Raison(s) du refus :
       ------------------------------

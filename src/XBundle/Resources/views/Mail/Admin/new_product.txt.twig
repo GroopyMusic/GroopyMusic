@@ -6,6 +6,7 @@
 
 {% block content %}
     {{ email_content('admin.x.new_product', {
+        '%project%' : product.project.title,
         '%product%': product.name
     })|raw }}
 {% endblock %}

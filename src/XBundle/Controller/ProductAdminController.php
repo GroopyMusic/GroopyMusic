@@ -29,7 +29,7 @@ class ProductAdminController extends BaseAdminController
 
         if (!$product->getProject()->getValidated()) {
             $this->addFlash('sonata_flash_error', 'Le projet doit d\'abord être validé avant la validation de la mise en vente de l\'article.');
-            return new RedirectResponse($this->admin->generateUrl('list'));
+            return new RedirectResponse($this->admin->getParent()->generateUrl('list'));
         }
 
         $form = $this->createFormBuilder()
@@ -97,7 +97,7 @@ class ProductAdminController extends BaseAdminController
 
         $form = $this->createFormBuilder()
             ->add('reason', 'ckeditor', array(
-                'label' => 'Cause(s) du refus',
+                'label' => 'Raison(s) du refus',
                 'config_name' => 'bbcode'
             ))
             ->add('confirm', SubmitType::class, array(

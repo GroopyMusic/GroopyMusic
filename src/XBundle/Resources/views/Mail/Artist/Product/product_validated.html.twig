@@ -6,6 +6,7 @@
         {% block content %}
             {{ email_content('x.product.validated', {
                 '%product%': product.name,
+                '%project%': product.project.title
             })|raw }}
         {% endblock %}
     {% endspaceless %}

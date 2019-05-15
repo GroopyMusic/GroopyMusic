@@ -134,9 +134,9 @@ class XContractFan
         return $this->purchasesForProduct;
     }
 
-    public function getPurchaseForProductWithChoice(Product $product, ChoiceOption $choice) {
+    public function getPurchaseForProductWithChoices(Product $product, $comboChoices) {
         foreach ($this->purchases as $purchase) {
-            if ($purchase->getProduct() == $product && $purchase->hasChoiceOption($choice)) {
+            if ($purchase->getProduct() == $product && $purchase->hasChoices($comboChoices)) {
                 return $purchase;
             }
         }

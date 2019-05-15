@@ -73,14 +73,12 @@
                                         {% if product.deletedAt is null %}
                                         <div class="my-3 py-2">
                                             <h5><b>{{ product.name }}</b></h5>
-                                            <p><b>{{ product.productsSold }}</b> vendu(s) au total {#% if product.productsSold > 0 and product.options is not empty %}dont:{% endif %#}</p>
-                                            {#% if product.productsSold > 0 %}
+                                            <p><b>{{ product.productsSold }}</b> vendu(s) au total {% if product.productsSold > 0 and product.options is not empty %}dont:{% endif %}</p>
+                                            {% if product.productsSold > 0 %}
                                                 {% if product.options is not empty %}
-                                                    {% for option in product.options %}
-                                                        {{ macros.sales_recap_row(project, product, option) }}
-                                                    {% endfor %}
+                                                    {{ macros.sales_recap_row(project, product) }}
                                                 {% endif %}
-                                            {% endif %#}
+                                            {% endif %}
                                         </div>
                                         {% endif %}
                                     {% endfor %}

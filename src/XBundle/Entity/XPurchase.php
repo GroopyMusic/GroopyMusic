@@ -64,8 +64,18 @@ class XPurchase
         return $this->product->getOptions();
     }
 
-    public function hasChoiceOption(ChoiceOption $choice) {
-        return $this->choices->contains($choice);
+    public function hasChoices($comboChoices) {
+        if (is_array($comboChoices)) {
+            for ($i = 0; $i < count($comboChoices); $i++) {
+                if(!$this->choices->contains($comboChoices[$i])) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return $this->choices->contains($comboChoices);
+        }
+        
     }
 
 

@@ -1,9 +1,9 @@
-{% macro sales_recap_row(project, product, option) %}
+{% macro sales_recap_row(project, product) %}
     <ul>
-        {% for choice in option.choices %}
-            {% set nb = project.getNbPerChoice(product, choice) %}
+        {% for combo in product.combinationOptions %}
+            {% set nb = project.getNbPerChoice(product, combo) %}
             {% if nb > 0 %}
-                <li><b>{{ nb }}</b> {{ choice }}</li>
+                <li><b>{{ nb }}</b> {{ product.stringCombo(combo) }}</li>
             {% endif %}
         {% endfor %}
     </ul>

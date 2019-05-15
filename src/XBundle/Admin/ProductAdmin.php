@@ -11,15 +11,22 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class ProductAdmin extends BaseAdmin
 {
+
     public function configureRoutes(RouteCollection $collection)
     {
-        $collection
-            ->remove('delete')
-            ->remove('create')
-            ->remove('edit')
-            ->add('validate', $this->getRouterIdParameter().'/validate')
-            ->add('refuse', $this->getRouterIdParameter().'/refuse')
-        ;
+        if ($this->isChild()) {
+            parent::configureRoutes($collection);
+            $collection
+                ->remove('delete')
+                ->remove('create')
+                ->remove('edit')
+                ->add('validate', $this->getRouterIdParameter().'/validate')
+                ->add('refuse', $this->getRouterIdParameter().'/refuse');
+            return;
+        }
+
+        // This is the route configuration as a parent
+        $collection->clear();
     }
 
     public function configureListFields(ListMapper $list)
@@ -28,9 +35,6 @@ class ProductAdmin extends BaseAdmin
             ->add('id')
             ->add('name', null, array(
                 'label' => 'Intitulé'
-            ))
-            ->add('project', null, array(
-                'label' => 'Projet associé',
             ))
             ->add('validated', null, array(
                 'label'=> 'Validé'
@@ -42,10 +46,10 @@ class ProductAdmin extends BaseAdmin
                 'actions' => array(
                     'show' => array(),
                     'validate' => array(
-                        'template' => 'XBundle:Admin/Product:icon_validate_product.html.twig'
+                        'template' => 'XBundle:Admin:icon_validate.html.twig'
                     ),
                     'refuse' => array(
-                        'template' => 'XBundle:Admin/Product:icon_refuse_product.html.twig'
+                        'template' => 'XBundle:Admin:icon_refuse.html.twig'
                     )
                 ) 
             ))
@@ -68,8 +72,14 @@ class ProductAdmin extends BaseAdmin
                 ->add('price', null, array(
                     'label' => 'Prix'
                 ))
+                ->add('freePrice', null, array(
+                    'label' => 'Prix libre'
+                ))
                 ->add('supply', null, array(
                     'label' => 'Stock'
+                ))
+                ->add('productsSold', null, array(
+                    'label' => 'Vendu'
                 ))
                 ->add('photo', null, array(
                     'label' => 'Photo',

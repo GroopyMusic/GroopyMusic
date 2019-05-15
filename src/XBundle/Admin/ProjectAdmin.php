@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class ProjectAdmin extends BaseAdmin
 {
+
     public function configureRoutes(RouteCollection $collection)
     {
         $collection
@@ -18,7 +19,8 @@ class ProjectAdmin extends BaseAdmin
             ->remove('create')
             ->remove('edit')
             ->add('validate', $this->getRouterIdParameter().'/validate')
-            ->add('refuse', $this->getRouterIdParameter().'/refuse');
+            ->add('refuse', $this->getRouterIdParameter().'/refuse')
+            ->add('products', $this->getRouterIdParameter().'/product/list');
     }
 
     public function configureListFields(ListMapper $list)
@@ -50,10 +52,13 @@ class ProjectAdmin extends BaseAdmin
                 'actions' => array(
                     'show' => array(),
                     'validate' => array(
-                        'template' => 'XBundle:Admin:icon_validate_project.html.twig'
+                        'template' => 'XBundle:Admin:icon_validate.html.twig'
                     ),
                     'refuse' => array(
-                        'template' => 'XBundle:Admin:icon_refuse_project.html.twig'
+                        'template' => 'XBundle:Admin:icon_refuse.html.twig'
+                    ),
+                    'products' => array(
+                        'template' => 'XBundle:Admin:icon_products_project.html.twig'
                     )
                 ) 
             ))

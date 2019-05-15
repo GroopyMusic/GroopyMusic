@@ -63,7 +63,7 @@ class ProjectAdminController extends BaseAdminController
                 }
                 finally {
                     $this->addFlash('sonata_flash_success', $message);
-                    return new RedirectResponse($productAdmin->generateUrl('list'));
+                    return new RedirectResponse($this->admin->getChild('XBundle\Admin\ProductAdmin')->generateUrl('list', ['id' => $project->getId()]));
                 }
             }            
         }
