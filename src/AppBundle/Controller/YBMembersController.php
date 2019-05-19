@@ -214,6 +214,29 @@ class YBMembersController extends BaseController
     }
 
     /**
+     * @Route("/campaign/{id}/toggle-publicity", name="yb_members_campaign_toggle_publicity")
+     */
+    public function togglePublicityCampaignAction(YBContractArtist $campaign, UserInterface $user = null, EntityManagerInterface $em) {
+        $this->checkIfAuthorized($user, $campaign);
+        $campaign->togglePublicity();
+        $em->persist($campaign);
+        $em->flush();
+        return $this->forward('AppBundle:YBMembers:displayOngoingCampaignsForOrganization', ['id' => $campaign->getOrganization()->getId()]);
+    }
+
+    /**
+     * @Route("/api/organization/{id}/ongoing-events", name="yb_members_organization_ongoing_events")
+     */
+    public function displayOngoingCampaignsForOrganizationAction(Organization $organization) {
+        $em = $this->em;
+        $campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingEvents($organization);
+        return new Response($this->renderView('@App/YB/Organizations/organization_ongoing_campaigns.html.twig', [
+            'campaigns' => $campaigns,
+            'organization' => $organization,
+        ]));
+    }
+
+        /**
      * @Route("/tickets/list/{id}", name="yb_members_get_tickets_list")
      */
     public function getTicketsListAction(YBContractArtist $campaign, UserInterface $user = null, Request $request) {

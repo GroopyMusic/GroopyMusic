@@ -55,8 +55,9 @@
                     {% if creation %}
                         {{ form_row(form.organization) }}
                     {% else %}
+                        {% do form.organization.setRendered %}
                         <div class="text-muted font-italic pb-2">Une fois la campagne lancée, il n'est plus possible de changer l'organisation en charge. Si besoin de le faire malgré tout, <a target="_blank" href="{{ path('yb_index') }}#contact">contactez-nous</a> en exposant la raison derrière le changement.</div>
-                        <div class="text-center">{% if campaign.organization.published %}<a target="_blank" href="{{ url('yb_organization', {'id':campaign.organization.id, 'slug': campaign.organization.slug}) }}">{% endif %}{{ campaign.organization.name }}{% if campaign.organization.published %}</a>{% endif %}</div>
+                    <div class="text-center">{% if campaign.organization.published %}<a target="_blank" href="{{ url('yb_organization', {'id':campaign.organization.id, 'slug': campaign.organization.slug}) }}">{% endif %}{{ campaign.organization.name }}{% if campaign.organization.published %}</a>{% endif %}</div>
                     {% endif %}
                 </div>
                 <div class="col-12 col-md-6 my-auto">

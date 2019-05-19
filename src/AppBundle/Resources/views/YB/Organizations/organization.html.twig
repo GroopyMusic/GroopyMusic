@@ -32,9 +32,9 @@
 
 {% block body %}
     {% if events|length == 0 %}
-        <section class="container mt-3">
+        <section class="container my-5">
             <h2>Campagnes en cours pour {{ organization.getName() }}</h2>
-            <p>Cet organisateur n'a pas d'événement publié sur sa page à l'heure actuelle.</p>
+            <p class="text-center py-3">Cet organisateur n'a pas d'événement publié sur sa page à l'heure actuelle.</p>
         </section>
     {% endif %}
     <section class="container my-3">

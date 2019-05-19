@@ -233,12 +233,16 @@ class YBContractArtist extends BaseContractArtist
     }
 
     // Commissionnaire
-    public function isCommissionary() {
+    public function isBroker() {
         return $this->vat == 0 || $this->vat == null;
     }
     // Courtier 
-    public function isBroker() {
-        return !$this->isCommissionary();
+    public function isCommissionary() {
+        return !$this->isBroker();
+    }
+
+    public function togglePublicity() {
+        $this->setPublished(!$this->published);
     }
 
     /**
