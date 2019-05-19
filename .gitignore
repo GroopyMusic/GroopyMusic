@@ -25,9 +25,11 @@
 !/web/pdf/viptickets
 !/web/pdf/phtickets
 /web/yb/images/campaigns/*
+/web/yb/images/organizations/*
 /web/yb/tickets/*
 !/web/yb/tickets
 !web/yb/images/campaigns
+!web/yb/images/organizations
 !web/uploads
 !web/uploads/artist_gallery
 !web/uploads/hall_gallery

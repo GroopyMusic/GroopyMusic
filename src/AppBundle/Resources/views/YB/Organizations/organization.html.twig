@@ -3,9 +3,21 @@
 
 {% block headtitle %}{{ organization.getName }}{% endblock %}
 {% block meta_description %}{{ organization.getDescription|slice(0,100) }}{% endblock %}
+{% set photo = organization.photo is not null ? organization.photo : false %}
+
+{% block open_graph %}
+    {% set og_src = photo ? organization.webPath(photo) : 'images/illustration-guitars.jpg' %}
+    <meta property="og:title"
+          content="{{ organization.getName }}"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:url"
+          content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
+    <meta property="og:image" content="{{ yb_asset(og_src) }}"/>
+    <meta property="og:description" content="{{ organization.getDescription|slice(0,100) }}"/>
+{% endblock %}
 
 {% block header_container %}
-    <header class="masthead campaign-masthead text-white" >
+    <header class="masthead campaign-masthead text-white" {% if photo %}style="background-image: url('{{ yb_asset(organization.webPath(photo)) }}');"{% endif %}>
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
@@ -19,20 +31,29 @@
 {% endblock %}
 
 {% block body %}
-    <section>
+    {% if events|length == 0 %}
+        <section class="container mt-3">
+            <h2>Campagnes en cours pour {{ organization.getName() }}</h2>
+            <p>Cet organisateur n'a pas d'événement publié sur sa page à l'heure actuelle.</p>
+        </section>
+    {% endif %}
+    <section class="container my-3">
         {% for event in events %}
             {% set photo = event.photo is not null ? event.photo : false %}
             {% set src = photo ? event.webPath(photo) : 'images/illustration-guitars.jpg' %}
-            <div class="card">
+            <div class="card p-3">
                 <div class="row ">
-                    <div class="col-md-4">
-                        <img src="{{ yb_asset(src) }}" class="w-100">
+                    <div class="col-md-4 my-auto">
+                        <img src="{{ yb_asset(src) }}" class="w-100 rounded">
                     </div>
-                    <div class="col-md-8 px-3">
+                    <div class="col-md-8 px-3 my-auto">
                         <div class="card-block px-3">
                             <h4 class="card-title">{{ event.getTitle }}</h4>
-                            <p class="card-text">{{ preview(event.getDescription|bbcode_filter('my_default_filter'), 400)|raw }}</p>
-                            <a href="{{ url('yb_campaign', {'id': event.id, 'slug': event.getSlug}) }}" class="btn btn-primary">Voir la page</a>
+                            <p class="card-text">{{ event.getDescription|bbcode_filter('my_default_filter') }}</p>
+                            <p class="card-text">
+                                <a href="{{ url('yb_campaign', {'id': event.id, 'slug': event.getSlug}) }}" class="btn btn-primary">
+                                    <img src="{{ yb_asset('images/icons/icon-white.png') }}" width="25"/> Tickets</a>
+                            </p>
                         </div>
                     </div>
                 </div>

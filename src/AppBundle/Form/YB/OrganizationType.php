@@ -3,6 +3,7 @@
 namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use AppBundle\Form\PhotoType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -12,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use AppBundle\Entity\YB\Organization;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class OrganizationType extends AbstractType {
 
@@ -40,14 +42,22 @@ class OrganizationType extends AbstractType {
                 'fields' => [
                     'description' => [
                         'field_type' => TextareaType::class,
-                        'label' => 'Description',
+                        'label' => 'Description courte',
                         'required' => false,
                     ],
                 ],
             ])
+            ->add('imageFile', VichImageType::class, [
+                'label' => 'Photo de couverture',
+                'required' => false,
+                'download_link' => false,
+                'download_uri' => false,
+                'image_uri' => true,
+                'allow_delete' => false,
+            ])
             ->add('save', SubmitType::class, array(
                 'label' => 'Enregistrer',
-                'attr' => array('class' => 'btn'),
+                'attr' => array('class' => 'btn btn-primary'),
             ));
     }
 

@@ -596,9 +596,13 @@ class YBController extends BaseController
     }
 
     /**
-     * @Route("/organizer/{id}", name="yb_organization")
+     * @Route("/organizer/{id}-{slug}", name="yb_organization")
      */
-    public function organizationAction(Organization $organization, UserInterface $user = null, EntityManagerInterface $em) {
+    public function organizationAction(Organization $organization, UserInterface $user = null, EntityManagerInterface $em, $slug = null) {
+        if($organization->getSlug() != null && $slug != null && $organization->getSlug() != $slug) {
+            return $this->redirectToRoute('yb_organization', ['id' => $organization->getId(), 'slug' => $organization->getSlug()]);
+        }
+
         /** @var User $user */
         if(!$organization->isPublished() && !($user != null && ($user->isSuperAdmin() || $user->isInOrganization($organization)))) {
             throw $this->createNotFoundException();

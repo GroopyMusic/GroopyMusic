@@ -1,52 +1,82 @@
 {% macro organization_row(organization, currentUser) %}
     {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
-    <div data-jplist-item>
+    <div data-jplist-item class="my-5">
         {% if organization.hasMember(currentUser) %}
-            <h3 class="name">{{ organization.getName|nl2br }}</h3>
+            <h3 class="name font-weight-bold">{{ organization.getName|nl2br }}</h3>
         {% else %}
-            <h3 class="name" style="color:orange;">{{ organization.getName|nl2br }} (SUPER ADMIN)</h3>
+            <h3 class="name font-weight-bold" style="color:orange;">{{ organization.getName|nl2br }} (SUPER ADMIN)</h3>
         {% endif %}
         <p class="small">
-            <i>Numéro de TVA : {{ organization.vatNumber|default('non renseigné - envoyez-le par mail') }}</i><br />
-            <i>Numéro de compte : {{ organization.bankAccount|default('non renseigné - envoyez-le par mail') }}</i>
+            <i>Numéro de TVA : {{ organization.vatNumber|default('non renseigné') }}</i><br />
+            <i>Numéro de compte : {{ organization.bankAccount|default('non renseigné') }}</i>
         </p>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <h4 class="mt-3">Membres</h4>
+                <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
+                    {% for member in organization.getMembers %}
+                        {{ macros.organization_member_row(currentUser, member, organization) }}
+                    {% endfor %}
+                    {% if organization.hasPendingRequest %}
+                        {% for request in organization.getJoinOrganizationRequests %}
+                            <tr>
+                                <td> {{ request.getEmail }}</td>
+                                <td>EN ATTENTE DE CONFIRMATION</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
 
-        <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
-            {% for member in organization.getMembers %}
-                {{ macros.organization_member_row(currentUser, member, organization) }}
-            {% endfor %}
-            {% if organization.hasPendingRequest %}
-                {% for request in organization.getJoinOrganizationRequests %}
-                    <tr>
-                        <td> {{ request.getEmail }}</td>
-                        <td>EN ATTENTE DE CONFIRMATION</td>
-                    </tr>
-                {% endfor %}
+                {% if organization.ongoingCampaigns is not empty and organization.ongoingCampaigns|length > 0 %}
+                    <h4 class="mt-3">Campagnes en cours</h4>
+                    <ul class="list-group">
+                    {% for camp in organization.ongoingCampaigns %}
+                        <li class="list-group-item">
+                            {{ camp.getTitle }}<br/>
+                            <a href="{{ url('yb_campaign', {'id': camp.id, 'slug': camp.slug}) }}">voir</a> - <a href="{{ url('yb_members_campaign_edit', {'id': camp.id}) }}">modifier</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <h4 class="mt-3">Options</h4>
+                <!-- On ne peut ajouter une personne qui si on est admin -->
+                {% if currentUser.isAdminForOrganization(organization) or currentUser.isSuperAdmin() %}
+                    {% if not organization.isPrivate() %}
+                        <p>
+                            <a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">
+                                <i class="fas fa-user-plus text-primary"></i> Rajouter un membre à cette organisation
+                            </a>
+                        </p>
+                    {% endif %}
+                    <p>
+                        <a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">
+                            <i class="fas fa-pencil-alt text-primary"></i> Modifier votre organisation
+                        </a>
+                    </p>
+                {% endif %}
+
+                <p>
+                    <a class="link-secondary" href="{{ path('yb_organization', {'id':organization.id, 'slug': organization.slug }) }}">
+                        <i class="far fa-eye text-primary"></i> {% if organization.isPublished %}Voir la page publique de l'organisation
+                        {% else %}Pré-visualiser la page publique de l'organisation{% endif %}
+                    </a>
+                </p>
+                {% if organization.hasMember(currentUser) %}
+                    <p>
+                        <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">
+                            <i class="fas fa-sign-out-alt text-primary"></i> Quitter cette organisation
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+            {% if organization.photo is not null %}
+                <div class="col-12 col-md-6 px-5">
+                    <h4>Photo</h4>
+                    <img class="img-fluid rounded" src="{{ yb_asset(organization.webPath(organization.photo)) }}" />
+                </div>
             {% endif %}
-        </table>
-
-        <!-- On ne peut ajouter une personne qui si on est admin -->
-        {% if currentUser.isAdminForOrganization(organization) or currentUser.isSuperAdmin() %}
-            {% if not organization.isPrivate() %}
-                <p><a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">Rajouter un membre à cette organisation...</a></p>
-            {% endif %}
-            <p><a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">Modifier votre organisation...</a></p>
-        {% endif %}
-
-        <p>
-            <a class="link-secondary" href="{{ path('yb_organization', {'id':organization.id}) }}">
-                {% if organization.isPublished %}Voir la page publique de l'organisation
-                {% else %}Pré-visualiser la page publique de l'organisation{% endif %}
-            </a>
-        </p>
-        {% if organization.hasMember(currentUser) %}
-            <p>
-                <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">
-                    Quitter cette organisation...
-                </a>
-            </p>
-        {% endif %}
-        <hr size="4" color="orange">
+        </div>
 
         <div class="modal fade" id="quitModal{{ organization.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

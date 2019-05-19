@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\AppBundle;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\Photo;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\YBCommission;
@@ -143,6 +144,7 @@ class YBMembersController extends BaseController
             'admin' => $user->isSuperAdmin(),
             'form' => $form->createView(),
             'campaign' => $campaign,
+            'creation' => true,
             'flow' => $flow,
         ]);
     }
@@ -207,6 +209,7 @@ class YBMembersController extends BaseController
             'form' => $form->createView(),
             'flow' => $flow,
             'campaign' => $campaign,
+            'creation' => false,
         ]);
     }
 
@@ -1043,6 +1046,13 @@ class YBMembersController extends BaseController
             $this->createNewParticipation($organization, $currentUser, true);
             $em->persist($organization);
             $em->flush();
+            if($organization->getImageFile() != null) {
+                $photo = new Photo();
+                $organization->setPhoto($photo);
+                $photo->setFilename($organization->getFilename())->setImageSize($organization->getImageSize());
+                $em->persist($photo);
+                $em->flush();
+            }
             $orgName = $organization->getName();
             $this->addFlash('yb_notice', 'Votre nouvelle organisation, ' . $orgName . ', a bien été enregistrée.');
         }
@@ -1191,6 +1201,18 @@ class YBMembersController extends BaseController
         } else {
             $organization->setName($new_name);
             $em->flush();
+            if($form->getData()->getImageFile() != null) {
+                if($organization->getPhoto() != null) {
+                    $photo = $organization->getPhoto();
+                }
+                else {
+                    $photo = new Photo();
+                    $organization->setPhoto($photo);
+                }
+                $photo->setFilename($organization->getFilename())->setImageSize($organization->getImageSize());
+                $em->persist($photo);
+                $em->flush();
+            }
             $this->addFlash('yb_notice', "L'organisation a bien été modifiée !");
             return true;
         }
