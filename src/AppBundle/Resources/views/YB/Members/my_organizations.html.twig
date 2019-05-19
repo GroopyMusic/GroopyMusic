@@ -19,17 +19,22 @@
 
     <section class="container py-5">
         <h2>Mes organisations</h2>
-        <div align="center">
-            <input
-                    data-jplist-control="textbox-filter"
-                    data-group="group1"
-                    data-name="my-filter-1"
-                    data-path=".name"
-                    type="text"
-                    value=""
-                    data-clear-btn-id="name-clear-btn"
-                    placeholder="Chercher..." />
-            <button type="button" id="name-clear-btn">Supprimer</button>
+        <div class="row">
+            <div class="col-12 col-md-10">
+                <input
+                        class="form-control"
+                        data-jplist-control="textbox-filter"
+                        data-group="group1"
+                        data-name="my-filter-1"
+                        data-path=".name"
+                        type="text"
+                        value=""
+                        data-clear-btn-id="name-clear-btn"
+                        placeholder="Chercher..." />
+            </div>
+            <div class="col-12 col-md-2">
+                <button type="button" class="btn btn-outline-primary" id="name-clear-btn">Effacer</button>
+            </div>
         </div>
         <br>
         {% if organizations|length > 0 %}
@@ -56,7 +61,7 @@
             {{ form_widget(form.translations) }}
             {{ form_row(form.published) }}
             <div class="col-md-12 text-center">
-                <button type="button" class="btn-secondary btn" data-toggle="modal" data-target="#createOrgaModal">
+                <button type="button" class="btn-primary btn" data-toggle="modal" data-target="#createOrgaModal">
                     Enregistrer
                 </button>
             </div>

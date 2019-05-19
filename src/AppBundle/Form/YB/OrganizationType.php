@@ -32,8 +32,8 @@ class OrganizationType extends AbstractType {
                 'required' => false,
             ))
             ->add('published', CheckboxType::class, array(
-                'label' => 'Publier l\'organisation\n Si cette case est cochée, l\'organisation aura sa propre page sur Ticked-it! reprenant la liste des événements qu\'elle organise ; pour pré-visualiser le rendu de cette page propre à votre campagne, vous pouvez laisser cette case décochée. 
-                En tant qu\'organisateur, vous pourrez pré-visualiser la page.',
+                'label' => 'Publier l\'organisation (si cette case est cochée, l\'organisation aura sa propre page sur Ticked-it! reprenant la liste des événements qu\'elle organise ; pour pré-visualiser le rendu de cette page propre à votre campagne, vous pouvez laisser cette case décochée. 
+                En tant qu\'organisateur, vous pourrez pré-visualiser la page.)',
                 'required' => false,
             ))
             ->add('translations', TranslationsType::class, [
