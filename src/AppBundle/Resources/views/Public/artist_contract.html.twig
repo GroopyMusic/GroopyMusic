@@ -44,7 +44,7 @@
 
         <div class="crowdfunding-box mb-3">
             {% if state not in contract.successfulStates and state not in contract.pendingStates and state not in contract.passedStates %}
-                <p><i class="fas fa-hourglass-half"></i> Il vous reste {{ contract.campaignDaysLeft }} jours pour soutenir cette campagne.
+                <p><i class="fas fa-hourglass-half"></i> Il vous reste {{ contract.campaignDaysLeft }} jour{% if contract.campaignDaysLeft > 1 %}s{% endif %} pour soutenir cette campagne.
                 Achetez votre ticket pour participer directement à la production de ce festival !</p>
             {% endif %}
             <div class="progress">

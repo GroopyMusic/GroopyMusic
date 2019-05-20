@@ -135,15 +135,6 @@ class YBContractArtist extends BaseContractArtist
         return in_array($today, $dates);
     }
 
-    public function getTodaySubEvent(){
-        foreach ($this->sub_events as $se){
-            if ($se->getDate()->format('m/d/Y') === (new \DateTime())->format('m/d/Y')){
-                return $se;
-            }
-        }
-        return null;
-    }
-
     public function getState()
     {
         if ($this->state != null) {
@@ -198,56 +189,6 @@ class YBContractArtist extends BaseContractArtist
             }
         }
     }
-
-    public function isOutOfStockCp(CounterPart $cp){
-        $blocks = null;
-        if ($cp->getContractArtist()->getConfig() !== null){
-            $blocks = $cp->getContractArtist()->getConfig()->getBlocks();
-        }
-        // cas où la salle n'est que en placement libre
-        if ($this->config->isOnlyStandup() || $this->config->hasFreeSeatingPolicy()){
-            return ($this->getNbPurchasable($cp) === 0);
-        }
-        // si les blocs concernés par le CP sont en placement libre
-        else if ($cp->hasOnlyFreeSeatingBlocks($blocks)){
-            return ($this->getNbPurchasable($cp) === 0);
-        }
-        // si les blocs ne sont que assis
-        else if ($cp->hasOnlySeatedBlock($blocks)) {
-            $totalSeatedCapacity = 0;
-            $totalSold = 0;
-            /** @var Block $block */
-            foreach ($cp->getVenueBlocks() as $block) {
-                $totalSeatedCapacity += $block->getSeatedCapacity();
-                $totalSold += $block->getSoldTicketInBlock($cp->getContractArtist());
-            }
-            $realCapacity = min($totalSeatedCapacity, $cp->getMaximumAmount());
-            return $totalSold === $realCapacity;
-        }
-        else {
-            // mix des 2 (assis et debout)
-            $cpCapacity = $cp->getMaximumAmount();
-            $totalSoldSeated = 0;
-            // on regarde d'abord les blocs assis
-            /** @var Block $block */
-            foreach ($cp->getVenueBlocks() as $block) {
-                $blkCapacity = $block->getComputedCapacity();
-                $soldInBlock = $block->getSoldTicketInBlock($this);
-                $realCapacity = min($cpCapacity, $blkCapacity);
-                if ($block->getType() === Block::BALCONY || $block->getType() === Block::SEATED) {
-                    if ($soldInBlock < $realCapacity) {
-                        // on sait qu'on peut encore mettre au moins 1 personne dans ce bloc
-                        return false;
-                    }
-                }
-                $totalSoldSeated += $soldInBlock;
-            }
-            // on est arrivé à la fin de la boucle : tous les blocs assis sont soldout
-            // on regarde pour les debout
-            return ($this->getNbPurchasable($cp) === 0);
-        }
-    }
-
     /**
      * @return float|int
      */
@@ -298,6 +239,7 @@ class YBContractArtist extends BaseContractArtist
     public function isCommissionary() {
         return $this->vat == 0 || $this->vat == null;
     }
+
     // Courtier
     public function isBroker() {
         return !$this->isCommissionary();
@@ -733,12 +675,14 @@ class YBContractArtist extends BaseContractArtist
     public function setOrganization($organization){
         $this->organization = $organization;
 
-        if($this->vat_number == null) {
-            $this->vat_number = $organization->getVatNumber();
-        }
+        if($this->organization != null) {
+            if($this->vat_number == null) {
+                $this->vat_number = $organization->getVatNumber();
+            }
 
-        if($this->bank_account == null) {
-            $this->bank_account = $organization->getBankAccount();
+            if($this->bank_account == null) {
+                $this->bank_account = $organization->getBankAccount();
+            }
         }
     }
 
@@ -827,44 +771,4 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->external_invoice = $external_invoice;
     }
-
-    public function getConfig()
-    {
-        return $this->config;
-    }
-    public function setConfig($config)
-    {
-        $this->config = $config;
-    }
-    /**
-     * @return Venue
-     */
-    public function getVenue()
-    {
-        return $this->venue;
-    }
-    /**
-     * @param Venue $venue
-     */
-    public function setVenue($venue)
-    {
-        $this->venue = $venue;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCustomTicket()
-    {
-        return $this->customTicket;
-    }
-
-    /**
-     * @param mixed $customTicket
-     */
-    public function setCustomTicket($customTicket)
-    {
-        $this->customTicket = $customTicket;
-    }
-
 }

@@ -270,11 +270,14 @@ class Purchase
     private $artists;
 
     /**
+<<<<<<< HEAD
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Booking", mappedBy="purchase", cascade={"persist", "remove"}, orphanRemoval=TRUE)
      */
     private $bookings;
 
     /**
+=======
+>>>>>>> e52d15923c35c09df7966a93c112c788e89837a1
      * Get id
      *
      * @return int
@@ -543,21 +546,5 @@ class Purchase
     public function getArtists()
     {
         return $this->artists;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBookings()
-    {
-        return $this->bookings;
-    }
-
-    /**
-     * @param mixed $bookings
-     */
-    public function setBookings($bookings)
-    {
-        $this->bookings = $bookings;
     }
 }

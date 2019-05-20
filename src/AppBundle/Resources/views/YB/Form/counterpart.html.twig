@@ -1,24 +1,11 @@
-{% block app_bundle_counter_part_type_row %}
+
     <div class="row counterpart-row">
         <h3><img src="{{ yb_asset('images/icons/icon-orange.png') }}" width="30" /> Ticket</h3>
 
         <div class="col-12">
             {{ form_widget(form.translations) }}
         </div>
-        {% if attr.class == '' %}
-            <div class="col-12">
-                {{ form_row(form.subEvents) }}
-            </div>
-        {% endif %}
-        {% if attr.class2 == '' %}
-        <div class="col-12">
-            {{ form_widget(form.accessEverywhere) }}
-        </div>
-        <div class="col-12 blocks-selection">
-            {{ form_row(form.venueBlocks) }}
-        </div>
-        {% endif %}
-        <div class="col-12 col-md-6 row">
+        <div class="col-12 row">
             <div class="col-12">
             {{ form_row(form.maximumAmount) }}
             </div>
@@ -31,30 +18,36 @@
                 {{ form_widget(form.maximumAmountPerPurchase) }}
             </div>
         </div>
-        <div class="col-12 col-md-6">
-            {{ form_label(form.thresholdIncrease) }}
-            <div class="text-muted font-italic pb-2">
-                Par exemple, si vous attribuez un poids de 1 à ce ticket, chaque ticket de ce type acheté vous rapprochera de 1 de l'objectif (si vous utilisez le système de financement participatif), mais aussi du soldout.
+        {% if not sold %}
+            {% if campaign.hasSubEvents %}
+                <div class="col-12">
+                    {{ form_row(form.subEvents) }}
+                </div>
+            {% endif %}
+            <div class="col-12 ">
+                {{ form_label(form.thresholdIncrease) }}
+                <div class="text-muted font-italic pb-2">
+                    Par exemple, si vous attribuez un poids de 1 à ce ticket, chaque ticket de ce type acheté vous rapprochera de 1 de l'objectif (si vous utilisez le système de financement participatif), mais aussi du soldout.
+                </div>
+                {{ form_errors(form.thresholdIncrease) }}
+                {{ form_widget(form.thresholdIncrease) }}
             </div>
-            {{ form_errors(form.thresholdIncrease) }}
-            {{ form_widget(form.thresholdIncrease) }}
-        </div>
-        <div class="col-12 mt-4">
-            {{ form_widget(form.isChildEntry) }}
-            <div class="text-muted font-italic pb-2">
-                Si cette case est cochée, des mentions supplémentaires pour les enfants apparaîtront sur le ticket. Elles vous permettront de vérifier si la personne qui le présente est bel et bien un enfant.
+            <div class="col-12 mt-4">
+                {{ form_widget(form.isChildEntry) }}
+                <div class="text-muted font-italic pb-2">
+                    Si cette case est cochée, des mentions supplémentaires pour les enfants apparaîtront sur le ticket. Elles vous permettront de vérifier si la personne qui le présente est bel et bien un enfant.
+                </div>
             </div>
-        </div>
-        <div class="col-12">
-            {{ form_widget(form.freePrice) }}
-            <div class="free-price-minimum" style="display:none;">
-                {{ form_row(form.minimumPrice) }}
+            <div class="col-12">
+                {{ form_widget(form.freePrice) }}
+                <div class="free-price-minimum" style="display:none;">
+                    {{ form_row(form.minimumPrice) }}
+                </div>
+                <div class="counter-part-price">
+                    {{ form_row(form.price) }}
+                </div>
             </div>
-            <div class="counter-part-price">
-                {{ form_row(form.price) }}
-            </div>
-        </div>
-
+        {% endif %}
     </div>
     <script type="text/javascript">
         $('.give-access-everywhere-cb').attr('checked','checked');
@@ -68,4 +61,3 @@
         });
         $('.free-price-checkbox').trigger('change');
     </script>
-{% endblock %}

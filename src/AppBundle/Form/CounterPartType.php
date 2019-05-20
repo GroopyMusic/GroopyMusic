@@ -38,87 +38,55 @@ class CounterPartType extends AbstractType
                     ],
                 ],
             ])
-            ->add('isChildEntry', CheckboxType::class, array(
-                'required' => false,
-                'label' => "Il s'agit d'un ticket enfant",
-            ))
             ->add('maximumAmount', IntegerType::class, array(
                 'required' => true,
                 'label' => 'Nombre en stock au total',
-            ))
-            ->add('price', NumberType::class, array(
-                'required' => false,
-                'label' => 'Prix (en euros) (soit 0 €, soit 1 € ou plus)',
-            ))
-            ->add('thresholdIncrease', NumberType::class, array(
-                'required' => true,
-                'label' => "Poids (dans le sold out, mais aussi dans le seuil du financement participatif)",
-            ))
-            ->add('freePrice', CheckboxType::class, array(
-                'attr' => ['class' => 'free-price-checkbox'],
-                'required' => false,
-                'label' => "Le prix doit être librement choisi par les acheteurs"
-            ))
-            ->add('minimumPrice', NumberType::class, array(
-                'required' => false,
-                'label' => "Prix minimum (en euros) (1 € ou plus)",
             ))
             ->add('maximumAmountPerPurchase', NumberType::class, array(
                 'required' => true,
                 'label' => "Nombre max par commande",
             ));
 
-        $id = $options['campaign_id'];
-        if($options['has_sub_events'])
+        if(!$options['sold']) {
             $builder
-                ->add('subEvents', EntityType::class, array(
+                ->add('isChildEntry', CheckboxType::class, array(
                     'required' => false,
-                    'label' => 'Dates auxquelles ce ticket donne accès',
-                    'multiple' => true,
-                    'expanded' => true,
-                    'class' => 'AppBundle\Entity\YB\YBSubEvent',
-                    'query_builder' => function (EntityRepository $er) use ($id) {
-                        return $er->createQueryBuilder('s')
-                            ->innerJoin('s.campaign','c')
-                            ->where('c.id = :id')
-                            ->orderBy('s.date', 'ASC')
-                            ->setParameter('id', $id);
-                    },
+                    'label' => "Il s'agit d'un ticket enfant",
+                ))
+                ->add('price', NumberType::class, array(
+                    'required' => false,
+                    'label' => 'Prix (en euros) (soit 0 €, soit 1 € ou plus)',
+                ))
+                ->add('thresholdIncrease', NumberType::class, array(
+                    'required' => true,
+                    'label' => "Poids (dans le sold out, mais aussi dans le seuil du financement participatif)",
+                ))
+                ->add('freePrice', CheckboxType::class, array(
+                    'attr' => ['class' => 'free-price-checkbox'],
+                    'required' => false,
+                    'label' => "Le prix doit être librement choisi par les acheteurs"
+                ))
+                ->add('minimumPrice', NumberType::class, array(
+                    'required' => false,
+                    'label' => "Prix minimum (en euros) (1 € ou plus)",
                 ));
-        if ($options['has_venue']){
-            $config = $options['config'];
-            $blks = $config->getBlocks();
-            if ($options['creation']){
+            $id = $options['campaign_id'];
+            if($options['has_sub_events'])
                 $builder
-                    ->add('accessEverywhere', CheckboxType::class, array(
+                    ->add('subEvents', EntityType::class, array(
                         'required' => false,
-                        'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
-                        'attr' => ['class' => 'give-access-everywhere give-access-everywhere-cb'],
-                    ))
-                    ->add('venueBlocks', EntityType::class, array(
-                        'required' => false,
-                        'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
+                        'label' => 'Dates auxquelles ce ticket donne accès',
                         'multiple' => true,
                         'expanded' => true,
-                        'class' => 'AppBundle\Entity\YB\Block',
-                        'choices' => $blks,
+                        'class' => 'AppBundle\Entity\YB\YBSubEvent',
+                        'query_builder' => function (EntityRepository $er) use ($id) {
+                            return $er->createQueryBuilder('s')
+                                ->innerJoin('s.campaign','c')
+                                ->where('c.id = :id')
+                                ->orderBy('s.date', 'ASC')
+                                ->setParameter('id', $id);
+                        },
                     ));
-            } else {
-                $builder
-                    ->add('accessEverywhere', CheckboxType::class, array(
-                        'required' => false,
-                        'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
-                        'attr' => ['class' => 'give-access-everywhere'],
-                    ))
-                    ->add('venueBlocks', EntityType::class, array(
-                        'required' => false,
-                        'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
-                        'multiple' => true,
-                        'expanded' => true,
-                        'class' => 'AppBundle\Entity\YB\Block',
-                        'choices' => $blks,
-                    ));
-            }
         }
     }
 
@@ -164,9 +132,7 @@ class CounterPartType extends AbstractType
             ),
             'campaign_id' => null,
             'has_sub_events' => false,
-            'has_venue' => false,
-            'config' => null,
-            'creation' => false,
+            'sold' => false
         ]);
     }
 

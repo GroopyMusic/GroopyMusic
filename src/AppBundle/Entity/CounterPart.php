@@ -95,111 +95,9 @@ class CounterPart implements TranslatableInterface
         return (!$this->free_price && $this->price == 0);
     }
 
-    public function canOverpassVenueCapacity(){
-        foreach ($this->venue_blocks as $blk){
-            if ($blk->getType() === Block::UP) {
-                return true;
-            }
-        }
-    }
 
-    public function isCapacityMaxReach(){
-        return $this->maximum_amount > $this->getBlkCapacity();
-    }
-
-    public function hasOnlyFreeSeatingBlocks($blocks){
-        if ($blocks === null){
-            return true;
-        }
-        if ($this->getAccessEverywhere()){
-            foreach ($blocks as $blk){
-                if (!$blk->isNotNumbered()){
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            foreach ($this->venue_blocks as $blk){
-                if (!$blk->isNotNumbered()){
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public function hasOnlySeatedBlock($blocks){
-        if ($blocks === null){
-            return true;
-        }
-        if ($this->getAccessEverywhere()){
-            foreach ($blocks as $blk){
-                if (!$blk->isNotNumbered()){
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            /** @var Block $blk */
-            foreach ($this->venue_blocks as $blk) {
-                if ($blk->getType() === Block::UP) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public function getSeatedCapacity($blocks){
-        if ($blocks === null){
-            return true;
-        }
-        if ($this->getAccessEverywhere()){
-            $capacity = 0;
-            foreach ($blocks as $blk){
-                if ($blk->getType === Block::SEATED || $blk->getType === Block::BALCONY) {
-                    $capacity += $blk->getComputedCapacity();
-                }
-            }
-            return $capacity;
-        } else {
-            /** @var Block $block */
-            $capacity = 0;
-            foreach($this->venue_blocks as $block){
-                if ($block->getType === Block::SEATED || $block->getType === Block::BALCONY) {
-                    $capacity += $block->getComputedCapacity();
-                }
-            }
-            return $capacity;
-        }
-    }
-
-    public function getStandUpCapacity($blocks){
-        if ($blocks === null){
-            return true;
-        }
-        if ($this->getAccessEverywhere()){
-            $capacity = 0;
-            foreach ($blocks as $blk){
-                if ($blk->getType === Block::UP) {
-                    $capacity += $blk->getComputedCapacity();
-                }
-            }
-            return $capacity;
-        } else {
-            /** @var Block $block */
-            $capacity = 0;
-            foreach($this->venue_blocks as $block){
-                if ($block->getType === Block::UP) {
-                    $capacity += $block->getComputedCapacity();
-                }
-            }
-            return $capacity;
-        }
-    }
-
-    public function getDifferenceBetweenPhysicalAndTicketCapacity($blocks){
-        return $this->maximum_amount - $this->getSeatedCapacity($blocks) - $this->getStandUpCapacity($blocks);
+    public function hasBeenSold() {
+        return $this->contractArtist->hasSoldCounterPart($this);
     }
 
     /**
@@ -225,6 +123,7 @@ class CounterPart implements TranslatableInterface
     private $step;
 
     /**
+     * @var BaseContractArtist
      * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="counterParts")
      * @ORM\JoinColumn(nullable=true)
      */
