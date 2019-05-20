@@ -1085,36 +1085,24 @@ class YBMembersController extends BaseController
         }
         $form = $this->createForm(CustomTicketType::class, $customTicket);
         $form->handleRequest($request);
-        $stations = new ArrayCollection();
         if ($form->isSubmitted() && $form->isValid()){
+            $stationsSNCB = [];
+            $stationsSTIB = [];
+            $stationsTEC = [];
             if ($customTicket->isCommuteAdded()) {
                 if ($customTicket->isCommuteSTIBAdded()) {
                     $stationsSTIB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::STIB, $em);
-                    if (is_array($stations)){
-                        $stations = array_merge($stations, $stationsSTIB);
-                    } else {
-                        $stations = array_merge($stations->toArray(), $stationsSTIB);
-                    }
                 }
                 if ($customTicket->isCommuteSNCBAdded()) {
                     $stationsSNCB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::SNCB, $em);
-                    if (is_array($stations)){
-                        $stations = array_merge($stations, $stationsSNCB);
-                    } else {
-                        $stations = array_merge($stations->toArray(), $stationsSNCB);
-                    }
                 }
                 if ($customTicket->isCommuteTECAdded()) {
                     $stationsTEC = $this->getTECStop($campaign->getVenue()->getAddress());
-                    if (is_array($stations)){
-                        $stations = array_merge($stations, $stationsTEC);
-                    } else {
-                        $stations = array_merge($stations->toArray(), $stationsTEC);
-                    }
                 }
-                $stations = $this->avoidDuplicate($stations);
-                $customTicket->setStations($stations);
-                if (count($stations) > 0){
+                $stations = $this->generate5ClosestStationsList($stationsSTIB, $stationsSNCB, $stationsTEC);
+                $orderedStations = $this->sortStations($stations);
+                $customTicket->setStations($orderedStations);
+                if (count($orderedStations) > 0){
                     $mapUrl = $customTicket->getMapQuestUrl($this->getParameter('mapquest_key'));
                     $imgPath = 'yb/images/custom-tickets/campaign' . $customTicket->getCampaign()->getId() . '.jpg';
                     $customTicket->setMapsImagePath($imgPath);
@@ -1157,6 +1145,7 @@ class YBMembersController extends BaseController
         $path = $ticketingManager->generateYBTicketsPreview($cf, $ticket, $ct);
         // passing the PDF url to the view
         $url = $request->getBasePath() . '/' . $path;
+        // write "i"
         return new Response($url);
     }
 
@@ -1591,9 +1580,12 @@ class YBMembersController extends BaseController
         return $url;
     }
 
-    private function getPublicTransportStations($lat, $lon, $transportType, EntityManagerInterface $em, $distance = 1000)
+    private function getPublicTransportStations($lat, $lon, $transportType, EntityManagerInterface $em, $distance = 5000)
     {
         $url = 'https://opendata.bruxelles.be/api/records/1.0/search/?dataset=' . $transportType . '&geofilter.distance=' . $lat . '%2C' . $lon . '%2C' . $distance;
+        if ($transportType === PublicTransportStation::STIB){
+            $url .= '&rows=50';
+        }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -1610,9 +1602,8 @@ class YBMembersController extends BaseController
             }
         }
         curl_close($curl);
-        $stops = array_slice($stations, 0, 10);
-        //$stations = $this->sortStations($stations);
-        return $stations;
+        $uniqueStops = $this->avoidDuplicate($stations);
+        return $uniqueStops;
     }
 
     private function getStationsFromInfos($stationName, $stationLat, $stationLon, $transportType, $distance, EntityManagerInterface $em){
@@ -1646,7 +1637,6 @@ class YBMembersController extends BaseController
         }
         fclose($handle);
         $stops = $this->getStopFromLine($lat, $lon, $infos, $city);
-        //$stops = $this->sortStations($stops);
         return $stops;
     }
 
@@ -1670,14 +1660,14 @@ class YBMembersController extends BaseController
             $lat = $infos[4];
             $lon = $infos[5];
             $distance = $this->calculateDistance($addressLat, $addressLon, $lat, $lon);
-            if ($distance <= 1){
+            if ($distance <= 5){
                 $name = str_replace('"', '', $infos[2]);
                 $name = str_replace(strtoupper($addressCity.' '), '', $name);
                 $stops [] = new PublicTransportStation($name, $lat, $lon, 'TEC', round($distance, 3));
             }
         }
-        $stops = array_slice($stops, 0, 10);
-        return $stops;
+        $uniqueStops = $this->avoidDuplicate($stops);
+        return $uniqueStops;
     }
 
     private function sortStations($stations){
@@ -1705,28 +1695,36 @@ class YBMembersController extends BaseController
         return $uniqueStations;
     }
 
-    /**
-     * @Route("get-tec", name="get_tec")
-     * @return Response
-     */
-    public function getTec(){
-        $lat = 50.666046;
-        $lon = 4.618243;
-        $city = 'Louvain-la-Neuve';
-        $handle = fopen("stops.txt", "r");
-        $infos = [];
-        while (($line = fgets($handle)) !== false) {
-            if (strpos($line, strtoupper($city)) !== false){
-                $infos[] = $line;
-            }
+    private function generate5ClosestStationsList($stib, $sncb, $tec){
+        $stations = new ArrayCollection();
+        if (count($sncb) > 0){
+            $s = array_shift($sncb);
+            $stations->add($s);
         }
-        fclose($handle);
-        $stops = $this->getStopFromLine($lat, $lon, $infos, $city);
-        $stops = $this->avoidDuplicate($stops);
-        foreach ($stops as $s){
-            file_put_contents('tec.txt', $s . PHP_EOL, 8);
+        if (count($stib) > 0){
+            $s = array_shift($stib);
+            $stations->add($s);
         }
-        //$stops = $this->sortStations($stops);
-        return new JsonResponse('Hello');
+        if (count($tec) > 0){
+            $s = array_shift($tec);
+            $stations->add($s);
+        }
+        $allTypeStations = [];
+        $allTypeStations = array_merge($allTypeStations, $sncb);
+        $allTypeStations = array_merge($allTypeStations, $stib);
+        $allTypeStations = array_merge($allTypeStations, $tec);
+        $sorted = $this->sortStations($allTypeStations);
+        while (count($stations) < 5 && count($sorted) > 0){
+            $s = array_shift($sorted);
+            $stations->add($s);
+        }
+        $this->printStations('stations.txt', $stations);
+        return $stations;
+    }
+
+    private function printStations($filename, $stations){
+        foreach ($stations as $s){
+            file_put_contents($filename, $s . PHP_EOL, 8);
+        }
     }
 }

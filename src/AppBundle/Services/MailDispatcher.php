@@ -726,10 +726,15 @@ class MailDispatcher
     public function sendYBTransactionalMessage(YBTransactionalMessage $message) {
         $campaign = $message->getCampaign();
         $buyers = $campaign->getBuyers();
+        $buyersWithEmails = array_filter($buyers, function(PhysicalPersonInterface $person = null) {
+            if ($person !== null) {
+                return $person->getEmail();
+            }
+        });
 
         $buyers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
             return $person->getEmail();
-        }, $buyers));
+        }, $buyersWithEmails));
 
         $to = [];
 

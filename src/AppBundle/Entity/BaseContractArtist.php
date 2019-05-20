@@ -1352,4 +1352,12 @@ class BaseContractArtist implements TranslatableInterface
         $this->facebook_url = $facebookUrl;
         return $this;
     }
+
+    public function getPhotoFileName(){
+        if ($this->photo !== null){
+            return $this->photo-> __toString();
+        } else {
+            return "";
+        }
+    }
 }

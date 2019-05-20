@@ -40,6 +40,23 @@ class CustomTicket {
         $this->customInfosAdded = $customInfosAdded;
         $this->customInfos = $customInfos;
         $this->commuteAdded = $commuteAdded;
+        $this->previewMode = false;
+    }
+
+    public function constructNull(){
+        $this->imageAdded = false;
+        $this->venueMapAdded = false;
+        $this->publicTransportTextInfosAdded = false;
+        $this->publicTransportTextInfos = '';
+        $this->customInfosAdded = false;
+        $this->customInfos = '';
+        $this->commuteAdded = false;
+        $this->commuteSNCBAdded = false;
+        $this->commuteSTIBAdded = false;
+        $this->commuteTECAdded = false;
+        $this->stations = new ArrayCollection();
+        $this->previewMode = false;
+        $this->mapsImagePath = null;
     }
 
     public function toFullString(){
@@ -57,7 +74,7 @@ class CustomTicket {
     public function getGMapsUrlToDisplay($maps_key, $maps_secret){
         $mapsAdress = str_replace(' ', '+', $this->campaign->getVenue()->getAddress()->getNatural());
         $url = 'https://maps.googleapis.com/maps/api/staticmap?center=';
-        $url .= $mapsAdress;
+        $url .= $this->campaign->getVenue()->getAddress()->getLatitude().','.$this->campaign->getVenue()->getAddress()->getLongitude();
         $url .= '&zoom=13&size=600x300&maptype=roadmap';
         foreach ($this->stations as $station){
             $marker = '&'.urlencode($this->getMarkerString($station));
@@ -106,17 +123,19 @@ class CustomTicket {
     }
 
     public function getMapQuestUrl($key){
-        $mapsAdress = str_replace(' ', '+', $this->campaign->getVenue()->getAddress()->getNatural());
-        $base_url = 'https://www.mapquestapi.com/staticmap/v5/map?center=' . $mapsAdress . '&locations=';
-        $base_url = $base_url . $mapsAdress . '|marker-red';
+        $mapsAdress = $this->campaign->getVenue()->getAddress()->getLatitude().','.$this->campaign->getVenue()->getAddress()->getLongitude();
+        $base_url = 'https://www.mapquestapi.com/staticmap/v5/map?center='.$mapsAdress .'&locations=';
+        $base_url = $base_url.$mapsAdress.'|marker-red';
         $this->stations = array_values($this->stations);
         for ($i = 0; $i < count($this->stations); $i++){
             $color = $this->getColorFromType($this->stations[$i]->getType());
-            $base_url = $base_url . '||' . $this->stations[$i]->getLatitude() . ',' . $this->stations[$i]->getLongitude() .
-                '|marker-' . ($i + 1) . '-' . $color;
+            $base_url = $base_url.'||'.$this->stations[$i]->getLatitude().','.$this->stations[$i]->getLongitude().'|marker-'.($i + 1).'-'.$color;
         }
-        $url = $base_url . '&size=210,200&zoom=13&key=' . $key;
-        return $url;
+        $url = $base_url.'&size=210,200&zoom=13&key='.$key;
+        file_put_contents('url.txt', $url);
+        $formatted_url = str_replace(' ', '', $url);
+        file_put_contents('url2.txt', $formatted_url);
+        return $formatted_url;
     }
 
     private function getColorFromType($type){

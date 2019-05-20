@@ -82,7 +82,13 @@ class PDFWriter
         if(!empty($tickets)) {
             // We know all tickets are for same event
             $customTicket = $event->getCustomTicket();
-            $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
+            try {
+                $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
+            } catch (\Exception $e){
+                $ct = new CustomTicket(false, false, false, '', false, '', false);
+                $ct->constructNull();
+                $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $ct]);
+            }
         }
     }
 

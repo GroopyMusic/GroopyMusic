@@ -697,6 +697,41 @@ class YBController extends BaseController
         }
         return new JsonResponse($bookedSeat);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Book all the seat for one purchase
      * A "Seat" is considered as a numbered seat (special row, special seat in a specific block)
@@ -828,19 +863,6 @@ class YBController extends BaseController
         } else {
             return (new \DateTime())->modify("+15 minutes")->getTimestamp();
         }
-    }
-
-    /**
-     * @Route("show-ticket/{ticket}", name="show_ticket")
-     * @param Ticket $ticket
-     * @return Response
-     */
-    public function showTicket(Ticket $ticket){
-        $tickets = [];
-        $tickets[] = $ticket;
-        return $this->render('@App/PDF/yb_tickets.html.twig', [
-            'tickets' => $tickets,
-        ]);
     }
 
 }

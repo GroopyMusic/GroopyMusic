@@ -8,6 +8,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Photo;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -120,6 +121,25 @@ class YBContractArtist extends BaseContractArtist
 
     public function getPercentObjective() {
         return min(floor(($this->getCounterpartsSold() / max(1, $this->getThreshold())) * 100), 100);
+    }
+
+    public function isSoldOutTicket(EntityManagerInterface $em){
+        $available = 0;
+        foreach ($this->counterParts as $cp){
+            $available += $this->getNbSoldTicketFor($cp, $em);
+        }
+        return $available;
+    }
+
+    private function getNbSoldTicketFor(CounterPart $cp, EntityManagerInterface $em){
+        if (in_array($cp, $this->counterParts->toArray())){
+            $limit = $cp->getMaximumAmount();
+            $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($this->getId(), $cp->getId());
+            $nbTicket = count($tickets);
+            return $limit - $nbTicket;
+        } else {
+            return -30;
+        }
     }
 
     public function isToday(){

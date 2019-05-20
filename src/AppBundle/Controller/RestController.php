@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\Purchase;
+use AppBundle\Entity\YB\YBOrder;
 use AppBundle\Entity\YB\YBSubEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,6 +101,7 @@ class RestController extends BaseController {
         } else {
             $error = 'Cet utilisateur n\'existe pas.';
         }
+        $events = $this->removeAllEventsBeingCreated($events);
         $yb_events = $this->getArrayFromEvents($events, $error);
         $array_events = array_merge($yb_events, $unmute_events);
         return new JsonResponse($array_events);
@@ -115,8 +118,13 @@ class RestController extends BaseController {
         } else {
             $quantity = $request->get('quantity');
             $modePayment = $request->get('mode');
+            $emailAddress = $request->get('email');
+            $firstName = $request->get('firstname');
+            $lastName = $request->get('lastname');
             $contract_artist = $em->getRepository('AppBundle:YB\YBContractArtist')->find($request->get('event_id'));
-            if ($contract_artist->isSoldOut()){
+            $available = $contract_artist->isSoldOutTicket($em);
+            if ($available === 0){
+                print_r("solout");
                 $error = 'L\'événement est sold-out...';
             } else {
                 $counterpart = $em->getRepository('AppBundle:CounterPart')->find($request->get('counterpart_id'));
@@ -137,6 +145,14 @@ class RestController extends BaseController {
                 $cart->setConfirmed(true);
                 $cart->setPaid(true);
                 $cart->generateBarCode();
+                if ($emailAddress !== ''){
+                    $order = new YBOrder();
+                    $order->setEmail($emailAddress)
+                        ->setFirstName($firstName)
+                        ->setLastName($lastName)
+                        ->setCart($cart);
+                    $cart->setYbOrder($order);
+                }
                 $em->persist($cart);
                 for ($i = 0; $i < $quantity; $i++){
                     $ticket = new Ticket($cf, $counterpart, $i, $price, $anonym, $contract_artist, 'N/A');
@@ -161,21 +177,21 @@ class RestController extends BaseController {
         foreach ($events as $event){
             if ($event->hasOnlyOneDate()){
                 if ($event->isFestivalDayToday()){
-                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($em, $event), []);
+                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
                 } else {
-                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), [], [], []);
+                    $unmuteEvents[] = $this->createArray($event, $event->__toString(), $event->getOnlyDate(), [], $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
                 }
             } else if (count($event->getFestivalDates()) === 0) {
-                $unmuteEvents[] = $this->createArray($event, $event->__toString(), 'no date', [], [], []);
+                $unmuteEvents[] = $this->createArray($event, $event->__toString(), 'no date', [], $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
             } else {
                 for ($i = 0; $i < count($event->getFestivalDates()); $i++){
                     $day = 'Day ' . ($i + 1);
                     if ($event->getFestivalDates()[$i]->format('m/d/Y') === (new \DateTime())->format('m/d/Y')){
                         $name = $day . ' - '.$event->__toString();
-                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($em, $event), []);
+                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
                     } else {
                         $name = $day . ' - '.$event->__toString();
-                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], [], [], []);
+                        $unmuteEvents[] = $this->createArray($event, $name, $event->getFestivalDates()[$i], [], $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
                     }
                 }
             }
@@ -183,7 +199,7 @@ class RestController extends BaseController {
         return $unmuteEvents;
     }
 
-    private function createArray($event, $eventName, $eventDate,$audience, $counterparts, $nbSoldTicketPerCp){
+    private function createArray($event, $eventName, $eventDate, $audience, $counterparts, $nbSoldTicketPerCp){
         $event = array (
             'id' => $event->getId(),
             'name' => $eventName,
@@ -197,6 +213,7 @@ class RestController extends BaseController {
             'audience' => $audience,
             'counterparts' => $counterparts,
             'detailsTixPerCp' => $nbSoldTicketPerCp,
+            'photoPath' => $event->getPhotoFileName(),
         );
         return $event;
     }
@@ -209,7 +226,7 @@ class RestController extends BaseController {
                 if ($event->isToday()){
                     $array_events[] = $this->createArray($event, $event->__toString(), new \DateTime(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
                 } else {
-                    $array_events[] = $this->createArray($event, $event->__toString(), $event->getDateEvent(), [], [], []);
+                    $array_events[] = $this->createArray($event, $event->__toString(), $event->getDateEvent(), [], $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
 
                 }
             }
@@ -253,7 +270,7 @@ class RestController extends BaseController {
      * @param $error
      * @return RestTicket
      */
-    private function setRestTicket($ticket, $error){
+    private function setRestTicket(Ticket $ticket, $error){
         if ($error === '' || $error === 'Ce ticket a déjà été scanné.'){
             $validation = $ticket->isValidated() ? 'vrai' : 'faux';
             $cpName = $ticket->getCounterPart() === null ? '' : $ticket->getCounterPart()->__toString();
@@ -263,9 +280,11 @@ class RestController extends BaseController {
                 $ticket->getSeat(),
                 $ticket->getBarcodeText(),
                 $error,
-                $validation);
+                $validation,
+                $ticket->getContractFan()->getCart()->getBarcodeText()
+            );
         } else {
-            return new RestTicket('','','','',$error, '');
+            return new RestTicket('','','','',$error, '', '');
         }
     }
 
@@ -277,6 +296,7 @@ class RestController extends BaseController {
             'barcode' => $rest_ticket->getBarcode(),
             'error' => $rest_ticket->getError(),
             'is_validated' => $rest_ticket->isValidated(),
+            'cart_number' => $rest_ticket->getCartNumber()
         );
         return $array_ticket;
     }
@@ -316,18 +336,6 @@ class RestController extends BaseController {
             return false;
         } else {
             return in_array($user, $contract_artist->getOrganizers());
-        }
-    }
-
-    private function getJSONResponseAudience($error, $tickets){
-        if ($error === ''){
-            $rest_tickets_array = [];
-            foreach ($tickets as $ticket){
-                $rest_tickets_array[] = $this->getArrayFromTicket($this->setRestTicket($ticket, $error));
-            }
-            return new JsonResponse($rest_tickets_array);
-        } else {
-            return new JsonResponse(array('error' => $error));
         }
     }
 
@@ -377,7 +385,7 @@ class RestController extends BaseController {
         return new JsonResponse($this->getArrayFromTicket($rest_ticket));
     }
 
-    private function getNbSoldTicketPerCounterpart(EntityManagerInterface $em, YBContractArtist $event){
+    private function getNbSoldTicketPerCounterpart(EntityManagerInterface $em, $event){
         $cps = $event->getCounterParts();
         $soldTicketsPerCp = [];
         foreach ($cps as $cp){
@@ -399,6 +407,16 @@ class RestController extends BaseController {
         } else {
             return false;
         }
+    }
+
+    private function removeAllEventsBeingCreated(array $events){
+        /** @var YBContractArtist $e */
+        foreach ($events as $k => $e){
+            if (count($e->getCounterParts()) === 0){
+                unset($events[$k]);
+            }
+        }
+        return $events;
     }
 
 }

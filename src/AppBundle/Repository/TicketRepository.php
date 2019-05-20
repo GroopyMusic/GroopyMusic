@@ -12,6 +12,16 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository {
             ->getResult();
     }
 
+    public function getTicketsFromEventAndCp($event_id, $cp_id){
+        return $this->createQueryBuilder('t')
+            ->where('t.contractArtist = ?1')
+            ->andWhere('t.counterPart = ?2')
+            ->setParameter('1', $event_id)
+            ->setParameter('2', $cp_id)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getPresale($event_id){
         return $this->createQueryBuilder('t')
             ->where('t.contractArtist = ?1')

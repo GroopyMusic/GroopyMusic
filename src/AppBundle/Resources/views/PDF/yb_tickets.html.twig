@@ -102,15 +102,29 @@
                                             {% else %}
                                                 <img style="height:200px" src="{{ absolute_url(asset('yb/images/white-square.png')) }} "/>
                                             {% endif %}
-                                            <p style="font-size: 11px">Les gares sont situé à moins de 1 km de la salle :
+                                            <p style="font-size: 11px">Les gares sont situées à moins de 1 km de la salle :
                                                 {% for station in customTicket.getSortedStations() %}
                                                     {{ loop.index }}) {{ station.name }} ({{ station.type }} - {{ station.timeToWalk() }}){% if not loop.last %}, {% endif %}
                                                 {% endfor %}
                                             </p>
                                         {% else %}
-                                            <img style="height:200px" src="{{ absolute_url(asset('yb/images/custom-tickets/test.jpg')) }}"/>
-                                            {% set msg = 'Les gares sont situé à moins de 1 km de la salle : 1) ARRET_1 (STIB - 1min), 2) ARRET_2 (TEC - 3min), 3) ARRET_3 (STIB - 4min), 4) ARRET_4 (SNCB - 11min)' %}
-                                            <p style="font-size: 11px; text-align: justify">{{ msg }}</p>
+                                            {% if customTicket.mapsImagePath is not null %}
+                                                <img style="height:200px" src="{{ absolute_url(asset(customTicket.mapsImagePath)) }} "/>
+                                            {% else %}
+                                                <p style="font-size: 10px">Cette carte est mise à titre d'exemple...</p>
+                                                <img style="height:200px" src="{{ absolute_url(asset('yb/images/custom-tickets/test.jpg')) }}"/>
+                                            {% endif %}
+                                            {% if customTicket.stations|length > 0 %}
+                                                <p style="font-size: 11px">Les gares sont situées à moins de 5 km de la salle :
+                                                    {% for station in customTicket.getSortedStations() %}
+                                                        {{ loop.index }}) {{ station.name }} ({{ station.type }} - {{ station.timeToWalk() }}){% if not loop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            {% else %}
+                                                {% set msg = 'Les gares sont situées à moins de 5 km de la salle : 1) ARRET_1 (STIB - 1min), 2) ARRET_2 (TEC - 3min), 3) ARRET_3 (STIB - 4min), 4) ARRET_4 (SNCB - 11min)' %}
+                                                <p style="font-size: 10px">Ces valeurs sont mises à titre d'exemple...</p>
+                                                <p style="font-size: 11px; text-align: justify">{{ msg }}</p>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 {% else %}

@@ -10,14 +10,16 @@ class RestTicket {
     private $barcode;
     private $error;
     private $isValidated;
+    private $cart_number;
 
-    public function __construct($buyer, $ticket_type, $seat_type, $barcode, $error, $isValidated){
+    public function __construct($buyer, $ticket_type, $seat_type, $barcode, $error, $isValidated, $cart_number){
         $this->buyer = $buyer;
         $this->ticket_type = $ticket_type;
         $this->seat_type = $seat_type;
         $this->barcode = $barcode;
         $this->error = $error;
         $this->isValidated = $isValidated;
+        $this->cart_number = $cart_number;
     }
 
     public function getBuyer(){
@@ -42,6 +44,10 @@ class RestTicket {
 
     public function isValidated(){
         return $this->isValidated;
+    }
+
+    public function getCartNumber(){
+        return $this->cart_number;
     }
 
 }
