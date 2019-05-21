@@ -51,7 +51,6 @@ class Organization {
     public function removeParticipation(\AppBundle\Entity\YB\Membership $participation){
         if ($this->participations->contains($participation)){
             $this->participations->removeElement($participation);
-            $participation->setOrganization(null);
         }
         return $this;
     }

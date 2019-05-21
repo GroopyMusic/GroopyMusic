@@ -68,22 +68,6 @@ class Venue {
     }
 
     /**
-     * Gets all the rows of the venue
-     * @return array
-     */
-    public function getRows(){
-        $rows = [];
-        foreach ($this->configurations as $config){
-            foreach ($config->getBlocks() as $block){
-                foreach ($block->getRows() as $row){
-                    array_map($row, $rows);
-                }
-            }
-        }
-        return $rows;
-    }
-
-    /**
      * Generates the rows for each block that is squared.
      * If the block is not squared, it does nothing
      */

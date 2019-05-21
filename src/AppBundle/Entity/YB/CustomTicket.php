@@ -15,13 +15,7 @@ class CustomTicket {
 
     /**
      * CustomTicket constructor.
-     * @param bool $imageAdded
-     * @param bool $venueMapAdded
-     * @param bool $publicTransportTextInfosAdded
-     * @param string $publicTransportTextInfos
-     * @param bool $customInfosAdded
-     * @param string $customInfos
-     * @param bool $commuteAdded
+     * @param YBContractArtist $campaign
      */
     public function __construct(YBContractArtist $campaign){
         $this->campaign = $campaign;
@@ -71,57 +65,6 @@ class CustomTicket {
             $this->previewMode;
     }
 
-    public function getGMapsUrlToDisplay($maps_key, $maps_secret){
-        $mapsAdress = str_replace(' ', '+', $this->campaign->getVenue()->getAddress()->getNatural());
-        $url = 'https://maps.googleapis.com/maps/api/staticmap?center=';
-        $url .= $this->campaign->getVenue()->getAddress()->getLatitude().','.$this->campaign->getVenue()->getAddress()->getLongitude();
-        $url .= '&zoom=13&size=600x300&maptype=roadmap';
-        foreach ($this->stations as $station){
-            $marker = '&'.urlencode($this->getMarkerString($station));
-            $url .= $marker;
-        }
-        $url = $url.'&key='.$maps_key;
-        $googleMapsUrl = $this->signUrl($url, $maps_secret);
-        return $googleMapsUrl;
-    }
-
-    private function signUrl($my_url, $maps_secret){
-        $url = parse_url($my_url);
-        $privatekey = $maps_secret;
-        $urlToSign =  $url['path'] . "?" . $url['query'];
-        $decodedKey = $this->decodeBase64UrlSafe($privatekey);
-        $signature = hash_hmac("sha1", $urlToSign, $decodedKey, true);
-        $encodedSignature = $this->encodeBase64UrlSafe($signature);
-        $originalUrl = $url['scheme'] . "://" . $url['host'] . $url['path'] . "?" . $url['query'];
-        $finalUrl = $originalUrl.'&signature='.$encodedSignature;
-        $finalUrl = str_replace('\u0026', '&', $finalUrl);
-        $finalUrl = str_replace('\\', '', $finalUrl);
-        return $finalUrl;
-    }
-
-    function encodeBase64UrlSafe($value){
-        return str_replace(array('+', '/'), array('-', '_'), base64_encode($value));
-    }
-
-    function decodeBase64UrlSafe($value){
-        return base64_decode(str_replace(array('-', '_'), array('+', '/'), $value));
-    }
-
-    private function getMarkerString(PublicTransportStation $station){
-        $string = 'markers=';
-        switch ($station->getType()){
-            case 'SNCB' :
-                $string .= 'color:blue%7C'; break;
-            case 'STIB' :
-                $string .= 'color:green%7C'; break;
-            default:
-                $string .= 'color:black%7C'; break;
-        }
-        $string .= 'label:'.$station->getName().'%7C';
-        $string .= ''.$station->getLatitude().','.$station->getLongitude();
-        return $string;
-    }
-
     public function getMapQuestUrl($key){
         $mapsAdress = $this->campaign->getVenue()->getAddress()->getLatitude().','.$this->campaign->getVenue()->getAddress()->getLongitude();
         $base_url = 'https://www.mapquestapi.com/staticmap/v5/map?center='.$mapsAdress .'&locations=';
@@ -132,9 +75,7 @@ class CustomTicket {
             $base_url = $base_url.'||'.$this->stations[$i]->getLatitude().','.$this->stations[$i]->getLongitude().'|marker-'.($i + 1).'-'.$color;
         }
         $url = $base_url.'&size=210,200&zoom=13&key='.$key;
-        file_put_contents('url.txt', $url);
         $formatted_url = str_replace(' ', '', $url);
-        file_put_contents('url2.txt', $formatted_url);
         return $formatted_url;
     }
 
@@ -150,7 +91,11 @@ class CustomTicket {
      * @return array|ArrayCollection
      */
     public function getSortedStations(){
-        $stationsArr = $this->stations->toArray();
+        if (!is_array($this->stations)) {
+            $stationsArr = $this->stations->toArray();
+        } else {
+            $stationsArr = $this->stations;
+        }
         usort($stationsArr, function(PublicTransportStation $s1, PublicTransportStation $s2){
             if ($s1->getDistance() === $s2->getDistance()){
                 return 0;
