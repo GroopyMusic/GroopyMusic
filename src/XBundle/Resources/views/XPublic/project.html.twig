@@ -132,13 +132,13 @@
                             <p>Date de l'évènement : <b>{{ project.dateEvent|date('d/m/Y \\à H:i') }}</b></p>
                             {% if project.address is not null %}
                                 <p>Adresse : <b>{{ project.address }}</b></p>
-                                {#<div class="embed-responsive embed-responsive-16by9">
+                                <div class="embed-responsive embed-responsive-16by9">
                                     <iframe
                                         class="embed-responsive-item"
                                         frameborder="0" style="border:0"
                                         src="https://www.google.com/maps/embed/v1/place?key={{ maps_api_key }}&q={{ project.address|url_encode }}" allowfullscreen>
                                     </iframe>
-                                </div>#}
+                                </div>
                             {% endif %}
                         </div>
                     </div>
@@ -179,8 +179,8 @@
                         {% for purchase in form_purchase.purchases %}
                             {% if loop.index > 1 %}<hr>{% endif %}
                             {% set product = purchase.vars.value.product %}
-                            <div class="purchase-form container-fluid my-4"{#% if product.disponibility == 0 %}disabled="disabled"{% endif %#}>
-                                {#{ form_errors(purchase) }#}
+                            <div class="purchase-form container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
+                                {{ form_errors(purchase) }}
 
                                 <h5><b>{{ product.name }}</b>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
                                     
@@ -215,25 +215,20 @@
 
                                     {% set max = product.maxAmountPerPurchase %}
                                     <div class="col-5 col-sm-3 col-lg-5">
-                                        {% if product.disponibility == 0 %}
-                                            <p>PLUS DISPONIBLE</p>
-                                            {% do purchase.setRendered(purchase.quantity) %}
-                                        {% else %}
-                                            {{ form_errors(purchase.quantity) }}
-                                            <div class="input-group">
-                                                <span class="input-group-btn">
-                                                    <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
-                                                        <i class="text-white fas fa-minus"></i>
-                                                    </button>
-                                                </span>
-                                                {{ form_widget(purchase.quantity) }}
-                                                <span class="input-group-btn">
-                                                    <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max }}" data-field="">
-                                                        <i class="text-white fas fa-plus"></i>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                        {% endif %}
+                                        {{ form_errors(purchase.quantity) }}
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
+                                                    <i class="text-white fas fa-minus"></i>
+                                                </button>
+                                            </span>
+                                            {{ form_widget(purchase.quantity) }}
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max }}" data-field="">
+                                                    <i class="text-white fas fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -283,35 +278,11 @@
             $('.contribution').attr('disabled', 'disabled');
         {% endif %}
 
-        /*function rectifyQuantities($q) {
-            var $displayer = $q.closest('.counterpart-form').find('.quantity-error-display');
-
-            var max = parseInt($q.closest('.counterpart-form').find('.quantity-right-plus').data('max'));
-            var quantity = parseInt($q.val());
-            if (quantity > max) {
-                var s = max > 1 ? 's' : '';
-                $displayer.text('Vous ne pouvez pas dépasser ' + max + " exemplaire"+s+" de ce ticket dans votre commande.");
-                $displayer.show();
-                $q.val(max);
-            }
-            else if(quantity < 0) {
-                $displayer.text('Vous ne pouvez pas commander un nombre négatif de tickets.');
-                $displayer.show();
-                $q.val(0);
-            }
-            else {
-                $displayer.hide();
-            }
-            calculateTickets();
-        }*/
-
         $('input.quantity').change(function() {
-            //rectifyQuantities($(this));
             calculateTotal();
         });
 
         $('input.quantity').each(function() {
-            //rectifyQuantities($(this));
             calculateTotal();
         });
 

@@ -64,6 +64,9 @@ class XPurchase
         return $this->product->getOptions();
     }
 
+    /**
+     * Check if purchase has choices in param
+     */
     public function hasChoices($comboChoices) {
         if (is_array($comboChoices)) {
             for ($i = 0; $i < count($comboChoices); $i++) {

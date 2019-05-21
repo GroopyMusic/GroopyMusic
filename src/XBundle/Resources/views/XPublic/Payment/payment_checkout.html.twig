@@ -141,7 +141,6 @@
                             </div>
                         </div>
                     </div>
-                {#% endif %#}
             </form>
         </div>
 
@@ -165,22 +164,22 @@
                                 </li>
                             {% else %}
 
-                            {% for purchase in contract.purchases %}
-                                <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                    <div>
-                                        <h4 class="my-0">{{ purchase.product }} (x {{ purchase.quantity }})</h4>
-                                        <small class="text-muted">
-                                            Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.product.freePrice %} (choisi librement){% endif %}
-                                            {% if purchase.choices is not empty %}
-                                                {% for choice in purchase.choices %}
-                                                    <br>{{ choice.option.name }} : {{ choice.name }}
-                                                {% endfor %}
-                                            {% endif %}
-                                        </small>
-                                    </div>
-                                    <span class="text-muted">{{ purchase.amount }}€</span>
-                                </li>
-                            {% endfor %}
+                                {% for purchase in contract.purchases %}
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                        <div>
+                                            <h4 class="my-0">{{ purchase.product }} (x {{ purchase.quantity }})</h4>
+                                            <small class="text-muted">
+                                                Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.product.freePrice %} (choisi librement){% endif %}
+                                                {% if purchase.choices is not empty %}
+                                                    {% for choice in purchase.choices %}
+                                                        <br>{{ choice.option.name }} : {{ choice.name }}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        <span class="text-muted">{{ purchase.amount }}€</span>
+                                    </li>
+                                {% endfor %}
 
                             {% endif %}
                         {% endfor %}
@@ -390,7 +389,6 @@
                 }
                 else {
                     hideError();
-                    //displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
                     displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
                     window.location.replace(result.source.redirect.url);
 
@@ -427,7 +425,6 @@
             function stripeTokenHandler(source) {
 
                 $('#payment-intro').hide();
-                //displayLoader("{{ 'threeds.pending'|trans|raw }}");
                  displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
                 // Insert the token ID into the form so it gets submitted to the server
                 var form = document.getElementById('payment-form');
@@ -499,28 +496,5 @@
             $('.stripe-error').hide();
         }
 
-        /*$('#free-order-submit').click(function(e) {
-            e.preventDefault();
-
-            displayLoader("");
-            scrollToLoader();
-
-            var $first_name = $('#first_name');
-            var $last_name = $('#last_name');
-            var $email = $('#email');
-
-            $.post('{{ url('x_ajax_post_order') }}', {
-                'first_name': $first_name.val(),
-                'last_name': $last_name.val(),
-                'email': $email.val(),
-                'cart_code': "{{ cart.barcodeText }}"
-            }, function() {
-                window.location.assign("{{ url('yb_order', {'code': cart.barcodeText}) ~ '#order-recapitulation'}}");
-            }).fail(function () {
-                displayForm();
-                displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
-            });
-
-        });*/
     </script>
 {% endblock %}

@@ -2,8 +2,6 @@
 
 {% block body %}
 
-    {% import '@X/Macros/sales_recap.html.twig' as macros %}
-
     <section class="container px-0 mt-4">
         <nav class="breadcrumb">
             <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
@@ -39,7 +37,7 @@
                         <div class= "donations-row border my-3 px-2">
                             <div class="row">
                                 <div class="col-4 col-md-3">{{ donation.date|date('d/m/Y \\à H:i') }}</div>
-                                <div class="col-4 col-md-3">{{ donation.displayName }}</div>
+                                <div class="col-4 col-md-3"><div>{{ donation.displayName }}</div><div>({{ donation.email }})</div></div>
                                 <div class="col-4 col-md-3">{{ donation.amount }} €</div>
                             </div>
                             <br /><div class="w-100 text-left"><a class="text-secondary font-italic" href="{{ path('x_order', {code: donation.cart.barcodeText}) }}" target="_blank"><i class="fas fa-link"></i> Voir la confirmation du don</a> (code de confirmation : {{ donation.cart.barcodeText }})</div>
@@ -76,7 +74,14 @@
                                             <p><b>{{ product.productsSold }}</b> vendu(s) au total {% if product.productsSold > 0 and product.options is not empty %}dont:{% endif %}</p>
                                             {% if product.productsSold > 0 %}
                                                 {% if product.options is not empty %}
-                                                    {{ macros.sales_recap_row(project, product) }}
+                                                    <ul>
+                                                        {% for combo in product.combinationOptions %}
+                                                            {% set nb = project.getNbPerChoice(product, combo) %}
+                                                            {% if nb > 0 %}
+                                                                <li><b>{{ nb }}</b> {{ product.stringCombo(combo) }}</li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
                                                 {% endif %}
                                             {% endif %}
                                         </div>
@@ -102,7 +107,7 @@
                         <div class= "sales-row border my-3 px-2">
                             <div class="row">
                                 <div class="col-4 col-md-3 my-2">{{ sale.date|date('d/m/Y \\à H:i') }}</div>
-                                <div class="col-4 col-md-3 my-2">{{ sale.displayName }}</div>
+                                <div class="col-4 col-md-3 my-2"><div>{{ sale.displayName }}</div><div>({{ sale.email }})</div></div>
                                 <div class="col-4 col-md-2 my-2">{{ sale.amount }} €</div>
                                 <div class="col-12 col-md-4 my-2">{{ sale|nl2br }}</div>
                             </div>

@@ -118,7 +118,7 @@ class XArtistController extends BaseController
 
         if($project == null || $project->isPassed()) {
             $this->addFlash('x_warning', "Pas possible de modifier le projet");
-            return $this->redirectToRoute('x_artist_passed_projets');
+            return $this->redirectToRoute('x_artist_dashboard');
         }
 
         $artistsUser = $em->getRepository('AppBundle:Artist')->findForUser($user);
@@ -275,7 +275,7 @@ class XArtistController extends BaseController
 
         $product = new Product();
         
-        $form = $this->createForm(ProductType::class, $product, ['creation' => true]);
+        $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -318,7 +318,7 @@ class XArtistController extends BaseController
             return $this->redirectToRoute('x_artist_dashboard');
         }
 
-        $form = $this->createForm(ProductType::class, $product, ['is_edit' => true]);
+        $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -480,67 +480,43 @@ class XArtistController extends BaseController
 
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            // if project has donators and buyers 
             if(!empty($project->getDonators()) && !empty($project->getBuyers())) {
                 // if check donators
                 if ($form->get('toDonators')->getData() == true && $form->get('toBuyers')->getData() == false) {
-                    if ($form->get('beforeValidation')->getData() ==  true) {
-                        $contributors = $project->getDonatorsBeforeDateValidation();
-                    } else {
-                        $contributors = $project->getDonators();
-                    }
+                    $contributors = $project->getDonators($form->get('beforeValidation')->getData());
                 }
                 // if check buyers
                 elseif ($form->get('toDonators')->getData() == false && $form->get('toBuyers')->getData() == true) {
-                    if($form->get('beforeValidation')->getData() ==  true){
-                        if ($form->get('products')->getData() == null) {
-                            $contributors = $project->getBuyersBeforeDateValidation();
-                        } else {
-                            $contributors = $project->getProductBuyersBeforeDateValidation($form->get('products')->getData());
-                        }
-                    } else {
-                        if ($form->get('products')->getData() == null) {
-                            $contributors = $project->getBuyers();
-                        } else {
-                            $contributors = $project->getProductBuyers($form->get('products')->getData());
-                        }
-                    }
+                    $contributors = $project->getBuyers($form->get('beforeValidation')->getData(), $form->get('products')->getData());
                 }
                 // else all contributors
                 else {
                     $message->setToDonators(true);
                     $message->setToBuyers(true);
-                    if ($form->get('beforeValidation')->getData() ==  true) {
-                        $contributors = $project->getContributorsBeforeDateValidation();
-                    } else {
-                        $contributors = $project->getContributors();
-                    }
+                    $contributors = $project->getContributors($form->get('beforeValidation')->getData(), $form->get('products')->getData());
                 }
             }
             else {
-                // donators only
-                if(!empty($project->getDonators())){
-                    if ($form->get('beforeValidation')->getData()){
-                        $contributors = $project->getDonatorsBeforeDateValidation();
-                    } else {
-                        $contributors = $project->getDonators();
-                    }
-                }
-                // buyers only
-                elseif(!empty($project->getBuyers())) {
-                    if ($form->get('beforeValidation')->getData()){
-                        $contributors = $project->getBuyersBeforeDateValidation();
-                    } else {
-                        $contributors = $project->getBuyers();
-                    }
-                }
+                // if project has only buyers
+                if (!empty($project->getBuyers())) {
+                    $message->setToBuyers(true);
+                    $contributors = $project->getBuyers($form->get('beforeValidation')->getData(), $form->get('products')->getData());
+                } 
+                // if project has only donators
+                elseif(!empty($project->getDonators())) {
+                    $message->setToDonators(true);
+                    $contributors = $project->getDonators($form->get('beforeValidation')->getData());
+                }   
             }
+
+            /*foreach ($contributors as $c) {
+                file_put_contents('test.txt', $c->getDisplayName() . PHP_EOL, FILE_APPEND);
+            }*/
 
             $em->persist($message);
             $em->flush();
-
-            /*foreach ($contributors as $person) {
-                file_put_contents('test.txt', $person->getDisplayName() . PHP_EOL, FILE_APPEND);
-            }*/
 
             $this->mailDispatcher->sendXTransactionalMessageWithCopy($message, $contributors);
 

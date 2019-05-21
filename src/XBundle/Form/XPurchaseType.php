@@ -17,9 +17,6 @@ class XPurchaseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Project $project */
-        $project = $options['project'];
-
         $builder
             ->add('quantity', NumberType::class, array(
                 'attr' => [
@@ -29,7 +26,7 @@ class XPurchaseType extends AbstractType
             ))
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($project) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $purchase = $event->getData();
             if($purchase->getProduct()->getFreePrice()) {
                 $event->getForm()->add('freePrice', NumberType::class, array(

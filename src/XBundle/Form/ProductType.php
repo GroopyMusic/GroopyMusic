@@ -74,14 +74,6 @@ class ProductType extends AbstractType
             ))
         ;
 
-        /*if ($options['creation']) {
-            $builder->add('isTicket', CheckboxType::class, array(
-                'label' => 'L\'article mis en vente est un ticket',
-                'attr' => ['class' => 'is-ticket-checkbox'],
-                'required' => false
-                ))
-            ;
-        }*/
     }
     
 
@@ -124,8 +116,6 @@ class ProductType extends AbstractType
             'constraints' => array(
                 new Assert\Callback(array($this, 'validate'))
             ),
-            'creation' => false,
-            'is_edit' =>false
         ));
     }
 

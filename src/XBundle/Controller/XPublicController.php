@@ -36,7 +36,6 @@ class XPublicController extends BaseController
      */
     public function indexAction(EntityManagerInterface $em, Request $request, MailDispatcher $mailDispatcher, CaptchaManager $captchaManager)
     {
-        // à changer pour afficher que les populaires et courant
         $projects = $em->getRepository('XBundle:Project')->findOngoingProjects();
         
         $contact = new XContact();
@@ -74,13 +73,11 @@ class XPublicController extends BaseController
      */
     public function projectsAction(EntityManagerInterface $em, Request $request)
     {
-
         $projectsOngoing = $em->getRepository('XBundle:Project')->findOngoingProjects();
         $projectsSuccessful = $em->getRepository('XBundle:Project')->findSuccessfulProjects();
         $categories = $em->getRepository('XBundle:XCategory')->findAll();
 
         return $this->render('@X/XPublic/catalog_projects.html.twig', array(
-            //'projects' => $projects,
             'projects_ongoing' => $projectsOngoing,
             'projects_successful' => $projectsSuccessful,
             'categories' => $categories,
@@ -254,14 +251,6 @@ class XPublicController extends BaseController
                 $order = $cart->getOrder();
             }
 
-            // check error
-            /*/foreach($cart->getContracts() as $contribution) {
-                $project = $contribution->getProject();
-                // check if project validated
-                foreach($contribution->getPurchases() as $purchase) {
-                }
-            }*/
-
 			$em->persist($order);
 			$em->flush();
 		
@@ -272,8 +261,6 @@ class XPublicController extends BaseController
             try{
                 $payment = new XPayment();
                 $payment->setCart($cart)
-                        ->setDate(new \DateTime())
-                        ->setRefunded(false)
                         ->setAmount($cart->getAmount());
                 
                 $charge = \Stripe\Charge::create(array(
@@ -417,7 +404,6 @@ class XPublicController extends BaseController
      */
     public function loginAction(Request $request, CsrfTokenManagerInterface $tokenManager = null, UserInterface $user = null)
     {
-        // à changer pcq tenir aussi compte contributeur!
         if($user != null) {
             if($user->isSuperAdmin() || $user->isArtistOwner()) {
                 return $this->redirectToRoute('x_artist_dashboard');

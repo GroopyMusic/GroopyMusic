@@ -1,5 +1,4 @@
 {% extends '@X/PDF/x_layout.html.twig' %}
-{#% trans_default_domain 'yb' %#}
 
 {% block additional_styles %}
 {% endblock %}
@@ -33,7 +32,7 @@
                 {{ ticket.product.name }} - {{ ticket.price }} € - {{ ticket.name }}
             </p>
 
-            <p>Conditions d'utilisation{#{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('yb_terms')})|raw|nl2br }#}</p>
+            <p>Conditions d'utilisation</p>
 
             {% if project.address is not null %}
                 <p>Adresse de l'événement : {{ project.address }}</p>

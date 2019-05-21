@@ -108,6 +108,9 @@ class XContractFan
         return self::X_TICKETS_DIRECTORY . $this->getTicketsFileName();
     }
 
+    /**
+     * Get purchases for tickets
+     */
     private $ticketsPurchases = null;
     public function getTicketsPurchases() {
         if($this->ticketsPurchases == null) {
@@ -118,22 +121,26 @@ class XContractFan
         return $this->ticketsPurchases;
     }
 
-
+    /**
+     * Get purchases for some products
+     */
     private $purchasesForProduct = null;
     public function getPurchasesForProduct($products) {
         if($this->purchasesForProduct == null) {
             foreach($products as $product) {
                 foreach ($this->purchases as $purchase) {
-                    if ($purchase->getProduct() == $product) {
+                    if ($purchase->getProduct() === $product) {
                         $this->purchasesForProduct[] = $purchase;
                     }
                 }
             }
-            
         }
         return $this->purchasesForProduct;
     }
 
+    /**
+     * Get purchase for a product with some choices amongst product options
+     */
     public function getPurchaseForProductWithChoices(Product $product, $comboChoices) {
         foreach ($this->purchases as $purchase) {
             if ($purchase->getProduct() == $product && $purchase->hasChoices($comboChoices)) {

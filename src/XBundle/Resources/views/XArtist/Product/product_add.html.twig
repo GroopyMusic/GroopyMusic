@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            {% if product.id is not null%}
+            {% if product.id is not null %}
                 {% if not product.isTicket %}
                     <div class="col-12 col-md-7 product-photo">
                         {{ form_row(form.imageFile) }}
@@ -161,26 +161,6 @@
         $('#loader').hide();
 
         $('.create-option').click(function(e) {
-            e.preventDefault();
-            loader();
-            $('#optionsModal').modal();
-            $.get($(this).data('url'), function(data) {
-                hideLoader();
-                $('#optionsModalBody').html(data);
-            });
-        });
-
-        $('.edit-option').click(function(e) {
-            e.preventDefault();
-            loader();
-            $('#optionsModal').modal();
-            $.get($(this).data('url'), function(data) {
-                hideLoader()
-                $('#optionsModalBody').html(data);
-            });
-        });
-
-        $('.delete-option').click(function(e) {
             e.preventDefault();
             loader();
             $('#optionsModal').modal();

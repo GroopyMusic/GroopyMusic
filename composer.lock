@@ -2722,17 +2722,17 @@
         },
         {
             "name": "jms/translation-bundle",
-            "version": "1.4.3",
+            "version": "1.4.4",
             "target-dir": "JMS/TranslationBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSTranslationBundle.git",
-                "reference": "64c2a7d1ad4e61987bc79fbfb59067fc9460dc21"
+                "reference": "7bdd5e2feae5c794af1306a408671a998bb84ca5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSTranslationBundle/zipball/64c2a7d1ad4e61987bc79fbfb59067fc9460dc21",
-                "reference": "64c2a7d1ad4e61987bc79fbfb59067fc9460dc21",
+                "url": "https://api.github.com/repos/schmittjoh/JMSTranslationBundle/zipball/7bdd5e2feae5c794af1306a408671a998bb84ca5",
+                "reference": "7bdd5e2feae5c794af1306a408671a998bb84ca5",
                 "shasum": ""
             },
             "require": {
@@ -2785,7 +2785,7 @@
                 "ui",
                 "webinterface"
             ],
-            "time": "2018-06-28T05:04:47+00:00"
+            "time": "2019-05-14T15:55:48+00:00"
         },
         {
             "name": "knplabs/doctrine-behaviors",
@@ -7141,12 +7141,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "00552848f8c4c5da7b4b4ffee306b66fd3de2c8f"
+                "reference": "01964c8570ee542007ef3df99fa3f2c687bdfdaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/00552848f8c4c5da7b4b4ffee306b66fd3de2c8f",
-                "reference": "00552848f8c4c5da7b4b4ffee306b66fd3de2c8f",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/01964c8570ee542007ef3df99fa3f2c687bdfdaa",
+                "reference": "01964c8570ee542007ef3df99fa3f2c687bdfdaa",
                 "shasum": ""
             },
             "require": {
@@ -7288,7 +7288,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2019-05-11T09:57:45+00:00"
+            "time": "2019-05-15T05:17:01+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -7507,16 +7507,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.9.0",
+            "version": "v2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "82a1c055c8ed4c4705023bfd0405f3c74db6e3ae"
+                "reference": "5240e21982885b76629552d83b4ebb6d41ccde6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/82a1c055c8ed4c4705023bfd0405f3c74db6e3ae",
-                "reference": "82a1c055c8ed4c4705023bfd0405f3c74db6e3ae",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/5240e21982885b76629552d83b4ebb6d41ccde6b",
+                "reference": "5240e21982885b76629552d83b4ebb6d41ccde6b",
                 "shasum": ""
             },
             "require": {
@@ -7532,7 +7532,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.9-dev"
+                    "dev-master": "2.10-dev"
                 }
             },
             "autoload": {
@@ -7570,7 +7570,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-04-28T06:57:38+00:00"
+            "time": "2019-05-14T12:03:52+00:00"
         },
         {
             "name": "vich/uploader-bundle",

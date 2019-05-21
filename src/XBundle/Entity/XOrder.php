@@ -14,6 +14,7 @@ use XBundle\Entity\XCart;
  **/
 class XOrder implements PhysicalPersonInterface
 {
+    
     public function __construct()
     {
         $this->date = new \DateTime();
@@ -24,11 +25,7 @@ class XOrder implements PhysicalPersonInterface
         return $this->firstName . ' ' . $this->lastName;
     }
 
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -66,6 +63,17 @@ class XOrder implements PhysicalPersonInterface
      * @ORM\Column(name="date", type="datetime", nullable=true)
      */
     private $date;
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set lastName
@@ -129,15 +137,14 @@ class XOrder implements PhysicalPersonInterface
         return $this;
     }
 
-
     /**
-     * Get id
-     *
-     * @return integer
+     * Get email
+     * 
+     * @return string $email
      */
-    public function getId()
+    public function getEmail()
     {
-        return $this->id;
+        return $this->email;
     }
 
     /**

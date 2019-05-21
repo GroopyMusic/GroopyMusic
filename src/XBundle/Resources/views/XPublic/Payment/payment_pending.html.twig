@@ -43,8 +43,7 @@
 		}
 
 		pollForSourceStatus();
-
-        //displayLoader("{{ 'threeds.pending_stripe'|trans|raw }}");
+        
         displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
         function onChargeable3DS(status, source) {
             if (source.status == 'chargeable') {

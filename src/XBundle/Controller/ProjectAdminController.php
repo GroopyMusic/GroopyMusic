@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProjectAdminController extends BaseAdminController
 {
-    public function validateAction(Request $request, ProductAdmin $productAdmin) {
+    public function validateAction(Request $request) {
 
         /** @var Project $project */
         $project = $this->admin->getSubject();
@@ -22,7 +22,6 @@ class ProjectAdminController extends BaseAdminController
         if (!$project) {
             throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $project->getId()));
         }
-
 
         if ($project->getValidated()) {
             $this->addFlash('sonata_flash_error', 'Ce projet est déjà validé.');
@@ -53,8 +52,6 @@ class ProjectAdminController extends BaseAdminController
                 $em->persist($project);
                 $em->flush();
 
-                $message = "Le projet a été validé et un mail a été envoyé aux gestionnaires du projet. Vous pouvez maintenant passer à la validation des articles du projet s'il y en a.";
-
                 try {
                     $this->get(MailDispatcher::class)->sendProjectValidated($project);
                 }
@@ -62,8 +59,15 @@ class ProjectAdminController extends BaseAdminController
                     $message = "Le projet a bien été validé mais le mail qui devait avertir les gestionnaires du projet n'est pas parti.";
                 }
                 finally {
+                    if (count($project->getProducts())> 0) {
+                        $message = "Le projet a été validé et un mail a été envoyé aux gestionnaires du projet. Vous pouvez maintenant passer à la validation des articles du projet.";
+                        $url = $this->admin->getChild('XBundle\Admin\ProductAdmin')->generateUrl('list', ['id' => $project->getId()]);
+                    } else {
+                        $message = 'Le projet a été validé et un mail a été envoyé aux gestionnaires du projet.';
+                        $url = $this->admin->generateUrl('list');
+                    }
                     $this->addFlash('sonata_flash_success', $message);
-                    return new RedirectResponse($this->admin->getChild('XBundle\Admin\ProductAdmin')->generateUrl('list', ['id' => $project->getId()]));
+                    return new RedirectResponse($url);
                 }
             }            
         }
@@ -93,7 +97,7 @@ class ProjectAdminController extends BaseAdminController
 
         $form = $this->createFormBuilder()
             ->add('reason', 'ckeditor', array(
-                'label' => 'Cause(s) du refus',
+                'label' => 'Raison(s) du refus',
                 'config_name' => 'bbcode'
             ))
             ->add('confirm', SubmitType::class, array(
@@ -120,11 +124,9 @@ class ProjectAdminController extends BaseAdminController
                 // Remove products
                 foreach($project->getProducts() as $product) {
                     $em->remove($product);
-                    //$em->persist($product);
                 }
 
                 $em->remove($project);
-                //$em->persist($project);
                 $em->flush();
 
                 $message = "Le projet a été refusé et un mail a été envoyé aux gestionnaires du projet pour leur expliquer les raisons de ce refus";

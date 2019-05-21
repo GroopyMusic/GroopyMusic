@@ -85,7 +85,9 @@
                 {% endfor %}
             {% endif %}
             {% if (form is defined and form is not null and not form.vars.valid) %}
-                {{ yb_error('<p>'~ 'error.form_error'|trans ~ '</p>' ~ form_errors(form))|raw }}
+                {{ yb_error('<p>Le formulaire contient une ou plusieurs erreurs.</p>' ~ form_errors(form))|raw }}
+            {% elseif (form_purchase is defined and form_purchase is not null and not form_purchase.vars.valid) %}
+                {{ yb_error('<p>Le formulaire contient une ou plusieurs erreurs.</p>' ~ form_errors(form_purchase))|raw }}
             {% endif %}
             {% if (errors is defined and errors|length > 0) %}
                 {% for error in errors %}
@@ -151,6 +153,7 @@
             {% endif %}
         {% endblock %}
 
+        <!-- Modal success creation project -->
         {% block notice_success_project %}
             {% set notice_bag = app.request.session.flashbag.get('x_notice_success_project') %}
             {% if notice_bag is not empty %}
@@ -257,9 +260,6 @@
             Dropzone.prototype.defaultOptions.dictRemoveFile = "{{ 'dictRemoveFile'|trans({}, 'dropzone') }}";
             Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "{{ 'dictMaxFilesExceeded'|trans({}, 'dropzone') }}";
         </script>
-
-        {#<script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>#}
-
         
         {% block additional_javascripts %}{% endblock %}
     

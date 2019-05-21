@@ -53,6 +53,10 @@ class Product
         return $this->getIsTicket();
     }
 
+    
+    /**
+     * Create all possible combination with product options
+     */
     private function createCombinationOptions($arrays, $i = 0) {
         if (!isset($arrays[$i])) {
             return [];
@@ -71,6 +75,9 @@ class Product
         return $result;
     }
 
+    /**
+     * Retrieve array of all possible combination
+     */
     public function getCombinationOptions() {
         $options = [];
         foreach ($this->options as $option) {
@@ -79,7 +86,9 @@ class Product
         return $this->createcombinationOptions($options);
     }
 
-    // Display combo
+    /**
+     * Convert array combo to string
+     */
     public function stringCombo($combo) {
         if (is_array($combo)) {
             $str = '';

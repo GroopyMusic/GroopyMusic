@@ -130,13 +130,16 @@ abstract class BaseController extends Controller
 
 
     ///////////////////////////////////////////////
-    /// X                                //////////
+    /// X - CHAPOTS                      //////////
     ///////////////////////////////////////////////
     protected function checkIfArtistAuthorized($user, $project = null) {
-        if(!$user || !$user instanceof User) {
+        if (!$user || !$user instanceof User) {
             throw new NoAuthenticationException();
         }
-        if(!$user->isSuperAdmin() && !$user->isArtistOwner() && $project != null && !$user->ownsProject($project)){
+        if (!$user->isSuperAdmin() && !$user->isArtistOwner()) {
+            throw new NotAllowedException();
+        }
+        if ($project != null && (!$user->ownsProject($project) && !$user->isSuperAdmin())){
             throw new NotAllowedException();
         }
     }

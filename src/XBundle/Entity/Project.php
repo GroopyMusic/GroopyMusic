@@ -70,6 +70,31 @@ class Project
     }
 
     /**
+     * Check if project has validated products
+     */
+    public function hasValidatedProducts() {
+        $validatedProducts = array_filter($this->getProducts()->toArray(), function(Product $product) {
+                                return $product->getValidated() && $product->getDeletedAt() == null;
+                            });
+        return count($validatedProducts) > 0;
+    }
+
+    /**
+     * Update collected amount
+     */
+    public function addAmount($amount) {
+        $this->collectedAmount += $amount;
+    }
+
+    /**
+     * Calculate percentage of project funding progress
+     */
+    public function getProgressPercent() {
+        return floor(($this->getCollectedAmount() / $this->getThreshold()) * 100);
+    }
+
+
+    /**
      * Calculate number of remaining days for project funding
      */
     public function getRemainingDays()
@@ -96,7 +121,7 @@ class Project
     }
 
     /**
-     * Display remaining time
+     * Return the correct remaining time format to display
      */
     public function getRemainingTime()
     {
@@ -113,43 +138,6 @@ class Project
         return $time;
     }
 
-    /**
-     * Calculate percentage of project funding progress
-     */
-    public function getProgressPercent() {
-        return floor(($this->getCollectedAmount() / $this->getThreshold()) * 100);
-    }
-
-    /**
-     * Update collected amount
-     */
-    public function addAmount($amount) {
-        $this->collectedAmount += $amount;
-    }
-
-    /**
-     * Count number of donations
-     */
-    public function getNbDonations() {
-        return count($this->getDonationsPaid());
-    }
-
-    /**
-     * Count number of sales
-     */
-    public function getNbSales() {
-        return count($this->getSalesPaid());
-    }
-
-    /**
-     * Count contributors; once a contributor who has paid several times
-     */
-    public function getNbContributors() {
-        $nbContributors = array_unique(array_map(function(XOrder $person) {
-            return $person->getEmail();
-        }, $this->getContributors()));
-        return count($nbContributors);
-    }
 
     public function isPassed() {
         return $this->dateEnd < new \DateTime();
@@ -182,195 +170,152 @@ class Project
         return $date > $this->dateEnd && $this->dateEnd->diff($date)->days > self::DAYS_BEFORE_WAY_PASSED;
     }
 
+
+    /**
+     * Count number of donations
+     */
+    public function getNbDonations() {
+        return count($this->getDonationsPaid());
+    }
+
+    /**
+     * Count number of sales
+     */
+    public function getNbSales() {
+        return count($this->getSalesPaid());
+    }
+
+    /**
+     * Count contributors; once a contributor who has paid several times
+     */
+    public function getNbContributors() {
+        $nbContributors = array_unique(array_map(function(XOrder $person) {
+            return $person->getEmail();
+        }, $this->getContributors()));
+        return count($nbContributors);
+    }
+
+
     /**
      * Get donations paid
      */
-    private $donationsPaid = null;
     public function getDonationsPaid() {
-        if($this->donationsPaid == null) {
-            $this->donationsPaid = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
-                return $contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
-            });
-        }
-        return $this->donationsPaid;
+        return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                    return $contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+               });
     }
 
     /**
      * Get donators
      */
-    public function getDonators() {
-        if($this->getDonationsPaid() == null || empty($this->getDonationsPaid())) {
+    public function getDonators($beforeValidation = false) {
+        if ($beforeValidation) {
+            $donations = array_filter($this->getDonationsPaid(), function(XContractFan $cf) {
+                return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
+            });
+        } else {
+            $donations = $this->getDonationsPaid();
+        }
+
+        if($donations == null || empty($donations)) {
             return [];
         }
+
         return array_map(function(XContractFan $cf) {
             return $cf->getPhysicalPerson();
-        }, $this->getDonationsPaid());
-
-
+        }, $donations);
     }
 
+
     /**
-     * Get sales paid for a product
+     * Get sales paid for some products
      */
-    private $productSalesPaid = null;
     public function getProductSalesPaid($products) {
-        if ($this->productSalesPaid == null) {
-            foreach ($this->contributions as $contribution) {
-                if(!empty($contribution->getPurchasesForProduct($products))) {
-                    $this->productSalesPaid[] = $contribution;
-                }
+        $productSalesPaid = [];
+        foreach ($this->contributions as $contribution) {
+            if(!empty($contribution->getPurchasesForProduct($products))) {
+                $productSalesPaid[] = $contribution;
             }
         }
-        return $this->productSalesPaid;
-    }
-
-    /**
-     * Get product buyers
-     */
-    public function getProductBuyers($products) {
-        if($this->getProductSalesPaid($products) == null || empty($this->getProductSalesPaid($products))) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $this->getProductSalesPaid($products));
+        return $productSalesPaid;
     }
 
     /**
      * Get sales paid
      */
-    private $salesPaid = null;
     public function getSalesPaid() {
-        if($this->salesPaid == null) {
-            $this->salesPaid = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
-                return !$contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
-            });
-        }
-        return $this->salesPaid;
+        return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                    return !$contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+               });
     }
 
     /**
      * Get buyers
      */
-    public function getBuyers() {
-        if($this->getSalesPaid() == null || empty($this->getSalesPaid())) {
+    public function getBuyers($beforeValidation = false, $products = null) {
+        if ($beforeValidation) {
+            if ($products != null) {
+                $sales = array_filter($this->getProductSalesPaid($products), function(XContractFan $cf) {
+                    return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
+                });
+            } else {
+                $sales = array_filter($this->getSalesPaid(), function(XContractFan $cf) {
+                    return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
+                });
+            }
+        } else {
+            if ($products != null) {
+                $sales = $this->getProductSalesPaid($products);
+            } else {
+                $sales = $this->getSalesPaid();
+            }
+        }
+        
+        if($sales == null || empty($sales)) {
             return [];
         }
+
         return array_map(function(XContractFan $cf) {
             return $cf->getPhysicalPerson();
-        }, $this->getSalesPaid());
+        }, $sales);
+
     }
+
 
     /**
      * Get all contributions paid
      */
-    private $contributionsPaid = null;
     public function getContributionsPaid() {
-        if($this->contributionsPaid == null) {
-            $this->contributionsPaid = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
-                return $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
-            });
-        }
-        return $this->contributionsPaid;
+        return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                    return $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+               });
     }
 
     /**
      * Get all contributors
      */
-    public function getContributors() {
-        if($this->getContributionsPaid() == null || empty($this->getContributionsPaid())) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $this->getContributionsPaid());
+    public function getContributors($beforeValidation = false, $products = null) {
+        return array_merge($this->getDonators($beforeValidation), $this->getBuyers($beforeValidation, $products));
     }
+
 
     /**
-     * Get all contributions paid and refunded
+     * Get wide contributors (those who have contributions paid or refunded)
      */
-    private $contributionsPaidAndRefunded = null;
-    public function getContributionsPaidAndRefunded() {
-        if($this->contributionsPaidAndRefunded == null) {
-            $this->contributionsPaidAndRefunded = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
-                return $contribution->getPaid();
-            });
-        }
-        return $this->contributionsPaidAndRefunded;
-    }
-
     public function getWideContributors() {
-        if($this->getContributionsPaidAndRefunded() == null || empty($this->getContributionsPaidAndRefunded())) {
+        $contributionsPaidAndRefunded = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+            return $contribution->getPaid();
+        });
+
+        if($contributionsPaidAndRefunded == null || empty($contributionsPaidAndRefunded)) {
             return [];
         }
+
         return array_map(function (XContractFan $cf) {
             return $cf->getPhysicalPerson();
-        }, $this->getContributionsPaidAndRefunded());
+        }, $contributionsPaidAndRefunded);
     }
 
-
-
-    public function getContributorsBeforeDateValidation() {
-        $contributionsBeforeDateValidation = array_filter($this->getContributionsPaid(), function(XContractFan $cf) {
-            return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
-        });
-        if ($contributionsBeforeDateValidation == null || empty($contributionsBeforeDateValidation)) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $contributionsBeforeDateValidation);
-    }
-
-
-    public function getDonatorsBeforeDateValidation() {
-        $donationsBeforeDateValidation = array_filter($this->getDonationsPaid(), function(XContractFan $cf) {
-            return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
-        });
-        if ($donationsBeforeDateValidation == null || empty($donationsBeforeDateValidation)) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $donationsBeforeDateValidation);
-    }
-
-
-    public function getBuyersBeforeDateValidation() {
-        $salesBeforeDateValidation = array_filter($this->getSalesPaid(), function(XContractFan $cf) {
-            return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
-        });
-        if ($salesBeforeDateValidation == null || empty($salesBeforeDateValidation)) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $salesBeforeDateValidation);
-    }
-
-
-    public function getProductBuyersBeforeDateValidation($products) {
-        $contributionsForProduct = array_filter($this->getProductSalesPaid($products), function(XContractFan $cf) {
-            return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
-        });
-        if($contributionsForProduct == null || empty($contributionsForProduct)) {
-            return [];
-        }
-        return array_map(function(XContractFan $cf) {
-            return $cf->getPhysicalPerson();
-        }, $contributionsForProduct);
-    }
-
-
-    /**
-     * Check if project has validated products
-     */
-    public function hasValidatedProducts() {
-        $validatedProducts = array_filter($this->getProducts()->toArray(), function(Product $product) {
-                                return $product->getValidated() && $product->getDeletedAt() == null;
-                            });
-        return count($validatedProducts) > 0;
-    }
 
     /**
      * Count for sales recap
@@ -1083,7 +1028,7 @@ class Project
     public function addProduct($product)
     {
         $this->products[] = $product;
-        $product->setProject($this);
+        return $this;
     }
 
     /**
@@ -1096,7 +1041,6 @@ class Project
     public function removeProduct($product)
     {
         $this->products->removeElement($product);
-        $product->setProject(null);
         return $this;
     }
 

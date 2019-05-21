@@ -36,25 +36,34 @@
             {{ form_row(form.content) }}
 
             {% if project.nbDonations > 0 and project.nbSales > 0 %}
-            <div class="text-muted font-italic pb-2">
-                Si vous ne cochez aucune des deux propositions, le mail sera envoyé aux donateurs ET aux acheteurs !
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-4">
-                    {{ form_widget(form.toDonators) }}
+                <div class="text-muted font-italic pb-2">
+                    Si vous ne cochez aucune des deux propositions, le mail sera envoyé aux donateurs ET aux acheteurs !
                 </div>
-                <div class="col-12 col-md-4" id="to_buyers_checkbox">
-                    {{ form_widget(form.toBuyers) }}
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        {{ form_widget(form.toDonators) }}
+                    </div>
+                    <div class="col-12 col-md-4" id="to_buyers_checkbox">
+                        {{ form_widget(form.toBuyers) }}
+                    </div>
+                    <div class="col-12 col-md-4 products_select">
+                        Si vous voulez cibler les acheteurs d'un ou de plusieurs articles en particulier, mentionnez-le(s) :
+                        {{ form_widget(form.products) }}
+                    </div>
                 </div>
-                <div class="col-12 col-md-4 products_select">
-                    Si vous voulez cibler les acheteurs d'un ou de plusieurs articles en particulier, mentionnez-le(s) :
-                    {{ form_widget(form.products) }}
+            {% elseif project.nbDonations == 0 and project.nbSales > 0 %}
+                <div class="row">
+                    <div class="col-12 col-md-6 my-3">
+                        Si vous voulez cibler les acheteurs d'un ou de plusieurs articles en particulier, mentionnez-le(s) :
+                        {{ form_widget(form.products) }}
+                    </div>
                 </div>
-            </div>
+                {% do form.toDonators.setRendered %}
+                {% do form.toBuyers.setRendered %}
             {% else %}
                 {% do form.toDonators.setRendered %}
                 {% do form.toBuyers.setRendered %}
-                {% do form.product.setRendered %}
+                {% do form.products.setRendered %}
             {% endif %}
 
             {% if project.hasThreshold and project.dateValidation is not null %}

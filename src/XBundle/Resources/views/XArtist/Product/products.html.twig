@@ -2,16 +2,6 @@
 
 {% block body %}
 
-    <style>
-        img {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 120px;
-            height: 120px;
-        }
-    </style>
-
     <section class="container px-0 mt-4">
         <nav class="breadcrumb">
             <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
@@ -20,7 +10,7 @@
         </nav>
     </section>
     
-    <section class="container my-4 py-2 my-md-4">
+    <section class="container my-4 py-2 my-md-4 product-section">
         {% if products is empty %}
             <p>Pas d'articles en vente</p>
         {% else %}

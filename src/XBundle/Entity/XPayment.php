@@ -14,9 +14,10 @@ use XBundle\Entity\XCart;
 class XPayment
 {
 
-    public function __toString()
+    public function __construct()
     {
-        return 'x_paiment';
+        $this->date = new \DateTime();
+        $this->refunded = false;
     }
 
     /**

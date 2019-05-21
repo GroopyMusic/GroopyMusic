@@ -20,7 +20,6 @@ class XTransactionalMessage
         $this->toDonators = false;
         $this->toBuyers = false;
         $this->beforeValidation = false;
-        $this->afterValidation = false;
     }
 
 
