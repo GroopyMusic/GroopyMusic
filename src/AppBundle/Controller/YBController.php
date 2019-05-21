@@ -624,6 +624,12 @@ class YBController extends BaseController
         return $this->render('@App/YB/Organizations/all_organizations.html.twig', [
             'organizations' => $organizations,
         ]);
+      
+     /**
+     * @Route("/app-scan-confidentiality-rules", name="yb_app_confidentiality_rules")
+     */
+    public function appConfidentialityRulesAction(){
+        return $this->render('@App/YB/app_confidentiality_rules.html.twig');
     }
 
 }
