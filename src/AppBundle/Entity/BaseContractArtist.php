@@ -43,6 +43,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->counterparts_sold = 0;
         $this->threshold = 0;
         $this->reminders = [];
+        $this->contractsFan = new ArrayCollection();
     }
 
     public function __call($method, $arguments)

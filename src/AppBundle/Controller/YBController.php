@@ -5,6 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\User;
+use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
@@ -519,6 +521,7 @@ class YBController extends BaseController
 
         if($cart->isFree()) {
             $cart->setPaid(true);
+            $cart->setFinalized(true);
             $mailDispatcher->sendYBOrderRecap($cart);
         }
 
@@ -593,6 +596,36 @@ class YBController extends BaseController
     }
 
     /**
+     * @Route("/organizer/{id}-{slug}", name="yb_organization")
+     */
+    public function organizationAction(Organization $organization, UserInterface $user = null, EntityManagerInterface $em, $slug = null) {
+        if($organization->getSlug() != null && $slug != null && $organization->getSlug() != $slug) {
+            return $this->redirectToRoute('yb_organization', ['id' => $organization->getId(), 'slug' => $organization->getSlug()]);
+        }
+
+        /** @var User $user */
+        if(!$organization->isPublished() && !($user != null && ($user->isSuperAdmin() || $user->isInOrganization($organization)))) {
+            throw $this->createNotFoundException();
+        }
+
+        $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingPublishedEvents($organization);
+        return $this->render('@App/YB/Organizations/organization.html.twig', [
+            'organization' => $organization,
+            'events' => $events,
+        ]);
+    }
+    
+    /**
+     * @Route("/organizers", name="yb_organizations")
+     */
+    public function organizationsAction(EntityManagerInterface $em) {
+        $organizations = $em->getRepository('AppBundle:YB\Organization')->findPublished();
+
+        return $this->render('@App/YB/Organizations/all_organizations.html.twig', [
+            'organizations' => $organizations,
+        ]);
+      
+     /**
      * @Route("/app-scan-confidentiality-rules", name="yb_app_confidentiality_rules")
      */
     public function appConfidentialityRulesAction(){

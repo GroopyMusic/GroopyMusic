@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\AppBundle;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\Photo;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\YB\YBCommission;
@@ -143,6 +144,7 @@ class YBMembersController extends BaseController
             'admin' => $user->isSuperAdmin(),
             'form' => $form->createView(),
             'campaign' => $campaign,
+            'creation' => true,
             'flow' => $flow,
         ]);
     }
@@ -207,10 +209,34 @@ class YBMembersController extends BaseController
             'form' => $form->createView(),
             'flow' => $flow,
             'campaign' => $campaign,
+            'creation' => false,
         ]);
     }
 
     /**
+     * @Route("/campaign/{id}/toggle-publicity", name="yb_members_campaign_toggle_publicity")
+     */
+    public function togglePublicityCampaignAction(YBContractArtist $campaign, UserInterface $user = null, EntityManagerInterface $em) {
+        $this->checkIfAuthorized($user, $campaign);
+        $campaign->togglePublicity();
+        $em->persist($campaign);
+        $em->flush();
+        return $this->forward('AppBundle:YBMembers:displayOngoingCampaignsForOrganization', ['id' => $campaign->getOrganization()->getId()]);
+    }
+
+    /**
+     * @Route("/api/organization/{id}/ongoing-events", name="yb_members_organization_ongoing_events")
+     */
+    public function displayOngoingCampaignsForOrganizationAction(Organization $organization) {
+        $em = $this->em;
+        $campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingEvents($organization);
+        return new Response($this->renderView('@App/YB/Organizations/organization_ongoing_campaigns.html.twig', [
+            'campaigns' => $campaigns,
+            'organization' => $organization,
+        ]));
+    }
+
+        /**
      * @Route("/tickets/list/{id}", name="yb_members_get_tickets_list")
      */
     public function getTicketsListAction(YBContractArtist $campaign, UserInterface $user = null, Request $request) {
@@ -969,13 +995,10 @@ class YBMembersController extends BaseController
      */
     public function renameOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null, Organization $organization){
         $this->checkIfAuthorized($user);
-        $form = $this->createFormBuilder()
-            ->add('new_name', TextType::class, ['label' => 'Nouveau nom'])
-            ->add('submit', SubmitType::class, ['label' => 'Valider'])
-            ->getForm();
+        $form = $this->createForm(OrganizationType::class, $organization);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            if ($this->handleRenameOrganization($form, $organization, $em)){
+            if ($this->handleEditOrganization($form, $organization, $em)){
                 return $this->redirectToRoute('yb_members_my_organizations');
             }
         }
@@ -1046,6 +1069,13 @@ class YBMembersController extends BaseController
             $this->createNewParticipation($organization, $currentUser, true);
             $em->persist($organization);
             $em->flush();
+            if($organization->getImageFile() != null) {
+                $photo = new Photo();
+                $organization->setPhoto($photo);
+                $photo->setFilename($organization->getFilename())->setImageSize($organization->getImageSize());
+                $em->persist($photo);
+                $em->flush();
+            }
             $orgName = $organization->getName();
             $this->addFlash('yb_notice', 'Votre nouvelle organisation, ' . $orgName . ', a bien été enregistrée.');
         }
@@ -1138,11 +1168,20 @@ class YBMembersController extends BaseController
      * @param $newName
      * @return bool
      */
-    private function organizationNameExist(EntityManagerInterface $em, $newName){
+    private function organizationNameExist(EntityManagerInterface $em, $newName, $except = null){
         $selfNamedOrg = $em->getRepository('AppBundle:YB\Organization')->findBy(['name' => $newName]);
         if (count($selfNamedOrg) === 0){
             return false;
         } else {
+            $areAllSame = true;
+            foreach($selfNamedOrg as $org) {
+                if($except != null && $org->getId() != $except->getId()) {
+                    $areAllSame = false;
+                }
+            }
+            if($areAllSame) {
+                return false;
+            }
             return !$this->areAllDeleted($selfNamedOrg);
         }
     }
@@ -1174,18 +1213,30 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @return bool
      */
-    private function handleRenameOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
-        $new_name = $form->getData()['new_name'];
-        if ($this->organizationNameExist($em, $new_name)){
+    private function handleEditOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
+        $new_name = $form->getData()->getName();
+        if ($this->organizationNameExist($em, $new_name, $organization)){
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
             return false;
-        } elseif($this->isNameOfMember($organization, $new_name)){
+        } elseif(!$organization->isPrivate() && $this->isNameOfMember($organization, $new_name)){
             $this->addFlash('error', 'L\'organisation ne peut avoir le même nom qu\'un de ses membres. Essayez un autre nom !');
             return false;
         } else {
             $organization->setName($new_name);
             $em->flush();
-            $this->addFlash('yb_notice', 'Le nom a bien été changé !');
+            if($form->getData()->getImageFile() != null) {
+                if($organization->getPhoto() != null) {
+                    $photo = $organization->getPhoto();
+                }
+                else {
+                    $photo = new Photo();
+                    $organization->setPhoto($photo);
+                }
+                $photo->setFilename($organization->getFilename())->setImageSize($organization->getImageSize());
+                $em->persist($photo);
+                $em->flush();
+            }
+            $this->addFlash('yb_notice', "L'organisation a bien été modifiée !");
             return true;
         }
     }

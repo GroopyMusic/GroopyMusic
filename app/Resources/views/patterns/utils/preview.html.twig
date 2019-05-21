@@ -4,5 +4,5 @@
 {% if preview_content|length > limit %}
     {{ preview_content|slice(0, limit)|raw }}...
 {% else %}
-    {{ preview_content|raw }}
+    {{ preview_content|nl2br|raw }}
 {% endif %}
