@@ -10,6 +10,12 @@ yb_members_controller:
   schemes: ['%http_protocol%']
   prefix: /edit
 
+rest_controller:
+  resource: "@AppBundle/Controller/RestController.php"
+  type: annotation
+  schemes: ['%http_protocol%']
+  prefix: /rest
+
 fos_user_security_check_yb:
   path: "/login_check"
   methods: ["POST"]
