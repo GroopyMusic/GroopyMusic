@@ -618,13 +618,14 @@ class YBController extends BaseController
     /**
      * @Route("/organizers", name="yb_organizations")
      */
-    public function organizationsAction(EntityManagerInterface $em) {
+    public function organizationsAction(EntityManagerInterface $em)
+    {
         $organizations = $em->getRepository('AppBundle:YB\Organization')->findPublished();
 
         return $this->render('@App/YB/Organizations/all_organizations.html.twig', [
             'organizations' => $organizations,
         ]);
-      
+    }
      /**
      * @Route("/app-scan-confidentiality-rules", name="yb_app_confidentiality_rules")
      */
