@@ -26,31 +26,3 @@ JMSTranslationBundle_ui:
     type:     annotation
     prefix:   /_trans
 
-scanticket:
-    resource: AppBundle\Controller\RestController
-    type: rest
-
-getevents:
-    resource: AppBundle\Controller\RestController
-    type: rest
-
-getevents-um:
-  resource: AppBundle\Controller\RestController
-  type: rest
-
-loginuser:
-    resource: AppBundle\Controller\RestController
-    type: rest
-
-addticket:
-    resource: AppBundle\Controller\RestController
-    type: rest
-
-getcounterpart:
-    resource: AppBundle\Controller\RestController
-    type: rest
-
-getaudience:
-    resource: AppBundle\Controller\RestController
-    type: rest
-
