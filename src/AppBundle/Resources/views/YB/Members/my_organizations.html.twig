@@ -20,23 +20,21 @@
 
     <section class="container py-5">
         <h2>Mes organisations</h2>
-        <div align="center">
-            <div class="input-group mb-3">
+        <div class="row">
+            <div class="col-12 col-md-10">
                 <input
-                        type="text"
                         class="form-control"
-                        placeholder="Chercher..."
-                        aria-label="Chercher..."
-                        aria-describedby="basic-addon2"
                         data-jplist-control="textbox-filter"
                         data-group="group1"
                         data-name="my-filter-1"
                         data-path=".name"
+                        type="text"
                         value=""
-                        data-clear-btn-id="name-clear-btn">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" id="name-clear-btn" type="button"><i class="fa fa-eraser"></i> Effacer</button>
-                </div>
+                        data-clear-btn-id="name-clear-btn"
+                        placeholder="Chercher..." />
+            </div>
+            <div class="col-12 col-md-2">
+                <button type="button" class="btn btn-outline-primary" id="name-clear-btn">Effacer</button>
             </div>
         </div>
         <br>
@@ -60,8 +58,11 @@
             {{ form_row(form.name) }}
             {{ form_row(form.vatNumber) }}
             {{ form_row(form.bankAccount) }}
+            {{ form_row(form.imageFile) }}
+            {{ form_widget(form.translations) }}
+            {{ form_row(form.published) }}
             <div class="col-md-12 text-center">
-                <button type="button" class="btn-secondary btn" data-toggle="modal" data-target="#createOrgaModal">
+                <button type="button" class="btn-primary btn" data-toggle="modal" data-target="#createOrgaModal">
                     Enregistrer
                 </button>
             </div>
@@ -74,9 +75,11 @@
                             </div>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
-                        <div class="modal-body text-center">
-                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                            <p>Vous êtes sur le point de créer une organisation. Êtes vous sûr ?</p>
+                        <div class="modal-body">
+                            Vous êtes sur le point de créer une organisation. Êtes vous sûr ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
                             {{ form_widget(form.save) }}
                             <button class="btn btn-success" data-dismiss="modal">
                                 <span>Annuler </span><i class="fas fa-ban"></i>

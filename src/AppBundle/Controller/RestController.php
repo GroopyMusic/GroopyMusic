@@ -1,5 +1,4 @@
 <?php
-
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\BaseContractArtist;
@@ -9,20 +8,15 @@ use AppBundle\Entity\YB\YBOrder;
 use AppBundle\Entity\YB\YBSubEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Entity\Rest\RestTicket;
-use FOS\RestBundle\View\View;
 use AppBundle\Entity\ContractFan;
-use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\YB\YBContractArtist;
-use FOS\UserBundle\Util\TokenGeneratorInterface;
 
 class RestController extends BaseController {
-
     /**
      * @Rest\View()
      * @Rest\Get("/scanticket")
@@ -40,7 +34,7 @@ class RestController extends BaseController {
         $response = $this->handleTicketValidation('', $user_id, $event_id, $ticket, $contract_artist, $em);
         return $response;
     }
-    
+
     /**
      * @Rest\View()
      * @Rest\Get("/loginuser")
@@ -75,7 +69,6 @@ class RestController extends BaseController {
         );
         return new JsonResponse($user_array);
     }
-
     /**
      * @Rest\View()
      * @Rest\Get("/getevents")
@@ -106,7 +99,6 @@ class RestController extends BaseController {
         $array_events = array_merge($yb_events, $unmute_events);
         return new JsonResponse($array_events);
     }
-
     /**
      * @Rest\View()
      * @Rest\Post("/addticket")
@@ -227,7 +219,6 @@ class RestController extends BaseController {
                     $array_events[] = $this->createArray($event, $event->__toString(), new \DateTime(), $this->getAudienceForEvent($event), $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
                 } else {
                     $array_events[] = $this->createArray($event, $event->__toString(), $event->getDateEvent(), [], $this->getCounterpartsForEvent($event), $this->getNbSoldTicketPerCounterpart($em, $event));
-
                 }
             }
         } else {
@@ -245,7 +236,7 @@ class RestController extends BaseController {
                 $array_tix[] = array(
                     'id' => $cp->getId(),
                     'name' => $cp->getName(),
-                    'price' => $cp->getPrice(), 
+                    'price' => $cp->getPrice(),
                 );
             }
         } else {
@@ -287,7 +278,6 @@ class RestController extends BaseController {
             return new RestTicket('','','','',$error, '', '');
         }
     }
-
     private function getArrayFromTicket($rest_ticket){
         $array_ticket = array(
             'buyer' => $rest_ticket->getBuyer(),
@@ -300,31 +290,26 @@ class RestController extends BaseController {
         );
         return $array_ticket;
     }
-
     private function getNbPresales($event){
         $em = $this->getDoctrine()->getManager();
         $tickets = $em->getRepository('AppBundle:Ticket')->getPresale($event->getId());
         return count($tickets);
     }
-
     private function getNbTicketSoldOnSite($event_id){
         $em = $this->getDoctrine()->getManager();
         $tickets = $em->getRepository('AppBundle:Ticket')->getNbBoughtOnSiteFromEvent($event_id);
         return count($tickets);
     }
-
     private function getTicketPaidByCash($event_id){
         $em = $this->getDoctrine()->getManager();
         $tickets = $em->getRepository('AppBundle:Ticket')->getNbPaidInCashFromEvent($event_id);
         return count($tickets);
     }
-
     private function getNbScannedTicket($event_id){
         $em = $this->getDoctrine()->getManager();
         $tickets = $em->getRepository('AppBundle:Ticket')->getNbPresaleScannedFromEvent($event_id);
         return count($tickets);
     }
-
     private function isOrganizer($user_id, $event_id){
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AppBundle:User')->find($user_id);
@@ -348,7 +333,6 @@ class RestController extends BaseController {
         }
         return $rest_tickets_array;
     }
-
     private function getCounterpartsForEvent($event){
         $counterparts = $event->getCounterParts();
         return $this->getTicketFromCounterpart($counterparts, '');

@@ -61,6 +61,7 @@ class YBContractArtist extends BaseContractArtist
         $this->no_sub_events = true;
         $this->date_event = new \DateTime();
         $this->external_invoice = 0;
+        $this->published = false;
     }
 
     public function getBuyers() {
@@ -315,12 +316,16 @@ class YBContractArtist extends BaseContractArtist
     }
 
     // Commissionnaire
-    public function isCommissionary() {
+    public function isBroker() {
         return $this->vat == 0 || $this->vat == null;
     }
-    // Courtier
-    public function isBroker() {
-        return !$this->isCommissionary();
+    // Courtier 
+    public function isCommissionary() {
+        return !$this->isBroker();
+    }
+
+    public function togglePublicity() {
+        $this->setPublished(!$this->published);
     }
 
     /**
@@ -441,6 +446,11 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\CustomTicket", mappedBy="campaign")
      */
     private $customTicket;
+
+    /**
+     * @ORM\Column(name="published", type="boolean")
+     */
+    private $published;
 
     /**
      * Set ticketsSent
@@ -753,12 +763,14 @@ class YBContractArtist extends BaseContractArtist
     public function setOrganization($organization){
         $this->organization = $organization;
 
-        if($this->vat_number == null) {
-            $this->vat_number = $organization->getVatNumber();
-        }
+        if($this->organization != null) {
+            if($this->vat_number == null) {
+                $this->vat_number = $organization->getVatNumber();
+            }
 
-        if($this->bank_account == null) {
-            $this->bank_account = $organization->getBankAccount();
+            if($this->bank_account == null) {
+                $this->bank_account = $organization->getBankAccount();
+            }
         }
     }
 
@@ -887,4 +899,14 @@ class YBContractArtist extends BaseContractArtist
         $this->customTicket = $customTicket;
     }
 
+    public function setPublished($published) {
+        $this->published = $published;
+        return $this;
+    }
+    public function getPublished() {
+        return $this->published;
+    }
+    public function isPublished() {
+        return $this->getPublished();
+    }
 }

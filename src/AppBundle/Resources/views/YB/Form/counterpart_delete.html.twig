@@ -1,0 +1,30 @@
+<div>
+    <p>Êtes-vous sûr de vouloir supprimer ce ticket ?</p>
+    <div><button class="btn btn-danger really-delete-ticket">Supprimer</button></div>
+</div>
+
+<script>
+    $('.really-delete-ticket').click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            method: 'post',
+            url: "{{ path('yb_members_delete_ticket', {'id': cp.id}) }}",
+            beforeSend: function () {
+                loader();
+            },
+            success: function (data) {
+                if (data == 'OK') {
+                    $.get('{{ path('yb_members_get_tickets_list', {'id': campaign.id}) }}', function (html_data) {
+                        $('#counterparts-container').html(html_data);
+                    });
+                    hideLoader();
+                    $('#counterPartsModalBody').html("Le ticket a bien été supprimé.");
+                }
+                else {
+                    hideLoader();
+                    $('#counterPartsModalBody').html(data);
+                }
+            }
+        })
+    });
+</script>

@@ -30,7 +30,7 @@ class YBContractArtistTicketsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $class_attr = $options['data']->hasSubEvents() ? '' : 'no-sub-events';
+        /*$class_attr = $options['data']->hasSubEvents() ? '' : 'no-sub-events';
         $class2_attr = count($options['data']->getConfig()->getBlocks()) > 0 ? '' : 'no-blk';
         $builder
             ->add('counterParts',  CollectionType::class, array(
@@ -53,7 +53,8 @@ class YBContractArtistTicketsType extends AbstractType
                 'by_reference' => false,
                 'prototype' => true,
                 'attr' => ['class' => 'collection'],
-            ))
+            ))*/
+        $builder
             ->add('globalSoldout', NumberType::class, array(
                 'label' => 'Sold out global',
                 'required' => false,

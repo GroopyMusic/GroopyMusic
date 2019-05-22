@@ -202,6 +202,10 @@ class CounterPart implements TranslatableInterface
         return $this->maximum_amount - $this->getSeatedCapacity($blocks) - $this->getStandUpCapacity($blocks);
     }
 
+    public function hasBeenSold() {
+        return $this->contractArtist->hasSoldCounterPart($this);
+    }
+
     /**
      * @var int
      *
@@ -225,6 +229,7 @@ class CounterPart implements TranslatableInterface
     private $step;
 
     /**
+     * @var BaseContractArtist
      * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="counterParts")
      * @ORM\JoinColumn(nullable=true)
      */

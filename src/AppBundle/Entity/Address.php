@@ -78,35 +78,35 @@ class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="street", type="string", length=255)
+     * @ORM\Column(name="street", type="string", length=255, nullable=true)
      */
     private $street;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="zipcode", type="string", length=10)
+     * @ORM\Column(name="zipcode", type="string", length=10, nullable=true)
      */
     private $zipcode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="country", type="string", length=20)
+     * @ORM\Column(name="country", type="string", length=20, nullable=true)
      */
     private $country;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="number", type="string", length=10)
+     * @ORM\Column(name="number", type="string", length=10, nullable=true)
      */
     private $number;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=255)
+     * @ORM\Column(name="city", type="string", length=255, nullable=true)
      */
     private $city;
 

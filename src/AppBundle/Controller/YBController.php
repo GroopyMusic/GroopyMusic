@@ -9,6 +9,8 @@ use AppBundle\Entity\YB\Booking;
 use AppBundle\Entity\YB\CustomTicket;
 use AppBundle\Entity\YB\Reservation;
 use AppBundle\Entity\YB\VenueConfig;
+use AppBundle\Entity\User;
+use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
@@ -220,12 +222,12 @@ class YBController extends BaseController
         // Token is created using Stripe.js or Checkout!
         // Get the payment token submitted by the form:
         $source = $_POST['stripeSource'];
+
         // Charge the user's card:
         try {
-            foreach ($cart->getContracts() as $contract) {
+            foreach($cart->getContracts() as $contract) {
                 /** @var ContractFan $contract
-                 * @var YBContractArtist $contract_artist
-                 */
+                 * @var YBContractArtist $contract_artist */
                 $contract->calculatePromotions();
             }
             $payment = new Payment();
@@ -305,7 +307,7 @@ class YBController extends BaseController
                 'endTime' => $timeStamp,
             ));
         }
-        foreach ($cart->getContracts() as $cf) {
+        foreach($cart->getContracts() as $cf) {
             /** @var ContractFan $cf */
             /** @var YBContractArtist $contract_artist */
             $contract_artist = $cf->getContractArtist();
@@ -340,32 +342,31 @@ class YBController extends BaseController
             $em->flush();
             return $this->generatePaymentResponse($intent, $cart);
         } catch (\Stripe\Error\Card $e) {
-            $this->addFlash('error', 'errors.stripe.card');
-            //$this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.card')]);
         } catch (\Stripe\Error\RateLimit $e) {
-            $this->addFlash('error', 'errors.stripe.rate_limit');
-            //$this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.rate_limit')]);
         } catch (\Stripe\Error\InvalidRequest $e) {
-            $this->addFlash('error', 'errors.stripe.invalid_request');
-            //$this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.invalid_request')]);
         } catch (\Stripe\Error\Authentication $e) {
-            $this->addFlash('error', 'errors.stripe.authentication');
-            //$this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.authentication')]);
         } catch (\Stripe\Error\ApiConnection $e) {
-            $this->addFlash('error', 'errors.stripe.api_connection');
-            //$this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.api_connection')]);
         } catch (\Stripe\Error\Base $e) {
-            $this->addFlash('error', 'errors.stripe.generic');
-            //$this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.generic')]);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'errors.stripe.other');
-            //$this->get(MailDispatcher::class)->sendAdminStripeError($e, $user, $cart);
+            $this->get(MailDispatcher::class)->sendAdminStripeError($e, null, $cart);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
         }
-        return $this->json([]);
+        return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
     }
 
-    function generatePaymentResponse(PaymentIntent $intent, Cart $cart)
-    {
+    function generatePaymentResponse(PaymentIntent $intent, Cart $cart) {
         if ($intent->status == 'requires_action' &&
             $intent->next_action->type == 'use_stripe_sdk') {
             # Tell the client to handle the action
@@ -381,7 +382,11 @@ class YBController extends BaseController
             $payment = new Payment();
             $payment->setDate(new \DateTime())->setUser($cart->getUser())
                 ->setCart($cart)->setRefunded(false)->setAmount($cart->getAmount());
-            $payment->setChargeId($intent->id);
+            try {
+                $payment->setChargeId($intent->charges->data[0]->id);
+            } catch(\Throwable $exception) {
+                $payment->setChargeId($intent->id);
+            }
             $this->em->persist($cart);
             $this->em->persist($payment);
             $this->em->flush();
@@ -391,9 +396,10 @@ class YBController extends BaseController
             ]);
         } else {
             # Invalid status
-            return $this->json(['error' => 'Invalid PaymentIntent status']);
+            return $this->json(['error' => $this->get('translator')->trans('errors.stripe.other')]);
         }
     }
+
 
     /**
      * @Route("/checkout/{code}", name="yb_checkout")
@@ -441,8 +447,7 @@ class YBController extends BaseController
     /**
      * @Route("/payment/success", name="yb_payment_success")
      */
-    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request)
-    {
+    public function paymentSuccessAction(MailDispatcher $mailDispatcher, TicketingManager $ticketingManager, EntityManagerInterface $em, Request $request) {
         $code = $request->get('code');
         /** @var Cart $cart */
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code]);
@@ -482,9 +487,9 @@ class YBController extends BaseController
     public function orderAction(EntityManagerInterface $em, $code, TicketingManager $ticketingManager)
     {
         $cart = $em->getRepository('AppBundle:Cart')->findOneBy(['barcode_text' => $code, 'paid' => true]);
-        foreach ($cart->getContracts() as $cf) {
+        foreach($cart->getContracts() as $cf) {
             /** @var ContractFan $cf */
-            if ($cf->getContractArtist()->getTicketsSent() && !$cf->getcounterpartsSent())
+            if($cf->getContractArtist()->getTicketsSent() && !$cf->getcounterpartsSent())
                 $ticketingManager->generateAndSendYBTickets($cf);
         }
         return $this->render('AppBundle:YB:order.html.twig', [
@@ -553,13 +558,13 @@ class YBController extends BaseController
             $order->setEmail($email)->setFirstName($first_name)->setLastName($last_name);
             $em->persist($order);
         }
-
         $errors = $validator->validate($order);
         if ($errors->count() > 0) {
             throw new \Exception($errors->offsetGet(0));
         }
         if ($cart->isFree()) {
             $cart->setPaid(true);
+            $cart->setFinalized(true);
             $mailDispatcher->sendYBOrderRecap($cart);
         }
         $em->persist($order);
@@ -626,6 +631,7 @@ class YBController extends BaseController
     }
 
     /**
+<<<<<<< HEAD
      * @Route("/book-seats", name="yb_book_seats")
      */
     public function bookSeatsAction(EntityManagerInterface $em, Request $request)
@@ -863,6 +869,45 @@ class YBController extends BaseController
         } else {
             return (new \DateTime())->modify("+15 minutes")->getTimestamp();
         }
+    }
+
+
+    /**
+     * @Route("/organizer/{id}-{slug}", name="yb_organization")
+     */
+    public function organizationAction(Organization $organization, UserInterface $user = null, EntityManagerInterface $em, $slug = null) {
+        if($organization->getSlug() != null && $slug != null && $organization->getSlug() != $slug) {
+            return $this->redirectToRoute('yb_organization', ['id' => $organization->getId(), 'slug' => $organization->getSlug()]);
+        }
+
+        /** @var User $user */
+        if(!$organization->isPublished() && !($user != null && ($user->isSuperAdmin() || $user->isInOrganization($organization)))) {
+            throw $this->createNotFoundException();
+        }
+
+        $events = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingPublishedEvents($organization);
+        return $this->render('@App/YB/Organizations/organization.html.twig', [
+            'organization' => $organization,
+            'events' => $events,
+        ]);
+    }
+    
+    /**
+     * @Route("/organizers", name="yb_organizations")
+     */
+    public function organizationsAction(EntityManagerInterface $em)
+    {
+        $organizations = $em->getRepository('AppBundle:YB\Organization')->findPublished();
+
+        return $this->render('@App/YB/Organizations/all_organizations.html.twig', [
+            'organizations' => $organizations,
+        ]);
+    }
+     /**
+     * @Route("/app-scan-confidentiality-rules", name="yb_app_confidentiality_rules")
+     */
+    public function appConfidentialityRulesAction(){
+        return $this->render('@App/YB/app_confidentiality_rules.html.twig');
     }
 
 }

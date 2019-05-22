@@ -33,7 +33,7 @@ class TicketingController extends BaseController
     {
         $scan_events = $em->getRepository('AppBundle:ContractArtist')->findSuccessful();
         $scan_events = array_filter($scan_events, function(ContractArtist $contractArtist) {
-            return $contractArtist->getLastFestivalDate() >= ((new \DateTime())->modify('+1day'));
+            return $contractArtist->getLastFestivalDate() > ((new \DateTime()));
         });
 
         $generate_events = $em->getRepository('AppBundle:ContractArtist')->findEligibleForTicketGeneration();
@@ -102,15 +102,25 @@ class TicketingController extends BaseController
         $ticket = $em->getRepository('AppBundle:Ticket')->findOneBy(['barcode_text' => $barcode]);
         $contractArtist = $em->getRepository('AppBundle:ContractArtist')->find($event_id);
 
-        if($ticket === null) {
-            $ticket_array = ['error' => 'Ce ticket n\'existe pas.'];
-        }
-
-        elseif($contractArtist === null) {
+        if($contractArtist === null) {
             $ticket_array = ['error' => 'Cet événement n\'existe pas.'];
         }
 
-        elseif($contractArtist->getLastFestivalDate() < (new \DateTime())->modify('+1day')) {
+        elseif($ticket === null) {
+            $topping = $em->getRepository('AppBundle:ToppingString')->findOneBy(['barCodeText' =>$barcode]);
+
+            if($topping === null) {
+                $ticket_array = ['error' => 'Ce ticket n\'existe pas.'];
+            }
+            else {
+                $ticket_array = ['type' => 'PROMOTION', 'contenu' => $topping->getContent(), 'code' => $topping->getBarCodeText(), 'validated' => $topping->isValidated()];
+                $topping->validate(); 
+                $em->persist($topping); 
+                $em->flush();
+            }
+        }
+
+        elseif($contractArtist->getLastFestivalDate() < (new \DateTime())->modify('-1day')) {
             $ticket_array = ['error' => "Cet événement n'a pas lieu aujourd'hui."];
         }
 

@@ -30,18 +30,9 @@ class YBContractArtistInfosType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('organization', EntityType::class, [
-                'class' => Organization::class,
-                'label' => 'Organisation',
-                'choices' => $options['userOrganizations'],
-                'group_by' => function(Organization $org){
-                    if ($org->isPrivate()){
-                        return 'Personnellement';
-                    } else {
-                        return 'Mes organisations';
-                    }
-                },
-                'choice_label' => 'name',
+            ->add('published', CheckboxType::class, [
+                'label' => "Afficher l'événement sur la page de l'organisation",
+                'required' => false,
             ])
             ->add('confirmVenue', CheckboxType::class, array(
                 'mapped' => false,
@@ -55,10 +46,7 @@ class YBContractArtistInfosType extends AbstractType {
                     new Assert\GreaterThanOrEqual(['value' => 0]),
                 ]
             ))
-            ->add('dateEnd', DateTimeType::class, array(
-                'required' => false,
-                'label' => 'Date de validation',
-            ))
+
             ->add('dateClosure', DateTimeType::class, array(
                 'required' => true,
                 'label' => 'Fin des ventes',
@@ -118,8 +106,28 @@ class YBContractArtistInfosType extends AbstractType {
             ))
         ;
 
+        if($options['creation'] || ($options['data'] != null && !$options['data']->hasSoldAtLeastOne())) {
+            $builder->add('dateEnd', DateTimeType::class, array(
+                'required' => false,
+                'label' => 'Date de validation',
+            ));
+        }
+
         if($options['creation']) {
             $builder
+                ->add('organization', EntityType::class, [
+                    'class' => Organization::class,
+                    'label' => 'Organisation',
+                    'choices' => $options['userOrganizations'],
+                    'group_by' => function(Organization $org){
+                        if ($org->isPrivate()){
+                            return 'Personnellement';
+                        } else {
+                            return 'Mes organisations';
+                        }
+                    },
+                    'choice_label' => 'name',
+                ])
                 ->add('noThreshold', CheckboxType::class, array(
                     'label' => "N'a pas de seuil de validation",
                     'required' => false,

@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Address;
 use AppBundle\Entity\ContractFan;
+use AppBundle\Entity\CounterPart;
+use AppBundle\Entity\Photo;
 use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
@@ -19,6 +21,7 @@ use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBInvoice;
 use AppBundle\Entity\YB\YBTransactionalMessage;
 use AppBundle\Exception\YBAuthenticationException;
+use AppBundle\Form\CounterPartType;
 use AppBundle\Form\UserBankAccountType;
 use AppBundle\Form\YB\BlockType;
 use AppBundle\Form\YB\CustomTicketType;
@@ -43,6 +46,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -91,13 +95,16 @@ class YBMembersController extends BaseController
     {
         /** @var \AppBundle\Entity\User $user */
         $this->checkIfAuthorized($user);
+
         $campaign_id = $request->get('campaign_id');
-        if (null !== $campaign_id) {
+        if(null !== $campaign_id) {
             $campaign = $em->getRepository('AppBundle:YB\YBContractArtist')->find(intval($campaign_id));
             $this->checkIfAuthorized($user, $campaign);
-        } else {
+        }
+        else {
             $campaign = new YBContractArtist();
         }
+
         $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         if (!$currentUser->hasPrivateOrganization()) {
             $this->createPrivateOrganization($em, $currentUser);
@@ -107,6 +114,7 @@ class YBMembersController extends BaseController
         $generic_options = ['admin' => $user->isSuperAdmin(), 'creation' => true, 'userOrganizations' => $userOrganizations, 'venues' => $venues, 'em' => $em, 'user' => $currentUser];
         $flow->setGenericFormOptions($generic_options);
         $flow->setAllowRedirectAfterSubmit(true);
+
         $flow->bind($campaign);
         $form = $flow->createForm();
         if ($flow->isValid($form)) {
@@ -139,6 +147,7 @@ class YBMembersController extends BaseController
             'admin' => $user->isSuperAdmin(),
             'form' => $form->createView(),
             'campaign' => $campaign,
+            'creation' => true,
             'flow' => $flow,
         ]);
     }
@@ -162,6 +171,7 @@ class YBMembersController extends BaseController
         $flow->setGenericFormOptions(['admin' => $user->isSuperAdmin(), 'creation' => false, 'userOrganizations' => $userOrganizations, 'campaign_id' => $campaign->getId(), 'venues' => $venues, 'em' => $em]);
         $flow->setAllowDynamicStepNavigation(true);
         $flow->setAllowRedirectAfterSubmit(true);
+
         $flow->bind($campaign);
         $form = $flow->createForm();
         //$form->handleRequest($request);
@@ -169,10 +179,13 @@ class YBMembersController extends BaseController
             $flow->saveCurrentStepData($form);
             $em->flush();
             if ($flow->nextStep()) {
-                if ($flow->getCurrentStepNumber() == 2)
+
+                if($flow->getCurrentStepNumber() == 2)
                     $this->addFlash('yb_notice', 'Les infos générales ont bien été modifiées.');
-                elseif ($flow->getCurrentStepNumber() == 3)
+
+                elseif($flow->getCurrentStepNumber() == 3)
                     $this->addFlash('yb_notice', 'Les tickets ont bien été modifiés.');
+
                 if ($flow->redirectAfterSubmit($form)) {
                     $params = $this->get('craue_formflow_util')->addRouteParameters(array_merge($request->query->all(),
                         $request->attributes->get('_route_params')), $flow);
@@ -192,7 +205,134 @@ class YBMembersController extends BaseController
             'form' => $form->createView(),
             'flow' => $flow,
             'campaign' => $campaign,
+            'creation' => false,
         ]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/toggle-publicity", name="yb_members_campaign_toggle_publicity")
+     */
+    public function togglePublicityCampaignAction(YBContractArtist $campaign, UserInterface $user = null, EntityManagerInterface $em) {
+        $this->checkIfAuthorized($user, $campaign);
+        $campaign->togglePublicity();
+        $em->persist($campaign);
+        $em->flush();
+        return $this->forward('AppBundle:YBMembers:displayOngoingCampaignsForOrganization', ['id' => $campaign->getOrganization()->getId()]);
+    }
+
+    /**
+     * @Route("/api/organization/{id}/ongoing-events", name="yb_members_organization_ongoing_events")
+     */
+    public function displayOngoingCampaignsForOrganizationAction(Organization $organization) {
+        $em = $this->em;
+        $campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getOrganizationOnGoingEvents($organization);
+        return new Response($this->renderView('@App/YB/Organizations/organization_ongoing_campaigns.html.twig', [
+            'campaigns' => $campaigns,
+            'organization' => $organization,
+        ]));
+    }
+
+        /**
+     * @Route("/tickets/list/{id}", name="yb_members_get_tickets_list")
+     */
+    public function getTicketsListAction(YBContractArtist $campaign, UserInterface $user = null, Request $request) {
+        $cps = $campaign->getCounterParts();
+        $this->checkIfAuthorized($user, $campaign);
+
+        return new Response($this->renderView('@App/YB/Members/tickets_list.html.twig', [
+            'cps' => $cps,
+            'campaign' => $campaign,
+        ]));
+    }
+
+    /**
+     * @Route("/tickets/update/{id}", name="yb_members_update_ticket")
+     */
+    public function ticketUpdateAction(CounterPart $cp, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+        $campaign = $cp->getContractArtist();
+        $this->checkIfAuthorized($user, $campaign);
+        $class_attr = $campaign->hasSubEvents() ? '' : 'no-sub-events';
+        $form = $this->createForm(CounterPartType::class, $cp,  [
+            'attr' => ['class' => $class_attr],
+            'label' => false,
+            'campaign_id' => $cp->getContractArtist()->getId(),
+            'has_sub_events' => $cp->getContractArtist()->hasSubEvents(),
+            'sold' => $cp->hasBeenSold()
+        ]);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($cp);
+            $em->flush();
+            return new Response('OK');
+        }
+        else {
+            return new Response($this->renderView('@App/YB/Form/counterpart_update.html.twig', [
+                'cp' => $cp,
+                'form' => $form->createView(),
+                'sold' => $cp->hasBeenSold(),
+                'campaign' => $campaign,
+            ]));
+        }
+    }
+
+    /**
+     * @Route("/tickets/create/{id}", name="yb_members_create_ticket")
+     */
+    public function ticketCreateAction(YBContractArtist $campaign, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+        $cp = new CounterPart();
+        $cp->setContractArtist($campaign);
+        $this->checkIfAuthorized($user, $campaign);
+        $class_attr = $campaign->hasSubEvents() ? '' : 'no-sub-events';
+
+        $form = $this->createForm(CounterPartType::class, $cp,  [
+            'attr' => ['class' => $class_attr],
+            'label' => false,
+            'campaign_id' => $cp->getContractArtist()->getId(),
+            'has_sub_events' => $cp->getContractArtist()->hasSubEvents(),
+            'sold' => false
+        ]);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($cp);
+            $em->flush();
+            return new Response('OK');
+        }
+        else {
+            return new Response($this->renderView('@App/YB/Form/counterpart_create.html.twig', [
+                'cp' => $cp,
+                'form' => $form->createView(),
+                'campaign' => $campaign,
+                'sold' => false,
+            ]));
+        }
+    }
+
+    /**
+     * @Route("/tickets/delete/{id}", name="yb_members_delete_ticket")
+     */
+    public function ticketDeleteAction(CounterPart $cp, UserInterface $user = null, Request $request, EntityManagerInterface $em) {
+        $campaign = $cp->getContractArtist();
+        $this->checkIfAuthorized($user, $campaign);
+
+        if($request->getMethod() == 'POST') {
+            if(!$cp->hasBeenSold()) {
+                $em->remove($cp);
+                $em->flush();
+            }
+            return new Response('OK');
+        }
+
+        else {
+            return new Response($this->renderView('@App/YB/Form/counterpart_delete.html.twig', [
+                'cp' => $cp,
+                'campaign' => $campaign,
+            ]));
+        }
+
     }
 
     /**
@@ -288,9 +428,11 @@ class YBMembersController extends BaseController
         if ($user == null || !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
-        if (!$campaign->isFacturable()) {
+
+        if(!$campaign->isFacturable()) {
             throw $this->createNotFoundException();
         }
+
         $invoice = new YBInvoice();
         $invoice->setCampaign($campaign);
         $em->persist($invoice);
@@ -298,15 +440,17 @@ class YBMembersController extends BaseController
         /** @var ContractFan $cf */
         foreach ($cfs as $cf) {
             /** @var Purchase $purchase */
-            foreach ($cf->getPurchases() as $purchase) {
-                if ($cf->getInvoice() === null) {
+            foreach ($cf->getPurchases() as $purchase){
+                if($cf->getInvoice() === null) {
                     $cf->setInvoice($invoice);
                     $em->persist($cf);
                 }
             }
         }
         $em->flush();
+
         $this->mailDispatcher->sendYBInvoiceGenerated($invoice);
+
         $this->addFlash('yb_notice', 'La facture a bien été générée. Les organisateurs ont été prévenus par mail qu\'ils étaient priés de la valider.');
         return $this->redirectToRoute("yb_members_invoices");
     }
@@ -314,31 +458,34 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/validate", name="yb_members_invoice_validate")
      */
-    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null, MailDispatcher $mailDispatcher)
-    {
+    public function invoiceValidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null, MailDispatcher $mailDispatcher){
         $this->checkIfAuthorized($user, $invoice->getCampaign());
-        if ($invoice->isUserValidated()) {
+
+        if($invoice->isUserValidated()) {
             throw new YBAuthenticationException();
         }
         $invoice->validate();
         $em->persist($invoice);
         $em->flush();
         $this->addFlash('yb_notice', 'La facture a bien été validée, elle est dès à présent valable.');
+
         try {
             $mailDispatcher->sendAdminYBInvoiceValidated($invoice);
-        } catch (\Exception $e) {
         }
+        catch(\Exception $e) {}
+
         return $this->redirectToRoute("yb_members_invoices");
     }
 
     /**
      * @Route("/invoice/{id}/invalidate", name="yb_members_invoice_invalidate")
      */
-    public function invoiceInvalidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null)
-    {
+    public function invoiceInvalidateAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user = null){
         $this->checkIfAuthorized($user, $invoice->getCampaign(), true);
+
         $purchases = $invoice->getPurchases(); // Necessary for hydratation
-        if (!$invoice->isUserValidated()) {
+
+        if(!$invoice->isUserValidated()) {
             $em->remove($invoice);
             $em->flush();
         }
@@ -349,21 +496,23 @@ class YBMembersController extends BaseController
     /**
      * @Route("/invoice/{id}/sold/{format}", name="yb_members_invoice_sold")
      */
-    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user, $format = 'pdf', PDFWriter $writer)
-    {
+    public function invoiceSoldDetailsAction(YBInvoice $invoice, EntityManagerInterface $em, UserInterface $user, $format = 'pdf', PDFWriter $writer){
         $campaign = $invoice->getCampaign();
         $this->checkIfAuthorized($user, $campaign);
         $purchases = $invoice->getPurchases();  // Necessary for hydratation
+
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildFromInvoice($invoice);
-        if (strtoupper($format) == 'HTML') {
+
+        if(strtoupper($format) == 'HTML') {
             return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
                 'invoice' => $invoice,
                 'ticketData' => $financialDataService->getTicketData(),
                 'campaign' => $campaign,
                 'cfs' => $invoice->getContractsFan()
             ]);
-        } else {
+        }
+        else {
             $writer->writeSoldInvoice($invoice, $financialDataService->getTicketData(), $campaign, $invoice->getContractsFan());
         }
     }
@@ -400,14 +549,15 @@ class YBMembersController extends BaseController
     /**
      * @Route("/campaign/{id}/sold/{format}", name="yb_members_campaign_sold")
      */
-    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null, $format = 'pdf', PDFWriter $writer)
-    {
-        if ($user == null || !$user->isSuperAdmin()) {
+    public function campaignSoldDetailsAction(YBContractArtist $campaign, UserInterface $user = null, $format = 'pdf', PDFWriter $writer){
+        if ($user == null || !$user->isSuperAdmin()){
             throw new YBAuthenticationException();
         }
-        if (!$campaign->isFacturable()) {
+
+        if(!$campaign->isFacturable()) {
             throw $this->createNotFoundException();
         }
+
         $cfs = array_reverse($campaign->getContractsFanPaid());
         $cfs = array_filter($cfs, function ($cf) {
             /** @var ContractFan $cf */
@@ -415,16 +565,19 @@ class YBMembersController extends BaseController
             $purchase = $cf->getPurchases()->first();
             return $purchase->getInvoice() == null;
         });
+
         $financialDataService = new FinancialDataGenerator($campaign);
         $financialDataService->buildInvoicelessCampaignData();
-        if (strtoupper($format) == 'HTML') {
+
+        if(strtoupper($format) == 'HTML') {
             return $this->render('@App/PDF/yb_invoice_sold.html.twig', [
                 'invoice' => null,
                 'ticketData' => $financialDataService->getTicketData(),
                 'campaign' => $campaign,
                 'cfs' => $cfs
             ]);
-        } else {
+        }
+        else {
             $writer->writeSoldInvoice(null, $financialDataService->getTicketData(), $campaign, $cfs);
         }
     }
@@ -776,13 +929,10 @@ class YBMembersController extends BaseController
     public function renameOrganizationAction(Request $request, EntityManagerInterface $em, UserInterface $user = null, Organization $organization)
     {
         $this->checkIfAuthorized($user);
-        $form = $this->createFormBuilder()
-            ->add('new_name', TextType::class, ['label' => 'Nouveau nom'])
-            ->add('submit', SubmitType::class, ['label' => 'Valider'])
-            ->getForm();
+        $form = $this->createForm(OrganizationType::class, $organization);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->handleRenameOrganization($form, $organization, $em)) {
+        if ($form->isSubmitted() && $form->isValid()){
+            if ($this->handleEditOrganization($form, $organization, $em)){
                 return $this->redirectToRoute('yb_members_my_organizations');
             }
         }
@@ -1214,6 +1364,13 @@ class YBMembersController extends BaseController
             $this->createNewParticipation($organization, $currentUser, true);
             $em->persist($organization);
             $em->flush();
+            if($organization->getImageFile() != null) {
+                $photo = new Photo();
+                $organization->setPhoto($photo);
+                $photo->setFilename($organization->getFilename())->setImageSize($organization->getImageSize());
+                $em->persist($photo);
+                $em->flush();
+            }
             $orgName = $organization->getName();
             $this->addFlash('yb_notice', 'Votre nouvelle organisation, ' . $orgName . ', a bien été enregistrée.');
         }
@@ -1310,12 +1467,20 @@ class YBMembersController extends BaseController
      * @param $newName
      * @return bool
      */
-    private function organizationNameExist(EntityManagerInterface $em, $newName)
-    {
+    private function organizationNameExist(EntityManagerInterface $em, $newName, $except = null){
         $selfNamedOrg = $em->getRepository('AppBundle:YB\Organization')->findBy(['name' => $newName]);
         if (count($selfNamedOrg) === 0) {
             return false;
         } else {
+            $areAllSame = true;
+            foreach($selfNamedOrg as $org) {
+                if($except != null && $org->getId() != $except->getId()) {
+                    $areAllSame = false;
+                }
+            }
+            if($areAllSame) {
+                return false;
+            }
             return !$this->areAllDeleted($selfNamedOrg);
         }
     }
@@ -1348,19 +1513,30 @@ class YBMembersController extends BaseController
      * @param EntityManagerInterface $em
      * @return bool
      */
-    private function handleRenameOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em)
-    {
-        $new_name = $form->getData()['new_name'];
-        if ($this->organizationNameExist($em, $new_name)) {
+private function handleEditOrganization(FormInterface $form, Organization $organization, EntityManagerInterface $em){
+        $new_name = $form->getData()->getName();
+        if ($this->organizationNameExist($em, $new_name, $organization)){
             $this->addFlash('error', 'Une organisation existe déjà avec ce nom. Essayez un autre nom !');
             return false;
-        } elseif ($this->isNameOfMember($organization, $new_name)) {
+        } elseif(!$organization->isPrivate() && $this->isNameOfMember($organization, $new_name)){
             $this->addFlash('error', 'L\'organisation ne peut avoir le même nom qu\'un de ses membres. Essayez un autre nom !');
             return false;
         } else {
             $organization->setName($new_name);
             $em->flush();
-            $this->addFlash('yb_notice', 'Le nom a bien été changé !');
+            if($form->getData()->getImageFile() != null) {
+                if($organization->getPhoto() != null) {
+                    $photo = $organization->getPhoto();
+                }
+                else {
+                    $photo = new Photo();
+                    $organization->setPhoto($photo);
+                }
+                $photo->setFilename($organization->getFilename())->setImageSize($organization->getImageSize());
+                $em->persist($photo);
+                $em->flush();
+            }
+            $this->addFlash('yb_notice', "L'organisation a bien été modifiée !");
             return true;
         }
     }
