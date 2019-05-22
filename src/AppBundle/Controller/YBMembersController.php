@@ -257,6 +257,8 @@ class YBMembersController extends BaseController
             'label' => false,
             'campaign_id' => $cp->getContractArtist()->getId(),
             'has_sub_events' => $cp->getContractArtist()->hasSubEvents(),
+            'config' => $campaign->getConfig(),
+            'has_venue' => $campaign->getVenue() !== null,
             'sold' => $cp->hasBeenSold()
         ]);
 
@@ -291,6 +293,8 @@ class YBMembersController extends BaseController
             'label' => false,
             'campaign_id' => $cp->getContractArtist()->getId(),
             'has_sub_events' => $cp->getContractArtist()->hasSubEvents(),
+            'config' => $campaign->getConfig(),
+            'has_venue' => $campaign->getVenue() !== null,
             'sold' => false
         ]);
 

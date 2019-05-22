@@ -24,7 +24,7 @@
                     {{ form_row(form.subEvents) }}
                 </div>
             {% endif %}
-            {% if attr.class2 == '' %}
+            {% if campaign.config.blocks|length > 0 %}
                 <div class="col-12">
                     {{ form_widget(form.accessEverywhere) }}
                 </div>
