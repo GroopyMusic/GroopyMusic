@@ -222,7 +222,7 @@ class Cart
 
     /**
      * @var YBOrder
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\YBOrder", mappedBy="cart")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\YBOrder", mappedBy="cart", cascade={"persist"})
      */
     private $yb_order;
 
