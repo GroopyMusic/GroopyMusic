@@ -6,7 +6,7 @@
  * Time: 16:30
  */
 
-namespace Tests\AppBundle\Entity;
+namespace Tests\AppBundle\Entity\YB;
 
 
 use AppBundle\Entity\User;
