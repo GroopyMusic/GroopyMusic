@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\YB\Block;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBSubEvent;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -101,10 +102,19 @@ class CounterPart implements TranslatableInterface
                 return true;
             }
         }
+        return false;
     }
 
     public function isCapacityMaxReach(){
-        return $this->maximum_amount > $this->getBlkCapacity();
+        if ($this->access_everywhere){
+            /** @var VenueConfig $config */$config  = $this->contractArtist->getConfig();
+            return $this->maximum_amount > $config->getTotalCapacity();
+        }
+        $capacity = 0;
+        foreach ($this->venue_blocks as $block){
+            $capacity += $block->getComputedCapacity();
+        }
+        return $this->maximum_amount > $capacity;
     }
 
     public function hasOnlyFreeSeatingBlocks($blocks){
@@ -157,7 +167,7 @@ class CounterPart implements TranslatableInterface
         if ($this->getAccessEverywhere()){
             $capacity = 0;
             foreach ($blocks as $blk){
-                if ($blk->getType === Block::SEATED || $blk->getType === Block::BALCONY) {
+                if ($blk->getType() === Block::SEATED || $blk->getType() === Block::BALCONY) {
                     $capacity += $blk->getComputedCapacity();
                 }
             }
@@ -166,7 +176,7 @@ class CounterPart implements TranslatableInterface
             /** @var Block $block */
             $capacity = 0;
             foreach($this->venue_blocks as $block){
-                if ($block->getType === Block::SEATED || $block->getType === Block::BALCONY) {
+                if ($block->getType() === Block::SEATED || $block->getType() === Block::BALCONY) {
                     $capacity += $block->getComputedCapacity();
                 }
             }
@@ -181,7 +191,7 @@ class CounterPart implements TranslatableInterface
         if ($this->getAccessEverywhere()){
             $capacity = 0;
             foreach ($blocks as $blk){
-                if ($blk->getType === Block::UP) {
+                if ($blk->getType() === Block::UP) {
                     $capacity += $blk->getComputedCapacity();
                 }
             }
@@ -190,7 +200,7 @@ class CounterPart implements TranslatableInterface
             /** @var Block $block */
             $capacity = 0;
             foreach($this->venue_blocks as $block){
-                if ($block->getType === Block::UP) {
+                if ($block->getType() === Block::UP) {
                     $capacity += $block->getComputedCapacity();
                 }
             }
