@@ -6,6 +6,9 @@ use AppBundle\Entity\Artist;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\User;
+use AppBundle\Entity\YB\Block;
+use AppBundle\Entity\YB\Venue;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Services\MailDispatcher;
@@ -120,6 +123,33 @@ abstract class BaseController extends Controller
             throw new YBAuthenticationException();
         }
         if($mustBeSuperAdmin && !$user->isSuperAdmin()) {
+            throw new YBAuthenticationException();
+        }
+    }
+
+    protected function checkIfAuthorizedVenue($user, Venue $venue = null){
+        if(!$user || !$user instanceof User) {
+            throw new YBAuthenticationException();
+        }
+        if($venue != null && !$user->ownsYBVenue($venue)) {
+            throw new YBAuthenticationException();
+        }
+    }
+
+    protected function checkIfAuthorizedVenueConfig($user, VenueConfig $config = null){
+        if(!$user || !$user instanceof User) {
+            throw new YBAuthenticationException();
+        }
+        if($config != null && !$user->ownsYBVenue($config->getVenue()) && !$user->isSuperAdmin()) {
+            throw new YBAuthenticationException();
+        }
+    }
+
+    protected function checkIfAuthorizedVenueBlock($user, Block $blk = null){
+        if(!$user || !$user instanceof User) {
+            throw new YBAuthenticationException();
+        }
+        if($blk != null && !$user->ownsYBVenue($blk->getConfig()->getVenue()) && !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
     }

@@ -9,22 +9,25 @@
             <td>
                 <a class="btn-secondary btn" data-toggle="modal" href="#confirmModal{{ organization.id }}-{{ member.id }}">Supprimer</a>
             </td>
-            <div class="modal fade" id="confirmModal{{ organization.id }}-{{ member.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal modal-dialog modal-confirmation" id="confirmModal{{ organization.id }}-{{ member.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <div class="modal-header text-center">
+                            <div class="icon-box">
+                                <i class="fa fa-question-circle"></i>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body" id="modal_detail">
-                            Vous êtes sur le point de supprimer un membre de cette organisation ({{ member.getDisplayName }}). Êtes vous sûr ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                            <p>Vous êtes sur le point de supprimer un membre de cette organisation ({{ member.getDisplayName }}). Êtes vous sûr ?</p>
+                            <button class="btn btn-success" data-dismiss="modal">
+                                <span>Annuler </span><i class="fas fa-ban"></i>
+                            </button>
                             <form action="{{ path('yb_members_remove_from_organization', {'user_id': member.getId, 'organization_id': organization.getId}) }}">
-                                <input class="btn" type="submit" value="Supprimer"/>
+                                <button class="btn btn-success" type="submit">
+                                    <span>Supprimer </span><i class="far fa-check-circle"></i>
+                                </button>
                             </form>
                         </div>
                     </div>

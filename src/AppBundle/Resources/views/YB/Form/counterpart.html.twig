@@ -7,7 +7,7 @@
         </div>
         <div class="col-12 row">
             <div class="col-12">
-            {{ form_row(form.maximumAmount) }}
+                {{ form_row(form.maximumAmount) }}
             </div>
             <div class="col-12">
                 {{ form_label(form.maximumAmountPerPurchase) }}
@@ -22,6 +22,14 @@
             {% if campaign.hasSubEvents %}
                 <div class="col-12">
                     {{ form_row(form.subEvents) }}
+                </div>
+            {% endif %}
+            {% if campaign.config.blocks|length > 0 %}
+                <div class="col-12">
+                    {{ form_widget(form.accessEverywhere) }}
+                </div>
+                <div class="col-12 blocks-selection">
+                    {{ form_row(form.venueBlocks) }}
                 </div>
             {% endif %}
             <div class="col-12 ">
@@ -50,6 +58,11 @@
         {% endif %}
     </div>
     <script type="text/javascript">
+        $('.give-access-everywhere-cb').attr('checked','checked');
+        $('.give-access-everywhere').on('change', function () {
+            $(this).closest('.counterpart-row').find('.blocks-selection').toggle(!this.checked);
+        });
+        $('.give-access-everywhere').trigger('change');
         $('.free-price-checkbox').on('change', function() {
             $(this).closest('.counterpart-row').find('.free-price-minimum').toggle(this.checked);
             $(this).closest('.counterpart-row').find('.counter-part-price').toggle(!this.checked);

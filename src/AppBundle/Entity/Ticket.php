@@ -34,6 +34,13 @@ class Ticket
         }
     }
 
+    public function getVenueConfig(){
+        /** @var YBContractArtist $campaign */
+        $campaign = $this->getCounterPart()->getContractArtist();
+        $config = $campaign->getConfig();
+        return $config;
+    }
+
     /**
      * @param $num
      * @return string
@@ -57,6 +64,10 @@ class Ticket
     public function isRefunded()
     {
         return $this->contractFan != null && $this->contractFan->getRefunded();
+    }
+
+    public function hasFreeSeatingSeat(){
+        return $this->seat === 'Placement libre';
     }
 
     /**
@@ -441,6 +452,7 @@ class Ticket
     {
         return $this->seat;
     }
+
     /**
      * @param mixed $seat
      */

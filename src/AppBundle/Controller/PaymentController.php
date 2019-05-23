@@ -158,7 +158,6 @@ class PaymentController extends BaseController
      * @Route("/cart/{id}/payment/post", name="user_cart_payment_stripe_post")
      */
     public function cartPostAction(Request $request, Cart $cart, UserInterface $user) {
-
         $translator = $this->get('translator');
         $amount = intval($request->get('amount'));
         $payment_method_id = $request->get('payment_method_id');

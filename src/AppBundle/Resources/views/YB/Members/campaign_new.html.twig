@@ -57,7 +57,7 @@
                     {% else %}
                         {% do form.organization.setRendered %}
                         <div class="text-muted font-italic pb-2">Une fois la campagne lancée, il n'est plus possible de changer l'organisation en charge. Si besoin de le faire malgré tout, <a target="_blank" href="{{ path('yb_index') }}#contact">contactez-nous</a> en exposant la raison derrière le changement.</div>
-                    <div class="text-center">{% if campaign.organization.published %}<a target="_blank" href="{{ url('yb_organization', {'id':campaign.organization.id, 'slug': campaign.organization.slug}) }}">{% endif %}{{ campaign.organization.name }}{% if campaign.organization.published %}</a>{% endif %}</div>
+                        <div class="text-center">{% if campaign.organization.published %}<a target="_blank" href="{{ url('yb_organization', {'id':campaign.organization.id, 'slug': campaign.organization.slug}) }}">{% endif %}{{ campaign.organization.name }}{% if campaign.organization.published %}</a>{% endif %}</div>
                     {% endif %}
                 </div>
                 <div class="col-12 col-md-6 my-auto">
@@ -66,7 +66,26 @@
                     </div>
                     {{ form_widget(form.published) }}
                 </div>
+            </div>
+        </section>
 
+        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+            <h2>Salle où se déroule l'événement </h2>
+            <div class="row">
+                {% if form.venue is defined %}
+                <div class="col-12 col-md-12">
+                    {{ form_row(form.venue) }}
+                </div>
+                {% endif %}
+                {% if form.config is defined %}
+                    <div class="col-12 col-md-12">
+                        {{ form_row(form.config) }}
+                    </div>
+                {% endif %}
+            </div> <br>
+            <p>Votre salle n'est pas dans la liste ? <a class="link-secondary" href="{{ path('yb_members_venues_new') }}" >Créez-la ici !</a></p>
+            <div class="col-12 col-md-12">
+                {{ form_widget(form.confirmVenue) }}
             </div>
         </section>
 
@@ -92,18 +111,6 @@
                 <div class="col-12 col-md-6">
                     {{ form_row(form.dateClosure) }}
                 </div>
-            </div>
-        </section>
-
-        <section class="container my-4 py-2 my-md-5 campaign-edit-section">
-            <h2>Adresse</h2>
-            <div class="row">
-                <div class="col-12">{{ form_row(form.address.name) }}</div>
-                <div class="col-12 col-md-10">{{ form_row(form.address.street) }}</div>
-                <div class="col-12 col-md-2">{{ form_row(form.address.number) }}</div>
-                <div class="col-12 col-md-4">{{ form_row(form.address.zipcode) }}</div>
-                <div class="col-12 col-md-8">{{ form_row(form.address.city) }}</div>
-                <div class="col-12">{{ form_row(form.address.country) }}</div>
             </div>
         </section>
 
@@ -203,6 +210,17 @@
             <div class="text-muted font-italic pb-2">Nombre maximum de tickets pouvant être vendus, tous tickets confondus.</div>
             {{ form_errors(form.globalSoldout) }}
             {{ form_widget(form.globalSoldout) }}
+            {% if form.globalSoldout is defined and campaign.id is not null %}
+                {% if form.vars.data.globalSoldout > campaign.config.maxCapacity %}
+                    <div class="error-capacity" style="display: block">
+                        <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
+                    </div>
+                {% else %}
+                    <div class="error-capacity" style="display: none">
+                        <p style="color: red;"><i class="fa fa-exclamation-triangle" style="color: red;"></i>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }})</p>
+                    </div>
+                {% endif %}
+            {% endif %}
         </section>
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <p>Pour vendre des tickets, il vous faut au moins en créer un.</p>
@@ -290,9 +308,10 @@
         </section>
     {% endif %}
 
-    <section class="container my-4 py-2 my-md-5">
+    <section class="container my-4 py-2 my-md-5 btns">
+        <button type="button" onclick="hideCustomButtonAndModal()" class="btn btn-warning maxCapacityCheckBtn" style="display: none">Attention !</button> <br>
         {% include '@CraueFormFlow/FormFlow/buttons.html.twig' with {
-        craue_formflow_button_class_next: 'btn btn-secondary',
+        craue_formflow_button_class_next: 'btn btn-secondary finishBtn',
         craue_formflow_button_class_finish: 'btn btn-secondary',
         craue_formflow_button_class_back: 'btn mr-2',
         craue_formflow_button_label_next: 'Enregistrer et passer à l\'étape suivante',
@@ -302,11 +321,83 @@
         } %}
     </section>
 
+    <div class="modal modal-dialog modal-attention" id="modal-overflow-attention" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <div class="icon-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body text-center">
+                    <h4>Confirmation</h4>
+                    {% if campaign.id is not null and campaign.config is not null %}
+                        <p>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }}). Ce n'est pas contraignant. Si vous désirez tout de même valider les tickets, appuyer sur "Enregistrer les tickets".</p>
+                    {% endif %}
+                    <button class="btn btn-success" data-dismiss="modal">
+                        <span>J'ai compris ! </span><i class="far fa-arrow-alt-circle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-dialog modal-overflow-error " id="modal-overflow-error" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <div class="icon-box">
+                        <i class="fas fa-exclamation-circle text-white"></i>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body text-center">
+                    <h4>Erreur</h4>
+                    {% if campaign.id is not null and campaign.config is not null %}
+                        <p>La capacité globale de votre événement dépasse celle de la salle ({{ campaign.config.maxCapacity }}) !</p>
+                    {% endif %}
+                    <button class="btn btn-success" data-dismiss="modal">
+                        <span>J'ai compris ! </span><i class="far fa-arrow-alt-circle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{ form_end(form) }}
 {% endblock  %}
 
 {% block additional_javascripts %}
     {{ parent() }}
+    <script>
+        $('#app_bundle_ybcontract_artist_infos_type_venue').change(function(){
+            var venueSelector = $(this);
+            venueSelector.prop('disabled', true);
+            $.ajax({
+                url: "{{ path('campaign_venue_list_config') }}",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    venueid: venueSelector.val()
+                },
+                success: function(configs){
+                    venueSelector.prop('disabled', false);
+                    var configSelect = $('#app_bundle_ybcontract_artist_infos_type_config');
+                    configSelect.html('');
+                    configSelect.append('<option value> Selectionne une configuration de la salle ' + venueSelector.find("option:selected").text() + ' ...</option>')
+                    $.each(configs, function(key, config){
+                        configSelect.append('<option value="' + config.id + '">' + config.name + '</option>')
+                    });
+                    $('#app_bundle_ybcontract_artist_infos_type_confirmVenue').attr('checked', false);
+                },
+                error: function(err){
+                    venueSelector.prop('disabled', false);
+                    alert("Problème lors du chargement ...");
+                }
+            })
+        });
+    </script>
     <script type="text/javascript">
         $(function() {
             yb_second_collection({
@@ -318,6 +409,10 @@
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une date</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer cette date</a>'
             });
+
+            {% if campaign.id is not null %}
+                $('#app_bundle_ybcontract_artist_infos_type_confirmVenue').attr('checked', 'checked');
+            {% endif %}
 
             var $chckbx = $('#yb_no_threshold_checkbox input[type="checkbox"]');
             {% if campaign.id is null %}
@@ -341,6 +436,30 @@
                 $(this).closest('.counterpart-row').find('.counter-part-price').toggle(!this.checked);
             });
             $('.free-price-checkbox').trigger('change');
+
+            $('.give-access-everywhere-cb').attr('checked','checked');
+
+            $('.give-access-everywhere').on('change', function () {
+                $(this).closest('.counterpart-row').find('.blocks-selection').toggle(!this.checked);
+            });
+            $('.give-access-everywhere').trigger('change');
+            $('#app_bundle_ybcontract_artist_type_globalSoldout').change(function(){
+                {% if campaign.id is not null and campaign.config is not null %}
+                    if ($('#app_bundle_ybcontract_artist_type_globalSoldout').val() > {{ campaign.config.maxCapacity }}){
+                        {% if campaign.config.hasOnlySeatedBlocks() %}
+                            $('.finishBtn').attr('disabled', 'true');
+                            $('.error-capacity').css('display', 'block');
+                            $('#modal-overflow-error').modal();
+                        {% else %}
+                            $('.error-capacity').css('display', 'block');
+                            hideCraueButtons();
+                        {% endif %}
+                    } else {
+                        $('.error-capacity').css('display', 'none');
+                        hideCustomButton();
+                    }
+                {% endif %}
+            });
 
             {% if campaign.id is not null %}
                 var $dropzone = $("div.dropzone");
@@ -408,5 +527,18 @@
                 });
             {% endif %}
         });
+        function hideCraueButtons(){
+            $('.finishBtn').attr('disabled', 'true');
+            $('.maxCapacityCheckBtn').css('display', 'block');
+        }
+        function hideCustomButtonAndModal(){
+            $('#modal-overflow-attention').modal();
+            $('.finishBtn').removeAttr('disabled');
+            $('.maxCapacityCheckBtn').css('display', 'none');
+        }
+        function hideCustomButton(){
+            $('.finishBtn').removeAttr('disabled');
+            $('.maxCapacityCheckBtn').css('display', 'none');
+        }
     </script>
 {% endblock %}

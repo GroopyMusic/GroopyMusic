@@ -462,4 +462,6 @@ class Cart
     {
         return $this->finalized;
     }
+
+
 }

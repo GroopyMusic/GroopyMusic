@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\Block;
+use AppBundle\Entity\YB\Booking;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -23,6 +25,7 @@ class Purchase
         $this->reducedPrice = 0;
         $this->purchase_promotions = new ArrayCollection();
         $this->ticket_rewards = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     public function __toString()
@@ -267,6 +270,14 @@ class Purchase
     private $artists;
 
     /**
+<<<<<<< HEAD
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Booking", mappedBy="purchase", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     */
+    private $bookings;
+
+    /**
+=======
+>>>>>>> master
      * Get id
      *
      * @return int
@@ -535,5 +546,21 @@ class Purchase
     public function getArtists()
     {
         return $this->artists;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBookings()
+    {
+        return $this->bookings;
+    }
+
+    /**
+     * @param mixed $bookings
+     */
+    public function setBookings($bookings)
+    {
+        $this->bookings = $bookings;
     }
 }

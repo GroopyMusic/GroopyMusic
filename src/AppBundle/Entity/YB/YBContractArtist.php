@@ -36,11 +36,16 @@ class YBContractArtist extends BaseContractArtist
     const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
 
     const PHOTOS_DIR = 'images/campaigns/';
+    const PHOTOS_DIR_YB = 'yb/images/campaigns/';
 
     const DAYS_BEFORE_WAY_PASSED = 60;
 
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
+    public static function getYBWebPath(Photo $photo){
+        return self::PHOTOS_DIR_YB . $photo->getFilename();
     }
 
     public function __construct()
@@ -151,6 +156,15 @@ class YBContractArtist extends BaseContractArtist
         return in_array($today, $dates);
     }
 
+    public function getTodaySubEvent(){
+        foreach ($this->sub_events as $se){
+            if ($se->getDate()->format('m/d/Y') === (new \DateTime())->format('m/d/Y')){
+                return $se;
+            }
+        }
+        return null;
+    }
+
     public function getState()
     {
         if ($this->state != null) {
@@ -203,6 +217,55 @@ class YBContractArtist extends BaseContractArtist
             } else {
                 return $this->state = self::STATE_PASSED;
             }
+        }
+    }
+
+    public function isOutOfStockCp(CounterPart $cp){
+        $blocks = null;
+        if ($cp->getContractArtist()->getConfig() !== null){
+            $blocks = $cp->getContractArtist()->getConfig()->getBlocks();
+        }
+        // cas où la salle n'est que en placement libre
+        if ($this->config->isOnlyStandup() || $this->config->hasFreeSeatingPolicy()){
+            return ($this->getNbPurchasable($cp) === 0);
+        }
+        // si les blocs concernés par le CP sont en placement libre
+        else if ($cp->hasOnlyFreeSeatingBlocks($blocks)){
+            return ($this->getNbPurchasable($cp) === 0);
+        }
+        // si les blocs ne sont que assis
+        else if ($cp->hasOnlySeatedBlock($blocks)) {
+            $totalSeatedCapacity = 0;
+            $totalSold = 0;
+            /** @var Block $block */
+            foreach ($cp->getVenueBlocks() as $block) {
+                $totalSeatedCapacity += $block->getSeatedCapacity();
+                $totalSold += $block->getSoldTicketInBlock($cp->getContractArtist());
+            }
+            $realCapacity = min($totalSeatedCapacity, $cp->getMaximumAmount());
+            return $totalSold === $realCapacity;
+        }
+        else {
+            // mix des 2 (assis et debout)
+            $cpCapacity = $cp->getMaximumAmount();
+            $totalSoldSeated = 0;
+            // on regarde d'abord les blocs assis
+            /** @var Block $block */
+            foreach ($cp->getVenueBlocks() as $block) {
+                $blkCapacity = $block->getComputedCapacity();
+                $soldInBlock = $block->getSoldTicketInBlock($this);
+                $realCapacity = min($cpCapacity, $blkCapacity);
+                if ($block->getType() === Block::BALCONY || $block->getType() === Block::SEATED) {
+                    if ($soldInBlock < $realCapacity) {
+                        // on sait qu'on peut encore mettre au moins 1 personne dans ce bloc
+                        return false;
+                    }
+                }
+                $totalSoldSeated += $soldInBlock;
+            }
+            // on est arrivé à la fin de la boucle : tous les blocs assis sont soldout
+            // on regarde pour les debout
+            return ($this->getNbPurchasable($cp) === 0);
         }
     }
 
@@ -326,6 +389,18 @@ class YBContractArtist extends BaseContractArtist
     private $address;
 
     /**
+     * @var Venue
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Venue", inversedBy="events", cascade={"persist"})
+     */
+    private $venue;
+
+    /**
+     * @var VenueConfig
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\VenueConfig", inversedBy="events", cascade={"persist"})
+     */
+    private $config;
+
+    /**
      * @var float
      * @ORM\Column(name="vat", type="float", nullable=true)
      */
@@ -365,6 +440,12 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
      */
     private $vat_number;
+
+    /**
+     * @var
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\CustomTicket", mappedBy="campaign")
+     */
+    private $customTicket;
 
     /**
      * @ORM\Column(name="published", type="boolean")
@@ -583,7 +664,11 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getAddress()
     {
-        return $this->address;
+        if ($this->venue !== null){
+            return $this->venue->getAddress();
+        } else {
+            return $this->address;
+        }
     }
 
     /**
@@ -670,7 +755,7 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->transactional_messages = $transactional_messages;
     }
-   
+
     public function getOrganization(){
         return $this->organization;
     }
@@ -688,9 +773,13 @@ class YBContractArtist extends BaseContractArtist
             }
         }
     }
-    
+
     public function getOrganizers(){
-        return $this->organization->getMembers();
+        if ($this->organization !== null){
+            return $this->organization->getMembers();
+        } else {
+            return array();
+        }
     }
 
     public function getVatNumber() {
@@ -773,6 +862,45 @@ class YBContractArtist extends BaseContractArtist
     public function setExternalInvoice($external_invoice)
     {
         $this->external_invoice = $external_invoice;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }
+    /**
+     * @return Venue
+     */
+    public function getVenue()
+    {
+        return $this->venue;
+    }
+    /**
+     * @param Venue $venue
+     */
+    public function setVenue($venue)
+    {
+        $this->venue = $venue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomTicket()
+    {
+        return $this->customTicket;
+    }
+
+    /**
+     * @param mixed $customTicket
+     */
+    public function setCustomTicket($customTicket)
+    {
+        $this->customTicket = $customTicket;
     }
 
     public function setPublished($published) {

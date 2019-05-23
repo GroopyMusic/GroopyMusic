@@ -11,6 +11,8 @@ use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\VIPInscription;
+use AppBundle\Entity\YB\CustomTicket;
+use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -310,23 +312,48 @@ class TicketingManager
             foreach ($cf->getPurchases() as $purchase) {
                 /** @var Purchase $purchase */
                 $counterPart = $purchase->getCounterpart();
-
-                for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
-                    $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice()));
-                    $j++;
-                }
-                for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
-                    $cf->addTicket(new Ticket($cf, $counterPart, $j, 0));
-                    $j++;
+                if (count($purchase->getBookings()) === 0){
+                    // TODO rajouter le siège
+                    for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice(), null, null, 'Placement libre'));
+                        $j++;
+                    }
+                    for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, 0, null, null, 'Placement libre' ));
+                        $j++;
+                    }
+                } else {
+                    $z = 0;
+                    for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
+                        if ($purchase->getBookings()[$z]->hasNoNumberedSeat()){
+                            $seat = 'Placement libre dans le bloc : ' . $purchase->getBookings()[$z]->getBlock();
+                        } else {
+                            $seat = $purchase->getBookings()[$z]->getSeat();
+                        }
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, $purchase->getUnitaryPrice(), null, null, $seat));
+                        $j++;
+                        $z++;
+                    }
+                    for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
+                        if ($purchase->getBookings()[$z]->hasNoNumberedSeat()){
+                            $seat = 'Placement libre dans le bloc : ' . $purchase->getBookings()[$z]->getBlock();
+                        } else {
+                            $seat = $purchase->getBookings()[$z]->getSeat();
+                        }
+                        $cf->addTicket(new Ticket($cf, $counterPart, $j, 0, null, null, $seat));
+                        $j++;
+                        $z++;
+                    }
                 }
             }
 
             try {
-                $this->writer->writeYBTickets($cf->getTicketsPath(), $cf->getTickets(), []);
+                $this->writer->writeYBTickets($cf->getTicketsPath(), $cf->getTickets(), [], $cf->getContractArtist());
                 $this->mailDispatcher->sendYBTickets($cf, $newly_successful);
                 $this->em->persist($cf);
                 $cf->setcounterpartsSent(true);
             } catch (\Exception $e) {
+                print_r($e->getMessage());
                 $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
                 return $e;
             }
@@ -334,5 +361,17 @@ class TicketingManager
 
         $this->em->flush();
         return null;
+    }
+
+    public function generateYBTicketsPreview(ContractFan $cf, Ticket $ticket, CustomTicket $ct, $newly_successful = false){
+        try {
+            $timestamp = (new \DateTime())->getTimestamp();
+            $path = 'yb/preview-tickets/campaign'.$cf->getContractArtist()->getId().'-'.$timestamp.'.pdf';
+            $this->writer->writeYBTicketsPreview($path, $ticket, [], $ct);
+            return $path;
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
+            return $e;
+        }
     }
 }

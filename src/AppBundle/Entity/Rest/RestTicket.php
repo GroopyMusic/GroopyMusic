@@ -11,6 +11,7 @@ class RestTicket
     private $isValidated;
     private $cart_number;
 
+
     public function __construct($buyer, $ticket_type, $seat_type, $barcode, $error, $isValidated, $cart_number)
     {
         $this->buyer = $buyer;

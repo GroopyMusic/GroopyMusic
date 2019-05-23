@@ -93,6 +93,9 @@ class YBContractArtistFacturationType extends AbstractType
             'userOrganizations' => null,
             'campaign_id' => null,
             'has_sub_events' => false,
+            'em' => null,
+            'user' => null,
+            'venues' => null,
         ]);
     }
 

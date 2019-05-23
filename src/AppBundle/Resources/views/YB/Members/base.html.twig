@@ -26,5 +26,14 @@
                 prefix: 'second-collection'
             }, options));
         }
+        function yb_third_collection(options) {
+            $('.third-collection').collection($.extend({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>',
+                prefix: 'third-collection'
+            }, options));
+        }
     </script>
 {% endblock %}

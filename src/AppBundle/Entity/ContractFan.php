@@ -143,6 +143,9 @@ class ContractFan
     /** @return PhysicalPersonInterface */
     public function getPhysicalPerson() {
         if($this->getContractArtist() instanceof YBContractArtist) {
+            if ($this->getCart() === null){
+                return null;
+            }
             return $this->getCart()->getYbOrder();
         }
         else {
@@ -197,6 +200,18 @@ class ContractFan
         return array_sum(array_map(function (Purchase $purchase) {
             return $purchase->getQuantity();
         }, $this->purchases->toArray()));
+    }
+
+    public function getPurchaseWithNoBookingQuantity(){
+        $quantity = 0;
+        /** @var YBContractArtist $campaign */ $campaign = $this->contractArtist;
+        /** @var Purchase $purchase */
+        foreach ($this->purchases as $purchase){
+            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks($campaign->getConfig()->getBlocks())){
+                $quantity += $purchase->getQuantity();
+            }
+        }
+        return $quantity;
     }
 
     public function getCounterPartsQuantityOrganic()

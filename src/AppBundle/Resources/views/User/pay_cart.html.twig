@@ -560,6 +560,7 @@
 
                 function handleServerResponse(response) {
                     if (response.error) {
+                        // Show error from server on payment form
                         displayError(response.error);
                     } else if (response.requires_action) {
                         // Use Stripe.js to handle required card action

@@ -42,7 +42,11 @@
             </p>
             <ul class="list-group">
                 {% for purchase in contract.purchases %}
-                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} € {% if purchase.counterpart.freePrice %}(prix unitaire de {{ purchase.freePriceValue }} € choisi librement){% endif %}</span></li>
+                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} € {% if purchase.freePriceValue is not null %}(prix unitaire de {{ purchase.freePriceValue }} € choisi librement){% endif %}</span><br>
+                        {% for booking in purchase.bookings %}
+                            {{ loop.index }}) {{ booking.getSeat }}<br>
+                        {% endfor %}
+                    </li>
                 {% endfor %}
             </ul>
             {% if not contract.refunded and contract.counterpartsSent %}

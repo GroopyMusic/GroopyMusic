@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\SponsorshipInvitation;
+use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\Organization;
 use Azine\EmailBundle\Entity\RecipientInterface;
@@ -225,6 +226,11 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return in_array($this, $organizers);
     }
 
+    public function ownsYBVenue(Venue $venue){
+        $handlers = $venue->getHandlers();
+        return in_array($this, $handlers);
+    }
+
     public function isYB() {
         return $this->getYB();
     }
@@ -236,6 +242,32 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     // CHAPOTS - PROJECT
     public function ownsProject(Project $project) {
         return $this->projects->contains($project);
+    }
+
+    public function addParticipation(\AppBundle\Entity\YB\Membership $participation){
+        if (!$this->participations->contains($participation)){
+            $this->participations->add($participation);
+            $participation->setMember($this);
+        }
+        return $this;
+    }
+
+    public function removeParticipation(\AppBundle\Entity\YB\Membership $participation){
+        if ($this->participations->contains($participation)){
+            $this->participations->removeElement($participation);
+            $participation->setMember(null);
+        }
+        return $this;
+    }
+
+    public function getVenuesHandled(){
+        $venues = [];
+        foreach ($this->participations as $participation){
+            foreach ($participation->getOrganization()->getVenues() as $venue){
+                array_push($venues, $venue);
+            }
+        }
+        return $venues;
     }
 
 
@@ -1299,19 +1331,5 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return $this->participations->toArray();
     }
 
-    public function addParticipation(\AppBundle\Entity\YB\Membership $participation){
-        if (!$this->participations->contains($participation)){
-            $this->participations->add($participation);
-            $participation->setMember($this);
-        }
-        return $this;
-    }
 
-    public function removeParticipation(\AppBundle\Entity\YB\Membership $participation){
-        if ($this->participations->contains($participation)){
-            $this->participations->removeElement($participation);
-            $participation->setMember(null);
-        }
-        return $this;
-    }
 }

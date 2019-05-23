@@ -24,6 +24,26 @@
 <div class="container py-4">
     <h2 class="text-left">Paiement</h2>
 
+    <div class="modal modal-dialog modal-attention" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <div class="icon-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body text-center">
+                    <h4>Attention !</h4>
+                    <p id="modal-text"></p>
+                    <button class="btn btn-success" data-dismiss="modal">
+                        <span>Retour </span><i class="far fa-arrow-alt-circle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12 col-md-7 order-2 order-md-1">
             <div>
@@ -65,7 +85,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 {% if cart.amount == 0 %}
                     <div class="checkout-payment-form card card-info mt-2">
@@ -207,7 +226,21 @@
                                         <h4 class="my-0">{{ purchase }}</h4>
                                         <small class="text-muted">
                                             {{ purchase.counterPart.getDescription }}<br />
-                                            Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.counterpart.freePrice %} (choisi librement){% endif %}
+                                            Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.counterpart.freePrice %} (choisi librement){% endif %} <br/>
+                                            {% if purchase.bookings|length == 0 %}
+                                                Placement libre dans :
+                                                {% if purchase.counterpart.getAccessEverywhere() %}
+                                                    tous les blocs de la salle
+                                                {% else %}
+                                                    {% for block in purchase.counterpart.venueblocks %}
+                                                        {{ block.name }} {% if not loop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% else %}
+                                                {% for booking in purchase.bookings %}
+                                                    {{ loop.index }}) {{ booking.getSeat }}<br>
+                                                {% endfor %}
+                                            {% endif %}
                                         </small>
                                     </div>
                                     <span class="text-muted">{{ purchase.amount > 0 ? purchase.amount ~ ' €' : 'Gratuit' }}</span>
@@ -230,6 +263,11 @@
 {% block additional_javascripts %}
     <script>
         hideError();
+        var end_time = {{ endTime }};
+        var end_time_milli = end_time * 1000;
+        var runtimeMax = new Date(end_time_milli);
+        setInterval(checkForAbortedBooking, 120000);
+        setInterval(function(){checkTwoMinutesWarning(runtimeMax)}, 60000);
 
         var $loader = $('#stripe-loader .loader');
         var $loaderexplanation = $('#stripe-loader .loader-explanation');
@@ -350,7 +388,13 @@
                         on3DSSource(result);
                     });
                 })
-                    .fail(function () {
+                    .fail(function (response) {
+                        if (response.status == 403){
+                            displayForm();
+                            console.log(response.responseText);
+                            $('#modal-text').text(response.responseText);
+                            $('.modal').modal();
+                        }
                         displayForm();
                         displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
                     });
@@ -499,6 +543,7 @@
 
             function handleServerResponse(response) {
                     if (response.error) {
+                        // Show error from server on payment form
                         displayError(response.error);
                     } else if (response.requires_action) {
                         // Use Stripe.js to handle required card action
@@ -603,6 +648,37 @@
 
         function hideError() {
             $('.stripe-error').hide();
+        }
+
+        function checkForAbortedBooking() {
+            $.ajax({
+                url: "{{ path('yb_refresh_seats') }}",
+                type: "POST",
+                data: {
+                    code: {{ code|json_encode|raw }},
+                    campaign: {{ campaign.id }}
+                },
+                success: function (response) {
+                    if (response === 'remain on page'){
+                        // do nothing
+                    } else {
+                        location.href = response;
+                    }
+                    console.log(response);
+                },
+                error: function (err) {
+                    console.log('Error');
+                }
+            })
+        }
+
+        function checkTwoMinutesWarning(dateMax){
+            var now = new Date().getTime();
+            var difference = (dateMax - now) / 60000;
+            if (difference < 3 && difference >= 2){
+                $('#modal-text').text('Il vous reste environ 2 minutes pour finir votre commande !');
+                $('.modal').modal();
+            }
         }
 
         $('#free-order-submit').click(function(e) {

@@ -1,6 +1,9 @@
 <?php
 namespace AppBundle\Controller;
+
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\Cart;
+use AppBundle\Entity\Purchase;
 use AppBundle\Entity\YB\YBOrder;
 use AppBundle\Entity\YB\YBSubEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -157,7 +160,9 @@ class RestController extends BaseController {
         }
         return new JsonResponse(array('error' => $error));
     }
+
     // ----------------- private methods -------------------
+
     private function getEventsUnMute(EntityManagerInterface $em){
         $events = $em->getRepository('AppBundle:ContractArtist')->findEventForApp();
         $unmuteEvents = [];
@@ -185,6 +190,7 @@ class RestController extends BaseController {
         }
         return $unmuteEvents;
     }
+
     private function createArray($event, $eventName, $eventDate, $audience, $counterparts, $nbSoldTicketPerCp){
         $event = array (
             'id' => $event->getId(),
@@ -203,6 +209,7 @@ class RestController extends BaseController {
         );
         return $event;
     }
+
     private function getArrayFromEvents($events, $error){
         $em = $this->getDoctrine()->getManager();
         $array_events = [];
@@ -221,6 +228,7 @@ class RestController extends BaseController {
         }
         return $array_events;
     }
+
     private function getTicketFromCounterpart($counterparts, $error){
         $array_tix = [];
         if ($error === ''){
@@ -238,6 +246,7 @@ class RestController extends BaseController {
         }
         return $array_tix;
     }
+
     private function validateTicket(Ticket $ticket, EntityManagerInterface $em){
         if (!$ticket->isValidated()){
             $ticket->setValidated(true);
@@ -246,6 +255,7 @@ class RestController extends BaseController {
             $em->flush();
         }
     }
+
     /**
      * @param $ticket Ticket
      * @param $error
@@ -313,6 +323,7 @@ class RestController extends BaseController {
             return in_array($user, $contract_artist->getOrganizers());
         }
     }
+
     private function getAudienceForEvent($event){
         $em = $this->getDoctrine()->getManager();
         $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($event->getId());
@@ -326,16 +337,17 @@ class RestController extends BaseController {
         $counterparts = $event->getCounterParts();
         return $this->getTicketFromCounterpart($counterparts, '');
     }
+
     private function handleTicketValidation($error, $user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
         if (!$this->isOrganizer($user_id, $event_id)){
-            $error = 'Vous n\'organisez pas cet événement';
+            $error = 'Vous n\'organisez pas cet événement.';
         } elseif ($ticket === null){
             $error = 'Ce ticket n\'existe pas.';
         } elseif ($contract_artist === null) {
             $error = 'Cet événement n\'existe pas.';
         } else {
             if ($ticket->getContractArtist()->getId() != $contract_artist->getId()) {
-                $error = 'Ce ticket ne correspond pas à l\'évenement sélectionné';
+                $error = 'Ce ticket ne correspond pas à l\'évenement sélectionné.';
             } elseif ($ticket->isRefunded()) {
                 $error = 'Ce ticket a été remboursé et n\'est donc plus valide.';
             } elseif ($ticket->isValidated()){
@@ -346,7 +358,7 @@ class RestController extends BaseController {
                     $error = '';
                     $this->validateTicket($ticket);
                 } else {
-                    $error = 'Ce ticket n\'est pas valide aujourd\'hui';
+                    $error = 'Ce ticket n\'est pas valide aujourd\'hui.';
                 }
             } else {
                 $error = '';
@@ -356,6 +368,7 @@ class RestController extends BaseController {
         $rest_ticket = $this->setRestTicket($ticket, $error);
         return new JsonResponse($this->getArrayFromTicket($rest_ticket));
     }
+
     private function getNbSoldTicketPerCounterpart(EntityManagerInterface $em, $event){
         $cps = $event->getCounterParts();
         $soldTicketsPerCp = [];
@@ -368,6 +381,7 @@ class RestController extends BaseController {
         }
         return $soldTicketsPerCp;
     }
+
     private function validateTicketWhenSubEvents(YBContractArtist $event, Ticket $ticket){
         $ticketCp = $ticket->getCounterPart();
         /** @var YBSubEvent $subEvent */$subEvent = $event->getTodaySubEvent();
@@ -378,6 +392,7 @@ class RestController extends BaseController {
             return false;
         }
     }
+
     private function removeAllEventsBeingCreated(array $events){
         /** @var YBContractArtist $e */
         foreach ($events as $k => $e){
@@ -387,4 +402,6 @@ class RestController extends BaseController {
         }
         return $events;
     }
+
 }
+

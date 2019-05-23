@@ -1,0 +1,168 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <!--<a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>-->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item" id="createVenue">
+                        <a class="nav-link" href="#sectionCreateVenue">Créer une salle</a>
+                    </li>
+                    <li class="nav-item" id="addConfig">
+                        <a class="nav-link" href="#sectionAddConfig">Ajouter une configuration</a>
+                    </li>
+                    <li class="nav-item" id="addBlocks">
+                        <a class="nav-link" href="#sectionAddBlocks">Ajouter des blocs</a>
+                    </li>
+                    <li class="nav-item" id="updateRows">
+                        <a class="nav-link" href="#sectionUpdateRows">Modifier les rangées</a>
+                    </li>
+                    <li class="nav-item" id="manageVenue">
+                        <a class="nav-link" href="#sectionManageVenue">Gérer ses salles</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </section>
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section">
+        <h2>Manuel pour la création et la gestion des salles</h2>
+    </section>
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section" id="sectionCreateVenue">
+        <h3>Création de salle</h3>
+        Quand on crée une salle, la première étape est de renseigner les informations générales de votre salle.
+        Vous devrez indiquer :
+        <ul>
+            <li>l'organisation en charge de la salle : cela peut être vous en votre nom propre ou une organisation de type ASBL, par exemple.</li>
+            <li>l'adresse ainsi que le nom de votre salle</li>
+            <li>la capacité par défaut : par la suite, vous pourrez renseigner des configurations (si vous avez des gradins rétractables, par exemple, il se peut que vous puissiez configurer votre salle différemment).
+            Si vous n'ajoutez pas de configuration, une configuration par défaut sera créée. Elle simule une salle qui ne possèdent que des places debout non-numérotéés et dont la capacité est la capacité par défaut indiquée.</li>
+        </ul>
+        Lors de la création de la salle, deux options s'offre à vous :
+        <ul>
+            <li>Soit vous indiqué être le gestionnaire de la salle. Dans ce cas, la salle est enregistrée dans notre base de données et pourra être utilisée par des gestionnaires d'événement "Ticked-it".</li>
+            <li>Soit vous ne possédez pas de salle mais vous organiser un événement et la salle où votre événement se passe n'est pas repris dans notre liste. Dans ce cas, il vous suffit de créer la salle. Cette salle éphémère ne pourra être utiliser que par vous.</li>
+        </ul>
+        Pour valider la création de la salle, vous pouvez soit cliquer sur "Terminer", une configuration par défaut sera alors créée pour vous, soit ajoutez vous-même une configuration.
+    </section>
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section" id="sectionAddConfig">
+        <h3>Ajout d'une configuration</h3>
+        <h5 style="color: orange;">Configuration de base</h5>
+        La deuxième étape l'ajout d'une configuration. Il vous faudra renseigner son nom et sa capacité. <br>
+        Dans sa version la plus simple, une configuration est une salle qui n'a que des places debout. Dès lors, les places sont non-numérotées.<br><br>
+        <h5 style="color: orange;">Configuration plus complexe</h5>
+        Vous pouvez néanmoins la complexifier en décochant la case "Vous n'avez que des places debout".<br>
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/all-standup.png') }}"/></h2><br>
+        Vous pouvez alors indiquer le nombre de places debout, assis (hors balcon), assis sur balcon que votre configuration possède.
+        Si votre salle a des places debout et assis mais que le placement reste néanmoins libre, vous pouvez cocher la case "Toutes les places de cette configuration sont en placement libre (non-numérotées)".<br>
+        <h2><img  class="img-fluid" src="{{ yb_asset('images/help-screenshots/free-seating.png') }}"/></h2><br><br>
+        <h5 style="color: orange;">Plan de salle</h5>
+        Enfin, et afin d'aider au mieux les visiteurs de votre salle, vous pourrez ajouter une image représentant le plan de salle. Ainsi, quand les acheteurs, choisiront leurs tickets, ils pourront vraiment savoir à quoi ressemble votre salle et pourront donc mieux choisir leur emplacement.<br>
+        Cette option est utile pour si vous avez des places numérotées.<br>
+        Voici un exemple de plan de salle : <br>
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/venuemap-example.png') }}"/></h2><br><br>
+    </section>
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section" id="sectionAddBlocks">
+        <h3>Ajout de blocs</h3>
+        Si votre configuration ne contient que des places non-numérotées (en placement libre), vous ne devrez pas ajouter des blocs.<br><br>
+        Un bloc est un ensemble de siège mais peut aussi représenter par exemple une fosse. Pour chaque bloc, vous devrez indiquer :
+        <ul>
+            <li>le nom du bloc</li>
+            <li>
+                le type du bloc
+                    <ul>
+                        <li>Debout (c'est le cas d'une fosse de concert, par exemple)</li>
+                        <li>Assis (hors balcon)</li>
+                        <li>Assis sur balcon</li>
+                    </ul>
+            </li>
+            <li>la capacité totale du bloc</li>
+        </ul>
+        Si le bloc est en placement libre, il suffit de cocher la case "Le placement est libre dans ce bloc". Si ce n'est pas le cas, il faudra configurer le bloc en lui rajoutant des rangées et des sièges.<br>
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/block-free-seating.png') }}"/></h2><br><br>
+        <h5 style="color: orange">Le cas d'un bloc rectangulaire</h5>
+        Lorsqu'un bloc est rectangulaire, il est composé de X rangées de Y sièges chacune. Vous pourrez indiquer un système de numérotation tant pour les rangées que pour les sièges.<br>
+        Pour la numérotation alphabétique ("A,B,C,D,..."), elle va de A à Z, puis de AA à AZ, puis de BA à BZ et ainsi de suite...<br>
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/block-square.png') }}"/></h2><br><br>
+        <h5 style="color: orange">Le cas d'un bloc non-rectangulaire</h5>
+        Il se peut que votre bloc ne soit pas parfaitement rectangulaire. Dans ce cas, il faudra renseigner chaque rangée séparément. Pour commencer, il suffit de cliquer sur la case "Mon bloc n'est pas carré/rectangulaire".<br>
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/block-not-square.png') }}"/></h2><br><br><br>
+        Une fois que vous avez rajouter tous vos blocs (vous pouvez en ajouter en cliquant sur le bouton "Ajouter un bloc", vous pouvez cliquer sur le bouton "Enregistrer".<br>
+        Si tous vos blocs sont de type "Debout" ou rectangulaire, la configuration est finie ! <br>
+        Par contre, si vous avez des blocs non-rectangulaires, vous allez maintenant les configurer.
+    </section>
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section" id="sectionUpdateRows">
+        <h3>Modification les rangées</h3>
+        Si vous avez un ou plusieurs blocs non-rectangulaires, ils apparaitront dans le menu déroulant. En sélectionnant un des blocs, les informations relatives apparaitront et vous pourrez rajouter des rangées.
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/update-rows.png') }}"/></h2><br>
+        En cliquant sur le bouton "Ajouter une rangée", vous pourrez créer vos rangées en leur donnant :
+        <ul>
+            <li>un libellé : le nom de la rangée</li>
+            <li>le nombre de siège qu'elle possède</li>
+            <li>un système de numérotation pour les sièges (pour la numérotation alphabétique ("A,B,C,D,..."), elle va de A à Z, puis de AA à AZ, puis de BA à BZ et ainsi de suite...)</li>
+        </ul>
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/row.png') }}"/></h2><br><br>
+        <h5 style="color: orange">Changer la capacité</h5>
+        Au moment de valider vos rangées, on vérifiera si le nombre de sièges donné correspond bien à la capacité du bloc. Il se pourrait que vous vous soyez trompé lorsque vous avez donné la capacité du bloc. Dans ce cas, il est possible de changer celle-ci en cliquant sur le bouton "Pas la bonne capacité? Changez-là!".<br>
+        Un pop-up apparaitra vous demandant de donner la nouvelle capacité et de valider votre choix.<br>
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/row-change-capacity.png') }}"/></h2><br><br>
+    </section>
+
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section" id="sectionManageVenue">
+        <h3>Gestion des salles</h3>
+        Depuis l'onglet "Mes salles" du Tableau de bord, vous pourrez gérer vos salles. <br>
+        L'affichage d'une salle est le suivant :
+        <h2><img class="img-fluid" src="{{ yb_asset('images/help-screenshots/venue.png') }}"/></h2><br>
+        <ul>
+            <li>En cliquant sur le bouton <b style="color: darkgreen"><em>"Modifier la salle"</em></b>, vous pourrez <a href="#sectionCreateVenue">modifier les informations générales de la salle</a>.</li>
+            <li>En cliquant sur le bouton <b style="color: darkgreen"><em>"Ajouter une configuration"</em></b>, vous pourrez <a href="#sectionAddConfig">ajouter une configuration à votre salle</a>.</li>
+            <li>En cliquant sur le bouton <b style="color: darkgreen"><em>"Supprimer cette salle"</em></b>, vous pourrez supprimer la salle. Attention (<i class="fas fa-exclamation-triangle"></i>), si un événement est encore prévu dans votre salle, vous ne pourrez pas la supprimer !</li>
+            <li>En cliquant sur le bouton <b style="color: darkgreen"><em>"Modifier la configuration"</em></b>, vous pourrez <a href="#sectionAddConfig">modifier la configuration</a>.</li>
+            <li>En cliquant sur le bouton <b style="color: darkgreen"><em>"Supprimer la configuration"</em></b>, vous pourrez supprimer la configuration. Attention (<i class="fas fa-exclamation-triangle"></i>), si un événement est encore prévu dans votre salle, dans cette configuration précise, vous ne pourrez pas la supprimer !</li>
+            <li>
+                Pour modifier les blocs, 2 options s'offrent à vous
+                <ul>
+                    <li>Le bloc est rectangulaire ou en placement libre, vous devrez cliquer sur <b style="color: darkgreen"><em>"Modifier la configuration"</em></b></li>
+                    <li>Le bloc est non-rectangulaire, vous pourrez cliquer sur <b style="color: darkgreen"><em>"Modifier le bloc"</em></b> afin de <a href="#sectionUpdateRows">mettre à jour les rangées</a>.</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            $('li#createVenue').click(function(){
+                $('li').not('#createVenue').removeClass('active');
+                $('li#createVenue').addClass('active');
+            });
+            $('li#addConfig').click(function(){
+                $('li').not('#addConfig').removeClass('active');
+                $('li#addConfig').addClass('active');
+            });
+            $('li#addBlocks').click(function(){
+                $('li').not('#addBlocks').removeClass('active');
+                $('li#addBlocks').addClass('active');
+            });
+            $('li#updateRows').click(function(){
+                $('li').not('#updateRows').removeClass('active');
+                $('li#updateRows').addClass('active');
+            });
+            $('li#manageVenue').click(function(){
+                $('li').not('#manageVenue').removeClass('active');
+                $('li#manageVenue').addClass('active');
+            });
+        });
+    </script>
+{% endblock %}

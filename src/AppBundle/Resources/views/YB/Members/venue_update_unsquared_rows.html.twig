@@ -1,0 +1,84 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+        <div class="px-0 mt-3 container" style="text-align: right">
+            <a class="btn btn-info" href="{{ path('help_venue') }}#sectionUpdateRows" target="_blank"><i class="fa fa-info-circle"></i> Aide</a>
+        </div>
+        <h2>Bloc : {{ block.name }}</h2>
+        <h2 style="font-size: 18px">Configuration : {{ block.config.name }}</h2>
+        <h2 style="font-size: 18px">Salle : {{ block.config.venue.address.name }}</h2>
+        <h2 class="capacity-value">Capacité : {{ block.capacity }}</h2>
+        <div class="col-12"><h2><a class="btn btn-outline-secondary" href="#" data-toggle="modal" data-target="#confirmModal">Pas la bonne capacité? Changez-là!</a></h2></div>
+
+        <div class="modal modal-dialog modal-confirmation" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <div class="icon-box">
+                            <i class="far fa-edit"></i>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body text-center" id="modal_detail">
+                        <h5 class="modal-title" id="exampleModalLabel">Changer la capacité du bloc</h5>
+                        <p>Nouvelle capacité du bloc : <input type="number" id="newCapacity"></p>
+                        <button class="btn btn-success" data-dismiss="modal">
+                            <span>Annuler </span><i class="fas fa-ban"></i>
+                        </button>
+                        <form action="#">
+                            <button class="btn btn-success change-capacity" type="submit">
+                                <span>Valider </span><i class="far fa-check-circle"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-muted font-italic pb-2">
+            Ce bloc n'est pas rectangulaire. Vous allez pouvoir rajouter des rangées et renseigner pour chacune d'elle le nombre de sièges qu'elle comprend.
+        </div>
+        {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/block_row.html.twig' ':Form:jquery.collection.html.twig' %}
+        {{ form_start(form) }}
+        {{ form_widget(form.rows) }}
+        {{ form_end(form) }}
+    </section>
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script>
+        $('.change-capacity').click(function(){
+           var newCapacity = $('#newCapacity').val();
+            $('.change-capacity').prop('disabled', true);
+            $.ajax({
+               url: "{{ path('change_blk_capacity') }}",
+               type: "POST",
+               dataType: "JSON",
+               data: {
+                   blockid: {{ block.id }},
+                   capacity: newCapacity,
+               },
+               success: function() {
+                   $('.change-capacity').prop('disabled', false);
+                   var newText = 'Capacité : ';
+                   $('.capacity-value').text(newText.concat(newCapacity));
+                   $('#confirmModal').modal('toggle');
+               },
+               error: function(err) {
+                   $('.change-capacity').prop('disabled', false);
+                   alert("Problème lors du chargement ...");
+                   $('#confirmModal').modal('toggle');
+               }
+           });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function() {
+            yb_third_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une rangée</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer la rangée</a>'
+            })
+        });
+    </script>
+{% endblock %}

@@ -664,7 +664,6 @@ class MailDispatcher
 
     public function sendYBReminderEventCreated(YBContractArtist $campaign) {
         $reminders = $campaign->getReminders();
-
         if(!in_array('organizer_campaign_created', $reminders)) {
             $organizers = $campaign->getHandlers();
             $emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
@@ -688,8 +687,6 @@ class MailDispatcher
             $this->em->persist($campaign);
             $this->em->flush();
         }
-
-
     }
 
     public function sendYBJoinOrganization($email, Organization $organization, User $user){
@@ -729,10 +726,15 @@ class MailDispatcher
     public function sendYBTransactionalMessage(YBTransactionalMessage $message) {
         $campaign = $message->getCampaign();
         $buyers = $campaign->getBuyers();
+        $buyersWithEmails = array_filter($buyers, function(PhysicalPersonInterface $person = null) {
+            if ($person !== null) {
+                return $person->getEmail();
+            }
+        });
 
         $buyers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
             return $person->getEmail();
-        }, $buyers));
+        }, $buyersWithEmails));
 
         $to = [];
 

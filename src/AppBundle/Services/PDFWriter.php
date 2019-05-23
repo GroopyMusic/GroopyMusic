@@ -7,6 +7,7 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\User;
+use AppBundle\Entity\YB\CustomTicket;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBInvoice;
 use Doctrine\ORM\EntityManager;
@@ -77,11 +78,28 @@ class PDFWriter
         }
     }
 
-    public function writeYBTickets($path, $tickets, $agenda = []) {
+    public function writeYBTickets($path, $tickets, $agenda = [], YBContractArtist $event) {
         if(!empty($tickets)) {
             // We know all tickets are for same event
-            $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
+            $customTicket = $event->getCustomTicket();
+            try {
+                $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
+            } catch (\Exception $e){
+                $ct = new CustomTicket(false, false, false, '', false, '', false);
+                $ct->constructNull();
+                try {
+                    $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $ct]);
+                } catch (\Exception $e){
+                    file_put_contents('error.txt', $e->getMessage());
+                }
+            }
         }
+    }
+
+    public function writeYBTicketsPreview($path, $ticket, $agenda = [], CustomTicket $customTicket){
+        $tickets = [];
+        $tickets[] = $ticket;
+        $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
     }
 
     public function writeTicketPreview(ContractFan $cf, $agenda = []) {

@@ -17,7 +17,7 @@
                 <div class="mb-2">Validation le {{ campaign.dateEnd|date('d/m/Y') }}</div>
             {% endif %}
         </div>
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-2">
             {{ campaign.counterPartsSold }} ticket(s) vendu(s)<br />
             {{ campaign.contractsFanPaid|length }} commande(s)
         </div>
@@ -29,12 +29,17 @@
                 <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les informations</a>
             </div>
         {% endif %}
+        {% if is_granted('ROLE_SUPER_ADMIN') or not campaign.isPassed and campaign.counterParts|length > 0 %}
+            <div class="col-12 col-md-2">
+                <i class="fas fa-ticket-alt text-primary"></i> <a class="link-secondary" href="{{ path('yb_customize_ticket', {'id': campaign.id}) }}">Personnaliser les tickets</a>
+            </div>
+        {% endif %}
         <div class="col-12 col-md-2">
             <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}">Accéder à la liste de commandes</a>
         </div>
 
         {% if campaign.wideBuyers is not empty and not campaign.isWayPassed %}
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-2">
                 <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_transactional_message', {'id': campaign.id}) }}">Envoyer un message transactionnel</a>
             </div>
         {% endif %}
