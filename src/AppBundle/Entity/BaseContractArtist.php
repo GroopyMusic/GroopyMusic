@@ -1378,4 +1378,8 @@ class BaseContractArtist implements TranslatableInterface
             return "";
         }
     }
+
+    public function getTicketsSent(){
+        return true;
+    }
 }

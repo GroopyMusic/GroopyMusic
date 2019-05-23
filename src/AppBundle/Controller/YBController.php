@@ -535,7 +535,7 @@ class YBController extends BaseController
     /**
      * @Route("/api/submit-order-coordinates", name="yb_ajax_post_order")
      */
-    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator, MailDispatcher $mailDispatcher)
+    public function orderAjaxAction(EntityManagerInterface $em, Request $request, ValidatorInterface $validator, MailDispatcher $mailDispatcher, TicketingManager $ticketingManager)
     {
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
@@ -566,6 +566,9 @@ class YBController extends BaseController
             $cart->setPaid(true);
             $cart->setFinalized(true);
             $mailDispatcher->sendYBOrderRecap($cart);
+            foreach ($cart->getContracts() as $cf){
+                $ticketingManager->generateAndSendYBTickets($cf);
+            }
         }
         $em->persist($order);
         $em->persist($cart);
