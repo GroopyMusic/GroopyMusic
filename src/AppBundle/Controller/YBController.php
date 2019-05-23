@@ -631,7 +631,6 @@ class YBController extends BaseController
     }
 
     /**
-<<<<<<< HEAD
      * @Route("/book-seats", name="yb_book_seats")
      */
     public function bookSeatsAction(EntityManagerInterface $em, Request $request)

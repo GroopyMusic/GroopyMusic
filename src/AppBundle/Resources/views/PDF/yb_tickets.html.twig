@@ -21,7 +21,7 @@
                 <tr style="background-color: lightgoldenrodyellow; border-spacing: 0;">
                     <td style="width: 300px; height: 300px; border-top: solid orange 2px; border-left: solid orange 2px; border-bottom: solid orange 2px;">
                         <p style="text-align: justify">
-                            Je donne accès à l'événement <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
+                            J<a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
                             {% if ticket.dates|length > 0 %}
                                 {% set dates = ticket.dates %}
                                 <br />
@@ -54,12 +54,20 @@
                             {% endif %}
                         {% endif %}
                     </td>
-                    <td style="width: 300px; height: 300px; text-align: right; border-top: solid orange 2px; border-right: solid orange 2px; border-bottom: solid orange 2px;">
+                    <td style="width: 300px; height: 300px; text-align: left; border-top: solid orange 2px; border-right: solid orange 2px; border-bottom: solid orange 2px;">
                         {% if customTicket != null and customTicket.isImageAdded == 'true' %}
                             {% if campaign.photo is not null %}
-                                <img style="border:2px solid black; max-height: 100%; max-width: 100%;" src="{{ absolute_url(asset(campaign.getYBWebPath(campaign.photo))) }}">
+                                <img style="border:2px solid black; max-height: 60%;" src="{{ absolute_url(asset(campaign.getYBWebPath(campaign.photo))) }}">
                             {% else %}
-                                <img style="border:2px solid black; max-height: 100%; max-width: 100%;" src="{{ absolute_url(asset('yb/images/illustration-guitars.jpg')) }}">
+                                <img style="border:2px solid black; max-height: 60%;" src="{{ absolute_url(asset('yb/images/illustration-guitars.jpg')) }}">
+                            {% endif %}
+                        {% endif %}
+                        {% if campaign.config is not null %}
+                            {% if campaign.config.pmrAccessible == 'true' %}
+                                <p>Pour les questions relatives au PMR, veuillez prendre contact avec les organisateurs :
+                                <br> - {{ campaign.config.emailAddressPMR }}
+                                <br> - {{ campaign.config.phoneNumberPMR }}
+                                </p>
                             {% endif %}
                         {% endif %}
                     </td>
@@ -85,8 +93,8 @@
                         {% endif %}
                         </div>
                     </td>
-                    <td  style="width: 300px; height: 300px; border: dotted limegreen 2px;">
-                        <div style="width: 300px; height: 300px">
+                    <td  style="width: 300px; height: 300px;">
+                        <div style="width: 300px; height: 300px;">
                             {% if customTicket != null %}
                                 {% if customTicket.isPublicTransportTextInfosAdded == 'true' %}
                                     <div style="border-bottom: dotted limegreen 2px">

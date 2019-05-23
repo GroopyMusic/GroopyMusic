@@ -17,7 +17,7 @@
         {% endif %}
     </section>
     <div id="sticky-anchor" style="width: 100%; margin: auto"></div>
-    <section style="text-align: center" id="myHeader">
+    <section style="text-align: center; margin-top: 50px" id="myHeader">
         <h2 style="font-size: 22px;  height: 40px; margin-top: 15px">Vous pouvez encore prendre <span id="remainingTix" style="font-size: 24px">{{ purchase.quantity }}</span> ticket(s).</h2>
     </section>
     <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations pick-seats-content">
@@ -29,17 +29,17 @@
                 {% if block.type != 'Debout' and block.getSoldTicketInBlock(campaign) == block.capacity %}
                     Ce bloc est sold-out...
                 {% else %}
-                    <div>
+                    <div id="free-blk{{ block.id }}">
                         Nombre de ticket voulu dans ce bloc :
                         <div class="input-group">
                         <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-dark btn-number retreat-quantity">
+                            <button type="button" class="quantity-left-minus btn btn-dark btn-number retreat-quantity" id="retreat-quantity{{ block.id }}">
                                 <i class="text-white fas fa-minus"></i>
                             </button>
                         </span>
                             <input type="number" style="width: 100px; text-align: center;" class="quantity-tix" id="quantity-tix{{ block.id }}" value="0" readonly>
                             <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-dark btn-number add-quantity">
+                            <button type="button" class="quantity-right-plus btn btn-dark btn-number add-quantity" id="add-quantity{{ block.id }}">
                                 <i class="text-white fas fa-plus"></i>
                             </button>
                         </span>
@@ -137,7 +137,7 @@
                     charts.set({{ block.id }}, sc);
                     $('.seatCharts-header').css('display', 'none');
                 {% else %}
-                    $('.retreat-quantity').click(function(){
+                    $('#retreat-quantity{{ block.id }}').click(function(){
                         var value = $('#quantity-tix{{ block.id }}').val();
                         if (soldTicket > 0){
                             value = value - 1;
@@ -154,7 +154,7 @@
                         }
                     });
 
-                    $('.add-quantity').click(function(){
+                    $('#add-quantity{{ block.id }}').click(function(){
                         var value = $('#quantity-tix{{ block.id }}').val();
                         if (remainingTicket > 0){
                             var decimal = parseInt((value + '').replace(/[^01]/gi, ''), 2);

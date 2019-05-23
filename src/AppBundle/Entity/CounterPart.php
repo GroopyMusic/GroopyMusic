@@ -30,6 +30,7 @@ class CounterPart implements TranslatableInterface
         $this->price = 0;
         $this->sub_events = new ArrayCollection();
         $this->maximum_amount_per_purchase = 1000;
+        $this->venue_blocks = new ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -104,7 +105,15 @@ class CounterPart implements TranslatableInterface
     }
 
     public function isCapacityMaxReach(){
-        return $this->maximum_amount > $this->getBlkCapacity();
+        if ($this->access_everywhere){
+            /** @var VenueConfig $config */$config  = $this->contractArtist->getConfig();
+            return $this->maximum_amount > $config->getTotalCapacity();
+        }
+        $capacity = 0;
+        foreach ($this->venue_blocks as $block){
+            $capacity += $block->getComputedCapacity();
+        }
+        return $this->maximum_amount > $capacity;
     }
 
     public function hasOnlyFreeSeatingBlocks($blocks){

@@ -775,7 +775,11 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function getOrganizers(){
-        return $this->organization->getMembers();
+        if ($this->organization !== null){
+            return $this->organization->getMembers();
+        } else {
+            return array();
+        }
     }
 
     public function getVatNumber() {

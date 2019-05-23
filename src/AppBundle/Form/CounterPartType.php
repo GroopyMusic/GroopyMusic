@@ -73,36 +73,38 @@ class CounterPartType extends AbstractType
             if ($options['has_venue']) {
                 $config = $options['config'];
                 $blks = $config->getBlocks();
-                if ($options['creation']) {
-                    $builder
-                        ->add('accessEverywhere', CheckboxType::class, array(
-                            'required' => false,
-                            'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
-                            'attr' => ['class' => 'give-access-everywhere give-access-everywhere-cb'],
-                        ))
-                        ->add('venueBlocks', EntityType::class, array(
-                            'required' => false,
-                            'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
-                            'multiple' => true,
-                            'expanded' => true,
-                            'class' => 'AppBundle\Entity\YB\Block',
-                            'choices' => $blks,
-                        ));
-                } else {
-                    $builder
-                        ->add('accessEverywhere', CheckboxType::class, array(
-                            'required' => false,
-                            'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
-                            'attr' => ['class' => 'give-access-everywhere'],
-                        ))
-                        ->add('venueBlocks', EntityType::class, array(
-                            'required' => false,
-                            'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
-                            'multiple' => true,
-                            'expanded' => true,
-                            'class' => 'AppBundle\Entity\YB\Block',
-                            'choices' => $blks,
-                        ));
+                if (count($blks) > 0) {
+                    if ($options['creation']) {
+                        $builder
+                            ->add('accessEverywhere', CheckboxType::class, array(
+                                'required' => false,
+                                'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
+                                'attr' => ['class' => 'give-access-everywhere give-access-everywhere-cb'],
+                            ))
+                            ->add('venueBlocks', EntityType::class, array(
+                                'required' => false,
+                                'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
+                                'multiple' => true,
+                                'expanded' => true,
+                                'class' => 'AppBundle\Entity\YB\Block',
+                                'choices' => $blks,
+                            ));
+                    } else {
+                        $builder
+                            ->add('accessEverywhere', CheckboxType::class, array(
+                                'required' => false,
+                                'label' => 'Ce ticket donne accès à l\'entièreté des sièges de la salle',
+                                'attr' => ['class' => 'give-access-everywhere'],
+                            ))
+                            ->add('venueBlocks', EntityType::class, array(
+                                'required' => false,
+                                'label' => 'Bloc de la salle pour lesquelles le ticket donne accès',
+                                'multiple' => true,
+                                'expanded' => true,
+                                'class' => 'AppBundle\Entity\YB\Block',
+                                'choices' => $blks,
+                            ));
+                    }
                 }
             }
             $id = $options['campaign_id'];
@@ -151,7 +153,10 @@ class CounterPartType extends AbstractType
             }
         }
         if (!$counterPart->canOverpassVenueCapacity()) {
-            if ($counterPart->isCapacityMaxReach()) {
+            if (count($counterPart->getVenueBlocks()) === 0){
+                $counterPart->setAccessEverywhere(true);
+            }
+            elseif ($counterPart->isCapacityMaxReach()) {
                 $context->addViolation("Le nombre de ticket en stock est supérieur aux nombre de places dans la salle !");
             }
         }

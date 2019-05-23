@@ -49,7 +49,7 @@
 {% block additional_javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        $(function() {
+        //$(function() {
             $(document).ready(function() {
                 $('select.block-type').change(function () {
                         if ($(this).val() == 'Debout') {
@@ -60,6 +60,7 @@
                     }
                 );
             });
+            console.log("Salut");
             /*yb_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un bloc</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer le bloc</a>'
@@ -82,6 +83,6 @@
                 $(this).closest('.venue-block').find('.hide-if-free-placement').toggle(!this.checked);
             });
             $('#free-placement input[type="checkbox"]').trigger('change');
-        });
+        //});
     </script>
 {% endblock %}

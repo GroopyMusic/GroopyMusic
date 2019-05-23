@@ -139,6 +139,21 @@ class YBContractArtistInfosType extends AbstractType {
                         new Assert\NotBlank(),
                     )
                 ));
+        } else {
+            $builder
+                ->add('organization', EntityType::class, [
+                    'class' => Organization::class,
+                    'label' => 'Organisation',
+                    'choices' => $options['userOrganizations'],
+                    'group_by' => function(Organization $org){
+                        if ($org->isPrivate()){
+                            return 'Personnellement';
+                        } else {
+                            return 'Mes organisations';
+                        }
+                    },
+                    'choice_label' => 'name',
+                ]);
         }
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
         $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
