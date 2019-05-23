@@ -356,14 +356,14 @@ class RestController extends BaseController {
 
     private function handleTicketValidation($error, $user_id, $event_id, $ticket, $contract_artist, EntityManagerInterface $em){
         if (!$this->isOrganizer($user_id, $event_id)){
-            $error = 'Vous n\'organisez pas cet événement';
+            $error = 'Vous n\'organisez pas cet événement.';
         } elseif ($ticket === null){
             $error = 'Ce ticket n\'existe pas.';
         } elseif ($contract_artist === null) {
             $error = 'Cet événement n\'existe pas.';
         } else {
             if ($ticket->getContractArtist()->getId() != $contract_artist->getId()) {
-                $error = 'Ce ticket ne correspond pas à l\'évenement sélectionné';
+                $error = 'Ce ticket ne correspond pas à l\'évenement sélectionné.';
             } elseif ($ticket->isRefunded()) {
                 $error = 'Ce ticket a été remboursé et n\'est donc plus valide.';
             } elseif ($ticket->isValidated()){
@@ -374,7 +374,7 @@ class RestController extends BaseController {
                     $error = '';
                     $this->validateTicket($ticket);
                 } else {
-                    $error = 'Ce ticket n\'est pas valide aujourd\'hui';
+                    $error = 'Ce ticket n\'est pas valide aujourd\'hui.';
                 }
             } else {
                 $error = '';
