@@ -1824,7 +1824,7 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
         $city = $address->getCity();
         $lat = $address->getLatitude();
         $lon = $address->getLongitude();
-        $handle = fopen("stops.txt", "r");
+        $handle = fopen("yb/file-fromstops.txt", "r");
         $infos = [];
         while (($line = fgets($handle)) !== false) {
             if (strpos($line, strtoupper($city)) !== false){
@@ -1919,13 +1919,6 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
             $s = array_shift($sorted);
             $stations->add($s);
         }
-        $this->printStations('stations.txt', $stations);
         return $stations;
-    }
-
-    private function printStations($filename, $stations){
-        foreach ($stations as $s){
-            file_put_contents($filename, $s . PHP_EOL, 8);
-        }
     }
 }

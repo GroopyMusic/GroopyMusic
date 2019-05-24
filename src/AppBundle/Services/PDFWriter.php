@@ -90,7 +90,6 @@ class PDFWriter
                 try {
                     $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $ct]);
                 } catch (\Exception $e){
-                    file_put_contents('error.txt', $e->getMessage());
                 }
             }
         }
