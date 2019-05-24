@@ -1243,32 +1243,45 @@ class YBMembersController extends BaseController
             $stationsSNCB = [];
             $stationsSTIB = [];
             $stationsTEC = [];
-            if ($customTicket->isCommuteAdded()) {
-                if ($customTicket->isCommuteSTIBAdded()) {
-                    $stationsSTIB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::STIB, $em);
+            if ($campaign->getVenue() !== null) {
+                if ($customTicket->isCommuteAdded()) {
+                    if ($customTicket->isCommuteSTIBAdded()) {
+                        $stationsSTIB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::STIB, $em);
+                    }
+                    if ($customTicket->isCommuteSNCBAdded()) {
+                        $stationsSNCB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::SNCB, $em);
+                    }
+                    if ($customTicket->isCommuteTECAdded()) {
+                        $stationsTEC = $this->getTECStop($campaign->getVenue()->getAddress());
+                    }
+                    $stations = $this->generate5ClosestStationsList($stationsSTIB, $stationsSNCB, $stationsTEC);
+                    $orderedStations = $this->sortStations($stations);
+                    $customTicket->setStations($orderedStations);
+                    if (count($orderedStations) > 0) {
+                        $mapUrl = $customTicket->getMapQuestUrl($this->getParameter('mapquest_key'));
+                        if ($mapUrl !== "") {
+                            $imgPath = 'yb/images/custom-tickets/campaign' . $customTicket->getCampaign()->getId() . '.jpg';
+                            $customTicket->setMapsImagePath($imgPath);
+                            file_put_contents($imgPath, file_get_contents($mapUrl));
+                        }
+                    } else {
+                        $customTicket->setMapsImagePath(null);
+                    }
                 }
-                if ($customTicket->isCommuteSNCBAdded()) {
-                    $stationsSNCB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::SNCB, $em);
-                }
-                if ($customTicket->isCommuteTECAdded()) {
-                    $stationsTEC = $this->getTECStop($campaign->getVenue()->getAddress());
-                }
-                $stations = $this->generate5ClosestStationsList($stationsSTIB, $stationsSNCB, $stationsTEC);
-                $orderedStations = $this->sortStations($stations);
-                $customTicket->setStations($orderedStations);
-                if (count($orderedStations) > 0){
-                    $mapUrl = $customTicket->getMapQuestUrl($this->getParameter('mapquest_key'));
-                    $imgPath = 'yb/images/custom-tickets/campaign' . $customTicket->getCampaign()->getId() . '.jpg';
-                    $customTicket->setMapsImagePath($imgPath);
-                    file_put_contents($imgPath, file_get_contents($mapUrl));
-                } else {
-                    $customTicket->setMapsImagePath(null);
-                }
+                $em->persist($customTicket);
+                $em->flush();
+                $this->addFlash('yb_notice', 'Vos préférences ont bien été enregistrées !');
+                return $this->redirectToRoute('yb_members_dashboard');
+            } else {
+                $customTicket->setCommuteAdded(false);
+                $customTicket->setCommuteSNCBAdded(false);
+                $customTicket->setCommuteSTIBAdded(false);
+                $customTicket->setCommuteTECAdded(false);
+                $em->persist($customTicket);
+                $em->flush();
+                $this->addFlash('yb_notice', "Votre événement n'a pas lieu dans une de nos salles. On ne peut générer les transports en commun les plus proches...");
+                return $this->redirectToRoute('yb_members_dashboard');
             }
-            $em->persist($customTicket);
-            $em->flush();
-            $this->addFlash('yb_notice', 'Vos préférences ont bien été enregistrées !');
-            return $this->redirectToRoute('yb_members_dashboard');
         }
         return $this->render('@App/YB/Members/customize_ticket.html.twig', [
             'campaign' => $campaign,
@@ -1648,8 +1661,10 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
     {
         $currentEvents = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
         foreach ($currentEvents as $currentEvent) {
-            if ($currentEvent->getVenue() === $venue) {
-                return true;
+            if ($currentEvent->getVenue() !== null) {
+                if ($currentEvent->getVenue() === $venue) {
+                    return true;
+                }
             }
         }
         return false;

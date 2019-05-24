@@ -40,7 +40,9 @@
                             </div>
                         </div>
                         {% if ticket.hasFreeSeatingSeat() %}
-                            {% if ticket.counterPart.getAccessEverywhere() or campaign.config.blocks|length == 0 %}
+                            {% if campaign.config == null %}
+                                <p>Ce ticket donne accès à l'entièreté de la salle !</p>
+                            {% elseif ticket.counterPart.getAccessEverywhere() or campaign.config.blocks|length == 0 %}
                                 <p>Ce ticket donne accès à l'entièreté de la salle !</p>
                             {% else %}
                                 <p>

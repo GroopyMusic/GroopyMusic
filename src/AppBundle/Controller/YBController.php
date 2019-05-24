@@ -90,7 +90,11 @@ class YBController extends BaseController
             $cart->generateBarCode();
             $em->persist($cart);
             $em->flush();
-            if ($c->getConfig()->isOnlyStandup() || $c->getConfig()->hasFreeSeatingPolicy()){
+            if ($c->getConfig() === null){
+                return $this->redirectToRoute('yb_checkout', [
+                    'code' => $cart->getBarcodeText(),
+                ]);
+            } elseif ($c->getConfig()->isOnlyStandup() || $c->getConfig()->hasFreeSeatingPolicy()){
                 // on skip le choix des sièges
                 return $this->redirectToRoute('yb_checkout', [
                     'code' => $cart->getBarcodeText(),
@@ -824,7 +828,9 @@ class YBController extends BaseController
             /** @var YBContractArtist $campaign */
             $campaign = $cf->getContractArtist();
             $config = $campaign->getConfig();
-            if ($config->isOnlyStandup() || $config->hasFreeSeatingPolicy()){
+            if ($config === null){
+                return true;
+            } elseif ($config->isOnlyStandup() || $config->hasFreeSeatingPolicy()){
                 // do nothing
             } else {
                 $quantityPurchased = $cf->getCounterPartsQuantity();
