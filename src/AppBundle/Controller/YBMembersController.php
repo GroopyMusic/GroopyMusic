@@ -65,7 +65,7 @@ class YBMembersController extends BaseController
     public function dashboardAction(EntityManagerInterface $em, UserInterface $user = null)
     {
         $this->checkIfAuthorized($user);
-        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        /** @var User $currentUser */$currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         if ($currentUser->isSuperAdmin()) {
             $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
             $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllPastEvents();
@@ -74,6 +74,7 @@ class YBMembersController extends BaseController
             $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
         }
         return $this->render('@App/YB/Members/dashboard.html.twig', [
+            'venues' => $currentUser->getVenuesHandled(),
             'current_campaigns' => $current_campaigns,
             'passed_campaigns' => $passed_campaigns,
         ]);
@@ -1866,7 +1867,12 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
     }
 
     private function sortStations($stations){
-        usort($stations, function(PublicTransportStation $s1, PublicTransportStation $s2){
+        if (!is_array($stations)){
+            $stationsArr = $stations->toArray();
+        } else {
+            $stationsArr = $stations;
+        }
+        usort($stationsArr, function(PublicTransportStation $s1, PublicTransportStation $s2){
             if ($s1->getDistance() === $s2->getDistance()){
                 return 0;
             } else if ($s1->getDistance() < $s2->getDistance()){
@@ -1875,7 +1881,7 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
                 return 1;
             }
         });
-        return $stations;
+        return $stationsArr;
     }
 
     private function avoidDuplicate($stations){

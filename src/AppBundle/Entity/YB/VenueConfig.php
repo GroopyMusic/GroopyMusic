@@ -110,7 +110,7 @@ class VenueConfig {
         $unsquaredRows = $this->getUnsquaredBlocks();
         /** @var Block $blk */
         foreach ($unsquaredRows as $blk){
-            $blk->removeRows();
+            $blk->removeSeats();
             $blk->generateSeats();
         }
     }
