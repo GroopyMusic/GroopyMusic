@@ -102,6 +102,7 @@ class CounterPart implements TranslatableInterface
                 return true;
             }
         }
+        return false;
     }
 
     public function isCapacityMaxReach(){
@@ -166,7 +167,7 @@ class CounterPart implements TranslatableInterface
         if ($this->getAccessEverywhere()){
             $capacity = 0;
             foreach ($blocks as $blk){
-                if ($blk->getType === Block::SEATED || $blk->getType === Block::BALCONY) {
+                if ($blk->getType() === Block::SEATED || $blk->getType() === Block::BALCONY) {
                     $capacity += $blk->getComputedCapacity();
                 }
             }
@@ -175,7 +176,7 @@ class CounterPart implements TranslatableInterface
             /** @var Block $block */
             $capacity = 0;
             foreach($this->venue_blocks as $block){
-                if ($block->getType === Block::SEATED || $block->getType === Block::BALCONY) {
+                if ($block->getType() === Block::SEATED || $block->getType() === Block::BALCONY) {
                     $capacity += $block->getComputedCapacity();
                 }
             }
@@ -190,7 +191,7 @@ class CounterPart implements TranslatableInterface
         if ($this->getAccessEverywhere()){
             $capacity = 0;
             foreach ($blocks as $blk){
-                if ($blk->getType === Block::UP) {
+                if ($blk->getType() === Block::UP) {
                     $capacity += $blk->getComputedCapacity();
                 }
             }
@@ -199,7 +200,7 @@ class CounterPart implements TranslatableInterface
             /** @var Block $block */
             $capacity = 0;
             foreach($this->venue_blocks as $block){
-                if ($block->getType === Block::UP) {
+                if ($block->getType() === Block::UP) {
                     $capacity += $block->getComputedCapacity();
                 }
             }

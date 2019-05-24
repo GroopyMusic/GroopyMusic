@@ -93,7 +93,7 @@ class Venue {
                 if ($block->isNotSquared()){
                     // nothing
                 } else {
-                    $block->generateSeats();
+                    $block->generateRows();
                 }
             }
         }
@@ -105,10 +105,11 @@ class Venue {
      */
     public function isOnlyFreeSeating(){
         foreach ($this->configurations as $configuration){
-            if (!$configuration->isOnlyStandup()){
-                return false;
-            }
-            if (!$configuration->hasFreeSeatingPolicy()){
+            if ($configuration->isOnlyStandup()){
+                // OK
+            } else if ($configuration->hasFreeSeatingPolicy()){
+                // OK
+            } else {
                 return false;
             }
         }

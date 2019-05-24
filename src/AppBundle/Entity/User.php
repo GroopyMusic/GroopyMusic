@@ -227,8 +227,9 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     public function ownsYBVenue(Venue $venue){
-        $handlers = $venue->getHandlers();
-        return in_array($this, $handlers);
+        //$handlers = $venue->getHandlers();
+        $venues = $this->getVenuesHandled();
+        return in_array($venue, $venues);
     }
 
     public function isYB() {

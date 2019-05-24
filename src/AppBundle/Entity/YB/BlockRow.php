@@ -27,7 +27,7 @@ class BlockRow {
     public function generateSeats(){
         if ($this->numerotationSystem == '2'){
             for ($i = 0; $i < $this->nbSeats; $i++){
-                $name = ''.$i+1;
+                $name = ''.($i+1);
                 $seat = new Seat($name, $this);
                 $this->addSeat($seat);
             }

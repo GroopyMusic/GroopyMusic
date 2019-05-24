@@ -107,9 +107,9 @@ class VenueConfig {
      * Generates all the seats for unsquared blocks
      */
     public function generateSeatForUnsquareRows(){
-        $unsquaredRows = $this->getUnsquaredBlocks();
+        $unsquaredBlks = $this->getUnsquaredBlocks();
         /** @var Block $blk */
-        foreach ($unsquaredRows as $blk){
+        foreach ($unsquaredBlks as $blk){
             $blk->removeSeats();
             $blk->generateSeats();
         }

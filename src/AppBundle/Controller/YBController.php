@@ -153,8 +153,6 @@ class YBController extends BaseController
                     }
                     $blk->setBookedSeatList($bookedSeat);
                 }
-                $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
-                $timeStamp = 0;
                 $timeStamp = $this->getOldestBookingTime($em, $cf);
                 return $this->render('@App/YB/pick_seats.html.twig', [
                     'endTime' => $timeStamp,
@@ -869,11 +867,7 @@ class YBController extends BaseController
     private function getOldestBookingTime (EntityManagerInterface $em, ContractFan $cf){
         $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
         if (count($oldestBooking)>0){
-            $oldestBookingTime = $oldestBooking[0]->getBookingDate();
-            $runTimeMax = new \DateTime($oldestBookingTime->format('Y-m-d H:i:s'));
-            $runTimeMax = $runTimeMax->modify('+15 minutes');
-            $timeStamp = $runTimeMax->getTimestamp();
-            return $timeStamp;
+            return $oldestBooking[0]->getRuntimeMax();
         } else {
             return (new \DateTime())->modify("+15 minutes")->getTimestamp();
         }

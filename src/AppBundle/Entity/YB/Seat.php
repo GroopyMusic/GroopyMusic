@@ -101,7 +101,7 @@ class Seat {
     }
 
     /**
-     * @return Block
+     * @return BlockRow
      */
     public function getRow()
     {

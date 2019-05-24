@@ -46,7 +46,7 @@ class Block {
         for ($i = 0; $i < $this->nbRows; $i++){
             $row = new BlockRow();
             if ($this->rowLabel === 2){
-                $name = ''.$i+1;
+                $name = ''.($i+1);
                 $row->setName($name);
             } else {
                 $row->setName($alphabet[$i]);
@@ -237,20 +237,6 @@ class Block {
         $seat = $row->getSeats()[$seatIndex];
         return $seat;
     }
-
-    /*public function getMaxSeatsOnRow(){
-        if (!$this->isNotSquared()){
-            return $this->nbSeatsPerRow;
-        } else {
-            $max = 0;
-            foreach ($this->rows as $row) {
-                if ($row->getNbSeats() > $max) {
-                    $max = $row->getNbSeats();
-                }
-            }
-            return $max;
-        }
-    }*/
 
     /**
      * Checks if a block is not numbered (if it is not composed of numbered seat)

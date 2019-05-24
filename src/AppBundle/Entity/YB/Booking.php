@@ -53,7 +53,15 @@ class Booking {
         } else {
             $seat = $blk->getSeatAt($this->reservation->getRowIndex(), $this->reservation->getSeatIndex());
         }
-        return $seat;
+        return $seat->__toString();
+    }
+
+    public function getRuntimeMax(){
+        $time = $this->bookingDate;
+        $runTimeMax = new \DateTime($time->format('Y-m-d H:i:s'));
+        $runTimeMax = $runTimeMax->modify('+15 minutes');
+        $timeStamp = $runTimeMax->getTimestamp();
+        return $timeStamp;
     }
 
     /**

@@ -82,9 +82,7 @@ class CustomTicket {
                 $base_url = $base_url . '||' . $this->stations[$i]->getLatitude() . ',' . $this->stations[$i]->getLongitude() . '|marker-' . ($i + 1) . '-' . $color;
             }
             $url = $base_url . '&size=210,200&zoom=13&key=' . $key;
-            file_put_contents('url.txt', $url);
             $formatted_url = str_replace(' ', '', $url);
-            file_put_contents('url2.txt', $formatted_url);
             return $formatted_url;
         } else {
             return "";
@@ -103,7 +101,11 @@ class CustomTicket {
      * @return array|ArrayCollection
      */
     public function getSortedStations(){
-        $stationsArr = $this->stations->toArray();
+        if (!is_array($this->stations)) {
+            $stationsArr = $this->stations->toArray();
+        } else {
+            $stationsArr = $this->stations;
+        }
         usort($stationsArr, function(PublicTransportStation $s1, PublicTransportStation $s2){
             if ($s1->getDistance() === $s2->getDistance()){
                 return 0;

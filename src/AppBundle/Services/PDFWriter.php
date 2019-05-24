@@ -85,7 +85,7 @@ class PDFWriter
             try {
                 $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
             } catch (\Exception $e){
-                $ct = new CustomTicket($event);
+                $ct = new CustomTicket(false);
                 $ct->constructNull();
                 try {
                     $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $ct]);
