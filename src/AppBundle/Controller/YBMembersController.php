@@ -1824,7 +1824,7 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
         $city = $address->getCity();
         $lat = $address->getLatitude();
         $lon = $address->getLongitude();
-        $handle = fopen("yb/file-fromstops.txt", "r");
+        $handle = fopen("yb/file-from-tec/stops.txt", "r");
         $infos = [];
         while (($line = fgets($handle)) !== false) {
             if (strpos($line, strtoupper($city)) !== false){
