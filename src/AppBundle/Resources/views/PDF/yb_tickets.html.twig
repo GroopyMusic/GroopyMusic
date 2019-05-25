@@ -21,7 +21,7 @@
                 <tr style="background-color: lightgoldenrodyellow; border-spacing: 0;">
                     <td style="width: 300px; height: 300px; border-top: solid orange 2px; border-left: solid orange 2px; border-bottom: solid orange 2px;">
                         <p style="text-align: justify">
-                            J<a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
+                            <a href="{{ url('yb_campaign', {'id': campaign.id}) }}" target="_blank">{{ campaign.getTitle }}</a>.
                             {% if ticket.dates|length > 0 %}
                                 {% set dates = ticket.dates %}
                                 <br />
@@ -40,7 +40,9 @@
                             </div>
                         </div>
                         {% if ticket.hasFreeSeatingSeat() %}
-                            {% if ticket.counterPart.getAccessEverywhere() or campaign.config.blocks|length == 0 %}
+                            {% if campaign.config == null %}
+                                <p>Ce ticket donne accès à l'entièreté de la salle !</p>
+                            {% elseif ticket.counterPart.getAccessEverywhere() or campaign.config.blocks|length == 0 %}
                                 <p>Ce ticket donne accès à l'entièreté de la salle !</p>
                             {% else %}
                                 <p>
@@ -116,23 +118,11 @@
                                                 {% endfor %}
                                             </p>
                                         {% else %}
-                                            {% if customTicket.mapsImagePath is not null %}
-                                                <img style="height:200px" src="{{ absolute_url(asset(customTicket.mapsImagePath)) }} "/>
-                                            {% else %}
-                                                <p style="font-size: 10px">Cette carte est mise à titre d'exemple...</p>
-                                                <img style="height:200px" src="{{ absolute_url(asset('yb/images/custom-tickets/test.jpg')) }}"/>
-                                            {% endif %}
-                                            {% if customTicket.stations|length > 0 %}
-                                                <p style="font-size: 11px">Les gares sont situées à moins de 5 km de la salle :
-                                                    {% for station in customTicket.getSortedStations() %}
-                                                        {{ loop.index }}) {{ station.name }} ({{ station.type }} - {{ station.timeToWalk() }}){% if not loop.last %}, {% endif %}
-                                                    {% endfor %}
-                                                </p>
-                                            {% else %}
-                                                {% set msg = 'Les gares sont situées à moins de 5 km de la salle : 1) ARRET_1 (STIB - 1min), 2) ARRET_2 (TEC - 3min), 3) ARRET_3 (STIB - 4min), 4) ARRET_4 (SNCB - 11min)' %}
-                                                <p style="font-size: 10px">Ces valeurs sont mises à titre d'exemple...</p>
-                                                <p style="font-size: 11px; text-align: justify">{{ msg }}</p>
-                                            {% endif %}
+                                            <p style="font-size: 10px">Cette carte est mise à titre d'exemple...</p>
+                                            <img style="height:200px" src="{{ absolute_url(asset('yb/images/custom-tickets/test.jpg')) }}"/>
+                                            {% set msg = 'Les gares sont situées à moins de 5 km de la salle : 1) ARRET_1 (STIB - 1min), 2) ARRET_2 (TEC - 3min), 3) ARRET_3 (STIB - 4min), 4) ARRET_4 (SNCB - 11min)' %}
+                                            <p style="font-size: 10px">Ces valeurs sont mises à titre d'exemple...</p>
+                                            <p style="font-size: 11px; text-align: justify">{{ msg }}</p>
                                         {% endif %}
                                     {% endif %}
                                 {% else %}

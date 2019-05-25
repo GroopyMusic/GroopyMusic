@@ -53,11 +53,11 @@
 {% block additional_javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        $(function() {
+        //$(function() {
             yb_third_collection({
                 add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une rangée</a>',
                 remove:'<a class="btn btn-danger" href="#">Supprimer la rangée</a>'
             })
-        });
+        //});
     </script>
 {% endblock %}

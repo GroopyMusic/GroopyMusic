@@ -22,7 +22,7 @@
                         {{ macros.organization_member_row(currentUser, member, organization) }}
                     {% endfor %}
                     {% if organization.hasPendingRequest %}
-                        {% for request in organization.getJoinOrganizationRequests %}
+                        {% for request in organization.getJoinOrganizationRequest() %}
                             <tr>
                                 <td> {{ request.getEmail }}</td>
                                 <td>EN ATTENTE DE CONFIRMATION</td>

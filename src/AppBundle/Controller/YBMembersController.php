@@ -65,7 +65,7 @@ class YBMembersController extends BaseController
     public function dashboardAction(EntityManagerInterface $em, UserInterface $user = null)
     {
         $this->checkIfAuthorized($user);
-        $currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
+        /** @var User $currentUser */$currentUser = $em->getRepository('AppBundle:User')->find($user->getId());
         if ($currentUser->isSuperAdmin()) {
             $current_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
             $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllPastEvents();
@@ -74,6 +74,7 @@ class YBMembersController extends BaseController
             $passed_campaigns = $em->getRepository('AppBundle:YB\YBContractArtist')->getPassedEvents($user);
         }
         return $this->render('@App/YB/Members/dashboard.html.twig', [
+            'venues' => $currentUser->getVenuesHandled(),
             'current_campaigns' => $current_campaigns,
             'passed_campaigns' => $passed_campaigns,
         ]);
@@ -1243,32 +1244,45 @@ class YBMembersController extends BaseController
             $stationsSNCB = [];
             $stationsSTIB = [];
             $stationsTEC = [];
-            if ($customTicket->isCommuteAdded()) {
-                if ($customTicket->isCommuteSTIBAdded()) {
-                    $stationsSTIB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::STIB, $em);
+            if ($campaign->getVenue() !== null) {
+                if ($customTicket->isCommuteAdded()) {
+                    if ($customTicket->isCommuteSTIBAdded()) {
+                        $stationsSTIB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::STIB, $em);
+                    }
+                    if ($customTicket->isCommuteSNCBAdded()) {
+                        $stationsSNCB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::SNCB, $em);
+                    }
+                    if ($customTicket->isCommuteTECAdded()) {
+                        $stationsTEC = $this->getTECStop($campaign->getVenue()->getAddress());
+                    }
+                    $stations = $this->generate5ClosestStationsList($stationsSTIB, $stationsSNCB, $stationsTEC);
+                    $orderedStations = $this->sortStations($stations);
+                    $customTicket->setStations($orderedStations);
+                    if (count($orderedStations) > 0) {
+                        $mapUrl = $customTicket->getMapQuestUrl($this->getParameter('mapquest_key'));
+                        if ($mapUrl !== "") {
+                            $imgPath = 'yb/images/custom-tickets/campaign' . $customTicket->getCampaign()->getId() . '.jpg';
+                            $customTicket->setMapsImagePath($imgPath);
+                            file_put_contents($imgPath, file_get_contents($mapUrl));
+                        }
+                    } else {
+                        $customTicket->setMapsImagePath(null);
+                    }
                 }
-                if ($customTicket->isCommuteSNCBAdded()) {
-                    $stationsSNCB = $this->getPublicTransportStations($campaign->getVenue()->getAddress()->getLatitude(), $campaign->getVenue()->getAddress()->getLongitude(), PublicTransportStation::SNCB, $em);
-                }
-                if ($customTicket->isCommuteTECAdded()) {
-                    $stationsTEC = $this->getTECStop($campaign->getVenue()->getAddress());
-                }
-                $stations = $this->generate5ClosestStationsList($stationsSTIB, $stationsSNCB, $stationsTEC);
-                $orderedStations = $this->sortStations($stations);
-                $customTicket->setStations($orderedStations);
-                if (count($orderedStations) > 0){
-                    $mapUrl = $customTicket->getMapQuestUrl($this->getParameter('mapquest_key'));
-                    $imgPath = 'yb/images/custom-tickets/campaign' . $customTicket->getCampaign()->getId() . '.jpg';
-                    $customTicket->setMapsImagePath($imgPath);
-                    file_put_contents($imgPath, file_get_contents($mapUrl));
-                } else {
-                    $customTicket->setMapsImagePath(null);
-                }
+                $em->persist($customTicket);
+                $em->flush();
+                $this->addFlash('yb_notice', 'Vos préférences ont bien été enregistrées !');
+                return $this->redirectToRoute('yb_members_dashboard');
+            } else {
+                $customTicket->setCommuteAdded(false);
+                $customTicket->setCommuteSNCBAdded(false);
+                $customTicket->setCommuteSTIBAdded(false);
+                $customTicket->setCommuteTECAdded(false);
+                $em->persist($customTicket);
+                $em->flush();
+                $this->addFlash('yb_notice', "Votre événement n'a pas lieu dans une de nos salles. On ne peut générer les transports en commun les plus proches...");
+                return $this->redirectToRoute('yb_members_dashboard');
             }
-            $em->persist($customTicket);
-            $em->flush();
-            $this->addFlash('yb_notice', 'Vos préférences ont bien été enregistrées !');
-            return $this->redirectToRoute('yb_members_dashboard');
         }
         return $this->render('@App/YB/Members/customize_ticket.html.twig', [
             'campaign' => $campaign,
@@ -1648,8 +1662,10 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
     {
         $currentEvents = $em->getRepository('AppBundle:YB\YBContractArtist')->getAllOnGoingEvents();
         foreach ($currentEvents as $currentEvent) {
-            if ($currentEvent->getVenue() === $venue) {
-                return true;
+            if ($currentEvent->getVenue() !== null) {
+                if ($currentEvent->getVenue() === $venue) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1808,7 +1824,7 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
         $city = $address->getCity();
         $lat = $address->getLatitude();
         $lon = $address->getLongitude();
-        $handle = fopen("stops.txt", "r");
+        $handle = fopen("yb/file-from-tec/stops.txt", "r");
         $infos = [];
         while (($line = fgets($handle)) !== false) {
             if (strpos($line, strtoupper($city)) !== false){
@@ -1851,7 +1867,12 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
     }
 
     private function sortStations($stations){
-        usort($stations, function(PublicTransportStation $s1, PublicTransportStation $s2){
+        if (!is_array($stations)){
+            $stationsArr = $stations->toArray();
+        } else {
+            $stationsArr = $stations;
+        }
+        usort($stationsArr, function(PublicTransportStation $s1, PublicTransportStation $s2){
             if ($s1->getDistance() === $s2->getDistance()){
                 return 0;
             } else if ($s1->getDistance() < $s2->getDistance()){
@@ -1860,7 +1881,7 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
                 return 1;
             }
         });
-        return $stations;
+        return $stationsArr;
     }
 
     private function avoidDuplicate($stations){
@@ -1898,13 +1919,6 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
             $s = array_shift($sorted);
             $stations->add($s);
         }
-        $this->printStations('stations.txt', $stations);
         return $stations;
-    }
-
-    private function printStations($filename, $stations){
-        foreach ($stations as $s){
-            file_put_contents($filename, $s . PHP_EOL, 8);
-        }
     }
 }

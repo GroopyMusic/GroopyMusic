@@ -85,12 +85,11 @@ class PDFWriter
             try {
                 $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
             } catch (\Exception $e){
-                $ct = new CustomTicket(false, false, false, '', false, '', false);
+                $ct = new CustomTicket(false);
                 $ct->constructNull();
                 try {
                     $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $ct]);
                 } catch (\Exception $e){
-                    file_put_contents('error.txt', $e->getMessage());
                 }
             }
         }

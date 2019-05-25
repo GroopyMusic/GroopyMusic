@@ -90,7 +90,11 @@ class YBController extends BaseController
             $cart->generateBarCode();
             $em->persist($cart);
             $em->flush();
-            if ($c->getConfig()->isOnlyStandup() || $c->getConfig()->hasFreeSeatingPolicy()){
+            if ($c->getConfig() === null){
+                return $this->redirectToRoute('yb_checkout', [
+                    'code' => $cart->getBarcodeText(),
+                ]);
+            } elseif ($c->getConfig()->isOnlyStandup() || $c->getConfig()->hasFreeSeatingPolicy()){
                 // on skip le choix des sièges
                 return $this->redirectToRoute('yb_checkout', [
                     'code' => $cart->getBarcodeText(),
@@ -149,8 +153,6 @@ class YBController extends BaseController
                     }
                     $blk->setBookedSeatList($bookedSeat);
                 }
-                $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
-                $timeStamp = 0;
                 $timeStamp = $this->getOldestBookingTime($em, $cf);
                 return $this->render('@App/YB/pick_seats.html.twig', [
                     'endTime' => $timeStamp,
@@ -824,7 +826,9 @@ class YBController extends BaseController
             /** @var YBContractArtist $campaign */
             $campaign = $cf->getContractArtist();
             $config = $campaign->getConfig();
-            if ($config->isOnlyStandup() || $config->hasFreeSeatingPolicy()){
+            if ($config === null){
+                return true;
+            } elseif ($config->isOnlyStandup() || $config->hasFreeSeatingPolicy()){
                 // do nothing
             } else {
                 $quantityPurchased = $cf->getCounterPartsQuantity();
@@ -863,11 +867,7 @@ class YBController extends BaseController
     private function getOldestBookingTime (EntityManagerInterface $em, ContractFan $cf){
         $oldestBooking = $em->getRepository('AppBundle:YB\Booking')->getOldestBookingForContractFan($cf->getId());
         if (count($oldestBooking)>0){
-            $oldestBookingTime = $oldestBooking[0]->getBookingDate();
-            $runTimeMax = new \DateTime($oldestBookingTime->format('Y-m-d H:i:s'));
-            $runTimeMax = $runTimeMax->modify('+15 minutes');
-            $timeStamp = $runTimeMax->getTimestamp();
-            return $timeStamp;
+            return $oldestBooking[0]->getRuntimeMax();
         } else {
             return (new \DateTime())->modify("+15 minutes")->getTimestamp();
         }
