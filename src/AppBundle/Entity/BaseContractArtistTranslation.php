@@ -15,7 +15,6 @@ class BaseContractArtistTranslation
 
     public function getSluggableFields()
     {
-        $this->title = "hello";
        return ['title'];
     }
 
