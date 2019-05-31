@@ -100,6 +100,7 @@ class YBContractArtistInfosType extends AbstractType {
                 ],
                 'exclude_fields' => ['additional_info', 'slug']
             ])
+
 //            ->add('photo', PhotoType::class, array(
 //                'label' => 'Photo de couverture',
 //                'required' => false,
