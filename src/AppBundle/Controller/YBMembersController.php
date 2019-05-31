@@ -130,8 +130,11 @@ class YBMembersController extends BaseController
                     $mailDispatcher->sendYBReminderEventCreated($campaign);
                 } catch (\Exception $e) {
                 }
-                if ($flow->getCurrentStepNumber() == 2)
+                if ($flow->getCurrentStepNumber() == 2) {
                     $this->addFlash('yb_notice', "La campagne a bien été créée. Pour qu'elle soit fonctionnelle, vous n'avez plus qu'à créer des tickets.");
+                    //$campaign->setTicketsSent(!$campaign->hasThreshold());
+                    //$em->flush();
+                }
                 elseif ($flow->getCurrentStepNumber() == 3)
                     $this->addFlash('yb_notice', "Les tickets ont été créés. Vous pouvez maintenant nous donner vos infos de facturation, qui nous permettront de vous reverser le fruit de vos ventes. Si vous souhaitez vous occuper de cette étape plus tard, libre à vous..");
                 // Redirecting to avoid multiple submissions
@@ -1644,7 +1647,7 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
      */
     private function isExistingAddress(EntityManagerInterface $em, Address $a)
     {
-        $addresses = $em->getRepository('AppBundle:Address')->findAll();
+        $addresses = $em->getRepository('AppBundle:YB\Venue')->findAllAddresses();
         foreach ($addresses as $address) {
             if ($a->equals($address)) {
                 return true;
@@ -1735,14 +1738,18 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
         $em = $this->getDoctrine()->getManager();
         $id = $request->get('venueid');
         $venue = $em->getRepository('AppBundle:YB\Venue')->find($id);
-        $configs = $venue->getConfigurations();
-        $responseArray = array();
-        foreach ($configs as $config) {
-            $responseArray[] = array(
-                'id' => $config->getId(),
-                'name' => $config->getName(),
-            );
+        if($venue) {
+            $configs = $venue->getConfigurations();
+            $responseArray = array();
+            foreach ($configs as $config) {
+                $responseArray[] = array(
+                    'id' => $config->getId(),
+                    'name' => $config->getName(),
+                );
+            }
         }
+        else
+            $responseArray = [];
         return new JsonResponse($responseArray);
     }
 

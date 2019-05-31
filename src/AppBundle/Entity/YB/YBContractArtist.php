@@ -62,6 +62,7 @@ class YBContractArtist extends BaseContractArtist
         $this->date_event = new \DateTime();
         $this->external_invoice = 0;
         $this->published = false;
+        $this->draft = true;
     }
 
     public function getBuyers() {
@@ -452,6 +453,11 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="published", type="boolean")
      */
     private $published;
+
+    /**
+     * @ORM\Column(name="draft", type="boolean")
+     */
+    private $draft;
 
     /**
      * Set ticketsSent
@@ -913,5 +919,16 @@ class YBContractArtist extends BaseContractArtist
     }
     public function isPublished() {
         return $this->getPublished();
+    }
+
+    public function setDraft($draft) {
+        $this->draft = $draft;
+        return $this;
+    }
+    public function getDraft() {
+        return $this->draft;
+    }
+    public function isDraft() {
+        return $this->getDraft();
     }
 }

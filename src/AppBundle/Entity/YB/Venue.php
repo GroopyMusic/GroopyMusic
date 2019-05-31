@@ -12,7 +12,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 /**
  * Class Venue
  * @ORM\table(name="yb_venues")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\VenueRepository")
  */
 class Venue {
 
