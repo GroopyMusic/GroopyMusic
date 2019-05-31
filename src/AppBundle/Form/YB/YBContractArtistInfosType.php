@@ -104,32 +104,6 @@ class YBContractArtistInfosType extends AbstractType {
                 'label' => 'Photo de couverture',
                 'required' => false,
             ))
-            ->add('venue', EntityType::class, [
-                 'label' => 'Salle',
-                 'required' => true,
-                 'choices' => $options['venues'],
-                 'placeholder' => 'Sélectionner une salle',
-                 'class' => Venue::class,
-                 'group_by' => function(Venue $v){
-                     if (strpos($v->getDisplayName(), Venue::OWN_VENUE)){
-                         return 'Mes salles';
-                     } else {
-                         return 'Autres salles';
-                     }
-                 },
-                 'choice_label' => 'name'
-             ]);
-        $configs = array();
-        if ($options['data']->getVenue() != null){
-            $configs = $options['data']->getVenue()->getConfigurations();
-        }
-        $builder->add('config', EntityType::class, [
-            'label' => 'Configuration',
-            'required' => true,
-            'choices' => $configs,
-            'placeholder' => 'Sélectionner une configuration de salle',
-            'class' => VenueConfig::class,
-        ]);
         ;
 
         if($options['creation'] || ($options['data'] != null && !$options['data']->hasSoldAtLeastOne())) {
@@ -181,6 +155,8 @@ class YBContractArtistInfosType extends AbstractType {
                     'choice_label' => 'name',
                 ]);
         }
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
@@ -229,5 +205,53 @@ class YBContractArtistInfosType extends AbstractType {
     public function getBlockPrefix()
     {
         return 'app_bundle_ybcontract_artist_infos_type';
+    }
+
+    protected function addElements(FormInterface $form, Venue $venue = null, User $user = null){
+        $form->add('venue', EntityType::class, [
+            'label' => 'Salle',
+            'required' => true,
+            'choices' => $form->getConfig()->getOptions()['venues'],
+            'data' => $venue,
+            'placeholder' => 'Sélectionner une salle',
+            'class' => Venue::class,
+            'group_by' => function(Venue $v){
+                if (strpos($v->getDisplayName(), Venue::OWN_VENUE)){
+                    return 'Mes salles';
+                } else {
+                    return 'Autres salles';
+                }
+            },
+            'choice_label' => 'name'
+        ]);
+        $configs = array();
+        if ($venue){
+            $configs = $venue->getConfigurations();
+        }
+        $form->add('config', EntityType::class, [
+            'label' => 'Configuration',
+            'required' => true,
+            'choices' => $configs,
+            'placeholder' => 'Sélectionner une configuration de salle',
+            'class' => VenueConfig::class,
+        ]);
+    }
+
+    function onPreSubmit(FormEvent $event){
+        $form = $event->getForm();
+        $data = $event->getData();
+        $em = $event->getForm()->getConfig()->getOptions()['em'];
+        $venue = $em->getRepository('AppBundle:YB\Venue')->find($data['venue']);
+        var_dump($data);
+        $user = $event->getForm()->getConfig()->getOptions()['user'];
+        $this->addElements($form, $venue, $user);
+    }
+
+    function onPreSetData(FormEvent $event){
+        $campaign = $event->getData();
+        $form = $event->getForm();
+        $venue = $campaign->getVenue() ? $campaign->getVenue() : null;
+        $user = $event->getForm()->getConfig()->getOptions()['user'];
+        $this->addElements($form, $venue, $user);
     }
 }
