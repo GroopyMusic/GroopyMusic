@@ -55,7 +55,6 @@
                     {% if creation %}
                         {{ form_row(form.organization) }}
                     {% else %}
-                        {% do form.organization.setRendered %}
                         <div class="text-muted font-italic pb-2">Une fois la campagne lancée, il n'est plus possible de changer l'organisation en charge. Si besoin de le faire malgré tout, <a target="_blank" href="{{ path('yb_index') }}#contact">contactez-nous</a> en exposant la raison derrière le changement.</div>
                         <div class="text-center">{% if campaign.organization.published %}<a target="_blank" href="{{ url('yb_organization', {'id':campaign.organization.id, 'slug': campaign.organization.slug}) }}">{% endif %}{{ campaign.organization.name }}{% if campaign.organization.published %}</a>{% endif %}</div>
                     {% endif %}
@@ -117,7 +116,7 @@
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Images </h2>
             <div class="row">
-                <div class="col-12 col-md-6">
+                {#<div class="col-12 col-md-6">
                     {{ form_label(form.photo) }}
                     <div class="text-text-muted font-italic pb-2">
                         Cette photo sera utilisée comme bannière de l'événement. Il est essentiel qu'elle soit de bonne qualité.
@@ -126,7 +125,7 @@
                     {{ form_errors(form.photo) }}
                     {{ form_widget(form.photo) }}
                 </div>
-
+#}
                 {% if campaign.id is not null and campaign.photo is not null %}
                     <div class="col-12 col-md-6"><img class="img-fluid" src="{{ yb_asset(campaign.webPath(campaign.photo)) }}" /></div>
                 {% endif %}
