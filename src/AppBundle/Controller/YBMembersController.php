@@ -121,6 +121,16 @@ class YBMembersController extends BaseController
         if ($flow->isValid($form)) {
             $em->persist($campaign);
             $em->flush();
+            if($flow->getCurrentStepNumber() == 1) {
+                $campaign->setTicketsSent(!$campaign->hasThreshold());
+                if($campaign->getImageFile() != null) {
+                    $photo = $campaign->getPhoto() != null ? $campaign->getPhoto() : new Photo();
+                    $campaign->setPhoto($photo);
+                    $photo->setFilename($campaign->getFilename())->setImageSize($campaign->getImageSize());
+                    $em->persist($photo);
+                    $em->flush();
+                }
+            }
             $em->refresh($campaign);
             $flow->setGenericFormOptions($generic_options);
             $flow->saveCurrentStepData($form);
@@ -132,8 +142,6 @@ class YBMembersController extends BaseController
                 }
                 if ($flow->getCurrentStepNumber() == 2) {
                     $this->addFlash('yb_notice', "La campagne a bien été créée. Pour qu'elle soit fonctionnelle, vous n'avez plus qu'à créer des tickets.");
-                    //$campaign->setTicketsSent(!$campaign->hasThreshold());
-                    //$em->flush();
                 }
                 elseif ($flow->getCurrentStepNumber() == 3)
                     $this->addFlash('yb_notice', "Les tickets ont été créés. Vous pouvez maintenant nous donner vos infos de facturation, qui nous permettront de vous reverser le fruit de vos ventes. Si vous souhaitez vous occuper de cette étape plus tard, libre à vous..");
@@ -180,8 +188,20 @@ class YBMembersController extends BaseController
         $form = $flow->createForm();
         //$form->handleRequest($request);
         if ($flow->isValid($form)) {
+
             $flow->saveCurrentStepData($form);
             $em->flush();
+
+            if($flow->getCurrentStepNumber() == 1) {
+                if($campaign->getImageFile() != null) {
+                    $photo = $campaign->getPhoto() != null ? $campaign->getPhoto() : new Photo();
+                    $campaign->setPhoto($photo);
+                    $photo->setFilename($campaign->getFilename())->setImageSize($campaign->getImageSize());
+                    $em->persist($photo);
+                    $em->flush();
+                }
+            }
+
             if ($flow->nextStep()) {
 
                 if($flow->getCurrentStepNumber() == 2)
@@ -222,6 +242,18 @@ class YBMembersController extends BaseController
         $em->persist($campaign);
         $em->flush();
         return $this->forward('AppBundle:YBMembers:displayOngoingCampaignsForOrganization', ['id' => $campaign->getOrganization()->getId()]);
+    }
+
+    /**
+     * @Route("/campaign/{id}/toggle-draft", name="yb_members_campaign_toggle_draft")
+     */
+    public function toggleDraftCampaignAction(YBContractArtist $campaign, UserInterface $user = null, EntityManagerInterface $em) {
+        $this->checkIfAuthorized($user, $campaign);
+        $campaign->toggleDraft();
+        $em->persist($campaign);
+        $em->flush();
+        $json = $campaign->getDraft() ? ['false' => 1, 'true' => 0] : ['true' => 1, 'false' => 0];
+        return new JsonResponse($json);
     }
 
     /**

@@ -14,6 +14,7 @@ use AppBundle\Entity\YB\Organization;
 use AppBundle\Entity\YB\YBContact;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\YBOrder;
+use AppBundle\Exception\YBAuthenticationException;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\YB\YBContactType;
 use AppBundle\Services\CaptchaManager;
@@ -70,8 +71,12 @@ class YBController extends BaseController
     /**
      * @Route("/campaign/{id}/{slug}", name="yb_campaign")
      */
-    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, Request $request, ValidatorInterface $validator, $slug = null)
+    public function campaignAction(YBContractArtist $c, EntityManagerInterface $em, Request $request, UserInterface $user = null, $slug = null)
     {
+        if($c->isDraft()) {
+            $this->checkIfAuthorized($user, $c);
+        }
+
         if ($slug != null && $c->getSlug() != $slug) {
             return $this->redirectToRoute('yb_campaign', ['id' => $c->getId(), 'slug' => $c->getSlug()]);
         }
@@ -877,7 +882,8 @@ class YBController extends BaseController
     /**
      * @Route("/organizer/{id}-{slug}", name="yb_organization")
      */
-    public function organizationAction(Organization $organization, UserInterface $user = null, EntityManagerInterface $em, $slug = null) {
+    public function organizationAction(Organization $organization, EntityManagerInterface $em, $slug = null) {
+        $user = $this->getUser();
         if($organization->getSlug() != null && $slug != null && $organization->getSlug() != $slug) {
             return $this->redirectToRoute('yb_organization', ['id' => $organization->getId(), 'slug' => $organization->getSlug()]);
         }

@@ -6,7 +6,7 @@
     {% set photo = campaign.photo is not null ? campaign.photo : false %}
 
     {% block header_container %}
-        <header class="masthead checkout-masthead text-white" {% if photo %}style="background-image: url('{{ absolute_url(asset(campaign.webPath(photo))) }}');"{% endif %} >
+        <header class="masthead checkout-masthead text-white" {% if photo %}style="background-image: url('{{ yb_asset(campaign.webPath(photo))) }}');"{% endif %} >
             <div class="overlay"></div>
             <div class="container">
                 <div class="row">
