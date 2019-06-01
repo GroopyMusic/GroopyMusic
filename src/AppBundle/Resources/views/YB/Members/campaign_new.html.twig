@@ -80,6 +80,7 @@
 
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Salle où se déroule l'événement </h2>
+            {{ hidden_loader(true, false) }}
             <div class="row">
                 {% if form.venue is defined %}
                 <div class="col-12 col-md-12">
@@ -87,7 +88,7 @@
                 </div>
                 {% endif %}
                 {% if form.config is defined %}
-                    <div class="col-12 col-md-12">
+                    <div class="col-12 col-md-12 config-select">
                         {{ form_row(form.config) }}
                     </div>
                 {% endif %}
@@ -393,7 +394,11 @@
                 data: {
                     venueid: venueSelector.val()
                 },
+                beforeSend: function () {
+                    loader();
+                },
                 success: function(configs){
+                    hideLoader();
                     venueSelector.prop('disabled', false);
                     var configSelect = $('#app_bundle_ybcontract_artist_infos_type_config');
                     configSelect.html('');
@@ -538,6 +543,38 @@
                     }
                 });
             {% endif %}
+
+            var configValue = $('#app_bundle_ybcontract_artist_infos_type_config').val();
+            var configVenue = $('#app_bundle_ybcontract_artist_infos_type_venue').val();
+            if (configValue == null && configVenue != null){
+                $.ajax({
+                    url: "{{ path('campaign_venue_list_config') }}",
+                    type: "GET",
+                    dataType: "JSON",
+                    data: {
+                        venueid: $('#app_bundle_ybcontract_artist_infos_type_venue').val()
+                    },
+                    beforeSend: function () {
+                        loader();
+                    },
+                    success: function(configs){
+                        hideLoader();
+                        $('#app_bundle_ybcontract_artist_infos_type_venue').prop('disabled', false);
+                        var configSelect = $('#app_bundle_ybcontract_artist_infos_type_config');
+                        configSelect.html('');
+                        configSelect.append('<option value> Selectionne une configuration de la salle ' + $('#app_bundle_ybcontract_artist_infos_type_venue').find("option:selected").text() + ' ...</option>')
+                        $.each(configs, function(key, config){
+                            configSelect.append('<option value="' + config.id + '">' + config.name + '</option>')
+                        });
+                        $('#app_bundle_ybcontract_artist_infos_type_confirmVenue').attr('checked', false);
+                    },
+                    error: function(err){
+                        $('#app_bundle_ybcontract_artist_infos_type_venue').prop('disabled', false);
+                        alert("Problème lors du chargement ...");
+                    }
+                })
+            }
+
         });
         function hideCraueButtons(){
             $('.finishBtn').attr('disabled', 'true');
@@ -551,6 +588,14 @@
         function hideCustomButton(){
             $('.finishBtn').removeAttr('disabled');
             $('.maxCapacityCheckBtn').css('display', 'none');
+        }
+        function loader() {
+            $('.loader').css('display', 'block');
+            $('.config-select').css('display', 'none');
+        }
+        function hideLoader() {
+            $('.loader').css('display', 'none');
+            $('.config-select').css('display', 'block');
         }
     </script>
 {% endblock %}
