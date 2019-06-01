@@ -46,8 +46,18 @@
         } %}
     </section>
 
-    {% if flow.getCurrentStepNumber() == 1 %}
+    <section class="container my-4 py-2 my-md-5">
+        {% if campaign.isDraft %}
+            <div class="alert alert-dark" role="alert">
+                Cette campagne est en mode <b>brouillon</b>.
+                {% if creation %} Terminez sa mise au point avant de la rendre accessible au grand public.
+                {% else %}Vous pouvez à tout moment la rendre accessible au grand public, via <a href="{{ path('yb_members_dashboard') }}">votre tableau de bord</a>.
+                {% endif %}
+            </div>
+        {% endif %}
+    </section>
 
+    {% if flow.getCurrentStepNumber() == 1 %}
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Organisation en charge de l'événement</h2>
             <div class="row">
@@ -116,36 +126,39 @@
 
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">
             <h2>Images </h2>
-            <div class="row">
-                {#<div class="col-12 col-md-6">
-                    {{ form_label(form.photo) }}
-                    <div class="text-text-muted font-italic pb-2">
-                        Cette photo sera utilisée comme bannière de l'événement. Il est essentiel qu'elle soit de bonne qualité.
-                        Sachez aussi que le titre de l'événement sera écrit par-dessus, en blanc.
-                    </div>
-                    {{ form_errors(form.photo) }}
-                    {{ form_widget(form.photo) }}
-                </div>
-#}
-                {% if campaign.id is not null and campaign.photo is not null %}
-                    <div class="col-12 col-md-6"><img class="img-fluid" src="{{ yb_asset(campaign.webPath(campaign.photo)) }}" /></div>
-                {% endif %}
-            </div>
-            <div class="row py-5">
-                <div class="col-12">
-                    <div class="form-row">
-                        <div><label>Autres photos</label></div>
-                        <div class="text-muted font-italic pb-2">
-                            Les photos que vous ajoutez ici seront affichées sous la description de l'événement, les unes à la suite des autres. Nous vous conseillons de limiter le nombre de photos afin que la page ne soit pas trop longue pour vos visiteurs.
+            {% if creation %}
+                <p>Une fois la campagne créée, vous pourrez ajouter des images pour l'illustrer.</p>
+            {% else %}
+                 <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form_label(form.imageFile) }}
+                        <div class="text-text-muted font-italic pb-2">
+                            Cette photo sera utilisée comme bannière de l'événement. Il est essentiel qu'elle soit de bonne qualité, mais pas trop lourde <b>(max 2 Mo)</b>.
+                            Sachez aussi que le titre de l'événement sera écrit par-dessus, en blanc.
                         </div>
-                            {% if campaign.id is not null %}
-                                <div class="dropzone w-100" id="#campaign_edit_photos"></div>
-                            {% else %}
-                                <p>Une fois la campagne créée, vous pourrez ajouter d'autres images pour l'illustrer.</p>
-                            {% endif %}
+                        {{ form_errors(form.imageFile) }}
+                        {{ form_widget(form.imageFile) }}
+                    </div>
+                    {% if campaign.photo is not null %}
+                        <div class="col-12 col-md-6"><img class="img-fluid" src="{{ yb_asset(campaign.webPath(campaign.photo)) }}" /></div>
+                    {% endif %}
+                </div>
+                <div class="row py-5">
+                    <div class="col-12">
+                        <div class="form-row">
+                            <div><label>Autres photos</label></div>
+                            <div class="text-muted font-italic pb-2">
+                                Les photos que vous ajoutez ici seront affichées sous la description de l'événement, les unes à la suite des autres. Nous vous conseillons de limiter le nombre de photos afin que la page ne soit pas trop longue pour vos visiteurs.
+                            </div>
+                                {% if campaign.id is not null %}
+                                    <div class="dropzone w-100" id="#campaign_edit_photos"></div>
+                                {% else %}
+                                    <p>Une fois la campagne créée, vous pourrez ajouter d'autres images pour l'illustrer.</p>
+                                {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </section>
 
         <section class="container my-4 py-2 my-md-5 campaign-edit-section">

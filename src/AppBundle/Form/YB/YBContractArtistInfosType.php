@@ -24,6 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class YBContractArtistInfosType extends AbstractType {
 
@@ -100,14 +101,9 @@ class YBContractArtistInfosType extends AbstractType {
                 ],
                 'exclude_fields' => ['additional_info', 'slug']
             ])
-
-//            ->add('photo', PhotoType::class, array(
-//                'label' => 'Photo de couverture',
-//                'required' => false,
-//            ))
         ;
 
-        if($options['creation'] || ($options['data'] != null && !$options['data']->hasSoldAtLeastOne())) {
+        if($options['creation'] || ($options['data'] != null && $options['data']->hasThreshold() && !$options['data']->hasSoldAtLeastOne())) {
             $builder->add('dateEnd', DateTimeType::class, array(
                 'required' => false,
                 'label' => 'Date de validation',
@@ -140,6 +136,17 @@ class YBContractArtistInfosType extends AbstractType {
                         new Assert\NotBlank(),
                     )
                 ));
+        }
+        else {
+            $builder
+                ->add('imageFile', VichImageType::class, [
+                    'label' => 'Photo de couverture',
+                    'required' => false,
+                    'download_link' => false,
+                    'download_uri' => false,
+                    'image_uri' => true,
+                    'allow_delete' => false,
+                ]);
         }
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
         $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));

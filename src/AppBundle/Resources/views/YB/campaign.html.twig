@@ -36,7 +36,14 @@
         <div class="row">
             <div class="col-12 col-lg-7">
                 <div class="mb-2">
-    <b>Organisé par {% if campaign.organization.published %}<a href="{{ path('yb_organization', {'id':campaign.organization.id}) }}">{% endif %}{{ campaign.organization.name|raw|nl2br }}{% if campaign.organization.published %}</a>{% endif %}</b>
+                {% if campaign.isDraft %}
+                    <div class="alert alert-dark" role="alert">
+                        Cette campagne est en mode <b>brouillon</b>. Vous la voyez parce que vous faites partie de l'organisation qui l'organise. Pour la rendre accessible au grand public, rendez-vous dans <a href="{{ path('yb_members_dashboard') }}">votre tableau de bord</a>.
+                    </div>
+                {% endif %}
+                <div>
+                    <b>Organisé par {% if campaign.organization.published %}<a href="{{ path('yb_organization', {'id':campaign.organization.id}) }}">{% endif %}{{ campaign.organization.name|raw|nl2br }}{% if campaign.organization.published %}</a>{% endif %}</b>
+                </div>
                 </div>
                 {% if is_event %}
                     <div class="mb-2">

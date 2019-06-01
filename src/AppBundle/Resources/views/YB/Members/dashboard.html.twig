@@ -23,9 +23,15 @@
                     <a href="{{ path('yb_members_campaign_new') }}"><i class="far fa-plus-square"></i> Nouvelle campagne</a>
                     <div class="text-muted">Créez une campagne de vente de tickets pour votre événement, avec de nombreuses options de configuration.</div>
                 </li>
+                {#<li class="list-group-item">
+                    <i class="far fa-credit-card"></i> Facturation
+                    <div class="text-muted">Consultez vos factures, les infos concernant notre mode de facturation et configurez vos infos de paiement.</div>
+                #}
                 <li class="list-group-item">
-                    {#<a href="{{ path('yb_members_invoices') }}">#}<i class="far fa-credit-card"></i> Facturation{#</a>#}
-                    <div class="text-muted">(Bientôt) Consultez vos factures, les infos concernant notre mode de facturation et configurez vos infos de paiement.</div>
+                    <a href="https://play.google.com/store/apps/details?id=adri.suys.un_mutescan"><i class="fas fa-mobile-alt"></i> Application de scan</a>
+                    <div class="text-muted">Téléchargez notre application pour scanner les QR codes des tickets lors de vos événements, retrouver les statistiques des entrées, ajouter des tickets vendus sur place, et plus encore.</div>
+                </li>
+
                 <li class="list-group-item">
                     <a href="{{ path('yb_members_my_organizations') }}"><i class="fa fa-group"></i> Mes organisations</a>
                     <div class="text-muted">Gérez vos organisations, créez-en des nouvelles, rajouter des membres, etc.</div>
@@ -74,3 +80,4 @@
     </div>
 
 {% endblock %}
+

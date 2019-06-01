@@ -17,6 +17,7 @@
             "yb/yb.scss"
             "yb/jquery.seat-charts.css"
             'yb/pick-seats.css'
+            'yb/bootstrap4-toggle.min.css'
             %}
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
@@ -29,7 +30,8 @@
 	<link rel="manifest" href="{{ yb_asset('images/favicon/site.webmanifest') }}">
 	<link rel="mask-icon" href="{{ yb_asset('images/favicon/safari-pinned-tab.svg') }}" color="#df790e">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<meta name="apple-mobile-web-app-title" content="Ticked-it!">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <meta name="apple-mobile-web-app-title" content="Ticked-it!">
 	<meta name="application-name" content="Ticked-it!">
 	<meta name="msapplication-TileColor" content="#da532c">
 </head>
@@ -188,6 +190,7 @@
         'yb/js/dropzone.js'
         'yb/js/jplist.min.js'
         'yb/js/jquery.seat-charts.min.js'
+        'yb/js/bootstrap4-toggle.min.js'
     %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}

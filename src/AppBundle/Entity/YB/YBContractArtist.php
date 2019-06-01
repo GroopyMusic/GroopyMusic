@@ -10,12 +10,16 @@ use AppBundle\Entity\Photo;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 /**
  * ContractArtist
  *
  * @ORM\Table(name="yb_contract_artist")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\YBContractArtistRepository")
+ * @Vich\Uploadable
  */
 class YBContractArtist extends BaseContractArtist
 {
@@ -328,6 +332,54 @@ class YBContractArtist extends BaseContractArtist
 
     public function togglePublicity() {
         $this->setPublished(!$this->published);
+    }
+
+    public function toggleDraft() {
+        $this->setDraft(!$this->draft);
+    }
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     *
+     * @Vich\UploadableField(mapping="yb_campaign_header", fileNameProperty="fileName", size="imageSize")
+     *
+     * @var File
+     */
+    private $imageFile;
+    /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+    private $filename;
+    private $imageSize;
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+        // It is required that at least one field changes if you are using doctrine
+        // otherwise the event listeners won't be called and the file is lost
+        $this->updatedAt = new \DateTime();
+    }
+
+    public function setImageSize($imageSize)
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    public function setFilename($filename) {
+        $this->filename = $filename;
+    }
+
+    public function getFilename() {
+        return $this->filename;
+    }
+
+    public function getImageSize() {
+        return $this->imageSize;
+    }
+
+    public function getImageFile() {
+        return $this->imageFile;
     }
 
     /**

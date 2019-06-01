@@ -35,5 +35,19 @@
                 prefix: 'third-collection'
             }, options));
         }
+
+        $(function() {
+            $('.toggle-draft').change(function() {
+                $.get($(this).data('url'), "JSON")
+                    .done(function( data ) {
+                        if (data.true == 1) {
+                            $('#toggle-trigger').bootstrapToggle('on');
+                        }
+                        else {
+                            $('#toggle-trigger').bootstrapToggle('off');
+                        }
+                    });
+            });
+        });
     </script>
 {% endblock %}
