@@ -1,6 +1,6 @@
 {% extends "@App/YB/Members/base.html.twig" %}
 
-{% block body %}
+{% block members_body %}
     {% import '@App/YB/Macros/venue.html.twig' as macros %}
 
     <section class="container px-0 mt-3">
@@ -56,7 +56,7 @@
         {% endif %}
     </section>
 
-{% endblock body %}
+{% endblock %}
 
 {% block additional_javascripts %}
     <script>jplist.init();</script>

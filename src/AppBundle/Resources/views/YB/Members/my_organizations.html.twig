@@ -1,6 +1,6 @@
 {% extends "@App/YB/Members/base.html.twig" %}
 
-{% block body %}
+{% block members_body %}
     {% import '@App/YB/Macros/organization.html.twig' as macros %}
     {% form_theme form ':Form:custom_submit_button.html.twig' %}
 
@@ -91,7 +91,7 @@
         {{ form_end(form) }}
     </section>
 
-{% endblock body %}
+{% endblock %}
 
 {% block additional_javascripts %}
     <script>jplist.init();</script>

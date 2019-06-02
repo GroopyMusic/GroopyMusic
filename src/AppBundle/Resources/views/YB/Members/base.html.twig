@@ -4,6 +4,32 @@
 
 {% endblock %}
 
+{% block body %}
+    <div class="row w-100">
+        <div class="d-block d-md-none col-12">
+
+            <div class="container text-center mt-2">
+                <button class="btn btn-primary" data-toggle="collapse" data-target="#dashboard-collapse"><i class="fas fa-angle-double-down"></i> Afficher mes options</button>
+            </div>
+            <section class="container py-5 collapse" id="dashboard-collapse">
+                {% include '@App/YB/Macros/dashboard.html.twig' %}
+                <div class="text-center mt-2">
+                    <button class="btn btn-primary" data-toggle="collapse" data-target="#dashboard-collapse"><i class="fas fa-angle-double-up"></i> Masquer mes options</button>
+                </div>
+            </section>
+        </div>
+        <div class="d-none d-md-block col-12 col-md-4">
+            <section class="container py-5">
+                {% include '@App/YB/Macros/dashboard.html.twig' %}
+            </section>
+        </div>
+
+        <div class="col-12 col-md-8">
+        {% block members_body %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
 {% block additional_javascripts %}
     <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
 
