@@ -6,6 +6,8 @@
         <ol class="breadcrumb-arrow">
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
             <li><a href="{{ path('yb_members_my_organizations') }}">Mes organisations</a></li>
+            <li><a target="_blank" href="{{ path('yb_organization', {'id': organization.id}) }}">{{ organization.getName }}</a></li>
+
             <li class="active"><span>Modifier mon organisation</span></li>
         </ol>
     </section>

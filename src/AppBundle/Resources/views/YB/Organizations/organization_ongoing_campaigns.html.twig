@@ -1,10 +1,13 @@
 <ul class="list-group">
     {% for camp in campaigns %}
         <li class="list-group-item">
-            {% if organization.published and camp.published %}<span class="badge badge-info">Visible sur la page de l'organisation</span><br />{% endif %}{{ camp.getTitle }}<br/>
+            {% if camp.draft %}<span class="badge badge-dark">Brouillon</span><br />
+            {% elseif organization.published and camp.published %}<span class="badge badge-info">Visible sur la page de l'organisation</span><br />{% endif %}
+            {{ camp.getTitle }}<br/>
+
             <a target="_blank" href="{{ url('yb_campaign', {'id': camp.id, 'slug': camp.slug}) }}">voir</a>
             - <a target="_blank " href="{{ url('yb_members_campaign_edit', {'id': camp.id}) }}">modifier</a>
-            {% if organization.published %}
+            {% if organization.published and not camp.draft %}
                 - <a class="toggle-publicity" data-url="{{ url('yb_members_campaign_toggle_publicity', {'id': camp.id}) }}" href="{{ url('yb_members_campaign_toggle_publicity', {'id': camp.id}) }}">{% if camp.published %}retirer la campagne de la page publique de l'organisation{% else %}afficher la campagne sur la page de l'organisation{% endif %}</a>
             {% endif %}
         </li>

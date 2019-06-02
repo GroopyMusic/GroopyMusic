@@ -33,6 +33,10 @@
 {% block body %}
     {% if events|length == 0 %}
         <section class="container my-5">
+            {% if not organization.published %}
+                <p class="alert alert-dark">La page de cette organisation n'est pas publiée. Vous y avez accès en pré-visualisation parce que vous gérez l'organisation, mais les visiteurs lambdas n'ont pas accès à cette page.</p>
+            {% endif %}
+
             <h2>Campagnes en cours pour {{ organization.getName() }}</h2>
             <p class="text-center py-3">Cet organisateur n'a pas d'événement publié sur sa page à l'heure actuelle.</p>
         </section>

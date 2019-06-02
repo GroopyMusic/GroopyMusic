@@ -3,8 +3,9 @@
     <div data-jplist-item class="my-5">
         <div class="row">
             <div class="col-12">
-                <h3 class="name font-weight-bold text-center" style="background-color:rgba(243, 146, 0, 0.46)">
+                <h3 class="py-1 name font-weight-bold text-center" style="background-color:rgba(243, 146, 0, 0.46)">
                     {{ organization.getName|nl2br }}{% if not organization.hasMember(currentUser) %} (SUPER ADMIN){% endif %}
+                    {% if organization.published %}<span class="badge badge-info">Page publique</span>{% endif %}
                 </h3>
             </div>
             <div class="col-12 col-md-6">

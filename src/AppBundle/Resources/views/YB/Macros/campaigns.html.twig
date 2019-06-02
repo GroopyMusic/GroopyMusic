@@ -4,7 +4,7 @@
         <div class="col-12">
             <h3 class="name font-weight-bold pl-2" style="background-color:rgba(243, 146, 0, 0.15)">{{ campaign.getTitle }}</h3>
             <div class="small">
-                Organisé par {{ campaign.getOrganizationName }}
+                Organisé par <a href="{{ path('yb_members_my_organizations') }}">{{ campaign.getOrganizationName }}</a>
             </div>
             {% if campaign.pending %}
                 <div class="mt-2"><i class="fas fa-exclamation"></i>
