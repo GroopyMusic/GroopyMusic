@@ -28,6 +28,7 @@ class XTicket
     }
 
     /**
+     * Check if ticket is validated
      * @return bool
      */
     public function isValidated()
@@ -36,6 +37,7 @@ class XTicket
     }
 
     /**
+     * Check if contractFan is refunded
      * @return bool
      */
     public function isRefunded()

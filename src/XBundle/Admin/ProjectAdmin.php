@@ -40,10 +40,10 @@ class ProjectAdmin extends BaseAdmin
                 'label' => 'Supprimé'
             ))
             ->add('successful', null, array(
-                'label' => 'Réussite'
+                'label' => 'Réussi'
             ))
             ->add('failed', null, array(
-                'label' => 'Échec'
+                'label' => 'Échoué'
             ))
             ->add('refunded', null, array(
                 'label' => 'Remboursé'

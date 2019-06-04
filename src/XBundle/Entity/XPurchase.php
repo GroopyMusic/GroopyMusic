@@ -41,11 +41,19 @@ class XPurchase
         return $str;
     }
 
+    /**
+     * Get total amount of purchase
+     * @return float
+     */
     public function getAmount()
     {
         return $this->quantity * $this->getUnitaryPrice() ;
     }
 
+    /**
+     * Get product unitary price
+     * @return float
+     */
     public function getUnitaryPrice() {
         if($this->product->getFreePrice()) {
             return $this->freePrice;
@@ -55,17 +63,27 @@ class XPurchase
         }
     }
 
+    /**
+     * Get project from product
+     * @return Project
+     */
     public function getProject()
     {
         return $this->product->getProject();
     }
 
+    /**
+     * Get options from product
+     * @return array
+     */
     public function getOptions() {
         return $this->product->getOptions();
     }
 
     /**
-     * Check if purchase has choices in param
+     * Check if purchase has choices
+     * @param $comboChoices
+     * @return bool
      */
     public function hasChoices($comboChoices) {
         if (is_array($comboChoices)) {

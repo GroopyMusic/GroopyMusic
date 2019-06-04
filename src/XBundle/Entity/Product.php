@@ -41,14 +41,26 @@ class Product
         return '' . $this->getName();
     }
 
+    /**
+     * Update number of times product has been sold
+     * @param $quantity
+     */
     public function updateProductsSold($quantity) {
         $this->productsSold += $quantity;
     }
 
+    /**
+     * Return purchasable quantity for product
+     * @return integer
+     */
     public function disponibility() {
         return $this->supply - $this->productsSold;
     }
 
+    /**
+     * Check if product is a ticket
+     * @return bool
+     */
     public function isTicket() {
         return $this->getIsTicket();
     }

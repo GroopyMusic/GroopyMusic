@@ -25,6 +25,10 @@ class XCart
         $this->contracts = new ArrayCollection();
     }
 
+    /**
+     * Generate a barcode for cart
+     * @return string
+     */
     public function generateBarCode()
     {
         if (empty($this->barcode_text)) {
@@ -35,7 +39,11 @@ class XCart
         return $this->barcode_text;
     }
 
-    // Unmapped
+    /**
+     * Calculate total amount
+     * Unmapped
+     * @return float
+     */
     private $amount = null;
     public function getAmount()  {
         if($this->amount == null) {
@@ -47,14 +55,26 @@ class XCart
         return $this->amount;
     }
 
+    /**
+     * Check if payment is refunded
+     * @return bool
+     */
     public function isRefunded() {
         return $this->payment == null ? false : $this->payment->getRefunded();
     }
 
+    /**
+     * Check if cart is paid
+     * @return bool
+     */
     public function isPaid() {
         return $this->getPaid();
     }
 
+    /**
+     * Check state cart
+     * @return string
+     */
     public function getState() {
         if($this->isPaid()) {
             if($this->isRefunded()) {

@@ -52,21 +52,36 @@ class XContractFan
         return $str;
     }
 
+    /**
+     * Calculate total amount
+     * @return float
+     */
     public function initAmount() {
         $this->amount = array_sum(array_map(function(XPurchase $purchase) {
             return $purchase->getAmount();
         }, $this->purchases->toArray()));
     }
 
+    /**
+     * Check if cart is paid
+     * @return bool
+     */
     public function getPaid() {
         return $this->cart->getPaid();
     }
 
-    /** @return PhysicalPersonInterface */
+    /**
+     * Get contributor
+     * @return PhysicalPersonInterface
+     */
     public function getPhysicalPerson() {
         return $this->getCart()->getOrder();
     }
 
+    /**
+     * Get contributor name to display
+     * @return string
+     */
     public function getDisplayName() {
         if($this->getPhysicalPerson() == null) {
             return 'anonyme';
@@ -74,6 +89,10 @@ class XContractFan
         return $this->getPhysicalPerson()->getDisplayName();
     }
 
+    /**
+     * Get contributor email
+     * @return string
+     */
     public function getEmail() {
         if($this->getPhysicalPerson() == null) {
             return 'anonyme' ;
@@ -81,6 +100,10 @@ class XContractFan
         return $this->getPhysicalPerson()->getEmail();
     }
 
+    /**
+     * Get total quantity of purchase
+     * @return integer
+     */
     public function getProductsQuantity()
     {
         return array_sum(array_map(function (XPurchase $purchase) {
@@ -88,21 +111,36 @@ class XContractFan
         }, $this->purchases->toArray()));
     }
 
+    /**
+     * Get payment from cart
+     * @return XPayment
+     */
     public function getPayment() {
         return $this->cart->getPayment();
     }
 
+    /**
+     * Generate a barcode for contract
+     */
     public function generateBarCode()
     {
         if (empty($this->barcodeText))
             $this->barcodeText = 'cf' . $this->id . uniqid();
     }
 
+    /**
+     * Get ticket filename
+     * @return string
+     */
     public function getTicketsFileName()
     {
         return $this->getBarcodeText() . '-tickets.pdf';
     }
 
+    /**
+     * Get ticket path to directory
+     * @return string
+     */
     public function getTicketsPath()
     {
         return self::X_TICKETS_DIRECTORY . $this->getTicketsFileName();
@@ -110,6 +148,7 @@ class XContractFan
 
     /**
      * Get purchases for tickets
+     * @return array
      */
     private $ticketsPurchases = null;
     public function getTicketsPurchases() {
@@ -123,6 +162,8 @@ class XContractFan
 
     /**
      * Get purchases for some products
+     * @param $products
+     * @return array
      */
     private $purchasesForProduct = null;
     public function getPurchasesForProduct($products) {
@@ -140,6 +181,8 @@ class XContractFan
 
     /**
      * Get purchase for a product with some choices amongst product options
+     * @param $product, $comboChoices
+     * @return Purchase, null otherwise
      */
     public function getPurchaseForProductWithChoices(Product $product, $comboChoices) {
         foreach ($this->purchases as $purchase) {

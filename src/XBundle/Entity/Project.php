@@ -64,6 +64,10 @@ class Project
         return '' . $this->getTitle();
     }
 
+    /**
+     * Check if project has threshold
+     * @return bool
+     */
     public function hasThreshold()
     {
         return !$this->noThreshold;
@@ -71,6 +75,7 @@ class Project
 
     /**
      * Check if project has validated products
+     * @return bool
      */
     public function hasValidatedProducts() {
         $validatedProducts = array_filter($this->getProducts()->toArray(), function(Product $product) {
@@ -81,6 +86,7 @@ class Project
 
     /**
      * Update collected amount
+     * @param $amount
      */
     public function addAmount($amount) {
         $this->collectedAmount += $amount;
@@ -88,6 +94,7 @@ class Project
 
     /**
      * Calculate percentage of project funding progress
+     * @return float
      */
     public function getProgressPercent() {
         return floor(($this->getCollectedAmount() / $this->getThreshold()) * 100);
@@ -96,6 +103,7 @@ class Project
 
     /**
      * Calculate number of remaining days for project funding
+     * @return integer
      */
     public function getRemainingDays()
     {
@@ -104,6 +112,7 @@ class Project
 
     /**
      * Calculate number of remaining hours for project funding
+     * @return integer
      */
     public function getRemainingHours()
     {
@@ -113,6 +122,7 @@ class Project
 
     /**
      * Calculate number of remaining minutes for project funding
+     * @return integer
      */
     public function getRemainingMinutes()
     {
@@ -122,6 +132,7 @@ class Project
 
     /**
      * Return the correct remaining time format to display
+     * @return string
      */
     public function getRemainingTime()
     {
@@ -139,28 +150,49 @@ class Project
     }
 
 
+    /**
+     * Check if project date end is passed
+     * @return bool
+     */
     public function isPassed() {
         return $this->dateEnd < new \DateTime();
     }
 
+    /**
+     * Check if project is pending
+     * @return bool
+     */
     public function isPending() {
         return !$this->successful && !$this->failed && !$this->refunded && $this->isPassed();
     }
 
+    /**
+     * Check if project is still ongoing
+     * @return bool
+     */
     public function isOngoing() {
         return !$this->successful && !$this->failed && !$this->refunded && !$this->isPassed();
     }
 
+    /**
+     * Check if project is closed
+     * @return bool
+     */
     public function isClosed() {
         return $this->isPassed() && ($this->successful || ($this->failed && $this->refunded));
     }
 
+    /**
+     * Check if project is an event
+     * @return bool
+     */
     public function isEvent() {
         return $this->dateEvent != null;
     }
 
     /**
      * Check if project is way passed to send transactional message
+     * @return bool
      */
     public function isWayPassed() {
         $date = new \DateTime();
@@ -173,6 +205,7 @@ class Project
 
     /**
      * Count number of donations
+     * @return integer
      */
     public function getNbDonations() {
         return count($this->getDonationsPaid());
@@ -180,6 +213,7 @@ class Project
 
     /**
      * Count number of sales
+     * @return integer
      */
     public function getNbSales() {
         return count($this->getSalesPaid());
@@ -187,6 +221,7 @@ class Project
 
     /**
      * Count contributors; once a contributor who has paid several times
+     * @return integer
      */
     public function getNbContributors() {
         $nbContributors = array_unique(array_map(function(XOrder $person) {
@@ -198,6 +233,7 @@ class Project
 
     /**
      * Get donations paid
+     * @return array
      */
     public function getDonationsPaid() {
         return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
@@ -207,6 +243,8 @@ class Project
 
     /**
      * Get donators
+     * @param $beforeValidation
+     * @return array
      */
     public function getDonators($beforeValidation = false) {
         if ($beforeValidation) {
@@ -229,6 +267,8 @@ class Project
 
     /**
      * Get sales paid for some products
+     * @param $products
+     * @return array
      */
     public function getProductSalesPaid($products) {
         $productSalesPaid = [];
@@ -242,6 +282,7 @@ class Project
 
     /**
      * Get sales paid
+     * @return array
      */
     public function getSalesPaid() {
         return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
@@ -251,6 +292,8 @@ class Project
 
     /**
      * Get buyers
+     * @param $beforeValidation, $products
+     * @return array
      */
     public function getBuyers($beforeValidation = false, $products = null) {
         if ($beforeValidation) {
@@ -284,6 +327,7 @@ class Project
 
     /**
      * Get all contributions paid
+     * @return array
      */
     public function getContributionsPaid() {
         return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
@@ -293,6 +337,8 @@ class Project
 
     /**
      * Get all contributors
+     * @param $beforeValidation, $products
+     * @return array
      */
     public function getContributors($beforeValidation = false, $products = null) {
         return array_merge($this->getDonators($beforeValidation), $this->getBuyers($beforeValidation, $products));
@@ -301,6 +347,7 @@ class Project
 
     /**
      * Get wide contributors (those who have contributions paid or refunded)
+     * @return array
      */
     public function getWideContributors() {
         $contributionsPaidAndRefunded = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
@@ -319,6 +366,8 @@ class Project
 
     /**
      * Count for sales recap
+     * @param $product, $comboChoices
+     * @return integer
      */
     public function getNbPerChoice(Product $product, $comboChoices){
         $count = 0;

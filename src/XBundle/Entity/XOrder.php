@@ -20,6 +20,10 @@ class XOrder implements PhysicalPersonInterface
         $this->date = new \DateTime();
     }
 
+    /**
+     * Get contributor name to display
+     * @return string
+     */
     public function getDisplayName()
     {
         return $this->firstName . ' ' . $this->lastName;

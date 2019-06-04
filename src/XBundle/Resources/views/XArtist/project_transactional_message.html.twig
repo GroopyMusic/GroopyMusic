@@ -118,12 +118,11 @@
                         <h4>{{ message.title }}</h4>
                         <p class="small text-secondary">
                             Envoyé le {{ message.date|date('d/m/Y \\à H:i') }} en destination des
-                            {% if message.toDonators and message.toBuyers %}
-                                donateurs et acheteurs
-                            {% elseif message.toDonators and not message.toBuyers %}
+                            {% if message.toDonators %}
                                 donateurs
-                            {% else %}
-                                acheteurs
+                            {% endif %}
+                            {% if message.toBuyers %}
+                                {% if message.toDonators %} et {% endif %}acheteurs
                                 {% if message.products is not empty %}
                                     de
                                     {% for product in message.products %}
@@ -134,7 +133,7 @@
                                     {% endfor %}
                                 {% endif %}
                             {% endif %}
-                            {% if message.beforeValidation %} avant validation.{% endif %}
+                            {% if message.beforeValidation %} avant validation{% endif %}
                         </p>
                         <p>{{ message.content }}</p>
                     </div>

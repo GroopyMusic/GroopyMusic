@@ -511,10 +511,6 @@ class XArtistController extends BaseController
                 }   
             }
 
-            /*foreach ($contributors as $c) {
-                file_put_contents('test.txt', $c->getDisplayName() . PHP_EOL, FILE_APPEND);
-            }*/
-
             $em->persist($message);
             $em->flush();
 

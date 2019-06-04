@@ -8,7 +8,7 @@ use AppBundle\Entity\Payment;
 use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\ORM\EntityManagerInterface;
 use XBundle\Entity\Project;
-use XBundle\ENtity\XContractFan;
+use XBundle\Entity\XContractFan;
 
 class PaymentManager
 {
