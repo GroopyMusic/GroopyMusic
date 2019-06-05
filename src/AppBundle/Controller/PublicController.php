@@ -14,6 +14,7 @@ use AppBundle\Form\CartType;
 use AppBundle\Form\ContractFanType;
 use AppBundle\Form\VIPInscriptionType;
 use AppBundle\Form\VolunteerProposalType;
+use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\RewardSpendingService;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
@@ -23,6 +24,7 @@ use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,6 +92,7 @@ class PublicController extends BaseController
      */
     public function contactFormAction(Request $request, UserInterface $user = null)
     {
+        $captchaManager = $this->get('AppBundle\Services\CaptchaManager');
         $suggestionBox = new SuggestionBox();
 
        	# Some fields will be pre-filled if user is logged in
@@ -103,6 +106,14 @@ class PublicController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if(!$captchaManager->verify()) {
+                $form->addError(new FormError('Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !'));
+                return new Response($this->renderView('AppBundle:Public/Form:suggestionBox.html.twig', array(
+                    'form' => $form->createView(),
+                )));
+            }
+
             $this->em->persist($suggestionBox);
             $this->em->flush();
 
@@ -123,7 +134,7 @@ class PublicController extends BaseController
      * VIP Inscription: form to register as member of press
      * @Route("/presse", name="press")
      */
-    public function VIPInscriptionAction(Request $request) {
+    public function VIPInscriptionAction(Request $request, CaptchaManager $captchaManager) {
 
         $inscription = new VIPInscription();
 
@@ -132,6 +143,14 @@ class PublicController extends BaseController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+            if(!$captchaManager->verify()) {
+                $form->addError(new FormError('Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !'));
+                return $this->render('@App/Public/Temp/vip_inscription.html.twig', array(
+                    'form' => $form->createView(),
+                    'inscription' => $inscription,
+                ));
+            }
+
             $this->em->persist($inscription);
             $this->em->flush();
             $this->addFlash('notice', "Votre demande d'accréditation a bien été enregistrée. Nous vous contacterons sous peu !");
@@ -156,7 +175,7 @@ class PublicController extends BaseController
      * Volunteer Proposal: form to register as volunteer
      * @Route("/benevoles", name="volunteering")
      */
-    public function VolunteerProposalAction(Request $request) {
+    public function VolunteerProposalAction(Request $request, CaptchaManager $captchaManager) {
 
         $inscription = new VolunteerProposal();
 
@@ -165,6 +184,14 @@ class PublicController extends BaseController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+            if(!$captchaManager->verify()) {
+                $form->addError(new FormError('Le test anti-robots a échoué... seriez-vous un androïde ??? Veuillez réessayer !'));
+                return $this->render('@App/Public/Temp/volunteer_proposal.html.twig', array(
+                    'form' => $form->createView(),
+                    'inscription' => $inscription,
+                ));
+            }
+
             $this->em->persist($inscription);
             $this->em->flush();
             $this->addFlash('notice', "Votre proposision de bénévolat a bien été enregistrée. Nous vous contacterons sous peu !");

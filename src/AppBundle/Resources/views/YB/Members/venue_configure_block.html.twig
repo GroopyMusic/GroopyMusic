@@ -1,0 +1,63 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block members_body %}
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('yb_members_my_venues') }}">Mes salles</a></li>
+            <li class="active"><span>{{ config.venue.name }}</span></li>
+            <li class="active"><span>Configuration des rangées/des sièges</span></li>
+        </ol>
+    </section>
+    <div class="px-0 mt-3 container" style="text-align: right">
+        <a class="btn btn-info" href="{{ path('help_venue') }}#sectionUpdateRows" target="_blank"><i class="fa fa-info-circle"></i> Aide</a>
+    </div>
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' '@App/YB/Form/unsquared_row_edit.html.twig' '@App/YB/Form/block_row.html.twig'  ':Form:jquery.collection.html.twig' %}
+    {{ form_start(form) }}
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+        <h2>
+            <select class="config">
+                <option value="-1">Sélectionner un bloc</option>
+                {% for block in blocks %}
+                    <option value="{{ block.id }}">{{ block.name }}</option>
+                {% endfor %}
+            </select>
+        </h2>
+        <div class="text-muted font-italic pb-2">
+            Veuillez indiquer le nombre de siège par rangée pour le bloc sélectionné.
+        </div>
+        {{ form_widget(form.blocks) }}
+        {{ form_end(form) }}
+    </section>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            window.onload = function() {
+                $('div.config').hide();
+            };
+            $("select.config").change(function(){
+                var selectedConfig = $(this).children("option:selected").val();
+                if (selectedConfig === '-1'){
+                    $('div.config').hide();
+                } else {
+                    var id = "#".concat(selectedConfig);
+                    $('div.config').not(id).hide();
+                    var x = "div.config".concat(id);
+                    $(x).show();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block additional_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        //$(function() {
+            yb_third_collection({
+                add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une rangée</a>',
+                remove:'<a class="btn btn-danger" href="#">Supprimer la rangée</a>'
+            })
+        //});
+    </script>
+{% endblock %}

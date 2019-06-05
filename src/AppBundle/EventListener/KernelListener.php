@@ -194,7 +194,7 @@ class KernelListener implements EventSubscriberInterface
             }
         }*/
 
-        $this->em->flush();
+        //$this->em->flush();
     }
 
 }

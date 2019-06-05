@@ -3,11 +3,11 @@
 namespace AppBundle\Form\YB;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use AppBundle\Entity\User;
+use AppBundle\Entity\YB\Venue;
+use AppBundle\Entity\YB\VenueConfig;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\Organization;
-use AppBundle\Entity\YB\YBSubEvent;
-use AppBundle\Form\AddressType;
-use AppBundle\Form\CounterPartType;
 use AppBundle\Form\PhotoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -15,71 +15,31 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\PercentType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\Common\Collections\ArrayCollection;
-use Craue\FormFlowBundle\Form\FormFlow;
-use Craue\FormFlowBundle\Form\FormFlowInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class YBContractArtistInfosType extends AbstractType
-{
+class YBContractArtistInfosType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if($options['admin']){
-            $builder
-                ->add('commissions', CollectionType::class, array(
-                    'label' => 'Commissions',
-                    'entry_type' => YBCommissionType::class,
-                    'entry_options' => array(
-                        'label' => false,
-                    ),
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-                    'prototype' => true,
-                    'attr' => ['class' => 'second-collection']
-                    //'required' => false,
-                    //'label' => 'Montant fixe minimum',
-                ))
-                ->add('vat', ChoiceType::class, array(
-                    'required' => false,
-                    'label' => 'Taux de TVA',
-                    'choices' => array(
-                        "0%" => 0,
-                        "6%" => 0.06,
-                        "12%" => 0.12,
-                        "21%" => 0.21),
-                    'constraints' => [
-                        new Assert\GreaterThanOrEqual(['value' => 0]),
-                        new Assert\LessThanOrEqual(['value' => 1])
-                    ]
-                ))
-            ;
-        }
-
         $builder
-            ->add('organization', EntityType::class, [
-                'class' => Organization::class,
-                'label' => 'Organisation',
-                'choices' => $options['userOrganizations'],
-                'group_by' => function(Organization $org){
-                    if ($org->isPrivate()){
-                        return 'Personnellement';
-                    } else {
-                        return 'Mes organisations';
-                    }
-                },
-                'choice_label' => 'name',
+            ->add('published', CheckboxType::class, [
+                'label' => "Afficher l'événement sur la page de l'organisation",
+                'required' => false,
             ])
+            ->add('confirmVenue', CheckboxType::class, array(
+                'mapped' => false,
+                'label' => 'Je certifie avoir l\'accord du gestionnaire de la salle pour utiliser celle-ci.',
+                'required' => true,
+            ))
             ->add('threshold', IntegerType::class, array(
                 'required' => false,
                 'label' => 'Seuil de validation',
@@ -87,10 +47,7 @@ class YBContractArtistInfosType extends AbstractType
                     new Assert\GreaterThanOrEqual(['value' => 0]),
                 ]
             ))
-            ->add('dateEnd', DateTimeType::class, array(
-                'required' => false,
-                'label' => 'Date de validation',
-            ))
+
             ->add('dateClosure', DateTimeType::class, array(
                 'required' => true,
                 'label' => 'Fin des ventes',
@@ -120,13 +77,6 @@ class YBContractArtistInfosType extends AbstractType
                 //'required' => false,
                 //'label' => 'Montant fixe minimum',
             ))
-            ->add('address', AddressType::class, array(
-                'required' => true,
-                'label' => "Lieu de l'événement",
-                'constraints' => [
-                    new Assert\Valid(),
-                ]
-            ))
             ->add('translations', TranslationsType::class, [
                 'locales' => ['fr'],
                 'constraints' => [
@@ -151,14 +101,30 @@ class YBContractArtistInfosType extends AbstractType
                 ],
                 'exclude_fields' => ['additional_info', 'slug']
             ])
-            ->add('photo', PhotoType::class, array(
-                'label' => 'Photo de couverture',
-                'required' => false,
-            ))
         ;
+
+        if($options['creation'] || ($options['data'] != null && $options['data']->hasThreshold() && !$options['data']->hasSoldAtLeastOne())) {
+            $builder->add('dateEnd', DateTimeType::class, array(
+                'required' => false,
+                'label' => 'Date de validation',
+            ));
+        }
 
         if($options['creation']) {
             $builder
+                ->add('organization', EntityType::class, [
+                    'class' => Organization::class,
+                    'label' => 'Organisation',
+                    'choices' => $options['userOrganizations'],
+                    'group_by' => function(Organization $org){
+                        if ($org->isPrivate()){
+                            return 'Personnellement';
+                        } else {
+                            return 'Mes organisations';
+                        }
+                    },
+                    'choice_label' => 'name',
+                ])
                 ->add('noThreshold', CheckboxType::class, array(
                     'label' => "N'a pas de seuil de validation",
                     'required' => false,
@@ -170,19 +136,20 @@ class YBContractArtistInfosType extends AbstractType
                         new Assert\NotBlank(),
                     )
                 ));
-        } else {
-            $builder
-                ->add('bankAccount', TextType::class, array(
-                    'label' => 'Numéro de compte en banque IBAN',
-                    'required' => false
-                ))
-                ->add('vatNumber', TextType::class, array(
-                    'label' => 'Numéro de TVA',
-                    'required' => false
-                ))
-            ;
         }
-
+        else {
+            $builder
+                ->add('imageFile', VichImageType::class, [
+                    'label' => 'Photo de couverture',
+                    'required' => false,
+                    'download_link' => false,
+                    'download_uri' => false,
+                    'image_uri' => true,
+                    'allow_delete' => false,
+                ]);
+        }
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
@@ -220,13 +187,63 @@ class YBContractArtistInfosType extends AbstractType
             'creation' => false,
             'admin' => false,
             'userOrganizations' => null,
+            'venues' => null,
             'campaign_id' => null,
             'has_sub_events' => false,
+            'em' => null,
+            'user' => null,
         ]);
     }
 
     public function getBlockPrefix()
     {
-        return 'app_bundle_ybcontract_artist_type';
+        return 'app_bundle_ybcontract_artist_infos_type';
+    }
+
+    protected function addElements(FormInterface $form, Venue $venue = null, User $user = null){
+        $form->add('venue', EntityType::class, [
+            'label' => 'Salle',
+            'required' => true,
+            'choices' => $form->getConfig()->getOptions()['venues'],
+            'data' => $venue,
+            'placeholder' => 'Sélectionner une salle',
+            'class' => Venue::class,
+            'group_by' => function(Venue $v){
+                if (strpos($v->getDisplayName(), Venue::OWN_VENUE)){
+                    return 'Mes salles';
+                } else {
+                    return 'Autres salles';
+                }
+            },
+            'choice_label' => 'name'
+        ]);
+        $configs = array();
+        if ($venue){
+            $configs = $venue->getConfigurations();
+        }
+        $form->add('config', EntityType::class, [
+            'label' => 'Configuration',
+            'required' => true,
+            'choices' => $configs,
+            'placeholder' => 'Sélectionner une configuration de salle',
+            'class' => VenueConfig::class,
+        ]);
+    }
+
+    function onPreSubmit(FormEvent $event){
+        $form = $event->getForm();
+        $data = $event->getData();
+        $em = $event->getForm()->getConfig()->getOptions()['em'];
+        $venue = $em->getRepository('AppBundle:YB\Venue')->find($data['venue']);
+        $user = $event->getForm()->getConfig()->getOptions()['user'];
+        $this->addElements($form, $venue, $user);
+    }
+
+    function onPreSetData(FormEvent $event){
+        $campaign = $event->getData();
+        $form = $event->getForm();
+        $venue = $campaign->getVenue() ? $campaign->getVenue() : null;
+        $user = $event->getForm()->getConfig()->getOptions()['user'];
+        $this->addElements($form, $venue, $user);
     }
 }

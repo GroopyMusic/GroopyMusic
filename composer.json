@@ -30,7 +30,6 @@
         "incenteev/composer-parameter-handler": "^2.0",
         "friendsofsymfony/user-bundle": "^2.0.1",
         "symfony/event-dispatcher": ">=2.8",
-        "stripe/stripe-php": "4.*",
         "symfony/assetic-bundle": "^2.8",
         "sonata-project/admin-bundle": "^3.20",
         "sonata-project/doctrine-orm-admin-bundle": "^3.1",
@@ -67,7 +66,8 @@
         "friendsofsymfony/rest-bundle": "^2.5",
         "jms/serializer-bundle": "^2.4",
         "nelmio/cors-bundle": "^1.5",
-        "craue/formflow-bundle": "~3.1"
+        "craue/formflow-bundle": "~3.1",
+        "stripe/stripe-php": "^6.32"
     },
     "scripts": {
         "post-install-cmd": [

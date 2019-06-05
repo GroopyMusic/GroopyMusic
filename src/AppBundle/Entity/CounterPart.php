@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\Block;
 use AppBundle\Entity\YB\YBSubEvent;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -28,6 +29,8 @@ class CounterPart implements TranslatableInterface
         $this->disabled = 0;
         $this->price = 0;
         $this->sub_events = new ArrayCollection();
+        $this->maximum_amount_per_purchase = 1000;
+        $this->venue_blocks = new ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -93,6 +96,126 @@ class CounterPart implements TranslatableInterface
         return (!$this->free_price && $this->price == 0);
     }
 
+    public function canOverpassVenueCapacity(){
+        foreach ($this->venue_blocks as $blk){
+            if ($blk->getType() === Block::UP) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function isCapacityMaxReach(){
+        if ($this->access_everywhere){
+            /** @var VenueConfig $config */$config  = $this->contractArtist->getConfig();
+            return $this->maximum_amount > $config->getTotalCapacity();
+        }
+        $capacity = 0;
+        foreach ($this->venue_blocks as $block){
+            $capacity += $block->getComputedCapacity();
+        }
+        return $this->maximum_amount > $capacity;
+    }
+
+    public function hasOnlyFreeSeatingBlocks($blocks){
+        if ($blocks === null){
+            return true;
+        }
+        if ($this->getAccessEverywhere()){
+            foreach ($blocks as $blk){
+                if (!$blk->isNotNumbered()){
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            foreach ($this->venue_blocks as $blk){
+                if (!$blk->isNotNumbered()){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    public function hasOnlySeatedBlock($blocks){
+        if ($blocks === null){
+            return true;
+        }
+        if ($this->getAccessEverywhere()){
+            foreach ($blocks as $blk){
+                if (!$blk->isNotNumbered()){
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            /** @var Block $blk */
+            foreach ($this->venue_blocks as $blk) {
+                if ($blk->getType() === Block::UP) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    public function getSeatedCapacity($blocks){
+        if ($blocks === null){
+            return true;
+        }
+        if ($this->getAccessEverywhere()){
+            $capacity = 0;
+            foreach ($blocks as $blk){
+                if ($blk->getType() === Block::SEATED || $blk->getType() === Block::BALCONY) {
+                    $capacity += $blk->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        } else {
+            /** @var Block $block */
+            $capacity = 0;
+            foreach($this->venue_blocks as $block){
+                if ($block->getType() === Block::SEATED || $block->getType() === Block::BALCONY) {
+                    $capacity += $block->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        }
+    }
+
+    public function getStandUpCapacity($blocks){
+        if ($blocks === null){
+            return true;
+        }
+        if ($this->getAccessEverywhere()){
+            $capacity = 0;
+            foreach ($blocks as $blk){
+                if ($blk->getType() === Block::UP) {
+                    $capacity += $blk->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        } else {
+            /** @var Block $block */
+            $capacity = 0;
+            foreach($this->venue_blocks as $block){
+                if ($block->getType() === Block::UP) {
+                    $capacity += $block->getComputedCapacity();
+                }
+            }
+            return $capacity;
+        }
+    }
+
+    public function getDifferenceBetweenPhysicalAndTicketCapacity($blocks){
+        return $this->maximum_amount - $this->getSeatedCapacity($blocks) - $this->getStandUpCapacity($blocks);
+    }
+
+    public function hasBeenSold() {
+        return $this->contractArtist->hasSoldCounterPart($this);
+    }
+
     /**
      * @var int
      *
@@ -116,6 +239,7 @@ class CounterPart implements TranslatableInterface
     private $step;
 
     /**
+     * @var BaseContractArtist
      * @ORM\ManyToOne(targetEntity="BaseContractArtist", inversedBy="counterParts")
      * @ORM\JoinColumn(nullable=true)
      */
@@ -163,9 +287,20 @@ class CounterPart implements TranslatableInterface
     private $disabled;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", mappedBy="counterparts")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\YBSubEvent", inversedBy="counterparts", cascade={"persist"})
      */
     private $sub_events;
+
+    /**
+     * @var
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\YB\Block", inversedBy="counterparts")
+     */
+    private $venue_blocks;
+
+    /**
+     * @ORM\Column(name="give_access_everywhere", type="boolean")
+     */
+    private $access_everywhere;
 
     /**
      * Get id
@@ -429,11 +564,63 @@ class CounterPart implements TranslatableInterface
             $this->sub_events = new ArrayCollection();
         }
         $this->sub_events->add($se);
+        $se->addCounterpart($this);
         return $this;
     }
 
     public function removeSubEvent(YBSubEvent $se) {
         $this->sub_events->remove($se);
+        $se->removeCounterpart($this);
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getVenueBlocks() {
+        return $this->venue_blocks;
+    }
+
+    /**
+     * @param mixed $venue_blocks
+     */
+    public function setVenueBlocks($venue_blocks) {
+        $this->venue_blocks = new ArrayCollection();
+        foreach ($venue_blocks as $venue_block){
+            $this->addVenueBlock($venue_block);
+        }
+    }
+
+    public function addVenueBlock(Block $block){
+        if ($this->venue_blocks == null){
+            $this->venue_blocks = new ArrayCollection();
+        }
+        $this->venue_blocks->add($block);
+        return $this;
+    }
+
+    public function removeVenueBlock(Block $block){
+        $this->venue_blocks->remove($block);
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccessEverywhere()
+    {
+        return $this->access_everywhere;
+    }
+
+    /**
+     * @param mixed $access_everywhere
+     */
+    public function setAccessEverywhere($access_everywhere)
+    {
+        $this->access_everywhere = $access_everywhere;
+    }
+
+
+
+
 }

@@ -20,6 +20,8 @@ parameters:
     instagram_page_url: https://www.instagram.com/unmutelive/
     expanded_locales: {fr: fr_FR, en: en_US, nl: nl_NL}
     maps_api_key: AIzaSyAjWpC8y-sy07JHTBAexmdCT4cQaC84y8U
+    maps_secret_code: sYzOCM4Aop8634Q4kMZ0X42FZHg=
+    mapquest_key: sHy6HYmy5y8Pan6gZcdHlKIh8zx20AiR
 
 framework:
     #esi:             ~
@@ -66,6 +68,7 @@ twig:
       instagram_page_url: "%instagram_page_url%"
       expanded_locales: "%expanded_locales%"
       maps_api_key: "%maps_api_key%"
+      maps_secret_code: "%maps_secret_code%"
 
 # Swiftmailer Configuration
 swiftmailer:

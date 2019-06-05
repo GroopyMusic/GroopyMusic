@@ -36,12 +36,19 @@
         <div class="row">
             <div class="col-12 col-lg-7">
                 <div class="mb-2">
-                    <b>Organisé par {{ campaign.organization.name|raw|nl2br }}</b>
+                {% if campaign.isDraft %}
+                    <div class="alert alert-dark" role="alert">
+                        Cette campagne est en mode <b>brouillon</b>. Vous la voyez parce que vous faites partie de l'organisation qui l'organise. Pour la rendre accessible au grand public, rendez-vous dans <a href="{{ path('yb_members_dashboard') }}">votre tableau de bord</a>.
+                    </div>
+                {% endif %}
+                <div>
+                    <b>Organisé par {% if campaign.organization.published %}<a href="{{ path('yb_organization', {'id':campaign.organization.id}) }}">{% endif %}{{ campaign.organization.name|raw|nl2br }}{% if campaign.organization.published %}</a>{% endif %}</b>
+                </div>
                 </div>
                 {% if is_event %}
                     <div class="mb-2">
                         {% if campaign.hasSubEvents %}
-                            <b>Dates : {% for se in campaign.getSubEvents %}{% if not loop.first %}, {% endif %}{{ se }}  {% endfor %}</b>
+                            <b>Dates : {% for se in campaign.getSubEvents %}{% if not loop.first %}, {% endif %}{{ se }}{% endfor %}</b>
                         {% else %}
                             <b>Date : {{ campaign.dateEvent|date('d/m/Y') }}</b>
                         {% endif %}
@@ -73,7 +80,7 @@
                                 <p>En fonction de la décision de l'organisateur, la campagne peut se poursuivre (vous recevrez alors vos tickets si vous en avez commandé, et vous pourrez à nouveau en commander) ou s'annuler (vous serez alors remboursé si vous avez acheté des tickets).</p>
                             {% endif %}
                         {% else %}
-                            <p>Cet événement ne sera confirmé que si son organisateur estime qu'il a atteint son objectif à la date de validation (le {{ campaign.dateEnd|date('d/m/Y') }})</p>
+                            <p>Cet événement ne sera confirmé que si son organisateur estime qu'il a atteint son objectif à la date de validation (le {{ campaign.dateEnd|date('d/m/Y') }}). Si l'événement est annulé parce que son objectif n'est pas atteint, tous les tickets achetés seront intégralement remboursés.</p>
                         {% endif %}
                         <p>Avancement actuel par rapport à l'objectif initial :</p>
                         <div class="progress">
@@ -84,7 +91,7 @@
                 <div class="mt-5{% if campaign.noThreshold %} mt-lg-3{% endif %}">
                     <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
 
-                    {% if campaign.isCrowdable %}
+                    {% if campaign.isCrowdable and form.purchases|length > 0 %}
                         {{ form_start(form) }}
 
                         {% for purchase in form.purchases %}
@@ -115,7 +122,7 @@
                                     <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
                                     <div class="col-4 col-sm-3 col-lg-4">
                                         <div class="container px-0">
-                                            {% if max_cp == 0 %}
+                                            {% if max_cp == 0 or campaign.isOutOfStockCp(counterpart) %}
                                                 <p>Il n'y a plus de tickets de ce type disponibles. (SOLD OUT)</p>
                                                 {% do purchase.setRendered(purchase.quantity) %}
                                             {% else %}
@@ -156,6 +163,8 @@
                             <p>Il n'est actuellement pas possible de contribuer à cette campagne car elle est en cours d'examination par son organisateur. Vous saurez bientôt si elle est validée ou non.</p>
                         {% elseif campaign.soldOut %}
                             <p>Cette campagne est sold out, il n'est donc plus possible d'acheter des tickets.</p>
+                        {% elseif form.purchases|length == 0 %}
+                            <p>Il n'y a pas encore de tickets mis en vente ; les organisateurs sont en train de paramétrer l'événement.</p>
                         {% else %}
                             <p>Il n'est actuellement pas possible d'acheter des tickets.</p>
                         {% endif %}

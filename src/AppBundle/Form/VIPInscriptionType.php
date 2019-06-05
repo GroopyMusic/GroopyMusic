@@ -52,10 +52,7 @@ class VIPInscriptionType extends AbstractType
                 'required' => false,
                 'label' => 'Commentaire (facultatif)'
             ))
-            ->add('submit', SubmitType::class, array(
-                'label' => "<i class='fas fa-paper-plane'></i> Envoyer",
-                'attr' => ['class' => 'btn btn-primary'],
-            ));
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -1,0 +1,63 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block members_body %}
+    {% import '@App/YB/Macros/venue.html.twig' as macros %}
+
+    <section class="container px-0 mt-3">
+        <ol class="breadcrumb-arrow">
+            <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
+            <li class="active"><span>Mes salles</span></li>
+        </ol>
+    </section>
+    <div class="px-0 mt-3 container" style="text-align: right">
+        <a class="btn btn-info" href="{{ path('help_venue') }}#sectionManageVenue" target="_blank"><i class="fa fa-info-circle"></i> Aide</a>
+    </div>
+    <div
+            style="display:none"
+            data-group="group1"
+            data-path=".name"
+            data-type="text">
+    </div>
+
+    <section class="container py-5">
+        <h2>Mes salles</h2>
+        <div align="center">
+            <div class="input-group mb-3">
+                <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Chercher..."
+                        aria-label="Chercher..."
+                        aria-describedby="basic-addon2"
+                        data-jplist-control="textbox-filter"
+                        data-group="group1"
+                        data-name="my-filter-1"
+                        data-path=".name"
+                        value=""
+                        data-clear-btn-id="name-clear-btn">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" id="name-clear-btn" type="button"><i class="fa fa-eraser"></i> Effacer</button>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        {% if venues|length > 0 %}
+            <div data-jplist-group="group1">
+                {% for venue in venues %}
+                    {{ macros.venue_row(venue, currentUser) }}
+                {% endfor %}
+                <div data-jplist-control="no-results" data-group="group1" data-name="no-results">
+                    Aucun résultat trouvé...
+                </div>
+            </div>
+        {% else %}
+            <p>Vous ne gérez aucune salle.</p>
+        {% endif %}
+    </section>
+
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script>jplist.init();</script>
+{% endblock additional_javascripts %}

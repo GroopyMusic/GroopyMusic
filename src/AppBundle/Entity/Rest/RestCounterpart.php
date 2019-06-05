@@ -24,7 +24,7 @@ class RestCounterpart {
         return $this->price;
     }
 
-    public function setPrice(){
+    public function setPrice($price){
         $this->price = $price;
     }
 

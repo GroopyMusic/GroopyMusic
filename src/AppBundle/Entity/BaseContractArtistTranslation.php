@@ -12,6 +12,7 @@ class BaseContractArtistTranslation
     use ORMBehaviors\Translatable\Translation;
     use ORMBehaviors\Sluggable\Sluggable;
 
+
     public function getSluggableFields()
     {
        return ['title'];

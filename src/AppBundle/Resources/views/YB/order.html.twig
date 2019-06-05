@@ -6,7 +6,7 @@
     {% set photo = campaign.photo is not null ? campaign.photo : false %}
 
     {% block header_container %}
-        <header class="masthead checkout-masthead text-white" {% if photo %}style="background-image: url('{{ absolute_url(asset(campaign.webPath(photo))) }}');"{% endif %} >
+        <header class="masthead checkout-masthead text-white" {% if photo %}style="background-image: url('{{ yb_asset(campaign.webPath(photo)) }}');"{% endif %} >
             <div class="overlay"></div>
             <div class="container">
                 <div class="row">
@@ -31,13 +31,22 @@
 
         {% for contract in cart.contracts %}
             <h3>{{ contract.contractArtist.getTitle }}</h3>
-            <p>
-                {% if contract.contractArtist.dateEvent is not null %}<i class="far fa-calendar-alt"></i> {{ contract.contractArtist.dateEvent|fancy_date }}<br />{% endif %}
+            <p><i class="far fa-calendar-alt"></i>
+                {% if campaign.hasSubEvents %}
+                    {% for se in campaign.getSubEvents %}{% if not loop.first %}, {% endif %}{{ se.date|fancy_date }}{% endfor %}
+                {% else %}
+                    {{ campaign.dateEvent|date('d/m/Y') }}
+                {% endif %}
+                <br />
                 <a href="{{ path('yb_campaign', {'id': contract.contractArtist.id}) }}" target="_blank"><i class="fas fa-external-link-alt"></i> Voir les infos de cet événement</a>
             </p>
             <ul class="list-group">
                 {% for purchase in contract.purchases %}
-                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} € {% if purchase.freePriceValue is not null %}(prix unitaire de {{ purchase.freePriceValue }} € choisi librement){% endif %}</span></li>
+                    <li class="list-group-item">{{ purchase }} <span class="text-muted">- {{ purchase.amount }} € {% if purchase.freePriceValue is not null %}(prix unitaire de {{ purchase.freePriceValue }} € choisi librement){% endif %}</span><br>
+                        {% for booking in purchase.bookings %}
+                            {{ loop.index }}) {{ booking.getSeat }}<br>
+                        {% endfor %}
+                    </li>
                 {% endfor %}
             </ul>
             {% if not contract.refunded and contract.counterpartsSent %}

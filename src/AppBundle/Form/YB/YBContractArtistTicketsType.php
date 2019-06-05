@@ -30,23 +30,31 @@ class YBContractArtistTicketsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $class_attr = $options['data']->hasSubEvents() ? '' : 'no-sub-events';
+        /*$class_attr = $options['data']->hasSubEvents() ? '' : 'no-sub-events';
+        $class2_attr = count($options['data']->getConfig()->getBlocks()) > 0 ? '' : 'no-blk';
         $builder
             ->add('counterParts',  CollectionType::class, array(
                 'label' => 'Tickets en vente',
                 'entry_type' => CounterPartType::class,
                 'entry_options' => array(
-                    'attr' => ['class' => $class_attr],
+                    'attr' => [
+                        'class' => $class_attr,
+                        'class2' => $class2_attr,
+                    ],
                     'label' => false,
                     'campaign_id' => $options['data']->getId(),
+                    'config' => $options['data']->getConfig(),
                     'has_sub_events' => $options['data']->hasSubEvents(),
+                    'has_venue' => $options['data']->getVenue() !== null,
+                    'creation' => $options['creation'],
             ),
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
                 'attr' => ['class' => 'collection'],
-            ))
+            ))*/
+        $builder
             ->add('globalSoldout', NumberType::class, array(
                 'label' => 'Sold out global',
                 'required' => false,
@@ -55,15 +63,13 @@ class YBContractArtistTicketsType extends AbstractType
 
     }
 
-    public function validate(YBContractArtist $campaign, ExecutionContextInterface $context)
-    {
+    public function validate(YBContractArtist $campaign, ExecutionContextInterface $context){
         if(count($campaign->getCounterParts()) == 0) {
             $context->addViolation('Il faut au moins un article en vente pour que la campagne soit valide.');
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
+    public function configureOptions(OptionsResolver $resolver){
         $resolver->setDefaults([
             'data_class' => YBContractArtist::class,
             'constraints' => array(
@@ -72,8 +78,11 @@ class YBContractArtistTicketsType extends AbstractType
             'creation' => false,
             'admin' => false,
             'userOrganizations' => null,
+            'venues' => null,
             'campaign_id' => null,
             'has_sub_events' => false,
+            'em' => null,
+            'user' => null,
         ]);
     }
 

@@ -1,0 +1,52 @@
+{% block app_bundle_venue_config_type_row %}
+    <div class="row counterpart-row config" id="{{ form.vars.data.id }}">
+        <h3>Configuration {{ form.vars.data.name}} </h3>
+        <div class="col-12">
+            {% if form.vars.data.nbStandUp > 0 %}
+                <div>Nombre de place debout : {{ form.vars.data.nbStandUp }}</div>
+            {% endif %}
+            {% if form.vars.data.nbSeatedSeats > 0 %}
+                <div>Nombre de place assise (hors balcon) : {{ form.vars.data.nbSeatedSeats }}</div>
+            {% endif %}
+            {% if form.vars.data.nbBalconySeats > 0 %}
+                <div>Nombre de place assise (sur balcon) : {{ form.vars.data.nbBalconySeats }}</div>
+            {% endif %}
+        </div>
+        <br>
+        <div class="col-12">
+            {{ form_widget(form.blocks) }}
+        </div>
+        <div class="text-muted font-italic pb-2">
+            Vous ne savez pas représenter votre salle entièrement car elle possède plusieurs blocs de sièges différents? Pas de soucis, ajoutez des blocs !
+        </div>
+        <div class="col-12">
+            <hr size="4" color="orange">
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('select.block-type').change(function () {
+                    if ($(this).val() == 'Debout') {
+                        $(this).closest('.venue-block').find('.hide-if-standup').hide();
+                    } else {
+                        $(this).closest('.venue-block').find('.hide-if-standup').show();
+                    }
+                }
+            );
+        });
+        yb_second_collection({
+            add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter une bloc</a>',
+            remove:'<a class="btn btn-danger" href="#">Supprimer le bloc</a>'
+        });
+        $('#is-squared input[type="checkbox"]').on('change', function(){
+            $(this).closest('.venue-block').find('.show-if-squared').toggle(!this.checked);
+            $(this).closest('.venue-block').find('.hide-if-squared').toggle(this.checked);
+        });
+        $('#is-squared input[type="checkbox"]').trigger('change');
+
+        $('#free-placement input[type="checkbox"]').on('change', function(){
+            $(this).closest('.venue-block').find('.hide-if-free-placement').toggle(!this.checked);
+        });
+        $('#free-placement input[type="checkbox"]').trigger('change');
+    </script>
+{% endblock %}

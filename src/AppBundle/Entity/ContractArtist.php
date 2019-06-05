@@ -157,10 +157,6 @@ class ContractArtist extends BaseContractArtist
         return in_array($this->getState(), self::getPassedStates());
     }
 
-    public function getPercentObjective() {
-       return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
-    }
-
     public function getTotalBookedTickets() {
         return $this->tickets_reserved + $this->getCounterpartsSold();
     }
@@ -194,7 +190,7 @@ class ContractArtist extends BaseContractArtist
     public function getCampaignDaysLeft() {
         $today = new \DateTime();
         $di = $today->diff($this->dateEnd);
-        return $di->days;
+        return $di->days + 1; // + 1 because validation date usually is at midnight
     }
 
     /** @deprecated  */

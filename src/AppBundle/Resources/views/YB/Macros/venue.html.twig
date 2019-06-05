@@ -1,0 +1,157 @@
+{% macro venue_row(venue, currentUser) %}
+{% import '@App/YB/Macros/organization_member.html.twig' as macros %}
+<div data-jplist-item>
+    <div class="row">
+        <div class="col-12 row" style="padding: 7px">
+            <div class="col-12 col-md-3">
+                <h3 class="name">{{ venue.address.name }}</h3>
+            </div>
+            <div class="col-12 col-md-3">
+                <a class="btn btn-outline-secondary" href="{{ path('yb_members_venue_edit', {'id': venue.id}) }}">
+                    <i class="fas fa-pen"></i>
+                    Modifier la salle...
+                </a>
+            </div>
+            <div class="col-12 col-md-3">
+                <a class="btn btn-outline-secondary"
+                   href="{{ path('yb_members_venue_add_configs', {'venue': venue.id}) }}">
+                    <i class="fa fa-plus-square"></i> Ajouter une configuration...
+                </a>
+            </div>
+            <div class="col-12 col-md-3">
+                {% if venue.isHandledByUser(currentUser) %}
+                    <p>
+                        <a class="btn btn-outline-secondary" data-toggle="modal" href="#quitModal{{ venue.id }}">
+                            <i class="fa fa-ban"></i>
+                            Supprimer cette salle...
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-12 row" style="padding: 7px">
+            {% for config in venue.getNotDefaultConfig() %}
+                <table class="table table-responsive" style="margin-left: 10px;">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="border: none"><p style="font-size: 20px; color: orangered">Configuration : {{ config.name }}</p></th>
+                        <th scope="col" style="border: none">
+                            {% if venue.isHandledByUser(currentUser) %}
+                                <a class="btn-outline-warning btn"
+                                   href="{{ path('yb_members_config_edit', {'id': config.id}) }}">
+                                    <i class="fas fa-pen"></i>
+                                    Modifier la configuration...
+                                </a>
+                            {% endif %}
+                        </th>
+                        <th scope="col" style="border: none">
+                            {% if venue.isHandledByUser(currentUser) %}
+                                <a class="btn-outline-warning btn" data-toggle="modal"
+                                   href="#deleteConfModal{{ config.id }}">
+                                    <i class="fa fa-ban"></i>
+                                    Supprimer la configuration...
+                                </a>
+                            {% endif %}</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: none">
+                                capacité maximale : {{ config.maxCapacity }} <br>
+                                {{ config.nbStandUp }} places debout <br>
+                                {{ config.nbSeatedSeats }} places assises (hors balcon) <br>
+                                {{ config.nbBalconySeats }} places balcon
+                            </td>
+                            <td style="border: none"></td>
+                            <td style="border: none"></td>
+                        </tr>
+                        {% if config.blocks|length > 0 %}
+                            {% for block in config.blocks %}
+                                <tr>
+                                    <td style="border: none">Bloc : {{ block.name }}</td>
+                                    <td style="border: none">Type : {{ block.type }}</td>
+                                    <td style="border: none">Capacité : {{ block.capacity }}</td>
+                                    <td style="border: none">
+                                        {% if block.notSquared %}
+                                            <a class="btn-outline-info btn" href="{{ path('yb_members_configure_block', {'id' : block.id}) }}">
+                                                <i class="fas fa-pen"></i>Modifier le bloc
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" style="border: none">
+                                    <div class="col-12 font-italic text-muted">
+                                        Votre salle n'a aucun bloc. C'est le cas, si le placement est libre ou si vous ne possédez que des places debout.
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <div class="modal modal-dialog modal-confirmation" id="deleteConfModal{{ config.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <div class="icon-box">
+                                    <i class="fa fa-question-circle"></i>
+                                </div>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body text-center" id="modal_detail">
+                                <h4>Confirmation</h4>
+                                <p>Vous êtes sur le point de supprimer la configuration {{ config.name }}. Êtes vous sûr ?</p>
+                                <button class="btn btn-success" data-dismiss="modal">
+                                    <span>Annuler </span><i class="fas fa-ban"></i>
+                                </button>
+                                <form action="{{ path('yb_members_delete_config', {'id': config.id}) }}">
+                                    <button class="btn btn-success" type="submit">
+                                        <span>Valider </span><i class="far fa-check-circle"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if not loop.last %}
+                <div class="col-12"><hr color="grey" size="3"/></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="modal modal-dialog modal-confirmation" id="quitModal{{ venue.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <div class="icon-box">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body text-center" id="modal_detail">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                    <p>Vous êtes sur le point de supprimer cette salle {{ venue.address.name }}. Êtes vous sûr ?</p>
+                    <button class="btn btn-success" data-dismiss="modal">
+                        <span>Annuler </span><i class="fas fa-ban"></i>
+                    </button>
+                    <form action="{{ path('yb_members_close_venue', {'id': venue.id}) }}">
+                        <button class="btn btn-success" type="submit">
+                            <span>Valider </span><i class="far fa-check-circle"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div><hr color="orange" size="3"/></div>
+</div>
+{% endmacro %}
+
+
+
+
+

@@ -7,6 +7,9 @@ use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\User;
+use AppBundle\Entity\YB\CustomTicket;
+use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -23,6 +26,7 @@ class PDFWriter
     const ORDER_TEMPLATE = 'order.html.twig';
     const TICKETS_TEMPLATE = 'tickets.html.twig';
     const YB_TICKETS_TEMPLATE = 'yb_tickets.html.twig';
+    const YB_INVOICE_SOLD_TEMPLATE = 'yb_invoice_sold.html.twig';
 
     const X_TICKETS_TEMPLATE = 'x_tickets.html.twig';
 
@@ -69,32 +73,53 @@ class PDFWriter
         $this->write(self::ORDER_TEMPLATE, $pdfpath, ['cart' => $cart]);//, 'user_rewards' => $cart->getUserRewards()]);
     }
 
-    public function writeTickets($path, $tickets, $agenda = []) {
-        if(!empty($tickets)) {
+    public function writeTickets($path, $cf, $tickets, $agenda = []) {
+        if(isset($tickets[0])) {
             // We know all tickets are for same event
-            $cf = $tickets[0]->getContractFan();
             $this->write(self::TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'cf' => $cf]);
         }
     }
 
-    public function writeYBTickets($path, $tickets, $agenda = []) {
+    public function writeYBTickets($path, $tickets, $agenda = [], YBContractArtist $event) {
         if(!empty($tickets)) {
             // We know all tickets are for same event
-            $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda]);
+            $customTicket = $event->getCustomTicket();
+            try {
+                $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
+            } catch (\Exception $e){
+                $ct = new CustomTicket(false);
+                $ct->constructNull();
+                try {
+                    $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $ct]);
+                } catch (\Exception $e){
+                }
+            }
         }
+    }
+
+    public function writeYBTicketsPreview($path, $ticket, $agenda = [], CustomTicket $customTicket){
+        $tickets = [];
+        $tickets[] = $ticket;
+        $this->write(self::YB_TICKETS_TEMPLATE, $path, ['tickets' => $tickets, 'agenda' => $agenda, 'customTicket' => $customTicket]);
     }
 
     public function writeTicketPreview(ContractFan $cf, $agenda = []) {
         $tickets = $cf->getTickets();
-
+        $cf = $tickets[0]->getContractFan();
         if(!empty($tickets)) {
-            $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda], 'D');
+            $this->write(self::TICKETS_TEMPLATE, 'ticket_preview.pdf', ['tickets' => $tickets, 'agenda' => $agenda, 'cf' => $cf], 'D');
         }
     }
 
-
+   public function writeSoldInvoice(YBInvoice $invoice = null, $ticketData, YBContractArtist $campaign, $cfs) {
+        $this->write(self::YB_INVOICE_SOLD_TEMPLATE, 'invoice.pdf', ['invoice' => $invoice,
+            'ticketData' => $ticketData,
+            'campaign' => $campaign,
+            'cfs' => $cfs,
+        ], 'D');
+    }
+  
     // ------------------------ X
-
     public function writeXTickets($path, $tickets) {
         if(!empty($tickets)) {
             $html = $this->twig->render('XBundle:PDF:' . self::X_TICKETS_TEMPLATE, ['tickets' => $tickets]);
@@ -103,6 +128,4 @@ class PDFWriter
             $html2pdf->output($path, 'F');
         }
     }
-
-
 }

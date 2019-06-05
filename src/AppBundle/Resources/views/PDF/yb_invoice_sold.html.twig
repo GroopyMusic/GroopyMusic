@@ -18,8 +18,8 @@
                     Numéro de facture: FV-{{ invoice.invoiceIdentifier }}
                 </p>
             {% else %}
-                <h3> IMPORTANT: Ce document ne constitue pas une facture valable
-                    tant que vous ne la validez pas.
+                <h3>
+                    IMPORTANT: Ce document ne constitue pas une facture valable tant que vous ne la validez pas.
                 </h3>
             {% endif %}
         {% else %}
@@ -27,14 +27,16 @@
         {% endif %}
         <p>
             {{ campaign.organizationName }} <br />
-            <!-- {{ campaign.address.name }} <br />-->
-            {{ campaign.address.street }}
-            {{ campaign.address.number }} <br />
-            {{ campaign.address.zipcode }}
-            {{ campaign.address.city }} <br />
-            {{ campaign.address.country }} <br />
-            Num&eacute;ro de TVA: {{ campaign.vatNumber }} <br />
-            IBAN: {{ campaign.bankAccount }}
+            {% if campaign.address is not null %}
+                {{ campaign.address.name }} <br />
+                {{ campaign.address.street }}
+                {{ campaign.address.number }} <br />
+                {{ campaign.address.zipcode }}
+                {{ campaign.address.city }} <br />
+                {{ campaign.address.country }} <br />
+            {% endif %}
+            Num&eacute;ro de TVA : {{ campaign.vatNumber }} <br />
+            IBAN : {{ campaign.bankAccount }}
         </p>
         <p align="right">
             Ticked-it <br />
@@ -45,90 +47,152 @@
         </p>
 
         {% if invoice is null %}
-            <h2>{{ campaign }} - Facture sur les recettes</h2>
-        {% else %}
-            <h2>{{ campaign }} - Facture sur les recettes du {{ invoice.dateValidated|date("d/m/Y") }}</h2>
+            <h2>Campagne "{{ campaign.getTitle }}" <br/>Facture sur les recettes{% if invoice is not null %} du {{ invoice.dateValidated|date("d/m/Y") }}{% endif %}</h2>
         {% endif %}
 
         <table border="1" style="width: 100%; border-collapse: collapse;">
             <tr class="bg-gray">
                 <th>Description</th>
-                <th>Prix unitaire HT</th>
+                <th>Prix unitaire{% if campaign.isBroker %} HTVA{% endif %}</th>
                 <th>Quantité</th>
-                <th>TVA</th>
-                <th>Montant</th>
+                <th>Montant total{% if campaign.isBroker %} HTVA{% endif %}</th>
             </tr>
             {% set totalRaw = 0 %}
             {% set totalVat = 0 %}
             {% set commission = 0 %}
+            {% set commissionRaw = 0 %}
+            {% set commissionVAT = 0 %}
             {% for item in ticketData %}
                 <tr>
-                    <td>{{ item.name }}</td>
-                    <td class="text-center">{{ item.unitPriceRaw|round(2) }}€</td>
+                    <td>{{ item.name }} <br />
+                        Détail des versements en annexe</td>
+                    <td class="text-center">{{ item.unitPriceRaw|round(2) }} €</td>
                     <td class="text-center">{{ item.qty }}</td>
                     {% set vat = item.qty*(item.unitPrice - item.unitPriceRaw) %}
-                    <td class="text-center">{{ vat|round(2) }}€</td>
                     {% set subtotal = item.unitPriceRaw * item.qty %}
-                    <td class="text-right">{{ subtotal|round(2) }}€</td>
+                    <td class="text-right">{{ subtotal|round(2) }} €</td>
                 </tr>
                 {% set commission = commission + item.commission * item.qty %}
+                {% set commissionRaw = commissionRaw + item.commissionRaw * item.qty %}
+                {% set commissionVAT = commissionVAT + item.commissionVAT * item.qty %}
                 {% set totalVat = totalVat + vat %}
                 {% set totalRaw = totalRaw + subtotal %}
             {% endfor %}
             <tr class="text-bold text-right bg-gray">
-                <td colspan="2" class="bg-white"></td>
-                <td colspan="2" class="text-italic">Total HT</td>
-                <td>{{ totalRaw|round(2) }}€</td>
+                <td class="bg-white"></td>
+                <td colspan="2" class="text-italic">Sous-total</td>
+                <td>{{ totalRaw|round(2) }} €</td>
             </tr>
-            <tr class="text-bold text-right bg-gray">
-                <td colspan="2" class="bg-white"></td>
-                <td colspan="2" class="text-italic">Taux de TVA</td>
-                <td>{{ 100*campaign.vat }}%</td>
-            </tr>
-            <tr class="text-bold text-right bg-gray">
-                <td colspan="2" class="bg-white"></td>
-                <td colspan="2" class="text-italic">TVA</td>
-                <td>{{ totalVat|round(2) }}€</td>
-            </tr>
-            <tr class="text-bold text-right bg-gray">
-                <td colspan="2" class="bg-white"></td>
-                <td colspan="2" class="text-italic">Commission Ticked-it</td>
-                <td>-{{ commission|round(2) }}€</td>
-            </tr>
-            <tr class="text-bold text-right bg-gray">
-                <td colspan="2" class="bg-white"></td>
-                <td colspan="2" class="text-italic">Total</td>
-                <td>{{ totalRaw + totalVat - commission|round(2) }}€</td>
-            </tr>
+            {% if campaign.isBroker %}
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">Dont commission</td>
+                    <td>{{ commission|round(2) }} €</td>
+                </tr>
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">Base T.V.A.</td>
+                    <td>{{ (commission + totalRaw)|round(2) }} €</td>
+                </tr>
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">Taux de T.V.A.</td>
+                    <td>{{ 100*campaign.vat }}.00%</td>
+                </tr>
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">T.V.A.</td>
+                    <td>{{ totalVat|round(2) }} €</td>
+                </tr>
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">Autre</td>
+                    <td>-</td>
+                </tr>
+
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">Total</td>
+                    <td>{{ totalRaw + totalVat  }} €</td>
+                </tr>
+            {% else %}
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">Dont commission HTVA</td>
+                    <td>{{ commissionRaw|round(2) }} €</td>
+                </tr>
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">T.V.A. sur la commission</td>
+                    <td>21.00 %</td>
+                </tr>
+                <tr class="text-bold text-right bg-gray">
+                    <td class="bg-white"></td>
+                    <td colspan="2" class="text-italic">Commission TTC</td>
+                    <td>{{ commission|round(2) }} €</td>
+                </tr>
+            {% endif %}
         </table>
 
     </page>
 
-    {% set ticketCount = 0 %}
-    {% set ticketsPerPage = 5 %}
-    {% for ticket in tickets %}
-        {% if ticketCount % ticketsPerPage == 0 %}
-            <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
-            <h2>Liste des tickets vendus</h2>
-            <table border="1" style="width: 100%; border-collapse: collapse;">
-                <tr class="bg-gray">
-                    <th>Identifiant du ticket</th>
-                    <th>Type de ticket et prix</th>
-                    <th>Acheteur</th>
-                </tr>
-        {% endif %}
-            {% set ticketCount = ticketCount + 1 %}
-                <tr>
-                    <td>{{ ticket.barCodeText }}</td>
-                    <td>{{ ticket.counterPart }} ({{ ticket.price }} €)</td>
-                    <td>{{ ticket.name }}</td>
-                </tr>
-        {% if ticketCount % ticketsPerPage == 0 %}
-            </table>
-            </page>
-        {% endif %}
+    {% set purchasesCount = 0 %}
+    {% set purchasesPerPage = 20 %}
+    {% set pagesCount = 0 %}
+    {% set totalPages = (campaign.nbPurchasesPaid / purchasesPerPage)|round(0, 'ceil') %}
+    {% for cf in cfs %}
+        {% for purchase in cf.purchases%}
+            {% if purchasesCount % purchasesPerPage == 0 %}
+                {% if pagesCount > 0 %}
+                    </table>
+                    </page>
+                {% endif %}
+                {% set pagesCount = pagesCount + 1 %}
+                <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
+                {% if invoice is not null and invoice.userValidated %}
+                    <p>
+                        Numéro de facture: FV-{{ invoice.invoiceIdentifier }}
+                    </p>
+                {% endif %}
+                <h2>Annexe : relevé des ventes ({{ pagesCount }}/{{ totalPages }})</h2>
+                <table border="1" style="width: 100%; border-collapse: collapse;">
+                    <tr class="bg-black">
+                        <th>#commande</th>
+                        <th>Date</th>
+                        <th>Identifiant Stripe</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+            {% endif %}
+            {% set purchasesCount = purchasesCount + 1 %}
+
+                    {% if loop.first %}
+                        <tr class="bg-dark">
+                            {% set rowspan = cf.purchases|length %}
+                            <td>{{ cf.id }}</td>
+                            <td>{{ cf.date|date('d/m/Y H:i:s') }}</td>
+                            <td>{{ cf.chargeId }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="bg-gray">
+                            <th class="bg-white"></th>
+                            <th>Type de ticket</th>
+                            <th>Prix unitaire</th>
+                            <th>Quantité</th>
+                            <th>Prix total</th>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td></td>
+                        <td>{{ purchase.counterpart }}</td>
+                        <td>{{ purchase.unitaryPrice }}</td>
+                        <td>{{ purchase.quantity }}</td>
+                        <td>{{ purchase.amount }} €</td>
+                    </tr>
+        {% endfor %}
     {% endfor %}
-    {% if ticketCount % ticketsPerPage != 0 %}
+    {% if pagesCount > 0 %}
         </table>
         </page>
     {% endif %}

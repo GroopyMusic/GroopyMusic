@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBInvoice;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -142,6 +143,9 @@ class ContractFan
     /** @return PhysicalPersonInterface */
     public function getPhysicalPerson() {
         if($this->getContractArtist() instanceof YBContractArtist) {
+            if ($this->getCart() === null){
+                return null;
+            }
             return $this->getCart()->getYbOrder();
         }
         else {
@@ -196,6 +200,18 @@ class ContractFan
         return array_sum(array_map(function (Purchase $purchase) {
             return $purchase->getQuantity();
         }, $this->purchases->toArray()));
+    }
+
+    public function getPurchaseWithNoBookingQuantity(){
+        $quantity = 0;
+        /** @var YBContractArtist $campaign */ $campaign = $this->contractArtist;
+        /** @var Purchase $purchase */
+        foreach ($this->purchases as $purchase){
+            if ($purchase->getCounterpart()->hasOnlyFreeSeatingBlocks($campaign->getConfig()->getBlocks())){
+                $quantity += $purchase->getQuantity();
+            }
+        }
+        return $quantity;
     }
 
     public function getCounterPartsQuantityOrganic()
@@ -297,6 +313,10 @@ class ContractFan
         return $this->getPayment()->getChargeId();
     }
 
+    public function getChargeId() {
+        return $this->getPayment()->getChargeId();
+    }
+
     public function getContractArtistExport() {
         return $this->getContractArtist()->__toString();
     }
@@ -394,6 +414,13 @@ class ContractFan
      * @ORM\JoinColumn(name="contract_fan_refund_request")
      */
     private $asking_refund;
+
+    /**
+     * @var YBInvoice
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\YBInvoice", inversedBy="contracts_fan")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $invoice;
 
     /**
      * Get id
@@ -776,5 +803,23 @@ class ContractFan
     public function getAskingRefund()
     {
         return $this->asking_refund;
+    }
+
+    /**
+     * @return YBInvoice
+     */
+    public function getInvoice()
+    {
+        return $this->invoice;
+    }
+
+    /**
+     * @param YBInvoice $invoice
+     * @return $this
+     */
+    public function setInvoice(YBInvoice $invoice)
+    {
+        $this->invoice = $invoice;
+        return $this;
     }
 }

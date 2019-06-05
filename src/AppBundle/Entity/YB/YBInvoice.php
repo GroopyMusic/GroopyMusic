@@ -2,14 +2,10 @@
 
 namespace AppBundle\Entity\YB;
 
-use AppBundle\Entity\Address;
-use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractFan;
-use AppBundle\Entity\CounterPart;
-use AppBundle\Entity\Photo;
-use AppBundle\Entity\Purchase;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
  * ContractArtist
@@ -19,10 +15,38 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class YBInvoice
 {
+    use ORMBehaviors\SoftDeletable\SoftDeletable {
+        delete as protected softdelete;
+    }
+
     public function __construct()
     {
         $this->date_generated = new \DateTime();
         $this->user_validated = false;
+        $this->contracts_fan = new ArrayCollection();
+    }
+
+    public function delete()
+    {
+        if(!$this->isDeleted()) {
+            $this->softdelete();
+            foreach($this->getContractsFan() as $cf) {
+                $this->removeContractFan($cf);
+            }
+        }
+    }
+
+    private $purchases = [];
+    public function getPurchases() {
+        if(count($this->purchases) == 0) {
+            $purchases = [];
+            foreach($this->contracts_fan as $cf) {
+                foreach($cf->getPurchases() as $purchase)
+                $purchases[] = $purchase;
+            }
+            $this->purchases = $purchases;
+        }
+        return $this->purchases;
     }
 
     /**
@@ -59,10 +83,10 @@ class YBInvoice
     private $date_validated;
 
     /**
-     * @var Purchase[] $purchases
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Purchase", cascade={"all"}, mappedBy="invoice")
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ContractFan", cascade={"all"}, mappedBy="invoice")
      */
-    private $purchases;
+    private $contracts_fan;
 
     /**
      * @var int|null
@@ -126,10 +150,23 @@ class YBInvoice
     }
 
     /**
-     * @return Purchase[]
+     * @return ArrayCollection
      */
-    public function getPurchases(){
-        return $this->purchases;
+    public function getContractsFan(){
+        return $this->contracts_fan;
+    }
+
+    public function addContractFan(ContractFan $contract_fan) {
+        $this->contracts_fan->add($contract_fan);
+        $contract_fan->setInvoice($this);
+    }
+
+    public function removeContractFan(ContractFan $contract_fan) {
+        if($this->contracts_fan->contains($contract_fan)) {
+            $this->contracts_fan->remove($contract_fan);
+            $contract_fan->setInvoice(null);
+        }
+
     }
 
     public function getSequenceNumber(){

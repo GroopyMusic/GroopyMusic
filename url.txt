@@ -1,0 +1,1 @@
+https://www.mapquestapi.com/staticmap/v5/map?center=50.8288651,4.3860961972&locations=50.8288651,4.3860961972|marker-red||50.821208,4.390222|marker-1-blue||50.831177,4.389945|marker-2-green||50.829856,4.386097|marker-3-green||50.827537,4.381838|marker-4-green&size=210,200&zoom=13&key=ma_cle_api

@@ -1,6 +1,6 @@
 {% extends "@App/YB/Members/base.html.twig" %}
 
-{% block body %}
+{% block members_body %}
     <section class="container px-0 mt-3">
         <ol class="breadcrumb-arrow">
             <li><a href="{{ path('yb_members_dashboard') }}">Tableau de bord</a></li>
@@ -11,57 +11,97 @@
     <section class="container py-5">
         <h2>Factures</h2>
 
-        <div class="row col-12 justify-content-between">
+        <div class="text-right">
             <a href="{{ path('yb_members_payment_options') }}">
-                <div class="btn btn-info"><i class="fa fa-info-circle"></i> Aide</div>
+                <div class="btn btn-info progress-bar-striped"><i class="fa fa-info-circle"></i> Aide</div>
             </a>
         </div>
 
         {% if campaigns|length > 0 %}
-            <div class="container row mt-4">
+            <div class="container">
                 {% for campaign in campaigns %}
-                    <div class="row col-12">
-                        <h3><a class="link-secondary" target="_blank"
-                               href="{{ path('yb_campaign', {'id': campaign.id}) }}">
+                    <div class="row border-dark py-2 my-3">
+                        <div class="col-12 my-2">
+                            <h3>
                                 {{ campaign.getTitle }}
-                            </a></h3>
-                        {% if admin %}
-                        <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                           href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
-                            <i class="fas fa-download text-primary"></i> Ventes (Apercu)
-                        </a>
-                        <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                           href="{{ url('yb_members_campaign_fee', {'id': campaign.id}) }}">
-                            <i class="fas fa-download text-primary"></i> Commissions (Apercu)
-                        </a>
-                        <a class="btn btn-sm btn-secondary col-12 col-md-2" target="_blank"
-                           href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
-                            Générer
-                        </a>
+                            </h3>
+                            <p class="small">
+                                Organisé par : {{ campaign.organizationName }}<br />
+                                Numéro de TVA : {{ campaign.vatNumber|default('non renseigné') }}<br />
+                                Numéro de compte : {{ campaign.bankAccount|default('non renseigné') }}<br />
+                                Taux de TVA : {{ campaign.vat|default('non renseigné') }}
+                                {% if admin %}<br />Rôle de {{ campaign.commissionary ? 'commissionnaire' : 'courtier' }}{% endif %}
+                            </p>
+                        </div>
+                        {% if campaign.externalInvoice %}
+                            <div>
+                                Il n'y aura pas de facture pour cette campagne car la facturation a été gérée de façon externe.
+                            </div>
+                        {% elseif admin %}
+                            {% if campaign.commissions is null or campaign.commissions|length <= 0 %}
+                                <div>
+                                    Impossible de générer une facture à l'heure actuelle car il n'y a aucune commission renseignée pour cette campagne.
+                                    <br /><a href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les infos de la campagne</a>
+                                </div>
+                            {% elseif campaign.isBroker and campaign.vatNumber is null %}
+                                <div>
+                                    Impossible de générer une facture à l'heure actuelle car il n'y a pas de numéro de TVA renseigné pour pour cette campagne, alors que la TVA n'est pas à 0%.
+                                    <br /><a href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les infos de la campagne</a>
+                                </div>
+                            {% elseif not campaign.facturable %}
+                                <div>
+                                    Il n'y a pas de commande à inclure dans cette facture. Il en faut au moins une pour pouvoir générer une facture.
+                                </div>
+                            {% else %}
+                                <div class="col-12">
+                                    <a class="btn btn-sm btn-primary" target="_blank"
+                                       href="{{ url('yb_members_campaign_sold', {'id': campaign.id}) }}">
+                                        <i class="fas fa-download"></i> Ventes (aperçu PDF)
+                                    </a>
+                                    <a class="btn btn-sm btn-primary" target="_blank"
+                                       href="{{ url('yb_members_campaign_sold', {'id': campaign.id,'format': "html"}) }}">
+                                        <i class="fas fa-download"></i> Ventes (aperçu HTML)
+                                    </a>
+                                    <a class="btn btn-sm btn-secondary progress-bar-striped" target="_blank" href="{{ url('yb_members_invoice_generate', {'id': campaign.id}) }}">
+                                        <i class="fas fa-cogs"></i> Générer
+                                    </a>
+                                </div>
+                            {% endif %}
                         {% endif %}
                         {% for invoice in campaign.getInvoices %}
-                            <div class="row col-12 {% if not invoice.userValidated %} bg-warning {% endif %}">
-                                <h4>
-                                    Facture du {{ invoice.getDateGenerated|date("d/m/Y") }}
+                            <div class="col-12 mt-3{% if not invoice.userValidated %} bg-warning{% endif %}">
+                                <h4>Facture du {{ invoice.getDateGenerated|date("d/m/Y") }}
                                     {% if invoice.userValidated %}
                                         <small>{{ invoice.invoiceIdentifier }}</small>
                                     {% endif %}
                                 </h4>
-                                <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
-                                   href="{{ url('yb_members_invoice_sold', {'id': invoice.id}) }}">
-                                    <i class="fas fa-download text-primary"></i> Ventes
-                                </a>
-                                <a class="btn btn-sm btn-success col-12 col-md-2" target="_blank"
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a class="btn btn-sm btn-success" target="_blank"
+                                           href="{{ url('yb_members_invoice_sold', {'id': invoice.id}) }}">
+                                            <i class="fas fa-download"></i> Télécharger (PDF)
+                                        </a>
+                                        <a class="btn btn-sm btn-success" target="_blank"
+                                           href="{{ url('yb_members_invoice_sold', {'id': invoice.id, 'format': 'html'}) }}">
+                                            <i class="fas fa-download"></i> Télécharger (HTML)
+                                        </a>
+                                    {% if not invoice.userValidated %}
+                                        <a class="btn btn-sm btn-secondary" href="{{ url('yb_members_invoice_validate', {'id': invoice.id}) }}">
+                                            <i class="fas fa-check-double"></i> Valider
+                                        </a>
+                                        {% if admin %}
+                                            <a class="btn btn-sm btn-danger" href="{{ url('yb_members_invoice_invalidate', {'id': invoice.id}) }}">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                                {#<a class="btn btn-sm btn-success col-12 col-md-3" target="_blank"
                                    href="{{ url('yb_members_invoice_fee', {'id': invoice.id}) }}">
                                     <i class="fas fa-download text-primary"></i> Commissions
-                                </a>
-                                {% if not invoice.userValidated %}
-                                    <a class="btn btn-sm btn-secondary col-12 col-md-2"
-                                       href="{{ url('yb_members_invoice_validate', {'id': invoice.id}) }}">
-                                        Valider
-                                    </a>
-                                {% endif %}
-                            </div>
+                                </a>#}
                         {% endfor %}
                     </div>
                 {% endfor %}

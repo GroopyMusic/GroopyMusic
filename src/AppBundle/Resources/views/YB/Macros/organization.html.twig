@@ -1,62 +1,116 @@
 {% macro organization_row(organization, currentUser) %}
     {% import '@App/YB/Macros/organization_member.html.twig' as macros %}
-    <div data-jplist-item>
-        {% if organization.hasMember(currentUser) %}
-            <h3 class="name">{{ organization.getName|nl2br }}</h3>
-        {% else %}
-            <h3 class="name" style="color:orange;">{{ organization.getName|nl2br }} (SUPER ADMIN)</h3>
-        {% endif %}
-        <p class="small">
-            <i>Numéro de TVA : {{ organization.vatNumber|default('non renseigné - envoyez-le par mail') }}</i><br />
-            <i>Numéro de compte : {{ organization.bankAccount|default('non renseigné - envoyez-le par mail') }}</i>
-        </p>
+    <div data-jplist-item class="my-5">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="py-1 name font-weight-bold text-center" style="background-color:rgba(243, 146, 0, 0.46)">
+                    {{ organization.getName|nl2br }}{% if not organization.hasMember(currentUser) %} (SUPER ADMIN){% endif %}
+                    {% if organization.published %}<span class="badge badge-info">Page publique</span>{% endif %}
+                </h3>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="small">
+                    <i>Numéro de TVA : {{ organization.vatNumber|default('non renseigné') }}</i><br />
+                    <i>Numéro de compte : {{ organization.bankAccount|default('non renseigné') }}</i>
+                </p>
+                {% if organization.photo %}
+                    <h4>Photo</h4>
+                    <img class="img-fluid rounded" src="{{ yb_asset(organization.webPath(organization.photo)) }}" />
+                {% endif %}
+                <h4 class="mt-3">Membres</h4>
+                <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
+                    {% for member in organization.getMembers %}
+                        {{ macros.organization_member_row(currentUser, member, organization) }}
+                    {% endfor %}
+                    {% if organization.hasPendingRequest %}
+                        {% for request in organization.getJoinOrganizationRequest() %}
+                            <tr>
+                                <td> {{ request.getEmail }}</td>
+                                <td>EN ATTENTE DE CONFIRMATION</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
 
-        <table class="table" width="100%" cellspacing="2" cellpadding="0" border="0" align="center" bgcolor="#FF9900">
-            {% for member in organization.getMembers %}
-                {{ macros.organization_member_row(currentUser, member, organization) }}
-            {% endfor %}
-            {% if organization.hasPendingRequest %}
-                {% for request in organization.getJoinOrganizationRequests %}
-                    <tr>
-                        <td> {{ request.getEmail }}</td>
-                        <td>EN ATTENTE DE CONFIRMATION</td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
-        </table>
+            <div class="col-12 col-md-6 px-5">
+                <h4 class="mt-3">Options</h4>
+                <!-- On ne peut ajouter une personne qui si on est admin -->
+                {% if currentUser.isAdminForOrganization(organization) or currentUser.isSuperAdmin() %}
+                    {% if not organization.isPrivate() %}
+                        <div>
+                            <a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">
+                                <i class="fas fa-user-plus text-primary"></i> Rajouter un membre à cette organisation
+                            </a>
+                        </div>
+                        <div class="pb-2 text-muted">
+                            En tant qu'administrateur de cette organisation, vous pouvez gérer les membres qui la composent. Besoin d'élargir l'équipe ?
+                            Envoyez une demande à vos contacts par mail pour qu'ils rejoignent l'organisation.
+                        </div>
+                    {% endif %}
+                    <div>
+                        <a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">
+                            <i class="fas fa-pencil-alt text-primary"></i> Modifier votre organisation
+                        </a>
+                    </div>
+                    <div class="pb-2 text-muted">
+                        Modifiez l'image, la description et même le nom de votre organisation. En fonction de vos envies, rendez sa page publique ou non, pour regrouper toutes vos campagnes en une page.
+                    </div>
+                {% endif %}
 
-        <!-- On ne peut ajouter une personne qui si on est admin -->
-        {% if currentUser.isAdminForOrganization(organization) or currentUser.isSuperAdmin() %}
-            {% if not organization.isPrivate() %}
-                <p><a class="link-secondary" href="{{ path('yb_members_add_to_organization', {'id': organization.getId}) }}">Rajouter un membre à cette organisation...</a></p>
-            {% endif %}
-            <p><a class="link-secondary" href="{{ path('yb_members_rename_organization', {'id': organization.getId}) }}">Renommer votre organisation...</a></p>
-        {% endif %}
-        {% if organization.hasMember(currentUser) %}
-            <p>
-                <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">
-                    Quitter cette organisation...
-                </a>
-            </p>
-        {% endif %}
-        <hr size="4" color="orange">
+                <div>
+                    <a class="link-secondary" href="{{ path('yb_organization', {'id':organization.id, 'slug': organization.slug }) }}">
+                        {% if organization.isPublished %}<i class="far fa-eye text-primary"></i> Voir la page publique de l'organisation
+                        {% else %}<i class="far fa-eye-slash text-primary"></i> Pré-visualiser la page publique de l'organisation{% endif %}
+                    </a>
+                </div>
+                <div class="pb-2 text-muted">
+                    Si votre organisation a une page publique, retrouvez-la en suivant ce lien.
+                    Si la page de votre organisation n'est pas (encore) publique, elle n'est pas accessible depuis le monde extérieur : seuls les membres de l'organisation ont accès à la page en pré-visualisation.
+                </div>
+                {% if organization.hasMember(currentUser) %}
+                    <div>
+                        <a class="link-secondary" data-toggle="modal" href="#quitModal{{ organization.id }}">
+                            <i class="fas fa-sign-out-alt text-primary"></i> Quitter cette organisation
+                        </a>
+                    </div>
+                    <div class="pb-2 text-muted">
+                        Attention : si vous quittez l'organisation, vous n'aurez bien entendu plus accès à sa gestion !
+                    </div>
+                {% endif %}
 
-        <div class="modal fade" id="quitModal{{ organization.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                {% if organization.ongoingCampaigns is not empty and organization.ongoingCampaigns|length > 0 %}
+                    <h4 class="mt-3">Campagnes en cours</h4>
+
+                    <div class="ongoing-campaigns-for-organization">
+                        {{ hidden_loader(true, false) }}
+                        <div class="ongoing-campaigns">
+                            {{ render(controller('AppBundle:YBMembers:displayOngoingCampaignsForOrganization', {'id': organization.id})) }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="modal modal-dialog modal-confirmation" id="quitModal{{ organization.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header text-center">
+                        <div class="icon-box">
+                            <i class="fa fa-question-circle"></i>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body text-center" id="modal_detail">
                         <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                        <p>Vous êtes sur le point de quitter l'organisation {{ organization.getName }}. Êtes vous sûr ?</p>
+                        <button class="btn btn-success" data-dismiss="modal">
+                            <span>Annuler </span><i class="fas fa-ban"></i>
                         </button>
-                    </div>
-                    <div class="modal-body" id="modal_detail">
-                        Vous êtes sur le point de quitter l'organisation {{ organization.getName }}. Êtes vous sûr ?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn" data-dismiss="modal">Annuler</button>
                         <form action="{{ path('yb_members_quit_organization', {'id': organization.getId}) }}">
-                            <input class="btn" type="submit" value="Valider"/>
+                            <button class="btn btn-success" type="submit">
+                                <span>Valider </span><i class="far fa-check-circle"></i>
+                            </button>
                         </form>
                     </div>
                 </div>

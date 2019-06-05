@@ -1,0 +1,13 @@
+{%- block button_widget -%}
+    {%- if label is not same as(false) and label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    {% autoescape false %}<button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain)|raw }} <i class="far fa-check-circle"></i></button>{% endautoescape %}
+{%- endblock button_widget -%}

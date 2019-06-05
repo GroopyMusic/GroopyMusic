@@ -1,0 +1,274 @@
+{% extends "@App/YB/Members/base.html.twig" %}
+
+{% block body %}
+    <style>
+        .pick-seats-content{
+            min-width: 700px;
+        }
+    </style>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations">
+        <h2>{{ campaign.getTitle }}</h2>
+        <h2 style="font-size: 20px">Sélection de siège : {{ purchase }}</h2>
+        {% if config.photo is not null %}
+            <h2 style="font-size: 18px">Plan de salle :</h2>
+            <div class="col-12">
+                <h2><img class="img-fluid" src="{{ yb_asset(config.webPath(config.photo)) }}"/></h2>
+            </div>
+        {% endif %}
+    </section>
+    <div id="sticky-anchor" style="width: 100%; margin: auto"></div>
+    <section style="text-align: center; margin-top: 50px" id="myHeader">
+        <h2 style="font-size: 22px;  height: 40px; margin-top: 15px">Vous pouvez encore prendre <span id="remainingTix" style="font-size: 24px">{{ purchase.quantity }}</span> ticket(s).</h2>
+    </section>
+    <section class="container my-4 py-2 my-md-5 campaign-edit-section my-configurations pick-seats-content">
+        {% for block in blocks %}
+            <h2>{{ block.name }}</h2>
+            {% if not block.isNotNumbered %}
+                <div align-text="center" id="seat-map{{ block.id }}"></div>
+            {% else %}
+                {% if block.type != 'Debout' and block.getSoldTicketInBlock(campaign) == block.capacity %}
+                    Ce bloc est sold-out...
+                {% else %}
+                    <div id="free-blk{{ block.id }}">
+                        Nombre de ticket voulu dans ce bloc :
+                        <div class="input-group">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-left-minus btn btn-dark btn-number retreat-quantity" id="retreat-quantity{{ block.id }}">
+                                <i class="text-white fas fa-minus"></i>
+                            </button>
+                        </span>
+                            <input type="number" style="width: 100px; text-align: center;" class="quantity-tix" id="quantity-tix{{ block.id }}" value="0" readonly>
+                            <span class="input-group-btn">
+                            <button type="button" class="quantity-right-plus btn btn-dark btn-number add-quantity" id="add-quantity{{ block.id }}">
+                                <i class="text-white fas fa-plus"></i>
+                            </button>
+                        </span>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        <br>
+        <div class="modal modal-dialog modal-attention" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <div class="icon-box">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h4>Attention !</h4>
+                        <p id="modal-text"></p>
+                        <button class="btn btn-success" data-dismiss="modal">
+                            <span>Retour </span><i class="far fa-arrow-alt-circle-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2>
+            <button class="btn-secondary btn book">Réserver</button>
+        </h2>
+    </section>
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var header = document.getElementById("myHeader");
+            var sticky = header.offsetTop;
+            window.onscroll = function(){stickToTop(header, sticky)};
+            var runtimeMax = new Date( {{ endTime|json_encode|raw }} );
+            var charts = new Map();
+            var qtyMax = {{ purchase.quantity }};
+            var remainingTicket = qtyMax;
+            var soldTicket = 0;
+            var selected = [];
+            var unordered = [];
+            {% for block in blocks %}
+                {% if not block.isNotNumbered %}
+                    var sc = $('#seat-map{{ block.id }}').seatCharts({
+                        map: {{ block.generateSeatChart|json_encode|raw }},
+                        rows: {{ block.getSeatChartRow|json_encode|raw }},
+                        seats: {
+                            f: {
+                                price: {{ purchase.counterpart.price }},
+                            }
+                        },
+                        click: function () {
+                            if (this.status() == 'available') {
+                                if (remainingTicket > 0) {
+                                    var fullName = this.settings.id + "_" + {{ block.id }};
+                                    selected.push(fullName);
+                                    console.log(selected);
+                                    remainingTicket--;
+                                    soldTicket++;
+                                    $('#remainingTix').text(remainingTicket);
+                                    return 'selected';
+                                } else {
+                                    return this.style();
+                                }
+                            } else if (this.status() == 'selected') {
+                                if (soldTicket > 0) {
+                                    var j;
+                                    for (j = 0; j < selected.length; j++) {
+                                        var fullName = this.settings.id + "_" + {{ block.id }};
+                                        if (selected[j] === fullName) {
+                                            selected.splice(j, 1);
+                                        }
+                                    }
+                                    console.log(selected);
+                                    remainingTicket++;
+                                    soldTicket--;
+                                    $('#remainingTix').text(remainingTicket);
+                                }
+                                return 'available';
+                            } else if (this.status() == 'unavailable') {
+                                //seat has been already booked
+                                return 'unavailable';
+                            } else {
+                                return this.style();
+                            }
+                        }
+                    });
+                    {% for bookedSeat in block.bookedSeatList %}
+                        sc.status("{{ bookedSeat }}", 'unavailable');
+                    {% endfor %}
+                    charts.set({{ block.id }}, sc);
+                    $('.seatCharts-header').css('display', 'none');
+                {% else %}
+                    $('#retreat-quantity{{ block.id }}').click(function(){
+                        var value = $('#quantity-tix{{ block.id }}').val();
+                        if (soldTicket > 0){
+                            value = value - 1;
+                            remainingTicket++;
+                            soldTicket--;
+                            for (j = 0; j < unordered.length; j++) {
+                                if (unordered[j] === {{ block.id }}) {
+                                    unordered.splice(j, 1);
+                                }
+                            }
+                            console.log(unordered);
+                            $('#remainingTix').text(remainingTicket);
+                            $('#quantity-tix{{ block.id }}').val(value);
+                        }
+                    });
+
+                    $('#add-quantity{{ block.id }}').click(function(){
+                        var value = $('#quantity-tix{{ block.id }}').val();
+                        if (remainingTicket > 0){
+                            var decimal = parseInt((value + '').replace(/[^01]/gi, ''), 2);
+                            decimal = decimal + 1;
+                            remainingTicket--;
+                            soldTicket++;
+                            unordered.push({{ block.id }});
+                            console.log(unordered);
+                            $('#remainingTix').text(remainingTicket);
+                            $('#quantity-tix{{ block.id }}').val(decimal);
+                        }
+                    });
+                {% endif %}
+            {% endfor %}
+
+            $('.book').click(function () {
+                console.log(selected);
+                if (remainingTicket == 0) {
+                    $('.book').prop('disabled', true); // avoid repeating request
+                    $.ajax({
+                        url: "{{ path('yb_book_seats') }}",
+                        type: "POST",
+                        data: {
+                            seats: selected,
+                            purchase: {{ purchase.id }},
+                            purchaseIndex: {{ purchaseIndex }} +1,
+                            passes: unordered,
+                        },
+                        success: function (response) {
+                            $('.book').prop('disabled', false);
+                            location.href = response;
+                        },
+                        error: function (err) {
+                            $('.book').prop('disabled', false);
+                            console.log('Error');
+                        }
+                    });
+                } else {
+                    $('#modal-text').text('Vous n\'avez pas sélectionné assez de places');
+                    $('.modal').modal();
+                }
+            });
+
+            setInterval(checkForAbortedBooking, 120000);
+
+            setInterval(function(){checkForOccupiedSeats(charts)}, 7000);
+
+            setInterval(function(){checkTwoMinutesWarning(runtimeMax)}, 60000);
+        });
+        function checkForAbortedBooking() {
+            $.ajax({
+                url: "{{ path('yb_refresh_seats') }}",
+                type: "POST",
+                data: {
+                    code: {{ code|json_encode|raw }},
+                    campaign: {{ campaign.id }}
+                },
+                success: function (response) {
+                    if (response === 'remain on page'){
+                        // do nothing
+                    } else {
+                        location.href = response;
+                    }
+                    console.log(response);
+                },
+                error: function (err) {
+                    console.log('Error');
+                }
+            })
+        }
+        function checkForOccupiedSeats(charts){
+            $.ajax({
+                url: "{{ path('yb_occupied_seats') }}",
+                type: "POST",
+                data: {
+                    purchase: {{ purchase.id }},
+                    config: {{ config.id }}
+                },
+                success: function (bookedSeat) {
+                    for(var i=0; i<bookedSeat.length; i++){
+                        var arr = bookedSeat[i].split('_');
+                        var blkToInt = parseInt(arr[2], 10);
+                        var scbis = charts.get(blkToInt);
+                        scbis.status(arr[0]+'_'+arr[1], 'unavailable');
+                    }
+                },
+                error: function (err) {
+                    console.log('Error');
+                }
+            })
+        }
+        function stickToTop(header, sticky){
+            /*if (window.pageYOffset > sticky) {
+                header.classList.add("sticky");
+                header.style.display = 'block';
+            } else {
+                header.style.display = 'none';
+                header.classList.remove("sticky");
+            }*/
+
+            var window_top = $(window).scrollTop();
+            var div_top = $('#sticky-anchor').offset().top;
+            if (window_top > div_top)
+                $('#myHeader').addClass('sticky');
+            else
+                $('#myHeader').removeClass('sticky');
+        }
+        function checkTwoMinutesWarning(dateMax){
+            var now = new Date().getTime();
+            var difference = (dateMax - now) / 60000;
+            if (difference < 3 && difference >= 2){
+                $('#modal-text').text('Il vous reste environ 2 minutes pour finir votre commande !');
+                $('.modal').modal();
+            }
+        }
+    </script>
+{% endblock %}

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\YB\YBContractArtist;
+use AppBundle\Entity\YB\YBSubEvent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,13 +15,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null)
+    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $seat = 'N/A')
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;
         $this->setPrice($price);
         $this->validated = false;
         $this->rewards = new ArrayCollection();
+        $this->seat = $seat;
         if ($cf != null) {
             $this->barcode_text = $cf->getBarcodeText() . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
@@ -29,6 +32,13 @@ class Ticket
             $this->contractArtist = $contractArtist;
             $this->name = $physicalPerson->getDisplayName();
         }
+    }
+
+    public function getVenueConfig(){
+        /** @var YBContractArtist $campaign */
+        $campaign = $this->getCounterPart()->getContractArtist();
+        $config = $campaign->getConfig();
+        return $config;
     }
 
     /**
@@ -54,6 +64,39 @@ class Ticket
     public function isRefunded()
     {
         return $this->contractFan != null && $this->contractFan->getRefunded();
+    }
+
+    public function hasFreeSeatingSeat(){
+        return $this->seat === 'Placement libre';
+    }
+
+    /**
+     * @return array
+     */
+    public function getDates() {
+        $campaign = $this->getContractArtist();
+        if($campaign->isYB()) {
+            /** @var YBContractArtist $campaign */
+            if($campaign->hasSubEvents()) {
+                if(count($this->counterPart->getSubEvents()) == 0) {
+                    return $campaign->getSubEventsDates();
+                }
+                else {
+                    return array_map(function(YBSubEvent $se) {
+                        return $se->getDate();
+                    }, $this->counterPart->getSubEvents()->toArray());
+                }
+            }
+            else {
+                return [$campaign->getDateEvent()];
+            }
+        }
+        else {
+            /**
+             * @var ContractArtist $campaign
+             */
+            return $campaign->getFestivalDates();
+        }
     }
 
     /**
@@ -135,6 +178,11 @@ class Ticket
      * @ORM\Column(name="paidInCash", type="boolean")
      */
     private $paidInCash = false;
+
+    /**
+     * @ORM\Column(name="seatLabel", type="string")
+     */
+    private $seat;
 
     /**
      * Get id
@@ -395,6 +443,22 @@ class Ticket
     public function setPaidInCash($paidInCash)
     {
         $this->paidInCash = $paidInCash;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSeat()
+    {
+        return $this->seat;
+    }
+
+    /**
+     * @param mixed $seat
+     */
+    public function setSeat($seat)
+    {
+        $this->seat = $seat;
     }
 
 

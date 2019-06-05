@@ -8,13 +8,18 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\CounterPart;
 use AppBundle\Entity\Photo;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 /**
  * ContractArtist
  *
  * @ORM\Table(name="yb_contract_artist")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\YB\YBContractArtistRepository")
+ * @Vich\Uploadable
  */
 class YBContractArtist extends BaseContractArtist
 {
@@ -35,11 +40,16 @@ class YBContractArtist extends BaseContractArtist
     const ONGOING_STATES = [self::STATE_ONGOING, self::STATE_SUCCESS_ONGOING];
 
     const PHOTOS_DIR = 'images/campaigns/';
+    const PHOTOS_DIR_YB = 'yb/images/campaigns/';
 
     const DAYS_BEFORE_WAY_PASSED = 60;
 
     public static function getWebPath(Photo $photo) {
         return self::PHOTOS_DIR . $photo->getFilename();
+    }
+
+    public static function getYBWebPath(Photo $photo){
+        return self::PHOTOS_DIR_YB . $photo->getFilename();
     }
 
     public function __construct()
@@ -54,6 +64,9 @@ class YBContractArtist extends BaseContractArtist
         $this->sub_events = new ArrayCollection();
         $this->no_sub_events = true;
         $this->date_event = new \DateTime();
+        $this->external_invoice = 0;
+        $this->published = false;
+        $this->draft = true;
     }
 
     public function getBuyers() {
@@ -75,8 +88,9 @@ class YBContractArtist extends BaseContractArtist
         }, $this->getContractsFanPaidAndRefunded());
     }
 
+    /** @deprecated */
     public function isEvent() {
-        return $this->getDateEvent() != null;
+        return true;
     }
 
     public function isUncrowdable() {
@@ -100,7 +114,7 @@ class YBContractArtist extends BaseContractArtist
     }
 
     public function isWayPassed() {
-        return $this->isPassed() && $this->date_event->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
+        return $this->isPassed() && $this->getDateEvent()->diff(new \DateTime())->days > self::DAYS_BEFORE_WAY_PASSED;
     }
 
     public function isOngoing() {
@@ -115,10 +129,45 @@ class YBContractArtist extends BaseContractArtist
         return min(floor(($this->getCounterpartsSold() / max(1, $this->getThreshold())) * 100), 100);
     }
 
+    public function isSoldOutTicket(EntityManagerInterface $em){
+        $available = 0;
+        foreach ($this->counterParts as $cp){
+            $available += $this->getNbSoldTicketFor($cp, $em);
+        }
+        return $available;
+    }
+
+    private function getNbSoldTicketFor(CounterPart $cp, EntityManagerInterface $em){
+        if (in_array($cp, $this->counterParts->toArray())){
+            $limit = $cp->getMaximumAmount();
+            $tickets = $em->getRepository('AppBundle:Ticket')->getTicketsFromEvent($this->getId(), $cp->getId());
+            $nbTicket = count($tickets);
+            return $limit - $nbTicket;
+        } else {
+            return -30;
+        }
+    }
+
     public function isToday(){
-        $dateOfEvent = $this->date_event->format('m/d/Y');
+        $dates = [];
+        if(!$this->hasSubEvents())
+            $dates[] = $this->date_event->format('m/d/Y');
+        else {
+            foreach($this->sub_events as $se) {
+                $dates[] = $se->getDate()->format('m/d/Y');
+            }
+        }
         $today = (new \DateTime())->format('m/d/Y');
-        return $dateOfEvent === $today;
+        return in_array($today, $dates);
+    }
+
+    public function getTodaySubEvent(){
+        foreach ($this->sub_events as $se){
+            if ($se->getDate()->format('m/d/Y') === (new \DateTime())->format('m/d/Y')){
+                return $se;
+            }
+        }
+        return null;
     }
 
     public function getState()
@@ -158,33 +207,179 @@ class YBContractArtist extends BaseContractArtist
 
                     return $this->state = self::STATE_SUCCESS_PENDING;
                 }
-                if ($this->dateEnd >= $today) {
-                    return $this->state = self::STATE_ONGOING;
-                } else {
-                    if ($this->successful) {
-                        return $this->state = self::STATE_SUCCESS_ONGOING;
-                    }
-                    // if($this->getNbCounterPartsPaid() >= $max_cp) {
-                    //     return $this->state = self::STATE_SOLD_OUT_PENDING;
-                    // }
-                    return $this->state = self::STATE_PENDING;
+
+                if ($this->successful) {
+                    return $this->state = self::STATE_SUCCESS_ONGOING;
                 }
+                // if($this->getNbCounterPartsPaid() >= $max_cp) {
+                //     return $this->state = self::STATE_SOLD_OUT_PENDING;
+                // }
+
+                if($this->dateEnd > $today) {
+                    return $this->state = self::STATE_ONGOING;
+                }
+                return $this->state = self::STATE_PENDING;
             } else {
                 return $this->state = self::STATE_PASSED;
             }
         }
     }
 
+    public function isOutOfStockCp(CounterPart $cp){
+        if ($cp->getContractArtist()->getConfig() == null){
+            return $this->getNbPurchasable($cp) === 0;
+        } else {
+            $blocks = null;
+            if ($cp->getContractArtist()->getConfig() !== null) {
+                $blocks = $cp->getContractArtist()->getConfig()->getBlocks();
+            }
+            // cas où la salle n'est que en placement libre
+            if ($this->config->isOnlyStandup() || $this->config->hasFreeSeatingPolicy()) {
+                return ($this->getNbPurchasable($cp) === 0);
+            } // si les blocs concernés par le CP sont en placement libre
+            else if ($cp->hasOnlyFreeSeatingBlocks($blocks)) {
+                return ($this->getNbPurchasable($cp) === 0);
+            } // si les blocs ne sont que assis
+            else if ($cp->hasOnlySeatedBlock($blocks)) {
+                $totalSeatedCapacity = 0;
+                $totalSold = 0;
+                /** @var Block $block */
+                foreach ($cp->getVenueBlocks() as $block) {
+                    $totalSeatedCapacity += $block->getSeatedCapacity();
+                    $totalSold += $block->getSoldTicketInBlock($cp->getContractArtist());
+                }
+                $realCapacity = min($totalSeatedCapacity, $cp->getMaximumAmount());
+                return $totalSold === $realCapacity;
+            } else {
+                // mix des 2 (assis et debout)
+                $cpCapacity = $cp->getMaximumAmount();
+                $totalSoldSeated = 0;
+                // on regarde d'abord les blocs assis
+                /** @var Block $block */
+                foreach ($cp->getVenueBlocks() as $block) {
+                    $blkCapacity = $block->getComputedCapacity();
+                    $soldInBlock = $block->getSoldTicketInBlock($this);
+                    $realCapacity = min($cpCapacity, $blkCapacity);
+                    if ($block->getType() === Block::BALCONY || $block->getType() === Block::SEATED) {
+                        if ($soldInBlock < $realCapacity) {
+                            // on sait qu'on peut encore mettre au moins 1 personne dans ce bloc
+                            return false;
+                        }
+                    }
+                    $totalSoldSeated += $soldInBlock;
+                }
+                // on est arrivé à la fin de la boucle : tous les blocs assis sont soldout
+                // on regarde pour les debout
+                return ($this->getNbPurchasable($cp) === 0);
+            }
+        }
+    }
+
+    /**
+     * @return float|int
+     */
     public function getTotalNbAvailable() {
         return $this->getMaxCounterParts() - $this->getTotalSoldCounterParts();
     }
 
+    /**
+     * @return string
+     */
     public function getOrganizationName() {
         return $this->organization->getName();
     }
 
+    /**
+     * @return bool
+     */
     public function hasSubEvents() {
         return !$this->no_sub_events;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubEventsDates() {
+        return array_map(function(YBSubEvent $subEvent) {
+            return $subEvent->getDate();
+        }, $this->sub_events->toArray());
+    }
+
+    public function isFacturable() {
+        if($this->external_invoice)
+            return false;
+
+        if($this->isBroker() && $this->vat_number == null)
+            return false;
+
+        if($this->commissions == null || count($this->commissions) == 0)
+            return false;
+
+        if(count($this->getContractsFanPaid()) == 0)
+            return false;
+
+        return $this->contractsFanPaid[count($this->contractsFanPaid) - 1]->getInvoice() == null;
+    }
+
+    // Commissionnaire
+    public function isBroker() {
+        return $this->vat == 0 || $this->vat == null;
+    }
+    // Courtier 
+    public function isCommissionary() {
+        return !$this->isBroker();
+    }
+
+    public function togglePublicity() {
+        $this->setPublished(!$this->published);
+    }
+
+    public function toggleDraft() {
+        $this->setDraft(!$this->draft);
+    }
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     *
+     * @Vich\UploadableField(mapping="yb_campaign_header", fileNameProperty="fileName", size="imageSize")
+     *
+     * @var File
+     */
+    private $imageFile;
+    /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+    private $filename;
+    private $imageSize;
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+        // It is required that at least one field changes if you are using doctrine
+        // otherwise the event listeners won't be called and the file is lost
+        $this->updatedAt = new \DateTime();
+    }
+
+    public function setImageSize($imageSize)
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    public function setFilename($filename) {
+        $this->filename = $filename;
+    }
+
+    public function getFilename() {
+        return $this->filename;
+    }
+
+    public function getImageSize() {
+        return $this->imageSize;
+    }
+
+    public function getImageFile() {
+        return $this->imageFile;
     }
 
     /**
@@ -248,6 +443,18 @@ class YBContractArtist extends BaseContractArtist
     private $address;
 
     /**
+     * @var Venue
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\Venue", inversedBy="events", cascade={"persist"})
+     */
+    private $venue;
+
+    /**
+     * @var VenueConfig
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\YB\VenueConfig", inversedBy="events", cascade={"persist"})
+     */
+    private $config;
+
+    /**
      * @var float
      * @ORM\Column(name="vat", type="float", nullable=true)
      */
@@ -266,6 +473,12 @@ class YBContractArtist extends BaseContractArtist
     private $invoices;
 
     /**
+     * @var bool
+     * @ORM\Column(name="external_invoice", type="boolean")
+     */
+    private $external_invoice;
+
+    /**
      * @ORM\OneToMany(targetEntity="YBTransactionalMessage", cascade={"remove"}, mappedBy="campaign")
      */
     private $transactional_messages;
@@ -281,6 +494,22 @@ class YBContractArtist extends BaseContractArtist
      * @ORM\Column(name="vat_number", type="string", length=50, nullable=true)
      */
     private $vat_number;
+
+    /**
+     * @var
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\YB\CustomTicket", mappedBy="campaign")
+     */
+    private $customTicket;
+
+    /**
+     * @ORM\Column(name="published", type="boolean")
+     */
+    private $published;
+
+    /**
+     * @ORM\Column(name="draft", type="boolean")
+     */
+    private $draft;
 
     /**
      * Set ticketsSent
@@ -351,8 +580,9 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getDateEvent()
     {
+        // For compatibility, this function returns the last event date when event is multidates
         if($this->hasSubEvents() && count($this->sub_events) > 0) {
-            return $this->sub_events->first()->getDate();
+            return $this->sub_events->last()->getDate();
         }
 
         return $this->date_event;
@@ -457,7 +687,7 @@ class YBContractArtist extends BaseContractArtist
     /**
      * Get handlers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getHandlers()
     {
@@ -493,7 +723,11 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getAddress()
     {
-        return $this->address;
+        if ($this->venue !== null){
+            return $this->venue->getAddress();
+        } else {
+            return $this->address;
+        }
     }
 
     /**
@@ -560,7 +794,9 @@ class YBContractArtist extends BaseContractArtist
      */
     public function getInvoices()
     {
-        return $this->invoices;
+        return array_filter($this->invoices->toArray(), function(YBInvoice $invoice) {
+            return !$invoice->isDeleted();
+        });
     }
 
     /**
@@ -578,7 +814,7 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->transactional_messages = $transactional_messages;
     }
-   
+
     public function getOrganization(){
         return $this->organization;
     }
@@ -586,17 +822,23 @@ class YBContractArtist extends BaseContractArtist
     public function setOrganization($organization){
         $this->organization = $organization;
 
-        if($this->vat_number == null) {
-            $this->vat_number = $organization->getVatNumber();
-        }
+        if($this->organization != null) {
+            if($this->vat_number == null) {
+                $this->vat_number = $organization->getVatNumber();
+            }
 
-        if($this->bank_account == null) {
-            $this->bank_account = $organization->getBankAccount();
+            if($this->bank_account == null) {
+                $this->bank_account = $organization->getBankAccount();
+            }
         }
     }
-    
+
     public function getOrganizers(){
-        return $this->organization->getMembers();
+        if ($this->organization !== null){
+            return $this->organization->getMembers();
+        } else {
+            return array();
+        }
     }
 
     public function getVatNumber() {
@@ -663,5 +905,82 @@ class YBContractArtist extends BaseContractArtist
     {
         $this->no_sub_events = $no_sub_events;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExternalInvoice()
+    {
+        return $this->external_invoice;
+    }
+
+    /**
+     * @param bool $external_invoice
+     */
+    public function setExternalInvoice($external_invoice)
+    {
+        $this->external_invoice = $external_invoice;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }
+    /**
+     * @return Venue
+     */
+    public function getVenue()
+    {
+        return $this->venue;
+    }
+    /**
+     * @param Venue $venue
+     */
+    public function setVenue($venue)
+    {
+        $this->venue = $venue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomTicket()
+    {
+        return $this->customTicket;
+    }
+
+    /**
+     * @param mixed $customTicket
+     */
+    public function setCustomTicket($customTicket)
+    {
+        $this->customTicket = $customTicket;
+    }
+
+    public function setPublished($published) {
+        $this->published = $published;
+        return $this;
+    }
+    public function getPublished() {
+        return $this->published;
+    }
+    public function isPublished() {
+        return $this->getPublished();
+    }
+
+    public function setDraft($draft) {
+        $this->draft = $draft;
+        return $this;
+    }
+    public function getDraft() {
+        return $this->draft;
+    }
+    public function isDraft() {
+        return $this->getDraft();
     }
 }

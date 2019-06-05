@@ -1,67 +1,10 @@
 {% extends "@App/YB/Members/base.html.twig" %}
 
-{% block body %}
+{% block members_body %}
 
     {% import '@App/YB/Macros/campaigns.html.twig' as macros %}
 
-    <nav class="container pt-4">
-        <ul class="nav nav-pills" id="tabs_dashboard" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link{% if current_campaigns is empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="tab-dashboard-toggler" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard">Tableau de bord</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link{% if current_campaigns is not empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="tab-current-campaigns-toggler" data-toggle="tab" href="#tab-current-campaigns" role="tab" aria-controls="tab-current-campaigns">Campagnes en cours</a>
-            </li>
-        </ul>
-    </nav>
-
-    <div class="tab-content">
-        <section class="tab-pane fade {% if current_campaigns is empty %}show active{% endif %} container py-5" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-toggler">
-            <h2>Tableau de bord</h2>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <a href="{{ path('yb_members_campaign_new') }}"><i class="far fa-plus-square"></i> Nouvelle campagne</a>
-                    <div class="text-muted">Créez une campagne de vente de tickets pour votre événement, avec de nombreuses options de configuration.</div>
-                </li>
-                <li class="list-group-item">
-                    {#<a href="{{ path('yb_members_invoices') }}">#}<i class="far fa-credit-card"></i> Facturation{#</a>#}
-                    <div class="text-muted">(Bientôt) Consultez vos factures, les infos concernant notre mode de facturation et configurez vos infos de paiement.</div>
-                <li class="list-group-item">
-                    <a href="{{ path('yb_members_my_organizations') }}"><i class="fa fa-group"></i> Mes organisations</a>
-                    <div class="text-muted">Gérez vos organisations, créez-en des nouvelles, rajouter des membres, etc.</div>
-                </li>
-                <li class="list-group-item">
-                    <i class="fas fa-plus-square"></i> Nouvelle salle
-                    <div class="text-muted">(Bientôt) Enregistrez votre salle, renseignez son adresse et créer un plan de salle simple.</div>
-                </li>
-                <li class="list-group-item">
-                    {% if false %}
-                        <a href="{{ path('yb_members_my_organizations') }}">
-                    {% endif %}
-                            <i class="fa fa-home"></i> Mes salles
-                    {% if false %}
-                        </a>
-                    {% endif %}
-                    <div class="text-muted">(Bientôt) Retrouvez toutes les infos de vos différentes salles et modifiez-les en cas de besoin.</div>
-                </li>
-                <li class="list-group-item">
-                    {% if passed_campaigns|length > 0 %}
-                        <a href="{{ path('yb_members_passed_campaigns') }}">
-                    {% endif %}
-                    <i class="far fa-clock"></i> Campagnes passées
-                    {% if passed_campaigns|length > 0 %}
-                        </a>
-                    {% endif %}
-                    <div class="text-muted">Retrouvez les infos des campagnes que vous avez lancées par le passé et qui sont terminées.</div>
-                </li>
-                <li class="list-group-item">
-                    <a class="text-danger" href="{{ path('yb_logout') }}">Déconnexion</a>
-                    <div class="text-muted">Arrêtez votre session sur Ticked-it ; votre mot de passe sera demandé à votre prochaine connexion.</div>
-                </li>
-            </ul>
-        </section>
-
-        <section class="tab-pane fade {% if current_campaigns is not empty %}show active{% endif %} container py-5" id="tab-current-campaigns" role="tabpanel" aria-labelledby="tab-current-campaigns-toggler">
+        <section class="container py-5">
             <h2>Campagnes en cours</h2>
             {% if current_campaigns is not empty %}
                 {% for campaign in current_campaigns %}
@@ -71,6 +14,5 @@
                 <p>Vous n'avez pas de campagne en cours. Pour en lancer une, <a href="{{ path('yb_members_campaign_new') }}">c'est par ici</a> !</p>
             {% endif %}
         </section>
-    </div>
 
 {% endblock %}

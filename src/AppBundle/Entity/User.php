@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\SponsorshipInvitation;
+use AppBundle\Entity\YB\Venue;
 use AppBundle\Entity\YB\YBContractArtist;
 use AppBundle\Entity\YB\Organization;
 use Azine\EmailBundle\Entity\RecipientInterface;
@@ -41,6 +42,66 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         $this->yb_campaigns = new ArrayCollection();
         $this->projects = new ArrayCollection();
         $this->participations = new ArrayCollection();
+    }
+
+    public function getOrganizations(){
+        $activeOrganizations = [];
+        foreach ($this->participations as $part){
+            if (!$part->getOrganization()->isDeleted()){
+                $activeOrganizations[] = $part->getOrganization();
+            }
+        }
+        return $activeOrganizations;
+    }
+
+    public function getPublicOrganizations(){
+        $publicOrganizations = [];
+        foreach ($this->participations as $participation){
+            if ($participation->getOrganization()->getName() !== $this->getDisplayName() && !$participation->getOrganization()->isDeleted()){
+                $publicOrganizations[] = $participation->getOrganization();
+            }
+        }
+        return $publicOrganizations;
+    }
+
+    public function setRightForOrganization(\AppBundle\Entity\YB\Membership $participation, $isAdmin){
+        if ($this->participations->contains($participation)){
+            $participation->setAdmin($isAdmin);
+        }
+    }
+
+    public function isAdminForOrganization(Organization $org){
+        foreach ($this->participations as $part){
+            if ($part->getOrganization() === $org){
+                return $part->isAdmin();
+            }
+        }
+    }
+
+    public function hasPrivateOrganization(){
+        return $this->getPrivateOrganization() !== null;
+    }
+
+    public function getPrivateOrganization(){
+        foreach ($this->participations as $part){
+            if ($part->getOrganization()->getName() === $this->getDisplayName()){
+                return $part->getOrganization();
+            }
+        }
+        return null;
+    }
+
+    public function getParticipationToOrganization(Organization $org){
+        foreach ($this->participations as $participation){
+            if ($participation->getOrganization()->getId() == $org->getId()){
+                return $participation;
+            }
+        }
+        return null;
+    }
+
+    public function isInOrganization(Organization $organization) {
+        return $this->getParticipationToOrganization($organization) != null;
     }
 
     public function owns(Artist $artist)
@@ -165,6 +226,12 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return in_array($this, $organizers);
     }
 
+    public function ownsYBVenue(Venue $venue){
+        //$handlers = $venue->getHandlers();
+        $venues = $this->getVenuesHandled();
+        return in_array($venue, $venues);
+    }
+
     public function isYB() {
         return $this->getYB();
     }
@@ -180,6 +247,32 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
 
     public function isArtistOwner() {
         return !empty($this->getArtists());
+    }
+  
+    public function addParticipation(\AppBundle\Entity\YB\Membership $participation){
+        if (!$this->participations->contains($participation)){
+            $this->participations->add($participation);
+            $participation->setMember($this);
+        }
+        return $this;
+    }
+
+    public function removeParticipation(\AppBundle\Entity\YB\Membership $participation){
+        if ($this->participations->contains($participation)){
+            $this->participations->removeElement($participation);
+            $participation->setMember(null);
+        }
+        return $this;
+    }
+
+    public function getVenuesHandled(){
+        $venues = [];
+        foreach ($this->participations as $participation){
+            foreach ($participation->getOrganization()->getVenues() as $venue){
+                array_push($venues, $venue);
+            }
+        }
+        return $venues;
     }
 
 
@@ -1243,75 +1336,5 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return $this->participations->toArray();
     }
 
-    public function addParticipation(\AppBundle\Entity\YB\Membership $participation){
-        if (!$this->participations->contains($participation)){
-            $this->participations->add($participation);
-            $participation->setMember($this);
-        }
-        return $this;
-    }
 
-    public function removeParticipation(\AppBundle\Entity\YB\Membership $participation){
-        if ($this->participations->contains($participation)){
-            $this->participations->removeElement($participation);
-            $participation->setMember(null);
-        }
-        return $this;
-    }
-
-    public function getOrganizations(){
-        $activeOrganizations = [];
-        foreach ($this->participations as $part){
-            if (!$part->getOrganization()->isDeleted()){
-                $activeOrganizations[] = $part->getOrganization();
-            }
-        }
-        return $activeOrganizations;
-    }
-
-    public function getPublicOrganizations(){
-        $publicOrganizations = [];
-        foreach ($this->participations as $participation){
-            if ($participation->getOrganization()->getName() !== $this->getDisplayName() && !$participation->getOrganization()->isDeleted()){
-                $publicOrganizations[] = $participation->getOrganization();
-            }
-        }
-        return $publicOrganizations;
-    }
-
-    public function setRightForOrganization(\AppBundle\Entity\YB\Membership $participation, $isAdmin){
-        if ($this->participations->contains($participation)){
-            $participation->setAdmin($isAdmin);
-        }
-    }
-
-    public function isAdminForOrganization(Organization $org){
-        foreach ($this->participations as $part){
-            if ($part->getOrganization() === $org){
-                return $part->isAdmin();
-            }
-        }
-    }
-
-    public function hasPrivateOrganization(){
-        return $this->getPrivateOrganization() !== null;
-    }
-
-    public function getPrivateOrganization(){
-        foreach ($this->participations as $part){
-            if ($part->getOrganization()->getName() === $this->getDisplayName()){
-                return $part->getOrganization();
-            }
-        }
-        return null;
-    }
-
-    public function getParticipationToOrganization(Organization $org){
-        foreach ($this->participations as $participation){
-            if ($participation->getOrganization() === $org){
-                return $participation;
-            }
-        }
-        return null;
-    }
 }

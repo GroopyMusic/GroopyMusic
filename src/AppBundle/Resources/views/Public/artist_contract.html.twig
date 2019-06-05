@@ -43,8 +43,8 @@
         <p class="big p-3 p-md-5">{{ contract.getDescription }}</p>
 
         <div class="crowdfunding-box mb-3">
-            {% if state not in contract.successfulStates and state not in contract.pendingStates %}
-                <p><i class="fas fa-hourglass-half"></i> Il vous reste {{ contract.campaignDaysLeft }} jours pour soutenir cette campagne.
+            {% if state not in contract.successfulStates and state not in contract.pendingStates and state not in contract.passedStates %}
+                <p><i class="fas fa-hourglass-half"></i> Il vous reste {{ contract.campaignDaysLeft }} jour{% if contract.campaignDaysLeft > 1 %}s{% endif %} pour soutenir cette campagne.
                 Achetez votre ticket pour participer directement à la production de ce festival !</p>
             {% endif %}
             <div class="progress">
@@ -52,7 +52,7 @@
                  style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
             </div>
             <div class="text-right mt-1 small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                {{ progress_100 }}% récoltés<br/>{{ ('event.'~state)|trans|raw }}
+                {{ progress_100 }}% des tickets nécessaires à la validation de l'événement<br/>{{ ('event.'~state)|trans({'%soldout_percentage%':contract.percentSoldOutRelativeToObjective})|raw }}
             </div>
         </div>
 
@@ -98,11 +98,17 @@
                                 {% if contract.knownLineup %}
                                     <tr>
                                         <td>
+                                            17:00
+                                        </td>
+                                        <td>{{ 'foodtrucks_opening'|trans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
                                             {{ day.date|date('H:i') }}
                                         </td>
                                         <td>{{ 'doors_opening'|trans }}</td>
                                     </tr>
-                                    {% for performance in day.performances %}
+                                    {% for performance in day.performancesAsc %}
                                             <tr>
                                                 <td>{{ performance.time|date('H:i') }}</td>
                                                 <td>
@@ -111,6 +117,12 @@
                                             </tr>
                                     {% endfor %}
                                 {% else %}
+                                    <tr>
+                                        <td class="contract-info-title text-left">{{ 'foodtrucks_opening'|trans }}</td>
+                                        <td>
+                                            17:00
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class="contract-info-title text-left">{{ 'doors_opening'|trans }}</td>
                                         <td>
@@ -141,9 +153,9 @@
                             {% for promo in visiblePromos %}
                                 <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span></p>
                             {% endfor %}
-                            {% if contract.isInCampaign %}
+                            {# if contract.isInCampaign %}
                                 <p class="text-center">1 commande passée avant la date de validation <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">accès au bar Vedett all-in à 18h</span></p>
-                            {% endif %}
+                            {% endif #}
                         </div>
                     </div>
                 {% endif %}
@@ -200,7 +212,7 @@
                         {{ 'event.infos.state'|trans|raw }}
                     </div>
                     <span class="contract-info-content pr-1">
-                        {{ ('event.'~state)|trans|raw }}
+                        {{ ('event.'~state)|trans({'%soldout_percentage%':contract.percentSoldOutRelativeToObjective})|raw }}
                     </span>
                 </div>
 
@@ -317,8 +329,14 @@
     <section class="container-fluid position-relative bg-body-light p-4 mt-2" id="tickets">
         <h3 class="festival-section-title "><img src="{{ asset('images/icons/blue/concert-ticket.png') }}" class="title-icon" /> Tickets</h3>
 
-        <p class="text-center"><i>Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett, pendant la première demi-heure (18h).
-            <br />C'est une façon pour nous de remercier les premiers contributeurs du financement participatif !</i></p>
+        {%  if contract.isInCampaign() %}
+            <p class="text-center">
+                <i>
+                    Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett Session, avant les premiers concerts.
+                    Si vous êtes un "early bird", envoyez-nous votre photo à festivals@un-mute.be pour que nous préparions une bouteille Vedett dont l'étiquette sera frappée à votre effigie !
+                </i>
+            </p>
+        {% endif %}
         {% if state not in contract.uncrowdableStates %}
             {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 

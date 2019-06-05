@@ -1,0 +1,35 @@
+{% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
+{{ form_start(form, {'action': path('yb_members_update_ticket', {'id': cp.id})}) }}
+
+{% include '@App/YB/Form/counterpart.html.twig' %}
+
+<button class="btn btn-secondary" id="button_edition">Valider</button>
+
+{{ form_end(form) }}
+
+<script>
+    $('#button_edition').click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            method: 'post',
+            url: "{{ path('yb_members_update_ticket', {'id': cp.id}) }}",
+            data: $("#button_edition").closest('form').serialize(),
+            beforeSend: function () {
+                loader();
+            },
+            success: function (data) {
+                if (data == 'OK') {
+                    $.get('{{ path('yb_members_get_tickets_list', {'id': campaign.id}) }}', function (html_data) {
+                        $('#counterparts-container').html(html_data);
+                    });
+                    hideLoader();
+                    $('#counterPartsModalBody').html("Le ticket a bien été mis à jour.");
+                }
+                else {
+                    hideLoader();
+                    $('#counterPartsModalBody').html(data);
+                }
+            }
+        });
+    });
+</script>

@@ -30,7 +30,10 @@
                 s.parentNode.insertBefore(t,s)}(window,document,'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '234678010533782');
+            fbq('init', '820632124956657');
             fbq('track', 'PageView');
+            {% block fb_pixel_events %}
+            {% endblock %}
         </script>
         <noscript>
             <img height="1" width="1"

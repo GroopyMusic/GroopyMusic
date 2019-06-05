@@ -43,6 +43,7 @@ class BaseContractArtist implements TranslatableInterface
         $this->counterparts_sold = 0;
         $this->threshold = 0;
         $this->reminders = [];
+        $this->contractsFan = new ArrayCollection();
     }
 
     public function __call($method, $arguments)
@@ -229,6 +230,13 @@ class BaseContractArtist implements TranslatableInterface
         return max(0, $nb);
     }
 
+    public function getNbPurchasesPaid() {
+        $contractsFanPaid = $this->getContractsFanPaid();
+        return array_sum(array_map(function(ContractFan $cf) {
+            return count($cf->getPurchases());
+        }, $contractsFanPaid));
+    }
+
     protected $contractsFanPaid = null;
     public function getContractsFanPaid() {
         if($this->contractsFanPaid == null) {
@@ -369,6 +377,38 @@ class BaseContractArtist implements TranslatableInterface
 
     public function removeCounterPartsSold($quantity) {
         $this->counterparts_sold -= $quantity;
+    }
+
+    public function getPercentObjective() {
+        return floor(($this->getTotalBookedTickets() / $this->getMinTickets()) * 100);
+    }
+
+    public function getPercentSoldOutRelativeToObjective() {
+        if($this->no_threshold || $this->threshold == 0) {
+            return 100;
+        }
+        return ($this->getGlobalSoldout() / $this->threshold) * 100;
+    }
+
+    public function getTotalBookedTickets() {
+        return max(0, $this->counterparts_sold);
+    }
+
+    public function hasSoldAtLeastOne() {
+        return $this->getContractsFanPaid() != null && count($this->getContractsFanPaid()) > 0;
+    }
+
+    public function hasSoldCounterPart(CounterPart $cp) {
+        foreach($this->getContractsFanPaid() as $cf) {
+            /** @var ContractFan $cf */
+            foreach($cf->getPurchases() as $purchase) {
+                /** @var Purchase $purchase */
+                if($cp->getId() == $purchase->getCounterPart()->getId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // Unmapped
@@ -1329,5 +1369,17 @@ class BaseContractArtist implements TranslatableInterface
     public function setFacebookUrl($facebookUrl) {
         $this->facebook_url = $facebookUrl;
         return $this;
+    }
+
+    public function getPhotoFileName(){
+        if ($this->photo !== null){
+            return $this->photo-> __toString();
+        } else {
+            return "";
+        }
+    }
+
+    public function getTicketsSent(){
+        return true;
     }
 }

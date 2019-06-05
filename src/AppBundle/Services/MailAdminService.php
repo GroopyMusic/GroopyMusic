@@ -63,6 +63,7 @@ class MailAdminService
         foreach ($contract_artists as $contract_artist) {
             $users = $this->em->getRepository('AppBundle:User')->getParticipants($contract_artist);
             foreach ($users as $user) {
+
                 array_push($user_participants, ['email' => $user->getEmail(), 'id' => $user->getId()]);
             }
         }
@@ -207,7 +208,7 @@ class MailAdminService
      */
     public function addAdminToRecipients($recipients)
     {
-        $users = $this->em->getRepository('AppBundle:User')->findUsersWithRoles(['ROLE_SUPER_ADMIN']);
+        $users = $this->em->getRepository('AppBundle:User')->findUsersWithRolesMandatory(['ROLE_SUPER_ADMIN']);
         foreach ($users as $user) {
             array_push($recipients, $user);
         }
