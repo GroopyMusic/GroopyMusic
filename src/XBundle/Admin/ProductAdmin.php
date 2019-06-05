@@ -3,24 +3,30 @@
 namespace XBundle\Admin;
 
 use AppBundle\Admin\BaseAdmin;
-use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use XBundle\Entity\Project;
+
 
 class ProductAdmin extends BaseAdmin
 {
+
     public function configureRoutes(RouteCollection $collection)
     {
-        $collection
-            ->remove('delete')
-            ->remove('create')
-            ->remove('edit')
-            ->add('validate', $this->getRouterIdParameter().'/validate')
-            ->add('refuse', $this->getRouterIdParameter().'/refuse')
-        ;
+        if ($this->isChild()) {
+            parent::configureRoutes($collection);
+            $collection
+                ->remove('delete')
+                ->remove('create')
+                ->remove('edit')
+                ->add('validate', $this->getRouterIdParameter().'/validate')
+                ->add('refuse', $this->getRouterIdParameter().'/refuse');
+            return;
+        }
+
+        // This is the route configuration as a parent
+        $collection->clear();
     }
 
     public function configureListFields(ListMapper $list)
@@ -30,24 +36,20 @@ class ProductAdmin extends BaseAdmin
             ->add('name', null, array(
                 'label' => 'Intitulé'
             ))
-            ->add('project', null, array(
-                'label' => 'Projet associé',
-                'associated_property' => 'title'
-            ))
             ->add('validated', null, array(
                 'label'=> 'Validé'
             ))
-            ->add('deleted', null, array(
+            ->add('deletedAt', 'boolean', array(
                 'label' => 'Supprimé'
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'validate' => array(
-                        'template' => 'XBundle:Admin/Product:icon_validate_product.html.twig'
+                        'template' => 'XBundle:Admin:icon_validate.html.twig'
                     ),
                     'refuse' => array(
-                        'template' => 'XBundle:Admin/Product:icon_refuse_product.html.twig'
+                        'template' => 'XBundle:Admin:icon_refuse.html.twig'
                     )
                 ) 
             ))
@@ -63,7 +65,6 @@ class ProductAdmin extends BaseAdmin
                 ))
                 ->add('project', null, array(
                     'label' => 'Projet associé',
-                    'associated_property' => 'title'
                 ))
                 ->add('description', null , array(
                     'label' => 'Description'
@@ -71,15 +72,29 @@ class ProductAdmin extends BaseAdmin
                 ->add('price', null, array(
                     'label' => 'Prix'
                 ))
+                ->add('freePrice', null, array(
+                    'label' => 'Prix libre'
+                ))
                 ->add('supply', null, array(
                     'label' => 'Stock'
                 ))
+                ->add('productsSold', null, array(
+                    'label' => 'Vendu'
+                ))
+                ->add('photo', null, array(
+                    'label' => 'Photo',
+                    'template' => 'XBundle:Admin/Product:photo.html.twig'
+                ))
+                ->add('options', null, array(
+                    'label' => 'Option(s)',
+                    'template' => 'XBundle:Admin/Product:options.html.twig'
+                ))
             ->end()
             ->with('État')
-                ->add('validated', 'boolean', array(
+                ->add('validated', null, array(
                     'label' => 'Validé par un administrateur Un-Mute'
                 ))
-                ->add('deleted', 'boolean', array(
+                ->add('deletedAt', 'boolean', array(
                     'label' => 'Supprimé ou refusé'
                 ))
             ->end()

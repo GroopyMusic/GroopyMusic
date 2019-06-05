@@ -12,10 +12,44 @@
     </section>
 
     <section class="container my-4 py-2 my-md-4">
-        {% for project in projects %}
-            {{ macros.project_row(project)}}
-        {% else %}
-            <p>Vous n'avez pas encore lancé de projet qui soit arrivé à terme.</p>
-        {% endfor %}
+
+        {% if app.user.isSuperAdmin %}
+            <nav class="container">
+                <ul class="nav nav-pills" id="tabs_project" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link{% if projects is not empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="tab-projects-toggler" data-toggle="tab" href="#tab-projects" role="tab" aria-controls="tab-projects">Vos projets passés</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if projects is empty %} active" aria-selected="true"{% else %}" aria-selected="false"{% endif %} id="tab-other-projects-toggler" data-toggle="tab" href="#tab-other-projects" role="tab" aria-controls="tab-other-projects">Autres projets passés</a>
+                    </li>
+                </ul>
+            </nav>
+        
+        <div class="tab-content">
+            <section class="tab-pane fade{% if projects is not empty %} show active{% endif %} container py-5" id="tab-projects" role="tabpanel" aria-labelledby="tab-projects-toggler">
+        {% endif %}
+
+                {% if projects is not empty %}
+                    {% for project in projects %}
+                        {{ macros.project_row(project)}}
+                    {% endfor %}
+                {% else %}
+                    <p>Vous n'avez pas encore de projet qui soit arrivé à son terme.</p>
+                {% endif %}
+
+        {% if app.user.isSuperAdmin %}
+            </section>
+            <section class="tab-pane fade{% if projects is empty %} show active{% endif %} container py-5" id="tab-other-projects" role="tabpanel" aria-labelledby="tab-other-projects-toggler">
+                {% if other_projects is not empty %}
+                    {% for project in other_projects %}
+                        {{ macros.project_row(project)}}
+                    {% endfor %}
+                {% else %}
+                     <p>Pas d'autre projet qui soit arrivé à son terme.</p>
+                {% endif %}
+            </section>
+        </div>
+        {% endif %}
+
     </section>
 {% endblock %}

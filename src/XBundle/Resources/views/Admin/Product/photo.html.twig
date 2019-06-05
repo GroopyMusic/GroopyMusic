@@ -1,0 +1,11 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+
+    {% block field_value %}
+        {% if object.image is not null %}
+            <img src="{{ asset(object.webPath(object.image)) }}" width="180" height="180" />
+        {% endif %}
+    {% endblock %}
+
+{% endblock %}

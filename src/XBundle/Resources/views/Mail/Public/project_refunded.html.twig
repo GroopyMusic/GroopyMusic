@@ -1,0 +1,14 @@
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('x.project.refunded', {
+                '%name%': cf.displayName,
+                '%project%': project.title,
+                '%amount%': cf.amount,
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

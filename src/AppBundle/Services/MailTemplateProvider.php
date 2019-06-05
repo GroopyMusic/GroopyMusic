@@ -76,7 +76,8 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const YB_INVOICE_GENERATED = 'AppBundle:Mail/YB/Invoices:generated.txt.twig';
 
     // X
-    const X_ADMIN_CONTACT = 'XBundle:Mail/Admin:contact.txt.twig';
+    const X_ADMIN_CONTACT = 'XBundle:Mail/Contact:contact.txt.twig';
+    const X_CONTACT_COPY = 'XBundle:Mail/Contact:copy.txt.twig';
     
     const X_ADMIN_NEW_PROJECT = 'XBundle:Mail/Admin:new_project.txt.twig';
     const X_PROJECT_VALIDATED = 'XBundle:Mail/Artist:project_validated.txt.twig';
@@ -86,6 +87,17 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const X_PRODUCT_VALIDATED = 'XBundle:Mail/Artist/Product:product_validated.txt.twig';
     const X_PRODUCT_REFUSED = 'XBundle:Mail/Artist/Product:product_refused.txt.twig';
 
+    const X_ORDER_RECAP = 'XBundle:Mail/Public:recap.txt.twig';
+    const X_TICKETS = 'XBundle:Mail/Public:tickets.txt.twig';
+
+    const X_PROJECT_THRESHOLD_CONFIRMED = 'XBundle:Mail/Artist:project_threshold_confirmed.txt.twig';
+    const X_PROJECT_TO_CONFIRM = 'XBundle:Mail/Artist:project_to_confirm.txt.twig';
+    
+    const X_CONFIRMED_PROJECT = 'XBundle:Mail/Public:project_confirmed.txt.twig';
+    const X_REFUNDED_PROJECT = 'XBundle:Mail/Public:project_refunded.txt.twig';
+
+    const X_TRANSACTIONAL_MESSAGE = 'XBundle:Mail/Communication:transactional_message.txt.twig';
+    const X_TRANSACTIONAL_MESSAGE_COPY = 'XBundle:Mail/Communication:transactional_message_copy.txt.twig';
 
 
     /**

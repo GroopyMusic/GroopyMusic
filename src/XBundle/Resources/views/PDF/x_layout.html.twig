@@ -1,0 +1,108 @@
+{% block style %}
+    <style type="text/css">
+        page {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        .header {
+            text-align: center;
+            color: #ea900c;
+            font-weight: bold;
+        }
+
+        #content {
+            margin-left: 20px;
+        }
+
+        h1 {
+            text-align:center;
+            color: #ea900c;
+        }
+        td, th {
+            padding: 5px 10px;
+        }
+        .footer {
+            border-top: 3px solid black;
+            width: 100%;
+            padding: 20px 20px;
+            color: black;
+        }
+        .footer p {
+            margin: 0 auto;
+            text-align:center;
+            color: black;
+        }
+
+        .footer img {
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-bottom: -7px;
+        }
+
+        a, a:visited {
+            color: inherit;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-secondary, .green {
+            color: #66ad61;
+        }
+
+        .text-bold {
+            font-weight: bold;
+        }
+
+        .text-italic {
+            font-style: italic;
+        }
+
+        .bg-gray, .bg-grey {
+            background-color: lightgrey;
+        }
+
+        .bg-white {
+            background-color: white;
+        }
+        {% block additional_styles %}
+        {% endblock %}
+    </style>
+{% endblock %}
+
+{% block page %}
+    <page {% block page_margins %}backtop="25mm" backbottom="30mm" backleft="10mm" backright="10mm"{% endblock %}>
+        {% block header %}
+            <page_header>
+                <div class="header">
+                    {% block header_content %}
+                        <p>Chapots</p>
+                    {% endblock %}
+                </div>
+            </page_header>
+        {% endblock %}
+        {% block footer %}
+            <page_footer>
+                <div class="footer">
+                    {% block footer_content %}
+                        <p>
+                            https://chapots.be - info@chapots.be
+                        </p>
+                    {% endblock %}
+                </div>
+            </page_footer>
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+    </page>
+{% endblock %}

@@ -91,7 +91,6 @@ sonata_admin:
                 label_catalogue: SonataAdminBundle
                 items:
                   - XBundle\Admin\ProjectAdmin
-                  - XBundle\Admin\ProductAdmin
         
 
    assets:
@@ -424,6 +423,8 @@ services:
         arguments: [~, XBundle\Entity\Project, XBundle:ProjectAdmin]
         tags:
             - { name: sonata.admin, manager_type: orm, label: app.admin.x.project }
+        calls:
+            - [ addChild, ['@XBundle\Admin\ProductAdmin', 'project']]
         public: true
 
     XBundle\Admin\ProductAdmin:

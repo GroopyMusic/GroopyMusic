@@ -24,14 +24,14 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="first_name">Prénom</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" value="" required>
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" value="{% if app.user %}{{ app.user.firstName }}{% endif %}" required>
                                 <div class="invalid-feedback">
                                     Veuillez renseigner un prénom valide.
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="last_name">Nom</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" value="" required>
+                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" value="{% if app.user %}{{ app.user.lastName }}{% endif %}" required>
                                 <div class="invalid-feedback">
                                     Veuillez renseigner un nom valide.
                                 </div>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="" value="{% if app.user %}{{ app.user.email }}{% endif %}" required>
                             <div class="invalid-feedback">
                                 Veuillez renseigner un email valide.
                             </div>
@@ -47,36 +47,10 @@
                     </div>
                 </div>
 
-
-                {#% if cart.amount == 0 %}
-                    <div class="checkout-payment-form card card-info mt-2">
-                        <div class="card-header">
-                            Validation
-                        </div>
-                        <div class="card-body">
-                            <p>{{ 'pay_cart.conditions.intro_free'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>
-                            <div class="form-row">
-                                {% if error_conditions %}
-                                    <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
-                                {% endif %}
-                                <label class="custom-control custom-checkbox pr-3" for="accept_conditions">
-                                    <input type="checkbox" id="accept_conditions" name="accept_conditions"
-                                           class="custom-control-input">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">{{ 'pay_cart.conditions.label'|trans|raw }}</span>
-                                </label>
-                            </div>
-                            <div class="form-row" id="card-form-row">
-                                <input type="submit" class="btn btn-primary" id="free-order-submit" value="Valider la commande (gratuite)"/>
-                            </div>
-                        </div>
-                    </div>
-
-                {% else %#}
                     <div class="checkout-payment-form card card-info mt-2">
                         <div class="card-header"><i class="fas fa-lock"></i>  Paiement <i class="fab fa-stripe" title="Nous utilisons Stripe pour garantir la sécurité de vos paiements."></i> </div>
                         <div class="card-body">
-                            {#<p>{{ 'pay_cart.conditions.intro'|trans({'%conditionsUrl%': url('yb_terms')})|raw }}</p>#}
+                            <p>En procédant au paiement de ces articles, vous assurez avoir lu les <a target="_blank" href="{{ url('x_terms') }}">conditions générales d'utilisation et de vente</a>.</p>
                             <div class="form-row">
                                 {% if error_conditions %}
                                     <p class="alert alert-danger">{{ 'pay_cart.conditions.error'|trans|raw }}</p>
@@ -140,7 +114,7 @@
                                                 </div>
                                                 <div class="col-12 mt-5">
                                                     <input type="submit" class="btn btn-primary"
-                                                           value="{{ 'pay_cart.proceed.creditcard.submit'|trans({'%amount%': cart.donationAmount})|raw }}"/>
+                                                           value="{{ 'pay_cart.proceed.creditcard.submit'|trans({'%amount%': cart.amount})|raw }}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -157,7 +131,7 @@
                                                 <div id="bc-card-element" class="text-center">
                                                     <button type="button" class="btn btn-primary mt-3"
                                                             id="choose-bancontact">
-                                                        {{ 'pay_cart.proceed.bancontact.submit'|trans({'%amount%': cart.donationAmount})|raw }}
+                                                        {{ 'pay_cart.proceed.bancontact.submit'|trans({'%amount%': cart.amount})|raw }}
                                                     </button>
                                                 </div>
                                             </div>
@@ -167,7 +141,6 @@
                             </div>
                         </div>
                     </div>
-                {#% endif %#}
             </form>
         </div>
 
@@ -176,26 +149,43 @@
                 <div class="card-header">Récapitulatif</div>
                 <div class="card-body">
                     <ul class="list-group mb-3">
-                        {% if cart.product == null %}
-                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                <div>
-                                    <h4 class="my-0">Donation</h4>
-                                    <small class="text-muted">en faveur de</small>
-                                </div>
-                                <span class="text-muted">{{ cart.donationAmount }}€</span>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                <div>
-                                    <h4 class="my-0">{{ cart.product.name }}</h4>
-                                    <small class="text-muted">Quantité: {{ cart.prodQuantity }}</small>
-                                </div>
-                                <span class="text-muted">{{ cart.donationAmount }}€</span>
-                            </li>
-                        {% endif %}
+                        {% for contract in cart.contracts %}
+                            {% if cart.contracts|length > 1 %}
+                                <h3>{{ contract.project.title }}</h3>
+                            {% endif %}
+                            {% if contract.isDonation %}
+                                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <div>
+                                        <h4 class="my-0">Donation</h4>
+                                        <small class="text-muted">
+                                            en faveur de : {{ contract.amount }} €
+                                        </small>
+                                    <div>
+                                </li>
+                            {% else %}
+
+                                {% for purchase in contract.purchases %}
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                        <div>
+                                            <h4 class="my-0">{{ purchase.product }} (x {{ purchase.quantity }})</h4>
+                                            <small class="text-muted">
+                                                Prix unitaire : {{ purchase.unitaryPrice }} €{% if purchase.product.freePrice %} (choisi librement){% endif %}
+                                                {% if purchase.choices is not empty %}
+                                                    {% for choice in purchase.choices %}
+                                                        <br>{{ choice.option.name }} : {{ choice.name }}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        <span class="text-muted">{{ purchase.amount }}€</span>
+                                    </li>
+                                {% endfor %}
+
+                            {% endif %}
+                        {% endfor %}
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Total (EUR)</span>
-                            <strong>{{ cart.donationAmount }}€</strong>
+                            <strong>{{ cart.amount }}€</strong>
                         </li>
                     </ul>
                 </div>
@@ -213,7 +203,7 @@
         var $loader = $('#stripe-loader .loader');
         var $loaderexplanation = $('#stripe-loader .loader-explanation');
 
-        var amount = {{ cart.donationAmount * 100 }};
+        var amount = {{ cart.amount * 100 }};
 
         $('#card-form-row').hide();
         $('#accept_conditions').change(function () {
@@ -399,7 +389,7 @@
                 }
                 else {
                     hideError();
-                    displayLoader("{{ 'pay_cart.proceed.threeds.pending'|trans|raw }}");
+                    displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
                     window.location.replace(result.source.redirect.url);
 
                     $('#payment-intro').hide();
@@ -435,8 +425,7 @@
             function stripeTokenHandler(source) {
 
                 $('#payment-intro').hide();
-                displayLoader("{{ 'threeds.pending'|trans|raw }}");
-
+                 displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
                 // Insert the token ID into the form so it gets submitted to the server
                 var form = document.getElementById('payment-form');
                 var hiddenInput = document.createElement('input');
@@ -507,28 +496,5 @@
             $('.stripe-error').hide();
         }
 
-        /*$('#free-order-submit').click(function(e) {
-            e.preventDefault();
-
-            displayLoader("");
-            scrollToLoader();
-
-            var $first_name = $('#first_name');
-            var $last_name = $('#last_name');
-            var $email = $('#email');
-
-            $.post('{{ url('x_ajax_post_order') }}', {
-                'first_name': $first_name.val(),
-                'last_name': $last_name.val(),
-                'email': $email.val(),
-                'cart_code': "{{ cart.barcodeText }}"
-            }, function() {
-                window.location.assign("{{ url('yb_order', {'code': cart.barcodeText}) ~ '#order-recapitulation'}}");
-            }).fail(function () {
-                displayForm();
-                displayError("Veuillez renseigner un nom, prénom et un e-mail valides.");
-            });
-
-        });*/
     </script>
 {% endblock %}

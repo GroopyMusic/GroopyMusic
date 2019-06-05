@@ -18,14 +18,21 @@
 
                 <div>
                     <h1 class="text-center">{{ project.title }}</h1>
-                    <p class="text-center">{{ project.tag.name }}</p>
+                    <p class="text-center">{{ project.category.name }}</p>
+                    {% if project.tags is not empty %}
+                        <div class="text-center">
+                        {% for tag in project.tags %}
+                            <span class="badge badge-info">{{ tag.name }}</span>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
                     <img class="img-fluid d-block py-3 mx-auto" src="{{ src_project }}" />
                 </div>
 
                 <!-- Description Section -->
                 <hr>
                 <div>
-                    <h3>A propos du projet</h3><br>
+                    <h3>À propos du projet</h3><br>
                     {{ project.description | bbcode_filter('my_default_filter') | raw }}
                     {% if project.motivations is not null %}
                         <hr>
@@ -34,7 +41,7 @@
                     {% endif %}
                     {% if project.thresholdPurpose is not null %}
                         <hr>
-                        <h3>A quoi servira le financement ?</h3><br>
+                        <h3>À quoi servira le financement ?</h3><br>
                         {{ project.thresholdPurpose | bbcode_filter('my_default_filter') | raw }}
                     {% endif %}
                 </div>
@@ -68,43 +75,75 @@
                     <div class="card">
                         <div class="card-body">
                             <p>
-                                <a class="x-link-artist" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">
+                                <a class="x-link-artist" target="_blank" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">
                                     <img src="{{ src_artist }}" width="100" height="70" />
                                     &nbsp;{{ artist.artistname }}
                                 </a>
                             </p>
 
                             <div class="row">
-                                <div class="col-8 col-sm-3 col-lg-4">
-                                {% if project.hasThreshold %}
-                                    <strong>{{ project.collectedAmount }} €</strong> sur {{ project.threshold }} €
-                                {% else %}
-                                    <strong>{{ project.collectedAmount }} €</strong> récoltés
-                                {% endif %}
+                                <div class="col-8 col-sm-4 col-lg-4">
+                                    <div><b>{{ project.collectedAmount }} €</b></div>
+                                    <div>{% if project.hasThreshold %}sur {{ project.threshold }} €{% else %} récoltés{% endif %}</div>
                                 </div>
-                                <div class="col-8 col-sm-3 col-lg-4">
-                                {% if project.remainingDays > 0 %}
-                                    <strong>{{ project.remainingDays }} jour(s)</strong> restant(s)
-                                {% else %}
-                                    {% if project.remainingHours > 0 %}
-                                        <strong>{{ project.remainingHours }} heure(s)</strong> restante(s)
+                                <div class="col-8 col-sm-4 col-lg-4">
+                                    {% if project.isPassed %}
+                                        <div><b>{{ project.dateEnd|date('d/m/Y') }}</b></div>
+                                        <div>date de fin</div>
                                     {% else %}
-                                        <strong>{{ project.remainingMinutes }} minute(s)</strong> restante(s)
+                                        <b>{{ project.remainingTime }}</b>
                                     {% endif %}
-                                {% endif %}
+                                </div>
+                                <div class="col-8 col-sm-4 col-lg-4">
+                                    <div><b>{{ project.nbContributors }}</b></div>
+                                    <div>contributeur(s)</div>
                                 </div>
                             </div>
     
                             {% if project.hasThreshold %}
                                 <br>
                                 <div class="progress">
-                                    <div class="progress-bar {% if project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
+                                    <div class="progress-bar {% if project.isPassed and project.progressPercent >= 100 %}bg-success{% endif %}" role="progressbar" style="width: {{ project.progressPercent }}%;" aria-valuenow="{{ project.progressPercent }}" aria-valuemin="0" aria-valuemax="100"><div class="card-funds" >{{ project.progressPercent}}%</div></div>
                                 </div>
+                            {% endif %}
+
+                            {% if not project.validated and project.deletedAt == null %}
+                                <br>
+                                <p class="text-muted text-center font-italic">En cours de validation</p>
+                            {% endif %}
+
+                            {% if project.isClosed %}
+                                <br>
+                                {% if project.successful %}
+                                    <p class="text-center" style="color: green;"><b>Réussite</b>&nbsp;<i class="fas fa-check-circle"></i></p>
+                                {% elseif project.failed and project.refunded %}
+                                    <p class="text-center" style="color: red;"><b>Échec</b>&nbsp;<i class="fas fa-times-circle"></i></p>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
                 </div>
 
+                <!-- Infos Event Section -->
+                {% if project.isEvent %}
+                <div class="mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Date de l'évènement : <b>{{ project.dateEvent|date('d/m/Y \\à H:i') }}</b></p>
+                            {% if project.address is not null %}
+                                <p>Adresse : <b>{{ project.address }}</b></p>
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe
+                                        class="embed-responsive-item"
+                                        frameborder="0" style="border:0"
+                                        src="https://www.google.com/maps/embed/v1/place?key={{ maps_api_key }}&q={{ project.address|url_encode }}" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
 
                 <!-- Donation Form Card -->
                 <div class="mt-5">
@@ -117,118 +156,115 @@
                             <div class="text-muted font-italic pb-2">
                                 Le montant d'un don est libre mais il doit être d'1 € minimum.
                             </div>
-                            {{ form_errors(form.donationAmount) }}
-                            {{ form_widget(form.donationAmount) }}
+                            {{ form_errors(form.amount) }}
+                            <div class="w-90 position-relative mb-2">
+                                {{ form_widget(form.amount) }}<span class="free-price-euro-sign position-absolute">€</span>
+                            </div>
                             {{ form_end(form) }}
                         </div>
                     </div>
                 </div>
 
-
                 <!-- Purchase Form Card -->
-                {% if products is not empty %}
+                {% if has_products %}
                 <div class="mt-5">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="text-center">Articles en vente</h3>
                         </div>
-                        {% for product in products %}
-                        <div class="card-body contribution" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
-                            <div class="container-fluid">
-                                <h5><strong>{{ product.name }}</strong>{% if product.freePrice %}&nbsp;(prix libre){% endif %}</h5>
+
+                        <div class="card-body contribution">
+                        {{ form_start(form_purchase) }}
+                        
+                        {% for purchase in form_purchase.purchases %}
+                            {% if loop.index > 1 %}<hr>{% endif %}
+                            {% set product = purchase.vars.value.product %}
+                            <div class="purchase-form container-fluid my-4" {% if product.disponibility == 0 %}disabled="disabled"{% endif %}>
+                                {{ form_errors(purchase) }}
+
+                                <h5><b>{{ product.name }}</b>{% if product.freePrice %}&nbsp;(prix libre, min. {{ product.minimumPrice }}€){% endif %}</h5>
+                                    
                                 <div class="row">
                                     <div class="col-7 col-sm-9 col-lg-8">
                                         <p class="text-muted font-italic">{{ product.description | bbcode_filter('my_default_filter') | raw }}</p>
-                                        <p>Disponibilité : {{ product.disponibility }}/{{ product.supply }}</p>
-                                        {% if product.freePrice %}
-                                            Prix minimum : {{ product.minimumPrice }} €
+                                        <p>Disponibilité : <b>{{ product.disponibility }}</b>/{{ product.supply }}</p>
+                                        <p>Maximum <b>{{ product.maxAmountPerPurchase }}</b> par commande</p>
+                                    </div>
+                                    <div class="col-5 col-sm-3 col-lg-4">
+                                        {% if product.isTicket %}
+                                            <img src="{{ asset('x/images/ticket.png') }}" width="100" height="100" />
                                         {% else %}
-                                            Prix : {{ product.price }} €
+                                            {% if product.image is not null %}
+                                                <img src="{{ asset(product.webPath(product.image)) }}" width="100" height="100" />
+                                            {% endif %}
                                         {% endif %}
                                     </div>
-                                    {% if product.photo is not null %}
-                                    <div class="col-5 col-sm-3 col-lg-4">
-                                        <img src="{{ asset(product.webPath(product.photo)) }}" width="100" height="100" />
-                                    </div>
-                                    {% endif %}
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-7 col-sm-9 col-lg-7">
+                                        {% if product.freePrice %}
+                                            {{ form_errors(purchase.freePrice) }}
+                                            <div class="w-90 position-relative mb-2">
+                                                {{ form_widget(purchase.freePrice, {'attr':  {'min': product.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
+                                                </div>
+                                        {% else %}
+                                            Prix : <b class="product-price">{{ product.price }} €</b>
+                                        {% endif %}
+                                    </div>
+
+                                    {% set max = product.maxAmountPerPurchase %}
+                                    <div class="col-5 col-sm-3 col-lg-5">
+                                        {{ form_errors(purchase.quantity) }}
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
+                                                    <i class="text-white fas fa-minus"></i>
+                                                </button>
+                                            </span>
+                                            {{ form_widget(purchase.quantity) }}
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max }}" data-field="">
+                                                    <i class="text-white fas fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {% if product.options is not empty %}
+                                    <div class="row select-options">
+                                        <div class="col-12 my-2 text-muted font-italic" style="font-size: 13px;">
+                                            N'oubliez pas de sélectionner parmi les options proposées
+                                        </div>
+                                        {% for option in product.options %}
+                                            <div class="col-6 col-sm-6 col-lg-6">
+                                                {{ option.name }}
+                                                <select class="form-control" name="{{ option.id }}" id="option-{{ option.id }}">
+                                                    {% for choice in option.choices %}
+                                                        <option value="{{ choice.id }}">{{ choice }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
                             </div>
-                        </div>
+
                         {% endfor %}
+
+                        <div class="text-center pr-2" id="totals">
+                            TOTAL : <span id="cart-total">0</span> € pour <span id="quantity-total">0</span> article(s)
+                        </div>
+                        <div class="text-center pr-2">
+                            {{ form_end(form_purchase) }}
+                        </div>
+
                     </div>
                 </div>
                 {% endif %}
-
-                {#<div class="mt-5{% if campaign.noThreshold %} mt-lg-3{% endif %}">
-                    <h3>Commander{% if is_event %} des tickets{% endif %}</h3>
-
-                    {% if campaign.isCrowdable %}
-                        {{ form_start(form) }}
-
-                        {% for purchase in form.purchases %}
-                            {% set counterpart = purchase.vars.value.counterpart %}
-                            <div class="counterpart-form p-3 my-2 border">
-
-                                <div class="quantity-error-display" style="display:none;"></div>
-
-                                <div class="form-group form-row">
-                                    {{ form_errors(purchase) }}
-
-                                    <div class="col-8 col-sm-9 col-lg-8">
-                                        <label class="font-weight-bold">{{ counterpart.name }}{% if counterpart.freePrice %} (prix libre){% endif %}</label>
-                                    </div>
-                                    {% if counterpart.freePrice %}
-                                        <div class="col-4 col-sm-3 col-lg-4">
-                                            <div class="w-90 position-relative mb-2">
-                                                {{ form_widget(purchase.free_price_value, {'attr': {'min': counterpart.minimumPrice, 'value': counterpart.minimumPrice}}) }} <span class="free-price-euro-sign position-absolute">€</span>
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <div class="col-4 col-sm-3 col-lg-4">
-                                        {% if counterpart.isFree %}Gratuit{% else %}{{ counterpart.price }} €{% endif %}
-                                        </div>
-                                    {% endif %}
-                                    {% set max_cp = campaign.nbPurchasable(counterpart) %}
-                                    <div class="col-8 col-sm-9 col-lg-8">{{ counterpart.getDescription|raw }}</div>
-                                    <div class="col-4 col-sm-3 col-lg-4">
-                                        <div class="container px-0">
-                                            {% if max_cp == 0 %}
-                                                <p>Il n'y a plus de tickets de ce type disponibles. (SOLD OUT)</p>
-                                                {% do purchase.setRendered(purchase.quantity) %}
-                                            {% else %}
-                                                <div class="input-group">
-                                                    <span class="input-group-btn">
-                                                        <button type="button" class="quantity-left-minus btn btn-dark btn-number"  data-type="minus" data-field="">
-                                                            <i class="text-white fas fa-minus"></i>
-                                                        </button>
-                                                    </span>
-                                                    {{ form_widget(purchase.quantity) }}
-                                                    <span class="input-group-btn">
-                                                        <button type="button" class="quantity-right-plus btn btn-dark btn-number" data-type="plus" data-max="{{ max_cp }}" data-field="">
-                                                            <i class="text-white fas fa-plus"></i>
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-
-                        {{ form_widget(form.submit) }}
-
-                        {{ form_end(form) }}
-                    {% else %}
-                        {% if campaign.passed %}
-                            <p>Cette campagne est terminée et il n'est donc plus possible d'acheter des tickets.</p>
-                        {% elseif campaign.pending %}
-                            <p>Il n'est actuellement pas possible de contribuer à cette campagne car elle est en cours d'examination par son organisateur. Vous saurez bientôt si elle est validée ou non.</p>
-                        {% else %}
-                            <p>Il n'est actuellement pas possible d'acheter des tickets.</p>
-                        {% endif %}
-                    {% endif %}
-                </div>#}
 
             </div>
         </div>
@@ -239,9 +275,47 @@
     <script type="text/javascript">
         // Disable form when project is passed
         {% if project.isPassed %}
-            $('.contribution').attr("disabled", true);
+            $('.contribution').attr('disabled', 'disabled');
         {% endif %}
 
-        $("a").attr("target", "_blank");
+        $('input.quantity').change(function() {
+            calculateTotal();
+        });
+
+        $('input.quantity').each(function() {
+            calculateTotal();
+        });
+
+        function calculateTotal() {
+            var tp = 0;
+            var q = 0;
+            $('.quantity.form-control').each(function() {
+                var qval = parseFloat($(this).val());
+                q += qval;
+                var $priceElem = $(this).closest('.purchase-form').find('.product-price');
+                var price = isNaN(parseFloat($priceElem.val())) ? parseFloat($priceElem.text()) : parseFloat($priceElem.val());
+                tp += price * qval;
+
+                var $select_option = $(this).closest('.purchase-form').find('.select-options');
+                if(qval == 0) {
+                    $select_option.hide();
+                } else {
+                    $select_option.show();
+                }
+            });
+
+            if(tp === 0 && q === 0) {
+               $('#totals').hide();
+               $('.submit-cart').attr('disabled', 'disabled');
+            }
+
+            else {
+                $('#cart-total').text(tp);
+                $('#quantity-total').text(q);
+                $('#totals').show();
+                $('.submit-cart').attr('disabled', null);
+            }
+        }
+
     </script>
 {% endblock %}

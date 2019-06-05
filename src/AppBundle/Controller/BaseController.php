@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 use XBundle\Exception\NoAuthenticationException;
-use XBundle\Exception\NotArtistOwnerException;
+use XBundle\Exception\NotAllowedException;
 
 abstract class BaseController extends Controller
 {
@@ -163,14 +163,17 @@ abstract class BaseController extends Controller
 
 
     ///////////////////////////////////////////////
-    /// X                                //////////
+    /// X - CHAPOTS                      //////////
     ///////////////////////////////////////////////
-    protected function checkIfArtistAuthorized($user) {
-        if(!$user || !$user instanceof User) {
+    protected function checkIfArtistAuthorized($user, $project = null) {
+        if (!$user || !$user instanceof User) {
             throw new NoAuthenticationException();
         }
-        if(empty($this->em->getRepository('AppBundle:Artist')->findForUser($user))) {
-            throw new NotArtistOwnerException();
+        if (!$user->isSuperAdmin() && !$user->isArtistOwner()) {
+            throw new NotAllowedException();
+        }
+        if ($project != null && (!$user->ownsProject($project) && !$user->isSuperAdmin())){
+            throw new NotAllowedException();
         }
     }
 

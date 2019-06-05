@@ -5,7 +5,7 @@
         {% if object.products|length > 0 %}
             <ul>
             {% for product in object.products %}
-                <li><a href="{{ path('admin_x_product_show', {'id': product.id}) }}">{{ product.name }}</a></li>
+                <li><a href="{{ path('admin_x_project_product_show', {'id': object.id, 'childId': product.id}) }}">{{ product }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}

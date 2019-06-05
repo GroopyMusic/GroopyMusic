@@ -1,0 +1,43 @@
+{% extends 'XBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('x.order.recap.intro', {
+    })|raw }}
+
+    {% for contract in cart.contracts %}
+        {% if contract.isDonation %}
+            <br />{{ email_content('x.order.recap.donation', {
+                                        '%date%': cart.dateCreation|date('d/m/Y'),
+                                        '%order_url%': url('x_order', {'code': cart.barcodeText})
+                                    })|raw }}
+        {% else %}
+            <br />{{ email_content('x.order.recap.contract_fan', {
+                                        '%date%': cart.dateCreation|date('d/m/Y'),
+                                        '%order_url%': url('x_order', {'code': cart.barcodeText})
+                                    })|raw }}
+        {% endif %}
+
+        {{ contract.project.title|upper }}
+        {% if contract.isDonation %}
+            --> Don en faveur de {{ contract.amount }} €
+        {% else %}
+            {% for purchase in contract.purchases %}
+                --> {{ purchase }} {% if purchase.freePrice is not null %}(prix choisi librement){% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    {{ email_content('x.order.recap.outro', {
+    })|raw }}
+
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'XBundle:Mail/Public:recap.html.twig' %}
+{% endblock %}

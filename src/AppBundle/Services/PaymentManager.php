@@ -7,6 +7,8 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\ORM\EntityManagerInterface;
+use XBundle\Entity\Project;
+use XBundle\Entity\XContractFan;
 
 class PaymentManager
 {
@@ -197,6 +199,42 @@ class PaymentManager
 
     public function notifyUserRefundedYBContractFan(ContractFan $cf) {
         $this->mailer->sendRefundedYBContractFan($cf);
+    }
+
+
+    // ---------- X
+    public function refundStripeAndProject(Project $project) {
+        $this->initStripe();
+        
+        foreach($project->getContributionsPaid() as $contribution) {
+            /** @var XContractFan $contribution */
+            $this->refundXPartOfStripePayment($contribution);
+            $this->refundXContractFan($contribution);
+        }
+
+        $project->setRefunded(true);
+        $this->em->persist($project);
+        $this->em->flush();
+    }
+
+    public function refundXPartOfStripePayment(XContractFan $cf) {
+        if(!$cf->getRefunded()) {
+            $payment = $cf->getCart()->getPayment();
+            if (!$payment->getRefunded()) {
+                \Stripe\Refund::create(array(
+                    "charge" => $payment->getChargeId(),
+                    "amount" => $cf->getAmount() * 100,
+                ));
+            }
+        }
+    }
+
+    public function refundXContractFan(XContractFan $cf) {
+        if(!$cf->getRefunded()) {
+            $cf->setRefunded(true);
+            $cf->getPayment()->setRefunded(true);
+            $this->mailer->sendRefundedProject($cf);
+        }
     }
 
 }

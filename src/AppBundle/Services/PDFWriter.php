@@ -28,6 +28,8 @@ class PDFWriter
     const YB_TICKETS_TEMPLATE = 'yb_tickets.html.twig';
     const YB_INVOICE_SOLD_TEMPLATE = 'yb_invoice_sold.html.twig';
 
+    const X_TICKETS_TEMPLATE = 'x_tickets.html.twig';
+
     private $twig;
     /** @var RouterInterface Router */
     private $router;
@@ -109,11 +111,21 @@ class PDFWriter
         }
     }
 
-    public function writeSoldInvoice(YBInvoice $invoice = null, $ticketData, YBContractArtist $campaign, $cfs) {
+   public function writeSoldInvoice(YBInvoice $invoice = null, $ticketData, YBContractArtist $campaign, $cfs) {
         $this->write(self::YB_INVOICE_SOLD_TEMPLATE, 'invoice.pdf', ['invoice' => $invoice,
             'ticketData' => $ticketData,
             'campaign' => $campaign,
             'cfs' => $cfs,
         ], 'D');
+    }
+  
+    // ------------------------ X
+    public function writeXTickets($path, $tickets) {
+        if(!empty($tickets)) {
+            $html = $this->twig->render('XBundle:PDF:' . self::X_TICKETS_TEMPLATE, ['tickets' => $tickets]);
+            $html2pdf = new Html2Pdf();
+            $html2pdf->writeHTML($html);
+            $html2pdf->output($path, 'F');
+        }
     }
 }

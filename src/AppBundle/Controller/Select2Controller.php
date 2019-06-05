@@ -152,4 +152,26 @@ class Select2Controller extends BaseController
         return new Response(json_encode($searray), 200, array('Content-Type' => 'application/json'));
     }
 
+
+    /**
+     * @Route("/transactional-message-products", name="select2_transactional_message_products")
+     */
+    public function transactionalMessageProductsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $projectId = $request->get('project');
+
+        $products = $em->getRepository('XBundle:Product')->getProductsSoldForProject(intval($projectId));
+        $productsArray = [];
+
+        foreach ($products as $product) {
+            $productsArray[] = array(
+                'id' => $product->getId(),
+                'text' => $product->__toString(),
+            );
+        }
+        return new Response(json_encode($productsArray), 200, array('Content-Type' => 'application/json'));
+    }
+
 }

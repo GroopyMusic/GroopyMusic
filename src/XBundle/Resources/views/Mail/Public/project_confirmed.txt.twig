@@ -1,0 +1,17 @@
+{% extends 'XBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% autoescape false %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% block content %}
+    {{ email_content('x.project.confirmed', {
+                '%project%': project.title,
+         })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'XBundle:Mail/Public:project_confirmed.html.twig' %}
+{% endblock %}

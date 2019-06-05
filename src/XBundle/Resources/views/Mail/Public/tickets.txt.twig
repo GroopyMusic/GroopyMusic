@@ -1,0 +1,17 @@
+{% extends 'XBundle:Mail:baseEmailLayout.txt.twig' %}
+{% autoescape false %}
+
+{% block title %}{{ subject }}{% endblock %}
+
+{% block content %}
+    {{ email_content('x.order.tickets', {
+        '%name%': cf.displayName,
+        '%project%': project.title,
+    })|raw }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'XBundle:Mail/Public:tickets.html.twig' %}
+{% endblock %}

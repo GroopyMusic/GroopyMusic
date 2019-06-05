@@ -1,0 +1,159 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block additional_stylesheets %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{%  block body %}
+
+    <section class="container px-0 mt-4">
+        <nav class="breadcrumb">
+            <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
+            <a class="breadcrumb-item" target="_blank" href="{{ path('x_project', {'id': project.id, 'slug' : project.slug}) }}">{{ project.title }}</a>
+            <span class="breadcrumb-item active">Envoyer un message transactionnel</span>
+        </nav>
+    </section>
+
+    <section class="container p-5">
+        <p>
+            Vous pouvez ici envoyer un message transactionnel aux contributeurs de votre projet <b>{{ project.title }}</b>.<br>
+            Attention : un message <b>transactionnel</b> ne peut pas être à vocation commerciale. Il doit s'agir d'informations organisationnelles uniquement, dont les consommateurs ont réellement besoin.
+        </p>
+
+        {% if project.wideContributors is empty %}
+            <p>
+                Vous ne pouvez pas envoyer de message pour cet projet à l'heure actuelle car il n'y a aucun contributeur à contacter...
+            </p>
+        {% elseif project.isWayPassed %}
+            <p>
+                Vous ne pouvez plus envoyer de message pour ce projet car il date d'il y a trop longtemps...
+            </p>
+        {% else %}
+
+            {{ form_start(form) }}
+
+            {{ form_row(form.title) }}
+            {{ form_row(form.content) }}
+
+            {% if project.nbDonations > 0 and project.nbSales > 0 %}
+                <div class="text-muted font-italic pb-2">
+                    Si vous ne cochez aucune des deux propositions, le mail sera envoyé aux donateurs ET aux acheteurs !
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        {{ form_widget(form.toDonators) }}
+                    </div>
+                    <div class="col-12 col-md-4" id="to_buyers_checkbox">
+                        {{ form_widget(form.toBuyers) }}
+                    </div>
+                    <div class="col-12 col-md-4 products_select">
+                        Si vous voulez cibler les acheteurs d'un ou de plusieurs articles en particulier, mentionnez-le(s) :
+                        {{ form_widget(form.products) }}
+                    </div>
+                </div>
+            {% elseif project.nbDonations == 0 and project.nbSales > 0 %}
+                <div class="row">
+                    <div class="col-12 col-md-6 my-3">
+                        Si vous voulez cibler les acheteurs d'un ou de plusieurs articles en particulier, mentionnez-le(s) :
+                        {{ form_widget(form.products) }}
+                    </div>
+                </div>
+                {% do form.toDonators.setRendered %}
+                {% do form.toBuyers.setRendered %}
+            {% else %}
+                {% do form.toDonators.setRendered %}
+                {% do form.toBuyers.setRendered %}
+                {% do form.products.setRendered %}
+            {% endif %}
+
+            {% if project.hasThreshold and project.dateValidation is not null %}
+                <div class="text-muted font-italic pb-2">
+                    En cochant la mention ci-dessous, le mail ne sera envoyé qu'aux contributeurs d'avant validation
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        {{ form_widget(form.beforeValidation) }}
+                    </div>
+                </div>
+            {% else %}
+                {% do form.beforeValidation.setRendered %}
+            {% endif %}
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">
+                Envoyer
+            </button>
+
+            <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Vous êtes sur le point d'envoyer un mail transactionnel à tous les contributeurs de votre projet. Êtes vous sûr ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal">Revenir à l'édition du message</button>
+                            {{ form_widget(form.submit) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+
+        {% endif %}
+    </section>
+
+    {% if old_messages is not empty %}
+        <section class="container px-5 mb-3">
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#oldMessagesCollapse" aria-expanded="false" aria-controls="oldMessagesCollapse">
+                <i class="fas fa-arrows-alt-v"></i> Afficher les messages transactionnels envoyés par le passé
+            </button>
+            <div class="collapse" id="oldMessagesCollapse">
+                {% for message in old_messages %}
+                    <div class="card card-body my-3 py-2">
+                        <h4>{{ message.title }}</h4>
+                        <p class="small text-secondary">
+                            Envoyé le {{ message.date|date('d/m/Y \\à H:i') }} en destination des
+                            {% if message.toDonators %}
+                                donateurs
+                            {% endif %}
+                            {% if message.toBuyers %}
+                                {% if message.toDonators %} et {% endif %}acheteurs
+                                {% if message.products is not empty %}
+                                    de
+                                    {% for product in message.products %}
+                                        {% if loop.index > 1 %}
+                                            {% if loop.last %} et {% else %}, {% endif %}
+                                        {% endif %}
+                                        "{{ product }}"
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                            {% if message.beforeValidation %} avant validation{% endif %}
+                        </p>
+                        <p>{{ message.content }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            var $chckbx = $('#to_buyers_checkbox input[type="checkbox"]');
+            $chckbx.on('change', function() {
+                $('.products_select').toggle(this.checked);
+            });
+            $chckbx.trigger("change");
+        });
+    </script>
+{% endblock %}

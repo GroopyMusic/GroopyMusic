@@ -1,0 +1,19 @@
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            <p>Un nouveau message a été reçu par l'intermédiaire du formulaire de contact.</p>
+
+            <p>
+                Le voici :
+            </p>
+            <ul>
+                <li>Expéditeur : {{ contact.name }}</li>
+                <li>E-mail : {{ contact.email }}</li>
+                <li>Message : <br /> {{ contact.message }}</li>
+            </ul>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

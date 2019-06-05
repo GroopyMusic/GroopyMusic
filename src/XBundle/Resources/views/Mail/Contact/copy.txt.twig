@@ -1,0 +1,20 @@
+{% extends 'XBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+    {{ email_content('x.contact.copy', {
+        '%name%': contact.name,
+        '%email%': contact.email
+    })|raw }}
+
+    {{ contact.message|nl2br }}
+{% endblock %}
+
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'XBundle:Mail/Contact:copy.html.twig' %}
+{% endblock %}

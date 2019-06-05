@@ -1,0 +1,13 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% block field_value %}
+        {% if object.options|length > 0 %}
+            <ul>
+                {% for option in object.options %}
+                    <li>{{ option|nl2br }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endblock %}
+{% endblock %}

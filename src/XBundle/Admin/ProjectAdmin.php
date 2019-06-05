@@ -3,15 +3,15 @@
 namespace XBundle\Admin;
 
 use AppBundle\Admin\BaseAdmin;
-use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use AppBundle\Entity\Artist;
+
 
 class ProjectAdmin extends BaseAdmin
 {
+
     public function configureRoutes(RouteCollection $collection)
     {
         $collection
@@ -19,7 +19,8 @@ class ProjectAdmin extends BaseAdmin
             ->remove('create')
             ->remove('edit')
             ->add('validate', $this->getRouterIdParameter().'/validate')
-            ->add('refuse', $this->getRouterIdParameter().'/refuse');
+            ->add('refuse', $this->getRouterIdParameter().'/refuse')
+            ->add('products', $this->getRouterIdParameter().'/product/list');
     }
 
     public function configureListFields(ListMapper $list)
@@ -35,17 +36,29 @@ class ProjectAdmin extends BaseAdmin
             ->add('validated', null, array(
                 'label'=> 'Validé'
             ))
-            ->add('deleted', null, array(
+            ->add('deletedAt', 'boolean', array(
                 'label' => 'Supprimé'
+            ))
+            ->add('successful', null, array(
+                'label' => 'Réussi'
+            ))
+            ->add('failed', null, array(
+                'label' => 'Échoué'
+            ))
+            ->add('refunded', null, array(
+                'label' => 'Remboursé'
             ))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array(),
                     'validate' => array(
-                        'template' => 'XBundle:Admin:icon_validate_project.html.twig'
+                        'template' => 'XBundle:Admin:icon_validate.html.twig'
                     ),
                     'refuse' => array(
-                        'template' => 'XBundle:Admin:icon_refuse_project.html.twig'
+                        'template' => 'XBundle:Admin:icon_refuse.html.twig'
+                    ),
+                    'products' => array(
+                        'template' => 'XBundle:Admin:icon_products_project.html.twig'
                     )
                 ) 
             ))
@@ -62,19 +75,24 @@ class ProjectAdmin extends BaseAdmin
                 ->add('artist', null, array(
                     'label' => 'Artiste associé'
                 ))
-                ->add('tag', null , array(
+                ->add('category', null , array(
                     'label' => 'Catégorie',
-                    'associated_property' => 'name'
                 ))
                 ->add('dateEnd', null, array(
                     'label' => 'Date de clôture du financement partipatif',
                     'format' => 'd/m/Y',
                     'locale' => 'fr'
                 ))
-            ->end()
-            ->with('Description')
+                ->add('dateEvent', null, array(
+                    'label' => "Date de l'évènement",
+                    'format' => 'd/m/Y',
+                    'locale' => 'fr'
+                ))
+                ->add('address', null, array(
+                    'label' => "Lieu de l'évènement"
+                ))
                 ->add('description', null, array(
-                    'label' => 'A propos du projet',
+                    'label' => 'À propos du projet',
                     'template' => 'XBundle:Admin:description.html.twig'
                 ))
                 ->add('motivations', null, array(
@@ -85,10 +103,14 @@ class ProjectAdmin extends BaseAdmin
                     'label' => 'Objectif du financement',
                     'template' => 'XBundle:Admin:threshold_purpose.html.twig'
                 ))
+                ->add('coverpic', null , array(
+                    'label' => 'Photo de couverture',
+                    'template' => 'XBundle:Admin:coverpic.html.twig'
+                ))
             ->end()
             ->with('Financement participatif')
-                ->add('noThreshold', 'boolean', array(
-                    'label' => 'Pas de seuil de validation'
+                ->add('hasThreshold', 'boolean', array(
+                    'label' => 'A de seuil de validation'
                 ))
                 ->add('collectedAmount', null, array(
                     'label' => 'Montant récolté'
@@ -102,19 +124,19 @@ class ProjectAdmin extends BaseAdmin
                 ))
             ->end()
             ->with('État')
-                ->add('validated', 'boolean', array(
+                ->add('validated', null, array(
                     'label' => 'Validé par un administrateur Un-Mute'
                 ))
-                ->add('deleted', 'boolean', array(
+                ->add('deletedAt', 'boolean', array(
                     'label' => 'Supprimé ou refusé'
                 ))
-                ->add('successful', 'boolean', array(
+                ->add('successful', null, array(
                     'label' => 'Réussite'
                 ))
-                ->add('failed', 'boolean', array(
+                ->add('failed', null, array(
                     'label' => 'Échec'
                 ))
-                ->add('refunded', 'boolean', array(
+                ->add('refunded', null, array(
                     'label' => 'Remboursé'
                 ))
             ->end()

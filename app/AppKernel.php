@@ -54,7 +54,6 @@ class AppKernel extends Kernel
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new XBundle\XBundle(),
             new FM\BbcodeBundle\FMBbcodeBundle(),
-            new Ob\HighchartsBundle\ObHighchartsBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Craue\FormFlowBundle\CraueFormFlowBundle(),
         ];
@@ -64,7 +63,7 @@ class AppKernel extends Kernel
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             // Next line disabled for failure in production mode (and this bundle is not really necessary)
-            // $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
+            $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             $bundles[] = new JMS\DiExtraBundle\JMSDiExtraBundle($this);
             $bundles[] = new JMS\AopBundle\JMSAopBundle();
             $bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();

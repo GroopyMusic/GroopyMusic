@@ -1,0 +1,43 @@
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
+
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+
+            {{ email_content('x.order.recap.intro', {
+            })|raw }}
+
+            {% for contract in cart.contracts %}
+                {% if contract.isDonation %}
+                    <br />{{ email_content('x.order.recap.donation', {
+                                                '%date%': cart.dateCreation|date('d/m/Y'),
+                                                '%order_url%': email_link(url('x_order', {'code': cart.barcodeText}))
+                                            })|raw }}
+                {% else %}
+                    <br />{{ email_content('x.order.recap.contract_fan', {
+                                                '%date%': cart.dateCreation|date('d/m/Y'),
+                                                '%order_url%': email_link(url('x_order', {'code': cart.barcodeText}))
+                                            })|raw }}
+                {% endif %}
+
+                <h3>{{ contract.project.title }}</h3>
+                <ul>
+                {% if contract.isDonation %}
+                    <li>Don en faveur de {{ contract.amount }} €</li>
+                {% else %}
+                    {% for purchase in contract.purchases %}
+                        <li>{{ purchase }} {% if purchase.freePrice is not null %}(prix choisi librement){% endif %}</li>
+                    {% endfor %}
+                {% endif %}
+                </ul>
+            {% endfor %}
+
+
+            {{ email_content('x.order.recap.outro', {
+            })|raw }}
+
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

@@ -1,10 +1,11 @@
-{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
 {% autoescape false %}
     {% spaceless %}
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
             {{ email_content('admin.x.new_product', {
+                '%project%' : product.project.title,
                 '%product%': product.name
             })|raw }}
         {% endblock %}

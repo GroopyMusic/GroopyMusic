@@ -1,0 +1,12 @@
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('x.project.confirm', {
+                '%project%': project.title,
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

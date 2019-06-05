@@ -245,6 +245,10 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
         return $this->projects->contains($project);
     }
 
+    public function isArtistOwner() {
+        return !empty($this->getArtists());
+    }
+  
     public function addParticipation(\AppBundle\Entity\YB\Membership $participation){
         if (!$this->participations->contains($participation)){
             $this->participations->add($participation);

@@ -1,0 +1,15 @@
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('x.transactional_message', {
+                '%date%': message.date|date('d/m/Y \\à H:i'),
+                '%project%': email_link(url('x_project', {'id': project.id, 'slug': project.slug}), project.title),
+                '%title%': message.title,
+                '%content%': message.content,
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}
