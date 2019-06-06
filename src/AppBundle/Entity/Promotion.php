@@ -101,7 +101,10 @@ class Promotion
 
     public function getNbOrganicNeeded() {
         switch($this->type) {
+            case self::TYPE_TWO_TWO_DRINKS:
+                return 2;
             case self::TYPE_THREE_PLUS_ONE:
+            case self::TYPE_THREE_THREE_DRINKS:
                 return 3;
             break;
             case self::TYPE_SIX_PLUS_ONE:

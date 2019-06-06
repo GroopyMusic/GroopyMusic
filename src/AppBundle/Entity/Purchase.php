@@ -138,24 +138,23 @@ class Purchase
         foreach ($this->getContractArtist()->getPromotionsDecr() as $promotion) {
             /** @var Promotion $promotion */
             if ($this->contractFan->isEligibleForPromotion($promotion) && !in_array($promotion, $this->getPromotions())) {
-                // Additional tickets
-                $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($organicsLeft / $promotion->getNbOrganicNeeded()));
-                $this->nb_free_counterparts += $new_promotional_counterparts;
-                $this->addQuantity($new_promotional_counterparts);
-                $organicsLeft %= $promotion->getNbOrganicNeeded();
-                // End additional tickets
-
                 // Tickets toppings
-                $organics = $organicsTotal;
                 $toppings = [];
-                while($organics >= $promotion->getNbNeededTopping()) {
-                    $organics -= $promotion->getNbNeededTopping();
+                while($organicsLeft >= $promotion->getNbNeededTopping()) {
+                    $organicsLeft -= $promotion->getNbNeededTopping();
                     $topping = $promotion->getTopping();
                     if($topping != null) {
                         $toppings[] = $topping;
                     }
                 }
                 // End tickets toppings
+
+                // Additional tickets
+                $new_promotional_counterparts = $promotion->getNbPromotional() * (floor($organicsLeft / $promotion->getNbOrganicNeeded()));
+                $this->nb_free_counterparts += $new_promotional_counterparts;
+                $this->addQuantity($new_promotional_counterparts);
+                $organicsLeft %= $promotion->getNbOrganicNeeded();
+                // End additional tickets
 
                 $pp = new Purchase_Promotion($this, $promotion, $new_promotional_counterparts, $toppings);
                 $this->addPurchasePromotion($pp);

@@ -1,76 +1,75 @@
 {% macro campaign_row(campaign) %}
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <h3 class="name font-weight-bold pl-2" style="background-color:rgba(243, 146, 0, 0.15)">{{ campaign.getTitle }}</h3>
+    <div class="row my-4">
+        <div class="col-12 my-4">
+            <h3 class="name font-weight-bold pl-2{% if campaign.draft %} draft{% endif %}">{{ campaign.getTitle }}</h3>
             <div class="small">
                 Organisé par <a href="{{ path('yb_members_my_organizations') }}">{{ campaign.getOrganizationName }}</a>
             </div>
-            {% if campaign.pending %}
-                <div class="mt-2"><i class="fas fa-exclamation"></i>
-                    Cette campagne est en attente de validation ou d'annulation de votre part.
-                    Pour le bien de vos acheteurs et de vos ventes, il est essentiel de rapidement <a href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">examiner où en est le financement participatif.</a>
-                </div>
-            {% endif %}
-            <div class="mt-2">Fin des ventes le {{ campaign.dateClosure|date('d/m/Y \\à H:i') }}</div>
-            {% if campaign.hasThreshold %}
-                <div class="mb-2">Validation le {{ campaign.dateEnd|date('d/m/Y') }}</div>
+        </div>
+
+        <div class="d-none d-md-block col-md-3 font-weight-bold text-center">
+            Photo
+        </div>
+        <div class="d-none d-md-block col-md-2 font-weight-bold text-center">
+            Etat
+        </div>
+        <div class="d-none d-md-block col-md-3 font-weight-bold text-center">
+            Infos
+        </div>
+        <div class="d-none d-md-block col-md-4 font-weight-bold text-center">
+            Actions
+        </div>
+
+        <div class="col-12 col-md-3">
+            {% if campaign.photo is not null %}<img class="img-fluid d-none d-md-inline" src="{{ yb_asset(campaign.webPath(campaign.photo))}}">{% endif %}
+        </div>
+
+        <div class="col-12 col-md-2 py-2">
+            {% if not campaign.passed %}
+                <input class="toggle-draft" type="checkbox" data-url="{{ url('yb_members_campaign_toggle_draft', { 'id':campaign.id}) }}" id="toggle-draft" data-on="Ventes en cours" data-off="Brouillon" {% if not campaign.draft %}checked{% endif %} data-toggle="toggle" data-onstyle="secondary" data-offstyle="primary" />
+            {% else %}
+                Passé
             {% endif %}
         </div>
 
-        {% if campaign.photo is not null %}
-            <div class="col-12 col-md-3">
-                <img class="img-fluid d-none d-md-inline" src="{{ yb_asset(campaign.webPath(campaign.photo))}}">
-            </div>
-
-            <div class="col-12 col-md-9 row">
-        {% endif %}
-
-            <div class="col-12 col-md-3 py-2">
-                {% if not campaign.passed %}
-                    <input class="toggle-draft" type="checkbox" data-url="{{ url('yb_members_campaign_toggle_draft', { 'id':campaign.id}) }}" id="toggle-draft" data-on="Ventes en cours" data-off="Brouillon" {% if not campaign.draft %}checked{% endif %} data-toggle="toggle" data-onstyle="secondary" data-offstyle="primary" />
-                {% endif %}
-            </div>
-
-            <div class="col-12 col-md-3">
-                {{ campaign.counterPartsSold }} ticket(s) vendu(s)<br />
-                {{ campaign.contractsFanPaid|length }} commande(s)
-            </div>
-
-            <div class="col-12 col-md-3">
-                <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">Voir la page de la campagne</a>
-            </div>
-            {% if is_granted('ROLE_SUPER_ADMIN') or not campaign.isPassed %}
-                <div class="col-12 col-md-3">
-                    <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les informations</a>
+        <div class="col-12 col-md-3">
+            {{ campaign.counterPartsSold }} ticket(s) vendu(s)<br />
+            {{ campaign.contractsFanPaid|length }} commande(s)<br />
+            Fin des ventes le {{ campaign.dateClosure|date('d/m/Y \\à H:i') }}
+            {% if campaign.hasThreshold %}
+                <br />Validation le {{ campaign.dateEnd|date('d/m/Y') }}
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% elseif campaign.failed %} bg-danger{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
                 </div>
+                {% if campaign.pending %}
+                    <div class="mt-2"><i class="fas fa-exclamation"></i>
+                        Cette campagne est en attente de validation ou d'annulation de votre part.
+                        Pour le bien de vos acheteurs et de vos ventes, il est essentiel de rapidement <a href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">examiner où en est le financement participatif.</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div> <i class="fas fa-eye text-primary"></i> <a class="link-secondary" target="_blank" href="{{ path('yb_campaign', {'id': campaign.id}) }}">Voir la page de la campagne</a></div>
+
+            {% if is_granted('ROLE_SUPER_ADMIN') or not campaign.isPassed %}
+                <div> <i class="fas fa-edit text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_edit', {'id': campaign.id}) }}">Modifier les informations</a></div>
             {% endif %}
             {% if is_granted('ROLE_SUPER_ADMIN') or not campaign.isPassed and campaign.counterParts|length > 0 %}
-                <div class="col-12 col-md-3">
-                    <i class="fas fa-ticket-alt text-primary"></i> <a class="link-secondary" href="{{ path('yb_customize_ticket', {'id': campaign.id}) }}">Personnaliser les tickets</a>
-                </div>
+                <div> <i class="fas fa-ticket-alt text-primary"></i> <a class="link-secondary" href="{{ path('yb_customize_ticket', {'id': campaign.id}) }}">Personnaliser les tickets</a></div>
             {% endif %}
-            <div class="col-12 col-md-3">
-                <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}">Accéder à la liste de commandes</a>
-            </div>
+                <div> <i class="fas fa-list text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_orders', {'id': campaign.id}) }}">Accéder à la liste de commandes</a></div>
 
             {% if campaign.wideBuyers is not empty and not campaign.isWayPassed %}
-                <div class="col-12 col-md-3">
-                    <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_transactional_message', {'id': campaign.id}) }}">Envoyer un message transactionnel</a>
-                </div>
+                <div> <i class="fas fa-comment text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_transactional_message', {'id': campaign.id}) }}">Envoyer un message transactionnel</a></div>
             {% endif %}
 
             {% if campaign.hasThreshold %}
-                <div class="col-12 col-md-3">
-                    <i class="fas fa-chart-bar text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">Financement participatif</a>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped{% if campaign.successful %} bg-success{% elseif campaign.failed %} bg-danger{% endif %}" role="progressbar" style="width: {{ campaign.percentObjective }}%" aria-valuenow="{{ campaign.percentObjective }}" aria-valuemin="0" aria-valuemax="100">{{ campaign.percentObjective }}%</div>
-                    </div>
-                </div>
+                <div> <i class="fas fa-chart-bar text-primary"></i> <a class="link-secondary" href="{{ path('yb_members_campaign_crowdfunding', {'id': campaign.id}) }}">Financement participatif</a></div>
             {% endif %}
-        {% if campaign.photo is not null %}
-            </div>
-        {% endif %}
+        </div>
     </div>
 
 {% endmacro %}

@@ -11,6 +11,12 @@
         </ol>
     </section>
 
+    {% if organizations|length > 1 %}
+        <div class="mt-5 text-center">
+            <a class="btn btn-outline-secondary" href="#new-organization-form"><i class="far fa-plus-square"></i> Créer une organisation</a>
+        </div>
+    {% endif %}
+
     <div
         style="display:none"
         data-group="group1"
@@ -52,7 +58,7 @@
         {% endif %}
     </section>
 
-    <section class="container py-5">
+    <section class="container py-5" id="new-organization-form">
         <h2>Créer une organisation</h2>
         {{ form_start(form) }}
             {{ form_row(form.name) }}
