@@ -2,8 +2,11 @@
 
 namespace XBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use XBundle\Entity\Image;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use XBundle\Entity\Project;
 
 /**
@@ -11,30 +14,104 @@ use XBundle\Entity\Project;
  *
  * @ORM\Table(name="product")
  * @ORM\Entity(repositoryClass="XBundle\Repository\ProductRepository")
+ * @Vich\Uploadable
  */
 class Product
 {
 
-    const PHOTOS_DIR = 'x/images/projects/';
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
+
+    const PHOTOS_DIR = 'x/images/products/';
 
     public function __construct() {
         $this->freePrice = false;
         $this->minimumPrice = 1;
         $this->productsSold = 0;
         $this->validated = false;
-        $this->deleted = false;
+        $this->isTicket = false;
+        $this->options = new ArrayCollection();
     }
 
-    public static function getWebPath(Image $image) {
-        return self::PHOTOS_DIR . $image->getFilename();
+    public static function getWebPath(string $image) {
+        return self::PHOTOS_DIR . $image;
     }
 
-    public function addProductsSold($quantity) {
+    public function __toString()
+    {
+        return '' . $this->getName();
+    }
+
+    /**
+     * Update number of times product has been sold
+     * @param $quantity
+     */
+    public function updateProductsSold($quantity) {
         $this->productsSold += $quantity;
     }
 
+    /**
+     * Return purchasable quantity for product
+     * @return integer
+     */
     public function disponibility() {
         return $this->supply - $this->productsSold;
+    }
+
+    /**
+     * Check if product is a ticket
+     * @return bool
+     */
+    public function isTicket() {
+        return $this->getIsTicket();
+    }
+
+    
+    /**
+     * Create all possible combination with product options
+     */
+    private function createCombinationOptions($arrays, $i = 0) {
+        if (!isset($arrays[$i])) {
+            return [];
+        }
+        if ($i == count($arrays)-1) {
+            return $arrays[$i];
+        }
+        $tmp = $this->createCombinationOptions($arrays, $i + 1);
+        $result = [];
+
+        foreach ($arrays[$i] as $v) {
+            foreach ($tmp as $t) {
+                $result[] = is_array($t) ? array_merge(array($v), $t) : array($v, $t);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Retrieve array of all possible combination
+     */
+    public function getCombinationOptions() {
+        $options = [];
+        foreach ($this->options as $option) {
+            $options[] = $option->getChoices()->toArray();
+        }
+        return $this->createcombinationOptions($options);
+    }
+
+    /**
+     * Convert array combo to string
+     */
+    public function stringCombo($combo) {
+        if (is_array($combo)) {
+            $str = '';
+            for ($i=0; $i<count($combo); $i++) {
+                $str .= $combo[$i] . ' ';
+            }
+            return $str;
+        } else {
+            return $combo;
+        }
+        
     }
 
 
@@ -75,12 +152,6 @@ class Product
     private $project;
 
     /**
-     * @ORM\OneToOne(targetEntity="XBundle\Entity\Image", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $photo;
-
-    /**
      * @var int
      * 
      * @ORM\Column(name="supply", type="integer")
@@ -118,16 +189,44 @@ class Product
     /**
      * @var bool
      * 
+     * @ORM\Column(name="is_ticket", type="boolean")
+     */
+    private $isTicket;
+
+    /**
+     * @var bool
+     * 
      * @ORM\Column(name="validated", type="boolean")
      */
     private $validated;
 
     /**
-     * @var bool
-     * 
-     * @ORM\Column(name="deleted", type="boolean")
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\OptionProduct", mappedBy="product", cascade={"all"}, orphanRemoval=true)
      */
-    private $deleted;
+    private $options;
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     *
+     * @Vich\UploadableField(mapping="x_product_header", fileNameProperty="image")
+     *
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @var string
+     */
+    private $image;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    private $updatedAt;
 
 
     /**
@@ -236,34 +335,11 @@ class Product
         return $this->project;
     }
 
-    /**
-     * Set photo
-     *
-     * @param Image $photo
-     *
-     * @return Product
-     */
-    public function setPhoto($photo = null)
-    {
-        $this->photo = $photo;
-
-        return $this;
-    }
 
     /**
-     * Get photo
-     *
-     * @return Image
-     */
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    /**
-     * Set stock
+     * Set supply
      * 
-     * @param integer $stock
+     * @param integer $supply
      * 
      * @return Product
      */
@@ -404,30 +480,148 @@ class Product
         return $this->validated;
     }
 
+
     /**
-     * Set deleted
-     * 
-     * @param boolean $deleted
-     * 
+     * Set isTicket
+     *
+     * @param boolean $isTicket
+     *
      * @return Product
      */
-    public function setDeleted($deleted)
+    public function setIsTicket($isTicket)
     {
-        $this->deleted = $deleted;
+        $this->isTicket = $isTicket;
 
         return $this;
     }
 
     /**
-     * Get deleted
-     * 
+     * Get isTicket
+     *
      * @return boolean
      */
-    public function getDeleted()
+    public function getIsTicket()
     {
-        return $this->deleted;
+        return $this->isTicket;
+    }
+
+    /**
+     * Add option
+     *
+     * @param \XBundle\Entity\OptionProduct $option
+     *
+     * @return Product
+     */
+    public function addOption(\XBundle\Entity\OptionProduct $option)
+    {
+        $option->setProduct($this);
+        $this->options[] = $option;
+        return $this;
+    }
+
+    /**
+     * Remove option
+     *
+     * @param \XBundle\Entity\OptionProduct $option
+     */
+    public function removeOption(\XBundle\Entity\OptionProduct $option)
+    {
+        $option->setProduct(null);
+        $this->options->removeElement($option);
+    }
+
+    /**
+     * Get options
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * Set image
+     *
+     * @param string $image
+     *
+     * @return Product
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Product
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param File $imageFile
+     */
+    public function setImageFile(File $imageFile = null)
+    {
+        $this->imageFile = $imageFile;
+
+        if ($imageFile){
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 
 
 }
-

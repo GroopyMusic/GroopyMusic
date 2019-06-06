@@ -5,8 +5,8 @@ namespace XBundle\Controller;
 use AppBundle\Controller\BaseAdminController;
 use XBundle\Entity\Product;
 use AppBundle\Services\MailDispatcher;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -22,11 +22,14 @@ class ProductAdminController extends BaseAdminController
             throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $product->getId()));
         }
 
-
         if ($product->getValidated()) {
             $this->addFlash('sonata_flash_error', 'La mise en vente de cet article est déjà validée.');
-
             return new RedirectResponse($this->admin->generateUrl('list'));
+        }
+
+        if (!$product->getProject()->getValidated()) {
+            $this->addFlash('sonata_flash_error', 'Le projet doit d\'abord être validé avant la validation de la mise en vente de l\'article.');
+            return new RedirectResponse($this->admin->getParent()->generateUrl('list'));
         }
 
         $form = $this->createFormBuilder()
@@ -68,8 +71,8 @@ class ProductAdminController extends BaseAdminController
         }
 
         return $this->render('@X/Admin/Product/action_validate_product.html.twig', array(
+            'form' => $form->createView(),
             'product' => $product,
-            'form' => $form->createView()
         ));
         
 
@@ -86,7 +89,7 @@ class ProductAdminController extends BaseAdminController
         }
 
 
-        if ($product->getDeleted()) {
+        if ($product->getDeletedAt() != null) {
             $this->addFlash('sonata_flash_error', 'La mise en vente de cet article a déjà été refusée.');
 
             return new RedirectResponse($this->admin->generateUrl('list'));
@@ -94,12 +97,12 @@ class ProductAdminController extends BaseAdminController
 
         $form = $this->createFormBuilder()
             ->add('reason', 'ckeditor', array(
-                'label' => 'Cause(s) du refus',
+                'label' => 'Raison(s) du refus',
                 'config_name' => 'bbcode'
             ))
             ->add('confirm', SubmitType::class, array(
                 'label' => 'Refuser la mise en vente de cet article',
-                'attr' => array('class' => 'btn btn-success')
+                'attr' => array('class' => 'btn btn-danger')
             ))
             ->add('cancel', SubmitType::class, array(
                 'label' => 'Annuler',
@@ -117,12 +120,11 @@ class ProductAdminController extends BaseAdminController
                 $reason = $form->get('reason')->getData();
                 
                 $em = $this->getDoctrine()->getManager();
-                $product->setDeleted(true);
-                $em->persist($product);
+
+                $em->remove($product);
                 $em->flush();
 
                 $message = "La mise en vente de l'article a été refusée et un mail a été envoyé aux gestionnaires du projet pour leur expliquer les raisons de ce refus";
-
                 try {
                     $this->get(MailDispatcher::class)->sendProductRefused($product, $reason);
                 }
@@ -137,8 +139,8 @@ class ProductAdminController extends BaseAdminController
         }
 
         return $this->render('@X/Admin/Product/action_refuse_product.html.twig', array(
+            'form' => $form->createView(),
             'product' => $product,
-            'form' => $form->createView()
         ));
     }
 

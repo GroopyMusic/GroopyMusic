@@ -42,34 +42,7 @@ $('document').ready(function() {
 
     $('.modal-notice').modal('show');
     $('.modal-error').modal('show');
-
-    function rectifyQuantities($q) {
-        var $displayer = $q.closest('.counterpart-form').find('.quantity-error-display');
-
-        var max = parseInt($q.closest('.counterpart-form').find('.quantity-right-plus').data('max'));
-        var quantity = parseInt($q.val());
-        if (quantity > max) {
-            $displayer.text('Vous ne pouvez pas dépasser ' + max + " exemplaires de ce ticket dans votre commande.");
-            $displayer.show();
-            $q.val(max);
-        }
-        else if(quantity < 0) {
-            $displayer.text('Vous ne pouvez pas commander un nombre négatif de tickets.');
-            $displayer.show();
-            $q.val(0);
-        }
-        else {
-            $displayer.hide();
-        }
-    }
-
-    $('input.quantity').each(function() {
-        rectifyQuantities($(this));
-    });
-
-    $('input.quantity').change(function() {
-        rectifyQuantities($(this));
-    });
+    $('.modal-warning').modal('show');
 
     $('.quantity-right-plus').click(function(e){
         e.preventDefault();

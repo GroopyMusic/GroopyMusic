@@ -10,6 +10,12 @@
   }
 }
 
+.modal-warning {
+  .modal-confirm .modal-header {
+    background: #c69500;
+  }
+}
+
 .modal-confirm {
   color: #434e65;
   width: 525px;

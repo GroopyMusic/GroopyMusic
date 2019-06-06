@@ -1,0 +1,13 @@
+{% extends 'XBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {{ email_content('x.order.tickets', {
+                '%name%': cf.displayName,
+                '%project%': project.title,
+            })|raw }}
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}

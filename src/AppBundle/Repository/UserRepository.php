@@ -316,4 +316,6 @@ class UserRepository extends EntityRepository
             ->getResult()
         ;
     }
+
+
 }

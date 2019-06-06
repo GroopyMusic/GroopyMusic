@@ -192,7 +192,7 @@ admin :
       Pour voir ses infos et le valider, rendez-vous sur l'espace d'admin !
 
     new_product: |
-      Un nouvel article a été mis en vente par un artiste pour l'aider à financer son projet. L'intitulé de l'article: %product%
+      Un nouvel article a été mis en vente pour le projet "%project%". L'intitulé de l'article: %product%
 
       Pour voir ses infos et le valider, rendez-vous sur l'espace d'admin !
 
@@ -391,12 +391,21 @@ yb:
         Direction %link% pour la télécharger !
 
 x:
+  contact:
+    copy: |
+      Votre message sur Chapots a bien été reçu! Nous vous répondrons le plus rapidement possible.
+
+      Voici une copie de votre message :
+
+      -- Name: %name%
+      -- Email: %email%
+      -- Message:
+
   project:
     validated: |
       Le projet que vous avez créé sur Chapots (titre : %project%) a bien été validé par un administrateur d'Un-Mute.
 
       Il est à présent visible publiquement sur la plateforme.
-
     refused: |
       Le projet que vous avez créé sur Chapots (titre : %project%) été refusé par un administrateur d'Un-Mute.
 
@@ -404,17 +413,82 @@ x:
       ------------------------------
         %reason%
       ------------------------------
+    threshold:
+      confirmed: |
+        Bravo !
 
+        Le projet que vous avez créé sur Chapots (titre : %project%) a atteint son seuil de validation avant la date de clotûre du financement. Il est donc automatiquement confirmé et les contributeurs en seront avertis.
+    confirm: |
+      Le projet que vous avez créé sur Chapots (titre: %project%) a atteint sa date de fin. Rendez-vous sur votre espace de gestion de projet pour le confirmer ou non.
+    confirmed: |
+      Le projet "%project%" que vous avez soutenu a été confirmé !
+
+      Si vous faites partie des contributeurs attendant leur(s) commande(s), vous serez recontacter d'ici peu de temps.
+
+      Encore merci de votre soutien et à très bientôt sur Chapots !
+    refunded: |
+      Cher/Chère %name%,
+
+      Le projet "%project%" n'a pas pu être confirmée. La raison devrait vous avoir été, par ailleurs, communiquée par le gestionnaire du projet.
+
+      Vous allez être remboursé(e) de votre contribution de %amount% € dans les jours qui viennent. Vous trouverez la preuve de remboursement dans vos extraits de compte.
   product:
     validated: |
-      L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a bien été validé par un administrateur d'Un-Mute.
+      L'article "%product%" que vous avez mis en vente pour le project "%project%" a bien été validé par un administrateur d'Un-Mute.
 
       Il est à présent visible publiquement sur la plateforme.
-
     refused: |
-      L'article que vous avez mis en vente sur Chapots (intitulé : %product%) a été refusé par un administrateur d'Un-Mute.
+      L'article "%product%" que vous avez mis en vente pour le project "%project%" a été refusé par un administrateur d'Un-Mute.
 
       Raison(s) du refus :
       ------------------------------
         %reason%
       ------------------------------
+  order:
+    recap:
+      intro: |
+        Merci pour de votre contribution sur Chapots.
+      donation: |
+        Vous trouverez ci-dessous un récapitulatif de votre don passé le %date%. Les informations de votre don sont également accessibles à l'adresse %order_url%.
+        
+        Dans le cas où le projet n'est pas confirmé par ses gestionnaires, vous serez entièrement remboursé(e).
+      contract_fan: |
+        Vous trouverez ci-dessous un récapitulatif de votre commande passée le %date%. Les informations de votre commande sont également accessibles à l'adresse %order_url%.
+        
+        Vous ne recevrez le contenu de votre commande que si le projet est confirmé par les gestionnaires du projet. Dans le cas contraire, vous serez entièrement remboursé(e).
+      outro: |
+        A très bientôt !
+    tickets: |
+      Cher/Chère %name%,
+
+      Veuillez trouver vos tickets pour "%project%" en pièce jointe.
+
+      Passez une excellente journée,
+  transactional_message: |
+    Vous avez reçu un nouveau message concernant le projet %project% pour lequel vous avez contribué sur Chapots.
+    Ce message a été envoyé par le gestionnaire du projet le %date%.
+
+    Titre :
+    ------------------------------
+      %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+      %content%
+    ------------------------------
+  transactional_message_copy: |
+    Votre message concernant le projet %project% a bien été transmis aux contributeurs.
+    Ce message a été envoyé le %date%.
+
+    Titre :
+    ------------------------------
+       %title%
+    ------------------------------
+
+
+    Contenu :
+    ------------------------------
+       %content%
+    ------------------------------

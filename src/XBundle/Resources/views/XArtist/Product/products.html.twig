@@ -2,12 +2,6 @@
 
 {% block body %}
 
-    <style>
-        a:hover {
-            text-decoration: none;
-        }
-    </style>
-
     <section class="container px-0 mt-4">
         <nav class="breadcrumb">
             <a class="breadcrumb-item" href="{{ path('x_artist_dashboard') }}">Tableau de bord</a>
@@ -16,61 +10,101 @@
         </nav>
     </section>
     
-    <section class="container my-4 py-2 my-md-5">
+    <section class="container my-4 py-2 my-md-4 product-section">
         {% if products is empty %}
-            <h3>Pas d'articles en vente</h3>
+            <p>Pas d'articles en vente</p>
         {% else %}
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Intitulé</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Prix</th>
-                        <th scope="col">Stock</th>
-                        <th scope="col">Vendus</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for product in products %}
-                        <tr class="table-active">
-                            {% if product.photo is not null %}
-                                <td class="text-center"><img src="{{ asset(product.webPath(product.photo)) }}" width="90px" height="90px"/></td>
+            {% for product in products %}
+                <div class="products-row border my-3 px-2">
+                    <div class="row my-3">
+
+                        <div class="col-3 col-sm-3 col-lg-3">
+                            {% if product.isTicket %}
+                                <img src="{{ asset('x/images/ticket.png') }}"/>
                             {% else %}
-                                <td></td>
+                                {% if product.image is not null %}
+                                    <img src="{{ asset(product.webPath(product.image)) }}"/>
+                                {% endif %}
                             {% endif %}
-                            <th scope="row">{{ product.name }}</th>
-                            <td>{{ product.description | bbcode_filter('my_default_filter') }}</td>
-                            <td>
-                                {% if product.freePrice %}
-                                    <p>Prix libre</p>{{ product.minimumPrice }} € (prix minimum)
-                                {% else %}
-                                    {{ product.price }} €
-                                {% endif %}
-                            </td>
-                            <td>{{ product.supply }}</td>
-                            <td>{{ product.productsSold }}</td>
-                            <td>
-                                {% if product.validated %}
-                                    <a class="btn btn-primary" href="{{ path('x_artist_product_update', {'id': project.id, 'idProd': product.id}) }}">Modifier</a>
-                                {% else %}
-                                    <div class="text-muted font-italic pb-2">
-                                        En cours de validation
+                        </div>
+
+                        <div class="col-3 col-sm-3 col-lg-3">
+                            <p><b>{{ product.name }}</b></p>
+                            <p class="text-muted font-italic">{{ product.description | bbcode_filter('my_default_filter') | raw }}</p>
+                        </div>
+
+                        <div class="col-3 col-sm-3 col-lg-3">
+                            {% if product.freePrice %}
+                                <p>Prix libre : <b>{{ product.minimumPrice }} €</b> (prix minimum)</p>
+                            {% else %}
+                                <p>Prix : <b>{{ product.price }} €</b></p>
+                            {% endif %}
+                            {% if product.options is not empty %}
+                                <div>
+                                    Option(s):
+                                    <ul>
+                                        {% for option in product.options %}
+                                            <li>{{ option|nl2br }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-3 col-sm-3 col-lg-3">
+                            <p><b>{{ product.supply }}</b> en stock</p>
+                            <p><b>{{ product.productsSold }}</b> vendus(s)</p>
+                            <p>Maximum <b>{{ product.maxAmountPerPurchase }}</b> par commande</p>
+                        </div>
+
+                    </div>
+
+                    {% if not project.isPassed %}
+                    <div class="col-12 my-2">
+                        <a class="btn btn-outline-primary" href="{{ path('x_artist_product_update', {'id': project.id, 'idProd': product.id}) }}"><i class="fas fa-marker"></i> Modifier</a>
+                        {% if product.validated %}
+                            {% if product.productsSold == 0 %}
+                                &nbsp;<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ product.id }}">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Supprimer l'article "{{ product }}"</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Vous êtes sur le point de supprimer cet article. Êtes-vous sûr de continuer ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="{{ path('x_artist_product_delete', {'id': project.id, 'idProd': product.id}) }}">
+                                                    <input class="btn btn-danger" type="submit" value="Supprimer"/>
+                                                </form>
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table> 
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-muted text-right font-italic pb-2">
+                                En cours de validation
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
         {% endif %}
 
         {% if not project.isPassed %}
-            <a href="{{ path('x_artist_product_add', {'id': project.id}) }}"><i class="far fa-plus-square"></i> Ajouter un article</a>
-            {% if project.tag.name == "Concert" %}
-                <a href="{{ path('x_artist_ticket_add', {'id': project.id}) }}"> / un ticket</a>  
-            {% endif %}
+            <a class="btn btn-primary" href="{{ path('x_artist_product_add', {'id': project.id}) }}"><i class="fas fa-plus-circle"></i> Ajouter un article</a>
         {% endif %}
 
     </section>

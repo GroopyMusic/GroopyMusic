@@ -14,6 +14,12 @@ use XBundle\Entity\XCart;
 class XPayment
 {
 
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+        $this->refunded = false;
+    }
+
     /**
      * @var int
      *
@@ -25,7 +31,7 @@ class XPayment
 
     /**
      *@var XCart
-     * @ORM\OneToOne(targetEntity="XBundle\Entity\XCart", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="XBundle\Entity\XCart", inversedBy="payment", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $cart;

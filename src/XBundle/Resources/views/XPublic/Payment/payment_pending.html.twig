@@ -20,7 +20,7 @@
         hideError();
         var $loader = $('#stripe-loader .loader');
         var $loaderexplanation = $('#stripe-loader .loader-explanation');
-        var amount = {{ cart.donationAmount }} * 100;
+        var amount = {{ cart.amount }} * 100;
         var stripe = Stripe('{{ stripe_api_public }}');
         var elements = stripe.elements();
         // After some amount of time, we should stop trying to resolve the order synchronously:
@@ -43,8 +43,8 @@
 		}
 
 		pollForSourceStatus();
-
-        displayLoader("{{ 'threeds.pending_stripe'|trans|raw }}");
+        
+        displayLoader("<b>Ne quittez pas Chapots pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement. Votre paiement sera validé dans quelques secondes...");
         function onChargeable3DS(status, source) {
             if (source.status == 'chargeable') {
                 stripeTokenHandler(source);

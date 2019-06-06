@@ -1,0 +1,57 @@
+    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig'%}
+    {{ form_start(form, {'action': path('x_product_create_option', {'id': product.id})}) }}
+    <div class="row product-row">
+        <div class="col-12">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col-12">
+            {{ form_widget(form.choices) }}
+        </div>
+        <div class="col-12" style="text-align: right">
+            <button class="btn btn-secondary" id="button-creation">Enregistrer</button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+    <script type="text/javascript" src="{{ absolute_url(asset('js/lib/jquery.collection.js')) }}"></script>
+
+    <script type="text/javascript">
+        function x_choices_collection(options) {
+            $('.choices-collection').collection($.extend({
+                up: '',
+                down: '',
+                add_at_the_end: true,
+                add: '<a href="#">Ajouter</a>',
+                prefix: 'choices-collection'
+            }, options));
+        }
+
+        x_choices_collection({
+            add:'<a class="btn btn-outline-secondary mt-3" href="#"><i class="fas fa-plus-square text-secondary"></i> Ajouter un choix</a>',
+            remove:'<a class="btn btn-outline-danger" href="#"><i class="fas fa-trash"></i> Supprimer ce choix</a>'
+        });
+
+        $('#button-creation').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                method: 'post',
+                url: "{{ path('x_product_create_option', {'id': product.id}) }}",
+                data: $('#button-creation').closest('form').serialize(),
+                beforeSend: function () {
+                    loader();
+                },
+                success: function (data) {
+                    if(data == 'OK') {
+                        $.get('{{ path('x_product_options', {'id': product.id}) }}', function (html_data) {
+                            $('#options-container').html(html_data);
+                        });
+                        hideLoader();
+                        $('#optionsModalBody').html("L'option a bien été créée.");
+                    } else {
+                        hideLoader();
+                        $('#optionsModalBody').html(data);
+                    }
+                }
+            })
+        });
+    </script>

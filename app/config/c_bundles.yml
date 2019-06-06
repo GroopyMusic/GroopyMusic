@@ -97,6 +97,22 @@ vich_uploader:
           inject_on_load: true
           namer:
             service: AppBundle\Services\UniqIdNamer
+      x_product_header:
+        uri_prefix:         x/images/products
+        upload_destination: '%kernel.root_dir%/../web/x/images/products'
+        delete_on_update: true
+        delete_on_remove: true
+        inject_on_load: true
+        namer:
+          service: AppBundle\Services\UniqIdNamer
+      x_choice_option_header:
+        uri_prefix:         x/images/products/choices
+        upload_destination: '%kernel.root_dir%/../web/x/images/products/choices'
+        delete_on_update: true
+        delete_on_remove: true
+        inject_on_load: true
+        namer:
+          service: AppBundle\Services\UniqIdNamer
 
 jmose_command_scheduler:
     log_path: '%kernel.root_dir%/../var/logs/commands/'

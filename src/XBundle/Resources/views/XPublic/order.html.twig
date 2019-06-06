@@ -1,0 +1,33 @@
+{% extends "XBundle::base.html.twig" %}
+
+{% block body %}
+
+    <div class="container py-5" id="order-recap">
+        <h2>Récapitulatif</h2>
+        <p>
+            Numéro: <span class="text-muted">{{ cart.barcodeText }}</span>
+            <br />Date de la contribution : {{ cart.dateCreation|date('d/m/Y \\à H:i') }}
+            <br />État de la contribution : {{ cart.state }}
+        </p>
+
+        {% for contract in cart.contracts %}
+            <h3>{{ contract.project.title }}</h3>
+            <p><a href="{{ path('x_project', {'id': contract.project.id, 'slug': contract.project.slug}) }}">Retourner sur la page du projet</a></p>
+            <ul class="list-group">
+                {% if contract.isDonation %}
+                    <li class="list-group-item">Don en faveur de : {{ contract.amount }} €</li>
+                {% else %}
+                    {% for purchase in contract.purchases %}
+                        <li class="list-group-item">{{ purchase }} {% if purchase.freePrice is not null %}(prix choisi librement){% endif %}</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        {% endfor %}
+
+        <div class="py-2 text-right">
+            TOTAL : {{ cart.amount }} €
+        </div>
+
+    <div>
+
+{% endblock %}

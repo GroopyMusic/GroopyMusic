@@ -32,7 +32,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
 use XBundle\Entity\Product;
 use XBundle\Entity\Project;
+use XBundle\Entity\XCart;
 use XBundle\Entity\XContact;
+use XBundle\Entity\XContractFan;
+use XBundle\Entity\XTransactionalMessage;
+
 
 class MailDispatcher
 {
@@ -799,115 +803,222 @@ class MailDispatcher
     // ------------------------ X
 
     public function sendAdminXContact(XContact $contact) {
-        $subject = 'Nouveau message sur Chapots!';
+        $subject = 'Nouveau message sur Chapots';
         $params = ['contact' => $contact];
         $subject_params = [];
         $reply_to = $contact->getEmail();
         $reply_to_name = $contact->getName();
-
         $this->sendAdminEmail(MailTemplateProvider::X_ADMIN_CONTACT, $subject, $params, $subject_params, [], $reply_to, $reply_to_name);
     }
 
-    public function sendAdminNewProject(Project $project)
-    {
+    public function sendXContactCopy(XContact $contact) {
+        $subject = 'Formulaire de contact Chapots';
+        $params = ['contact' => $contact];
+        $subject_params = [];
+        $recipient = [$contact->getEmail() => $this->translator->getLocale()];
+        $recipientName = $contact->getName();
+        $reply_to = "info@chapots.be";
+        $reply_to_name = "Chapots";
+
+        $this->sendEmail(MailTemplateProvider::X_CONTACT_COPY, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+    public function sendAdminNewProject(Project $project) {
         $params = ['project' => $project];
         $subject = 'Nouveau projet créé sur Chapots';
         $subject_params = [];
-
         $this->sendAdminEmail(MailTemplateProvider::X_ADMIN_NEW_PROJECT, $subject, $params, $subject_params);
     }
 
-    public function sendProjectValidated(Project $project)
-    {
-        $params = [
-            'project' => $project,
-        ];
-
+    public function sendProjectValidated(Project $project) {
+        $params = ['project' => $project];
         $to = [];
         foreach ($project->getHandlers() as $handler) {
             /** @var User $handler */
             $to[$handler->getEmail()] = $handler->getPreferredLocale();
         }
-
         $toName = [];
-
         $subject = 'Votre project sur Chapots a été vérifié';
         $subject_params = [];
-
         $this->sendEmail(MailTemplateProvider::X_PROJECT_VALIDATED, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
-    public function sendProjectRefused(Project $project, $reason)
-    {
-        $params = [
-            'project' => $project,
-            'reason' => $reason,
-        ];
-
+    public function sendProjectRefused(Project $project, $reason) {
+        $params = ['project' => $project, 'reason' => $reason,];
         $to = [];
         foreach ($project->getHandlers() as $handler) {
             /** @var User $handler */
             $to[$handler->getEmail()] = $handler->getPreferredLocale();
         }
-
         $toName = [];
-
         $subject = 'Votre project sur Chapots a été refusé';
         $subject_params = [];
-
         $this->sendEmail(MailTemplateProvider::X_PROJECT_REFUSED, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
-
-    
-    public function sendAdminNewProduct(Product $product)
-    {
+    public function sendAdminNewProduct(Product $product) {
         $params = ['product' => $product];
         $subject = 'Mise en vente d\'un article sur Chapots';
         $subject_params = [];
-
         $this->sendAdminEmail(MailTemplateProvider::X_ADMIN_NEW_PRODUCT, $subject, $params, $subject_params);
     }
 
-    public function sendProductValidated(Product $product)
-    {
-        $params = [
-            'product' => $product,
-        ];
-
+    public function sendProductValidated(Product $product) {
+        $params = ['product' => $product,];
         $to = [];
         foreach ($product->getProject()->getHandlers() as $handler) {
             /** @var User $handler */
             $to[$handler->getEmail()] = $handler->getPreferredLocale();
         }
-
         $toName = [];
-
         $subject = 'La mise en vente de votre article sur Chapots a été vérifiée';
         $subject_params = [];
-
         $this->sendEmail(MailTemplateProvider::X_PRODUCT_VALIDATED, $subject, $params, $subject_params, [], [], $to, $toName);
     }
 
     public function sendProductRefused(Product $product, $reason)
     {
-        $params = [
-            'product' => $product,
-            'reason' => $reason,
-        ];
-
+        $params = ['product' => $product, 'reason' => $reason,];
         $to = [];
         foreach ($product->getProject()->getHandlers() as $handler) {
             /** @var User $handler */
             $to[$handler->getEmail()] = $handler->getPreferredLocale();
         }
-
         $toName = [];
-
         $subject = 'La mise en vente de votre article sur Chapots a été refusée';
         $subject_params = [];
-
         $this->sendEmail(MailTemplateProvider::X_PRODUCT_REFUSED, $subject, $params, $subject_params, [], [], $to, $toName);
     }
+
+    // Send e-mail recap to contributor
+    public function sendXOrderRecap(XCart $cart) {
+        $subject = 'Votre contribution sur Chapots';
+        $params = ['cart' => $cart];
+        $subject_params = [];
+        $recipient = [$cart->getOrder()->getEmail() => $this->translator->getLocale()];
+        $recipientName = '';
+        $reply_to = "info@chapots.be";
+        $reply_to_name = "Chapots";
+        $this->sendEmail(MailTemplateProvider::X_ORDER_RECAP, $subject, $params, $subject_params, [], [], $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+    // Send e-mail to project handlers that threshold is reached and project is automatically successful
+    public function sendProjectThresholdConfirmed(Project $project) {
+        $params = ['project' => $project];
+        $to = [];
+        foreach ($project->getHandlers() as $handler) {
+            /** @var User $handler */
+            $to[$handler->getEmail()] = $handler->getPreferredLocale();
+        }
+        $toName = [];
+        $subject = 'Votre project sur Chapots a atteint son seuil de validation';
+        $subject_params = [];
+        $this->sendEmail(MailTemplateProvider::X_PROJECT_THRESHOLD_CONFIRMED, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    // Send e-mail to project handlers that end date has expired and to confirm or not the project
+    public function sendProjectToConfirm(Project $project) {
+        $params = ['project' => $project];
+        $to = [];
+        foreach ($project->getHandlers() as $handler) {
+            /** @var User $handler */
+            $to[$handler->getEmail()] = $handler->getPreferredLocale();
+        }
+        $toName = [];
+        $subject = 'Votre project sur Chapots a atteint sa date de fin';
+        $subject_params = [];
+        $this->sendEmail(MailTemplateProvider::X_PROJECT_TO_CONFIRM, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    // Send e-mail to contributors for project confirmation
+    public function sendConfirmedProject(Project $project) {
+        $params = ['project' => $project];
+        $to = [];
+        foreach ($project->getContributors() as $contributor) {
+            $to[$contributor->getEmail()] = $this->translator->getLocale(); 
+        }
+        $toName = [];
+        $subject = 'Confirmation du projet';
+        $subject_params = [];
+        $this->sendEmail(MailTemplateProvider::X_CONFIRMED_PROJECT, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    // Send e-mail to contributors for refund
+    public function sendRefundedProject(XContractFan $cf) {
+        $params = ['cf' => $cf,
+                   'project' => $project = $cf->getProject(),
+        ];
+        $to = [$cf->getEmail() => 'fr'];
+        $toName = [$cf->getDisplayName()];
+        $subject = 'Annulation du projet et remboursement';
+        $subject_params = [];
+        $this->sendEmail(MailTemplateProvider::X_REFUNDED_PROJECT, $subject, $params, $subject_params, [], [], $to, $toName);
+    }
+
+    // Send e-mail with tickets if project is confirmed
+    public function sendXTickets(XContractFan $cf) {
+        $subject = 'Vos tickets sont arrivés';
+        $params = ['cf' => $cf, 'project' => $cf->getProject()];
+        $subject_params = [];
+        $recipient = [$cf->getEmail() => $this->translator->getLocale()];
+        $recipientName = '';
+        $reply_to = "info@chapots.be";
+        $reply_to_name = "Chapots";
+        $attachments = ['chapots-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
+        $this->sendEmail(MailTemplateProvider::X_TICKETS, $subject, $params, $subject_params, [], $attachments, $recipient, $recipientName, $reply_to, $reply_to_name);
+    }
+
+
+    public function sendXTransactionalMessageWithCopy(XTransactionalMessage $message, $contributors) {
+        $this->sendXTransactionalMessage($message, $contributors);
+        try { $this->sendXTransactionalMessageCopy($message); }
+        catch(\Throwable $exception) {
+            $this->logger->error("Echec lors de l'envoi de la copie d'un message transactionnel aux gestionnaires du projet : " . $exception->getMessage());
+        }
+    }
+
+    public function sendXTransactionalMessage(XTransactionalMessage $message, $contributors) {
+        $project = $message->getProject();
+
+        $contributors_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $contributors));
+
+        $to = [];
+
+        foreach($contributors_emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['project' => $project, 'message' => $message];
+        $subject = 'Nouveau message pour le projet "' . $project->getTitle() . '"';
+
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_TRANSACTIONAL_MESSAGE, $subject, $params, $subject_params, $to);
+    }
+
+    public function sendXTransactionalMessageCopy(XTransactionalMessage $message) {
+        $project = $message->getProject();
+        $handlers = $project->getHandlers();
+
+        $handlers_emails = array_unique(array_map(function(PhysicalPersonInterface $person) {
+            return $person->getEmail();
+        }, $handlers->toArray()));
+
+        $to = self::ADMIN_TO;
+
+        foreach($handlers_emails as $email) {
+            $to[$email] = $this->translator->getLocale();
+        }
+
+        $params = ['project' => $project, 'message' => $message];
+        $subject = 'Votre message pour le projet "' . $project->getTitle() . '"';
+
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::X_TRANSACTIONAL_MESSAGE_COPY, $subject, $params, $subject_params, $to);
+    }
+
 
 }

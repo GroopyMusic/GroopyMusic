@@ -2,6 +2,7 @@
 
 namespace XBundle\Entity;
 
+use AppBundle\Entity\Address;
 use AppBundle\Entity\Artist;
 use AppBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +11,8 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use XBundle\Entity\Image;
 use XBundle\Entity\Product;
 use XBundle\Entity\Tag;
+use XBundle\Entity\XContractFan;
+use XBundle\Entity\XCategory;
 
 /**
  * Project
@@ -20,6 +23,10 @@ use XBundle\Entity\Tag;
 class Project
 {
     use ORMBehaviors\Sluggable\Sluggable;
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
+
+    const DAYS_BEFORE_WAY_PASSED_EVENT = 15;
+    const DAYS_BEFORE_WAY_PASSED = 30;
 
     const PHOTOS_DIR = 'x/images/projects/';
 
@@ -28,19 +35,20 @@ class Project
         $this->dateEnd = new \DateTime();
         $this->collectedAmount = 0;
         $this->validated= false;
-        $this->deleted = false;
         $this->successful = false;
         $this->failed = false;
         $this->refunded = false;
         $this->noThreshold = true;
-        $this->nbDonations = 0;
-        $this->nbSales = 0;
         $this->code = uniqid('x');
         $this->projectPhotos = new ArrayCollection();
         $this->handlers = new ArrayCollection();
         $this->products = new ArrayCollection();
-        $this->points = 0;
+        $this->tags = new ArrayCollection();
         $this->acceptConditions = false;
+        $this->contributions= new ArrayCollection();
+        $this->notifEndSent = 0;
+        $this->notifSuccessSent = 0;
+        $this->transactionalMessages = new ArrayCollection();
     }
 
     public function getSluggableFields() {
@@ -51,13 +59,51 @@ class Project
         return self::PHOTOS_DIR . $image->getFilename();
     }
 
+    public function __toString()
+    {
+        return '' . $this->getTitle();
+    }
+
+    /**
+     * Check if project has threshold
+     * @return bool
+     */
     public function hasThreshold()
     {
         return !$this->noThreshold;
     }
 
     /**
-     * Calculates the number of remaining days for project funding
+     * Check if project has validated products
+     * @return bool
+     */
+    public function hasValidatedProducts() {
+        $validatedProducts = array_filter($this->getProducts()->toArray(), function(Product $product) {
+                                return $product->getValidated() && $product->getDeletedAt() == null;
+                            });
+        return count($validatedProducts) > 0;
+    }
+
+    /**
+     * Update collected amount
+     * @param $amount
+     */
+    public function addAmount($amount) {
+        $this->collectedAmount += $amount;
+    }
+
+    /**
+     * Calculate percentage of project funding progress
+     * @return float
+     */
+    public function getProgressPercent() {
+        return floor(($this->getCollectedAmount() / $this->getThreshold()) * 100);
+    }
+
+
+    /**
+     * Calculate number of remaining days for project funding
+     * @return integer
      */
     public function getRemainingDays()
     {
@@ -65,7 +111,8 @@ class Project
     }
 
     /**
-     * Calculates the number of remaining hours for project funding
+     * Calculate number of remaining hours for project funding
+     * @return integer
      */
     public function getRemainingHours()
     {
@@ -74,7 +121,8 @@ class Project
     }
 
     /**
-     * Calculates the number of remaining minutes for project funding
+     * Calculate number of remaining minutes for project funding
+     * @return integer
      */
     public function getRemainingMinutes()
     {
@@ -83,32 +131,259 @@ class Project
     }
 
     /**
-     * Calculates the percentage of project funding progress
+     * Return the correct remaining time format to display
+     * @return string
      */
-    public function getProgressPercent() {
-        return min(floor(($this->getCollectedAmount() / max(1, $this->getThreshold())) * 100), 100);
+    public function getRemainingTime()
+    {
+        $time = '';
+        if($this->getRemainingDays() > 0) {
+            $time .= $this->getRemainingDays() . ' jour(s) restant(s)';
+        } else {
+            if($this->getRemainingHours() > 0) {
+                $time .= $this->getRemainingHours() . ' heure(s) restante(s)';
+            } else {
+                $time .= $this->getRemainingMinutes() . ' minute(s) restante(s)';
+            }
+        }
+        return $time;
     }
 
-    public function addAmount($amount) {
-        $this->collectedAmount += $amount;
-    }
 
-    public function addNbDonations() {
-        $this->nbDonations++;
-    }
-
-    public function addNbSales() {
-        $this->nbSales++;
-    }
-
+    /**
+     * Check if project date end is passed
+     * @return bool
+     */
     public function isPassed() {
         return $this->dateEnd < new \DateTime();
     }
 
-    // To get only artists that creator owns (form only)
-    private $creator;
+    /**
+     * Check if project is pending
+     * @return bool
+     */
+    public function isPending() {
+        return !$this->successful && !$this->failed && !$this->refunded && $this->isPassed();
+    }
 
-    // Conditions approval (form only)
+    /**
+     * Check if project is still ongoing
+     * @return bool
+     */
+    public function isOngoing() {
+        return !$this->successful && !$this->failed && !$this->refunded && !$this->isPassed();
+    }
+
+    /**
+     * Check if project is closed
+     * @return bool
+     */
+    public function isClosed() {
+        return $this->isPassed() && ($this->successful || ($this->failed && $this->refunded));
+    }
+
+    /**
+     * Check if project is an event
+     * @return bool
+     */
+    public function isEvent() {
+        return $this->dateEvent != null;
+    }
+
+    /**
+     * Check if project is way passed to send transactional message
+     * @return bool
+     */
+    public function isWayPassed() {
+        $date = new \DateTime();
+        if ($this->isEvent()) {
+            return $date > $this->dateEvent && $this->dateEvent->diff($date)->days > self::DAYS_BEFORE_WAY_PASSED_EVENT;
+        }
+        return $date > $this->dateEnd && $this->dateEnd->diff($date)->days > self::DAYS_BEFORE_WAY_PASSED;
+    }
+
+
+    /**
+     * Count number of donations
+     * @return integer
+     */
+    public function getNbDonations() {
+        return count($this->getDonationsPaid());
+    }
+
+    /**
+     * Count number of sales
+     * @return integer
+     */
+    public function getNbSales() {
+        return count($this->getSalesPaid());
+    }
+
+    /**
+     * Count contributors; once a contributor who has paid several times
+     * @return integer
+     */
+    public function getNbContributors() {
+        $nbContributors = array_unique(array_map(function(XOrder $person) {
+            return $person->getEmail();
+        }, $this->getContributors()));
+        return count($nbContributors);
+    }
+
+
+    /**
+     * Get donations paid
+     * @return array
+     */
+    public function getDonationsPaid() {
+        return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                    return $contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+               });
+    }
+
+    /**
+     * Get donators
+     * @param $beforeValidation
+     * @return array
+     */
+    public function getDonators($beforeValidation = false) {
+        if ($beforeValidation) {
+            $donations = array_filter($this->getDonationsPaid(), function(XContractFan $cf) {
+                return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
+            });
+        } else {
+            $donations = $this->getDonationsPaid();
+        }
+
+        if($donations == null || empty($donations)) {
+            return [];
+        }
+
+        return array_map(function(XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $donations);
+    }
+
+
+    /**
+     * Get sales paid for some products
+     * @param $products
+     * @return array
+     */
+    public function getProductSalesPaid($products) {
+        $productSalesPaid = [];
+        foreach ($this->contributions as $contribution) {
+            if(!empty($contribution->getPurchasesForProduct($products))) {
+                $productSalesPaid[] = $contribution;
+            }
+        }
+        return $productSalesPaid;
+    }
+
+    /**
+     * Get sales paid
+     * @return array
+     */
+    public function getSalesPaid() {
+        return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                    return !$contribution->getIsDonation() && $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+               });
+    }
+
+    /**
+     * Get buyers
+     * @param $beforeValidation, $products
+     * @return array
+     */
+    public function getBuyers($beforeValidation = false, $products = null) {
+        if ($beforeValidation) {
+            if ($products != null) {
+                $sales = array_filter($this->getProductSalesPaid($products), function(XContractFan $cf) {
+                    return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
+                });
+            } else {
+                $sales = array_filter($this->getSalesPaid(), function(XContractFan $cf) {
+                    return $this->dateValidation != null && $cf->getPayment()->getDate() <= $this->dateValidation;
+                });
+            }
+        } else {
+            if ($products != null) {
+                $sales = $this->getProductSalesPaid($products);
+            } else {
+                $sales = $this->getSalesPaid();
+            }
+        }
+        
+        if($sales == null || empty($sales)) {
+            return [];
+        }
+
+        return array_map(function(XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $sales);
+
+    }
+
+
+    /**
+     * Get all contributions paid
+     * @return array
+     */
+    public function getContributionsPaid() {
+        return array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+                    return $contribution->getPaid() && ($this->failed || !$contribution->getRefunded());
+               });
+    }
+
+    /**
+     * Get all contributors
+     * @param $beforeValidation, $products
+     * @return array
+     */
+    public function getContributors($beforeValidation = false, $products = null) {
+        return array_merge($this->getDonators($beforeValidation), $this->getBuyers($beforeValidation, $products));
+    }
+
+
+    /**
+     * Get wide contributors (those who have contributions paid or refunded)
+     * @return array
+     */
+    public function getWideContributors() {
+        $contributionsPaidAndRefunded = array_filter($this->contributions->toArray(), function(XContractFan $contribution) {
+            return $contribution->getPaid();
+        });
+
+        if($contributionsPaidAndRefunded == null || empty($contributionsPaidAndRefunded)) {
+            return [];
+        }
+
+        return array_map(function (XContractFan $cf) {
+            return $cf->getPhysicalPerson();
+        }, $contributionsPaidAndRefunded);
+    }
+
+
+    /**
+     * Count for sales recap
+     * @param $product, $comboChoices
+     * @return integer
+     */
+    public function getNbPerChoice(Product $product, $comboChoices){
+        $count = 0;
+        foreach ($this->contributions as $contribution) {
+            $purchase = $contribution->getPurchaseForProductWithChoices($product, $comboChoices);
+            if($purchase != null) {
+                $count += $purchase->getQuantity();
+            }
+        }
+        return $count;
+    }
+
+
+    /**
+     * Conditions approval (form only)
+     */
     private $acceptConditions;
 
 
@@ -175,10 +450,16 @@ class Project
     private $dateEnd;
 
     /**
-     * @ORM\ManyToOne(targetEntity="XBundle\Entity\Tag")
+     * @var \DateTime
+     * @ORM\Column(name="date_validation", type="datetime", nullable=true)
+     */
+    private $dateValidation;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="XBundle\Entity\XCategory")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $tag;
+    private $category;
 
     /**
      * @var float
@@ -200,13 +481,6 @@ class Project
      * @ORM\Column(name="validated", type="boolean")
      */
     private $validated;
-
-    /**
-     * @var bool
-     * 
-     * @ORM\Column(name="deleted", type="boolean")
-     */
-    private $deleted;
 
     /**
      * @var bool
@@ -237,20 +511,6 @@ class Project
     private $noThreshold;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="nb_donations", type="integer")
-     */
-    private $nbDonations;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="nb_sales", type="integer")
-     */
-    private $nbSales;
-
-    /**
      * @ORM\OneToOne(targetEntity="\XBundle\Entity\Image", cascade={"all"})
      * @ORM\JoinColumn(nullable=true)
      */
@@ -267,9 +527,9 @@ class Project
     private $products;
 
     /**
-     * @ORM\ManyToMany(targetEntity="\XBundle\Entity\Tags", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="\XBundle\Entity\Tag", cascade={"all"})
      */
-    //private $tags;
+    private $tags;
 
     /**
      * @var string
@@ -278,11 +538,44 @@ class Project
     private $code;
 
     /**
-     * @var int
-     * 
-     * @ORM\Column(name="points", type="integer")
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\XContractFan", mappedBy="project", cascade={"persist"})
      */
-    private $points;
+    private $contributions;
+
+    /**
+     * @var boolean
+     * 
+     * @ORM\Column(name="notif_end_sent", type="boolean")
+     */
+    private $notifEndSent;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="notif_success_sent", type="boolean")
+     */
+    private $notifSuccessSent;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_event", type="datetime", nullable=true)
+     */
+    private $dateEvent;
+
+    /**
+     * @var Address
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Address", cascade={"all"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $address;
+
+    /**
+     * @ORM\OneToMany(targetEntity="XBundle\Entity\XTransactionalMessage", cascade={"remove"}, mappedBy="project")
+     */
+    private $transactionalMessages;
+
 
 
     /**
@@ -342,30 +635,6 @@ class Project
     {
         return $this->artist;
     }
-
-    /**
-     * Set user
-     *
-     * @param User $user
-     *
-     * @return Project
-     */
-    /*public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }*/
-
-    /**
-     * Get user
-     *
-     * @return User
-     */
-    /*public function getUser()
-    {
-        return $this->user;
-    }*/
 
 
     /**
@@ -524,27 +793,51 @@ class Project
     }
 
     /**
-     * Set tag
+     * Set dateValidation
      *
-     * @param Tag $tag
+     * @param \DateTime $dateValidation
      *
      * @return Project
      */
-    public function setTag($tag)
+    public function setDateValidation($dateValidation)
     {
-        $this->tag = $tag;
+        $this->dateValidation = $dateValidation;
 
         return $this;
     }
 
     /**
-     * Get tag
+     * Get dateValidation
      *
-     * @return Tag
+     * @return \DateTime
      */
-    public function getTag()
+    public function getDateValidation()
     {
-        return $this->tag;
+        return $this->dateValidation;
+    }
+
+    /**
+     * Set category
+     *
+     * @param XCategory $category
+     *
+     * @return Project
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return XCategory
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 
     /**
@@ -617,30 +910,6 @@ class Project
     public function getValidated()
     {
         return $this->validated;
-    }
-
-    /**
-     * Set deleted
-     * 
-     * @param boolean $deleted
-     * 
-     * @return Project
-     */
-    public function setDeleted($deleted)
-    {
-        $this->deleted = $deleted;
-
-        return $this;
-    }
-
-    /**
-     * Get deleted
-     * 
-     * @return boolean
-     */
-    public function getDeleted()
-    {
-        return $this->deleted;
     }
 
     /**
@@ -740,54 +1009,6 @@ class Project
     }
 
     /**
-     * Set nbDonations
-     *
-     * @param integer $nbDonations
-     *
-     * @return Project
-     */
-    public function setNbDonations($nbDonations)
-    {
-        $this->nbDonations = $nbDonations;
-
-        return $this;
-    }
-
-    /**
-     * Get nbDonations
-     *
-     * @return int
-     */
-    public function getNbDonations()
-    {
-        return $this->nbDonations;
-    }
-
-    /**
-     * Set nbSales
-     *
-     * @param integer $nbSales
-     *
-     * @return Project
-     */
-    public function setNbSales($nbSales)
-    {
-        $this->nbSales = $nbSales;
-
-        return $this;
-    }
-
-    /**
-     * Get nbSales
-     *
-     * @return int
-     */
-    public function getNbSales()
-    {
-        return $this->nbSales;
-    }
-
-    /**
      * Set coverpic
      *
      * @param Image $coverpic
@@ -856,19 +1077,19 @@ class Project
     public function addProduct($product)
     {
         $this->products[] = $product;
-        $product->setProject($this);
+        return $this;
     }
 
-    // A VOIR SI C'EST NECESSAIRE
     /**
      * Remove product
      * 
      * @param Product $product
+     *
+     * @return Project
      */
     public function removeProduct($product)
     {
         $this->products->removeElement($product);
-        $product->setProject(null);
         return $this;
     }
 
@@ -906,52 +1127,7 @@ class Project
         return $this->code;
     }
 
-    /**
-     * Set points
-     * 
-     * @return Project
-     */
-    public function setPoints($points)
-    {
-        $this->points = $points;
-        
-        return $this;
-    }
 
-    /**
-     * Get points
-     * 
-     * @return int
-     */
-    public function getPoints(){
-        return $this->points;
-    }
-
-    
-    // Form only
-    /**
-     * Set creator
-     *
-     * @param User $creator
-     *
-     * @return Project
-     */
-    public function setCreator($creator)
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    /**
-     * Get creator
-     *
-     * @return User
-     */
-    public function getCreator()
-    {
-        return $this->creator;
-    }
 
     /**
      * @param boolean $acceptConditions
@@ -971,5 +1147,219 @@ class Project
 
     
 
-}
 
+    /**
+     * Add tag
+     *
+     * @param \XBundle\Entity\Tag $tag
+     *
+     * @return Project
+     */
+    public function addTag(\XBundle\Entity\Tag $tag)
+    {
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param \XBundle\Entity\Tag $tag
+     */
+    public function removeTag(\XBundle\Entity\Tag $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Add contribution
+     *
+     * @param \XBundle\Entity\XContractFan $contribution
+     *
+     * @return Project
+     */
+    public function addContribution(\XBundle\Entity\XContractFan $contribution)
+    {
+        $this->contributions[] = $contribution;
+
+        return $this;
+    }
+
+    /**
+     * Remove contribution
+     *
+     * @param \XBundle\Entity\XContractFan $contribution
+     */
+    public function removeContribution(\XBundle\Entity\XContractFan $contribution)
+    {
+        $this->contributions->removeElement($contribution);
+    }
+
+    /**
+     * Get contributions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContributions()
+    {
+        return $this->contributions;
+    }
+
+    /**
+     * Set notifEndSent
+     *
+     * @param boolean $notifEndSent
+     *
+     * @return Project
+     */
+    public function setNotifEndSent($notifEndSent)
+    {
+        $this->notifEndSent = $notifEndSent;
+
+        return $this;
+    }
+
+    /**
+     * Get notifEndSent
+     *
+     * @return boolean
+     */
+    public function getNotifEndSent()
+    {
+        return $this->notifEndSent;
+    }
+
+    /**
+     * Set dateEvent
+     *
+     * @param \DateTime $dateEvent
+     *
+     * @return Project
+     */
+    public function setDateEvent($dateEvent)
+    {
+        $this->dateEvent = $dateEvent;
+
+        return $this;
+    }
+
+    /**
+     * Get dateEvent
+     *
+     * @return \DateTime
+     */
+    public function getDateEvent()
+    {
+        return $this->dateEvent;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return Project
+     */
+    public function setAddress(\AppBundle\Entity\Address $address = null)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Add transactionalMessage
+     *
+     * @param \XBundle\Entity\XTransactionalMessage $transactionalMessage
+     *
+     * @return Project
+     */
+    public function addTransactionalMessage(\XBundle\Entity\XTransactionalMessage $transactionalMessage)
+    {
+        $this->transactionalMessages[] = $transactionalMessage;
+
+        return $this;
+    }
+
+    /**
+     * Remove transactionalMessage
+     *
+     * @param \XBundle\Entity\XTransactionalMessage $transactionalMessage
+     */
+    public function removeTransactionalMessage(\XBundle\Entity\XTransactionalMessage $transactionalMessage)
+    {
+        $this->transactionalMessages->removeElement($transactionalMessage);
+    }
+
+    /**
+     * Get transactionalMessages
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTransactionalMessages()
+    {
+        return $this->transactionalMessages;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * Set notifSuccessSent
+     *
+     * @param boolean $notifSuccessSent
+     *
+     * @return Project
+     */
+    public function setNotifSuccessSent($notifSuccessSent)
+    {
+        $this->notifSuccessSent = $notifSuccessSent;
+
+        return $this;
+    }
+
+    /**
+     * Get notifSuccessSent
+     *
+     * @return boolean
+     */
+    public function getNotifSuccessSent()
+    {
+        return $this->notifSuccessSent;
+    }
+
+
+}

@@ -11,10 +11,14 @@ use AppBundle\Entity\Purchase;
 use AppBundle\Entity\Ticket;
 use AppBundle\Entity\User;
 use AppBundle\Entity\VIPInscription;
+use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Entity\YB\CustomTicket;
 use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use XBundle\Entity\XContractFan;
+use XBundle\Entity\XPurchase;
+use XBundle\Entity\XTicket;
 
 
 class TicketingManager
@@ -363,7 +367,7 @@ class TicketingManager
         return null;
     }
 
-    public function generateYBTicketsPreview(ContractFan $cf, Ticket $ticket, CustomTicket $ct, $newly_successful = false){
+  public function generateYBTicketsPreview(ContractFan $cf, Ticket $ticket, CustomTicket $ct, $newly_successful = false){
         try {
             $timestamp = (new \DateTime())->getTimestamp();
             $path = 'yb/preview-tickets/campaign'.$cf->getContractArtist()->getId().'-'.$timestamp.'.pdf';
@@ -373,5 +377,41 @@ class TicketingManager
             $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
             return $e;
         }
+    }
+  
+    // ------------------------ X
+
+    public function generateAndSendXTickets(XContractFan $cf) {
+        if (!$cf->getTicketsSent()) {
+            $cf->generateBarCode();
+
+            // TODO enhance this process, tickets shouldn't be removed & re-built (or should they ?)
+            foreach ($cf->getTickets() as $ticket) {
+                $cf->removeTicket($ticket);
+            }
+
+            $j = 1;
+            foreach ($cf->getTicketsPurchases() as $purchase) {
+                /** @var XPurchase $purchase */
+                $product = $purchase->getProduct();
+
+                for($k = 1; $k <= $purchase->getQuantity(); $k++) {
+                    $cf->addTicket(new XTicket($cf, $product, $j, $purchase->getUnitaryPrice()));
+                    $j++;
+                }
+            }
+
+            try {
+                $this->writer->writeXTickets($cf->getTicketsPath(), $cf->getTickets());
+                $this->mailDispatcher->sendXTickets($cf);
+                $this->em->persist($cf);
+                $cf->setTicketsSent(true);
+            } catch (\Exception $e) {
+                $this->logger->error('Erreur lors de la génération de tickets pour la contribution ' . $cf->getId() . ' : ' . $e->getMessage());
+                return $e;
+            }
+        }
+        $this->em->flush();
+        return null;
     }
 }
