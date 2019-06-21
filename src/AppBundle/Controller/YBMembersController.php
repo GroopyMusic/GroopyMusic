@@ -1731,7 +1731,7 @@ private function handleEditOrganization(FormInterface $form, Organization $organ
         $venues = $em->getRepository('AppBundle:YB\Venue')->findAll();
         $activeVenues = [];
         foreach ($venues as $venue) {
-            if (!$venue->isDeleted() && !$venue->getAcceptVenueTemp()) {
+            if (!$venue->isDeleted()) {//&& !$venue->getAcceptVenueTemp()) {
                 array_push($activeVenues, $venue);
             }
         }
