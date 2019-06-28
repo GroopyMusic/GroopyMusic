@@ -141,7 +141,7 @@
                 </div>
                 {% set visiblePromos = contract.currentPromotionsVisible %}
                 {% if visiblePromos is not empty or contract.isInCampaign %}
-                    {% set endSentence = visiblePromos|length > 1 ? "des promotions suivantes" : "de la promotion suivante" %}
+                    {% set endSentence = visiblePromos|length > 1 ? "des promotions (non cumulables) suivantes" : "de la promotion suivante" %}
                     <div class="col-12 content-box mt-4 mt-md-5">
                         <h3 class="festival-section-title"><img src="{{ asset('images/icons/continuity.png') }}" class="title-icon" /> <span>Promotions</span></h3>
                         <div class="content-box-content" style="border-top: 2px solid #becdf1;border-left: 2px solid #becdf1;">
