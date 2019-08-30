@@ -20,13 +20,17 @@
 
 {% block body %}
     <section id="festivals" class="container-fluid position-relative bg-body-strong">
-        <h3 class="festival-section-title text-center">{{ 'home.concerts.title'|trans|raw }}</h3>
+        <h3 class="festival-section-title text-center">Appel aux artistes{# 'home.concerts.title'|trans|raw #}</h3>
 
         <div class="row">
             {% set md = crowdfundings is not empty ? 4 : 12 %}
             <div class="col-12 col-md-{{ md }} my-auto">
                 <p class="text-center mx-auto">
-                    Nos festivals sont produits <b>par financement participatif</b>. Chaque ticket acheté participe à la jauge de validation du festival. Plus que de simples spectateurs, vous devenez les <b>producteurs</b> de la scène locale.
+                    {#Nos festivals sont produits <b>par financement participatif</b>. Chaque ticket acheté participe à la jauge de validation du festival. Plus que de simples spectateurs, vous devenez les <b>producteurs</b> de la scène locale.
+                    #}
+                    Vous êtes un artiste musical et vous souhaitez faire partie de l'affiche du prochain Festival Un-Mute (mai 2020) ?
+                    Alors répondez à <a href="https://www.mycourtcircuit.be/appels/festival-un-mute">notre appel sur la plateforme MyCourtCircuit</a>.
+                    Votre candidature sera vérifiée par l'équipe Un-Mute et, si tout va bien, nous vous proposerons avec plaisir de rejoindre l'aventure !
                 </p>
             </div>
 
