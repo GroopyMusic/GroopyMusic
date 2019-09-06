@@ -107,6 +107,21 @@
         </section>
     {% endif %}
 
+    <section class="container-fluid position-relative text-center py-4" id="services">
+        <h3 class="festival-section-title mt-2 mt-lg-0">Nos services</h3>
+        <div class="row">
+            <div class="col-12 col-md-6 my-auto">
+                <img src="{{ asset('images/logo.png') }}" alt="Un-Mute" class="img-fluid" width="200">
+                <p class="mt-4 big font-weight-bold text-italic"><a class="scroll" href="{{ path('homepage') }}#home">Un-Mute</a> : organisation de festivals collaboratifs par financement participatif</p>
+            </div>
+
+            <div class="col-12 col-md-6 my-auto">
+                <a href="{{ url('yb_index') }}"><img src="{{ yb_asset('images/logo.svg') }}" alt="Ticked-it!" class="img-fluid p-3 px-md-4 px-lg-5"></a>
+                <p class="mt-4 big font-weight-bold text-italic"><a href="{{ url('yb_index') }}">Ticked-it!</a> : plate-forme de ticketing en ligne et bon marché pour organisateurs</p>
+            </div>
+        </div>
+    </section>
+
     <section class="container-fluid position-relative bg-body-strong text-center py-4" id="friends">
         <h3 class="festival-section-title mt-2 mt-lg-0">{{ 'home.partners.title'|trans }}</h3>
         <div id="friends-carousel" class="carousel slide py-4" data-ride="carousel">
