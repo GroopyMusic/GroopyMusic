@@ -17,6 +17,7 @@ use AppBundle\Form\VolunteerProposalType;
 use AppBundle\Services\CaptchaManager;
 use AppBundle\Services\RewardSpendingService;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
@@ -228,8 +229,10 @@ class PublicController extends BaseController
      * Festival page with info & tickets: fetches festival info + handles order form
      * @Route("/events/{id}-{slug}", name="artist_contract")
      */
-    public function artistContractAction(Request $request, UserInterface $user = null, ContractArtist $contract, $slug = null)
+    public function artistContractAction(Request $request, UserInterface $user = null, $id, $slug = null, EntityManagerInterface $em)
     {
+        $contract = $em->getRepository('AppBundle:ContractArtist')->findAsMuch($id);
+
         if ($contract->getSlug() != $slug) {
             return $this->redirectToRoute('artist_contract', ['id' => $contract->getId(), 'slug' => $contract->getSlug()]);
         }

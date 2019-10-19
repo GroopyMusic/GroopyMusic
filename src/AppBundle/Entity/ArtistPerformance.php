@@ -53,6 +53,12 @@ class ArtistPerformance
     private $festivalday;
 
     /**
+     * @var LineUp
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\LineUp", inversedBy="performances")
+     */
+    private $lineup;
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="time", type="time", nullable=true)
      */
@@ -168,5 +174,29 @@ class ArtistPerformance
     public function getFestivalday()
     {
         return $this->festivalday;
+    }
+
+    /**
+     * Set lineup
+     *
+     * @param \AppBundle\Entity\LineUp $lineup
+     *
+     * @return ArtistPerformance
+     */
+    public function setLineup(\AppBundle\Entity\LineUp $lineup = null)
+    {
+        $this->lineup = $lineup;
+
+        return $this;
+    }
+
+    /**
+     * Get lineup
+     *
+     * @return \AppBundle\Entity\LineUp
+     */
+    public function getLineup()
+    {
+        return $this->lineup;
     }
 }

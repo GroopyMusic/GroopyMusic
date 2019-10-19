@@ -83,7 +83,7 @@ class Stage implements TranslatableInterface
      *
      * @return LineUpDay
      */
-    public function addLineUp(\AppBundle\Entity\ContractArtist $lineup)
+    public function addLineup(\AppBundle\Entity\ContractArtist $lineup)
     {
         $this->lineups[] = $lineup;
         $lineup->addLineUpday($this);
@@ -96,7 +96,7 @@ class Stage implements TranslatableInterface
      *
      * @param \AppBundle\Entity\ContractArtist $lineup
      */
-    public function removeLineUp(\AppBundle\Entity\ContractArtist $lineup)
+    public function removeLineup(\AppBundle\Entity\ContractArtist $lineup)
     {
         $this->lineups->removeElement($lineup);
         $lineup->removeLineUpday($this);
@@ -107,7 +107,7 @@ class Stage implements TranslatableInterface
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getLineUps()
+    public function getLineups()
     {
         return $this->lineups;
     }

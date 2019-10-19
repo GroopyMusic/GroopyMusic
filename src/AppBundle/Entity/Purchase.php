@@ -269,14 +269,11 @@ class Purchase
     private $artists;
 
     /**
-<<<<<<< HEAD
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Booking", mappedBy="purchase", cascade={"persist", "remove"}, orphanRemoval=TRUE)
      */
     private $bookings;
 
     /**
-=======
->>>>>>> master
      * Get id
      *
      * @return int

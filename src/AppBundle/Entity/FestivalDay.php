@@ -386,7 +386,7 @@ class FestivalDay
      *
      * @return FestivalDay
      */
-    public function addLineUp(\AppBundle\Entity\LineUp $lineup)
+    public function addLineup(\AppBundle\Entity\LineUp $lineup)
     {
         $this->lineups[] = $lineup;
 
@@ -398,7 +398,7 @@ class FestivalDay
      *
      * @param \AppBundle\Entity\LineUp $lineup
      */
-    public function removeLineUp(\AppBundle\Entity\LineUp $lineup)
+    public function removeLineup(\AppBundle\Entity\LineUp $lineup)
     {
         $this->lineups->removeElement($lineup);
     }
@@ -408,7 +408,7 @@ class FestivalDay
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getLineUps()
+    public function getLineups()
     {
         return $this->lineups;
     }
