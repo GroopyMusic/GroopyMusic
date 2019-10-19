@@ -15,6 +15,7 @@ class FestivalDay
     {
         $this->performances = new ArrayCollection();
         $this->festivals = new ArrayCollection();
+        $this->lineups = new ArrayCollection();
         $this->tickets_sold = 0;
     }
 
@@ -26,8 +27,25 @@ class FestivalDay
         return $this->getFestival()->__toString() . ' (jour : ' . $this->date->format('d/m/Y') . ')';
     }
 
+    private $artist_perfs = null;
     public function getArtistPerformances() {
-        return $this->getPerformances();
+        if($this->artist_perfs != null) {
+            return $this->artist_perfs;
+        }
+
+        if($this->lineups->count() == 0) {
+            $this->artist_perfs = $this->getPerformances()->toArray();
+        }
+        else {
+            $perfs = [];
+            foreach($this->lineups as $lineup) {
+                /** @var LineUp $lineup */
+                $ps = $lineup->getPerformances()->toArray();
+                $perfs = array_merge($perfs, $ps);
+            }
+            $this->artist_perfs = $perfs;
+        }
+        return $this->artist_perfs;
     }
 
     public function getFestival() {
@@ -95,7 +113,7 @@ class FestivalDay
 
 
     public function getPerformancesAsc() {
-        $performances = $this->performances->toArray();
+        $performances = $this->getArtistPerformances();
         return self::sortPerformancesAsc($performances);
     }
 
@@ -124,6 +142,12 @@ class FestivalDay
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\ArtistPerformance", mappedBy="festivalday")
      */
     private $performances;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="LineUp", mappedBy="festivalDay")
+     */
+    private $lineups;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CounterPart", mappedBy="festivaldays")
@@ -353,5 +377,39 @@ class FestivalDay
     public function getGlobalSoldout()
     {
         return $this->global_soldout;
+    }
+
+    /**
+     * Add lineup
+     *
+     * @param \AppBundle\Entity\LineUp $lineup
+     *
+     * @return FestivalDay
+     */
+    public function addLineUp(\AppBundle\Entity\LineUp $lineup)
+    {
+        $this->lineups[] = $lineup;
+
+        return $this;
+    }
+
+    /**
+     * Remove lineup
+     *
+     * @param \AppBundle\Entity\LineUp $lineup
+     */
+    public function removeLineUp(\AppBundle\Entity\LineUp $lineup)
+    {
+        $this->lineups->removeElement($lineup);
+    }
+
+    /**
+     * Get lineups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLineUps()
+    {
+        return $this->lineups;
     }
 }
