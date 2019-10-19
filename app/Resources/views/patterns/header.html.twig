@@ -1,29 +1,20 @@
-
-
-<header id="home" class="masthead position-relative" style="background-image:url('{{ absolute_url(asset('images/live/live-1.jpg')) }}')">
-    {% include ':patterns:header_nav.html.twig' with {'home_header': false} %}
-    <div class="container justify-content-center align-items-center text-center position-relative mt-4">
-        <a id="logo-header-container" href="{{ path('homepage') }}"><img id="logo" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>
-
-        <div id="logo-video-container">
-            <video class="text-center mx-auto" id="logo-video" loop autoplay>
-                <source src="{{ asset('images/logo/animated-logo.mp4') }}" type="video/mp4" />
-                <source src="{{ asset('images/logo/animated-logo.ogv') }}" type="video/ogg" />
-                <source src="{{ asset('images/logo/animated-logo.webm') }}" type="video/webm" />
-                <img id="logo-video-alternative" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" />
-            </video>
+{% if home_header is defined and home_header %}
+    <header id="home-header" class="header container-fluid">
+        <div class="container">
+            <div class="d-flex align-items-start flex-column">
+                <a class="mt-4" href="#"><img id="logo" style="height:200px;" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>
+                <h1 class="text-white text-bold">Un-Mute</h1>
+                <div id="headline">Envie de devenir producteur de ta scène locale ?</div>
+                <p class="soustitre">Les artistes émergents belges se réunissent pour lancer une campagne de vente de tickets en ligne, débouchant sur l'organisation d'un festival de découverte musicale en cas de succès.</p>
+                <a class="btn btn-reserver" href="{{ path('tickets_marketplace') }}">RÉSERVER UN TICKET</a>
+            </div>
         </div>
-
-        <h1 class="text-white text-bold">Un-Mute</h1>
-        <div id="headline" class="col-12 text-center">{{ 'header.slogan'|trans }}</div>
-    </div>
-    <div id="cta-festivals" class="mt-3">
-        <a class="btn btn-outline-primary btn-primary scroll text-center" href="#festivals">
-            {#Voir nos festivals#}
-            Appel aux artistes<br />
-            <i class="fas fa-arrow-down"></i> <i class="fas fa-arrow-down"></i> <i class="fas fa-arrow-down"></i>
-        </a>
-    </div>
-    <div class="separating-waves prior high big"></div>
-</header>
+    </header>
+{% else %}
+    <header class="header container-fluid" style="background-image:{{ asset('images/headers/'~img) }}">
+        <div class="page-header">
+            <h1>{{ title }}</h1>
+        </div>
+    </header>
+{% endif %}
 

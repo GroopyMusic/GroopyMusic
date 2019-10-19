@@ -1,0 +1,237 @@
+$primary: #E79A41;
+
+// import bootstrap 4
+@import "../../vendor/twbs/bootstrap/scss/bootstrap.scss";
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background: #FFF9F4;
+}
+
+section {
+  .container {
+    @extend .py-4;
+  }
+  &#home-festivals {
+   background-color: #FFF9F4;
+  }
+  &#home-about {
+    background-image: url('images/principes.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    text-align: center;
+
+    .about-item {
+      width: 90%;
+      margin: 0 auto;
+      @extend .rounded;
+      background-color: rgba(255,255,255,0.73);
+      i {
+        @extend .round-icon;
+      }
+    }
+  }
+}
+
+.round-icon {
+  @extend .bg-primary;
+  color: white;
+  @extend .rounded-circle;
+  @extend .p-4;
+  font-size: 40px;
+}
+
+h2, h1, h3 {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+h2, .h2 {
+  font-size: 1.7rem;
+}
+
+.home-section-title {
+  text-transform: none;
+}
+
+.bg-black {
+  background: #1A2326;
+}
+
+footer {
+  background: black;
+  &, a, a:hover {
+    color: #ADADAD !important;
+  }
+
+  @extend .py-3;
+
+  #footer-links {
+    border-left: 3px #E79A41 solid;
+    border-right: 3px #E79A41 solid;
+    @extend .px-3;
+    a {
+      text-transform: uppercase;
+    }
+  }
+  div {
+    @extend .my-3;
+  }
+}
+.form-block {
+  width: 90%;
+  margin: auto;
+  border-radius: 20px;
+  @extend .bg-white;
+}
+.form-header {
+  width: 100%;
+  border-radius: 20px 20px 0 0;
+  @extend .py-2, .text-center, .text-primary, .text-uppercase, .bg-black;
+  h2 {
+    font-weight: normal;
+    font-size: 1.4rem;
+  }
+}
+.form-body {
+  @extend .p-4;
+}
+form {
+  .form-control {
+    background: rgba(255, 249, 244, 0.75);
+    border: 2px solid #E79A41;
+    box-sizing: border-box;
+    border-radius: 20px;
+  }
+  label {
+    font-weight: 300;
+    @extend .text-uppercase;
+  }
+}
+button, a { cursor: pointer; }
+/*--- navigation bar ---*/
+.navbar {
+  background:#1A2326;
+  .nav-item {
+    text-align: center;
+    @extend .text-uppercase;
+    a {
+      color: rgba(231, 154, 65, 0.71);
+      font-weight: lighter;
+    }
+  }
+}
+.nav-link,
+.navbar-brand {
+  color: #E79A41;
+  cursor: pointer;
+}
+.nav-link {
+  margin-right: 2rem !important;
+}
+.nav-link:hover {
+  color: #ffffff;
+}
+.toplogo {
+  height: 30%;
+  width: 30%;
+}
+header {
+  .page-header {
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    min-height: 30vh;
+    h1 {
+      @extend .text-uppercase, .text-white;
+    }
+  }
+  &#home-header {
+    min-height: 90vh;
+    background-image: url('images/bobdoug-accueil.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    @extend .pb-5;
+  }
+}
+
+  .overlay {
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+    left: 0;
+    top: 0;
+    background:#E79A41 ;
+    opacity: 0.4;
+  }
+  #headline {
+    font-size: 2.5rem;
+    margin-top: 3rem;
+    color: white;
+    font-style: italic;
+  }
+  .soustitre {
+    font-size: 2rem;
+    color: white;
+    margin-top: 1rem;
+    font-weight: 100;
+  }
+
+  .btn-reserver{
+    background: linear-gradient(90deg, #E7AA41 0%, rgba(231, 154, 65, 0) 96.2%), #E79A41;
+    box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    color: #ffffff;
+    padding: 1% 1.5%;
+    margin-top: 4rem;
+  }
+  .sticky {
+    position: sticky;
+    top: 0px;
+    z-index:100;
+  }
+
+  .rounded-pill {
+    border-radius: 30px;
+  }
+  .features {
+    margin: 4em auto;
+    padding: 1em;
+    position: relative;
+  }
+  .festi1 {
+    background: #E79A41;
+  }
+  .card {
+    margin: 0 auto;
+    float: none;
+    margin-bottom: 30px;
+    margin-top: 30px;
+  }
+  .card-text {
+    color:#929292;
+  }
+  .card-title {
+    color: #E79A41;
+  }
+  .bottom-left {
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+  }
+  .no-padding {
+    padding-left: 0;
+    padding-right: 0;
+  }

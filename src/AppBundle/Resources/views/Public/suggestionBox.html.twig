@@ -1,124 +1,126 @@
 {% extends "base.html.twig" %}
 
-{% block main_attributes %}class="bg-body-light"{% endblock %}
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': 'Contact', 'img': ''} %}
+{% endblock %}
+
 {% block body %}
-    <section id="contact" class="container pb-2 position-relative">
+
+
+    <section class="container-fluid">
+
+        <div class="container">
+            {{ hidden_loader() }}
+            <div class="form-block">
+                <div class="form-header"><h2>Formulaire de contact</h2></div>
+                <div class="form-body">
+                    <div id="suggestionbox_form">
+                        {{ render(controller('AppBundle:Public:contactForm')) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="sessions" class="container-fluid py-5 bg-black">
+        <div class="container text-center">
+            <h2 class="text-primary">Sessions d'information</h2>
+            <div class="text-white">
+                <p>Nous organisons régulièrement des séances d'information qui vous permettent d'en savoir plus sur le fonctionnement d'Un-Mute.
+                    Ces séances sont obligatoires pour tout artiste qui souhaite créer sa fiche sur Un-Mute, mais sont aussi ouvertes à toute personne
+                    intéressée par le concept.
+
+                    {% if sessions is not empty %}Voici le calendrier des prochaines séances :</p>
+
+                <ul>
+                    {% for session in sessions %}
+                        <li>{{ session.getName() }} (date : {{ session.date|date('d/m/Y \à H\\hi') }}, lieu : {{ session.address }})</li>
+                    {% endfor %}
+                </ul>
+                <p>Pour vous inscrire à une session, merci de soit vous créer un profil artiste (auquel cas vous devrez choisir une date de session à laquelle vous devrez participer),
+                    soit remplir le formulaire de contact ci-dessus (auquel cas vous serez automatiquement inscrit(e)).
+                    {% else %}
+                        Il n'y a pas de séance prévue pour l'instant ; bientôt de nouvelles dates !
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="equipe" class="container-fluid p-5 mt-2">
+        <h2 class="text-center">L'équipe</h2>
         <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="content-box">
-                    <div class="content-box-content">
-                        <h3 class="text-center mb-4  text-primary"><i class="fas fa-address-card"></i> Nos coordonnées</h3>
-
-                        <p>
-                            Un-Mute ASBL<br />
-                            0664.782.372<br />
-                            <br />
-                            <b><i class="fas fa-map-marker-alt"></i> Siège social</b><br />
-                            Place Saint-Antoine 3, 1040 Bruxelles<br />
-                            Belgique<br />
-                            <br />
-                            <b><i class="fas fa-envelope"></i></i> Mail</b><br />
-                            festivals@un-mute.be<br />
-                            <br />
-                            <b><i class="fas fa-phone"></i> Téléphone</b><br />
-                            +32 497 21 26 54
-                        </p>
-                    </div>
-                </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle" src="{{ asset('images/team/piet.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Pierre Blackman</span>
+                    <br />Coordinateur du projet
+                    <br />pierre@un-mute.be
+                    <br />+32 497 21 26 54
+                </p>
             </div>
-            <div class="col-12 col-md-8">
-
-                <div class="content-box">
-
-                    <div class="content-box-content">
-                        <h3 class="text-center mb-4 text-primary"><i class="fas fa-comment"></i> {{ 'contact.title'|trans|raw }}</h3>
-
-                        {{ hidden_loader() }}
-                        <div id="suggestionbox_form">
-                            {{ render(controller('AppBundle:Public:contactForm')) }}
-                        </div>
-                    </div>
-                </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle" src="{{ asset('images/team/gonzague.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Gonzague Yernaux</span>
+                    <br />Développeur Web
+                    <br />gonzague@un-mute.be
+                    <br />+32 473 75 75 87
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle" src="{{ asset('images/team/alice.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Alice Blackman</span>
+                    <br />Responsable communication
+                    <br />alice@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle" src="{{ asset('images/team/louis.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Louis Leboutte</span>
+                    <br />Responsable juridique
+                    <br />louis@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle" src="{{ asset('images/team/alexis.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Alexis Wuyts</span>
+                    <br />Responsable partenaires
+                    <br />alexis@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle" src="{{ asset('images/team/adrien.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Adrien Vervekken</span>
+                    <br />Community manager
+                    <br />adrien@un-mute.be
+                </p>
             </div>
         </div>
     </section>
 
-    <section id="sessions" class="container px-4 pt-2 position-relative">
-        <div class="content-box-content">
-            <h3 class="text-center mb-2  text-primary"><i class="fas fa-calendar-alt"></i> Sessions d'information</h3>
-
-            <p>Nous organisons régulièrement des séances d'information qui vous permettent d'en savoir plus sur le fonctionnement d'Un-Mute.
-                Ces séances sont obligatoires pour tout artiste qui souhaite créer sa fiche sur Un-Mute, mais sont aussi ouvertes à toute personne
-                intéressée par le concept.
-
-                {% if sessions is not empty %}Voici le calendrier des prochaines séances :</p>
-
-            <ul>
-                {% for session in sessions %}
-                    <li>{{ session.getName() }} (date : {{ session.date|date('d/m/Y \à H\\hi') }}, lieu : {{ session.address }})</li>
-                {% endfor %}
-            </ul>
-            <p>Pour vous inscrire à une session, merci de soit vous créer un profil artiste (auquel cas vous devrez choisir une date de session à laquelle vous devrez participer),
-                soit remplir le formulaire de contact ci-dessus (auquel cas vous serez automatiquement inscrit(e)).
-                {% else %}
-                    Il n'y a pas de séance prévue pour l'instant ; bientôt de nouvelles dates !
-                {% endif %}
-            </p>
-        </div>
-    </section>
-
-    <section id="equipe" class="container px-4 pt-2 mt-2 position-relative">
-        <div class="content-box">
-            <div class="content-box-content">
-                <h3 class="text-center text-primary mb-2"><i class="fas fa-user-friends"></i> L'équipe</h3>
-                <div class="row">
-                    <div class="col-12 col-md-4 col-lg-2 text-center">
-                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/piet.jpg') }}" />
-                        <p>Pierre <span class="text-uppercase">Blackman</span>
-                            <br />Coordinateur du projet
-                            <br />pierre@un-mute.be
-                            <br />+32 497 21 26 54
-                        </p>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-2 text-center">
-                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/gonzague.jpg') }}" />
-                        <p>Gonzague <span class="text-uppercase">Yernaux</span>
-                            <br />Développeur Web
-                            <br />gonzague@un-mute.be
-                            <br />+32 473 75 75 87
-                        </p>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-2 text-center">
-                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alice.jpg') }}" />
-                        <p>Alice <span class="text-uppercase">Blackman</span>
-                            <br />Responsable communication
-                            <br />alice@un-mute.be
-                        </p>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-2 text-center">
-                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/louis.jpg') }}" />
-                        <p>Louis <span class="text-uppercase">Leboutte</span>
-                            <br />Responsable juridique
-                            <br />louis@un-mute.be
-                        </p>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-2 text-center">
-                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/alexis.jpg') }}" />
-                        <p>Alexis <span class="text-uppercase">Wuyts</span>
-                            <br />Responsable partenaires
-                            <br />alexis@un-mute.be
-                        </p>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-2 text-center">
-                        <img class="mb-4 img-fluid rounded" src="{{ asset('images/team/adrien.jpg') }}" />
-                        <p>Adrien <span class="text-uppercase">Vervekken</span>
-                            <br />Community manager
-                            <br />adrien@un-mute.be
-                        </p>
-                    </div>
+    <section id="contact" class="container-fluid p-5 text-center ">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <i class="round-icon fas fa-map-marker-alt"></i> <br /> <br />
+                    <span class="text-uppercase">Siège social</span><br />
+                    Place Saint-Antoine 3<br />
+                    1040 Bruxelles<br />
+                    Belgique<br />
+                    TVA : 0664.782.372
+                </div>
+                <div class="col-12 col-md-4">
+                    <i class="round-icon fas fa-envelope"></i><br /> <br />
+                    <span class="text-uppercase">Mail</span><br/>
+                    festivals@un-mute.be
+                </div>
+                <div class="col-12 col-md-4">
+                    <i class="round-icon fas fa-phone"></i><br /> <br />
+                    <span class="text-uppercase">Téléphone</span><br />
+                    +32 497 21 26 54
                 </div>
             </div>
         </div>
     </section>
-    <div class="separating-waves colored high prior"></div>
+
 {% endblock %}

@@ -12,102 +12,64 @@
 {% endblock %}
 
 {% block header %}
-    {% include ':patterns:header.html.twig' %}
+    {% include ':patterns:header.html.twig' with {'home_header': true} %}
 {% endblock %}
 
-{% block body_attributes %}class="bg-white"{% endblock %}
-{% block main_attributes %}class="pt-0 pb-0"{% endblock %}
-
 {% block body %}
-    <section id="festivals" class="container-fluid position-relative bg-body-strong">
-        <h3 class="festival-section-title text-center">Appel aux artistes{# 'home.concerts.title'|trans|raw #}</h3>
-
-        <div class="row">
-            {% set md = crowdfundings is not empty ? 4 : 12 %}
-            <div class="col-12 col-md-{{ md }} my-auto">
-                <p class="text-center mx-auto">
-                    {#Nos festivals sont produits <b>par financement participatif</b>. Chaque ticket acheté participe à la jauge de validation du festival. Plus que de simples spectateurs, vous devenez les <b>producteurs</b> de la scène locale.
-                    #}
-                    Vous êtes un artiste musical et vous souhaitez faire partie de l'affiche du prochain Festival Un-Mute (mai 2020) ?
-                    Alors répondez à <a href="https://www.mycourtcircuit.be/appels/festival-un-mute">notre appel sur la plateforme MyCourtCircuit</a>.
-                    Votre candidature sera vérifiée par l'équipe Un-Mute et, si tout va bien, nous vous proposerons avec plaisir de rejoindre l'aventure !
-                </p>
+    <section id="home-festivals" class="container-fluid">
+        <h2 class="home-section-title text-center mt-2 mt-lg-0">Le Festival pour artistes émergents</h2>
+        <div class="card" style="width: 28rem;">
+            <img class="card-img-top" src="images/festival.jpg" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">FESTIVAL UN-MUTE À LA FERME DU BIÉREAU</h5>
+                <p class="card-text">ELYSIANE - THE CHORD STRIKERS - BRUNO MALHERBE - THOMAS FRANK HOPPER - HILLARY STEP</p>
+                <a href="#" class="btn btn-primary1">PLUS D'INFOS</a>
+                <a href="#" class="btn btn-primary rounded-pill">TICKETS</a>
             </div>
+        </div>
+    </section>
 
-            {% for crowdfunding in crowdfundings %}
-                {% set md = loop.first or loop.last ? 8 : 12 %}
-                {% include 'AppBundle:Public/Card:contract_artist.html.twig' with {'contract': crowdfunding, 'md':md, 'xs': 12, 'news': false, 'bgwhite': true, 'clickable': true, 'card_classes': ['pb-3']} %}
-            {% endfor %}
-            {% if crowdfundings is not empty %}
-                {% set md = crowdfundings|length > 1 ? 4 : 12 %}
-                <div class="col-12 mx-auto my-auto col-md-{{ md }}">
-                    <p class="text-center mt-4">
-                        <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary">
-                            Voir les tickets en vente <b class="far fa-arrow-alt-circle-right"></b>
-                        </a>
-                    </p>
+    <section id="home-about" class="container-fluid">
+        <div class="container">
+            <h2 class="home-section-title text-center mt-2 mt-lg-0">Un-Mute, c'est...</h2>
+            <p>
+                Un-Mute, c’est l’ASBL qui vous déniche les petites pépites de la scène belge !
+                L’objectif est simple : rendre la scène indépendante locale accessible au public, grâce au système de financement participatif appliqué au monde des festivals.
+            </p>
+            <div class="row p-md-5 text-center">
+                <div class="col-12 col-md-6 p-3">
+                    <div class="about-item">
+                        <i class="fas fa-handshake"></i>
+                        <h3>Collaboratif</h3>
+                        <p>Les artistes travaillent ensemble pour remplir la salle du festival, réunis derrière un objectif commun : le nombre de tickets minimum pour valider l'événement.</p>
+                    </div>
                 </div>
-            {% endif %}
-        </div>
-    </section>
-
-    <section id="about" class="container-fluid position-relative">
-        <h2 class="festival-section-title text-center mt-2 mt-lg-0">Nos principes</h2>
-        <div class="row p-md-5 text-center">
-            <div class="col-12 col-md-6 p-3">
-                <i class="fas fa-handshake"></i>
-                <h3>Collaboratif</h3>
-                <p>Les artistes travaillent ensemble pour remplir la salle du festival, réunis derrière un objectif commun : le nombre de tickets minimum pour valider l'événement.</p>
-            </div>
-            <div class="col-12 col-md-6 p-3">
-                <i class="fas fa-map-marked-alt"></i>
-                <h3>Local</h3>
-                <p>Il ne faut pas toujours chercher très loin pour trouver du talent... Près de chez vous, dans votre région, les artistes émergents ne demandent qu'à se faire entendre.</p>
-            </div>
-            <div class="col-12 col-md-6 p-3">
-                <i class="fas fa-hand-paper"></i>
-                <h3>Participatif</h3>
-                <p>Le festival est produit sur base du financement collectif. Acheter un ticket revient à participer directement à la production de l'événement !</p>
-            </div>
-            <div class="col-12 col-md-6 p-3">
-                <i class="fas fa-headphones"></i>
-                <h3>Découverte</h3>
-                <p>Votre playlist fait toujours tourner les mêmes artistes ? Pourtant, ce n'est pas la variété qui manque. Nous vous avons déniché les pépites de demain !</p>
-            </div>
-        </div>
-        <p class="text-center">
-            <a href="{{ path('about') }}" class="btn btn-primary">
-                Plus sur notre fonctionnement <b class="far fa-arrow-alt-circle-right"></b>
-            </a>
-        </p>
-    </section>
-
-    {% if crowdfundings is not empty %}
-        <section class="container-fluid position-relative bg-body-very-strong py-4">
-            <h3 class="festival-section-title text-center text-white mt-2 mt-lg-0">{{ 'home.news.title'|trans|raw }}</h3>
-
-            <div class="position-relative mx-auto" id="wrapper-wrapper">
-                <div id="wrapper" class="mx-auto">
-                    <div id="carousel">
-                        {% for new in news %}
-                            {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true} %}
-                        {% endfor %}
-                        {% for new in news %}
-                            {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': new, 'md':3, 'xs': 12, 'news':false, 'bgwhite': true, 'repeated': true} %}
-                        {% endfor %}
+                <div class="col-12 col-md-6 p-3">
+                    <div class="about-item">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Local</h3>
+                        <p>Il ne faut pas toujours chercher très loin pour trouver du talent... Près de chez vous, dans votre région, les artistes émergents ne demandent qu'à se faire entendre.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 p-3">
+                    <div class="about-item">
+                        <i class="fas fa-hand-paper"></i>
+                        <h3>Participatif</h3>
+                        <p>Le festival est produit sur base du financement collectif. Acheter un ticket revient à participer directement à la production de l'événement !</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 p-3">
+                    <div class="about-item">
+                        <i class="fas fa-headphones"></i>
+                        <h3>Découverte</h3>
+                        <p>Votre playlist fait toujours tourner les mêmes artistes ? Pourtant, ce n'est pas la variété qui manque. Nous vous avons déniché les pépites de demain !</p>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <p class="text-center mt-3">
-                <a href="{{ path('catalog_artists', {'affiche': 'true'}) }}" class="btn btn-primary">
-                    Voir tous les artistes à l'affiche <i class="far fa-arrow-alt-circle-right"></i>
-                </a>
-            </p>
-        </section>
-    {% endif %}
-
-    <section class="container-fluid position-relative text-center py-4" id="services">
+    {#<section class="container-fluid position-relative text-center py-4" id="services">
         <h3 class="festival-section-title mt-2 mt-lg-0">Nos services</h3>
         <div class="row">
             <div class="col-12 col-md-6 my-auto">
@@ -120,63 +82,27 @@
                 <p class="mt-4 big font-weight-bold text-italic"><a href="{{ url('yb_index') }}">Ticked-it!</a> : plate-forme de ticketing en ligne et bon marché pour organisateurs</p>
             </div>
         </div>
-    </section>
+    </section>#}
 
-    <section class="container-fluid position-relative bg-body-strong text-center py-4" id="friends">
-        <h3 class="festival-section-title mt-2 mt-lg-0">{{ 'home.partners.title'|trans }}</h3>
-        <div id="friends-carousel" class="carousel slide py-4" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="row">
-                        <div class="my-auto col-6 col-sm-4 col-md-2 offset-md-3  py-3"><a href="http://timetolunch.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/ttl.png') }}" alt="Time to lunch"></a></div>
-                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="http://brabantwallon.be/bw/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/bw.png') }}" alt="Province du Brabant Wallon"></a></div>
-                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="https://www.mybeerbox.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/mbb.png') }}" alt="My Beer Box"></a></div>
-                        <div class="my-auto col-6 col-sm-4 col-md-2 offset-md-2  py-3"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.svg') }}" alt="Tacite, l'Allié des Artistes"></a></div>
-                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="https://www.facebook.com/cafedeshallesbxl/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/hsg.png') }}" alt="Café des Halles Saint-Géry"></a></div>
-                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="https://www.maisonsclothes.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/maisonclothes.png') }}" alt="Maison Clothes"></a></div>
-                        <div class="my-auto col-6 col-sm-4 col-md-2 py-3"><a href="http://www.whatthefun.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/wtf.png') }}" alt="What the Fun"></a></div>
-                    </div>
-                </div>
+    <section class="container-fluid bg-white text-center" id="home-friends">
+        <div class="container">
+            <h2 class="home-section-title text-center mt-2 mt-lg-0">{{ 'home.partners.title'|trans }}</h2>
+            <div class="row">
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="http://timetolunch.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/biy.jpg') }}" alt="Brussels is Yours"></a></div>
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="http://timetolunch.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/ttl.png') }}" alt="Time to lunch"></a></div>
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="http://brabantwallon.be/bw/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/bw.png') }}" alt="Province du Brabant Wallon"></a></div>
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="https://www.mybeerbox.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/mbb.png') }}" alt="My Beer Box"></a></div>
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.svg') }}" alt="Tacite, l'Allié des Artistes"></a></div>
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="https://www.facebook.com/cafedeshallesbxl/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/hsg.png') }}" alt="Café des Halles Saint-Géry"></a></div>
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="https://www.maisonsclothes.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/maisonclothes.png') }}" alt="Maison Clothes"></a></div>
+                <div class="my-auto col-6 col-sm-4 col-md-3 py-3"><a href="http://www.whatthefun.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/wtf.png') }}" alt="What the Fun"></a></div>
             </div>
+            <div class="separating-waves high prior"></div>
         </div>
-        <div class="separating-waves high prior"></div>
     </section>
 {% endblock %}
 
 {% block additional_javascripts %}
-
-    <script type="text/javascript">
-        $(function() {
-
-            var $c = $('#carousel'),
-                $w = $('#wrapper-wrapper');
-
-            $c.carouFredSel({
-                align: false,
-                items: {{ news|length }},
-                scroll: {
-                    items: 1,
-                    duration: 3000,
-                    timeoutDuration: 0,
-                    easing: 'linear'
-                }
-            });
-
-            $w.bind('resize.example', function () {
-                var nw = $w.width();
-                if (nw < 990) {
-                    nw = 990;
-                }
-
-                $c.width(nw * 3);
-                $c.parent().width(nw);
-
-            }).trigger('resize.example');
-
-        });
-    </script>
-
-
     <script type="application/ld+json">
     {
       "@context": "http://schema.org",

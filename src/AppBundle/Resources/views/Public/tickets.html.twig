@@ -1,18 +1,39 @@
 {% extends "base.html.twig" %}
 
-{% block main_attributes %}class="bg-body-light"{% endblock %}
-
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'img': '', 'title': 'Tickets'} %}
+{% endblock %}
 {% block body %}
-    <div id="tickets" class="container-fluid" style="padding-top:0 !important;">
-        <h2 class="festival-section-title text-center text-primary text-uppercase mb-4"><u>Tickets</u></h2>
 
-        {% if form.contracts is not empty %}
+
+    {% if form.contracts is not empty %}
         {{ form_start(form) }}
 
-            {% set nb_contracts_ok = 0 %}
+        {% set nb_contracts_ok = 0 %}
         {% for contract in form.contracts %}
+            {% set contractArtist = contract.vars.data.contractArtist %}
+            <section class="container-fluid bg-black text-center">
+                <h2 class="text-primary">Financement participatif</h2>
+                <div class="row text-white">
+                    <div class="col-12 col-md-6 text-uppercase">
+                        Date de validation<br />
+                        <b></b><br />
+                        <b></b><br />
+                    </div>
+                    <div class="col-12 col-md-6 text-uppercase">
+                        {% if contractArtist.state in contractArtist.successfulStates %}
+                        {% else %}
+
+                        {% endif  %}
+                    </div>
+                </div>
+            </section>
+
+
+    <div id="tickets" class="container-fluid" style="padding-top:0 !important;">
+        <h2 class="festival-section-title text-center text-primary text-uppercase mb-4"><u>Tickets</u></h2>
             <section class="position-relative rounded{% if not loop.first %} mt-5{% endif %}">
-                {% set contractArtist = contract.vars.data.contractArtist %}
+
 
                 <h3 class="festival-title">{{ contractArtist.getTitle }}</h3>
 

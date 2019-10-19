@@ -2,18 +2,21 @@
 
 {% block headtitle %}Bénévoles | Un-Mute{% endblock %}
 
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': 'Bénévoles', 'img':''} %}
+{% endblock %}
+
 {% block body %}
     <div class="container">
-
-        <h2 class="text-center text-primary"><i class="fas fa-hands-helping"></i> Proposition de bénévolat</h2>
-        <p class="my-4 d-none d-md-block">
+        <p class="my-4 d-none d-md-block font-weight-bold w-50">
             Vous aimeriez participer à la mise en place d'un de nos festivals ?
             Vous souhaitez aider notre équipe d'une façon ou d'une autre ?
             Remplissez le formulaire suivant ou <a href="{{ path('suggestionBox') }}">contactez-nous</a> !
         </p>
 
-        <div class="content-box">
-            <div class="content-box-content">
+        <div class="form-block mb-5">
+            <div class="form-header"><h2>Proposition de bénévolat</h2></div>
+            <div class="form-body">
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
                 <div class="text-center">
@@ -26,7 +29,6 @@
             </div>
         </div>
     </div>
-    <div class="separating-waves colored high prior"></div>
 {% endblock %}
 
 
