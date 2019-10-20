@@ -49,7 +49,8 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('fancy_date', array($this, 'fancy_date', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('yb_asset', array($this, 'yb_asset', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('base64', array($this, 'base64')),
-            new \Twig_SimpleFunction('yb_error', array($this, 'yb_error', array('is_safe' => array('html'))))
+            new \Twig_SimpleFunction('yb_error', array($this, 'yb_error', array('is_safe' => array('html')))),
+            new \Twig_SimpleFunction('progress', array($this, 'progress', array('is_safe' => array('html')))),
         );
     }
 
@@ -167,6 +168,12 @@ class UtilitiesExtension extends \Twig_Extension
     public function yb_error($message) {
         return $this->twig->render(':patterns/utils:yb_error.html.twig', array(
             'message' => $message,
+        ));
+    }
+
+    public function progress($progress_100) {
+        return $this->twig->render(':patterns/utils:progress.html.twig', array(
+            'progress_100' => $progress_100,
         ));
     }
 }

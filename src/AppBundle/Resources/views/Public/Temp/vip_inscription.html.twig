@@ -1,16 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block headtitle %}Accréditations | Un-Mute{% endblock %}
+{% block header %}{% include ':patterns:header.html.twig' with {'title': 'Accréditations', 'img': ''} %}{% endblock %}
 
 {% block body %}
     <div class="container">
 
-        <h2 class="text-center text-primary"><i class="far fa-newspaper"></i> Demande d'accréditation</h2>
-        <p class="my-4 d-none d-md-block">Vous êtes attaché de presse et vous souhaitez en savoir plus sur Un-Mute ? Vous aimeriez bénéficier d'accréditations pour l'un de nos festivals ? Remplissez le formulaire ci-dessous ou <a href="{{ path('suggestionBox') }}">contactez-nous</a> !</p>
+        <p class="my-4 font-weight-bold w-50">
+            Vous êtes attaché de presse et vous souhaitez en savoir plus sur Un-Mute ? Vous aimeriez bénéficier d'accréditations pour l'un de nos festivals ? Remplissez le formulaire ci-dessous ou <a href="{{ path('suggestionBox') }}">contactez-nous</a> !
+        </p>
 
-
-        <div class="content-box">
-            <div class="content-box-content">
+        <div class="form-block mb-5">
+            <div class="form-header"><h2>Demande d'accréditation</h2></div>
+            <div class="form-body">
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
                  <div class="text-center">

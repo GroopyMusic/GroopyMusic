@@ -16,18 +16,20 @@
 {% endblock %}
 
 {% block body %}
+    {% for festival in festivals %}
     <section id="home-festivals" class="container-fluid">
         <h2 class="home-section-title text-center mt-2 mt-lg-0">Le Festival pour artistes émergents</h2>
-        <div class="card" style="width: 28rem;">
+        <div class="card w-75">
             <img class="card-img-top" src="images/festival.jpg" alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title">FESTIVAL UN-MUTE À LA FERME DU BIÉREAU</h5>
-                <p class="card-text">ELYSIANE - THE CHORD STRIKERS - BRUNO MALHERBE - THOMAS FRANK HOPPER - HILLARY STEP</p>
-                <a href="#" class="btn btn-primary1">PLUS D'INFOS</a>
-                <a href="#" class="btn btn-primary rounded-pill">TICKETS</a>
+                <h5 class="card-title">{{ festival.getTitle }}</h5>
+                <p class="card-text">{% for artist in festival.allArtists %}{{ artist }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
+                <a href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}" class="btn btn-primary1">PLUS D'INFOS</a>
+                <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary rounded-pill">TICKETS</a>
             </div>
         </div>
     </section>
+    {% endfor %}
 
     <section id="home-about" class="container-fluid">
         <div class="container">

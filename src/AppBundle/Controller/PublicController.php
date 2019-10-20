@@ -48,20 +48,10 @@ class PublicController extends BaseController
      */
     public function indexAction()
     {
-        $crowdfundings = $this->em->getRepository('AppBundle:ContractArtist')->findVisible();
-
-        $news = [];
-
-        foreach($crowdfundings as $crowd) {
-            $news = array_merge($news, $crowd->getAllArtists());
-        }
-
-        $news = array_unique($news);
-        shuffle($news);
+        $festivals = $this->em->getRepository('AppBundle:ContractArtist')->findVisible();
 
         return $this->render('AppBundle:Public:home.html.twig', array(
-            'news' => $news,
-            'crowdfundings' => $crowdfundings,
+            'festivals' => $festivals,
         ));
     }
 

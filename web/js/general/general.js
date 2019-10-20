@@ -36,23 +36,6 @@ $(function () {
         }
     });
 
-    // Closes responsive menu when a scroll trigger link is clicked
-    $('.scroll').click(function() {
-        $('.navbar-collapse').collapse('hide');
-    });
-
-    // Collapse Navbar
-    var navbarCollapse = function() {
-        if ($("#mainNav").offset().top > 100) {
-            $("#mainNav").addClass("navbar-shrink");
-        } else {
-            $("#mainNav").removeClass("navbar-shrink");
-        }
-    };
-    // Collapse now if page is not at top
-    navbarCollapse();
-    // Collapse the navbar when page is scrolled
-    $(window).scroll(navbarCollapse);
 
     $('[data-toggle="popover"]').popover({'html': true});
     $('[data-toggle="popover"]').on('click', function (e) {
@@ -166,6 +149,32 @@ $(function () {
             .fail(function () {
                 attach_youtube_click($video, video_id, '');
             });
+    });
+    $(function() {
+
+        $(".progress").each(function() {
+
+            var value = $(this).attr('data-value');
+            var left = $(this).find('.progress-left .progress-bar');
+            var right = $(this).find('.progress-right .progress-bar');
+
+            if (value > 0) {
+                if (value <= 50) {
+                    right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+                } else {
+                    right.css('transform', 'rotate(180deg)');
+                    left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+                }
+            }
+
+        });
+
+        function percentageToDegrees(percentage) {
+
+            return percentage / 100 * 360
+
+        }
+
     });
 });
 

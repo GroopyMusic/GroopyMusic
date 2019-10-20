@@ -41,6 +41,98 @@ section {
   }
 }
 
+.progress {
+  width: 100px;
+  height: 100px;
+  background: none;
+  position: relative;
+}
+
+.progress::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 6px solid #eee;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.progress>span {
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+}
+
+.progress .progress-left {
+  left: 0;
+}
+
+.progress .progress-bar {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border-width: 6px;
+  border-style: solid;
+  position: absolute;
+  top: 0;
+}
+
+.progress .progress-left .progress-bar {
+  left: 100%;
+  border-top-right-radius: 80px;
+  border-bottom-right-radius: 80px;
+  border-left: 0;
+  -webkit-transform-origin: center left;
+  transform-origin: center left;
+}
+
+.progress .progress-right {
+  right: 0;
+}
+
+.progress .progress-right .progress-bar {
+  left: -100%;
+  border-top-left-radius: 80px;
+  border-bottom-left-radius: 80px;
+  border-right: 0;
+  -webkit-transform-origin: center right;
+  transform-origin: center right;
+}
+
+.progress .progress-value {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.border-primary {
+  border-color: $primary;
+}
+
+.text-gray {
+  color: #ADADAD;
+}
+
+.um-login {
+  &-button {
+    border-radius: 5px;
+    padding-left: 3rem;
+  }
+
+  &-wave-icon {
+    position: absolute;
+    left: 5px;
+    top: calc(50% - 12px);
+    height: 24px;
+  }
+}
+
+
 .round-icon {
   @extend .bg-primary;
   color: white;
@@ -64,6 +156,10 @@ h2, .h2 {
 
 .bg-black {
   background: #1A2326;
+}
+
+.no-upper {
+  text-transform: none !important;
 }
 
 footer {
@@ -127,6 +223,9 @@ button, a { cursor: pointer; }
       color: rgba(231, 154, 65, 0.71);
       font-weight: lighter;
     }
+    &:hover {
+      color: white;
+    }
   }
 }
 .nav-link,
@@ -143,6 +242,11 @@ button, a { cursor: pointer; }
 .toplogo {
   height: 30%;
   width: 30%;
+}
+.y-middle {
+  display: flex;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
 }
 header {
   .page-header {
@@ -235,3 +339,105 @@ header {
     padding-left: 0;
     padding-right: 0;
   }
+
+.round-left {
+  border-radius: 20px 0 0 20px;
+}
+.round-right {
+  border-radius: 0 20px 20px 0;
+}
+
+.invalid-feedback {
+  display:block;
+}
+
+ul.form-errors {
+  @extend
+  .alert ul,
+  .alert-danger ul,
+  .list-unstyled,
+  .mb-0;
+}
+
+input[type=submit], button[type=submit] {
+  cursor: pointer;
+}
+
+.collection-actions {
+  text-align: right;
+}
+
+.datePicker.hasDatepicker {
+  width: 0;
+  padding: 35px;
+  background-image: url('../images/calendar.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position:center;
+  cursor: pointer;
+}
+
+.a2lix_translationsLocales.nav-tabs {
+  display: none; /* As we don't use != locales */
+}
+
+.required:after {
+  content: "*";
+  color: rgba(167, 44, 0, 1);
+}
+
+// number input for adding tickets
+
+.count-input {
+  position: relative;
+  width: 100%;
+  max-width: 100px;
+  margin: 0 0 10px 0;
+}
+.count-input input {
+  width: 100%;
+  height: 36.92307692px;
+  border-radius: 20px;
+  background-color: #f5f8fa;
+  text-align: center;
+}
+.count-input input:focus {
+  outline: none;
+}
+.count-input a.incr-btn {
+  color: rgba(45, 44, 44, 0.8);
+  display: block;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  font-size: 26px;
+  font-weight: 300;
+  text-align: center;
+  line-height: 30px;
+  top: 50%;
+  right: 0;
+  margin-top: -15px;
+  text-decoration:none;
+}
+.count-input .incr-btn:first-child {
+  right: auto;
+  left: 0;
+  top: 46%;
+}
+.count-input.count-input-sm {
+  max-width: 125px;
+}
+.count-input.count-input-sm input {
+  height: 36px;
+}
+.count-input.count-input-lg {
+  max-width: 200px;
+}
+.count-input.count-input-lg input {
+  height: 70px;
+  border-radius: 3px;
+}
+
+.custom-radio input[type='radio'] {
+  @extend .custom-control-input;
+}
