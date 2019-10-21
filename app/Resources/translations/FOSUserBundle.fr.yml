@@ -24,7 +24,7 @@ profile:
 registration:
   title: Inscription
   intro: Créez votre profil en quelques secondes pour pouvoir soutenir vos artistes favoris&nbsp;!
-  tab-um-title: Créer un compte Un-Mute
+  tab-um-title: Créer un compte
   tab-fb-title: S'inscrire avec Facebook
   tab-fb:
     intro: |
@@ -34,7 +34,6 @@ registration:
     message: |
       Vous êtes bien connecté à votre compte Un-Mute. Avez-vous déjà vu les pages suivantes ?
       <div class="list-group">
-        <a class="list-group-item list-group-item-action" href="%eventsUrl%">Nos festivals à venir</a>
         <a class="list-group-item list-group-item-action" href="%artistsUrl%">Nos artistes</a>
         <a class="list-group-item list-group-item-action" href="%profileUrl%">Votre compte</a>
       </div>

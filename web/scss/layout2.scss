@@ -223,9 +223,6 @@ button, a { cursor: pointer; }
       color: rgba(231, 154, 65, 0.71);
       font-weight: lighter;
     }
-    &:hover {
-      color: white;
-    }
   }
 }
 .nav-link,
@@ -341,11 +338,22 @@ header {
   }
 
 .round-left {
-  border-radius: 20px 0 0 20px;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
 }
 .round-right {
-  border-radius: 0 20px 20px 0;
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
 }
+.round-top {
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+}
+.round-bot {
+  border-bottom-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+
 
 .invalid-feedback {
   display:block;
@@ -440,4 +448,23 @@ input[type=submit], button[type=submit] {
 
 .custom-radio input[type='radio'] {
   @extend .custom-control-input;
+}
+
+
+.nav-tabs {
+  border-bottom: 0 none;
+  .nav-link {
+    @extend .text-uppercase, .py-3;
+    &.active {
+      background-color: $black !important;
+      @extend .text-primary, .round-top;
+    }
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #E7AA41 0%, rgba(231, 154, 65, 0) 96.2%), #E79A41;
+  box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  color: white;
 }

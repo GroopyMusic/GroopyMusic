@@ -2,10 +2,12 @@
 
 {% trans_default_domain 'FOSUserBundle' %}
 
-{% block fos_user_content %}
-    <div class="container">
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': 'registration.title'|trans|raw, 'img': ''} %}
+{% endblock %}
 
-        <h3 class="mb-3 text-center">{{ 'registration.title'|trans|raw }}</h3>
+{% block fos_user_content %}
+    <div class="container w-75 mx-auto pl-0">
 
        {% include 'FOSUserBundle:Registration:register_content.html.twig' %}
 

@@ -1,7 +1,6 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
  {% if not app.user %}
-     <p class="text-center mb-4">{{ 'registration.intro'|trans|raw }}</p>
         <ul class="nav nav-tabs text-right">
             <li class="nav-item">
                 <a class="nav-link active" id="registration-tab-link-um" href="#registration-tab-um" data-toggle="tab" role="tab" aria-selected="true">{{ 'registration.tab-um-title'|trans|raw }}</a>
@@ -12,11 +11,8 @@
         </ul>
  {% endif %}
 
-<div class="content-box">
-    <div class="content-box-content text-center">
         {% if app.user %}
             <p>{{ 'registration.already_logged.message'|trans({
-                    '%eventsUrl%': url('catalog_crowdfundings'),
                     '%artistsUrl%': url('catalog_artists'),
                     '%profileUrl%': url('fos_user_profile_show'),
                 })|raw }}</p>
@@ -25,12 +21,12 @@
                 <a href="{{ path('fos_user_security_logout') }}" class="btn small btn-outline-secondary mt-2 mt-md-0">{{ 'registration.already_logged.logout'|trans|raw }}</a>
             </div>
         {% else %}
-            <div class="tab-content">
+            <div class="tab-content pb-5">
 
                 <div class="tab-pane fade show active" role="tabpanel" id="registration-tab-um" aria-labelledby="#registration-tab-link-um">
                     {{ form_start(form, {'method': 'post', 'attr': {'class': 'fos_user_registration_register'}}) }}
 
-                    <div class="row">
+                    <div class="row round-bot round-right bg-white pt-3">
                         <div class="form-group col-12">
                             {{ form_row(form.email) }}
                             {{ form_row(form.lastname) }}
@@ -40,7 +36,8 @@
                         <div class="form-group col-12">
                             {{ form_row(form.plainPassword) }}
                         </div>
-
+                    </div>
+                    <div class="row mt-2">
                         <div class="form-group col-12 text-left">
                             <div class="form-group row mb-1">
                                 <div class="col-sm-2"></div>
@@ -51,8 +48,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-primary sharp text-uppercase um-login-button position-relative" type="submit" id="_submit_um_registration" name="_submit">
-                            <img class="um-login-wave-icon" src="{{ asset('images/wave-white.png') }}" />
+                        <button class="btn btn-primary text-uppercase" type="submit" id="_submit_um_registration" name="_submit">
                             {{ 'registration.submit'|trans }}
                         </button>
                     </div>
@@ -68,5 +64,3 @@
 
             </div>
         {% endif %}
-    </div>
-</div>
