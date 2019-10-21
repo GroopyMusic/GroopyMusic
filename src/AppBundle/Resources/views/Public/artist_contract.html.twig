@@ -1,9 +1,5 @@
 {% extends "base.html.twig" %}
 
-{% set artist = contract.artist %}
-
-
-
 {% set image_url = contract.photo is not null ? contract.webPath(contract.photo) : 'images/live/live-6.jpg' %}
 
 {% set artists_str = '' %}
@@ -30,395 +26,114 @@
     <meta property="og:image" content="{{ absolute_url(asset(image_url)) }}"/>
 {% endblock %}
 
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': contract.getTitle ~ '<br />' ~ contract.getDisplayDates, 'img': absolute_url(asset(image_url)), 'img_absolute':true} %}
+{% endblock %}
+
 {% set state = contract.state %}
+{% set nb_contracts_ok = 0 %}
 
 {% set first_counterpart = contract.firstCounterPart %}
 {% set progress_100 = contract.percentObjective %}
 
-{% block header_attributes %}id="home" class="masthead masthead-small position-relative" style="background-image:url('{{ absolute_url(asset(image_url)) }}')"{% endblock %}
-
-{% block header_header %}
-    <div class="container justify-content-center text-white align-items-center text-center position-relative">
-        <h2 class="festival-title text-uppercase font-weight-bold py-2">{{ contract.getTitle }}</h2>
-        <p class="big p-3 p-md-5">{{ contract.getDescription }}</p>
-
-        <div class="crowdfunding-box mb-3">
-            {% if state not in contract.successfulStates and state not in contract.pendingStates and state not in contract.passedStates %}
-                <p><i class="fas fa-hourglass-half"></i> Il vous reste {{ contract.campaignDaysLeft }} jour{% if contract.campaignDaysLeft > 1 %}s{% endif %} pour soutenir cette campagne.
-                Achetez votre ticket pour participer directement à la production de ce festival !</p>
-            {% endif %}
-            <div class="progress">
-                <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
-                 style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
-            </div>
-            <div class="text-right mt-1 small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                {{ progress_100 }}% des tickets nécessaires à la validation de l'événement<br/>{{ ('event.'~state)|trans({'%soldout_percentage%':contract.percentSoldOutRelativeToObjective})|raw }}
-            </div>
-        </div>
-
-    </div>
-    <div class="text-center">
-        <a class="scroll btn btn-secondary" href="#tickets">Tickets</a>
-    </div>
-    <div class="separating-waves high prior"></div>
-    <div class="separating-waves colored big low prior"></div>
-{% endblock %}
-
-{% block main_attributes %}class="pb-0 pt-0"{% endblock %}
+{% set visiblePromos = contract.currentPromotionsVisible %}
 
 {% block body %}
-    {% set max_tickets = contract.maxTickets %}
-    {% set tickets_left = contract.totalNbAvailable %}
-    {% if contract.festivalHalls is not empty and contract.festivalDays is not empty %}
-    <section class="container-fluid position-relative" style="padding-top: 1.2rem !important;">
+    {% include ':patterns:crowdfunding.html.twig' with {'contractArtist': contract} %}
 
-        <div class="row mt-4">
-            <div class="col-12">
-                {% if state not in contract.uncrowdableStates and contract.isLastSellingDate %}
-                    <p class="p-info">
-                        {{ 'event.lastday.tickets'|trans|raw }}
-                    </p>
-                {% elseif state not in contract.successfulStates and contract.isDeadlineDate %}
-                    <p class="p-info">
-                        C'est le dernier jour de campagne ! C'est le moment de soutenir les artistes de ce Festival !
-                    </p>
-                {% endif %}
+    <section class="container-fluid p-5">
+        <div class="row">
+            <div class="col-8 text-left">
+                <p class="font-weight-bold w-md-75">{{ contract.description }}</p>
             </div>
+            <div class="col-4 text-right">
+                <a class="btn btn-primary scroll" href="#tickets">Tickets</a>
+            </div>
+        </div>
+    </section>
 
-            <div class="col-12 col-lg-8">
-                <div class="col-12 content-box">
+     <section class="container-fluid p-5">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-block">
+                    <div class="form-header">
+                        <h2>Line-up</h2>
+                    </div>
+                    <div class="form-body">
 
-                    <h3 class="festival-section-title"><img src="{{ asset('images/icons/artist.png') }}" class="title-icon" /> <span>{{ 'event.lineup.title'|trans|raw }}</span></h3>
-                    <div class="content-box-content">
-                        {% for day in contract.festivalDays %}
-                            <h4{% if not loop.first %} class="pt-3"{% endif %}>{{ ('Days ' ~ day.date|date('w'))|trans }} {{ day.date|date('j') }} {{ ('months.' ~ day.date|date('m'))|trans }} {{ day.date|date('Y') }}</h4>
-                            <table class="table">
-                                <tbody>
-
-                                {% if contract.knownLineup %}
-                                    <tr>
-                                        <td>
-                                            17:00
-                                        </td>
-                                        <td>{{ 'foodtrucks_opening'|trans }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            {{ day.date|date('H:i') }}
-                                        </td>
-                                        <td>{{ 'doors_opening'|trans }}</td>
-                                    </tr>
-                                    {% for performance in day.performancesAsc %}
-                                            <tr>
-                                                <td>{{ performance.time|date('H:i') }}</td>
-                                                <td>
-                                                    <a href="{{ path('artist_profile', {'id': performance.artist.id, 'slug': performance.artist.slug}) }}">{{ performance.artist.artistname }}</a>
-                                                </td>
-                                            </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td class="contract-info-title text-left">{{ 'foodtrucks_opening'|trans }}</td>
-                                        <td>
-                                            17:00
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="contract-info-title text-left">{{ 'doors_opening'|trans }}</td>
-                                        <td>
-                                            {{ day.date|date('H:i') }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="contract-info-title text-left">Artistes</td>
-                                        <td>{% for performance in day.performances %}{% if not loop.first %} - {% endif %}<a href="{{ path('artist_profile', {'id': performance.artist.id, 'slug': performance.artist.slug}) }}">{{ performance.artist.artistName }}</a>{% endfor %}</td>
-                                    </tr>
-                                {% endif %}
-                                </tbody>
-                            </table>
-                        {% endfor %}
                     </div>
                 </div>
-                {% set visiblePromos = contract.currentPromotionsVisible %}
+            </div>
+            <div class="col-md-7">
                 {% if visiblePromos is not empty or contract.isInCampaign %}
                     {% set endSentence = visiblePromos|length > 1 ? "des promotions (non cumulables) suivantes" : "de la promotion suivante" %}
-                    <div class="col-12 content-box mt-4 mt-md-5">
-                        <h3 class="festival-section-title"><img src="{{ asset('images/icons/continuity.png') }}" class="title-icon" /> <span>Promotions</span></h3>
-                        <div class="content-box-content" style="border-top: 2px solid #becdf1;border-left: 2px solid #becdf1;">
-                            {% if not contract.inTestPeriod %}
-                                <p class="text-center">Tout au long de la campagne, profitez {{ endSentence }} :</p>
-                            {% else %}
-                                <p class="text-center">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
-                            {% endif %}
-                            {% for promo in visiblePromos %}
-                                <p class="text-center">{{ promo.left }} <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">{{ promo.right }}</span></p>
-                            {% endfor %}
-                            {# if contract.isInCampaign %}
-                                <p class="text-center">1 commande passée avant la date de validation <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">accès au bar Vedett all-in à 18h</span></p>
-                            {% endif #}
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
 
-
-            {% if not contract.hasNoDefinedHall %}
-                <div class="col-12 col-lg-4 mt-3 mt-md-0 content-box">
-                        <h3 class="festival-section-title"><img src="{{ asset('images/icons/blue/hall.png') }}" class="title-icon" /> <span>{{ 'event.hall.known'|trans|raw }}</span></h3>
-
-                    <div class="content-box-content">
-                        <div id="carouselPotentialHalls" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                {% set i = 0 %}
-                                {% for hall in contract.uniqueFestivalHalls if hall is not null %}
-                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                        {% include 'AppBundle:Public/Card:hall.html.twig' with {'xs': 12, 'md':12, 'no_rotation_hall':true} %}
-                                    </div>
-                                    {% set i = i + 1 %}
-                                {% endfor %}
-                            </div>
-                            {% if i > 1 %}
-                                <a class="carousel-control-prev" href="#carouselPotentialHalls" role="button"
-                                   data-slide="prev">
-                                        <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-1"
-                                              aria-hidden="true"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" href="#carouselPotentialHalls" role="button"
-                                   data-slide="next">
-                                        <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-1"
-                                              aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-        <div class="separating-waves colored big high"></div>
-        <div class="separating-waves low prior"></div>
-    </section>
-    {% endif %}
-    <section class="container-fluid position-relative bg-body-strong">
-
-        <h3 class="festival-section-title mt-4 mt-md-0">Financement participatif</h3>
-        {% if state not in contract.successfulStates %}<p class="font-italic text-center">Ce festival ne sera confirmé que si suffisamment de tickets sont vendus d'ici la date de validation. <a href="{{ path('homepage') }}#about" class="text-secondary">En savoir plus</a></p>{% endif %}
-
-        <div class="content-box solid-borders">
-            <div class="content-box-content no-border text-center bg-transparent">
-                <div class="col-12 content-box-col">
-                    <div class="contract-info-title pr-2">
-                        {{ 'event.infos.state'|trans|raw }}
-                    </div>
-                    <span class="contract-info-content pr-1">
-                        {{ ('event.'~state)|trans({'%soldout_percentage%':contract.percentSoldOutRelativeToObjective})|raw }}
-                    </span>
-                </div>
-
-
-                <div class="col-12 row equal content-box-row">
-                    <div class="col-12 col-md-6 content-box-col">
-                        <div class="contract-info-title">
-                            {{ 'event.infos.validation_date'|trans|raw }}
-                        </div>
-                        <div class="contract-info-content">
-                            {{ contract.dateEnd|date('d/m/Y') }}
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 content-box-col">
-                        <div class="contract-info-title{% if contract.isInTestPeriod %} invisible{% endif %}">
-                            Avancement
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar{% if state in contract.successfulStates %} successful-progress-bg{% endif %}"
-                                 style="padding-left: 1rem;width:{{ progress_100 }}%"></div>
-                        </div>
-                        <div class="text-right small font-weight-bold text-uppercase{% if state in contract.successfulStates %} text-black{% else %} text-primary{% endif %}">
-                            {{ progress_100 }}% récoltés{% if state in contract.successfulStates %} - {{ 'confirmed'|trans|raw }}{% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% if contract.nbOrdersPaid > 0 %}
-                    <div class="col-12 content-box-col">
-                        <span class="text-center um-label"><i class="fas fa-people-carry"></i> <span class="um-semi-bold">{{ contract.nbOrdersPaid }}</span> contributeur{% if contract.nbOrdersPaid > 1 %}s{% endif %}</span>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-            {% if app.user and (app.user.hasArtistPerformingIn(contract) or is_granted('ROLE_ADMIN')) %}
-                <div class="separating-waves colored big low prior"></div>
-                <div class="separating-waves high prior"></div>
-                </section>
-                <section class="container-fluid position-relative bg-body-strong">
-                {% set total_sales = contract.counterpartsSold %}
-                <h3 class="festival-section-title mt-4 mt-md-0">Distribution des ventes</h3>
-                <p class="font-italic text-center">
-                    Vous ne voyez ceci que parce que vous êtes connecté en tant qu'artiste participant à la line-up de ce festival.
-                </p>
-
-                <div class="row d-flex p-3 counterparts-header bg-secondary text-white">
-                    <div class="col-4 um-label-bold">
-                        Artiste
-                    </div>
-                    <div class="col-4 my-auto um-label-bold">
-                        Tickets vendus (organique)
-                    </div>
-                    <div class="col-4 my-auto um-label-bold">
-                        Tickets vendus (promo)
-                    </div>
-                </div>
-
-
-                {% for artist in contract.allArtists %}
-                    <div class="row counterpart-form border px-3 bg-body-light">
-                        <div class="col-4 py-2 my-auto">
-                            <a class="text-secondary font-weight-bold" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ artist }}</a>
-                        </div>
-
-                        <div class="col-4 py-2 my-auto">
-                            {% set perf = contract.artistScore(artist)[0] %}
-                            {% set s = perf > 1 ? 's' : '' %}
-                            {{ perf }} ticket{{ s }}
-                        </div>
-
-                        <div class="col-4 py-2 my-auto">
-                            {% set promo_perf = contract.artistScore(artist)[1] %}
-                            {% set s = promo_perf > 1 ? 's' : '' %}
-                            {{ promo_perf }} ticket{{ s }}
-                        </div>
-                    </div>
-
-                    {% if loop.last %}
-                    <div class="row counterpart-form border px-3 bg-body-light">
-                        <div class="col-4 py-2 my-auto">
-                            (pas de mention)
-                        </div>
-
-                        <div class="col-4 py-2 my-auto">
-                            {% set perf = contract.noArtistScore()[0] %}
-                            {% set s = perf > 1 ? 's' : '' %}
-                            {{ perf }} ticket{{ s }}
-                        </div>
-
-                        <div class="col-4 py-2 my-auto">
-                            {% set promo_perf = contract.noArtistScore()[1] %}
-                            {% set s = promo_perf > 1 ? 's' : '' %}
-                            {{ promo_perf }} ticket{{ s }}
-                        </div>
-                    </div>
-
-                    <p class="text-center big p-2">
-                        Au total : <strong>{{ contract.totalScores|round }}</strong> ticket{% if contract.totalScores > 1 %}s{% endif %} vendu{% if contract.totalScores > 1 %}s{% endif %}
-                    </p>
-                    <p>
-                        Notez  bien que les acheteurs peuvent mentionner plusieurs artistes lors de leur passage de commande ; le nombre total de tickets n'est donc pas nécessairement la somme des tickets vendus par chaque artiste.
-                    </p>
+                    <h2 class="text-center">Promotions</h2>
+                    {% if not contract.inTestPeriod %}
+                        <p class="text-center">Tout au long de la campagne, profitez {{ endSentence }} :</p>
+                    {% else %}
+                        <p class="text-center">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
                     {% endif %}
-                {% endfor %}
+                    {% for promo in visiblePromos %}
+                        {{ promo.left }} {{ promo.right }}
+                    {% endfor %}
+                    {# if contract.isInCampaign %}
+                        <p class="text-center">1 commande passée avant la date de validation <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">accès au bar Vedett all-in à 18h</span></p>
+                    {% endif #}
+                {% endif %}
 
-            {% endif %}
-
-
-        <div class="separating-waves colored big low prior"></div>
-        <div class="separating-waves high prior"></div>
-    </section>
-
-    <section class="container-fluid position-relative bg-body-light p-4 mt-2" id="tickets">
-        <h3 class="festival-section-title "><img src="{{ asset('images/icons/blue/concert-ticket.png') }}" class="title-icon" /> Tickets</h3>
-
-        {%  if contract.isInCampaign() %}
-            <p class="text-center">
-                <i>
-                    Les tickets "early birds" donneront accès, le jour J, au bar "all-in" de bières Vedett Session, avant les premiers concerts.
-                    Si vous êtes un "early bird", envoyez-nous votre photo à festivals@un-mute.be pour que nous préparions une bouteille Vedett dont l'étiquette sera frappée à votre effigie !
-                </i>
-            </p>
-        {% endif %}
-        {% if state not in contract.uncrowdableStates %}
-            {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
-
-            {{ form_start(form) }}
-
-            <div class="row d-none d-md-flex p-3 counterparts-header">
-                <div class="col-md-3 um-label-bold">
-                    Ticket
-                </div>
-                <div class="col-6 col-md-4 my-auto um-label-bold">
-                    Description
-                </div>
-                <div class="col-6 col-md-2 my-auto um-label-bold">
-                    Prix
-                </div>
-                <div class="col-6 col-md-3 my-auto um-label-bold">
-                    Quantité
-                </div>
-            </div>
-
-            {% for purchase in form.purchases %}
-                <div class="row counterpart-form border">
-
-                    {% set counterpart = purchase.vars.value.counterpart %}
-                    <div class="col-6 col-md-3 py-2 my-auto">
-                        <div>{{ form_errors(purchase) }}</div>
-                        <label class="counterpart-label"><i class="fas fa-ticket-alt"></i> {{ counterpart.name }}</label>
-                    </div>
-
-                    <div class="col-6 col-md-4 py-2 my-auto">
-                        {{ counterpart.getDescription|raw }}
-                    </div>
-
-                    <div class="col-6 col-md-2 py-2 my-auto">
-                        {{ counterpart.price }} €
-                    </div>
-
-                    <div class="col-6 col-md-3 py-2 my-auto">
-                        {% if counterpart.disabled %}
-                            {% do purchase.setRendered(true) %}
-                            <p><i>Pas disponible pour l'instant</i></p>
-                        {% elseif contract.nbAvailable(counterpart) == 0 %}
-                            {% do purchase.setRendered(true) %}
-                            <p><i>SOLD OUT</i></p>
-                        {% else %}
-                            <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
-                                <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                {{ form_widget(purchase.quantity) }}
-                                <a class="incr-btn" data-action="increase"
-                                   data-max="{{ contract.nbPurchasable(counterpart) }}"
-                                   href="#">&plus;</a>
-                            </div>
-                            {% if counterpart.potentialArtists is not empty %}
-                                <div class="select2-artists">
-                                    Si vous venez en particulier pour un ou plusieurs artiste(s), mentionnez-le(s) :
-                                    {{ form_widget(purchase.artists) }}
+                {% if not contract.hasNoDefinedHall %}
+                    <div class="form-block mt-5 mx-auto w-50">
+                        <div class="form-header">
+                            <h2>{{ 'event.hall.known'|trans|raw }}</h2>
+                        </div>
+                        <div class="form-body">
+                            <div id="carouselPotentialHalls" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% set i = 0 %}
+                                    {% for hall in contract.uniqueFestivalHalls if hall is not null %}
+                                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                            {% include 'AppBundle:Public/Card:hall.html.twig' with {'xs': 12, 'md':12, 'no_rotation_hall':true} %}
+                                        </div>
+                                        {% set i = i + 1 %}
+                                    {% endfor %}
                                 </div>
-                            {% endif %}
-                        {% endif %}
+                                {% if i > 1 %}
+                                    <a class="carousel-control-prev" href="#carouselPotentialHalls" role="button"
+                                       data-slide="prev">
+                        <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-1"
+                              aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselPotentialHalls" role="button"
+                                       data-slide="next">
+                        <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-1"
+                              aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-            {#{{ form_row(form.user_rewards) }}
-            <div id="user_reward-error"><span
-                        class="danger danger-color">{{ 'event.buy_tickets.to_much_reduction'|trans|raw }}</span>
+                {% endif %}
             </div>
-            #}
-            <div class="text-right mt-3">
-                <div class="d-inline-block mr-2">TOTAL : <span id="cart-total">0</span> €</div>
-                {{ form_widget(form.submit) }}
-            </div>
+        </div>
+     </section>
 
-            {{ form_end(form) }}
-        {% else %}
-            <p class="text-uppercase small text-center font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
-        {% endif %}
-        <div class="separating-waves colored high prior"></div>
-    </section>
+
+
+
+
+    <div id="tickets"></div>
+    {% if state not in contract.uncrowdableStates %}
+        {% include ':patterns:tickets.html.twig' with {'contractArtist': contract, 'contract': form} %}
+    {% else %}
+        <p class="text-uppercase small text-center font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
+    {% endif %}
 
 {% endblock %}
 
-    {% block additional_javascripts %}
+{% block additional_javascripts %}
         {% if (contract.crowdable or contract.pending) and contract.festivalDates is not empty %}
             <script type="application/ld+json">
             {
@@ -472,27 +187,4 @@
             }
         </script>
     {% endif %}
-        <script type="text/javascript">
-            $(document).ready(function () {
-                var errorDiv = $('#user_reward-error');
-                errorDiv.hide();
-                $('.js-example-basic-multiple').select2();
-                $('.user-rewards-select').on('select2:select select2:unselect', function () {
-                    errorDiv.hide();
-                    var haveReduction = false;
-                    var select = $('.user-rewards-select');
-                    select.find(':selected').each(function () {
-                        if ($(this).hasClass('reduction')) {
-                            if (haveReduction === true) {
-                                errorDiv.show();
-                                select.find(':selected').last().attr('selected', false).trigger('change');
-                            } else {
-                                haveReduction = true;
-                            }
-                        }
-                    })
-                })
-            });
-
-        </script>
-    {% endblock %}
+{% endblock %}

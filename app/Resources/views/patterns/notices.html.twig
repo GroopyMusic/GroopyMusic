@@ -3,21 +3,18 @@
 {% if notice_bag is not empty %}
     {% for message in notice_bag %}
         <!-- Modal HTML -->
+
         <div class="modal-notice modal fade in">
             <div class="modal-dialog modal-confirm">
-                <div class="modal-confirm-content modal-content">
+                <div class="modal-confirm-content modal-content p-5">
                     <div class="modal-confirm-header">
-                        <div class="icon-box">
-                            <i class="far fa-check-circle"></i>
-                        </div>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div class="text-center"><i class="fa fa-check round-icon big"></i></div>
                     </div>
                     <div class="modal-confirm-body text-center">
-                        <h4>{{ 'notice.title'|trans }}</h4>
-                        <p>{{ message|trans|raw }}</p>
-                        <button class="btn btn-success" data-dismiss="modal">
-                            <span>{{ 'notice.back'|trans }}</span><i class="far fa-arrow-alt-circle-right"></i>
-                        </button>
+                        <h3 class="mt-3 no-upper">{{ 'notice.title'|trans }}</h3>
+                        <p class="font-weight-bold">{{ message|trans|raw }}</p>
+                        <button class="btn btn-primary" data-dismiss="modal">{{ 'notice.back'|trans }}</button>
                     </div>
                 </div>
             </div>

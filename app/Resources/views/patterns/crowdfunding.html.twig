@@ -1,0 +1,21 @@
+<section class="container-fluid bg-black text-center text-gray p-4">
+    <h2 class="text-primary">Financement participatif</h2>
+    <div class="row text-white">
+        <div class="col-12 col-md-6 text-uppercase my-auto">
+            Date de validation<br />
+            <b class="text-white">{{ contractArtist.dateEnd|date('d/m/Y') }}</b>{% set orders = contractArtist.nbOrdersPaid %}
+            {% if orders > 0 %}<br />
+                <b class="text-white">{{ orders }} contributeur{% if orders > 1 %}s{% endif %}</b>{% endif %}
+        </div>
+        <div class="col-12 col-md-6 text-uppercase">
+            {% if contractArtist.state in contractArtist.successfulStates %}
+                <div class="d-inline-block align-middle pr-3">
+                    <i class="round-icon fas fa-check"></i>
+                </div>
+            {% endif %}
+            <div class="d-inline-block align-middle">
+                {{ ('event.'~contractArtist.state)|trans({'%soldout_percentage%':contractArtist.percentSoldOutRelativeToObjective})|raw }}
+            </div>
+        </div>
+    </div>
+</section>

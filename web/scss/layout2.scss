@@ -139,6 +139,9 @@ section {
   @extend .rounded-circle;
   @extend .p-4;
   font-size: 40px;
+  &.big {
+    font-size: 50px;
+  }
 }
 
 h2, h1, h3 {
