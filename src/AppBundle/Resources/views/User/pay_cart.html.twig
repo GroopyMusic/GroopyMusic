@@ -1,5 +1,9 @@
 {% extends "base.html.twig" %}
 
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': 'Commande', 'img': ''} %}
+{% endblock %}
+
 {% set contract_fan = cart.first %}
 
 {% macro recap_toppings(purchase) %}
@@ -23,7 +27,7 @@
     {% endfor %}
 
     {% for i in 0..toppings|length - 1 %}
-        <div class="content-box-content-zone">
+        <div class="content-box-content-zone font-weight-light">
             <table class="table recap-table">
                 <tbody>
                     <tr>
@@ -45,11 +49,11 @@
 {% endmacro %}
 
 {% macro recap_zone(purchase, contract, promotional = false) %}
-    <div class="content-box-content-zone">
+    <div class="content-box-content-zone font-weight-light">
         <table class="table recap-table">
             <tbody>
             {% if promotional %}
-                <div class="um-label text-center"><strong>{{ 'pay_cart.recap.promo_title'|trans|raw }}</strong></div>
+                <div class="font-weight-bold text-center"><strong>{{ 'pay_cart.recap.promo_title'|trans|raw }}</strong></div>
             {% endif %}
             <tr>
                 <td class="contract-info-title">{{ 'pay_cart.recap.labels.counterpart'|trans|raw }}</td>
@@ -103,14 +107,11 @@
 
     {% block body %}
 
-        <div class="container">
-
-            <h3 class="mb-5 text-center">{{ 'pay_cart.title'|trans|raw }}</h3>
-
+        <div class="container pb-4">
             <div class="row">
-                <div class="col-12 col-md-8 order-2 order-md-1">
+                <div class="col-12 col-md-8 order-2 order-md-1 p-4">
                     {% if app.user %}
-                        <div id="payment-intro">
+                        <div id="payment-intro font-weight-bold">
                             {{ 'pay_cart.intro'|trans({
                                 '%conditionsUrl%': path('conditions') ~ '#cgv'
                             })|raw }}
@@ -200,20 +201,17 @@
                                     </div>
                                 </div>
 
-                                <div class="content-box col-12">
-                                    <div class="content-box-content content-box-content-zones">
-
-                                        <div id="credit-card" class="payment-method w-100">
-                                            <div class="col-12 content-box-content-zone">
-                                                <h5><i class="fab fa-cc-visa"></i>
-                                                    <i class="fab fa-cc-mastercard"></i>
-                                                    {{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a href="#"
+                                <div class="col-12">
+                                    <div id="credit-card" class="payment-method w-100">
+                                        <div class="form-block pb-3">
+                                            <div class="form-header">
+                                                <h3>{{ 'pay_cart.proceed.creditcard.title'|trans|raw }} <a class="text-white small" href="#"
                                                                                                            data-toggle="popover"
                                                                                                            title="{{ 'pay_cart.proceed.creditcard.popover.title'|trans|raw }}"
                                                                                                            data-content="{{ 'pay_cart.proceed.creditcard.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.creditcard.popover.apparent'|trans|raw }}</a>
-                                                </h5>
+                                                </h3>
                                             </div>
-                                            <div class="content-box-content-zone no-border">
+                                            <div class="form-content">
                                                 <div class="col-12 row">
                                                     <div class="col-12">
                                                         <label>
@@ -239,20 +237,23 @@
                                                            value="{{ 'pay_cart.proceed.creditcard.submit'|trans({'%amount%': cart.amount})|raw }}"/>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div id="debit-card" class="form-row payment-method w-100"
-                                             style="display:none;">
-                                            <div class="col-12 content-box-content-zone">
-                                                <h5><i class="far fa-credit-card"></i>
-                                                    {{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a href="#"
+                                        </div>
+                                    </div>
+
+                                    <div id="debit-card" class="form-row payment-method w-100"
+                                         style="display:none;">
+                                        <div class="form-block">
+                                            <div class="form-header">
+                                                <h3>{{ 'pay_cart.proceed.bancontact.title'|trans|raw }} <a class="text-white small" href="#"
                                                                                                            data-toggle="popover"
                                                                                                            title="{{ 'pay_cart.proceed.bancontact.popover.title'|trans|raw }}"
                                                                                                            data-content="{{ 'pay_cart.proceed.bancontact.popover.content'|trans|raw }}">{{ 'pay_cart.proceed.bancontact.popover.apparent'|trans|raw }}</a>
-                                                </h5>
-                                                <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
+                                                </h3>
                                             </div>
-                                            <div class="content-box-content-zone no-border">
+                                            <div class="form-content p-4">
+                                                <p>{{ 'pay_cart.proceed.bancontact.info'|trans|raw }}</p>
+
                                                 <div id="bc-card-element" class="text-center">
                                                     <button type="button" class="btn btn-primary mt-3"
                                                             id="choose-bancontact">
@@ -266,7 +267,7 @@
                             </div>
                         </form>
                     {% elseif form is defined and form is not null %}
-                        <p>{{ 'pay_cart.not_authenticated.intro'|trans|raw }}</p>
+                        <p class="font-weight-bold mb-3">{{ 'pay_cart.not_authenticated.intro'|trans|raw }}</p>
                         <div class="form-row form-group">
                             <div class="col-12">
                                 <label class="custom-control custom-radio d-block">
@@ -290,7 +291,7 @@
                                     <span class="custom-control-description">{{ 'pay_cart.not_authenticated.signup_label'|trans|raw }}</span>
                                 </label>
 
-                                <div id="sign-up-block">
+                                <div id="sign-up-block" class="mt-3">
                                     {% include '@FOSUser/Registration/register_content.html.twig' %}
                                 </div>
                             </div>
@@ -298,13 +299,13 @@
                     {% endif %}
                 </div>
 
-                <div class="col-12 col-md-4 order-1 order-md-2">
-                    <div class="card card-info">
-                        <div class="card-header">
+                <div class="col-12 col-md-4 order-1 order-md-2" id="order-recap">
+                    <div class="form-block">
+                        <div class="form-header">
                             <h3 class="text-primary text-center">{{ 'pay_cart.recap.title'|trans|raw }}</h3>
                         </div>
 
-                        <div class="card-content">
+                        <div class="form-content round-bot">
                             <ul class="list-group">
                                 {% set sum_tickets = 0 %}
                                 {% set amoutWithoutReduction = 0 %}
@@ -340,8 +341,8 @@
                                 <li class="list-group-item">
                                     <table class="table recap-table">
                                         <tr class="no-border">
-                                            <td class="contract-info-title big">{{ 'pay_cart.recap.total'|transchoice(sum_tickets)|raw }}</td>
-                                            <td class="big font-weight-bold">{{ cart.amount }} €</td>
+                                            <td class="contract-info-title">{{ 'pay_cart.recap.total'|transchoice(sum_tickets)|raw }}</td>
+                                            <td class="big font-weight-bold"><span class="btn btn-outline-primary round-all">{{ cart.amount }} €</span></td>
                                         </tr>
                                     </table>
                                 </li>

@@ -56,11 +56,13 @@
                 </div>
 
                 <div class="tab-pane fade" role="tabpanel" id="registration-tab-fb" aria-labelledby="#registration-tab-link-um">
-                    <p class="text-left">{{ 'registration.tab-fb.intro'|trans({'%conditions_url%': url('conditions')})|raw|nl2br }}</p>
-                    <div class="mb-4 mt-1 text-center">
-                        {{ facebook_connect_widget()|raw }}
+
+                    <div class="round-bot round-right bg-white p-3 text-center">
+                        <p class="text-left">{{ 'registration.tab-fb.intro'|trans({'%conditions_url%': url('conditions')})|raw|nl2br }}</p>
+                        <div class="mb-4 mt-1 text-center">
+                            {{ facebook_connect_widget()|raw }}
+                        </div>
                     </div>
                 </div>
-
             </div>
         {% endif %}

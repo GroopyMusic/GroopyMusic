@@ -11,7 +11,7 @@
         </div>
     </header>
 {% else %}
-    <header class="header container-fluid" style="background-image:{{ asset('images/headers/'~img) }}">
+    <header class="header container-fluid" style="background-image:{% if img_absolute is defined and img_absolute %}{{ img }}{% else %} {{ asset('images/headers/'~img) }}{% endif %}">
         <div class="page-header">
             <h1 class="text-center">{{ title|raw }}</h1>
         </div>

@@ -176,6 +176,16 @@ $(function () {
         }
 
     });
+
+    function ratios() {
+        $('.ratio-23').each(function() {
+            $(this).css('height', $(this).outerWidth()/3*2 + 'px');
+        })
+    }
+    ratios();
+    $(window).resize(function() {
+        ratios();
+    });
 });
 
 

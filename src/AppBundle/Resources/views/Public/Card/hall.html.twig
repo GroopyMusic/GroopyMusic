@@ -25,26 +25,20 @@
         {% set rotation = false %}
     {% endif %}
 
-    <div class="um-card{% if rotation %} images-rotation{% endif %}{% if bgwhite %} bg-white{% endif %}" {% if rotation %}data-images='{{ imgstring }}'{% endif %}>
-
-        <div class="um-card-header" style="background-image: url({{ src }});">
+    <div class="bg-white" >
+        <div class="mx-auto w-75 position-relative">
+            <div class="defaultHeightBg sepia ratio-23" style="background-image: url({{ src }});"></div>
+            <span class="card-caption position-absolute">{{ hall.name }}</span>
         </div>
 
         <!-- this is the content of the card with an optionnal span for ⭐ -->
-        <div class="um-card-content">
-            <h5 class="hall-name">{{ hall.name }}</h5>
-            <p>{{ hall.address }}</p>
-            <p>{{ preview(hall.getShortDescription(), 100)|raw }}</p>
-            {% set province_slug, step_slug
-                    =   "jplist-" ~ hall.province|slug,
-                        "jplist-" ~ hall.step.slug
-            %}
-            <span class="d-none hall-province {{ province_slug }}">{{ hall.province }}</span>
-            <span class="d-none hall-step {{ step_slug }}">{{ hall.step }}</span>
-            <span class="d-none hall-capacity">{{ hall.capacity }}</span>
-
+        <div class="mt-2">
+            <div class="font-weight-light text-center">{{ hall.address }}</div>
+            {#<p>{{ preview(hall.getShortDescription(), 100)|raw }}</p>#}
             {% if hall.website is not empty %}
-                <a class="btn small btn-outline-primary" target="_blank" href="{{ absolute_url(hall.website) }}">{{ 'more_info'|trans }}</a>
+                <div class="text-right my-1">
+                    <a class="btn btn-primary" target="_blank" href="{{ absolute_url(hall.website) }}">{{ 'more_info'|trans }}</a>
+                </div>
             {% endif %}
         </div>
 

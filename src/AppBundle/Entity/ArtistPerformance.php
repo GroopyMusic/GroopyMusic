@@ -33,6 +33,13 @@ class ArtistPerformance
         return $this->time;
     }
 
+    public function getStage() {
+        if($this->lineup != null) {
+            return $this->lineup->getStage();
+        }
+        return null;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -173,7 +180,7 @@ class ArtistPerformance
      */
     public function getFestivalday()
     {
-        return $this->festivalday;
+        return $this->festivalday != null ? $this->festivalday : ($this->lineup != null ? $this->lineup->getFestivalDay() : null);
     }
 
     /**

@@ -41,7 +41,7 @@
 {% block body %}
     {% include ':patterns:crowdfunding.html.twig' with {'contractArtist': contract} %}
 
-    <section class="container-fluid p-5">
+    <section class="container p-5">
         <div class="row">
             <div class="col-8 text-left">
                 <p class="font-weight-bold w-md-75">{{ contract.description }}</p>
@@ -52,38 +52,68 @@
         </div>
     </section>
 
-     <section class="container-fluid p-5">
+     <section class="container">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="form-block">
                     <div class="form-header">
                         <h2>Line-up</h2>
                     </div>
-                    <div class="form-body">
-
+                    {% if contract.festivalDays is not empty %}
+                        <div class="p-3">
+                            {% if contract.festivalDays|length > 1 %}
+                                <span class="text-primary">Jour</span><br />
+                                <span class="artists-selector artists-selector-day selected" data-day="all">Tous</span>
+                                {% for day in contract.festivalDays %}
+                                    <span class="artists-selector artists-selector-day" data-day="{{ day.id}}">{{ day.date|date('l')|trans }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="p-3">
+                            {% if contract.stages is not null and contract.stages|length > 1 %}
+                            <span class="text-primary">Scène</span><br />
+                            <span class="artists-selector artists-selector-stage selected" data-stage="all">Toutes</span>
+                            {% for stage in contract.stages %}
+                                <span class="artists-selector artists-selector-stage" data-stage="{{ stage.id }}">{{ stage }}</span>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <div class="form-body row">
+                        {% for performance in contract.artistPerformances %}
+                                <div class="col-6 artist-col" data-day="{{ performance.festivalDay.id }}" {% if performance.stage is not null %}data-stage="{{ performance.stage.id }}"{% endif %}>
+                                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': performance.artist, 'hours': performance.time} %}
+                                    {% if performance.stage is not null %}
+                                        <div class="font-weight-light"><i class="text-primary fas fa-circle"></i> {{ performance.stage }}</div>
+                                    {% endif %}
+                                </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6 mt-4">
                 {% if visiblePromos is not empty or contract.isInCampaign %}
                     {% set endSentence = visiblePromos|length > 1 ? "des promotions (non cumulables) suivantes" : "de la promotion suivante" %}
 
                     <h2 class="text-center">Promotions</h2>
                     {% if not contract.inTestPeriod %}
-                        <p class="text-center">Tout au long de la campagne, profitez {{ endSentence }} :</p>
+                        <p class="text-center font-weight-light">Tout au long de la campagne, profitez {{ endSentence }} :</p>
                     {% else %}
-                        <p class="text-center">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
+                        <p class="text-center font-weight-light">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
                     {% endif %}
-                    {% for promo in visiblePromos %}
-                        {{ promo.left }} {{ promo.right }}
-                    {% endfor %}
+                    <div class="row text-uppercase">
+                        {% for promo in visiblePromos %}
+                            <div class="col-6 my-auto py-2 text-right">{{ promo.left }}</div>
+                            <div class="col-6 my-auto py-2 border-left border-primary text-left">{{ promo.right }}</div>
+                        {% endfor %}
+                    </div>
                     {# if contract.isInCampaign %}
                         <p class="text-center">1 commande passée avant la date de validation <i class='fas fa-long-arrow-alt-right'></i> <span class="text-secondary font-weight-bold">accès au bar Vedett all-in à 18h</span></p>
                     {% endif #}
                 {% endif %}
 
                 {% if not contract.hasNoDefinedHall %}
-                    <div class="form-block mt-5 mx-auto w-50">
+                    <div class="form-block mt-5 mx-auto w-75">
                         <div class="form-header">
                             <h2>{{ 'event.hall.known'|trans|raw }}</h2>
                         </div>
@@ -120,20 +150,58 @@
         </div>
      </section>
 
-
-
-
+    {% include ':patterns:header.html.twig' with {'title': 'Tickets', 'img': ''} %}
 
     <div id="tickets"></div>
     {% if state not in contract.uncrowdableStates %}
-        {% include ':patterns:tickets.html.twig' with {'contractArtist': contract, 'contract': form} %}
+        {{ form_start(form) }}
+            {% include ':patterns:tickets.html.twig' with {'contractArtist': contract, 'contract': form,'more_info':false} %}
+
+            <section class="text-center mt-4 mb-5">
+                <span class="pr-4">TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</span>
+                {{ form_widget(form.submit) }}
+            </section>
+        {{ form_end(form) }}
+
     {% else %}
         <p class="text-uppercase small text-center font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
     {% endif %}
 
+
+
 {% endblock %}
 
 {% block additional_javascripts %}
+        <script>
+            var day = 'all';
+            var stage = 'all';
+
+            function refreshArtists() {
+                $('.artist-col').each(function() {
+                  if((day === 'all' || $(this).data('day') === day) && (stage === 'all' || $(this).data('stage') === stage)) {
+                      $(this).show();
+                  }
+                  else {
+                      $(this).hide();
+                  }
+                });
+            }
+
+            $('.artists-selector').click(function() {
+                if($(this).hasClass('artists-selector-day')) {
+                    day = $(this).data('day');
+                    $('.artists-selector-day').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+                else {
+                    stage = $(this).data('stage');
+                    $('.artists-selector-stage').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+                refreshArtists();
+            })
+        </script>
+
         {% if (contract.crowdable or contract.pending) and contract.festivalDates is not empty %}
             <script type="application/ld+json">
             {

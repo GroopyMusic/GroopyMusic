@@ -6,6 +6,14 @@ Days 4: Jeudi
 Days 5: Vendredi
 Days 6: Samedi
 
+Sunday: Dimanche
+Monday: Lundi
+Tuesday: Mardi
+Wednesday: Mercredi
+Thursday: Jeudi
+Friday: Vendredi
+Saturday: Samedi
+
 months.01: Janvier
 months.02: Février
 months.03: Mars
@@ -421,7 +429,7 @@ pay_cart:
             error: Une erreur est survenue. Veuillez réessayer plus tard et en informer un administrateur Un-Mute si le problème persiste.
             pending: <b>Ne quittez pas Un-Mute.be pendant l'opération.</b> Veuillez patienter, votre demande est en cours de traitement.
         creditcard:
-            title: Paiement par carte de crédit
+            title: Payer par carte de crédit
             popover:
                 title: Cartes autorisées
                 content: Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes de crédit.
@@ -437,12 +445,12 @@ pay_cart:
                 title: Cartes autorisées
                 content: Nos paiements sont sécurisés par l'interface Stripe. Nous acceptons toutes les cartes belges.
                 apparent: + d'infos
-            info: Vous serez redirigé vers la page d'autorisation de paiement de votre opérateur bancaire.
+            info: Vous serez redirigé(e) vers la page d'autorisation de paiement de votre opérateur bancaire.
             submit: Payer %amount% € avec Bancontact
             pending: Vous allez être redirigé vers la page d'autorisation de votre banque. Si rien ne se passe, veuillez réessayer.
     recap:
         promo_title: Promotion
-        title: Vos tickets
+        title: Tickets
         labels:
             counterpart: Type
             concert: Festival
@@ -487,7 +495,7 @@ pay_cart:
         title: Récapitulatif
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
     not_authenticated:
-      intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute.
+      intro: Afin de pouvoir finaliser votre commande, vous devez être connecté sur Un-Mute. Créez votre profil en quelques secondes pour pouvoir soutenir vos artistes favoris !
       signin_label: J'ai un compte sur Un-Mute
       signup_label: Je n'ai pas encore de compte Un-Mute
 

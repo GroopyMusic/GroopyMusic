@@ -11,7 +11,7 @@
         {% for contract in form.contracts %}
             {% set contractArtist = contract.vars.data.contractArtist %}
             {% include ':patterns:crowdfunding.html.twig' %}
-            {% include ':patterns:tickets.html.twig' %}
+            {% include ':patterns:tickets.html.twig' with {'more_info': true} %}
         {% endfor %}
 
         {% if nb_contracts_ok > 0 %}

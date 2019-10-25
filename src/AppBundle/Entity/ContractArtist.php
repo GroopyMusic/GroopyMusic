@@ -423,6 +423,37 @@ class ContractArtist extends BaseContractArtist
         return count($this->getContractsFanPaid());
     }
 
+
+    private $lineups = null;
+    public function getLineUps() {
+        if($this->lineups == null) {
+            $lineups = [];
+            foreach($this->getFestivaldays() as $festivalDay) {
+                foreach($festivalDay->getLineUps() as $lu) {
+                    $lineups[] = $lu;
+                }
+            }
+            $this->lineups = $lineups;
+        }
+        return $this->lineups;
+    }
+
+    private $stages = null;
+
+    public function getStages() {
+        if($this->stages == null) {
+            $stages = [];
+            foreach($this->getLineUps() as $lineup) {
+                $stage = $lineup->getStage();
+                if(!in_array($stage, $stages)) {
+                    $stages[] = $stage;
+                }
+            }
+            $this->stages = $stages;
+        }
+        return $this->stages;
+    }
+
     // unmapped, memoized
     private $artistperformances = null;
 
@@ -433,7 +464,7 @@ class ContractArtist extends BaseContractArtist
 
             foreach($this->getFestivaldays() as $festivalDay) {
                 foreach($festivalDay->getArtistPerformances() as $artistPerformance) {
-                    $performances_days[$i][] = $artistPerformance;
+                    $performances_days[] = $artistPerformance;
                 }
                 $i++;
             }

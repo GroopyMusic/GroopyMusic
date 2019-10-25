@@ -2,6 +2,7 @@ $primary: #E79A41;
 
 // import bootstrap 4
 @import "../../vendor/twbs/bootstrap/scss/bootstrap.scss";
+@import '_stripe';
 
 html, body {
   max-width: 100%;
@@ -236,9 +237,6 @@ button, a { cursor: pointer; }
 .nav-link {
   margin-right: 2rem !important;
 }
-.nav-link:hover {
-  color: #ffffff;
-}
 .toplogo {
   height: 30%;
   width: 30%;
@@ -356,6 +354,9 @@ header {
   border-bottom-right-radius: 25px;
   border-bottom-left-radius: 25px;
 }
+.round-all {
+  @extend .round-top, .round-bot, .round-left, .round-right;
+}
 
 
 .invalid-feedback {
@@ -453,7 +454,6 @@ input[type=submit], button[type=submit] {
   @extend .custom-control-input;
 }
 
-
 .nav-tabs {
   border-bottom: 0 none;
   .nav-link {
@@ -470,4 +470,72 @@ input[type=submit], button[type=submit] {
   box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
   border-radius: 50px;
   color: white;
+}
+
+.sepia {
+  filter: sepia(1);
+}
+
+.defaultHeightBg {
+  height: 100px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.card-caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  @extend .text-primary, .text-uppercase, .px-2, .bg-black;
+}
+
+.card-caption-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  @extend .text-white, .text-uppercase, .px-2;
+}
+
+.border {
+  &-left {
+    border-left: 3px solid;
+  }
+  &-right {
+    border-right: 3px solid;
+  }
+  &-top {
+    border-top: 3px solid;
+  }
+  &-bottom {
+    border-bottom: 3px solid;
+  }
+}
+
+.artists-selector {
+  cursor: pointer;
+  @extend .text-uppercase, .d-inline-block, .text-center;
+  width: 20%;
+  font-weight: 300;
+  &.selected {
+    font-weight: bold;
+  }
+}
+
+.counterpart-price {
+  font-size: 150%;
+  color: #808080;
+}
+
+.contract-info-title {
+  @extend .text-uppercase;
+}
+
+#order-recap {
+  .list-group-item {
+    border-top: 1px solid orange;
+  }
+  td {
+    border: none;
+  }
 }

@@ -49,7 +49,7 @@ registration:
       Merci pour votre inscription ! Votre compte Un-Mute a bien été créé.
 
       Pouvez-vous nous confirmer que votre adresse mail est bien correcte en cliquant sur le lien suivant : %confirmationUrl% ?
-  submit: Créer mon compte Un-Mute
+  submit: Créer un compte
 
 resetting:
   check_email: |
