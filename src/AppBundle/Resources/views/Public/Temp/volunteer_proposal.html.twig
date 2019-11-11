@@ -2,6 +2,10 @@
 
 {% block headtitle %}Bénévoles | Un-Mute{% endblock %}
 
+{% block nav %}
+    {% include ':patterns:header_nav.html.twig' with {'page': 'volunteering'} %}
+{% endblock %}
+
 {% block header %}
     {% include ':patterns:header.html.twig' with {'title': 'Bénévoles', 'img':''} %}
 {% endblock %}

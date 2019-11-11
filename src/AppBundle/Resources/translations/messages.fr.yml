@@ -89,7 +89,7 @@ header:
     about: À propos
     artists: Artistes
     tickets: Tickets
-    events: Festivals
+    events: Festival
     sign_up: Inscription
     sign_in: Connexion
     all_notifications: Voir toutes les notifications
@@ -265,7 +265,7 @@ contact:
 jplist:
   sort_by: Trier par
   no_results: Aucun résultat trouvé
-  action: Filtrer...
+  action: Genre
 
 catalog_artists:
   title: Nos artistes

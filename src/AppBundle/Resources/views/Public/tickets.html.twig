@@ -1,5 +1,9 @@
 {% extends "base.html.twig" %}
 
+{% block nav %}
+    {% include ':patterns:header_nav.html.twig' with {'page': 'tickets'} %}
+{% endblock %}
+
 {% block header %}
     {% include ':patterns:header.html.twig' with {'img': '', 'title': 'Tickets'} %}
 {% endblock %}

@@ -64,7 +64,7 @@
                 </div>
             <![endif]-->
             {% block nav %}
-                {% include ':patterns:header_nav.html.twig' %}
+                {% include ':patterns:header_nav.html.twig' with {'page': page|default('none')} %}
             {% endblock %}
             {% block header %}
                 <header {% block header_attributes %}{% endblock %}>
@@ -103,7 +103,7 @@
                 <div class="d-inline-block mx-auto text-uppercase" id="footer-links">
                     <a href="{{ path('press') }}">{{ 'footer.press'|trans }}</a><br/>
                     <a href="{{ path('suggestionBox') }}">{{ 'footer.contact'|trans }}</a><br/>
-                    <a href="{{ path('passed_festivals') }}">Campagnes passées</a><br/>
+                    {#<a href="{{ path('passed_festivals') }}">Campagnes passées</a><br/>#}
                     <a href="{{ path('conditions') }}">{{ 'footer.conditions'|trans }}</a>
                 </div>
                 <div class="mx-auto">

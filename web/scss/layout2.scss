@@ -20,7 +20,7 @@ section {
   .container {
     @extend .py-4;
   }
-  &#home-festivals {
+  &#festival {
    background-color: #FFF9F4;
   }
   &#home-about {
@@ -204,17 +204,15 @@ footer {
 .form-body {
   @extend .p-4;
 }
-form {
-  .form-control {
-    background: rgba(255, 249, 244, 0.75);
-    border: 2px solid #E79A41;
-    box-sizing: border-box;
-    border-radius: 20px;
-  }
-  label {
-    font-weight: 300;
-    @extend .text-uppercase;
-  }
+.form-control {
+  background: rgba(255, 249, 244, 0.75);
+  border: 2px solid #E79A41;
+  box-sizing: border-box;
+  border-radius: 20px;
+}
+label {
+  font-weight: 300;
+  @extend .text-uppercase;
 }
 button, a { cursor: pointer; }
 /*--- navigation bar ---*/
@@ -225,7 +223,14 @@ button, a { cursor: pointer; }
     @extend .text-uppercase;
     a {
       color: rgba(231, 154, 65, 0.71);
-      font-weight: lighter;
+    }
+    .nav-link {
+      &:hover, &:focus, &.focus {
+        color: white;
+      }
+      &.focus {
+        border-bottom: white 1px solid;
+      }
     }
   }
 }
@@ -537,5 +542,18 @@ input[type=submit], button[type=submit] {
   }
   td {
     border: none;
+  }
+}
+
+.jplist {
+  &-dd {
+    @extend .round-all;
+  }
+  &-dd-panel {
+    @extend .bg-white, .round-all;
+    border: 2px solid #E79A41;
+  }
+  &-dd-content {
+    @extend .bg-white;
   }
 }

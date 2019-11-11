@@ -81,12 +81,12 @@
                     {% endif %}
                     <div class="form-body row">
                         {% for performance in contract.artistPerformances %}
-                                <div class="col-6 artist-col" data-day="{{ performance.festivalDay.id }}" {% if performance.stage is not null %}data-stage="{{ performance.stage.id }}"{% endif %}>
-                                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': performance.artist, 'hours': performance.time} %}
-                                    {% if performance.stage is not null %}
-                                        <div class="font-weight-light"><i class="text-primary fas fa-circle"></i> {{ performance.stage }}</div>
-                                    {% endif %}
-                                </div>
+                            <div class="col-6 artist-col" data-day="{{ performance.festivalDay.id }}" {% if performance.stage is not null %}data-stage="{{ performance.stage.id }}"{% endif %}>
+                                {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': performance.artist, 'hours': performance.time} %}
+                                {% if performance.stage is not null %}
+                                    <div class="font-weight-light"><i class="text-primary fas fa-circle"></i> {{ performance.stage }}</div>
+                                {% endif %}
+                            </div>
                         {% endfor %}
                     </div>
                 </div>

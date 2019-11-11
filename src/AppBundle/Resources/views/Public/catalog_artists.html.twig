@@ -1,94 +1,83 @@
 {% extends "base_catalogue.html.twig" %}
 
+
+{% block headtitle %}Artistes | Un-Mute{% endblock %}
+
+{% block nav %}
+    {% include ':patterns:header_nav.html.twig' with {'page': 'artists'} %}
+{% endblock %}
+
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title':  'catalog_artists.title'|trans, 'img': ''} %}
+{% endblock %}
+
 {% block body %}
-    <div class="container" id="artists-catalogue">
-        <h3 class="text-center mb-4">{{ 'catalog_artists.title'|trans|raw }}</h3>
-
+    <div class="container pb-4">
         {% if artists is empty %}
-            <p>{{ 'catalog_artists.empty'|trans|raw }}</p>
+            <p class="font-weight-bold w-50">{{ 'catalog_artists.empty'|trans|raw }}</p>
         {% else %}
+            <div class="d-inline-block">
+                <input class="form-control bg-white"
+                       data-jplist-control="textbox-filter"
+                       data-group="group1"
+                       data-name="my-filter-1"
+                       data-path=".artist-name"
+                       type="text"
+                       value=""
+                       placeholder="Chercher..." />
+            </div>
+            <div class="d-inline-block jplist-dd pl-2"
+                 data-jplist-control="dropdown-filter"
+                 data-group="group1"
+                 data-name="name1">
 
-            <div>
-                <!-- ios button: show/hide panel -->
-                <div class="jplist-ios-button">
-                    <i class="fa fa-sort"></i>
-                    {{ 'jplist.action'|trans }}
-                </div>
+                <div data-type="panel" class="jplist-dd-panel">Filter by</div>
+                <div data-type="content" class="jplist-dd-content">
 
-                <!-- panel -->
-                <div class="jplist-panel box panel-top">
-                    <!-- sort dropdown -->
-                    <div class="jplist-drop-down" data-control-type="sort-drop-down" data-control-name="sort" data-control-action="sort" data-datetime-format="{month}/{day}/{year}"><div class="jplist-dd-panel">{{ 'jplist.sort_by'|trans }}</div> <!-- {year}, {month}, {day}, {hour}, {min}, {sec} -->
-                        <ul>
-                            <li class="active"><span data-path=".artist-name" data-order="asc" data-type="text">{{ 'catalog_artists.filtering.name_asc'|trans }}</span></li>
-                            <li><span data-path=".artist-name" data-order="desc" data-type="text">{{ 'catalog_artists.filtering.name_desc'|trans }}</span></li>
-                        </ul>
-                    </div>
-
-                    <div class="text-filter-box">
-
-                        <i class="fa fa-search  jplist-icon"></i>
-
-                        <!--[if lt IE 10]>
-                        <div class="jplist-label">{{ 'catalog_artists.filtering.search_name'|trans }}</div>
-                        <![endif]-->
-
-                        <input data-path=".artist-name" type="text" value="" placeholder="{{ 'catalog_artists.filtering.search_name'|trans }}" data-control-type="textbox" data-control-name="model-text-filter" data-control-action="filter">
-                    </div>
-
-                    <div class="jplist-drop-down" data-control-type="filter-drop-down" data-control-action="filter" data-control-name="artist-genres-filter" data-path=".artist-genres">
-                        <div class="jplist-dd-panel"></div>
-                        <ul>
-                            <li class="active"><span data-path="default" style="color:grey">{{ 'jplist.action'|trans }}</span></li>
-                            {% for genre in genres %}
-                                {% set slug = "jplist-" ~ genre|slug %}
-                                <li>
-                                    <span data-path=".{{ slug }}">{{ genre }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-
-                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-province" data-path=".artist-province">
-                        {% for province in provinces %}
-                            {% set slug = "jplist-" ~ province|slug %}
-                            <label class="custom-control custom-checkbox pl-3" for="{{ slug }}">
-                                <input data-path=".{{ slug }}" id="{{ slug }}" class="form-check-input custom-control-input" type="checkbox" checked>
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">{{ province }}</span>
-                            </label>
-                        {% endfor %}
-                    </div>
-
-                    <div class="jplist-group" data-control-type="checkbox-group-filter" data-control-action="filter" data-control-name="artist-hascontract" data-path=".artist-has-current-contract">
-                        <label class="custom-control custom-checkbox pl-3" for="checkbox-has-current-contract">
-                            <input data-path=".artist-has-current-contract" id="checkbox-has-current-contract" class="form-check-input custom-control-input" type="checkbox"{% if affiche_checked %} checked{% endif %}>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">A l'affiche</span>
-                        </label>
-                    </div>
+                    <div data-value="0"
+                         data-path="default"
+                         class="jplist-dd-item"
+                         data-selected="true">Tous les genres</div>
+                    {% for genre in genres %}
+                        {% set slug = "jplist-" ~ genre|slug %}
+                        <div data-value="{{ loop.index }}"
+                             data-path=".{{ slug }}"
+                             class="jplist-dd-item"
+                             data-selected="false">{{ genre }}</div>
+                    {% endfor %}
                 </div>
             </div>
-
-            <div class="row jp-list">
-                {% for artist in artists %}
-                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'bgwhite': true, 'jplist': true} %}
-                {% endfor %}
+            <div class="d-inline-block pl-2">
+                <label class="custom-control custom-checkbox pr-3" for="checkbox_scheduled">
+                    <input type="checkbox"
+                           data-jplist-control="checkbox-path-filter"
+                           data-path=".artist-has-current-contract"
+                           data-group="group1"
+                           id="checkbox_scheduled"
+                           name="checkbox_scheduled"
+                           class="form-check-input custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">A l'affiche</span>
+                </label>
             </div>
         {% endif %}
     </div>
-    <div class="separating-waves colored high prior"></div>
+    <div class="container pb-5">
+        <div class="row" data-jplist-group="group1">
+            {% for artist in artists %}
+                <div data-jplist-item class="col-6 col-md-4">
+                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': artist, 'jplist': true} %}
+                </div>
+            {% endfor %}
+            <div class="font-weight-bold w-75" data-jplist-control="no-results" data-group="group1" data-name="no-results">Aucun artiste n'a été trouvé pour ces critères de recherche.</div>
+        </div>
+    </div>
 {% endblock %}
 
 
-{% block additional_javascripts %}
+{% block javascripts %}
+    {{ parent() }}
     <script>
-        $('document').ready(function () {
-            $('#artists-catalogue').jplist({
-                itemsBox: '.jp-list'
-                ,itemPath: '.jp-list-item'
-                ,panelPath: '.jplist-panel'
-            });
-        });
+        jplist.init();
     </script>
 {% endblock %}

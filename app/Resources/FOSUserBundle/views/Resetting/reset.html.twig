@@ -1,8 +1,12 @@
 {% extends "@FOSUser/layout.html.twig" %}
 
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': 'Nouveau mot de passe', 'img': ''} %}
+{% endblock header %}
+
 {% block fos_user_content %}
 
-    <div class="container">
+    <div class="container pb-4">
         {% include "@FOSUser/Resetting/reset_content.html.twig" %}
     </div>
 {% endblock fos_user_content %}

@@ -2,10 +2,13 @@
 
 {% trans_default_domain 'FOSUserBundle' %}
 
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': 'Mail envoyé', 'img': ''} %}
+{% endblock %}
+
 {% block fos_user_content %}
     <div class="container">
-        <h3 class="rounded-title">Mail envoyé</h3>
-        <p>
+        <p class="w-75 font-weight-bold">
             {{ 'resetting.check_email'|trans({'%tokenLifetime%': tokenLifetime})|nl2br }}
         </p>
     </div>
