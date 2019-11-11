@@ -34,7 +34,7 @@
         {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img': ''} %}
     {% else %}
         {% if artist.profilepic is not null %}
-            {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img_absolute': true, 'img': asset(artist.webPath(artist.profilepic))} %}
+            {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img_absolute': true, 'img': asset(artist.webPath(artist.profilepic)), 'huge': true} %}
         {% else %}
             {% include ':patterns:header.html.twig' with {'title': artist.__toString} %}
         {% endif %}
