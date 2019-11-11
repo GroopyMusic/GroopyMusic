@@ -20,154 +20,130 @@
 {% block description %}{{ 'meta_description_artist'|trans({'%artist%': artist.artistname}) }} {{ artist.shortDescription }}{% endblock %}
 
 {% if artist.visible %}
-    {% block headtitle %}{{ artist.artistname }}{% endblock %}
+    {% block headtitle %}{{ artist.artistname }} | Un-Mute{% endblock %}
 {% endif %}
 
-{% block body %}
-    <div class="container container-large-margins w-md-75 mx-auto">
-        {% if artist.deleted %}
-            <h2>{{ 'artist_profile.see.deleted.title'|trans|raw }}</h2>
-            <p>{{ 'artist_profile.see.deleted.content'|trans|raw }}</p>
-        {% elseif not artist.visible and not owned %}
-            <h2>{{ artist }}</h2>
-            <p>{{ 'artist_profile.see.invisible.content'|trans|raw }}</p>
+{% block nav %}
+    {% include ':patterns:header_nav.html.twig' with {'page': 'artists'} %}
+{% endblock %}
+
+{% block header %}
+    {% if artist.deleted %}
+        {% include ':patterns:header.html.twig' with {'title': 'artist_profile.see.deleted.title'|trans, 'img':''} %}
+    {% elseif not artist.visible and not owned %}
+        {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img': ''} %}
+    {% else %}
+        {% if artist.profilepic is not null %}
+            {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img_absolute': true, 'img': asset(artist.webPath(artist.profilepic))} %}
         {% else %}
-            <div id="artist-profile-photos-carousel" class="carousel slide" data-ride="carousel" data-interval="8000">
-                <div class="carousel-inner h-100">
-                    {% if artist.profilepic is not null %}
-                        <div class="carousel-item active h-100 w-100">
-                            <div class="mx-auto d-block h-100 w-100 artist-profile-carousel-photo" style="background-image:url('{{ asset(artist.webPath(artist.profilepic)) }}')">
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% for photo in artist.photos %}
-                        <div class="carousel-item {% if artist.profilepic is null and loop.first %}active{% endif %} h-100 w-100">
-                            <div class="mx-auto d-block h-100 w-100 artist-profile-carousel-photo" style="background-image:url('{{ asset(artist.webPath(photo)) }}')">
-                            </div>
-                        </div>
-                    {% else %}
-                        {% if artist.profilepic is null %}
-                            <div class="carousel-item active h-100 w-100">
-                                <div class="mx-auto d-block h-100 w-100 artist-profile-carousel-photo">
-                                </div>
+            {% include ':patterns:header.html.twig' with {'title': artist.__toString} %}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        {% if artist.deleted %}
+            <p class="w-75 font-weight-bold">{{ 'artist_profile.see.deleted.content'|trans|raw }}</p>
+        {% elseif not artist.visible and not owned %}
+            <p class="w-75 font-weight-bold">{{ 'artist_profile.see.invisible.content'|trans|raw }}</p>
+        {% else %}
+            <div class="row">
+                <div class="col-12 col-md-8 p-5 text-center">
+                    <div class="container">
+                        {% if not artist.validated and not artist.visible and owned %}
+                            <p class="alert alert-warning" role="alert">{{ 'artist_profile.see.owned.to_be_examined'|trans|raw }}</p>
+                        {% elseif artist.validated and not artist.visible and owned %}
+                            <p class="alert alert-warning" role="alert">{{ 'artist_profile.see.owned.invisible'|trans|raw }}</p>
+                        {% elseif not artist.validated and artist.visible and owned %}
+                            <p class="alert alert-warning" role="alert">{{ 'artist_profile.see.owned.not_validated'|trans|raw }}</p>
+                        {% endif %}
+                        <h2 class="text-uppercase">Profil</h2>
+
+                        {% if owned %}
+                            <div class="text-right pb-4">
+                                <a class="btn btn-outline-primary" href="{{ path('artist_profile_edit', {'id':artist.id}) }}">{{ 'artist_profile.see.tabs.edition'|trans|raw }}</a>
                             </div>
                         {% endif %}
-                    {% endfor %}
-                </div>
-                {% if artist.allPhotos|length > 1 %}
-                    <a class="carousel-control-prev" href="#artist-profile-photos-carousel" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon rounded-circle btn-primary bg-primary p-2 p-md-3" aria-hidden="true"></span>
-                        <span class="sr-only">Précédent</span>
-                    </a>
-                    <a class="carousel-control-next" href="#artist-profile-photos-carousel" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon rounded-circle btn-primary bg-primary p-2 p-md-3" aria-hidden="true"></span>
-                        <span class="sr-only">Suivant</span>
-                    </a>
-                {% endif %}
-                <div class="artist-profile-title"><h3>{{ artist.artistname }}</h3></div>
-            </div>
 
-            <ul class="nav nav-tabs nav-justified artist-profile-tabs mt-5">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="home" aria-expanded="true" href="#artist-profile-home">{{ 'artist_profile.see.tabs.profile'|trans|raw }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" role="tab" aria-controls="bio" aria-expanded="false"  href="#artist-profile-bio">{{ 'artist_profile.see.tabs.biography'|trans|raw }}</a>
-                </li>
-                {% if owned %}
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="{{ path('artist_profile_edit', {'id':artist.id}) }}">{{ 'artist_profile.see.tabs.edition'|trans|raw }}</a>
-                    </li>
-                {% endif %}
-            </ul>
-
-            <div class="content-box">
-                {% if not artist.validated and not artist.visible and owned %}
-                    <p class="p-info">{{ 'artist_profile.see.owned.to_be_examined'|trans|raw }}</p>
-                {% elseif artist.validated and not artist.visible and owned %}
-                    <p class="p-info">{{ 'artist_profile.see.owned.invisible'|trans|raw }}</p>
-                {% elseif not artist.validated and artist.visible and owned %}
-                    <p class="p-info">{{ 'artist_profile.see.owned.not_validated'|trans|raw }}</p>
-                {% endif %}
-
-                <div class="tab-content artist-profile-content content-box-content border-left pl-md-5">
-                    <div class="tab-pane active" id="artist-profile-home" role="tabpanel">
-
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <div class="um-label um-semi-bold pr-2">
-                                    {{ 'artist_profile.see.short_description'|trans|raw }}
-                                </div>
-                                <p>
-                                    {{ artist.getShortDescription()|nl2br }}
-                                </p>
+                        {% if artist.genres is not empty %}
+                            <div class="mx-auto font-weight-bold my-3">
+                                {% for genre in artist.genres %}
+                                    <div class="text-uppercase text-left d-inline-block"><i class="text-primary fas fa-circle"></i> {{ genre }}</div><br />
+                                {% endfor %}
                             </div>
-                            <div class="col-12 col-md-6">
-                                {% if artist.genres is not empty %}
-                                    <div class="um-label um-semi-bold">{{ 'artist_profile.see.genres'|trans|raw }}</div>
-                                    <ul class="fa-ul">
-                                        {% for genre in artist.genres %}
-                                            <li><span class="fa-li"><i class="text-primary fas fa-circle"></i></span>{{ genre }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <h4 class="mt-4">{{ 'artist_profile.see.videos.title'|trans|raw }}</h4>
-                        {% for video in artist.videos %}
-                            {{ video.embedVideo|raw }}
-                        {% else %}
-                            <p>{{ 'artist_profile.see.videos.empty'|trans|raw }}</p>
-                        {% endfor %}
-
+                            <p class="font-weight-bold my-3">
+                                {{ artist.getShortDescription()|nl2br }}
+                            </p>
+                        {% endif %}
                         {% if artist.hasOneLink %}
-                            <h4 class="mt-4">{{ 'artist_profile.see.links.title'|trans|raw }}</h4>
-                            <ul class="um-list">
+                            <div id="artist-links" class="my-2">
                                 {% if artist.website is not null and artist.website is not empty %}
-                                    <li>
-                                        <a href="{{ artist.website }}">{{ 'artist_profile.see.links.website'|trans|raw }}</a>
-                                    </li>
+                                    <a class="p-3" href="{{ artist.website }}"><i class="fas fa-external-link-alt text-dark"></i></a>
                                 {% endif %}
                                 {% if artist.spotify is not null and artist.spotify is not empty %}
-                                    <li>
-                                        <a href="{{ artist.spotify }}">{{ 'artist_profile.see.links.spotify'|trans|raw }}</a>
-                                    </li>
+                                    <a class="p-3" href="{{ artist.spotify }}"><i class="fab fa-spotify text-dark"></i></a>
                                 {% endif %}
                                 {% if artist.twitter is not null and artist.twitter is not empty %}
-                                    <li>
-                                        <a href="{{ artist.twitter }}">{{ 'artist_profile.see.links.twitter'|trans|raw }}</a>
-                                    </li>
+                                    <a class="p-3" href="{{ artist.twitter }}"><i class="fab fa-twitter text-dark"></i></a>
                                 {% endif %}
                                 {% if artist.facebook is not null and artist.facebook is not empty %}
-                                    <li>
-                                        <a href="{{ artist.facebook }}">{{ 'artist_profile.see.links.facebook'|trans|raw }}</a>
-                                    </li>
+                                    <a class="p-3" href="{{ artist.facebook }}"><i class="fab fa-facebook-square text-dark"></i></a>
                                 {% endif %}
                                 {% if artist.instagram is not null and artist.bandcamp is not empty %}
-                                    <li>
-                                        <a href="{{ artist.instagram }}">{{ 'artist_profile.see.links.instagram'|trans|raw }}</a>
-                                    </li>
+                                    <a class="p-3" href="{{ artist.instagram }}"><i class="fab fa-instagram text-dark"></i></a>
                                 {% endif %}
                                 {% if artist.soundcloud is not null and artist.soundcloud is not empty %}
-                                    <li>
-                                        <a href="{{ artist.soundcloud }}">{{ 'artist_profile.see.links.soundcloud'|trans|raw }}</a>
-                                    </li>
+                                    <a class="p-3" href="{{ artist.soundcloud }}"><i class="fab fa-soundcloud text-dark"></i></a>
                                 {% endif %}
                                 {% if artist.bandcamp is not null and artist.bandcamp is not empty %}
-                                    <li>
-                                        <a href="{{ artist.bandcamp }}">{{ 'artist_profile.see.links.bandcamp'|trans|raw }}</a>
-                                    </li>
+                                    <a class="p-3" href="{{ artist.bandcamp }}"><i class="fab fa-bandcamp text-dark"></i></a>
                                 {% endif %}
-                            </ul>
+                            </div>
                         {% endif %}
-
                     </div>
-
-                    <div id="artist-profile-bio" class="tab-pane" role="tabpanel">
-                        <h3>{{ 'artist_profile.see.tabs.biography'|trans|raw }}</h3>
-                        <p>{{ artist.getBiography()|nl2br }}</p>
+                </div>
+                <div class="col-0 col-md-4 pr-0 mr-0">
+                    <div id="artist-profile-photos-carousel" class="carousel slide h-100" data-ride="carousel" data-interval="8000">
+                        <div class="carousel-inner h-100">
+                            {% for photo in artist.photos %}
+                                <div class="carousel-item {% if loop.first %}active{% endif %} h-100 w-100">
+                                    <div class="mx-auto d-block h-100 w-100 artist-profile-carousel-photo" style="background-image:url('{{ asset(artist.webPath(photo)) }}')">
+                                    </div>
+                                </div>
+                            {% else %}
+                                {% if artist.profilepic is not null %}
+                                    <div class="carousel-item active h-100 w-100">
+                                        <div class="mx-auto d-block h-100 w-100 artist-profile-carousel-photo" style="background-image:url('{{ asset(artist.webPath(artist.profilepic)) }}')">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
+                </div>
+
+                <div class="col-12 bg-dark text-white text-center pt-4 pb-5">
+                    <div class="container">
+                        <h2 class="text-uppercase text-primary">Biographie</h2>
+                        <p class="font-weight-light">{{ artist.getBiography()|nl2br }}</p>
+                    </div>
+                </div>
+
+                <div class="col-12 bg-white text-center pt-4 pb-5">
+                    <div class="container">
+                        <h2 class="mt-4 text-uppercase">{{ 'artist_profile.see.videos.title'|trans|raw }}</h2>
+                        <div class="row">
+                            {% for video in artist.videos %}
+                                <div class="col-6">{{ video.embedVideo|raw }}</div>
+                            {% else %}
+                                <p class="font-weight-bold w-75">{{ 'artist_profile.see.videos.empty'|trans|raw }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+
                 </div>
             </div>
         {% endif %}
