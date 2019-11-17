@@ -222,7 +222,17 @@ button, a { cursor: pointer; }
     text-align: center;
     @extend .text-uppercase;
     a {
-      color: rgba(231, 154, 65, 0.71);
+      color: rgba(231, 154, 65, 0.7);
+      font-weight: 300;
+      &.dropdown-item {
+        font-weight: normal;
+      }
+      &#dropdownMenuButton {
+        @extend .border-primary, .round-all, .text-white;
+        &::after {
+          color: rgba(231, 154, 65, 0.7);
+        }
+      }
     }
     .nav-link {
       &:hover, &:focus, &.focus {
@@ -232,8 +242,11 @@ button, a { cursor: pointer; }
         border-bottom: white 1px solid;
       }
     }
+
+
   }
 }
+
 .nav-link,
 .navbar-brand {
   color: #E79A41;
