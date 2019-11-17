@@ -635,3 +635,75 @@ input[type=submit], button[type=submit] {
     font-size: 1.5rem;
   }
 }
+
+.nav-profile {
+  color: rgb(20, 19, 19);
+}
+
+.nav-profile:hover {
+  color: $primary;
+}
+
+.profile-user-icon {
+  position: absolute;
+  margin-top: -80px;
+  width: 100%;
+}
+
+.profile-user-icon-img {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.profile-contextual-menu {
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.profile-user-info {
+  margin-bottom: 50px;
+}
+
+.profile-table-info {
+  padding: 30px;
+  border-radius: 25px;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 90px -70px;
+}
+
+.profile-table-orange-border {
+  border-right:2px solid orange;
+  padding:15px;
+}
+
+.info-btn {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.profile-more-infos-text {
+  color: #888888;
+}
+
+.profile-contextual-menu-active {
+  color: $primary;
+}
+
+.danger-color-title {
+  color: #690101;
+}
+
+.btn-remove-facebook-account {
+  background: linear-gradient(90deg, #690101 0%, rgba(231, 154, 65, 0) 96.2%), #690101;
+  box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  color: white;
+}
+
+

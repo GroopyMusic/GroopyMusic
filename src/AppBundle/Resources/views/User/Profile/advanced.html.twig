@@ -5,36 +5,38 @@
 {% form_theme form ':Form:bootstrap_4_layout.html.twig' %}
 
 {% block user_profile_content %}
-    <div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" aria-labelledby="signOutModalLabel" aria-hidden="true">>
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p>{{ 'profile.advanced.deletion.warning'|trans|raw }}</p>
-                </div>
-                <div class="modal-footer">
-                    {{ form_start(form) }}
-                        {{ form_widget(form.submit) }}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'profile.advanced.deletion.cancel'|trans|raw }}</button>
-                    {{ form_end(form) }}
+    <div class="profile-table-info">
+        <div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" aria-labelledby="signOutModalLabel" aria-hidden="true">>
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>{{ 'profile.advanced.deletion.warning'|trans|raw }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            {{ form_start(form) }}
+                                {{ form_widget(form.submit) }}
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'profile.advanced.deletion.cancel'|trans|raw }}</button>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <h4 class="danger-color">{{ 'profile.advanced.deletion.title'|trans|raw }}</h4>
-    <p>
-        {{ 'profile.advanced.deletion.explanation'|trans|raw }}
-    </p>
+            <h4 class="danger-color-title">{{ 'profile.advanced.deletion.title'|trans|raw|upper }}</h4>
+            <p class="profile-more-infos-text"><em>
+                {{ 'profile.advanced.deletion.explanation'|trans|raw }}
+                </em></p>
 
-    <label class="custom-control custom-checkbox pr-3" for="checkbox-suppress-account">
-        <input type="checkbox" id="checkbox-suppress-account" data-toggle="collapse" data-target="#collapse-suppress-account" class="custom-control-input">
-        <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">{{ 'profile.advanced.deletion.checkbox'|trans|raw }}</span>
-    </label>
+            <label class="custom-control custom-checkbox pr-3" for="checkbox-suppress-account">
+                <input type="checkbox" id="checkbox-suppress-account" data-toggle="collapse" data-target="#collapse-suppress-account" class="custom-control-input">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">{{ 'profile.advanced.deletion.checkbox'|trans|raw }}</span>
+            </label>
 
-    <div class="collapse" id="collapse-suppress-account">
-        <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#signOutModal">
-            {{ 'profile.advanced.deletion.confirm'|trans|raw }}
-        </button>
+            <div class="collapse" id="collapse-suppress-account">
+                <button id="button-suppress-account" type="button" class="btn btn-remove-facebook-account" data-toggle="modal" data-target="#signOutModal">
+                    {{ 'profile.advanced.deletion.confirm'|trans|raw|upper }}
+                </button>
+            </div>
     </div>
 {% endblock %}

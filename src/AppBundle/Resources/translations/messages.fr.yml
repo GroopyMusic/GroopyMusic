@@ -850,14 +850,14 @@ labels:
     firstname: Prénom
     lastname: Nom
     newemail:
-      submit: Changer mon adresse e-mail
+      submit: CHANGER MON ADRESSE E-MAIL
     newsletter: Je souhaite recevoir des newsletters et autres communications commerciales d'Un-Mute Asbl
     preferences:
       submit: Enregistrer
     profile:
       firstname: Prénom
       lastname: Nom de famille
-      submit: Enregistrer
+      submit: ENREGISTRER
     accept_conditions: J'accepte les conditions générales d'utilisation
     askedEmail:
       first: Nouvelle adresse e-mail demandée
