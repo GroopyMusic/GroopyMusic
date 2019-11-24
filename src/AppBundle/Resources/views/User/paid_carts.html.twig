@@ -48,20 +48,38 @@
                                     {{ contract.date|date('d/m/Y') }}
                                 </div>
 
+
+                                {% if contract.purchases|length == 1  %}
+                                    {% for purchase in contract.purchases %}
+                                        {% if purchase.artist is not null %}
+                                            <div class="col-6 text-left text-uppercase px-3 py-2">
+                                                Artiste soutenu
+                                            </div>
+                                            <div class="col-6 border-left border-primary text-left pl-5 pr-2 py-2">
+                                               {{ purchase.artist }}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+
                                 <div class="col-6 text-left text-uppercase px-3 py-2">
                                     {{ 'my_orders.labels.quantity'|trans|raw }}
                                 </div>
+
                                 <div class="col-6 border-left border-primary text-left pl-5 pr-2 py-2">
                                     {% if contract.purchases|length > 1 %}
                                         {% for purchase in contract.purchases %}
                                             {{ purchase.quantity }}x "{{ purchase.counterpart.name }}" {% if purchase.quantityPromotional > 0 %}
                                             <br/>(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
                                             <br/>(prix unitaire : {{ purchase.unitaryPrice}} €)
+                                            {% if purchase.artist is not null %}
+                                                <br/>(artiste soutenu : {{ purchase.artist }})
+                                            {% endif %}
                                         {% endfor %}
                                     {% else %}
                                         {% for purchase in contract.purchases %}
-                                            {{ purchase.quantity }} {% if purchase.quantityPromotional > 0 %}
-                                            <br/>(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
+                                            {{ purchase.quantity }}
+                                            {% if purchase.quantityPromotional > 0 %}<br/>(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
                                         {% endfor %}
                                     {% endif %}
                                 </div>

@@ -14,6 +14,7 @@ class LineUp
     public function __construct()
     {
         $this->performances = new ArrayCollection();
+        $this->ticketsSold = 0;
     }
 
     public function __toString()
@@ -60,6 +61,10 @@ class LineUp
         return $this->getPerformances();
     }
 
+    public function addTicketsSold($quantity) {
+        $this->ticketsSold += $quantity;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -84,6 +89,11 @@ class LineUp
      * @ORM\ManyToOne(targetEntity="Stage", inversedBy="lineups")
      */
     private $stage;
+
+    /**
+     * @ORM\Column(name="tickets_sold", type="float")
+     */
+    private $ticketsSold;
 
     /**
      * Add performance
@@ -141,5 +151,13 @@ class LineUp
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setTicketsSold($quantity) {
+        $this->ticketsSold = $quantity;
+        return $this;
+    }
+    public function getTicketsSold() {
+        return $this->ticketsSold;
     }
 }
