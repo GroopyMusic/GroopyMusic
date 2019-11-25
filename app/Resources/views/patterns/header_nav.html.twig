@@ -41,17 +41,31 @@
             </ul>
         {% else %}
             <ul class="nav navbar-nav navbar-right ml-auto">
-                <li class="nav-item dropdown d-inline-block">
-                    <a id="dropdownMenuButton" class="btn uppercase dropdown-toggle px-1 px-md-2 px-lg-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ 'header.nav.my_account'|trans|raw }}</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{ path('user_my_artists') }}">{{ 'header.nav.my_artists'|trans|raw }}</a>
-                        <a class="dropdown-item" href="{{ path('fos_user_profile_show') }}">{{ 'header.nav.my_profile'|trans|raw }}</a>
-                        <a class="dropdown-item" href="{{ path('user_paid_carts') }}">{{ 'header.nav.my_orders'|trans|raw }}</a>
-                        {% if is_granted('ROLE_TICKETING') %}<a class="dropdown-item" href="{{ path('ticketing_index') }}">Ticketing</a>{% endif %}
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a>
+                <li class="nav-item-profile dropdown d-inline-block">
+                    <a class="btn btn-my-profile uppercase dropdown-toggle px-1 px-md-2 px-lg-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ 'header.nav.my_account'|trans|raw }}</a>
+                    <div class="dropdown-menu profile-dropdown" aria-labelledby="dropdownMenuButton">
+                        <div class="profile-dropdown-item">
+                            <a href="{{ path('user_my_artists') }}" class="profile-dropdown-item-a">{{ 'header.nav.my_artists'|trans|raw }}</a>
+                        </div>
+                        <div class="profile-dropdown-item">
+                            <a class="profile-dropdown-item-a" href="{{ path('fos_user_profile_show') }}">{{ 'header.nav.my_profile'|trans|raw }}</a>
+                        </div>
+                        <div class="profile-dropdown-item">
+                            <a class="profile-dropdown-item-a" href="{{ path('user_paid_carts') }}">{{ 'header.nav.my_orders'|trans|raw }}</a>
+                        </div>
+                        {% if is_granted('ROLE_TICKETING') %}
+                            <div class="profile-dropdown-item">
+                                <a class="profile-dropdown-item-a" href="{{ path('ticketing_index') }}">Ticketing</a>
+                            </div>
                         {% endif %}
-                        <a class="dropdown-item logout-link" href="{{ path('fos_user_security_logout') }}">{{ 'header.nav.log_out'|trans|raw }}</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="profile-dropdown-item">
+                                <a class="profile-dropdown-item-a" href="{{ path('sonata_admin_dashboard') }}">Administration</a>
+                            </div>
+                        {% endif %}
+                        <div class="profile-dropdown-item">
+                            <a class="profile-dropdown-item-a logout-link" href="{{ path('fos_user_security_logout') }}">{{ 'header.nav.log_out'|trans|raw }}</a>
+                        </div>
                     </div>
                 </li>
             </ul>

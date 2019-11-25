@@ -3,39 +3,38 @@
 {% extends "@App/User/Artist/edit_profile_layout.html.twig" %}
 
 {% block artist_edit_profile_content %}
+    <div class="profile-table-info">
+        {% if owners|length > 1 or requests|length > 0 %}
+        <h4>{{ 'owners.others.title'|trans|raw }}</h4>
+        <ul>
+        {% for owner in owners if owner.user.id != app.user.id %}
+            <li>{{ owner.user.displayName }}
+                {% if owner.role is not null %}<br> {{ 'owners.others.role_label'|trans|raw }} : {{ owner.role }}{% endif %}
+            </li>
+        {% endfor %}
+        {% for request in requests %}
+            <li>{{ request.email }} - {{ 'owners.others.pending'|trans|raw }}
+                ({{ 'owners.others.added_by'|trans|raw }} {{ request.demander.displayName }})
+                {% if request.demander.id == app.user.id %}<a href="{{ path('artist_cancel_ownership_request', {'id': artist.id, 'request_id': request.id}) }}">{{ 'owners.others.cancel'|trans|raw }}</a>{% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
 
-    {% if owners|length > 1 or requests|length > 0 %}
-    <h4>{{ 'owners.others.title'|trans|raw }}</h4>
-    <ul>
-    {% for owner in owners if owner.user.id != app.user.id %}
-        <li>{{ owner.user.displayName }}
-            {% if owner.role is not null %}<br> {{ 'owners.others.role_label'|trans|raw }} : {{ owner.role }}{% endif %}
-        </li>
-    {% endfor %}
-    {% for request in requests %}
-        <li>{{ request.email }} - {{ 'owners.others.pending'|trans|raw }}
-            ({{ 'owners.others.added_by'|trans|raw }} {{ request.demander.displayName }})
-            {% if request.demander.id == app.user.id %}<a href="{{ path('artist_cancel_ownership_request', {'id': artist.id, 'request_id': request.id}) }}">{{ 'owners.others.cancel'|trans|raw }}</a>{% endif %}
-        </li>
-    {% endfor %}
-    </ul>
-    {% endif %}
+        <h4>{{ 'owners.add.title'|trans|raw }}</h4>
+        <p class="profile-more-infos-text"><em><strong>
+            {{ 'owners.add.intro'|trans|raw }}<br>
+                    {{ 'owners.add.case_1'|trans|raw }}<br>
+                        {{ 'owners.add.case_2'|trans|raw }}
+                        </strong></em></p>
 
-    <h4>{{ 'owners.add.title'|trans|raw }}</h4>
-    <p>
-        {{ 'owners.add.intro'|trans|raw }}
-    </p>
-    <ul class="um-list">
-        <li>{{ 'owners.add.case_1'|trans|raw }}</li>
-        <li>{{ 'owners.add.case_2'|trans|raw }}</li>
-    </ul>
-
-    {% form_theme form 'AppBundle:Themes:ownerships_collection.html.twig' 'jquery.collection.html.twig' %}
-    {{ form_start(form) }}
-        <div class="form_group mb-3">
-            {{ form_widget(form.ownership_requests_form) }}
-        </div>
-    {{ form_rest(form) }}
+        {% form_theme form 'AppBundle:Themes:ownerships_collection.html.twig' 'jquery.collection.html.twig' %}
+        {{ form_start(form) }}
+            <div class="form_group mb-3">
+                {{ form_widget(form.ownership_requests_form) }}
+            </div>
+        {{ form_rest(form) }}
+    </div>
 
 {% endblock %}
 
@@ -44,8 +43,8 @@
 
     <script type="text/javascript">
         um_collection({
-            add: '<a class="btn btn-outline-secondary" href="#">{{ 'owners.add.button'|trans|raw }}</a>',
-            remove:'<a class="danger-color" href="#">{{ 'owners.delete'|trans|raw }}</a>'
+            add: '<a class="btn add-btn" href="#">+</a>',
+            remove:'<a class="danger-color delete-btn" href="#">{{ 'owners.delete'|trans|raw }}</a>'
         });
     </script>
 {% endblock %}

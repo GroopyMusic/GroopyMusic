@@ -494,6 +494,7 @@ new_artist:
   intro: |
       Als u een artiest wilt maken op Un-Mute, vult u het volgende formulier in. We nemen contact met je op voordat je het profiel dat je hebt gemaakt openbaar maakt.
       In de tussentijd kun je foto's en video's aan deze artiest toevoegen en zijn profiel uitbreiden.
+  intro-more-artists: Vous pouvez créer plusieurs artistes si vous le souhaitez. Pour créer un nouvel artiste, c’est par ici !
   warning: Door een artiest te maken, verklaar je dat je de vertegenwoordiger bent, of een van de leden als het een groep is.
   urls_explanation: Voer in de volgende velden uw mogelijke links in als geldige URL's<strong>die beginnen met<em>http://</em> of <em>https://</em></strong>
   
@@ -506,6 +507,8 @@ my_artists:
       Maak je identiteit op Un-Mute en organiseer je concerten zonder risico te nemen.
   new_event: Creëert een evenement
   new_artist: Creëert een artiest
+  another_artist: Add another artist
+  new_artist_form_title: Creatie nieuwe artiest
   no_available_artist: "Noot : je kunt geen nieuw evenement voor je artiest (en) creëeren omdat al je artiesten al op een ander evenement draaien."
 
 profile:

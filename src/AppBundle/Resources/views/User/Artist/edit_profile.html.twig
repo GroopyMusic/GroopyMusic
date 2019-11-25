@@ -3,10 +3,11 @@
 {% extends '@App/User/Artist/edit_profile_layout.html.twig' %}
 
 {% block artist_edit_profile_content %}
+    <div class="profile-table-info">
+        {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
 
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
-
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_rest(form) }}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_rest(form) }}
+    </div>
 {% endblock  %}

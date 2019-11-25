@@ -525,17 +525,21 @@ new_artist:
   intro: |
       Pour créer un artiste sur Un-Mute, merci de remplir le formulaire suivant. Nous vous contacterons avant de rendre public le profil que vous aurez créé.
       Pendant ce temps, vous pourrez ajouter des photos et vidéos à cet artiste et étoffer son profil.
+  intro-more-artists: Vous pouvez créer plusieurs artistes si vous le souhaitez. Pour créer un nouvel artiste, c’est par ici !
   warning: En créant un artiste, vous certifiez en être le représentant, ou l'un des membres s'il s'agit d'un groupe.
   urls_explanation: Dans les champs suivants, veuillez introduire vos éventuels liens sous forme d'URL valides <strong>commençant par <em>http://</em> ou <em>https://</em></strong>
   phone_explanation: Si vous renseignez un numéro de téléphone, il ne sera utilisé que par l'équipe Un-Mute afin de vous contacter. Ce numéro ne sera pas rendu public.
 
 my_artists:
-  title: Mes artistes
+  title: Espace artistes
   intro: |
-      Vous êtes un artiste musical ? Vous faites partie d'un groupe ?
-      Créez votre identité sur Un-Mute et organisez vos concerts sans prendre aucun risque.
+    Il semblerait que vous soyez nouveau dans cet espace !
+    Vous êtes un artiste musical ? Vous faites partie d’un groupe ?
+    Créez votre identité sur Un-Mute ! Cette dernière sera validée après une séance d’information. Pour vous y inscrire, contactez-nous !
   new_event: Créer un événement
-  new_artist: Créer un artiste
+  new_artist: Créer mon identité artiste
+  another_artist: Ajouter un nouvel artiste
+  new_artist_form_title: Création nouvel artiste
   no_available_artist: "Note : vous ne pouvez pas créer de nouvel événement pour votre/vos artiste(s) parce que tous vos artistes sont déjà lancés sur un autre événement."
 
 profile:
@@ -570,7 +574,7 @@ artist_profile:
     medias: Vidéos
     owners: Propriétaires
     see: Voir le profil
-    leave: Quitter l'artiste
+    leave: Options avancées
   see:
     deleted:
       title: Artiste supprimé

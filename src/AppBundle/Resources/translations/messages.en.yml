@@ -420,6 +420,7 @@ new_artist:
       To create your artist profile, please fill in the form below.
       Once your profile created, you will be contacted by the Un-Mute team and your artist profile will appear on our <a href="%catalog_url%">artists list</a>.
       It will also be possible to add photos & videos to your artist profile.
+  intro-more-artists: You can create more than one artist if you wish. Press the button to create another one !
   warning: By creating an artist profile, you certify being its representative, or one of the members if it is a band.
   urls_explanation: Please fill in your network links below, <strong>starting with <em>http://</em> or <em>https://</em></strong>
 
@@ -430,6 +431,8 @@ my_artists:
       Create your identity on Un-Mute and organize your own festivals while taking no risk at all.
   new_event: Create an event
   new_artist: Create an artist profile
+  another_artist: Add another artist
+  new_artist_form_title: Creation new artist
   no_available_artist: "Note: you can't create events at the moment as all of your artists are already in a running campaign."
 
 profile:

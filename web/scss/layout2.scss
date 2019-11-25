@@ -233,6 +233,10 @@ button, a { cursor: pointer; }
       }
     }
   }
+  .nav-item-profile {
+    text-align: center;
+    @extend .text-uppercase;
+  }
 }
 .nav-link,
 .navbar-brand {
@@ -245,6 +249,9 @@ button, a { cursor: pointer; }
 .toplogo {
   height: 30%;
   width: 30%;
+}
+.dropdownMenuButton {
+  color: rgba(231, 154, 65, 0.71);
 }
 .y-middle {
   display: flex;
@@ -487,6 +494,19 @@ input[type=submit], button[type=submit] {
   color: white;
 }
 
+.btn-my-profile {
+  background: #1A2326;
+  border-color: #E7AA41;
+  box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  color: white;
+}
+
+.btn-my-profile:hover {
+  text-decoration: none;
+  color: white;
+}
+
 .sepia {
   &:before {
     position: absolute;
@@ -642,6 +662,7 @@ input[type=submit], button[type=submit] {
 
 .nav-profile:hover {
   color: $primary;
+  text-decoration: none;
 }
 
 .profile-user-icon {
@@ -706,4 +727,71 @@ input[type=submit], button[type=submit] {
   color: white;
 }
 
+.profile-dropdown {
+  background: #1A2326;
+}
 
+.profile-dropdown-item {
+  border-bottom: solid 0.1em rgba(231, 154, 65, 0.71);
+  margin-left: 5px;
+  margin-right: 5px
+}
+
+.profile-dropdown-item-a {
+  color: white;
+  padding-left: 10px;
+}
+
+.profile-dropdown-item-a:hover {
+  color: rgba(231, 154, 65, 0.71);
+  text-decoration: none;
+}
+
+.artist-body {
+  margin: 50px auto;
+}
+
+.artist-create-btn {
+  margin-top: 20px;
+}
+
+.artist-new-page {
+  margin-top: 20px;
+  margin-bottom: 50px
+}
+
+.artist-new-form {
+  border-radius: 25px;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 90px -70px;
+}
+
+.artist-new-form-title {
+  background: black;
+  border-radius: 25px 25px 0px 0px;
+  padding: 30px 20px 20px 20px;
+  p {
+    color: rgba(231, 154, 65, 0.71);
+    font-size: 25px;
+    text-align: center
+  }
+}
+
+.artist-new-form-content {
+  border-radius: 0px 0px 25px 25px;
+  padding: 20px 20px 20px 20px
+}
+
+.add-btn {
+  font-size: 40px;
+}
+
+.add-btn:active {
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+
+.delete-btn {
+  color: #690101;
+}

@@ -2,40 +2,45 @@
 
 {% block headtitle %}{{ artist.artistname }}{% endblock %}
 
-{% block body %}
-    <div class="container">
-        <h3 class="mb-4 text-center">{{ 'artist_profile.title'|trans({'%artist%': artist.artistname})|raw }}</h3>
+{% block header %}
+    <div style="position: relative">
+        {% include ':patterns:header.html.twig' with {'img': photo, 'title': artist.artistname|trans|raw } %}
+    </div>
+{% endblock %}
 
+{% block body %}
+    <div class="container" style="margin-top: 50px">
         <div class="container content-box">
             <div class="row content-box-content content-box-content-zones content-box-content-zones-vert no-padding-left">
-                <div class="col-xs-12 col-md-4 content-box-content-zone content-box-content-zone-vert no-padding-left no-padding-right">
+                <div class="col-xs-12 col-md-4 content-box-content-zone content-box-content-zone-vert no-padding-left no-padding-right profile-contextual-menu">
                     <ul class="nav flex-column">
-                        <li class="nav-item{% if active_link == 'infos' %} active{% endif %}">
-                            <a class="nav-link " href="{{ path('artist_profile_edit', {'id': artist.id}) }}">{{ 'artist_profile.menu.edit'|trans|raw }}</a>
+                        <li class="nav-item nav-profile">
+                            <i class="fas fa-user"></i> <a class="nav-profile" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ 'artist_profile.menu.see'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'pp' %} active{% endif %}">
-                            <a class="nav-link " href="{{ path('artist_edit_profilepic', {'id': artist.id}) }}">{{ 'artist_profile.menu.profile_pic'|trans|raw }}</a>
+                        <li class="nav-item{% if active_link == 'infos' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-pen"></i> <a class="{% if active_link == 'infos' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('artist_profile_edit', {'id': artist.id}) }}">{{ 'artist_profile.menu.edit'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'photos' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('artist_edit_photos', {'id': artist.id}) }}">{{ 'artist_profile.menu.other_pics'|trans|raw }}</a>
+                        <li class="nav-item{% if active_link == 'pp' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-camera"></i> <a class="{% if active_link == 'pp' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('artist_edit_profilepic', {'id': artist.id}) }}">{{ 'artist_profile.menu.profile_pic'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'medias' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('artist_edit_medias', {'id': artist.id}) }}">{{ 'artist_profile.menu.medias'|trans|raw }}</a>
+                        <li class="nav-item{% if active_link == 'photos' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-camera"></i> <a class="{% if active_link == 'photos' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('artist_edit_photos', {'id': artist.id}) }}">{{ 'artist_profile.menu.other_pics'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'owners' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('artist_owners', {'id': artist.id}) }}">{{ 'artist_profile.menu.owners'|trans|raw }}</a>
+                        <li class="nav-item{% if active_link == 'medias' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-play-circle"></i> <a class="{% if active_link == 'medias' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('artist_edit_medias', {'id': artist.id}) }}">{{ 'artist_profile.menu.medias'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">{{ 'artist_profile.menu.see'|trans|raw }}</a>
+                        <li class="nav-item{% if active_link == 'owners' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-key"></i> <a class="{% if active_link == 'owners' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('artist_owners', {'id': artist.id}) }}">{{ 'artist_profile.menu.owners'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'leave' %} active{% endif %}">
-                            <a class="nav-link danger-color" href="{{ path('artist_leave', {'id': artist.id}) }}">{{ 'artist_profile.menu.leave'|trans|raw }}</a>
+                        <li class="nav-item{% if active_link == 'leave' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-cog"></i> <a class="danger-color {% if active_link == 'leave' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('artist_leave', {'id': artist.id}) }}">{{ 'artist_profile.menu.leave'|trans|raw|upper }}</a>
                         </li>
                     </ul>
                 </div>
 
-                <div class="col-xs-12 col-md-8 content-box-content-zone content-box-content-zone-vert no-border">
-                    {% block artist_edit_profile_content %}{% endblock %}
+                <div class="col-xs-12 col-md-8 content-box-content-zone content-box-content-zone-vert no-border" style="margin-bottom: 50px">
+                    {% block artist_edit_profile_content %}
+                    {% endblock %}
                 </div>
             </div>
         </div>
