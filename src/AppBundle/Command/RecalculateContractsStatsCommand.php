@@ -74,11 +74,14 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
                             if($purchase->getFirstArtist() != null) {
                                 $aps[$purchase->getFirstArtist()->getId()]->addTicketsSold($fdIncrease);
                                 $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addTicketsSold($fdIncrease);
-                                $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addMoneyPoints($mi);
+                                $aps[$purchase->getFirstArtist()->getId()]->addMoneyPoints($mi);
                             }
                             else {
-                                $nbLineUps = count($lineUps);
-                                foreach ($lineUps as $lineUp) {
+                                $lineUpsFiltered = array_filter($lineUps->toArray(), function(LineUp $lineUp) {
+                                    return !$lineUp->isSoldOut() && !$lineUp->isFailed();
+                                });
+                                $nbLineUps = count($lineUpsFiltered);
+                                foreach ($lineUpsFiltered as $lineUp) {
                                     /** @var LineUp $lineUp */
                                     foreach($lineUp->getArtistPerformances() as $perf) {
                                         $aps[$perf->getArtist()->getId()]->addMoneyPoints($mi);

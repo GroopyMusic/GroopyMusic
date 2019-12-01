@@ -116,3 +116,12 @@
         } )) }}
     </div>
 {% endblock %}
+
+{% if refresh %}
+    {% block javascripts %}
+        {{ parent() }}
+        <script>
+            $.get("{{ url('recalculate_stats') }}");
+        </script>
+    {% endblock %}
+{% endif %}

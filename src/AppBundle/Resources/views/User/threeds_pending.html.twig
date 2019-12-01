@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <div class="container">
-        <h3 class="text-center">{{ 'threeds.title'|trans|raw }}</h3>
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'img': '', 'title':'threeds.title'|trans|raw } %}
+{% endblock %}
 
+{% block body %}
+    <div class="container pt-4">
         <form method="post" action="{{ path('user_cart_payment_bancontact_stripe') }}" id="payment-form">
         </form>
 

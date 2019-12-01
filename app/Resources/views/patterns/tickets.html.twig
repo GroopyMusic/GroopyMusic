@@ -42,7 +42,7 @@
                         {% if counterpart.disabled %}
                             {% do purchase.setRendered(true) %}
                             <p><i>Pas disponible pour l'instant</i></p>
-                        {% elseif contractArtist.nbAvailable(counterpart) == 0 %}
+                        {% elseif counterpart.getNbAvailable() == 0 %}
                             {% do purchase.setRendered(true) %}
                             <p><i>SOLD OUT</i></p>
                         {% else %}

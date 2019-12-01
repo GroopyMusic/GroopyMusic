@@ -64,6 +64,24 @@ class CounterPart implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
+    public function isSoldOut() {
+        return $this->getNbAvailable() < 1;
+    }
+
+    // Unmapped, memoized
+    private $nbAvailable = null;
+    public function getNbAvailable() {
+        if($this->nbAvailable == null) {
+            $this->nbAvailable = 0;
+            foreach ($this->festivaldays as $festivalday) {
+                foreach ($festivalday->getLineUps() as $lineUp) {
+                    $this->nbAvailable += max($lineUp->getNbAvailable(), 0);
+                }
+            }
+        }
+        return $this->nbAvailable;
+    }
+
     // Unmapped, memoized
     private $potential_artists = null;
 
@@ -73,13 +91,14 @@ class CounterPart implements TranslatableInterface
             $artists = [];
 
             foreach ($this->festivaldays as $festivalday) {
-
                 /** @var  FestivalDay $festivalday */
                 if($festivalday->hasLineUps()) {
                     foreach($festivalday->getLineUps() as $lineUp) {
                         /** @var LineUp $lineUp */
-                        foreach($lineUp->getArtistPerformances() as $perf) {
-                            $artists[] = $perf->getArtist();
+                        if(!$lineUp->isSoldOut() && !$lineUp->isFailed()) {
+                            foreach($lineUp->getArtistPerformances() as $perf) {
+                                $artists[] = $perf->getArtist();
+                            }
                         }
                     }
                 }

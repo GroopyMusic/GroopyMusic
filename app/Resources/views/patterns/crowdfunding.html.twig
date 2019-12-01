@@ -4,17 +4,35 @@
         <div class="col-12 col-md-6 text-uppercase my-auto">
             Date de validation<br />
             <b class="text-white">{{ contractArtist.dateEnd|date('d/m/Y') }}</b>{% set orders = contractArtist.nbOrdersPaid %}
-            {% if orders > 0 %}<br />
-                <b class="text-white">{{ orders }} contributeur{% if orders > 1 %}s{% endif %}</b>{% endif %}
         </div>
         <div class="col-12 col-md-6 text-uppercase">
-            {% if contractArtist.state in contractArtist.successfulStates %}
-                <div class="d-inline-block align-middle pr-3">
-                    <i class="round-icon fas fa-check"></i>
-                </div>
-            {% endif %}
             <div class="d-inline-block align-middle">
                 {{ ('event.'~contractArtist.state)|trans({'%soldout_percentage%':contractArtist.percentSoldOutRelativeToObjective})|raw }}
+                {% if orders > 0 %}<br />
+                    <b class="text-white">{{ orders }} contributeur{% if orders > 1 %}s{% endif %}</b>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row mt-5">
+            {% for lineUp in contractArtist.lineUps %}
+                {% set percent = lineUp.isSuccessful ? 100 : lineUp.getPercentageObjective %}
+                {% set color = lineUp.isSuccessful ? 'green' : lineUp.isFailed ? 'red' : 'orange' %}
+                {% set text = lineUp.isSuccessful ? 'Confirmé' : lineUp.isFailed ? 'Annulé' : percent ~ ' %' %}
+                <div class="col-4 col-md-2 px-2 text-center">
+                    <h3 class="text-primary small-title">{{ lineUp.festivalDay.date|date('l')|trans }} - {{ lineUp.stage }}</h3>
+                    <div class="small font-weight-light">{% for performance in lineUp.performances %}{{ performance.artist }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
+                    <div class="d-inline-block">
+                        <div class="c100 p{{ percent }} {{ color }}">
+                            <span class="{{ color}}">{{ text }}</span>
+                            <div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
             </div>
         </div>
     </div>

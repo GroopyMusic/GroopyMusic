@@ -41,74 +41,238 @@ section {
     }
   }
 }
+// VARS
+$circle-width: 0.09em;
+$circle-width-hover: 0.07em;
 
-.progress {
-  width: 100px;
-  height: 100px;
-  background: none;
-  position: relative;
+// colors default
+$primary-color: #000000; // czarny
+$secondary-color: #dfe8ed; //szary bcg
+$bg-color: #ffffff; //srodkowy bezowy
+
+
+
+// colors customized
+$primary-color-blue: #30bae7;
+$primary-color-green: #15c7a8;
+$primary-color-orange: #eb7d4b;
+$primary-color-pink: #d74680;
+$primary-color-span: #3c4761;
+$primary-color-red: #9f1b1c;
+
+@mixin rotate($degrees) {
+  -webkit-transform: rotate($degrees);
+  -moz-transform: rotate($degrees);
+  -ms-transform: rotate($degrees);
+  -o-transform: rotate($degrees);
+  transform: rotate($degrees);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=#{cos($degrees)}, M12=#{-1*sin($degrees)}, M21=#{sin($degrees)}, M22=#{cos($degrees)})";
+  filter:  progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=#{cos($degrees)}, M12=#{-1*sin($degrees)}, M21=#{sin($degrees)}, M22=#{cos($degrees)});
 }
 
-.progress::after {
-  content: "";
-  width: 100%;
-  height: 100%;
+.small-title {
+  font-size: 1rem;
+}
+
+.rect-auto{
+  clip: rect(auto, auto, auto, auto);
+}
+
+.pie {
+  position: absolute;
+  border: $circle-width solid $primary-color;
+  width: 1 - (2 * $circle-width);
+  height: 1 - (2 * $circle-width);
+  clip: rect(0em, 0.5em, 1em, 0em);
   border-radius: 50%;
-  border: 6px solid #eee;
-  position: absolute;
-  top: 0;
-  left: 0;
+  @include rotate(0deg);
 }
 
-.progress>span {
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  z-index: 1;
+.pie-fill {
+  @include rotate(180deg);
 }
 
-.progress .progress-left {
-  left: 0;
-}
+// main
+.c100 {
 
-.progress .progress-bar {
-  width: 100%;
-  height: 100%;
-  background: none;
-  border-width: 6px;
-  border-style: solid;
-  position: absolute;
-  top: 0;
-}
+  *, *:before, *:after {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+  }
 
-.progress .progress-left .progress-bar {
-  left: 100%;
-  border-top-right-radius: 80px;
-  border-bottom-right-radius: 80px;
-  border-left: 0;
-  -webkit-transform-origin: center left;
-  transform-origin: center left;
-}
+  position: relative;
+  font-size: 90px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  float: left;
+  background-color: $secondary-color;
 
-.progress .progress-right {
-  right: 0;
-}
+  @extend .m-3;
+  // 	// center circle to its parent
+  // 	&.center{
+  // 		float: none;
+  // 		margin: 0 auto;
+  // 	}
 
-.progress .progress-right .progress-bar {
-  left: -100%;
-  border-top-left-radius: 80px;
-  border-bottom-left-radius: 80px;
-  border-right: 0;
-  -webkit-transform-origin: center right;
-  transform-origin: center right;
-}
+  // 	&.small{
+  // 		font-size: 80px;
+  // 	}
 
-.progress .progress-value {
-  position: absolute;
-  top: 0;
-  left: 0;
+  // centered value inside circle
+  > span {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 5em;
+    line-height: 5em;
+    font-size: 0.2em;
+    color: $primary-color-span;
+    &.red {
+      color: $primary-color-red;
+    }
+    &.green {
+      color: $primary-color-green;
+    }
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+  }
+
+  // background inside the circle
+  &:after{
+    position: absolute;
+    top: $circle-width;
+    left: $circle-width;
+    display: block;
+    content: " ";
+    border-radius: 50%;
+    background-color: $bg-color;
+    width: 1 - (2 * $circle-width);
+    height: 1 - (2 * $circle-width);
+    -webkit-transition: all 0.2s ease-in;
+    -moz-transition: all 0.2s ease-in;
+    -o-transition: all 0.2s ease-in;
+    transition: all 0.2s ease-in;
+
+  }
+
+  // the slice (mask)
+  .slice {
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    clip: rect(0em, 1em, 1em, 0.5em);
+  }
+
+  // circle to show the status
+  .bar {
+    @extend .pie;
+  }
+
+
+  // loop to create all needed elements automatically
+  @for $j from 51 through 100 {
+
+    &.p#{$j} .slice {
+      @extend .rect-auto;
+    }
+
+    &.p#{$j} .bar:after{
+      @extend .pie-fill;
+    }
+
+    &.p#{$j} .fill{
+      @extend .pie;
+      @extend .pie-fill;
+    }
+
+  }
+
+  // loop to rotate all 100 circles
+  @for $j from 1 through 100 {
+    &.p#{$j} .bar {
+      @include rotate((360/100*$j) + deg);
+    }
+  }
+
+
+
+  // hover styles
+  &:hover{
+
+    cursor: default;
+
+    > span {
+      //width: 3.33em;
+      //line-height: 3.33em;
+      //font-size: 0.2em;
+      //color: $primary-color-span;
+    }
+
+    &:after{
+      top: $circle-width-hover;
+      left: $circle-width-hover;
+      width: 1 - (2 * $circle-width-hover);
+      height: 1 - (2 * $circle-width-hover);
+    }
+
+  }
+
+  // blue
+  &.blue{
+
+    .bar, .fill { border-color: $primary-color-blue !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
+
+  // pink skin
+  &.pink{
+
+    .bar, .fill { border-color: $primary-color-pink !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
+
+  // green skin
+  &.green{
+
+    .bar, .fill { border-color: $primary-color-green !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
+
+  // orange skin
+  &.orange{
+
+    .bar, .fill { border-color: $primary-color-orange !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
 }
 
 .border-primary {
