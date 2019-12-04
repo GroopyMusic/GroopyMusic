@@ -303,10 +303,14 @@ $primary-color-red: #9f1b1c;
   color: white;
   @extend .rounded-circle;
   @extend .p-4;
-  font-size: 40px;
+  font-size: 30px;
   &.big {
     font-size: 50px;
   }
+}
+
+.font-weight-300 {
+  font-weight: 300 !important;
 }
 
 h2, h1, h3 {
@@ -509,16 +513,42 @@ header {
     background: #E79A41;
   }
   .card {
+    @extend .round-all;
+
+    width: 100%;
+
+    @include media-breakpoint-up(md) {
+      letter-spacing: 0.05em;
+      line-height: 2.5rem;
+      width: 75%;
+    }
+
     margin: 0 auto;
     float: none;
     margin-bottom: 30px;
     margin-top: 30px;
+    font-size: 1.1rem;
+    &-text {
+      color:#929292;
+      font-weight: bold;
+    }
+    &-img-top {
+      height: 250px;
+      width: 100%;
+      background-position: top left;
+      background-size: cover;
+      h3 {
+        color: white;
+        font-size: 1.3em;
+        padding-top: 50px;
+      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
-  .card-text {
-    color:#929292;
-  }
-  .card-title {
-    color: #E79A41;
+  .light-icon {
+    color: rgba(209, 209, 209, 0.5)
   }
   .bottom-left {
     position: absolute;

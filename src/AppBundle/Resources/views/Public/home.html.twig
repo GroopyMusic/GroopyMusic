@@ -17,54 +17,70 @@
 
 {% block body %}
     {% for festival in festivals %}
-    <section id="festival" class="container-fluid">
+    <section id="festival" class="container-fluid py-4">
         <h2 class="home-section-title text-center mt-2 mt-lg-0">Le Festival pour artistes émergents</h2>
-        <div class="card w-75">
-            <img class="card-img-top" src="images/festival.jpg" alt="Card image cap">
+        <div class="card">
+            {% set image_url = festival.photo is not null ? festival.webPath(festival.photo) : 'images/live/live-6.jpg' %}
+            <div class="card-img-top round-top" style="background-image:url('{{ absolute_url(asset(image_url))}}')">
+                <h3>{{ festival.getTitle }}</h3>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">{{ festival.getTitle }}</h5>
-                <p class="card-text">{% for artist in festival.allArtists %}{{ artist }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
-                <a href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}" class="btn btn-primary1">PLUS D'INFOS</a>
-                <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary rounded-pill">TICKETS</a>
+                <div class="row">
+                    <div class="col-6 text-left">
+                        <i class="text-primary fas fa-calendar-alt light-icon"></i>
+                        <span class="card-text">{{ festival.displayDates }}</span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <i class="text-primary fas fa-map-marker-alt light-icon"></i>
+                        <span class="card-text text-uppercase">{{ festival.displayHalls }}</span>
+                    </div>
+                    <div class="col-12">
+                        <p class="card-text text-uppercase my-3">{% for perf in festival.artistPerformances %}{{ perf.artist }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
+                        <div class="text-right">
+                            <a href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}" class="card-text btn btn-primary1">PLUS D'INFOS</a>
+                            <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary rounded-pill">TICKETS</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
     {% endfor %}
 
-    <section id="home-about" class="container-fluid">
+    <section id="home-about" class="container-fluid py-3 text-white">
         <div class="container">
             <h2 class="home-section-title text-center mt-2 mt-lg-0">Un-Mute, c'est...</h2>
-            <p>
+            <p class="font-weight-300">
                 Un-Mute, c’est l’ASBL qui vous déniche les petites pépites de la scène belge !
                 L’objectif est simple : rendre la scène indépendante locale accessible au public, grâce au système de financement participatif appliqué au monde des festivals.
             </p>
-            <div class="row p-md-5 text-center">
-                <div class="col-12 col-md-6 p-3">
-                    <div class="about-item">
+            <div class="row p-md-5 text-center text-dark">
+                <div class="col-12 col-md-6 col-lg-3 p-3">
+                    <div class="about-item py-5">
                         <i class="fas fa-handshake"></i>
-                        <h3>Collaboratif</h3>
-                        <p>Les artistes travaillent ensemble pour remplir la salle du festival, réunis derrière un objectif commun : le nombre de tickets minimum pour valider l'événement.</p>
+                        <h3 class="text-capitalize my-4">Collaboratif</h3>
+                        <p class="font-weight-300">Les artistes travaillent ensemble pour remplir la salle du festival, réunis derrière un objectif commun : le nombre de tickets minimum pour valider l'événement.</p>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 p-3">
-                    <div class="about-item">
+                <div class="col-12 col-md-6 col-lg-3 p-3">
+                    <div class="about-item py-5">
                         <i class="fas fa-map-marked-alt"></i>
-                        <h3>Local</h3>
-                        <p>Il ne faut pas toujours chercher très loin pour trouver du talent... Près de chez vous, dans votre région, les artistes émergents ne demandent qu'à se faire entendre.</p>
+                        <h3 class="text-capitalize my-4">Local</h3>
+                        <p class="font-weight-300">Il ne faut pas toujours chercher très loin pour trouver du talent... Près de chez vous, dans votre région, les artistes émergents ne demandent qu'à se faire entendre.</p>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 p-3">
-                    <div class="about-item">
+                <div class="col-12 col-md-6 col-lg-3 p-3">
+                    <div class="about-item py-5">
                         <i class="fas fa-hand-paper"></i>
-                        <h3>Participatif</h3>
-                        <p>Le festival est produit sur base du financement collectif. Acheter un ticket revient à participer directement à la production de l'événement !</p>
+                        <h3 class="text-capitalize my-4">Participatif</h3>
+                        <p class="font-weight-300">Le festival est produit sur base du financement collectif. Acheter un ticket revient à participer directement à la production de l'événement !</p>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 p-3">
-                    <div class="about-item">
+                <div class="col-12 col-md-6 col-lg-3 p-3">
+                    <div class="about-item py-5">
                         <i class="fas fa-headphones"></i>
-                        <h3>Découverte</h3>
-                        <p>Votre playlist fait toujours tourner les mêmes artistes ? Pourtant, ce n'est pas la variété qui manque. Nous vous avons déniché les pépites de demain !</p>
+                        <h3 class="text-capitalize my-4">Découverte</h3>
+                        <p class="font-weight-300">Votre playlist fait toujours tourner les mêmes artistes ? Pourtant, ce n'est pas la variété qui manque. Nous vous avons déniché les pépites de demain !</p>
                     </div>
                 </div>
             </div>
