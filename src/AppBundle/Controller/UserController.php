@@ -39,8 +39,9 @@ class UserController extends BaseController
      * Paid carts : lists all past orders for user (based on "confirmed" carts)
      * @Route("/paid-carts", name="user_paid_carts")
      */
-    public function paidCartsAction(Request $request, UserInterface $user)
+    public function paidCartsAction(Request $request, UserInterface $user, $ref = 0)
     {
+        $refresh = $ref == '1';
         $em = $this->getDoctrine()->getManager();
         $carts = $em->getRepository('AppBundle:Cart')->findConfirmedForUser($user);
         $sponsorship_event = $em->getRepository('AppBundle:ContractArtist')->getUserContractArtists($user);
@@ -48,6 +49,7 @@ class UserController extends BaseController
         return $this->render('@App/User/paid_carts.html.twig', array(
             'carts' => $carts,
             'possible_sponsorship_event' => $sponsorship_event,
+            'refresh' => $refresh,
         ));
     }
 

@@ -2,11 +2,14 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Artist;
 use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractArtistPot;
 use AppBundle\Entity\ContractArtistSales;
 use AppBundle\Entity\Purchase;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -34,14 +37,20 @@ class PurchaseType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($contract_artist) {
             $purchase = $event->getData();
             if(!empty($purchase->getCounterPart()->getPotentialArtists())) {
-                $event->getForm()->add('artists', Select2EntityType::class, array(
+                $event->getForm()->add('artist', Select2EntityType::class, array(
                     'required' => false,
                     'label' => false,
-                    'multiple' => true,
+                    'multiple' => false,
+                    'placeholder' => "Pas d'artiste favori",
                     'remote_route' => 'select2_counterpart_artists',
                     'remote_params' => ['counterpart' => $purchase->getCounterPart()->getId()],
+//                    'query_builder' => function (EntityRepository $er) use ($purchase) {
+//                        return $er->createQueryBuilder('a')
+//                            ->where('a.id IN(:artistsIds)')
+//                            ->orderBy('a.artistname', 'ASC')
+//                            ->setParameter('artistsIds', array_values(array_map(function(Artist $artist) use ($purchase) { return $artist->getId();}, $purchase->getCounterPart()->getPotentialArtists())));
+//                    },
                     'class' => 'AppBundle\Entity\Artist',
-                    'primary_key' => 'id',
                 ));
             }
             if($contract_artist instanceof ContractArtistSales || $contract_artist instanceof ContractArtistPot || $purchase->getCounterPart()->getFreePrice()) {

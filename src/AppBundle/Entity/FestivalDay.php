@@ -117,6 +117,10 @@ class FestivalDay
         return self::sortPerformancesAsc($performances);
     }
 
+    public function hasLineUps() {
+        return !$this->lineups->isEmpty();
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

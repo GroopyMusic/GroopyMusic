@@ -14,6 +14,9 @@ class LineUp
     public function __construct()
     {
         $this->performances = new ArrayCollection();
+        $this->ticketsSold = 0;
+        $this->successful = 0;
+        $this->failed = 0;
     }
 
     public function __toString()
@@ -60,6 +63,25 @@ class LineUp
         return $this->getPerformances();
     }
 
+    public function addTicketsSold($quantity) {
+        $this->ticketsSold += $quantity;
+    }
+
+    public function getPercentageObjective() {
+        if($this->threshold == 0) {
+            return 0;
+        }
+        return round(($this->ticketsSold / $this->threshold) * 100, 0);
+    }
+
+    public function isSoldOut() {
+        return $this->soldout_amount <= $this->ticketsSold;
+    }
+
+    public function getNbAvailable() {
+        return $this->soldout_amount - $this->ticketsSold;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -84,6 +106,31 @@ class LineUp
      * @ORM\ManyToOne(targetEntity="Stage", inversedBy="lineups")
      */
     private $stage;
+
+    /**
+     * @ORM\Column(name="tickets_sold", type="float")
+     */
+    private $ticketsSold;
+
+    /**
+     * @ORM\Column(name="threshold", type="float")
+     */
+    private $threshold;
+
+    /**
+     * @ORM\Column(name="soldout_amount", type="float")
+     */
+    private $soldout_amount;
+
+    /**
+     * @ORM\Column(name="successful", type="boolean")
+     */
+    private $successful;
+
+    /**
+     * @ORM\Column(name="failed", type="boolean")
+     */
+    private $failed;
 
     /**
      * Add performance
@@ -141,5 +188,49 @@ class LineUp
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setTicketsSold($quantity) {
+        $this->ticketsSold = $quantity;
+        return $this;
+    }
+    public function getTicketsSold() {
+        return $this->ticketsSold;
+    }
+
+    public function setThreshold($threshold) {
+        $this->threshold = $threshold;
+        return $this;
+    }
+    public function getThreshold() {
+        return $this->threshold;
+    }
+    public function setSoldoutAmount($soldout_amount) {
+        $this->soldout_amount = $soldout_amount;
+        return $this;
+    }
+    public function getSoldoutAmount() {
+        return $this->soldout_amount;
+    }
+
+    public function setSuccessful($successful) {
+        $this->successful = $successful;
+        return $this;
+    }
+    public function getSuccessful() {
+        return $this->successful;
+    }
+    public function isSuccessful() {
+        return $this->getSuccessful();
+    }
+    public function setFailed($failed) {
+        $this->failed = $failed;
+        return $this;
+    }
+    public function getFailed() {
+        return $this->failed;
+    }
+    public function isFailed() {
+        return $this->getFailed();
     }
 }

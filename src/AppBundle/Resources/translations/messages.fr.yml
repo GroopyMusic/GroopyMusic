@@ -463,7 +463,7 @@ pay_cart:
             price: Prix
             applied_rewards: "Récompense(s) appliquée(s):"
             artist: Artiste soutenu
-            supported_artists: Artiste(s) incitant(s)
+            supported_artists: Artiste incitant
         reduction: Récompense(s) appliquée(s)
         total: "[0,1] Total pour %count% ticket| [2, Inf[ Total pour %count% tickets"
     recap_reward:

@@ -81,13 +81,13 @@ class ContractFanType extends AbstractType
             if($purchase->getCounterPart()->getFreePrice() && $purchase->getFreePriceValue() < $purchase->getCounterpart()->getMinimumPrice()) {
                 $context->addViolation('contractfan.free_price_min');
             }
-            $purchasable = $contract_artist->getNbPurchasable($purchase->getCounterpart());
+            $purchasable = $purchase->getCounterpart()->getNbAvailable();
             if($purchasable < $purchase->getQuantityOrganic()) {
                 $context->addViolation("Vous ne pouvez pas commander plus de " . $purchasable . " exemplaires de \"" . $purchase->getCounterpart()->getName() . "\".");
             }
         }
-        if($contractFan->getCounterPartsQuantityOrganic() > $contract_artist->getMaxCounterParts())
-            $context->addViolation("Il n'y a plus que " . $contract_artist->getMaxCounterParts() . " tickets disponibles, toutes catégories confondues. Veuillez réduire le nombre de tickets commandés");
+        //if($contractFan->getCounterPartsQuantityOrganic() > $contract_artist->getMaxCounterParts())
+          //  $context->addViolation("Il n'y a plus que " . $contract_artist->getMaxCounterParts() . " tickets disponibles, toutes catégories confondues. Veuillez réduire le nombre de tickets commandés");
     }
 
     public function configureOptions(OptionsResolver $resolver)

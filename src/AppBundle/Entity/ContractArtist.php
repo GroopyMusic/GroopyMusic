@@ -253,7 +253,7 @@ class ContractArtist extends BaseContractArtist
         $today2 = new \DateTime();
         $today3 = new \DateTime();
 
-        $max_tickets = $this->getMaxTickets();
+        //$max_tickets = $this->getMaxTickets();
 
         // Failure & refunded
         if($this->refunded)
@@ -263,28 +263,35 @@ class ContractArtist extends BaseContractArtist
         if($this->failed)
             return self::STATE_FAILED;
 
+        // Or in pre-validaton
+        if($this->isInTestPeriod()) {
+            return self::STATE_TEST_PERIOD;
+        }
         // Marked as success
-        if($this->successful)
-        {
+        //if($this->successful)
+        //{
             // Concert in the future
             if($this->getLastFestivalDate() >= $today3->modify('-1 day')) {
                 // Sold out
-                if ($this->getTotalBookedTickets() >= $max_tickets)
-                    return self::STATE_SUCCESS_SOLDOUT;
+          //      if ($this->getTotalBookedTickets() >= $max_tickets)
+            //        return self::STATE_SUCCESS_SOLDOUT;
                 // No more selling
-                $dateConcert2 = clone $this->getLastFestivalDate();
-                if ($today2->modify('+' . ($this->nb_closing_days) . ' days') > $dateConcert2)
-                    return self::STATE_SUCCESS_CLOSED;
+          //      $dateConcert2 = clone $this->getLastFestivalDate();
+            //    if ($today2->modify('+' . ($this->nb_closing_days) . ' days') > $dateConcert2)
+              //      return self::STATE_SUCCESS_CLOSED;
                 // Successful, in the future, not sold out, not closed => ongoing
-                else
-                    return self::STATE_SUCCESS_ONGOING;
+
+                    return self::STATE_ONGOING;
+            }
+            else {
+            return self::STATE_SUCCESS_PASSED;
             }
             // Concert in the passed & successful
-            else
-                return self::STATE_SUCCESS_PASSED;
-        }
+            //else
+            //    return self::STATE_SUCCESS_PASSED;
+        //}
 
-        // Crowdfunding is not over yet
+        /* Crowdfunding is not over yet
         if($this->dateEnd > (new \DateTime())) {
             // But already sold out
             if ($this->getTotalBookedTickets() >= $max_tickets)
@@ -294,17 +301,14 @@ class ContractArtist extends BaseContractArtist
             if ($this->getTotalBookedTickets() >= $this->getMinTickets())
                 return self::STATE_SUCCESS_PENDING;
 
-            // Or in pre-validaton
-            if($this->isInTestPeriod()) {
-                return self::STATE_TEST_PERIOD;
-            }
+
 
             // Or simply ongoing
             return self::STATE_ONGOING;
-        }
+        }*/
 
         // Crowdfunding is over but not marked as successful nor failed -> need for admin validation
-        return self::STATE_PENDING;
+        //return self::STATE_PENDING;
     }
 
     public function setArtist(\AppBundle\Entity\Artist $artist)

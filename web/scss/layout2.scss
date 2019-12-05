@@ -42,6 +42,258 @@ section {
   }
 }
 
+// VARS
+$circle-width: 0.09em;
+$circle-width-hover: 0.07em;
+
+// colors default
+$primary-color: #000000; // czarny
+$secondary-color: #dfe8ed; //szary bcg
+$bg-color: #ffffff; //srodkowy bezowy
+
+
+
+// colors customized
+$primary-color-blue: #30bae7;
+$primary-color-green: #15c7a8;
+$primary-color-orange: #eb7d4b;
+$primary-color-pink: #d74680;
+$primary-color-span: #3c4761;
+$primary-color-red: #9f1b1c;
+
+@mixin rotate($degrees) {
+  -webkit-transform: rotate($degrees);
+  -moz-transform: rotate($degrees);
+  -ms-transform: rotate($degrees);
+  -o-transform: rotate($degrees);
+  transform: rotate($degrees);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=#{cos($degrees)}, M12=#{-1*sin($degrees)}, M21=#{sin($degrees)}, M22=#{cos($degrees)})";
+  filter:  progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=#{cos($degrees)}, M12=#{-1*sin($degrees)}, M21=#{sin($degrees)}, M22=#{cos($degrees)});
+}
+
+.small-title {
+  font-size: 1rem;
+}
+
+.rect-auto{
+  clip: rect(auto, auto, auto, auto);
+}
+
+.pie {
+  position: absolute;
+  border: $circle-width solid $primary-color;
+  width: 1 - (2 * $circle-width);
+  height: 1 - (2 * $circle-width);
+  clip: rect(0em, 0.5em, 1em, 0em);
+  border-radius: 50%;
+  @include rotate(0deg);
+}
+
+.pie-fill {
+  @include rotate(180deg);
+}
+
+// main
+.c100 {
+
+  *, *:before, *:after {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+  }
+
+  position: relative;
+  font-size: 90px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  float: left;
+  background-color: $secondary-color;
+
+  @extend .m-3;
+  // 	// center circle to its parent
+  // 	&.center{
+  // 		float: none;
+  // 		margin: 0 auto;
+  // 	}
+
+  // 	&.small{
+  // 		font-size: 80px;
+  // 	}
+
+  // centered value inside circle
+  > span {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 5em;
+    line-height: 5em;
+    font-size: 0.2em;
+    color: $primary-color-span;
+    &.red {
+      color: $primary-color-red;
+    }
+    &.green {
+      color: $primary-color-green;
+    }
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+  }
+
+  // background inside the circle
+  &:after{
+    position: absolute;
+    top: $circle-width;
+    left: $circle-width;
+    display: block;
+    content: " ";
+    border-radius: 50%;
+    background-color: $bg-color;
+    width: 1 - (2 * $circle-width);
+    height: 1 - (2 * $circle-width);
+    -webkit-transition: all 0.2s ease-in;
+    -moz-transition: all 0.2s ease-in;
+    -o-transition: all 0.2s ease-in;
+    transition: all 0.2s ease-in;
+
+  }
+
+  // the slice (mask)
+  .slice {
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    clip: rect(0em, 1em, 1em, 0.5em);
+  }
+
+  // circle to show the status
+  .bar {
+    @extend .pie;
+  }
+
+
+  // loop to create all needed elements automatically
+  @for $j from 51 through 100 {
+
+    &.p#{$j} .slice {
+      @extend .rect-auto;
+    }
+
+    &.p#{$j} .bar:after{
+      @extend .pie-fill;
+    }
+
+    &.p#{$j} .fill{
+      @extend .pie;
+      @extend .pie-fill;
+    }
+
+  }
+
+  // loop to rotate all 100 circles
+  @for $j from 1 through 100 {
+    &.p#{$j} .bar {
+      @include rotate((360/100*$j) + deg);
+    }
+  }
+
+
+
+  // hover styles
+  &:hover{
+
+    cursor: default;
+
+    > span {
+      //width: 3.33em;
+      //line-height: 3.33em;
+      //font-size: 0.2em;
+      //color: $primary-color-span;
+    }
+
+    &:after{
+      top: $circle-width-hover;
+      left: $circle-width-hover;
+      width: 1 - (2 * $circle-width-hover);
+      height: 1 - (2 * $circle-width-hover);
+    }
+
+  }
+
+  // blue
+  &.blue{
+
+    .bar, .fill { border-color: $primary-color-blue !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
+
+  // pink skin
+  &.pink{
+
+    .bar, .fill { border-color: $primary-color-pink !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
+
+  // green skin
+  &.green{
+
+    .bar, .fill { border-color: $primary-color-green !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
+
+  // orange skin
+  &.orange{
+
+    .bar, .fill { border-color: $primary-color-orange !important;}
+
+    &:hover{
+      > span { color: $primary-color-span;}
+    }
+
+  }
+
+}
+// VARS
+$circle-width: 0.09em;
+$circle-width-hover: 0.07em;
+
+// colors default
+$primary-color: #000000; // czarny
+$secondary-color: #dfe8ed; //szary bcg
+$bg-color: #ffffff; //srodkowy bezowy
+
+
+
+// colors customized
+$primary-color-blue: #30bae7;
+$primary-color-green: #15c7a8;
+$primary-color-orange: #eb7d4b;
+$primary-color-pink: #d74680;
+$primary-color-span: #3c4761;
+$primary-color-red: #9f1b1c;
+
 .progress {
   width: 100px;
   height: 100px;
@@ -139,10 +391,14 @@ section {
   color: white;
   @extend .rounded-circle;
   @extend .p-4;
-  font-size: 40px;
+  font-size: 30px;
   &.big {
     font-size: 50px;
   }
+}
+
+.font-weight-300 {
+  font-weight: 300 !important;
 }
 
 h2, h1, h3 {
@@ -222,7 +478,17 @@ button, a { cursor: pointer; }
     text-align: center;
     @extend .text-uppercase;
     a {
-      color: rgba(231, 154, 65, 0.71);
+      color: rgba(231, 154, 65, 0.7);
+      font-weight: 300;
+      &.dropdown-item {
+        font-weight: normal;
+      }
+      &#dropdownMenuButton {
+        @extend .border-primary, .round-all, .text-white;
+        &::after {
+          color: rgba(231, 154, 65, 0.7);
+        }
+      }
     }
     .nav-link {
       &:hover, &:focus, &.focus {
@@ -232,12 +498,15 @@ button, a { cursor: pointer; }
         border-bottom: white 1px solid;
       }
     }
+
+
   }
   .nav-item-profile {
     text-align: center;
     @extend .text-uppercase;
   }
 }
+
 .nav-link,
 .navbar-brand {
   color: #E79A41;
@@ -339,16 +608,48 @@ header {
     background: #E79A41;
   }
   .card {
+    @extend .round-all;
+
+    width: 100%;
+
+    @include media-breakpoint-up(md) {
+      letter-spacing: 0.05em;
+      line-height: 2.5rem;
+      width: 75%;
+    }
+
     margin: 0 auto;
     float: none;
     margin-bottom: 30px;
     margin-top: 30px;
+    font-size: 1.1rem;
+    &-text {
+      color:#929292;
+      font-weight: bold;
+    }
+    &-img-top {
+      height: 250px;
+      width: 100%;
+      background-position: top left;
+      background-size: cover;
+      h3 {
+        color: white;
+        font-size: 1.3em;
+        padding-top: 50px;
+      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
-  .card-text {
-    color:#929292;
-  }
-  .card-title {
-    color: #E79A41;
+.card-text {
+  color:#929292;
+}
+.card-title {
+  color: #E79A41;
+}
+  .light-icon {
+    color: rgba(209, 209, 209, 0.5)
   }
   .bottom-left {
     position: absolute;
@@ -801,4 +1102,13 @@ input[type=submit], button[type=submit] {
 
 .delete-btn {
   color: #690101;
+}
+
+.loader {
+  position: relative;
+  margin: 0 auto;
+  width: 60px;
+  img {
+    max-width: 120px;
+  }
 }

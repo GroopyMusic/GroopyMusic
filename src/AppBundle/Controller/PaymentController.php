@@ -23,6 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,6 +35,28 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class PaymentController extends BaseController
 {
+    /**
+     * @Route("/recalculate-stats", name="recalculate_stats")
+     */
+    public function recalculateAction(KernelInterface $kernel) {
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput([
+            'command' => 'app:recalculate-contracts-stats',
+        ]);
+
+        // You can use NullOutput() if you don't need the output
+        $output = new NullOutput();
+        $application->run($input, $output);
+
+        // return the output, don't use if you used NullOutput()
+        // $content = $output->fetch();
+
+        // return new Response(""), if you used NullOutput()
+        return new Response("");
+    }
+
     /**
      * @Route("/cart/{id}/payment/3ds/post", name="user_cart_payment_3DS_stripe_post")
      */
@@ -354,7 +377,7 @@ class PaymentController extends BaseController
         $cart->setFinalized(true);
         $em->flush();
 
-        return $this->redirectToRoute('user_paid_carts',['is_payment' => false]); // $request->get('is_payment')]);
+        return $this->redirectToRoute('user_paid_carts',['ref' => 1, 'is_payment' => false]); // $request->get('is_payment')]);
     }
 
     /**

@@ -26,6 +26,9 @@ class Purchase
         $this->purchase_promotions = new ArrayCollection();
         $this->ticket_rewards = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->artists = new ArrayCollection();
+        $this->artist = null;
+        $this->moneyIncrease = 0;
     }
 
     public function __toString()
@@ -200,6 +203,13 @@ class Purchase
         return $this->getContractFan()->getInvoice();
     }
 
+    public function getFirstArtist() {
+        if($this->artist != null) {
+            return $this->artist;
+        }
+        return $this->artists->isEmpty() ? null : $this->artists->first();
+    }
+
     /**
      * @var int
      *
@@ -265,13 +275,24 @@ class Purchase
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Artist")
+     * @deprecated
      */
     private $artists;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Artist")
+     */
+    private $artist;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\YB\Booking", mappedBy="purchase", cascade={"persist", "remove"}, orphanRemoval=TRUE)
      */
     private $bookings;
+
+    /**
+     * @ORM\Column(name="money_increase", type="float")
+     */
+    private $moneyIncrease;
 
     /**
      * Get id
@@ -558,5 +579,20 @@ class Purchase
     public function setBookings($bookings)
     {
         $this->bookings = $bookings;
+    }
+
+    public function setMoneyIncrease($quantity) {
+        $this->moneyIncrease = $quantity;
+        return $this;
+    }
+    public function getMoneyIncrease() {
+        return $this->moneyIncrease;
+    }
+    public function getArtist() {
+        return $this->artist;
+    }
+    public function setArtist($artist) {
+        $this->artist = $artist;
+        return $this;
     }
 }

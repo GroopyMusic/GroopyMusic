@@ -10,6 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class ArtistPerformance
 {
+    public function __construct() {
+        $this->ticketsSold = 0;
+        $this->moneyPoints = 0;
+    }
+
     public function __toString() {
         if($this->artist == null) {
             return 'Nouvelle performance';
@@ -38,6 +43,14 @@ class ArtistPerformance
             return $this->lineup->getStage();
         }
         return null;
+    }
+
+    public function addTicketsSold($quantity) {
+        $this->ticketsSold += $quantity;
+    }
+
+    public function addMoneyPoints($quantity) {
+        $this->moneyPoints += $quantity;
     }
 
     /**
@@ -76,6 +89,16 @@ class ArtistPerformance
      * @ORM\Column(name="duration", type="smallint", nullable=true)
      */
     private $duration;
+
+    /**
+     * @ORM\Column(name="tickets_sold", type="float")
+     */
+    private $ticketsSold;
+
+    /**
+     * @ORM\Column(name="money_points", type="float")
+     */
+    private $moneyPoints;
 
     /**
      * Get id
@@ -205,5 +228,20 @@ class ArtistPerformance
     public function getLineup()
     {
         return $this->lineup;
+    }
+
+    public function setTicketsSold($quantity) {
+        $this->ticketsSold = $quantity;
+        return $this;
+    }
+    public function getTicketsSold() {
+        return $this->ticketsSold;
+    }
+    public function setMoneyPoints($quantity) {
+        $this->moneyPoints = $quantity;
+        return $this;
+    }
+    public function getMoneyPoints() {
+        return $this->moneyPoints;
     }
 }
