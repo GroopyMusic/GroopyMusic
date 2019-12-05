@@ -538,7 +538,7 @@ my_artists:
     Créez votre identité sur Un-Mute ! Cette dernière sera validée après une séance d’information. Pour vous y inscrire, contactez-nous !
   new_event: Créer un événement
   new_artist: Créer mon identité artiste
-  another_artist: Ajouter un nouvel artiste
+  another_artist: Créer un nouvel artiste
   new_artist_form_title: Création nouvel artiste
   no_available_artist: "Note : vous ne pouvez pas créer de nouvel événement pour votre/vos artiste(s) parce que tous vos artistes sont déjà lancés sur un autre événement."
 

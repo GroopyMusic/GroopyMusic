@@ -494,6 +494,13 @@ input[type=submit], button[type=submit] {
   color: white;
 }
 
+.btn-outline-primary {
+  box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  border-color: $primary;
+  color: $primary;
+}
+
 .btn-my-profile {
   background: #1A2326;
   border-color: #E7AA41;
