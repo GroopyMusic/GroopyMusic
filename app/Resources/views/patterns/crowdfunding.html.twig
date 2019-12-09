@@ -5,12 +5,12 @@
 
     <div class="row text-white">
         <div class="col-6 text-uppercase my-auto">
-            Date de validation<br />
+            <span class="font-weight-light">Date de validation</span><br />
             <b class="text-white">{{ contractArtist.dateEnd|date('d/m/Y') }}</b>{% set orders = contractArtist.nbOrdersPaid %}
         </div>
         <div class="col-6 text-uppercase">
             <div class="d-inline-block align-middle">
-                {{ ('event.'~contractArtist.state)|trans({'%soldout_percentage%':contractArtist.percentSoldOutRelativeToObjective})|raw }}
+                <span class="font-weight-light">{{ ('event.'~contractArtist.state)|trans({'%soldout_percentage%':contractArtist.percentSoldOutRelativeToObjective})|raw }}</span>
                 {% if orders > 0 %}<br />
                     <b class="text-white">{{ orders }} contributeur{% if orders > 1 %}s{% endif %}</b>
                 {% endif %}

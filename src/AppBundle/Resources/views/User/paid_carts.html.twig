@@ -71,9 +71,9 @@
                                         {% for purchase in contract.purchases %}
                                             {{ purchase.quantity }}x "{{ purchase.counterpart.name }}" {% if purchase.quantityPromotional > 0 %}
                                             <br/>(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
-                                            <br/>(prix unitaire : {{ purchase.unitaryPrice}} €)
+                                            <br/>(prix unitaire : {{ purchase.unitaryPrice}} €)<br />
                                             {% if purchase.artist is not null %}
-                                                <br/>(artiste soutenu : {{ purchase.artist }})
+                                                artiste soutenu : {{ purchase.artist }})<br/>(
                                             {% endif %}
                                         {% endfor %}
                                     {% else %}
