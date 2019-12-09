@@ -3,20 +3,19 @@
 {% extends '@App/User/Artist/edit_profile_layout.html.twig' %}
 
 {% block artist_edit_profile_content %}
-
-    {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
-
-    {{ form_start(form) }}
-        {{ form_row(form.videos) }}
-        {{ form_row(form.submit) }}
-    {{ form_rest(form) }}
-
-    <div id="videos-stock">
-        {% for video in artist.videos %}
-            <div class="video-stock-{{ loop.index0 }}">
-                {{ video.embedVideo|raw }}
-            </div>
-        {% endfor %}
+    <div class="profile-table-info">
+        {% form_theme form ':Form:bootstrap_4_layout.html.twig' ':Form:jquery.collection.html.twig' %}
+        {{ form_start(form) }}
+            {{ form_row(form.videos) }}
+            {{ form_row(form.submit) }}
+        {{ form_rest(form) }}
+        <div id="videos-stock">
+            {% for video in artist.videos %}
+                <div class="video-stock-{{ loop.index0 }}">
+                    {{ video.embedVideo|raw }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock  %}
 
@@ -24,8 +23,8 @@
     {{ parent() }}
     <script type="text/javascript">
         um_collection({
-            add:'<a class="btn btn-outline-secondary" href="#">{{ "artist_profile.medias.add_video"|trans|raw }}</a>',
-            remove:'<a class="danger-color" href="#">{{ "artist_profile.medias.remove_video"|trans|raw }}</a>',
+            add:'<a class="btn add-btn" href="#">+</a>',
+            remove:'<a class="danger-color delete-btn" href="#">{{ "artist_profile.medias.remove_video"|trans|raw }}</a>',
         });
 
         $('#videos-stock').hide();

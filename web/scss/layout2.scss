@@ -41,6 +41,7 @@ section {
     }
   }
 }
+
 // VARS
 $circle-width: 0.09em;
 $circle-width-hover: 0.07em;
@@ -274,6 +275,93 @@ $primary-color-red: #9f1b1c;
   }
 
 }
+// VARS
+$circle-width: 0.09em;
+$circle-width-hover: 0.07em;
+
+// colors default
+$primary-color: #000000; // czarny
+$secondary-color: #dfe8ed; //szary bcg
+$bg-color: #ffffff; //srodkowy bezowy
+
+
+
+// colors customized
+$primary-color-blue: #30bae7;
+$primary-color-green: #15c7a8;
+$primary-color-orange: #eb7d4b;
+$primary-color-pink: #d74680;
+$primary-color-span: #3c4761;
+$primary-color-red: #9f1b1c;
+
+.progress {
+  width: 100px;
+  height: 100px;
+  background: none;
+  position: relative;
+}
+
+.progress::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 6px solid #eee;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.progress>span {
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+}
+
+.progress .progress-left {
+  left: 0;
+}
+
+.progress .progress-bar {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border-width: 6px;
+  border-style: solid;
+  position: absolute;
+  top: 0;
+}
+
+.progress .progress-left .progress-bar {
+  left: 100%;
+  border-top-right-radius: 80px;
+  border-bottom-right-radius: 80px;
+  border-left: 0;
+  -webkit-transform-origin: center left;
+  transform-origin: center left;
+}
+
+.progress .progress-right {
+  right: 0;
+}
+
+.progress .progress-right .progress-bar {
+  left: -100%;
+  border-top-left-radius: 80px;
+  border-bottom-left-radius: 80px;
+  border-right: 0;
+  -webkit-transform-origin: center right;
+  transform-origin: center right;
+}
+
+.progress .progress-value {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 .border-primary {
   border-color: $primary;
@@ -413,6 +501,10 @@ button, a { cursor: pointer; }
 
 
   }
+  .nav-item-profile {
+    text-align: center;
+    @extend .text-uppercase;
+  }
 }
 
 .nav-link,
@@ -426,6 +518,9 @@ button, a { cursor: pointer; }
 .toplogo {
   height: 30%;
   width: 30%;
+}
+.dropdownMenuButton {
+  color: rgba(231, 154, 65, 0.71);
 }
 .y-middle {
   display: flex;
@@ -547,6 +642,12 @@ header {
       align-items: center;
     }
   }
+.card-text {
+  color:#929292;
+}
+.card-title {
+  color: #E79A41;
+}
   .light-icon {
     color: rgba(209, 209, 209, 0.5)
   }
@@ -691,6 +792,26 @@ input[type=submit], button[type=submit] {
   background: linear-gradient(90deg, #E7AA41 0%, rgba(231, 154, 65, 0) 96.2%), #E79A41;
   box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
   border-radius: 50px;
+  color: white;
+}
+
+.btn-outline-primary {
+  box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  border-color: $primary;
+  color: $primary;
+}
+
+.btn-my-profile {
+  background: #1A2326;
+  border-color: #E7AA41;
+  box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  color: white;
+}
+
+.btn-my-profile:hover {
+  text-decoration: none;
   color: white;
 }
 
@@ -841,6 +962,146 @@ input[type=submit], button[type=submit] {
     @extend .text-dark;
     font-size: 1.5rem;
   }
+}
+
+.nav-profile {
+  color: rgb(20, 19, 19);
+}
+
+.nav-profile:hover {
+  color: $primary;
+  text-decoration: none;
+}
+
+.profile-user-icon {
+  position: absolute;
+  margin-top: -80px;
+  width: 100%;
+}
+
+.profile-user-icon-img {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.profile-contextual-menu {
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.profile-user-info {
+  margin-bottom: 50px;
+}
+
+.profile-table-info {
+  padding: 30px;
+  border-radius: 25px;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 90px -70px;
+}
+
+.profile-table-orange-border {
+  border-right:2px solid orange;
+  padding:15px;
+}
+
+.info-btn {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.profile-more-infos-text {
+  color: #888888;
+}
+
+.profile-contextual-menu-active {
+  color: $primary;
+}
+
+.danger-color-title {
+  color: #690101;
+}
+
+.btn-remove-facebook-account {
+  background: linear-gradient(90deg, #690101 0%, rgba(231, 154, 65, 0) 96.2%), #690101;
+  box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  color: white;
+}
+
+.profile-dropdown {
+  background: #1A2326;
+}
+
+.profile-dropdown-item {
+  border-bottom: solid 0.1em rgba(231, 154, 65, 0.71);
+  margin-left: 5px;
+  margin-right: 5px
+}
+
+.profile-dropdown-item-a {
+  color: white;
+  padding-left: 10px;
+}
+
+.profile-dropdown-item-a:hover {
+  color: rgba(231, 154, 65, 0.71);
+  text-decoration: none;
+}
+
+.artist-body {
+  margin: 50px auto;
+}
+
+.artist-create-btn {
+  margin-top: 20px;
+}
+
+.artist-new-page {
+  margin-top: 20px;
+  margin-bottom: 50px
+}
+
+.artist-new-form {
+  border-radius: 25px;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 90px -70px;
+}
+
+.artist-new-form-title {
+  background: black;
+  border-radius: 25px 25px 0px 0px;
+  padding: 30px 20px 20px 20px;
+  p {
+    color: rgba(231, 154, 65, 0.71);
+    font-size: 25px;
+    text-align: center
+  }
+}
+
+.artist-new-form-content {
+  border-radius: 0px 0px 25px 25px;
+  padding: 20px 20px 20px 20px
+}
+
+.add-btn {
+  font-size: 40px;
+}
+
+.add-btn:active {
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+
+.delete-btn {
+  color: #690101;
 }
 
 .loader {

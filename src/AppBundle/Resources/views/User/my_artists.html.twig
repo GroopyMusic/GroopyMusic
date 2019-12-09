@@ -1,22 +1,50 @@
 {% extends "base.html.twig" %}
 
-{% block body %}
-    <div class="container">
-        <h3 class="text-center mb-4">{{ 'my_artists.title'|trans|raw }}</h3>
-            <p>
-                {{ 'my_artists.intro'|trans|raw }}
-            </p>
-
-            <div class="text-center mb-3">
-                <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">{{ 'my_artists.new_artist'|trans|raw }}</a>
-            </div>
-
-            {% if artists is not empty %}
-                <div class="row">
-                    {% for artist in artists %}
-                        {% include "AppBundle:Public/Card:artist.html.twig" with {'bgwhite': true} %}
-                    {% endfor %}
-                </div>
-            {% endif %}
+{% block header %}
+    <div style="position: relative">
+        {% include ':patterns:header.html.twig' with {'img': '', 'title': 'my_artists.title'|trans|raw } %}
     </div>
+{% endblock %}
+
+{% block body %}
+    <div class="container row artist-body">
+            <div class="col-md-7">
+                {% if artists is not empty %}
+                    <p>
+                        <b>
+                            {{ 'new_artist.intro-more-artists'|trans|raw }}
+                        </b>
+                    </p>
+                    <div class="text-center mb-3 artist-create-btn">
+                        <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">
+                            {{ 'my_artists.another_artist'|trans|raw|upper }}
+                        </a>
+                    </div>
+                {% else %}
+                    <p>
+                        <b>
+                            {{ 'my_artists.intro'|trans|raw }}
+                        </b>
+                    </p>
+                    <div class="text-center mb-3 artist-create-btn">
+                        <a class="btn btn-primary mt-2 mt-md-0" href="{{ path('user_new_artist') }}">
+                            {{ 'my_artists.new_artist'|trans|raw|upper }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-5">
+                {% if artists is empty %}
+                    <img src="{{ absolute_url(asset('images/dancing-silhouettes.png')) }}">
+                {% endif %}
+            </div>
+    </div>
+    {% if artists is not empty %}
+        <div class="container row artist-body">
+            {% for artist in artists %}
+                {% include "AppBundle:Public/Card:artist.html.twig" with {'bgwhite': true} %}
+            {% endfor %}
+        </div>
+    {% else %}
+    {% endif %}
 {% endblock %}

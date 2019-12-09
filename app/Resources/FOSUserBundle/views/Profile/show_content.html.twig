@@ -14,82 +14,83 @@
 </div>
 
 <div class="fos_user_user_show">
-    <p>Votre profil n'est pas publié sur la plateforme ; seul vous y avez accès.</p>
-
-    <table class="um-table">
-        <tr>
-            <td class="contract-info-title text-left">{{ 'profile.show.firstname'|trans }}</td>
-            <td class="pl-3">{{ user.firstName }}</td>
-        </tr>
-
-        <tr>
-            <td class="contract-info-title text-left">{{ 'profile.show.lastname'|trans }}</td>
-            <td class="pl-3">{{ user.lastName }}</td>
-        </tr>
-
-        <tr>
-            <td class="contract-info-title text-left">{{ 'profile.show.email'|trans }}</td>
-            <td class="pl-3">{{ user.email }}</td>
-        </tr>
-
-        {% if user.birthday is not null and user.birthday|date('Y') > 1900 %}
+    <p><b>Votre profil n'est pas publié sur la plateforme ; seul vous y avez accès.</b></p>
+    <div class="profile-table-info">
+        <table class="um-table">
             <tr>
-                <td class="contract-info-title text-left">{{ 'profile.show.birthday'|trans }}</td>
-                <td class="pl-3">{{ user.birthday|date('d/m/Y') }}</td>
+                <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.firstname'|trans }}</td>
+                <td class="pl-3">{{ user.firstName }}</td>
             </tr>
-        {% endif %}
 
-        {% if user.address is not null %}
             <tr>
-                <td class="contract-info-title text-left">{{ 'profile.show.address'|trans }}</td>
-                <td class="pl-3">{{ user.address }}</td>
+                <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.lastname'|trans }}</td>
+                <td class="pl-3">{{ user.lastName }}</td>
             </tr>
-        {% endif %}
 
-        {% if user.artists is not empty %}
             <tr>
-                <td class="contract-info-title text-left align-top">{{ 'profile.show.artists'|trans }}</td>
-                <td class="pl-3">
-                    <ul class="um-list">
-                        {% for artist in user.artists %}
-                            <li><a href="{{ path('artist_profile', {'id': artist.id}) }}">{{ artist.artistname }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </td>
+                <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.email'|trans }}</td>
+                <td class="pl-3">{{ user.email }}</td>
             </tr>
-        {% endif %}
 
-        {% if user.genres is not empty %}
+            {% if user.birthday is not null and user.birthday|date('Y') > 1900 %}
+                <tr>
+                    <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.birthday'|trans }}</td>
+                    <td class="pl-3">{{ user.birthday|date('d/m/Y') }}</td>
+                </tr>
+            {% endif %}
+
+            {% if user.address is not null %}
+                <tr>
+                    <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.address'|trans }}</td>
+                    <td class="pl-3">{{ user.address }}</td>
+                </tr>
+            {% endif %}
+
+            {% if user.artists is not empty %}
+                <tr>
+                    <td class="contract-info-title text-left align-top profile-table-orange-border">{{ 'profile.show.artists'|trans }}</td>
+                    <td class="pl-3">
+                        <ul class="um-list">
+                            {% for artist in user.artists %}
+                                <li><a href="{{ path('artist_profile', {'id': artist.id}) }}">{{ artist.artistname }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% endif %}
+
+            {% if user.genres is not empty %}
+                <tr>
+                    <td class="contract-info-title text-left align-top profile-table-orange-border">{{ 'profile.show.genres'|trans }}</td>
+                    <td class="pl-3">
+                        <ul class="um-list">
+                            {% for g in user.genres %}
+                                <li>{{ g }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% endif %}
+
             <tr>
-                <td class="contract-info-title text-left align-top">{{ 'profile.show.genres'|trans }}</td>
-                <td class="pl-3">
-                    <ul class="um-list">
-                        {% for g in user.genres %}
-                            <li>{{ g }}</li>
-                        {% endfor %}
-                    </ul>
-                </td>
+                <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.newsletter'|trans }}</td>
+                <td class="pl-3">{{ user.newsletter ? 'Oui' : 'Non' }}</td>
             </tr>
-        {% endif %}
 
-        <tr>
-            <td class="contract-info-title text-left">{{ 'profile.show.newsletter'|trans }}</td>
-            <td class="pl-3">{{ user.newsletter ? 'Oui' : 'Non' }}</td>
-        </tr>
-
-        <tr>
-            <td class="contract-info-title text-left">{{ 'profile.show.inscription_date'|trans }}</td>
-            <td class="pl-3">{{ user.inscriptionDate|date('d/m/Y') }}</td>
-        </tr>
-
-        {% if user.facebookId is not null %}
             <tr>
-                <td class="contract-info-title text-left">{{ 'profile.show.facebook.label'|trans }}</td>
-                <td class="pl-3">
-                    <img src="//graph.facebook.com/{{ user.facebookId }}/picture"><br />
-                    <a href="#" data-toggle="modal" data-target="#disableFBModal">{{ 'profile.show.facebook.disconnect_link'|trans }}</a>
-                </td>
+                <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.inscription_date'|trans }}</td>
+                <td class="pl-3">{{ user.inscriptionDate|date('d/m/Y') }}</td>
             </tr>
-        {% endif %}
-    </table>
+
+            {% if user.facebookId is not null %}
+                <tr>
+                    <td class="contract-info-title text-left profile-table-orange-border">{{ 'profile.show.facebook.label'|trans }}</td>
+                    <td class="pl-3">
+                        <img src="//graph.facebook.com/{{ user.facebookId }}/picture"><br />
+                        <a href="#" data-toggle="modal" data-target="#disableFBModal">{{ 'profile.show.facebook.disconnect_link'|trans }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
 </div>

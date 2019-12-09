@@ -2,33 +2,41 @@
 
 {% block headtitle %}{{ 'profile.title'|trans|raw }}{% endblock %}
 
+{% block header %}
+    <div style="position: relative">
+        {% include ':patterns:header.html.twig' with {'img': '', 'title': 'profile.title'|trans|raw } %}
+        <div class="profile-user-icon">
+            <img class="profile-user-icon-img" width="150px" height="150px" src="{{ absolute_url(asset('images/user-icon.png')) }}">
+        </div>
+    </div>
+{% endblock %}
+
 {% block fos_user_content %}
-    <div class="container">
-        <h3 class="mb-4 text-center">{{ 'profile.title'|trans|raw }}</h3>
+    <div class="container" style="margin-top: 80px">
 
         <div class="container content-box">
             <div class="row content-box-content content-box-content-zones content-box-content-zones-vert no-padding-left">
-                <div class="col-xs-12 col-md-4 content-box-content-zone content-box-content-zone-vert no-padding-left no-padding-right">
+                <div class="col-xs-12 col-md-4 content-box-content-zone content-box-content-zone-vert no-padding-left no-padding-right profile-contextual-menu">
                     <ul class="nav flex-column">
-                        <li class="nav-item{% if active_link == 'show' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('fos_user_profile_show') }}">{{ 'profile.see.title'|trans|raw }}</a>
+                        <li class="nav-item {% if active_link == 'show' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-eye"></i> <a class="{% if active_link == 'show' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('fos_user_profile_show') }}">{{ 'profile.see.title'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'edit' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('user_profile_edit') }}">{{ 'profile.edit.title'|trans|raw }}</a>
+                        <li class="nav-item {% if active_link == 'edit' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-pen"></i> <a class="{% if active_link == 'edit' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('user_profile_edit') }}">{{ 'profile.edit.title'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'password' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('fos_user_change_password') }}">{{ 'profile.change_password.title'|trans|raw }}</a>
+                        <li class="nav-item {% if active_link == 'password' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-lock"></i> <a class="{% if active_link == 'password' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('fos_user_change_password') }}">{{ 'profile.change_password.title'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'email' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('user_change_email') }}">{{ 'profile.change_email.title'|trans|raw }}</a>
+                        <li class="nav-item {% if active_link == 'email' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-envelope"></i> <a class="{% if active_link == 'email' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('user_change_email') }}">{{ 'profile.change_email.title'|trans|raw|upper }}</a>
                         </li>
-                        <li class="nav-item{% if active_link == 'advanced' %} active{% endif %}">
-                            <a class="nav-link danger-color" href="{{ path('user_advanced_options') }}">{{ 'profile.advanced.title'|trans|raw }}</a>
+                        <li class="nav-item {% if active_link == 'advanced' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}">
+                            <i class="fas fa-cog"></i> <a class="danger-color {% if active_link == 'advanced' %} profile-contextual-menu-active {% else %} nav-profile {% endif %}" href="{{ path('user_advanced_options') }}">{{ 'profile.advanced.title'|trans|raw|upper }}</a>
                         </li>
                     </ul>
                 </div>
 
-                <div class="col-xs-12 col-md-8 content-box-content-zone content-box-content-zone-vert no-border">
+                <div class="col-xs-12 col-md-8 content-box-content-zone content-box-content-zone-vert no-border profile-user-info">
                     {% block user_profile_content %}
                     {% endblock %}
                 </div>

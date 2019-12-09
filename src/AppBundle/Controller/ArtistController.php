@@ -46,8 +46,13 @@ class ArtistController extends BaseController
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
 
+        if (!empty($artist->getAllPhotos())){
+            $photo = $artist->getAllPhotos()[0];
+        }
+
         return $this->render('@App/User/Artist/edit_profile.html.twig', array(
             'artist' => $artist,
+            'photo' => $photo,
             'form' => $form->createView(),
         ));
     }
@@ -111,8 +116,13 @@ class ArtistController extends BaseController
             return $this->redirectToRoute($HTTPRequest->get('_route'), $HTTPRequest->get('_route_params'));
         }
 
+        if (!empty($artist->getAllPhotos())){
+            $photo = $artist->getAllPhotos()[0];
+        }
+
         return $this->render('@App/User/Artist/owners.html.twig', array(
             'artist' => $artist,
+            'photo' => $photo,
             'owners' => $owners,
             'requests' => $requests,
             'form' => $form->createView(),
@@ -196,9 +206,14 @@ class ArtistController extends BaseController
             }
         }
 
+        if (!empty($artist->getAllPhotos())){
+            $photo = $artist->getAllPhotos()[0];
+        }
+
         return $this->render('@App/User/Artist/leave.html.twig', array(
             'lastOne' => $lastOne,
             'artist' => $artist,
+            'photo' => $photo,
             'form' => $form->createView(),
         ));
 
@@ -211,8 +226,13 @@ class ArtistController extends BaseController
     public function editProfilepicAction(UserInterface $user, Artist $artist) {
         $this->assertOwns($user, $artist);
 
+        if (!empty($artist->getAllPhotos())){
+            $photo = $artist->getAllPhotos()[0];
+        }
+
         return $this->render('@App/User/Artist/edit_profilepic.html.twig', array(
             'artist' => $artist,
+            'photo' => $photo,
         ));
     }
 
@@ -223,8 +243,13 @@ class ArtistController extends BaseController
     public function editPhotosAction(UserInterface $user, Artist $artist) {
         $this->assertOwns($user, $artist);
 
+        if (!empty($artist->getAllPhotos())){
+            $photo = $artist->getAllPhotos()[0];
+        }
+
         return $this->render('@App/User/Artist/edit_photos.html.twig', array(
             'artist' => $artist,
+            'photo' => $photo,
         ));
     }
 
@@ -248,8 +273,13 @@ class ArtistController extends BaseController
             return $this->redirectToRoute($request->get('_route'), $request->get('_route_params'));
         }
 
+        if (!empty($artist->getAllPhotos())){
+            $photo = $artist->getAllPhotos()[0];
+        }
+
         return $this->render('@App/User/Artist/edit_medias.html.twig', array(
             'artist' => $artist,
+            'photo' => $photo,
             'form' => $form->createView(),
         ));
     }

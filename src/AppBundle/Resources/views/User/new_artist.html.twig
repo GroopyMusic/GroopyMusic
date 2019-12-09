@@ -1,69 +1,78 @@
 {% extends "base.html.twig" %}
 
+{% block header %}
+    <div style="position: relative">
+        {% include ':patterns:header.html.twig' with {'img': '', 'title': 'my_artists.title'|trans|raw } %}
+    </div>
+{% endblock %}
+
 {% block body %}
 
-    <div class="container">
-        <h3 class="mb-3 text-center">{{ 'new_artist.title'|trans|raw }}</h3>
-
+    <div class="container artist-new-page">
+        <div class="col-md-8">
         <p>
-            {{ 'new_artist.intro'|trans({'%catalog_url%':path('catalog_artists') })|raw }}
-        </p>
-        <p>
+            <strong>{{ 'new_artist.intro'|trans({'%catalog_url%':path('catalog_artists') })|raw }}</strong>
             <strong>{{ 'new_artist.warning'|trans|raw }}</strong>
         </p>
+        </div>
 
         <div class="content-box mt-3">
-            <div class="content-box-content">
-                {% form_theme form 'jquery.collection.html.twig' %}
-
-                {{ form_start(form) }}
-
-                <div class="form-group">
-                    {{ form_row(form.artistname) }}
-                    {{ form_row(form.province) }}
+            <div class="content-box-content artist-new-form">
+                <div class="artist-new-form-title">
+                    <p>{{ 'my_artists.new_artist_form_title'|trans|raw|upper }}</p>
                 </div>
+                <div class="artist-new-form-content">
+                    {% form_theme form 'jquery.collection.html.twig' %}
 
-                <div class="form-group">
-                    {{ form_row(form.province) }}
-                    {{ form_row(form.genres) }}
-                </div>
+                    {{ form_start(form) }}
 
-                {{ form_row(form.translations) }}
-
-                {% if iss %}
                     <div class="form-group">
-                        <p>Choisissez une session d'information à laquelle vous assisterez. La présence à une telle session est requise
-                        pour valider l'inscription de votre artiste sur la plateforme. Une session dure environ 1h et vous permettra de rencontrer notre équipe, qui vous détaillera le fonctionnement d'Un-Mute et votre rôle sur la plateforme en tant qu'artiste.</p>
-                        {{ form_row(form.informationSession) }}
+                        {{ form_row(form.artistname) }}
+                        {{ form_row(form.province) }}
                     </div>
-                {% endif %}
 
-                <div class="col-0 col-md-2"></div>
-                <div class="col-12 col-md-10">
-                    <p>{{ 'new_artist.phone_explanation'|trans|raw }}</p>
-                    {{ form_row(form.phone) }}
+                    <div class="form-group">
+                        {{ form_row(form.province) }}
+                        {{ form_row(form.genres) }}
+                    </div>
+
+                    {{ form_row(form.translations) }}
+
+                    {% if iss %}
+                        <div class="form-group">
+                            <p>Choisissez une session d'information à laquelle vous assisterez. La présence à une telle session est requise
+                            pour valider l'inscription de votre artiste sur la plateforme. Une session dure environ 1h et vous permettra de rencontrer notre équipe, qui vous détaillera le fonctionnement d'Un-Mute et votre rôle sur la plateforme en tant qu'artiste.</p>
+                            {{ form_row(form.informationSession) }}
+                        </div>
+                    {% endif %}
+
+                    <div class="col-0 col-md-2"></div>
+                    <div class="col-12">
+                        <p class="profile-more-infos-text"><em><strong>{{ 'new_artist.phone_explanation'|trans|raw }}</strong></em></p>
+                        {{ form_row(form.phone) }}
+                    </div>
+
+                    <div class="col-0 col-md-2"></div>
+                    <div class="col-12">
+                        <p class="profile-more-infos-text"><em><strong>{{ 'new_artist.urls_explanation'|trans|raw }}</strong></em></p>
+                    </div>
+
+                    <div class="form-group" style="padding-left: 20px">
+                        {{ form_row(form.website) }}
+                        {{ form_row(form.facebook) }}
+                        {{ form_row(form.twitter) }}
+                        {{ form_row(form.spotify) }}
+                        {{ form_row(form.soundcloud) }}
+                        {{ form_row(form.bandcamp) }}
+                        {{ form_row(form.instagram) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_widget(form.accept_conditions) }}
+                    </div>
+
+                    {{ form_end(form) }}
                 </div>
-
-                <div class="col-0 col-md-2"></div>
-                <div class="col-12 col-md-10">
-                    {{ 'new_artist.urls_explanation'|trans|raw }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_row(form.website) }}
-                    {{ form_row(form.facebook) }}
-                    {{ form_row(form.twitter) }}
-                    {{ form_row(form.spotify) }}
-                    {{ form_row(form.soundcloud) }}
-                    {{ form_row(form.bandcamp) }}
-                    {{ form_row(form.instagram) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_widget(form.accept_conditions) }}
-                </div>
-
-                {{ form_end(form) }}
             </div>
         </div>
     </div>

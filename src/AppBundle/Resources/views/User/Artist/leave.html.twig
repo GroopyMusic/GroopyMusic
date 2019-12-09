@@ -4,6 +4,8 @@
 
 {% block artist_edit_profile_content %}
 
+    <div class="profile-table-info">
+
     <div class="modal fade" id="leaveArtistModal" tabindex="-1" role="dialog" aria-labelledby="leaveArtistModalLabel" aria-hidden="true">>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -23,6 +25,8 @@
         </div>
     </div>
 
+        <h4 class="danger-color-title">QUITTER LA GESTION</h4>
+
     <p>
         {{ 'leave_artist.intro'|trans|raw }}
     </p>
@@ -37,10 +41,12 @@
         {% if lastOne and not artist.available %}
             <p>{{ 'leave_artist.last.busy'|trans|raw }}</p>
         {% else %}
-            <button id="button-suppress-account" type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaveArtistModal">
-                {{ 'leave_artist.confirm'|trans({'%artist%':artist})|raw }}
+            <button id="button-suppress-account" type="button" class="btn btn-remove-facebook-account" data-toggle="modal" data-target="#leaveArtistModal">
+                {{ 'leave_artist.confirm'|trans({'%artist%':artist})|raw|upper }}
             </button>
         {% endif %}
+    </div>
+
     </div>
 
 {% endblock %}

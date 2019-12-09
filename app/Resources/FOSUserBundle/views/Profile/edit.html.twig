@@ -3,7 +3,9 @@
 {% extends "AppBundle:User/Profile:layout.html.twig" %}
 
 {% block user_profile_content %}
-    {% include "@FOSUser/Profile/edit_content.html.twig" %}
+    <div class="profile-table-info">
+        {% include "@FOSUser/Profile/edit_content.html.twig" %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
