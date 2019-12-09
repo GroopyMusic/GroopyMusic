@@ -20,9 +20,9 @@
     <section id="festival" class="container-fluid py-4">
         <h2 class="home-section-title text-center mt-2 mt-lg-0">Le Festival pour artistes émergents</h2>
         <div class="card">
-            {% set image_url = festival.photo is not null ? festival.webPath(festival.photo) : 'images/live/live-6.jpg' %}
+            {% set image_url = festival.photo is not null ? festival.webPath(festival.photo) : 'images/festival.jpg' %}
             <div class="card-img-top round-top" style="background-image:url('{{ absolute_url(asset(image_url))}}')">
-                <h3>{{ festival.getTitle }}</h3>
+                <h3><a class="text-white" href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}">{{ festival.getTitle }}</a></h3>
             </div>
             <div class="card-body">
                 <div class="row">

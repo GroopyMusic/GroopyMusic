@@ -27,7 +27,7 @@
 {% endblock %}
 
 {% block header %}
-    {% include ':patterns:header.html.twig' with {'title': contract.getTitle ~ '<br />' ~ contract.getDisplayDates, 'img': absolute_url(asset(image_url)), 'img_absolute':true} %}
+    {% include ':patterns:header.html.twig' with {'title': contract.getTitle ~ '<br /><span class="smaller">' ~ contract.getDisplayDates ~ '</span>', 'img': absolute_url(asset(image_url)), 'img_absolute':true} %}
 {% endblock %}
 
 {% set state = contract.state %}
@@ -147,7 +147,7 @@
                     </div>
                 {% endif %}
                 {% if app.user and (app.user.hasArtistPerformingIn(contract) or is_granted('ROLE_ADMIN')) %}
-                    <h2 class="text-center mt-3">Statistiques</h2>
+                    <h2 class="text-center mt-4 pt-2">Statistiques</h2>
 
                     {% set total_sales = contract.counterpartsSold %}
                     <p>
@@ -167,7 +167,7 @@
         </div>
      </section>
 
-    {% include ':patterns:header.html.twig' with {'title': 'Tickets', 'img': ''} %}
+    {% include ':patterns:header.html.twig' with {'title': 'Tickets', 'img': 'tickets.jpg'} %}
 
     <div id="tickets"></div>
     {% if state not in contract.uncrowdableStates %}

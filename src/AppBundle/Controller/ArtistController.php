@@ -49,6 +49,9 @@ class ArtistController extends BaseController
         if (!empty($artist->getAllPhotos())){
             $photo = $artist->getAllPhotos()[0];
         }
+        else {
+            $photo = null;
+        }
 
         return $this->render('@App/User/Artist/edit_profile.html.twig', array(
             'artist' => $artist,
@@ -118,6 +121,9 @@ class ArtistController extends BaseController
 
         if (!empty($artist->getAllPhotos())){
             $photo = $artist->getAllPhotos()[0];
+        }
+        else {
+            $photo = null;
         }
 
         return $this->render('@App/User/Artist/owners.html.twig', array(
@@ -209,6 +215,9 @@ class ArtistController extends BaseController
         if (!empty($artist->getAllPhotos())){
             $photo = $artist->getAllPhotos()[0];
         }
+        else {
+            $photo = null;
+        }
 
         return $this->render('@App/User/Artist/leave.html.twig', array(
             'lastOne' => $lastOne,
@@ -229,6 +238,9 @@ class ArtistController extends BaseController
         if (!empty($artist->getAllPhotos())){
             $photo = $artist->getAllPhotos()[0];
         }
+        else {
+            $photo = null;
+        }
 
         return $this->render('@App/User/Artist/edit_profilepic.html.twig', array(
             'artist' => $artist,
@@ -245,6 +257,9 @@ class ArtistController extends BaseController
 
         if (!empty($artist->getAllPhotos())){
             $photo = $artist->getAllPhotos()[0];
+        }
+        else {
+            $photo = null;
         }
 
         return $this->render('@App/User/Artist/edit_photos.html.twig', array(
@@ -275,6 +290,9 @@ class ArtistController extends BaseController
 
         if (!empty($artist->getAllPhotos())){
             $photo = $artist->getAllPhotos()[0];
+        }
+        else {
+            $photo = null;
         }
 
         return $this->render('@App/User/Artist/edit_medias.html.twig', array(

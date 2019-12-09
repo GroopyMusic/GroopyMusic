@@ -4,7 +4,7 @@
 
 {% block header %}
     <div style="position: relative">
-        {% include ':patterns:header.html.twig' with {'img': photo, 'title': artist.artistname|trans|raw } %}
+        {% include ':patterns:header.html.twig' with {'img': absolute_url(asset(artist.webPath(photo))), 'img_absolute': true, 'title': artist.artistname|trans|raw } %}
     </div>
 {% endblock %}
 

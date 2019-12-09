@@ -17,7 +17,6 @@
     </div>
 
     {% if contractArtist.crowdable %}
-        {% set nb_contracts_ok = nb_contracts_ok + 1 %}
         {% for purchase in contract.children.purchases %}
             <div class="row my-2 counterpart-form">
                 {% set counterpart = purchase.vars.value.counterpart %}

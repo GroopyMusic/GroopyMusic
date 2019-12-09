@@ -8,11 +8,11 @@
 {% endblock %}
 
 {% block header %}
-    {% include ':patterns:header.html.twig' with {'title':  'catalog_artists.title'|trans, 'img': ''} %}
+    {% include ':patterns:header.html.twig' with {'title':  'catalog_artists.title'|trans, 'img': 'artistes.jpg'} %}
 {% endblock %}
 
 {% block body %}
-    <div class="container pb-4">
+    <div class="container py-4">
         {% if artists is empty %}
             <p class="font-weight-bold w-50">{{ 'catalog_artists.empty'|trans|raw }}</p>
         {% else %}

@@ -24,7 +24,7 @@ section {
    background-color: #FFF9F4;
   }
   &#home-about {
-    background-image: url('images/principes.jpg');
+    background-image: url('../images/principes.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -34,7 +34,7 @@ section {
       width: 90%;
       margin: 0 auto;
       @extend .rounded;
-      background-color: rgba(255,255,255,0.73);
+      background-color: rgba(255,255,255,1);
       i {
         @extend .round-icon;
       }
@@ -55,7 +55,7 @@ $bg-color: #ffffff; //srodkowy bezowy
 
 // colors customized
 $primary-color-blue: #30bae7;
-$primary-color-green: #15c7a8;
+$primary-color-green: #15af79;
 $primary-color-orange: #eb7d4b;
 $primary-color-pink: #d74680;
 $primary-color-span: #3c4761;
@@ -124,13 +124,9 @@ $primary-color-red: #9f1b1c;
   // centered value inside circle
   > span {
     position: absolute;
-    width: 100%;
     z-index: 1;
     left: 0;
     top: 0;
-    width: 5em;
-    line-height: 5em;
-    font-size: 0.2em;
     color: $primary-color-span;
     &.red {
       color: $primary-color-red;
@@ -139,12 +135,20 @@ $primary-color-red: #9f1b1c;
       color: $primary-color-green;
     }
     display: block;
-    text-align: center;
     white-space: nowrap;
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
     -o-transition: all 0.2s ease-out;
     transition: all 0.2s ease-out;
+    font-weight: 500;
+
+    @extend .d-inline-block, .mx-auto;
+    font-size: 0.8rem;
+    height: 100%;
+    vertical-align: middle;
+    line-height: 90px;
+    text-align: center;
+    width: 100%;
   }
 
   // background inside the circle
@@ -257,7 +261,7 @@ $primary-color-red: #9f1b1c;
     .bar, .fill { border-color: $primary-color-green !important;}
 
     &:hover{
-      > span { color: $primary-color-span;}
+      > span { color: $primary-color-green;}
     }
 
   }
@@ -270,6 +274,16 @@ $primary-color-red: #9f1b1c;
 
     &:hover{
       > span { color: $primary-color-span;}
+    }
+
+  }
+
+  &.red{
+
+    .bar, .fill { border-color: $primary-color-red !important;}
+
+    &:hover{
+      > span { color: $primary-color-red;}
     }
 
   }
@@ -550,11 +564,15 @@ header {
     h1 {
       @extend .text-uppercase, .text-white;
       z-index: 10;
+      font-size: 3.5rem;
+      .smaller {
+        font-size: 2rem;
+      }
     }
   }
   &#home-header {
     min-height: 90vh;
-    background-image: url('images/bobdoug-accueil.jpg');
+    background-image: url('../images/home-header.jpg');
     position: relative;
     @extend .pb-5;
   }
@@ -588,7 +606,7 @@ header {
     border-radius: 50px;
     color: #ffffff;
     padding: 1% 1.5%;
-    margin-top: 4rem;
+    margin-top: 3rem;
   }
   .sticky {
     position: sticky;
@@ -630,7 +648,7 @@ header {
     &-img-top {
       height: 250px;
       width: 100%;
-      background-position: top left;
+      background-position: center;
       background-size: cover;
       h3 {
         color: white;
@@ -1111,4 +1129,62 @@ input[type=submit], button[type=submit] {
   img {
     max-width: 120px;
   }
+}
+
+#contact {
+  background-image: url('../images/contact.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.artist-card:hover {
+  @extend .sepia;
+}
+
+.w-md-75 {
+  @include media-breakpoint-up(md) {
+    width: 75% !important;
+  }
+}
+.w-lg-75 {
+  @include media-breakpoint-up(lg) {
+    width: 75% !important;
+  }
+}
+
+
+.noscript-warning {
+  width: 100%;
+  background: black;
+  color: white;
+  min-height: 30px;
+  line-height: 30px;
+  text-align: center;
+  position: fixed;
+  z-index: 9999;
+}
+
+
+/* For Safari compatibility */
+.row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.clearfix:before,
+.clearfix:after,
+.dl-horizontal dd:before,
+.dl-horizontal dd:after,
+.container:before,
+.container:after,
+.container-fluid:before,
+.container-fluid:after,
+.row:before,
+.row:after{
+  display: inline-block;
 }

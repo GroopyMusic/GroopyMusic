@@ -2,7 +2,7 @@
 
 {% block header %}
     <div style="position: relative">
-        {% include ':patterns:header.html.twig' with {'img': '', 'title': 'my_artists.title'|trans|raw } %}
+        {% include ':patterns:header.html.twig' with {'img': 'espace-artistes.jpg', 'title': 'my_artists.title'|trans|raw } %}
     </div>
 {% endblock %}
 
@@ -41,9 +41,11 @@
     </div>
     {% if artists is not empty %}
         <div class="container row artist-body">
-            {% for artist in artists %}
-                {% include "AppBundle:Public/Card:artist.html.twig" with {'bgwhite': true} %}
-            {% endfor %}
+            <div class="col-6 col-md-4">
+                {% for artist in artists %}
+                    {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': artist} %}
+                {% endfor %}
+            </div>
         </div>
     {% else %}
     {% endif %}

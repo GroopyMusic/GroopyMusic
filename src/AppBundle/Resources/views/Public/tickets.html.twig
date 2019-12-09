@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block header %}
-    {% include ':patterns:header.html.twig' with {'img': '', 'title': 'Tickets'} %}
+    {% include ':patterns:header.html.twig' with {'img': 'tickets.jpg', 'title': 'Tickets'} %}
 {% endblock %}
 {% block body %}
     {% if form.contracts is not empty %}
@@ -14,20 +14,24 @@
         {% set nb_contracts_ok = 0 %}
         {% for contract in form.contracts %}
             {% set contractArtist = contract.vars.data.contractArtist %}
-            {% include ':patterns:crowdfunding.html.twig' %}
+            {% if contractArtist.crowdable %}
+                {% set nb_contracts_ok = nb_contracts_ok + 1 %}
+            {% endif %}
             {% include ':patterns:tickets.html.twig' with {'more_info': true} %}
+
+            {% if loop.last and nb_contracts_ok > 0 %}
+                <section class="text-center mt-4 mb-5">
+                    <span class="pr-4">TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</span>
+                    {{ form_widget(form.submit) }}
+                </section>
+            {% else %}
+                {% do form.submit.setRendered %}
+            {% endif %}
+
+            {{ form_end(form) }}
+            {% include ':patterns:crowdfunding.html.twig' %}
         {% endfor %}
 
-        {% if nb_contracts_ok > 0 %}
-            <section class="text-center mt-4 mb-5">
-                <span class="pr-4">TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</span>
-                {{ form_widget(form.submit) }}
-            </section>
-        {% else %}
-            {% do form.submit.setRendered %}
-        {% endif %}
-
-        {{ form_end(form) }}
     {% else %}
         <p class="w-50 font-weight-bold">
             Soyez prêts, de nouveaux festivals seront annoncés prochainement - et les tickets seront alors mis en vente !
