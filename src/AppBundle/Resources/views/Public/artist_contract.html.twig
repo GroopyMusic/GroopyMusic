@@ -147,7 +147,7 @@
                     </div>
                 {% endif %}
                 {% if app.user and (app.user.hasArtistPerformingIn(contract) or is_granted('ROLE_ADMIN')) %}
-                    <h2 class="text-center mt-4 pt-2">Statistiques</h2>
+                    <h2 class="text-center mt-5 pt-2">Statistiques</h2>
 
                     {% set total_sales = contract.counterpartsSold %}
                     <p>
