@@ -3,7 +3,7 @@
         <div class="container">
             <div class="d-flex align-items-start flex-column">
                 <a class="mt-4" href="#"><img id="logo" style="height:200px;" class="img-fluid" src="{{ asset('images/logo/logo.png') }}" /></a>
-                <h1 class="text-white text-bold pl-2">Un-Mute</h1>
+                <h1 class="text-white text-bold pl-2 montserrat">Un-Mute</h1>
                 <div id="headline">Envie de devenir producteur de ta scène locale ?</div>
                 <p class="soustitre">Les artistes émergents belges se réunissent pour lancer une campagne de vente de tickets en ligne, débouchant sur l'organisation d'un festival de découverte musicale en cas de succès.</p>
                 <a class="btn btn-reserver" href="{{ path('tickets_marketplace') }}">RÉSERVER UN TICKET</a>
@@ -12,7 +12,7 @@
     </header>
 {% else %}
     <header class="header container-fluid{% if huge is defined and huge %} artist-header{% endif %}" style="background-image:{% if img_absolute is defined and img_absolute %}url('{{ img }}'){% else %} url('{{ asset('images/headers/'~img|default('')) }}'){% endif %}">
-        <div class="page-header{% if huge is defined and huge %} artist-header{% endif %}">
+        <div class="page-header{% if huge is defined and huge %} artist-header{% endif %}{% if not (sepia is defined and not sepia) %} sepia{% endif %}">
             <h1 class="text-center">{{ title|raw }}</h1>
         </div>
     </header>

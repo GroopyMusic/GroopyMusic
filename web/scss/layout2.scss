@@ -1,4 +1,5 @@
 $primary: #E79A41;
+$dark: #1A2326;
 
 // import bootstrap 4
 @import "../../vendor/twbs/bootstrap/scss/bootstrap.scss";
@@ -7,13 +8,17 @@ $primary: #E79A41;
 html, body {
   max-width: 100%;
   overflow-x: hidden;
-  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
   padding: 0;
   margin: 0;
   background: #FFF9F4;
+}
+
+.montserrat {
+  font-family: 'Montserrat';
 }
 
 section {
@@ -551,7 +556,6 @@ header {
   min-height: 50vh;
   position:relative;
   .page-header {
-    @extend .sepia;
     display: flex;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
@@ -565,8 +569,10 @@ header {
       @extend .text-uppercase, .text-white;
       z-index: 10;
       font-size: 3.5rem;
+      text-shadow: 5px 2px 3px rgba(95, 95, 95, 0.77);
       .smaller {
         font-size: 2rem;
+        text-shadow: 3px 2px 2px rgba(95, 95, 95, 0.77);
       }
     }
   }
@@ -591,7 +597,6 @@ header {
     font-size: 2.5rem;
     margin-top: 3rem;
     color: white;
-    font-style: italic;
   }
   .soustitre {
     font-size: 2rem;
@@ -628,6 +633,10 @@ header {
   .card {
     @extend .round-all;
 
+    -webkit-box-shadow: 3px 3px 5px 0px rgba(101, 101, 101, 0.41);
+    -moz-box-shadow: 3px 3px 5px 0px rgba(101, 101, 101, 0.41);
+    box-shadow: 3px 3px 5px 0px rgba(101, 101, 101, 0.41);
+
     width: 100%;
 
     @include media-breakpoint-up(md) {
@@ -652,7 +661,7 @@ header {
       background-size: cover;
       h3 {
         color: white;
-        font-size: 1.3em;
+        font-size: 1.5em;
         padding-top: 50px;
       }
       display: flex;

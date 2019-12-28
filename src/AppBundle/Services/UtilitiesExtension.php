@@ -3,17 +3,20 @@
 namespace AppBundle\Services;
 
 
+use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment;
 
 class UtilitiesExtension extends \Twig_Extension
 {
     private $twig;
     private $stringHelper;
+    private $em;
 
-    public function __construct(Environment $twig, StringHelper $stringHelper)
+    public function __construct(Environment $twig, StringHelper $stringHelper, EntityManagerInterface $em)
     {
         $this->twig = $twig;
         $this->stringHelper = $stringHelper;
+        $this->em = $em;
     }
 
     public function getTests()
@@ -51,6 +54,7 @@ class UtilitiesExtension extends \Twig_Extension
             new \Twig_SimpleFunction('base64', array($this, 'base64')),
             new \Twig_SimpleFunction('yb_error', array($this, 'yb_error', array('is_safe' => array('html')))),
             new \Twig_SimpleFunction('progress', array($this, 'progress', array('is_safe' => array('html')))),
+            new \Twig_SimpleFunction('festival_link', array($this, 'festival_link', array('is_safe' => array('html')))),
         );
     }
 
@@ -176,4 +180,19 @@ class UtilitiesExtension extends \Twig_Extension
             'progress_100' => $progress_100,
         ));
     }
+
+    public function festival_link() {
+        $festivals = $this->em->getRepository('AppBundle:ContractArtist')->findVisible();
+        if(empty($festivals))  {
+            $festival = null;
+        }
+        else {
+            $festival = $festivals[0];
+        }
+        return $this->twig->render(':patterns/utils:festival_link.html.twig', array(
+            'festival' => $festival,
+        ));
+    }
+
+
 }

@@ -34,7 +34,7 @@
         {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img': ''} %}
     {% else %}
         {% if artist.profilepic is not null %}
-            {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img_absolute': true, 'img': asset(artist.webPath(artist.profilepic)), 'huge': true} %}
+            {% include ':patterns:header.html.twig' with {'title': artist.__toString, 'img_absolute': true, 'img': asset(artist.webPath(artist.profilepic)), 'huge': true, 'sepia': false} %}
         {% else %}
             {% include ':patterns:header.html.twig' with {'title': artist.__toString} %}
         {% endif %}
@@ -49,7 +49,7 @@
             <p class="w-75 font-weight-bold">{{ 'artist_profile.see.invisible.content'|trans|raw }}</p>
         {% else %}
             <div class="row">
-                <div class="col-12 col-md-8 p-5 text-center">
+                <div class="col-12 col-md-6 col-lg-8 p-5 text-center">
                     <div class="container">
                         {% if not artist.validated and not artist.visible and owned %}
                             <p class="alert alert-warning" role="alert">{{ 'artist_profile.see.owned.to_be_examined'|trans|raw }}</p>
@@ -103,7 +103,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="col-0 col-md-4 pr-0 mr-0">
+                <div class="col-12 col-md-6 col-lg-4 p-0 mr-0">
                     <div id="artist-profile-photos-carousel" class="carousel slide h-100" data-ride="carousel" data-interval="8000">
                         <div class="carousel-inner h-100">
                             {% for photo in artist.photos %}
@@ -142,9 +142,6 @@
                         </div>
                     </div>
                 </div>
-
-
-                </div>
             </div>
         {% endif %}
     </div>
@@ -171,6 +168,26 @@
       "description": "{{ artist.getShortDescription }}"
     }
     </script>
+
+    <script type="text/javascript">
+        var $carousel = $('#artist-profile-photos-carousel');
+
+        function carouselResize() {
+            var height = $carousel.outerHeight();
+            var width = $carousel.outerWidth();
+
+            var max = Math.min(Math.min($(window).height(), $(window).width()), Math.max(height, width));
+            $carousel.css('min-height', max);
+            $carousel.css('min-width', max);
+
+        }
+
+        $( window ).resize(function() {
+           carouselResize();
+        });
+        carouselResize();
+    </script>
+
 
 
 {% endblock %}
