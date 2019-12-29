@@ -893,7 +893,8 @@ input[type=submit], button[type=submit] {
 
 .artists-selector {
   cursor: pointer;
-  @extend .text-uppercase, .d-inline-block, .text-center;
+  @extend .text-uppercase, .text-center;
+  display: inline-block;
   width: 20%;
   font-weight: 300;
   &.selected {

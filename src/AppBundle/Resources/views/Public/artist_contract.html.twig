@@ -61,30 +61,38 @@
                     </div>
                     {% if contract.festivalDays is not empty %}
                         <div class="p-3">
-                            {% if contract.festivalDays|length > 1 %}
+                            {% if contract.filterableFestivalDays|length > 1 %}
                                 <span class="text-primary">Jour</span><br />
                                 <span class="artists-selector artists-selector-day selected" data-day="all">Tous</span>
-                                {% for day in contract.festivalDays %}
+                                {% for day in contract.filterableFestivalDays %}
                                     <span class="artists-selector artists-selector-day" data-day="{{ day.id}}">{{ day.date|date('l')|trans }}</span>
                                 {% endfor %}
                             {% endif %}
                         </div>
                         <div class="p-3">
-                            {% if contract.stages is not null and contract.stages|length > 1 %}
-                            <span class="text-primary">Scène</span><br />
-                            <span class="artists-selector artists-selector-stage selected" data-stage="all">Toutes</span>
-                            {% for stage in contract.stages %}
-                                <span class="artists-selector artists-selector-stage" data-stage="{{ stage.id }}">{{ stage }}</span>
-                            {% endfor %}
+                            {% if contract.filterableStages|length > 1 %}
+                                <span class="text-primary">Scène</span><br />
+                                <span class="artists-selector artists-selector-stage selected" data-stage="all">Toutes</span>
+                                {% for stage in contract.filterableStages %}
+                                    <span class="artists-selector artists-selector-stage" data-stage="{{ stage.id }}">{{ stage }}</span>
+                                {% endfor %}
+                            {% elseif contract.filterableLineUps|length > 1 %}
+                                <span class="text-primary">Affiche</span><br />
+                                <span class="artists-selector artists-selector-lineup selected" data-day="all" data-lineup="all">Toutes</span>
+                                {% for lineup in contract.filterableLineUps %}
+                                    <span class="artists-selector artists-selector-lineup pb-4" data-day="{{ lineup.festivalDay.id }}" data-lineup="{{ lineup.id }}">{{ lineup.getName }}</span>
+                                {% endfor %}
                             {% endif %}
                         </div>
                     {% endif %}
                     <div class="form-body row">
                         {% for performance in contract.artistPerformances %}
-                            <div class="col-6 artist-col" data-day="{{ performance.festivalDay.id }}" {% if performance.stage is not null %}data-stage="{{ performance.stage.id }}"{% endif %}>
+                            <div class="col-6 artist-col" data-day="{{ performance.festivalDay.id }}" data-lineup="{{ performance.lineup.id }}" {% if performance.stage is not null %}data-stage="{{ performance.stage.id }}"{% endif %}>
                                 {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': performance.artist, 'hours': performance.time} %}
+
+                                <div class="font-weight-light"><i class="text-primary fas fa-circle"></i>Affiche {{ performance.lineup.getName }}</div>
                                 {% if performance.stage is not null %}
-                                    <div class="font-weight-light"><i class="text-primary fas fa-circle"></i> {{ performance.stage }}</div>
+                                    <div class="font-weight-light"><i class="text-primary fas fa-circle"></i>Scène {{ performance.stage }}</div>
                                 {% endif %}
                             </div>
                         {% endfor %}
@@ -192,15 +200,29 @@
         <script>
             var day = 'all';
             var stage = 'all';
+            var lineup = 'all';
 
             function refreshArtists() {
                 $('.artist-col').each(function() {
-                  if((day === 'all' || $(this).data('day') === day) && (stage === 'all' || $(this).data('stage') === stage)) {
+                  if((day === 'all' || $(this).data('day') === day) && (stage === 'all' || $(this).data('stage') === stage) && (lineup === 'all' || $(this).data('lineup') === lineup)) {
                       $(this).show();
                   }
                   else {
                       $(this).hide();
                   }
+                });
+                $('.artists-selector-lineup').each(function() {
+                   if(day === 'all' || $(this).data('day') === day || $(this).data('day') === 'all') {
+                       $(this).show();
+                   }
+                   else {
+                       $(this).hide();
+                       if($(this).hasClass('selected')) {
+                           $(this).removeClass('selected');
+                           $('.artists-selector-lineup').first().addClass('selected');
+                           lineup = 'all';
+                       }
+                   }
                 });
             }
 
@@ -208,6 +230,12 @@
                 if($(this).hasClass('artists-selector-day')) {
                     day = $(this).data('day');
                     $('.artists-selector-day').removeClass('selected');
+                    $(this).addClass('selected');
+                    refreshArtists();
+                }
+                else if($(this).hasClass('artists-selector-lineup')) {
+                    lineup = $(this).data('lineup');
+                    $('.artists-selector-lineup').removeClass('selected');
                     $(this).addClass('selected');
                 }
                 else {

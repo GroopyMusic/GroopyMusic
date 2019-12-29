@@ -75,6 +75,15 @@ class ContractArtist extends BaseContractArtist
         }
     }
 
+    public function getFilterableFestivalDays() {
+        if(!$this->successful && !$this->failed) {
+            return $this->getFestivalDays();
+        }
+        return array_filter($this->getFestivaldays()->toArray(), function(FestivalDay $fd){
+           return $fd->hasSuccessfulLineUps();
+        });
+    }
+
     public function getDisplayDates() {
         $str = '';
         $i = 1;
@@ -428,6 +437,14 @@ class ContractArtist extends BaseContractArtist
     }
 
 
+    public function getFilterableLineUps() {
+        if(!$this->successful && !$this->failed)
+            return $this->getLineUps();
+        return array_filter($this->getLineUps(), function(LineUp $lineup) {
+           return $lineup->isSuccessful();
+        });
+    }
+
     private $lineups = null;
     public function getLineUps() {
         if($this->lineups == null) {
@@ -440,6 +457,14 @@ class ContractArtist extends BaseContractArtist
             $this->lineups = $lineups;
         }
         return $this->lineups;
+    }
+
+    public function getFilterableStages() {
+        if(!$this->successful && !$this->failed)
+            return $this->getStages();
+        return array_filter($this->getStages(), function(Stage $stage) {
+            return $stage->hasSuccessfulLineUp();
+        });
     }
 
     private $stages = null;

@@ -121,6 +121,16 @@ class FestivalDay
         return !$this->lineups->isEmpty();
     }
 
+    public function hasSuccessfulLineUps() {
+        foreach($this->lineups as $lu) {
+            /** @var LineUp $lu */
+            if($lu->isSuccessful()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

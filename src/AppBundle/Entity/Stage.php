@@ -51,6 +51,15 @@ class Stage implements TranslatableInterface
         return $this->getCurrentLocale();
     }
 
+    public function hasSuccesfulLineUp() {
+        foreach($this->lineups as $lineup) {
+            if($lineup->isSuccessful()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @var int
      *

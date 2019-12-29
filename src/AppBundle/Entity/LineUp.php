@@ -4,13 +4,17 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Sonata\TranslationBundle\Model\TranslatableInterface;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\LineUpRepository")
  * @ORM\Table(name="lineup")
  **/
-class LineUp
+class LineUp implements TranslatableInterface
 {
+    use ORMBehaviors\Translatable\Translatable;
+
     public function __construct()
     {
         $this->performances = new ArrayCollection();
@@ -19,12 +23,37 @@ class LineUp
         $this->failed = 0;
     }
 
+    public function __call($method, $arguments)
+    {
+        try {
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        } catch(\Exception $e) {
+            $method = 'get' . ucfirst($method);
+            return $this->proxyCurrentLocaleTranslation($method, $arguments);
+        }
+    }
+
+    public function getDefaultLocale() {
+        return 'fr';
+    }
+
     public function __toString()
     {
         if($this->festivalDay == null || $this->stage == null) {
             return 'Nouvelle lineup';
         }
-        return $this->getFestivalDay()->__toString() . ' (lineup : '.$this->stage->__toString();
+        return $this->getFestivalDay()->__toString() . ' (lineup ' .  $this->getName() . ' @'.$this->stage->__toString();
+    }
+
+    public function setLocale($locale)
+    {
+        $this->setCurrentLocale($locale);
+        return $this;
+    }
+
+    public function getLocale()
+    {
+        return $this->getCurrentLocale();
     }
 
     public static function sortPerformancesAsc($performances) {
@@ -104,6 +133,7 @@ class LineUp
     /**
      * @var Stage
      * @ORM\ManyToOne(targetEntity="Stage", inversedBy="lineups")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $stage;
 
