@@ -2,13 +2,14 @@
 
 {% trans_default_domain 'FOSUserBundle' %}
 
+{% block headtitle %}Inscription | Un-Mute{% endblock %}
+
 {% block header %}
     {% include ':patterns:header.html.twig' with {'title': 'registration.title'|trans|raw, 'img': 'inscription.jpg'} %}
 {% endblock %}
 
 {% block fos_user_content %}
-    <div class="container w-75 mx-auto pl-0">
-
+    <div class="container w-75 mx-auto py-4">
        {% include 'FOSUserBundle:Registration:register_content.html.twig' %}
-
+    </div>
 {% endblock fos_user_content %}

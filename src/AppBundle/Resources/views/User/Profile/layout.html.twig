@@ -4,7 +4,7 @@
 
 {% block header %}
     <div style="position: relative">
-        {% include ':patterns:header.html.twig' with {'img': '', 'title': 'profile.title'|trans|raw } %}
+        {% include ':patterns:header.html.twig' with {'img': 'mon-profil.jpg', 'title': 'profile.title'|trans|raw } %}
         <div class="profile-user-icon">
             <img class="profile-user-icon-img" width="150px" height="150px" src="{{ absolute_url(asset('images/user-icon.png')) }}">
         </div>

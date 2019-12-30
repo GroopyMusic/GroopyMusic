@@ -1,12 +1,12 @@
 {% extends "@FOSUser/layout.html.twig" %}
 
 {% block header %}
-    {% include ':patterns:header.html.twig' with {'title': 'Mot de passe oublié ?', 'img': ''} %}
+    {% include ':patterns:header.html.twig' with {'title': 'Mot de passe oublié ?', 'img': 'profil.jpg'} %}
 {% endblock %}
 
 {% block fos_user_content %}
 
-    <div class="container">
+    <div class="container p-5">
         <p class="w-75 font-weight-bold">
             Vous avez oublié votre mot de passe Un-Mute ? Entrez ci-dessous l'adresse e-mail avec laquelle vous êtes inscrit(e)
             sur Un-Mute.be et vous recevrez un e-mail qui vous permettra de le réinitialiser.

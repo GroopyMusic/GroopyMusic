@@ -326,8 +326,6 @@ $primary-color-red: #9f1b1c;
   }
 }
 
-
-
 .progress {
   width: 100px;
   height: 100px;
@@ -584,7 +582,7 @@ header {
       @extend .text-uppercase, .text-white;
       z-index: 10;
       font-size: 3.5rem;
-      text-shadow: 5px 2px 3px rgba(95, 95, 95, 0.77);
+      text-shadow: 5px 4px 4px rgba(95, 95, 95, 0.77);
       .smaller {
         font-size: 2rem;
         text-shadow: 3px 2px 2px rgba(95, 95, 95, 0.77);
@@ -609,12 +607,12 @@ header {
     opacity: 0.4;
   }
   #headline {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin-top: 3rem;
     color: white;
   }
   .soustitre {
-    font-size: 2rem;
+    font-size: 1.6rem;
     color: white;
     margin-top: 1rem;
     font-weight: 100;
@@ -1212,4 +1210,9 @@ input[type=submit], button[type=submit] {
 .row:before,
 .row:after{
   display: inline-block;
+}
+
+.img-sepia {
+  -webkit-filter: sepia(1);
+  filter: sepia(1);
 }
