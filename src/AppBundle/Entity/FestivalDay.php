@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class FestivalDay
 {
-    const TOTAL_COMBOS_AVAILABLE = 100;
+    const TOTAL_COMBOS_AVAILABLE = 500;
     const TOTAL_SOLOS_AVAILABLE = 2000;
 
     public function __construct()
