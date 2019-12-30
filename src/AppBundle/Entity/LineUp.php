@@ -19,6 +19,7 @@ class LineUp implements TranslatableInterface
     {
         $this->performances = new ArrayCollection();
         $this->ticketsSold = 0;
+        $this->ticketsSoldPostVal = 0;
         $this->successful = 0;
         $this->failed = 0;
     }
@@ -92,8 +93,17 @@ class LineUp implements TranslatableInterface
         return $this->getPerformances();
     }
 
+    public function getArtists() {
+        return array_map(function (ArtistPerformance $ap) {
+            return $ap->getArtist();
+        }, $this->performances->toArray());
+    }
+
     public function addTicketsSold($quantity) {
         $this->ticketsSold += $quantity;
+    }
+    public function addTicketsSoldPostVal($quantity) {
+        $this->ticketsSoldPostVal += $quantity;
     }
 
     public function getPercentageObjective() {
@@ -141,6 +151,11 @@ class LineUp implements TranslatableInterface
      * @ORM\Column(name="tickets_sold", type="float")
      */
     private $ticketsSold;
+
+    /**
+     * @ORM\Column(name="tickets_sold_post_val", type="float")
+     */
+    private $ticketsSoldPostVal;
 
     /**
      * @ORM\Column(name="threshold", type="float")
@@ -262,5 +277,22 @@ class LineUp implements TranslatableInterface
     }
     public function isFailed() {
         return $this->getFailed();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTicketsSoldPostVal()
+    {
+        return $this->ticketsSoldPostVal;
+    }
+
+    /**
+     * @param mixed $ticketsSoldPostVal
+     */
+    public function setTicketsSoldPostVal($ticketsSoldPostVal)
+    {
+        $this->ticketsSoldPostVal = $ticketsSoldPostVal;
+        return $this;
     }
 }

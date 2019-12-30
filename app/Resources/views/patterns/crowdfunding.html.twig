@@ -25,7 +25,7 @@
                 {% set sizexs = big is defined and big ? 6 : 4 %}
                 {% set sizemd = big is defined and big ? 4 : 2 %}
                 <div class="col-{{ sizexs }} col-md-{{ sizemd }} px-2 text-center">
-                    <h3 class="text-primary small-title">{{ lineUp.festivalDay.date|date('l')|trans }} - {{ lineUp.stage }}</h3>
+                    <h3 class="text-primary small-title">{{ lineUp.festivalDay.date|date('l')|trans }} - {{ lineUp.getName }}</h3>
                     <div class="small font-weight-light">{% for performance in lineUp.performances %}{{ performance.artist }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
                     <div class="d-inline-block">
                         <div class="c100 p{{ percent }} {{ color }}">

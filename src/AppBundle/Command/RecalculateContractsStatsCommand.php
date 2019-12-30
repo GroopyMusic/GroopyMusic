@@ -36,6 +36,8 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
             foreach($contractArtists as $contract) {
                 $em->persist($contract);
                 /** @var ContractArtist $contract */
+                $dateVal = $contract->getDateSuccess();
+
                 $contract->setCounterpartsSold(0);
 
                 $aps = [];
@@ -43,6 +45,7 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
                     $em->persist($ap);
                     /** @var ArtistPerformance $ap */
                     $ap->setTicketsSold(0);
+                    $ap->setTicketsSoldPostVal(0);
                     $ap->setMoneyPoints(0);
                     $aps[$ap->getArtist()->getId()] = $ap;
                 }
@@ -53,10 +56,13 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
                 foreach($contract->getLineUps() as $lu) {
                     $em->persist($lu);
                     $lu->setTicketsSold(0);
+                    $lu->setTicketsSoldPostVal(0);
                 }
 
                 foreach($contract->getContractsFanPaid() as $cf) {
                     /** @var ContractFan $cf */
+                    $date = $cf->getDate();
+                    $postval = $dateVal != null && $date >= $dateVal;
 
                     foreach($cf->getPurchases() as $purchase) {
                         /** @var Purchase $purchase */
@@ -74,6 +80,10 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
                             if($purchase->getFirstArtist() != null) {
                                 $aps[$purchase->getFirstArtist()->getId()]->addTicketsSold($fdIncrease);
                                 $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addTicketsSold($fdIncrease);
+                                if($postval) {
+                                    $aps[$purchase->getFirstArtist()->getId()]->addTicketsSoldPostVal($fdIncrease);
+                                    $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addTicketsSoldPostVal($fdIncrease);
+                                }
                                 $aps[$purchase->getFirstArtist()->getId()]->addMoneyPoints($mi);
                             }
                             else {
@@ -88,6 +98,9 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
                                     }
                                     $luIncrease = $fdIncrease/$nbLineUps;
                                     $lineUp->addTicketsSold($luIncrease);
+                                    if($postval) {
+                                        $lineUp->addTicketsSoldPostVal($luIncrease);
+                                    }
                                 }
                             }
                         }

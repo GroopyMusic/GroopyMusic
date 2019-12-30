@@ -12,6 +12,7 @@ class ArtistPerformance
 {
     public function __construct() {
         $this->ticketsSold = 0;
+        $this->ticketsSoldPostVal = 0;
         $this->moneyPoints = 0;
     }
 
@@ -43,6 +44,10 @@ class ArtistPerformance
             return $this->lineup->getStage();
         }
         return null;
+    }
+
+    public function addTicketsSoldPostVal($quantity) {
+        $this->ticketsSoldPostVal += $quantity;
     }
 
     public function addTicketsSold($quantity) {
@@ -94,6 +99,11 @@ class ArtistPerformance
      * @ORM\Column(name="tickets_sold", type="float")
      */
     private $ticketsSold;
+
+    /**
+     * @ORM\Column(name="tickets_sold_post_val", type="float")
+     */
+    private $ticketsSoldPostVal;
 
     /**
      * @ORM\Column(name="money_points", type="float")
@@ -243,5 +253,22 @@ class ArtistPerformance
     }
     public function getMoneyPoints() {
         return $this->moneyPoints;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTicketsSoldPostVal()
+    {
+        return $this->ticketsSoldPostVal;
+    }
+
+    /**
+     * @param mixed $ticketsSoldPostVal
+     */
+    public function setTicketsSoldPostVal($ticketsSoldPostVal)
+    {
+        $this->ticketsSoldPostVal = $ticketsSoldPostVal;
+        return $this;
     }
 }

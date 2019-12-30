@@ -154,19 +154,28 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if app.user and (app.user.hasArtistPerformingIn(contract) or is_granted('ROLE_ADMIN')) %}
+                {% if app.user and (is_granted('ROLE_ADMIN') or app.user.hasArtistPerformingIn(contract)) %}
                     <h2 class="text-center mt-5 pt-2">Statistiques</h2>
 
-                    {% set total_sales = contract.counterpartsSold %}
+                    {% set total_sales = contract.counterpartsSold|round(0, 'floor') %}
                     <p>
                         Puisque vous êtes propriétaire d'un artiste participant à ce festival, vous avez accès à vos performances, c'est-à-dire au nombre de tickets dont les acheteurs vous ont mentionné comme motivation de leur achat.
-                        Notez qu'il y a à l'heure actuelle eu <strong>{{ total_sales }}</strong> ticket{% if total_sales > 1 %}s{% endif %} vendu{% if contract.totalScores > 1 %}s{%endif%}.
-                        Notez également que les acheteurs peuvent mentionner plusieurs artistes lors de leur passage de commande.
+                        Il y a à l'heure actuelle eu <strong>{{ total_sales }}</strong> ticket{% if total_sales > 1 %}s{% endif %} vendu{% if contract.totalScores > 1 %}s{%endif%}.
+                        Notez que lors de son passage de commande, un acheteur peut soit renseigner un artiste (et soutient alors son affiche en particulier) soit pas (il soutient alors équitablement toutes les affiches du/des jour(s) concerné(s) par son ticket).
+                        Attention également qu'en conséquence, certains tickets accordent moins qu'un point de validation à une affiche (car ils sont divisés en plusieurs affiches). Les nombres de tickets repris ci-dessous sont arrondis vers le bas le cas échéant.
                     </p>
                     <ul>
-                        {% for perf in contract.artistPerformances %}
-                            {% set s = perf.ticketsSold > 1 ? 's' : '' %}
-                            <li>{{ perf.ticketsSold }} ticket{{ s }} - <a class="text-secondary" href="{{ path('artist_profile', {'id': perf.artist.id, 'slug': perf.artist.slug}) }}">{{ perf.artist }}</a></li>
+                        {% for lineup in contract.filterableLineUps %}
+                            <li>Affiche <b>{{ lineup.getName }}</b> : {{ lineup.ticketsSold|round(0,'floor') }}/{{ lineup.threshold }} tickets vendus{% if lineup.ticketsSoldPostVal|round(0,'floor') > 0 %} dont {{ lineup.ticketsSoldPostVal|round(0,'floor') }} après validation{% endif %}
+                            {% if is_granted('ROLE_ADMIN') or app.user.hasArtistPerformingInLineUp(lineup) %} (c'est votre affiche)
+                                <ul>
+                                    {% for perf in lineup.artistPerformances %}
+                                        {% set s = perf.ticketsSold > 1 ? 's' : '' %}
+                                        <li>{{ perf.ticketsSold|round(0, 'floor') }} ticket{{ s }}{% if perf.ticketsSoldPostVal|round(0,'floor') > 0 %} dont {{ perf.ticketsSoldPostVal|round(0,'floor') }} après validation{% endif %} - <a class="text-secondary" href="{{ path('artist_profile', {'id': perf.artist.id, 'slug': perf.artist.slug}) }}">{{ perf.artist }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            </li>
                         {% endfor %}
                     </ul>
 
@@ -175,23 +184,23 @@
         </div>
      </section>
 
+
     {% include ':patterns:header.html.twig' with {'title': 'Tickets', 'img': 'tickets.jpg'} %}
+    <section id="tickets" class="container">
+        {% if state not in contract.uncrowdableStates %}
+            {{ form_start(form) }}
+                {% include ':patterns:tickets.html.twig' with {'contractArtist': contract, 'contract': form,'more_info':false} %}
 
-    <div id="tickets"></div>
-    {% if state not in contract.uncrowdableStates %}
-        {{ form_start(form) }}
-            {% include ':patterns:tickets.html.twig' with {'contractArtist': contract, 'contract': form,'more_info':false} %}
+                <section class="text-center mt-4 mb-5">
+                    <span class="pr-4">TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</span>
+                    {{ form_widget(form.submit) }}
+                </section>
+            {{ form_end(form) }}
 
-            <section class="text-center mt-4 mb-5">
-                <span class="pr-4">TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</span>
-                {{ form_widget(form.submit) }}
-            </section>
-        {{ form_end(form) }}
-
-    {% else %}
-        <p class="text-uppercase small text-center font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
-    {% endif %}
-
+        {% else %}
+            <p class="text-uppercase small text-center font-weight-bold">{{ 'event.buy_tickets.over'|trans|raw }}</p>
+        {% endif %}
+    </section>
 
 
 {% endblock %}
