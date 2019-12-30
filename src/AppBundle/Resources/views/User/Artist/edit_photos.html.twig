@@ -23,29 +23,28 @@
             var $dropzone = $("div#artist_edit_photos");
             var mocks = [];
             {% for photo in artist.photos %}
-                mocks.push({
-                    name: "{{ photo.filename }}",
-                    url: "{{ absolute_url(asset(artist.webPath(photo))) }}",
-                    size: 12345
-                });
+            mocks.push({
+                name: "{{ photo.filename }}",
+                url: "{{ absolute_url(asset(artist.webPath(photo))) }}",
+                size: 12345
+            });
             {% endfor %}
-
             $dropzone.dropzone({
                 url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
                 resizeWidth: 1000,
                 maxFiles: 5,
                 addRemoveLinks: true,
-                 params: {
+                params: {
                     pp: 0,
                     artist: {{ artist.id }}
                 },
                 accept: function (file, done) {
                     console.log(file);
                     if ((file.type).toLowerCase() != "image/jpg" &&
-                            (file.type).toLowerCase() != "image/gif" &&
-                            (file.type).toLowerCase() != "image/jpeg" &&
-                            (file.type).toLowerCase() != "image/png"
-                            ) {
+                        (file.type).toLowerCase() != "image/gif" &&
+                        (file.type).toLowerCase() != "image/jpeg" &&
+                        (file.type).toLowerCase() != "image/png"
+                    ) {
                         done("Invalid file");
                     }
                     else {
@@ -69,7 +68,6 @@
                     while(i < mocks.length) {
                         var mock = mocks[i];
                         mock.accepted = true;
-
                         this.files.push(mock);
                         this.createThumbnailFromUrl(mock, mock.url);
                         this.emit('addedfile', mock);
