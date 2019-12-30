@@ -16,22 +16,23 @@
     {% endif %}
 
     <a class="um-card-link" href="{{ path('artist_profile', {'id': artist.id, 'slug': artist.slug}) }}">
-    <div style="position: relative; left: 0; top: 0;">
-            <div style="position: relative; top: 0; left: 0;">
-                <img src="{{ src }}" width="300px" height="200px"/>
+        <div class="bg-white">
+            <div class="mx-auto w-100 position-relative">
+                <div class="w-100 defaultHeightBg sepia ratio-23" style="background-image: url({{ src }});"></div>
+                {% if hours is defined and hours is not null %}
+                    <span class="card-caption-2 position-absolute">{{ hours }}</span>
+                {% endif %}
+                <span class="card-caption position-absolute artist-name">{{ artist.artistname }}</span>
             </div>
-            {% if hours is defined and hours is not null %}
-                <span class="card-caption-2 position-absolute">{{ hours }}</span>
-            {% endif %}
-            <div style="background-color: black; position:absolute; bottom: 0; right: 0px; padding-left: 15px; padding-right: 15px; padding-top: 10px; border-radius: 10px 0 0 0">
-                <p style="color: #E79A41">{{ artist.artistname }}</p>
-            </div>
-        </div>
-        <div style="width: 300px">
+
+            <!-- this is the content of the card with an optionnal span for ⭐ -->
             <div>
                 <span class="d-none artist-genres">{% for genre in artist.genres %}{% if not loop.first %} {% endif %}<span class="jplist-{{ genre|slug }}">{{ genre }}</span>{% endfor %}</span>
                 {% if artist.hasCurrentContract %}<span class="d-none artist-has-current-contract"></span>{% endif %}
             </div>
+
+            <!-- this is the link that the card need to take to -->
+
         </div>
     </a>
 {% endblock %}

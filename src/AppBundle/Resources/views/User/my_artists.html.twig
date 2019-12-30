@@ -40,10 +40,14 @@
             </div>
     </div>
     {% if artists is not empty %}
-        <div class="container row artist-body">
-            {% for artist in artists %}
-                {% include "AppBundle:Public/Card:artist.html.twig" with {'bgwhite': true} %}
-            {% endfor %}
+        <div class="container pb-5">
+            <div class="row" data-jplist-group="group1">
+                {% for artist in artists %}
+                    <div data-jplist-item class="col-6 col-md-4">
+                        {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': artistg} %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     {% else %}
     {% endif %}
