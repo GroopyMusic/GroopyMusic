@@ -73,7 +73,10 @@
                                             <br/>(promo {{ purchase.quantityOrganic }} + {{ purchase.quantityPromotional }}){% endif %}
                                             <br/>(prix unitaire : {{ purchase.unitaryPrice}} €)<br />
                                             {% if purchase.artist is not null %}
-                                                artiste soutenu : {{ purchase.artist }})<br/>(
+                                                (artiste soutenu : {{ purchase.artist }})<br/>
+                                            {% endif %}
+                                            {% if not loop.last %}
+                                                <br />
                                             {% endif %}
                                         {% endfor %}
                                     {% else %}

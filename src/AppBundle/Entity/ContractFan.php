@@ -335,6 +335,44 @@ class ContractFan
         return $toppings;
     }
 
+    public function exceedsFestivalDaysTolerance(&$message) {
+        $festivaldays = array();
+        $realdays = array();
+        foreach($this->getPurchases() as $purchase) {
+            /** @var Counterpart $counterpart */
+            $counterpart = $purchase->getCounterPart();
+            if(count($counterpart->getFestivaldays()) > 0) {
+                if(!$counterpart->isCombo()) {
+                    if(!array_key_exists($counterpart->getFestivaldays()->first()->getId(),$festivaldays)) {
+                        $festivaldays[$counterpart->getFestivaldays()->first()->getId()] = $counterpart->getFestivaldays()->first()->getSolosAvailable();
+                        $realdays[$counterpart->getFestivaldays()->first()->getId()] = $counterpart->getFestivaldays()->first();
+                    }
+                    $festivaldays[$counterpart->getFestivaldays()->first()->getId()] -= $purchase->getQuantityOrganic() * $counterpart->getThresholdIncrease();
+                }
+                else {
+                    if(!array_key_exists('combo',$festivaldays)) {
+                        $festivaldays['combo'] = $counterpart->getFestivaldays()->first()->getCombosAvailable();
+                    }
+                    $festivaldays['combo'] -= $purchase->getQuantityOrganic() * $counterpart->getThresholdIncrease() / 2;
+                }
+            }
+        }
+
+        foreach($festivaldays as $key=>$day) {
+            if($day < 0) {
+                if($key == 'combo') {
+                    $message = 'En effet, les tickets "combo" sont trop nombreux (' . ceil(abs($day)) . ' de trop). ';
+                }
+                else {
+                    $message = 'En effet, les tickets pour le jour "' . $realdays[$key]->__toString() . '" sont trop nombreux (' . ceil(abs($day)) . ' de trop). ';
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @var int
      *

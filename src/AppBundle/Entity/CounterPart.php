@@ -31,6 +31,7 @@ class CounterPart implements TranslatableInterface
         $this->sub_events = new ArrayCollection();
         $this->maximum_amount_per_purchase = 1000;
         $this->venue_blocks = new ArrayCollection();
+        $this->nb_sold = 0;
     }
 
     public function __call($method, $arguments)
@@ -68,18 +69,22 @@ class CounterPart implements TranslatableInterface
         return $this->getNbAvailable() < 1;
     }
 
-    // Unmapped, memoized
-    private $nbAvailable = null;
+    public function isCombo() {
+        return count($this->getFestivaldays()) > 1;
+    }
+
     public function getNbAvailable() {
-        if($this->nbAvailable == null) {
-            $this->nbAvailable = 0;
-            foreach ($this->festivaldays as $festivalday) {
-                foreach ($festivalday->getLineUps() as $lineUp) {
-                    $this->nbAvailable += max($lineUp->getNbAvailable(), 0);
-                }
-            }
-        }
-        return $this->nbAvailable;
+       $fds = $this->getFestivaldays()->toArray();
+       if(count($fds) > 1) {
+           $maxAvailable = $fds[0]->getCombosAvailable();
+       }
+       elseif(count($fds) == 1) {
+           $maxAvailable = $fds[0]->getSolosAvailable();
+       }
+       else {
+           $maxAvailable = 10000;
+       }
+       return max(0, floor(min($maxAvailable, $this->maximum_amount - $this->nb_sold)));
     }
 
     // Unmapped, memoized
@@ -249,6 +254,11 @@ class CounterPart implements TranslatableInterface
         return $this->contractArtist->hasSoldCounterPart($this);
     }
 
+    public function addNbSold($quantity) {
+        $this->nb_sold += $quantity;
+        return $this;
+    }
+
     /**
      * @var int
      *
@@ -334,6 +344,11 @@ class CounterPart implements TranslatableInterface
      * @ORM\Column(name="give_access_everywhere", type="boolean")
      */
     private $access_everywhere;
+
+    /**
+     * @ORM\Column(name="nb_sold", type="smallint")
+     */
+    private $nb_sold;
 
     /**
      * Get id
@@ -653,7 +668,20 @@ class CounterPart implements TranslatableInterface
         $this->access_everywhere = $access_everywhere;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getNbSold()
+    {
+        return $this->nb_sold;
+    }
 
-
-
+    /**
+     * @param mixed $nb_sold
+     */
+    public function setNbSold($nb_sold)
+    {
+        $this->nb_sold = $nb_sold;
+        return $this;
+    }
 }

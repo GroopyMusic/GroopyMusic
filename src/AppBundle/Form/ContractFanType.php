@@ -86,6 +86,10 @@ class ContractFanType extends AbstractType
                 $context->addViolation("Vous ne pouvez pas commander plus de " . $purchasable . " exemplaires de \"" . $purchase->getCounterpart()->getName() . "\".");
             }
         }
+        $message = '';
+        if($contractFan->exceedsFestivalDaysTolerance($message)) {
+            $context->addViolation("Vous ne pouvez pas commander ces tickets car leur nombre fait dépasser la capacité d'accueil de l'une ou l'autre des journées du festival." . $message . "Veuillez réessayer avec une commande plus petite.");
+        }
         //if($contractFan->getCounterPartsQuantityOrganic() > $contract_artist->getMaxCounterParts())
           //  $context->addViolation("Il n'y a plus que " . $contract_artist->getMaxCounterParts() . " tickets disponibles, toutes catégories confondues. Veuillez réduire le nombre de tickets commandés");
     }

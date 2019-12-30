@@ -59,6 +59,11 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
                     $lu->setTicketsSoldPostVal(0);
                 }
 
+                foreach($contract->getCounterParts() as $cp) {
+                    $em->persist($cp);
+                    $cp->setNbSold(0);
+                }
+
                 foreach($contract->getContractsFanPaid() as $cf) {
                     /** @var ContractFan $cf */
                     $date = $cf->getDate();
@@ -67,6 +72,7 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
                     foreach($cf->getPurchases() as $purchase) {
                         /** @var Purchase $purchase */
                         $cp = $purchase->getCounterpart();
+                        $cp->addNbSold($purchase->getQuantity());
                         $festivalDays = $cp->getFestivaldays();
                         $ti = $purchase->getThresholdIncrease();
                         $mi = $purchase->getMoneyIncrease();

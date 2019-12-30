@@ -2,7 +2,7 @@ $(function() {
     var tickets = 0;
     var totalprice = 0;
     var needForTotal = $('#cart-total').length;
-
+    $('.select2-artists').hide();
     function calculateTickets() {
         var tp = 0;
         var q = 0;
@@ -10,7 +10,7 @@ $(function() {
             var qval = parseFloat($(this).val());
             q += qval;
             var $select2_container = $(this).closest('.counterpart-form').find('.select2-artists');
-            if(qval == 0) {
+            if(qval <= 0) {
                 $select2_container.hide();
             }
             else {

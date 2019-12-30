@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class FestivalDay
 {
+    const TOTAL_COMBOS_AVAILABLE = 100;
+    const TOTAL_SOLOS_AVAILABLE = 2000;
+
     public function __construct()
     {
         $this->performances = new ArrayCollection();
@@ -129,6 +132,26 @@ class FestivalDay
             }
         }
         return false;
+    }
+
+    public function getCombosAvailable() {
+        $combosSold = 0;
+        foreach($this->getCounterparts() as $cp) {
+            if($cp->isCombo()) {
+                $combosSold += $cp->getNbSold() * $cp->getThresholdIncrease() / 2;
+            }
+        }
+        return floor(self::TOTAL_COMBOS_AVAILABLE - $combosSold);
+    }
+
+    public function getSolosAvailable() {
+        $solosSold = 0;
+        foreach($this->getCounterparts() as $cp) {
+            if(!$cp->isCombo()) {
+                $solosSold += $cp->getNbSold() * $cp->getThresholdIncrease();
+            }
+        }
+        return floor(self::TOTAL_SOLOS_AVAILABLE - $solosSold);
     }
 
     /**

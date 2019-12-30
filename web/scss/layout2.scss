@@ -112,7 +112,7 @@ $primary-color-red: #9f1b1c;
   width: 1em;
   height: 1em;
   border-radius: 50%;
-  float: left;
+  @extend .mx-auto;
   background-color: $secondary-color;
 
   @extend .m-3;
@@ -294,6 +294,7 @@ $primary-color-red: #9f1b1c;
   }
 
 }
+
 // VARS
 $circle-width: 0.09em;
 $circle-width-hover: 0.07em;
@@ -303,15 +304,29 @@ $primary-color: #000000; // czarny
 $secondary-color: #dfe8ed; //szary bcg
 $bg-color: #ffffff; //srodkowy bezowy
 
-
-
 // colors customized
 $primary-color-blue: #30bae7;
 $primary-color-green: #15c7a8;
-$primary-color-orange: #eb7d4b;
+$primary-color-orange: #f29d6b;
 $primary-color-pink: #d74680;
 $primary-color-span: #3c4761;
 $primary-color-red: #9f1b1c;
+
+.status-txt {
+  font-size: 0.8rem;
+  &.text-green {
+    color: $primary-color-green;
+  }
+  &.text-red {
+    font-style: italic;
+    color: #d7afbb;
+  }
+  &.text-orange {
+    color: $primary-color-orange;
+  }
+}
+
+
 
 .progress {
   width: 100px;

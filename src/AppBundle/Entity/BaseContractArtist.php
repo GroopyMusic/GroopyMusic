@@ -216,10 +216,10 @@ class BaseContractArtist implements TranslatableInterface
     }
     
     public function getNbAvailable(CounterPart $cp) {
-        $nb = $cp->getMaximumAmount();
+        /*$nb = $cp->getMaximumAmount();
 
         foreach($this->getContractsFanPaid() as $cf) {
-            /** @var ContractFan $cf */
+            /** @var ContractFan $cf
             foreach ($cf->getPurchases() as $purchase) {
                 if ($purchase->getCounterPart()->getId() == $cp->getId()) {
                     $nb -= $purchase->getQuantity();
@@ -227,7 +227,8 @@ class BaseContractArtist implements TranslatableInterface
             }
         }
 
-        return max(0, $nb);
+        return max(0, $nb);*/
+        return $cp->getNbAvailable();
     }
 
     public function getNbPurchasesPaid() {

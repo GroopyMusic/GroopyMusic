@@ -52,7 +52,7 @@
         </div>
     </section>
 
-     <section class="container">
+     <section class="container pb-3">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-block">
@@ -105,9 +105,9 @@
 
                     <h2 class="text-center">Promotions</h2>
                     {% if not contract.inTestPeriod %}
-                        <p class="text-center font-weight-light">Tout au long de la campagne, profitez {{ endSentence }} :</p>
+                        <p class="text-center font-weight-light">Tout au long de la campagne, profitez {{ endSentence }}&nbsp;:</p>
                     {% else %}
-                        <p class="text-center font-weight-light">Pendant les premiers jours de campagne, profitez {{ endSentence }} :</p>
+                        <p class="text-center font-weight-light">Pendant les premiers jours de campagne, profitez {{ endSentence }}&nbsp;:</p>
                     {% endif %}
                     <div class="row text-uppercase">
                         {% for promo in visiblePromos %}
@@ -166,7 +166,7 @@
                     </p>
                     <ul>
                         {% for lineup in contract.filterableLineUps %}
-                            <li>Affiche <b>{{ lineup.getName }}</b> : {{ lineup.ticketsSold|round(0,'floor') }}/{{ lineup.threshold }} tickets vendus{% if lineup.ticketsSoldPostVal|round(0,'floor') > 0 %} dont {{ lineup.ticketsSoldPostVal|round(0,'floor') }} après validation{% endif %}
+                            <li>Affiche <b>{{ lineup.getName }}</b>&nbsp;: {{ lineup.ticketsSold|round(0,'floor') }}/{{ lineup.threshold }} tickets vendus{% if lineup.ticketsSoldPostVal|round(0,'floor') > 0 %} dont {{ lineup.ticketsSoldPostVal|round(0,'floor') }} après validation{% endif %}
                             {% if is_granted('ROLE_ADMIN') or app.user.hasArtistPerformingInLineUp(lineup) %} (c'est votre affiche)
                                 <ul>
                                     {% for perf in lineup.artistPerformances %}
@@ -192,7 +192,7 @@
                 {% include ':patterns:tickets.html.twig' with {'contractArtist': contract, 'contract': form,'more_info':false} %}
 
                 <section class="text-center mt-4 mb-5">
-                    <span class="pr-4">TOTAL : <span class="um-label-bold" id="cart-total">0</span> €</span>
+                    <span class="pr-4">TOTAL&nbsp;: <span class="um-label-bold" id="cart-total">0</span> €</span>
                     {{ form_widget(form.submit) }}
                 </section>
             {{ form_end(form) }}
