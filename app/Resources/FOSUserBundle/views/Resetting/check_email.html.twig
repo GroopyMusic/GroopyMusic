@@ -3,11 +3,11 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 {% block header %}
-    {% include ':patterns:header.html.twig' with {'title': 'Mail envoyé', 'img': ''} %}
+    {% include ':patterns:header.html.twig' with {'title': 'Mail envoyé', 'img': 'profil.jpg'} %}
 {% endblock %}
 
 {% block fos_user_content %}
-    <div class="container">
+    <div class="container p-5">
         <p class="w-75 font-weight-bold">
             {{ 'resetting.check_email'|trans({'%tokenLifetime%': tokenLifetime})|nl2br }}
         </p>

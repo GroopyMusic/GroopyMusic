@@ -2,24 +2,28 @@
 
 {% trans_default_domain 'FOSUserBundle' %}
 
-{% block fos_user_content %}
-    <div class="container">
-        <h3 class="text-center mb-3">Bienvenue chez Un-Mute !</h3>
+{% block headtitle %}Inscription | Un-Mute{% endblock %}
 
+{% block header %}
+    {% include ':patterns:header.html.twig' with {'title': 'Bienvenue chez Un-Mute&nbsp;!', 'img': 'inscription.jpg'} %}
+{% endblock %}
+
+{% block fos_user_content %}
+    <div class="container p-5">
         <div class="content-box">
             <div class="content-box-content row mt-3">
                 <div class="col-12 col-md-8 my-auto">
                     {% if app.user %}
                         <p class="text-center">{{ 'registration.confirmed'|trans({'%username%': user.firstname}) }}</p>
                     {% else %}
-                        <p class="text-center">Vous avez bien vérifié votre compte. Bienvenue chez Un-Mute !</p>
+                        <p class="text-center">Vous avez bien vérifié votre compte. Bienvenue chez Un-Mute&nbsp;!</p>
                     {% endif %}
 
-                    <p class="text-center"><a href="{{ path('homepage') }}#festivals" class="btn btn-primary small">Voir les festivals à produire</a></p>
+                    <p class="text-center"><a href="{{ path('homepage') }}#festivals" class="btn btn-primary small">Direction la page d'accueil</a></p>
 
-                    {% if targetUrl %}
+                    {# if targetUrl %}
                         <p><a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a></p>
-                    {% endif %}
+                    {% endif #}
                 </div>
                 <div class="d-none d-md-block col-md-4">
                     <img class="img-fluid um-icon" src="{{ asset('images/icons/advantages-producer.png') }}" />

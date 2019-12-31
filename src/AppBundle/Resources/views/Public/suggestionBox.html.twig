@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% block headtitle %}Contact | Un-Mute{% endblock %}
+
 {% block header %}
     {% include ':patterns:header.html.twig' with {'title': 'Contact', 'img': 'equipe.jpg'} %}
 {% endblock %}
@@ -52,7 +54,7 @@
         <h2 class="text-center">L'équipe</h2>
         <div class="row">
             <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded-circle sepia" src="{{ asset('images/team/piet.jpg') }}" />
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/piet.jpg') }}" />
                 <p><span class="text-uppercase font-weight-bold">Pierre Blackman</span>
                     <br />Coordinateur du projet
                     <br />pierre@un-mute.be
@@ -60,7 +62,7 @@
                 </p>
             </div>
             <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded-circle sepia" src="{{ asset('images/team/gonzague.jpg') }}" />
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/gonzague.jpg') }}" />
                 <p><span class="text-uppercase font-weight-bold">Gonzague Yernaux</span>
                     <br />Développeur Web
                     <br />gonzague@un-mute.be
@@ -68,31 +70,66 @@
                 </p>
             </div>
             <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded-circle sepia" src="{{ asset('images/team/alice.jpg') }}" />
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/alice.jpg') }}" />
                 <p><span class="text-uppercase font-weight-bold">Alice Blackman</span>
                     <br />Responsable communication
                     <br />alice@un-mute.be
                 </p>
             </div>
             <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded-circle sepia" src="{{ asset('images/team/louis.jpg') }}" />
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/louis.jpg') }}" />
                 <p><span class="text-uppercase font-weight-bold">Louis Leboutte</span>
                     <br />Responsable juridique
                     <br />louis@un-mute.be
                 </p>
             </div>
             <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded-circle sepia" src="{{ asset('images/team/alexis.jpg') }}" />
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/alexis.jpg') }}" />
                 <p><span class="text-uppercase font-weight-bold">Alexis Wuyts</span>
                     <br />Responsable partenaires
                     <br />alexis@un-mute.be
                 </p>
             </div>
             <div class="col-12 col-md-4 col-lg-2 text-center">
-                <img class="mb-4 img-fluid rounded-circle sepia" src="{{ asset('images/team/adrien.jpg') }}" />
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/adrien.jpg') }}" />
                 <p><span class="text-uppercase font-weight-bold">Adrien Vervekken</span>
                     <br />Community manager
                     <br />adrien@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 offset-lg-1 text-center">
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/adriens.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Adrien Suys</span>
+                    <br />Développeur Androïd
+                    <br />adrien.suys@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/isma.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Ismaëla Soussi</span>
+                    <br />Responsable image
+                    <br />ismaela@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/pierred.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Pierre D'Heur</span>
+                    <br />Responsable budget
+                    <br />pierre.d@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/nora.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Nora Belhadi</span>
+                    <br />Responsable relations publiques
+                    <br />nora@un-mute.be
+                </p>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 text-center">
+                <img class="mb-4 img-fluid rounded-circle img-sepia" src="{{ asset('images/team/nina.jpg') }}" />
+                <p><span class="text-uppercase font-weight-bold">Nina Dherte</span>
+                    <br />Responsable communication visuelle
+                    <br />nina@un-mute.be
                 </p>
             </div>
         </div>
