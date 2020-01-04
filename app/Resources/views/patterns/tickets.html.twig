@@ -33,6 +33,7 @@
                         {% if counterpart.potentialArtists is not empty %}
                             <div class="select2-artists">
                                 Si vous venez en particulier pour un artiste, mentionnez-le&nbsp;:
+                                <button type="button" class="info-btn" data-toggle="tooltip" data-placement="top" title="Une partie du prix du ticket s'ajoutera au cachet de l'artiste que vous sélectionnez. Si vous ne choissisez personne, le montant sera divisé équitablement entre tous les artistes de l'affiche."><i class="fas fa-info-circle" style="color: orange"></i></button>
                                 {{ form_widget(purchase.artist) }}
                             </div>
                         {% endif %}
