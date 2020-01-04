@@ -5,6 +5,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cropper.css') }}">
 {% endblock %}
 
 {% block artist_edit_profile_content %}
@@ -18,6 +19,7 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('js/cropper.js') }}"></script>
     <script>
         $('document').ready(function() {
             var $dropzone = $("div#artist_edit_photos");
@@ -31,7 +33,7 @@
             {% endfor %}
             $dropzone.dropzone({
                 url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
-                resizeWidth: 1000,
+                //resizeWidth: 1000,
                 maxFiles: 5,
                 addRemoveLinks: true,
                 params: {
@@ -56,8 +58,8 @@
                     confirm.textContent = 'Confirmer';
                     confirm.addEventListener('click', function() {
                         var canvas = cropper.getCroppedCanvas({
-                            width: 1280,
-                            height: 720
+                            width: 1024,
+                            height: 1024
                         });
                         canvas.toBlob(function(blob) {
                             myDropZone.createThumbnail(
@@ -89,7 +91,7 @@
                     editor.appendChild(image);
                     document.body.appendChild(editor);
                     var cropper = new Cropper(image, {
-                        aspectRatio: 16/9
+                        aspectRatio: 1
                     });
                 },
                 removedfile: function(file) {

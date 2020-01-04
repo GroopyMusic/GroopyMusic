@@ -68,8 +68,8 @@
                     confirm.textContent = 'Confirmer';
                     confirm.addEventListener('click', function() {
                         var canvas = cropper.getCroppedCanvas({
-                            width: 1024,
-                            height: 1024
+                            width: 1920,
+                            height: 1080
                         });
                         canvas.toBlob(function(blob) {
                             myDropZone.createThumbnail(
@@ -101,7 +101,7 @@
                     editor.appendChild(image);
                     document.body.appendChild(editor);
                     var cropper = new Cropper(image, {
-                        aspectRatio: 1
+                        aspectRatio: 16/9
                     });
                 },
                 init: function() {
