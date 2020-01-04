@@ -16,38 +16,49 @@
 {% endblock %}
 
 {% block body %}
-    {% for festival in festivals %}
     <section id="festival" class="container-fluid py-4">
         <h2 class="home-section-title text-center mt-2 mt-lg-0">Le Festival pour artistes émergents</h2>
-        <div class="card">
-            {% set image_url = festival.photo is not null ? festival.webPath(festival.photo) : 'images/festival.jpg' %}
-           <a class="texty-white" href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}">
-                <div class="card-img-top round-top" style="background-image:url('{{ absolute_url(asset(image_url))}}')">
-                    <h3>{{ festival.getTitle }}</h3>
-                </div>
-           </a>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-6 text-left">
-                        <i class="text-primary fas fa-calendar-alt light-icon"></i>
-                        <span class="card-text">{{ festival.displayDates }}</span>
+        {% for festival in festivals %}
+            <div class="card">
+                {% set image_url = festival.photo is not null ? festival.webPath(festival.photo) : 'images/festival.jpg' %}
+               <a class="texty-white" href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}">
+                    <div class="card-img-top round-top" style="background-image:url('{{ absolute_url(asset(image_url))}}')">
+                        <h3>{{ festival.getTitle }}</h3>
                     </div>
-                    <div class="col-6 text-right">
-                        <i class="text-primary fas fa-map-marker-alt light-icon"></i>
-                        <span class="card-text text-uppercase">{{ festival.displayHalls }}</span>
-                    </div>
-                    <div class="col-12">
-                        <p class="card-text text-uppercase my-3">{% for perf in festival.artistPerformances %}{{ perf.artist }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
-                        <div class="text-right">
-                            <a href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}" class="card-text btn btn-primary1">PLUS D'INFOS</a>
-                            <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary rounded-pill">TICKETS</a>
+               </a>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 text-left">
+                            <i class="text-primary fas fa-calendar-alt light-icon"></i>
+                            <span class="card-text">{{ festival.displayDates }}</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <i class="text-primary fas fa-map-marker-alt light-icon"></i>
+                            <span class="card-text text-uppercase">{{ festival.displayHalls }}</span>
+                        </div>
+                        <div class="col-12">
+                            <p class="card-text text-uppercase my-3">{% for perf in festival.artistPerformances %}{{ perf.artist }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
+                            <div class="text-right">
+                                <a href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}" class="card-text btn btn-primary1">PLUS D'INFOS</a>
+                                <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary rounded-pill">TICKETS</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% else %}
+            <div class="container">
+                <p class="p-4">
+                    Le prochain Festival Un-Mute aura lieu les <u>16-17 mai 2020</u>. Les campagnes de financement participatif se feront cette fois par affiche - une affiche regroupant 5 à 6 artistes qui joueront, en cas de validation de l'affiche, sur une même scène lors du festival.
+                    <br /><br />
+                    <b>Lieu</b> : l'espace SeeU, à Ixelles (à deux pas de la gare d'Etterbeek !)<br />
+                    <b>Tickets</b> : en vente dès février !
+                </p>
+                    <div class="text-center">Revenez vite pour plus d'informations...</div>
+            </div>
+        {% endfor %}
     </section>
-    {% endfor %}
+
 
     <section id="about" class="container-fluid py-3 text-white">
         <div class="container">
