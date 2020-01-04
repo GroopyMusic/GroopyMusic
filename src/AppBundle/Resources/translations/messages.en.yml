@@ -800,7 +800,7 @@ labels:
     phone: Phone number
   conditions:
     accept_new: I have read and I accept the last <a href="%conditionsUrl%" target="_blank">terms of service</a> of Un-Mute.be
-    Accept & continue on the website
+    submit: Accept & continue on the website
     logout: I want to log out
   proposition_hall:
     name: Place/hall name
