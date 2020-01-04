@@ -5,6 +5,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cropper.css') }}">
 {% endblock %}
 
 {% block artist_edit_profile_content %}
@@ -25,54 +26,82 @@
 
 {% block javascripts %}
     {{ parent() }}
-
+    <script src="{{ asset('js/cropper.js') }}"></script>
     <script>
         $('document').ready(function() {
             var $ppzone =  $("div#artist_edit_pp");
 
             var mocks = [];
             {% if artist.profilepic is not null %}
-                {% for photo in [artist.profilepic]  %}
-                    mocks.push({
-                        name: "{{ photo.filename }}",
-                        url: "{{ absolute_url(asset(artist.webPath(photo))) }}",
-                        size: 12345
-                    });
-                {% endfor %}
+            {% for photo in [artist.profilepic]  %}
+            mocks.push({
+                name: "{{ photo.filename }}",
+                url: "{{ absolute_url(asset(artist.webPath(photo))) }}",
+                size: 12345
+            });
+            {% endfor %}
             {% endif %}
 
             $ppzone.dropzone({
                 url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
-                resizeWidth: 1200,
                 maxFiles: 1,
                 addRemoveLinks: true,
                 params: {
                     pp: 1,
                     artist: {{ artist.id }}
                 },
-                accept: function (file, done) {
-                    console.log(file);
-                    if ((file.type).toLowerCase() != "image/jpg" &&
-                            (file.type).toLowerCase() != "image/gif" &&
-                            (file.type).toLowerCase() != "image/jpeg" &&
-                            (file.type).toLowerCase() != "image/png"
-                    ) {
-                        done("Invalid file");
-                    }
-                    else {
-                        done();
-                    }
-                },
-                removedfile: function(file) {
-                    $.ajax({
-                        method: 'get',
-                        url: "{{ path('artist_ajax_remove_photo', {'id': artist.id}) }}",
-                        data: {
-                            filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
-                        },
-                        complete: function() {
-                            file.previewElement.remove();
-                        }
+                transformFile: function(file, done){
+                    var myDropZone = this;
+                    var editor = document.createElement('div');
+                    editor.style.position = 'fixed';
+                    editor.style.left = 0;
+                    editor.style.right = 0;
+                    editor.style.top = 0;
+                    editor.style.bottom = 0;
+                    editor.style.zIndex = 9999;
+                    editor.style.backgroundColor = '#000';
+                    var confirm = document.createElement('button');
+                    confirm.style.position = 'absolute';
+                    confirm.style.left = '10px';
+                    confirm.style.top = '10px';
+                    confirm.style.zIndex = 9999;
+                    confirm.textContent = 'Confirmer';
+                    confirm.addEventListener('click', function() {
+                        var canvas = cropper.getCroppedCanvas({
+                            width: 1024,
+                            height: 1024
+                        });
+                        canvas.toBlob(function(blob) {
+                            myDropZone.createThumbnail(
+                                blob,
+                                myDropZone.options.thumbnailWidth,
+                                myDropZone.options.thumbnailHeight,
+                                myDropZone.options.thumbnailMethod,
+                                false,
+                                function(dataURL) {
+                                    myDropZone.emit('thumbnail', file, dataURL);
+                                    if ((file.type).toLowerCase() != "image/jpg" &&
+                                        (file.type).toLowerCase() != "image/gif" &&
+                                        (file.type).toLowerCase() != "image/jpeg" &&
+                                        (file.type).toLowerCase() != "image/png"
+                                    ) {
+                                        done("Invalid file");
+                                    }
+                                    else {
+                                        done(blob);
+                                    }
+                                }
+                            );
+                        });
+                        editor.parentNode.removeChild(editor);
+                    });
+                    editor.appendChild(confirm);
+                    var image = new Image();
+                    image.src = URL.createObjectURL(file);
+                    editor.appendChild(image);
+                    document.body.appendChild(editor);
+                    var cropper = new Cropper(image, {
+                        aspectRatio: 1
                     });
                 },
                 init: function() {
@@ -90,10 +119,23 @@
                     }
                     $ppzone.options.maxFiles = $ppzone.options.maxFiles - i;
                 },
+                removedfile: function(file) {
+                    $.ajax({
+                        method: 'get',
+                        url: "{{ path('artist_ajax_remove_photo', {'id': artist.id}) }}",
+                        data: {
+                            filename: file.previewElement.querySelector("[data-dz-name]").innerHTML
+                        },
+                        complete: function() {
+                            file.previewElement.remove();
+                        }
+                    });
+                },
                 success: function(file, serverResponse) {
                     file.previewElement.querySelector("[data-dz-name]").innerHTML = serverResponse.newfilename;
-                }
+                },
             });
         });
     </script>
+
 {% endblock %}

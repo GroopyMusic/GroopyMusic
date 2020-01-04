@@ -38,18 +38,59 @@
                     pp: 0,
                     artist: {{ artist.id }}
                 },
-                accept: function (file, done) {
-                    console.log(file);
-                    if ((file.type).toLowerCase() != "image/jpg" &&
-                        (file.type).toLowerCase() != "image/gif" &&
-                        (file.type).toLowerCase() != "image/jpeg" &&
-                        (file.type).toLowerCase() != "image/png"
-                    ) {
-                        done("Invalid file");
-                    }
-                    else {
-                        done();
-                    }
+                transformFile: function(file, done){
+                    var myDropZone = this;
+                    var editor = document.createElement('div');
+                    editor.style.position = 'fixed';
+                    editor.style.left = 0;
+                    editor.style.right = 0;
+                    editor.style.top = 0;
+                    editor.style.bottom = 0;
+                    editor.style.zIndex = 9999;
+                    editor.style.backgroundColor = '#000';
+                    var confirm = document.createElement('button');
+                    confirm.style.position = 'absolute';
+                    confirm.style.left = '10px';
+                    confirm.style.top = '10px';
+                    confirm.style.zIndex = 9999;
+                    confirm.textContent = 'Confirmer';
+                    confirm.addEventListener('click', function() {
+                        var canvas = cropper.getCroppedCanvas({
+                            width: 1280,
+                            height: 720
+                        });
+                        canvas.toBlob(function(blob) {
+                            myDropZone.createThumbnail(
+                                blob,
+                                myDropZone.options.thumbnailWidth,
+                                myDropZone.options.thumbnailHeight,
+                                myDropZone.options.thumbnailMethod,
+                                false,
+                                function(dataURL) {
+                                    myDropZone.emit('thumbnail', file, dataURL);
+                                    if ((file.type).toLowerCase() != "image/jpg" &&
+                                        (file.type).toLowerCase() != "image/gif" &&
+                                        (file.type).toLowerCase() != "image/jpeg" &&
+                                        (file.type).toLowerCase() != "image/png"
+                                    ) {
+                                        done("Invalid file");
+                                    }
+                                    else {
+                                        done(blob);
+                                    }
+                                }
+                            );
+                        });
+                        editor.parentNode.removeChild(editor);
+                    });
+                    editor.appendChild(confirm);
+                    var image = new Image();
+                    image.src = URL.createObjectURL(file);
+                    editor.appendChild(image);
+                    document.body.appendChild(editor);
+                    var cropper = new Cropper(image, {
+                        aspectRatio: 16/9
+                    });
                 },
                 removedfile: function(file) {
                     $.ajax({
