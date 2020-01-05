@@ -58,7 +58,7 @@
                         {% elseif not artist.validated and artist.visible and owned %}
                             <p class="alert alert-warning" role="alert">{{ 'artist_profile.see.owned.not_validated'|trans|raw }}</p>
                         {% endif %}
-                        <h2 class="text-uppercase">Profil</h2>
+                        <h2 class="text-uppercase mb-3">Profil</h2>
 
                         {% if owned %}
                             <div class="text-right pb-4">
@@ -67,17 +67,17 @@
                         {% endif %}
 
                         {% if artist.genres is not empty %}
-                            <div class="mx-auto font-weight-bold my-3">
+                            <div class="mx-auto font-weight-bold my-4">
                                 {% for genre in artist.genres %}
-                                    <div class="text-uppercase text-left d-inline-block"><i class="text-primary fas fa-circle"></i> {{ genre }}</div><br />
+                                    <div class="text-uppercase text-left d-inline-block my-1"><i class="text-primary fas fa-circle"></i> {{ genre }}</div><br />
                                 {% endfor %}
                             </div>
-                            <p class="font-weight-bold my-3">
-                                {{ artist.getShortDescription()|nl2br }}
-                            </p>
                         {% endif %}
+                        <p class="font-weight-bold my-5">
+                            {{ artist.getShortDescription()|nl2br }}
+                        </p>
                         {% if artist.hasOneLink %}
-                            <div id="artist-links" class="my-2">
+                            <div id="artist-links" class="my-4">
                                 {% if artist.website is not null and artist.website is not empty %}
                                     <a class="p-3" href="{{ artist.website }}"><i class="fas fa-external-link-alt text-dark"></i></a>
                                 {% endif %}
