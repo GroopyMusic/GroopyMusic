@@ -582,10 +582,10 @@ header {
       @extend .text-uppercase, .text-white;
       z-index: 10;
       font-size: 3.5rem;
-      text-shadow: 6px 5px 5px rgba(58, 58, 58);
+      text-shadow: 6px 5px 5px rgb(58, 58, 58);
       .smaller {
         font-size: 2rem;
-        text-shadow: 4px 3px 3px rgba(58, 58, 58);
+        text-shadow: 4px 3px 3px rgb(58, 58, 58);
       }
     }
   }
