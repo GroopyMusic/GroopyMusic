@@ -69,7 +69,7 @@
                                 {% endfor %}
                             {% endif %}
                         </div>
-                        <div class="p-3">
+                        <div class="pb-0 px-3 pt-3">
                             {% if contract.filterableStages|length > 1 %}
                                 <span class="text-primary">Scène</span><br />
                                 <span class="artists-selector artists-selector-stage selected" data-stage="all">Toutes</span>
@@ -85,7 +85,7 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                    <div class="form-body row">
+                    <div class="form-body row" style="padding-top:0 !important;">
                         {% for performance in contract.artistPerformances %}
                             <div class="col-6 artist-col" data-day="{{ performance.festivalDay.id }}" data-lineup="{{ performance.lineup.id }}" {% if performance.stage is not null %}data-stage="{{ performance.stage.id }}"{% endif %}>
                                 {% include 'AppBundle:Public/Card:artist.html.twig' with {'artist': performance.artist, 'hours': performance.time} %}
