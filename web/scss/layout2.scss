@@ -606,16 +606,26 @@ header {
     background:#E79A41 ;
     opacity: 0.4;
   }
+  #logo {
+    height: 200px;
+    @include media-breakpoint-down(sm) { height: 140px;  }
+  }
+  h1#maintitle {
+    @include media-breakpoint-down(sm) {  font-size: 1.8rem;  }
+
+  }
   #headline {
     font-size: 2.2rem;
     margin-top: 3rem;
     color: white;
+    @include media-breakpoint-down(sm) { line-height: 1.2; font-size: 2rem; margin-top: 2rem;   }
   }
   .soustitre {
     font-size: 1.6rem;
     color: white;
     margin-top: 1rem;
     font-weight: 100;
+    @include media-breakpoint-down(sm) { line-height: 1.1; font-size: 1.3rem;  }
   }
 
   .btn-reserver{
@@ -625,6 +635,7 @@ header {
     color: #ffffff;
     padding: 1% 1.5%;
     margin-top: 3rem;
+    @include media-breakpoint-down(sm) { margin-top: 0;   }
   }
   .sticky {
     position: sticky;
@@ -861,7 +872,7 @@ input[type=submit], button[type=submit] {
     z-index: 0;
     content: "";
     background: $primary;
-    background: linear-gradient(90deg, rgba(213,31,104,1) 0%, rgba(231,154,65,1) 76%);
+    background: linear-gradient(90deg, rgb(213, 83, 134) 0%, rgba(231,154,65,1) 70%);
     width: 100%;
     height: 100%;
     opacity: .6;
