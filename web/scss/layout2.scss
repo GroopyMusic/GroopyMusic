@@ -888,7 +888,9 @@ input[type=submit], button[type=submit] {
 }
 
 .card-caption {
-  font-size: .8rem;
+  @include media-breakpoint-down(md) {
+    font-size: .8rem;
+  }
   position: absolute;
   right: 0;
   bottom: 0;
@@ -896,7 +898,9 @@ input[type=submit], button[type=submit] {
 }
 
 .card-caption-2 {
-  font-size: .8rem;
+  @include media-breakpoint-down(md) {
+    font-size: .8rem;
+  }
   position: absolute;
   top: 0;
   left: 0;
