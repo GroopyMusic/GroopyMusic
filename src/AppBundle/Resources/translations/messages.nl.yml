@@ -578,10 +578,10 @@ artist_profile:
     intro: |
         Hier kunt u de profielfoto van %artist% uploaden.
         Deze foto verschijnt als eerste op de verschillende afbeeldingen van deze artiest op Un-Mute.
-        Zorg ervoor dat het van goede kwaliteit is en dat het afmetingen heeft van type 4 (breedte) / 3 (lengte).
+        Zorg ervoor dat het van goede kwaliteit is en dat het afmetingen heeft van type 16 (breedte) / 9 (lengte).
     to_other_pics: Wil je meer foto's toevoegen aan je artiest? <a href="%url%">Voeg er maximaal 5 toe</a>
   other_pics:
-    intro: Voeg hier maximaal 5 extra foto's toe aan je artiest. Kies afbeeldingen van goede kwaliteit en voorkeur die de verhouding 4 (breedte) / 3 (hoogte) volgen.
+    intro: Voeg hier maximaal 5 extra foto's toe aan je artiest. Kies vierkante afbeeldingen van goede kwaliteit.
   medias:
     add_video: Voeg een video toe
     remove_video: Video verwijderen

@@ -493,10 +493,10 @@ artist_profile:
     intro: |
       You can here upload a profile picture for %artist%.
       This picture will be the first one to appear on the artist presentation on Un_mute.
-      Please ensure it has a proper quality and respects dimensions of 4 (width) / 3 (length)
+      Please ensure it has a proper quality and respects dimensions of 16 (width) / 9 (length)
     to_other_pics: Do you wish to add other pictures? <a href="%url%">Add up to 5 pictures</a>
   other_pics:
-    intro: You can add up to 5 pictures for your artist. Please ensure they have a proper quality and respects dimensions of 4 (width) / 3 (length)
+    intro: You can add up to 5 pictures for your artist. Please ensure they have a proper quality. The pictures should be square; you will be able to crop them if necessary.
   medias:
     add_video: Add a video
     remove_video: Remove video
