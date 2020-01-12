@@ -186,7 +186,7 @@
 
 
     {% include ':patterns:header.html.twig' with {'title': 'Tickets', 'img': 'tickets.jpg'} %}
-    <section id="tickets" class="container-fluid p-md-5">
+    <section id="tickets" class="container-fluid px-md-5 pb-md-5">
         {% if state not in contract.uncrowdableStates %}
             {{ form_start(form) }}
                 {% include ':patterns:tickets.html.twig' with {'contractArtist': contract, 'contract': form,'more_info':false} %}
