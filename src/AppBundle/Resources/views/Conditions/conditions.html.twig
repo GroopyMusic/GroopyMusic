@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% block headtitle %}Conditions générales | Un-Mute{% endblock %}
+{% block header %}{% include ':patterns:header.html.twig' with {'img': '', 'title':'Conditions générales d\'utilisation et de vente'} %}{% endblock %}
+
 {% block body %}
     <div class="container-fluid" style="padding-top:0 !important;">
 
          <div class="row">
-            <div class="col-12 col-md-4 content-box">
+            <div class="col-12 col-md-3 content-box">
                 <div id="static-toc" class="fixed-toc col-12 col-md-4">
                     <div class="content-box-header">
                         <h3>Navigation</h3>
@@ -16,7 +19,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-md-8 static-content">
+            <div class="col-12 col-md-9 static-content">
 
                 <div class="content-box">
                     <div class="content-box-content">
@@ -32,8 +35,8 @@
     </div>
 {% endblock %}
 
-{% block additional_javascripts %}
-
+{% block javascripts %}
+    {{ parent() }}
     <script type="text/javascript">
 
         var $nav = $('#toc-nav .list-group');
@@ -44,8 +47,6 @@
                 i + "' title='" + current.html() + "'>" +
                 current.html() + "</a>");
         });
-
-
     </script>
 
 

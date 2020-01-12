@@ -432,6 +432,18 @@ $primary-color-red: #9f1b1c;
 .font-weight-300 {
   font-weight: 300 !important;
 }
+.font-weight-400 {
+  font-weight: 400 !important;
+}
+
+.font-weight-500 {
+  font-weight: 500 !important;
+}
+
+.font-weight-600 {
+  font-weight: 600 !important;
+}
+
 
 h2, h1, h3 {
   font-weight: bold;
@@ -511,7 +523,7 @@ button, a { cursor: pointer; }
     @extend .text-uppercase;
     a {
       color: rgba(231, 154, 65, 0.7);
-      font-weight: 300;
+      font-weight: 400;
       &.dropdown-item {
         font-weight: normal;
       }

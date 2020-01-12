@@ -13,6 +13,7 @@
 
 {% block body %}
     <div class="container py-4">
+        <p class="my-3 w-50 font-weight-bold">Retrouvez l'esnemble des artistes ayant lancé une campagne de financement participatif avec Un-Mute. Les artistes sont soit à l'affiche actuellement, soit l'ont été par le passé.</p>
         {% if artists is empty %}
             <p class="font-weight-bold w-50">{{ 'catalog_artists.empty'|trans|raw }}</p>
         {% else %}
