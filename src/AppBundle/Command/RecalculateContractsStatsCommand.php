@@ -31,7 +31,7 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         try {
-            $contractArtists = $em->getRepository('AppBundle:ContractArtist')->findVisible();
+            $contractArtists = $em->getRepository('AppBundle:ContractArtist')->findVisibleIncludingPreValidation();
 
             foreach($contractArtists as $contract) {
                 $em->persist($contract);

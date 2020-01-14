@@ -241,7 +241,11 @@ class BaseContractArtist implements TranslatableInterface
     protected $contractsFanPaid = null;
     public function getContractsFanPaid() {
         if($this->contractsFanPaid == null) {
-            $this->contractsFanPaid = array_filter($this->contractsFan->toArray(), function(ContractFan $contractFan) {
+            $cfs = $this->contractsFan->toArray();
+            usort($cfs, function(ContractFan $cf1, ContractFan $cf2) {
+                return $cf1->getDate() < $cf2->getDate() ? -1 : 1;
+            });
+            $this->contractsFanPaid = array_filter($cfs, function(ContractFan $contractFan) {
                 return $contractFan->isPaid() && ($this->failed || !$contractFan->isRefunded());
             });
         }

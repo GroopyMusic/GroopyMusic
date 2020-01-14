@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Artist;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,6 +119,9 @@ class Select2Controller extends BaseController
 
         $counterPart = $em->getRepository('AppBundle:CounterPart')->find($counterPart_id);
         $artists = $counterPart->getPotentialArtists();
+        usort($artists, function(Artist $a, Artist $b) {
+            return strtoupper($a->getArtistname()) < strtoupper($b->getArtistname()) ? -1 : 1;
+        });
         $artistsArray = [];
 
         foreach ($artists as $artist) {
