@@ -116,9 +116,9 @@ class User extends BaseUser implements RecipientInterface, PhysicalPersonInterfa
     }
 
     public function hasArtistPerformingIn(ContractArtist $contractArtist) {
-        $artists = $contractArtist->getAllArtists();
+        $artists = array_map(function(Artist $artist) { return $artist->getId();},$contractArtist->getAllArtists());
         foreach($this->artists_user as $au) {
-            if(in_array($au->getArtist(), $artists)) {
+            if(in_array($au->getArtist()->getId(), $artists)) {
                 return true;
             }
         }

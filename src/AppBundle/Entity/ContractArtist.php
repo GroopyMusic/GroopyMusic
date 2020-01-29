@@ -510,9 +510,8 @@ class ContractArtist extends BaseContractArtist
     {
         if($this->all_artists == null) {
             $all_artists = [];
-            foreach($this->getArtistPerformances() as $artistPerformance_day) {
-                foreach($artistPerformance_day as $artistPerformance)
-                    $all_artists[] = $artistPerformance->getArtist();
+            foreach($this->getArtistPerformances() as $artistPerformance) {
+                $all_artists[] = $artistPerformance->getArtist();
             }
             $this->all_artists = $all_artists;
         }
