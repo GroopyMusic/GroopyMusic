@@ -4,7 +4,11 @@
 
 {% block header %}
     <div style="position: relative">
-        {% include ':patterns:header.html.twig' with {'img': absolute_url(asset(artist.webPath(photo))), 'img_absolute': true, 'title': artist.artistname|trans|raw } %}
+        {% if artist.profilepic is not null %}
+            {% include ':patterns:header.html.twig' with {'title': artist.__toString~' (édition)', 'img_absolute': true, 'img': asset(artist.webPath(artist.profilepic)), 'huge': true, 'sepia': false} %}
+        {% else %}
+            {% include ':patterns:header.html.twig' with {'title': artist.__toString~' (édition)'} %}
+        {% endif %}
     </div>
 {% endblock %}
 

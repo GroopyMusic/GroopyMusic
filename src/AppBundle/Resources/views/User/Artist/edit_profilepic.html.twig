@@ -45,6 +45,7 @@
             $ppzone.dropzone({
                 url: "{{ oneup_uploader_endpoint('artist_gallery') }}",
                 maxFiles: 1,
+                maxFilesize: 4,
                 addRemoveLinks: true,
                 params: {
                     pp: 1,

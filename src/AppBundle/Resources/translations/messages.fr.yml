@@ -610,10 +610,10 @@ artist_profile:
     intro: |
       Vous pouvez ici mettre en ligne la photo de profil de %artist%.
       Cette photo sera la première à apparaître sur les différents visuels de cet artiste sur Un-Mute.
-      Veillez à ce qu'elle soit de bonne qualité et qu'elle ait des dimensions de type 16 (largeur) / 9 (longueur). Vous pourrez la recentrer au besoin.
+      Veillez à ce qu'elle soit de bonne qualité (mais attention : <b>pas plus que 2 Mb</b>) et qu'elle ait des dimensions de type 16 (largeur) / 9 (longueur). Vous pourrez la recentrer au besoin.
     to_other_pics: Vous souhaitez ajouter d'autres photos à votre artiste ? <a href="%url%">Ajoutez-en jusqu'à 5</a>
   other_pics:
-    intro: Ajoutez ici jusqu'à 5 photos supplémentaires à votre artiste. Choisissez des photos de bonne qualité. Elles doivent être de dimensions carrées ; vous pourrez les recentrer au besoin.
+    intro: Ajoutez ici jusqu'à 5 photos supplémentaires à votre artiste. Choisissez des photos de bonne qualité, mais les fichiers ne peuvent excéder 2 Mb. Elles doivent être de dimensions carrées ; vous pourrez les recentrer au besoin.
   medias:
     add_video: Ajouter une vidéo
     remove_video: Supprimer la vidéo
