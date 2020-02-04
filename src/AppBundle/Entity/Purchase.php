@@ -37,16 +37,9 @@ class Purchase
 
         $str .= $this->counterpart . ' (x' . $this->quantity . ')';
 
-        if(!empty($this->getArtists() && count($this->getArtists()) > 0)) {
+        if($this->artist != null) {
             $str .= ' pour ';
-            $i = 0;
-            foreach($this->getArtists() as $artist) {
-                if($i > 0) {
-                    $str .= ', ';
-                }
-                $str .= $artist->getArtistname();
-                $i++;
-            }
+            $str .= $this->artist->getArtistname();
         }
 
         $str .= $this->getActuallyAppliedPromotionsString();
