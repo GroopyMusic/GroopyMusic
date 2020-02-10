@@ -35,7 +35,7 @@
 
         @media (max-width: 575.98px) {
             header.header {
-                background-position-y: -30px;
+                background-position-y: top;
                 background-image:url('{{ absolute_url(asset(small_img)) }}');
                 max-height: 470px;
             }
@@ -44,6 +44,7 @@
         @media (min-width: 576px) and (max-width: 991.98px) {
             header.header {
                 background-image:url('{{ absolute_url(asset(medium_img)) }}');
+                background-position-y: top;
                 max-height: 300px;
             }
         }
