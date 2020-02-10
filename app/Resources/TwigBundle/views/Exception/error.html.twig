@@ -1,7 +1,9 @@
 {% extends "base.html.twig" %}
 
+{% block header %}{% include ':patterns:header.html.twig' with {'img': '', 'title':'Oups...'} %}{% endblock %}
+
 {% block body %}
-    <div class="container text-center">
+    <div class="container p-5 text-center">
         <h3>{% block error_title %}{{ 'error.generic.title'|trans }}{% endblock %}</h3>
 
         <p class="text-center font-italic">{{ 'error.intro'|trans|raw }}</p>

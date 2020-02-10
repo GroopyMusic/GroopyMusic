@@ -28,20 +28,23 @@
 
         header.header {
             background-image:url('{{ absolute_url(asset(image_url)) }}');
-            background-position-y: -30px;
             background-position-x: center;
-            min-height: 55vh;
+            height: 55vh;
+            max-height: 600px;
         }
 
         @media (max-width: 575.98px) {
             header.header {
+                background-position-y: -30px;
                 background-image:url('{{ absolute_url(asset(small_img)) }}');
+                max-height: 470px;
             }
         }
 
         @media (min-width: 576px) and (max-width: 991.98px) {
             header.header {
                 background-image:url('{{ absolute_url(asset(medium_img)) }}');
+                max-height: 300px;
             }
         }
     </style>
