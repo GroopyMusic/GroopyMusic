@@ -580,6 +580,9 @@ header {
   background-repeat: no-repeat;
   min-height: 50vh;
   position:relative;
+  &.notitle .page-header h1 {
+    display: none !important;
+  }
   .page-header {
     display: flex;
     justify-content: center; /* align horizontal */

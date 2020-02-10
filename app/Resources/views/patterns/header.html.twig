@@ -11,7 +11,7 @@
         </div>
     </header>
 {% else %}
-    <header class="header container-fluid{% if huge is defined and huge %} artist-header{% endif %}" style="background-image:{% if img_absolute is defined and img_absolute %}url('{{ img }}'){% else %} url('{{ asset('images/headers/'~img|default('')) }}'){% endif %}">
+    <header class="header container-fluid{% if notitle is defined and notitle %} notitle{% endif %}{% if huge is defined and huge %} artist-header{% endif %}" {% if nostyle is not defined or not nostyle %}style="background-image:{% if img_absolute is defined and img_absolute %}url('{{ img }}'){% else %} url('{{ asset('images/headers/'~img|default('')) }}'){% endif %}"{% endif %}>
         <div class="page-header{% if huge is defined and huge %} artist-header{% endif %}{% if not (sepia is defined and not sepia) %} sepia{% endif %}">
             <h1 class="text-center">{{ title|raw }}</h1>
         </div>

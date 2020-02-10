@@ -28,7 +28,11 @@
                 {% set text = lineUp.isSoldOut ? 'SOLD OUT' : lineUp.isSuccessful ? 'Confirmé. Prochain objectif&nbsp;: le sold out &nbsp;!' : lineUp.isFailed ? 'Annulé' : 'Campagne en cours' %}
                 {% set sizexs = big is defined and big ? 6 : 4 %}
                 {% set sizemd = big is defined and big ? 4 : 2 %}
-                {% set offset = l == 5 ? loop.index == 1 ? ' offset-md-1' : loop.index == 4 ? ' offset-2 offset-md-0' : '' %}
+                {% if big is not defined or not big %}
+                    {% set offset = l == 5 ? loop.index == 1 ? ' offset-md-1' : loop.index == 4 ? ' offset-2 offset-md-0' : '' %}
+                {% else %}
+                    {% set offset = l == 5 ? loop.index == 4 ? ' offset-md-2 pt-4' : loop.index == 5 ? ' offset-3 offset-md-0 pt-4' : ' pt-4 pt-md-0' %}
+                {% endif %}
                 <div class="col-{{ sizexs }} col-md-{{ sizemd~offset }} px-2 pb-3 text-center">
                     <h3 class="text-primary small-title">{{ lineUp.festivalDay.date|date('l')|trans }} - {{ lineUp.getName }}</h3>
                     <div class="small font-weight-light">{% for performance in lineUp.performances %}{{ performance.artist }}{% if not loop.last %}, {% endif %}{% endfor %}</div>

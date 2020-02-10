@@ -1,3 +1,7 @@
+{% if contract.crowdable %}
+    {% set page = 'festival' %}
+{% endif %}
+
 {% extends "base.html.twig" %}
 
 {% set image_url = contract.photo is not null ? contract.webPath(contract.photo) : 'images/live/live-6.jpg' %}
@@ -17,6 +21,32 @@
     {{ contract.getTitle }}
 {% endblock %}
 
+{% block head_styles %}
+    <style type="text/css">
+        {% set medium_img = contract.photo is not null ? contract.webPathMD(contract.photo) : 'images/live/live-6.jpg' %}
+        {% set small_img = contract.photo is not null ? contract.webPathSM(contract.photo) : 'images/live/live-6.jpg' %}
+
+        header.header {
+            background-image:url('{{ absolute_url(asset(image_url)) }}');
+            background-position-y: -30px;
+            background-position-x: center;
+            min-height: 55vh;
+        }
+
+        @media (max-width: 575.98px) {
+            header.header {
+                background-image:url('{{ absolute_url(asset(small_img)) }}');
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            header.header {
+                background-image:url('{{ absolute_url(asset(medium_img)) }}');
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block open_graph %}
     <meta property="og:title"
           content="{{ contract.getTitle }}"/>
@@ -27,7 +57,7 @@
 {% endblock %}
 
 {% block header %}
-    {% include ':patterns:header.html.twig' with {'title': contract.getTitle ~ '<br /><span class="smaller">' ~ contract.getDisplayDates ~ '</span>', 'img': absolute_url(asset(image_url)), 'img_absolute':true} %}
+    {% include ':patterns:header.html.twig' with {'title': contract.getTitle ~ '<br /><span class="smaller">' ~ contract.getDisplayDates ~ '</span>', 'img': absolute_url(asset(image_url)), 'img_absolute':true, 'sepia':false, 'notitle': true, 'nostyle':true} %}
 {% endblock %}
 
 {% set state = contract.state %}

@@ -94,6 +94,14 @@ class BaseContractArtist implements TranslatableInterface
         return self::PHOTOS_DIR . $photo->getFilename();
     }
 
+    public static function getWebPathMD(Photo $photo) {
+        return self::PHOTOS_DIR . 'MD_'.$photo->getFilename();
+    }
+
+    public static function getWebPathSM(Photo $photo) {
+        return self::PHOTOS_DIR . 'SM_'.$photo->getFilename();
+    }
+
     public function isInTestPeriod() {
         return $this->test_period;
     }
