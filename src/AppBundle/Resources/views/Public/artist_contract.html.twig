@@ -73,20 +73,26 @@
 {% set visiblePromos = contract.currentPromotionsVisible %}
 
 {% block body %}
-    {% include ':patterns:crowdfunding.html.twig' with {'contractArtist': contract} %}
-
-    <section class="container p-5">
-        <div class="row">
-            <div class="col-8 text-left">
-                <p class="font-weight-bold w-md-75">{{ contract.getDescription }}</p>
-            </div>
-            <div class="col-4 text-right">
-                <a class="btn btn-primary scroll" href="#tickets">Tickets</a>
-            </div>
+    <div class="row">
+        <div class="col-12 p-0 m-0 order-1 order-md-2">
+            <section class="container p-5">
+                <div class="row">
+                    <div class="col-8 text-left">
+                        <h1 class="d-block d-md-none">{{ contract.getTitle }}</h1>
+                        <p class="font-weight-bold w-md-75">{{ contract.getDescription }}</p>
+                    </div>
+                    <div class="col-4 text-right">
+                        <a class="btn btn-primary scroll" href="#tickets">Tickets</a>
+                    </div>
+                </div>
+            </section>
         </div>
-    </section>
+        <div class="col-12 p-0 m-0 order-2 order-md-1">
+            {% include ':patterns:crowdfunding.html.twig' with {'contractArtist': contract} %}
+        </div>
+    </div>
 
-     <section class="container pb-3">
+     <section class="container pb-3 pt-4 pt-md-0">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-block">
