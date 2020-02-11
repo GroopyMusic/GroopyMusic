@@ -21,11 +21,11 @@
     {{ contract.getTitle }}
 {% endblock %}
 
+{% set medium_img = contract.photo is not null ? contract.webPathMD(contract.photo) : 'images/live/live-6.jpg' %}
+{% set small_img = contract.photo is not null ? contract.webPathSM(contract.photo) : 'images/live/live-6.jpg' %}
+
 {% block head_styles %}
     <style type="text/css">
-        {% set medium_img = contract.photo is not null ? contract.webPathMD(contract.photo) : 'images/live/live-6.jpg' %}
-        {% set small_img = contract.photo is not null ? contract.webPathSM(contract.photo) : 'images/live/live-6.jpg' %}
-
         header.header {
             background-image:url('{{ absolute_url(asset(image_url)) }}');
             background-position-x: center;
@@ -45,7 +45,7 @@
             header.header {
                 background-image:url('{{ absolute_url(asset(medium_img)) }}');
                 background-position-y: top;
-                max-height: 300px;
+                min-height: 480px;
             }
         }
     </style>
@@ -57,7 +57,7 @@
     <meta property="og:type" content="article"/>
     <meta property="og:url"
           content="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"/>
-    <meta property="og:image" content="{{ absolute_url(asset(image_url)) }}"/>
+    <meta property="og:image" content="{{ absolute_url(asset(medium_img)) }}"/>
 {% endblock %}
 
 {% block header %}
