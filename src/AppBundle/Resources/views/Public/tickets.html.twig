@@ -6,6 +6,10 @@
 
 {% block headtitle %}Tickets | Un-Mute{% endblock %}
 
+{% block open_graph %}
+    <meta property="og:image" content="{{ absolute_url(asset('images/festivals/SM_seeu-16-17-mai-2020.jpg')) }}" />
+{% endblock %}
+
 {% block header %}
     {% include ':patterns:header.html.twig' with {'img': 'tickets.jpg', 'title': 'Tickets'} %}
 {% endblock %}

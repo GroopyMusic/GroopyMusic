@@ -9,7 +9,16 @@
         {% block additional_metas %}{% endblock %}
 
         <title>{% block headtitle %}Un-Mute{% endblock %}</title>
-        {% block open_graph %}{% endblock %}
+        {% block open_graph_base %}
+            <meta property="fb:app_id" content="1918090235107203" />
+            <meta property="og:description" content="{{ block('description') }}" />
+        {% endblock %}
+        {% block open_graph %}
+            <meta property="og:image" content="{{ absolute_url(asset('images/home-header.jpg')) }}" />
+            <meta property="og:title" content="{{ 'home.og_title'|trans }}"  />
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
+        {% endblock %}
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
         {% block stylesheets %}

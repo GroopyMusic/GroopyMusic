@@ -4,13 +4,6 @@
     <meta name="google-site-verification" content="YPTGtQFS6XZ2KSoHIOWAVIoosrK_-hyOTqq1TRTAUM8" />
 {% endblock %}
 
-{% block open_graph %}
-    <meta property="og:title" content="{{ 'home.og_title'|trans }}"  />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}" />
-    <meta property="og:image" content="{{ absolute_url(asset('images/home-header.jpg')) }}" />
-{% endblock %}
-
 {% block header %}
     {% include ':patterns:header.html.twig' with {'home_header': true} %}
 {% endblock %}
@@ -121,8 +114,6 @@
             <div class="row">
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://federation-wallonie-bruxelles.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/fwb.png') }}" alt="Fédération Wallonie-Bruxelles"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://brusselsisyours.com/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/biy.jpg') }}" alt="Brussels is Yours"></a></div>
-                <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://timetolunch.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/ttl.png') }}" alt="Time to lunch"></a></div>
-                <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://brabantwallon.be/bw/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/bw.png') }}" alt="Province du Brabant Wallon"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="https://www.mybeerbox.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/mbb.png') }}" alt="My Beer Box"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.svg') }}" alt="Tacite, l'Allié des Artistes"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="https://www.facebook.com/cafedeshallesbxl/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/hsg.png') }}" alt="Café des Halles Saint-Géry"></a></div>
