@@ -32,6 +32,7 @@ class CounterPart implements TranslatableInterface
         $this->maximum_amount_per_purchase = 1000;
         $this->venue_blocks = new ArrayCollection();
         $this->nb_sold = 0;
+        $this->difference = 0;
     }
 
     public function __call($method, $arguments)
@@ -349,6 +350,11 @@ class CounterPart implements TranslatableInterface
      * @ORM\Column(name="nb_sold", type="smallint")
      */
     private $nb_sold;
+
+    /**
+     * @ORM\Column(name="difference", type="float")
+     * */
+    private $difference;
 
     /**
      * Get id
@@ -682,6 +688,14 @@ class CounterPart implements TranslatableInterface
     public function setNbSold($nb_sold)
     {
         $this->nb_sold = $nb_sold;
+        return $this;
+    }
+
+    public function getDifference() {
+        return $this->difference;
+    }
+    public function setDifference($difference) {
+        $this->difference = $difference;
         return $this;
     }
 }

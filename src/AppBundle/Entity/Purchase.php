@@ -29,6 +29,8 @@ class Purchase
         $this->artists = new ArrayCollection();
         $this->artist = null;
         $this->moneyIncrease = 0;
+        $this->confirmed = 0;
+        $this->refunded = 0;
     }
 
     public function __toString()
@@ -62,7 +64,6 @@ class Purchase
 
     public function getPromotionalThresholdIncrease() {
         return $this->getQuantityPromotional() * $this->getCounterpart()->getThresholdIncrease();
-
     }
 
     public function getPromotions()
@@ -203,6 +204,10 @@ class Purchase
         return $this->artists->isEmpty() ? null : $this->artists->first();
     }
 
+    public function isCancelled() {
+        return $this->refunded;
+    }
+
     /**
      * @var int
      *
@@ -286,6 +291,16 @@ class Purchase
      * @ORM\Column(name="money_increase", type="float")
      */
     private $moneyIncrease;
+
+    /**
+     * @ORM\Column(name="confirmed", type="boolean")
+     */
+    private $confirmed;
+
+    /**
+     * @ORM\Column(name="refunded", type="boolean")
+     */
+    private $refunded;
 
     /**
      * Get id
@@ -586,6 +601,20 @@ class Purchase
     }
     public function setArtist($artist) {
         $this->artist = $artist;
+        return $this;
+    }
+    public function getConfirmed() {
+        return $this->confirmed;
+    }
+    public function setConfirmed($confirmed) {
+        $this->confirmed = $confirmed ;
+        return $this;
+    }
+    public function getRefunded() {
+        return $this->refunded;
+    }
+    public function setRefunded($refunded) {
+        $this->refunded = $refunded;
         return $this;
     }
 }

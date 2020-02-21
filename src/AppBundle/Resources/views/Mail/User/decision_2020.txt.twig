@@ -1,0 +1,42 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.txt.twig' %}
+
+{% block subject %}{{ subject }}{% endblock %}
+
+{% autoescape false %}
+
+{% block content %}
+Chers et chères contributeurs au Festival Un-Mute des 16 et 17 mai prochains dans le grand Espace See U, à Ixelles,
+
+Vous le savez : avec Un-Mute, les artistes sont regroupés en affiches (en fonction de leur style musical) ; chaque affiche doit mener une campagne de financement participatif pour collectivement jouer sur scène en cas de succès de la campagne ; en cas d'échec, malheureusement, l'affiche est annulée et ne pourra pas se produire sur scène le jour où elle était programmée.
+
+Voici le résultat des courses, affiche par affiche, pour le festival 2020 au See U :
+{% for affiche in ca.lineups %}
+    - Affiche du {{ affiche.festivalDay.date|date('l')|trans|lower }} "{{ affiche.getName }}" ({% for artist in affiche.artists %}{{ artist }}{% if not loop.last %}, {% endif %}{% endfor %}) : {% if affiche.successful %}confirmée !{% elseif affiche.failed %}annulée{% endif %}
+{% endfor %}
+
+Ce mail concerne {% if purchases|length <= 1 %}l'achat{% else %}les achats{% endif %} suivant{% if purchases|length > 1 %}s{% endif %} :
+{% for purchase in purchases %}
+    {{ purchase.getDisplayWithAmount }}
+{% endfor %}
+
+{% if partRefund %}
+    Au vu des résultats des campagnes menées par les artistes, il se trouve que le ticket combi ne peut donner accès à deux jours de festival, puisqu'un seul jour seulement est confirmé. Vous allez dès lors recevoir un remboursement de {{ amount }} € (la différence de prix avec un ticket journalier si vous en aviez acheté un au lieu du ticket combi).
+    Le remboursement sera effectué dans les quelques jours ouvrables qui viennent.
+{% elseif completeRefund %}
+    Au vu des résultats des campagnes menées par les artistes, il se trouve que votre achat concerne une affiche et/ou une journée qui a été annulée. Vous allez dès lors recevoir un remboursement intégral, de {{ amount }} €.
+    Le remboursement sera effectué dans les quelques jours ouvrables qui viennent.
+{% else %}
+    Au vu des résultats des campagnes menées par les artistes, votre achat reste valide et d'application. Vous recevrez vos tickets, seuls droits d'accès au festival, par mail dans les semaines qui viennent.
+{% endif %}
+
+Si vous avez la moindre question concernant notre fonctionnement et/ou le résultat des campagnes, merci de nous envoyer un mail à festivals@un-mute.be dans les 14 jours qui viennent.
+{% if yellow %}En particulier, si les accès auxquels vos tickets donnent droits ont été réduits par suite de campagnes échouées, et que vous souhaitez en conséquence annuler votre achat et demander son remboursement, merci de nous le faire savoir, également par mail à festivals@un-mute.be, dans les 14 jours.{% endif %}
+
+Nous vous remercions chaleureusement d'avoir soutenu nos artistes dans leur campagne !
+
+{% endblock %}
+{% endautoescape %}
+
+{% block body_html %}
+    {% include 'AppBundle:Mail/User:decision_2020.html.twig' %}
+{% endblock %}

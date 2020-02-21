@@ -5,6 +5,7 @@ namespace AppBundle\Services;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
+use AppBundle\Entity\Purchase;
 use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\ORM\EntityManagerInterface;
 use XBundle\Entity\Project;
@@ -153,6 +154,24 @@ class PaymentManager
     {
         $this->mailer->sendRefundedPayment($payment);
     }
+
+    public function refundPurchase(Purchase $purchase) {
+        $payment = $purchase->getContractFan()->getPayment();
+        \Stripe\Refund::create(array(
+            "charge" => $payment->getChargeId(),
+            "amount" => $purchase->getAmount() * 100,
+        ));
+    }
+
+    public function refundPurchaseDifference(Purchase $purchase) {
+        $difference = $purchase->getCounterpart()->getDifference();
+        $payment = $purchase->getContractFan()->getPayment();
+        \Stripe\Refund::create(array(
+            "charge" => $payment->getChargeId(),
+            "amount" => $difference * $purchase->getQuantity() * 100,
+        ));
+    }
+
 
     // ---------- YB
     public function refundStripeAndYBContractArtist(YBContractArtist $campaign) {

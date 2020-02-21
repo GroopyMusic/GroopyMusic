@@ -10,6 +10,7 @@ use AppBundle\Entity\ContractFan;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\PhysicalPersonInterface;
 use AppBundle\Entity\PropositionContractArtist;
+use AppBundle\Entity\Purchase;
 use AppBundle\Entity\SponsorshipInvitation;
 use AppBundle\Entity\SuggestionBox;
 use AppBundle\Entity\User;
@@ -381,18 +382,43 @@ class MailDispatcher
             return;
         }
 
+        $this->send2020Decision($cf, true, false, null, false);
+    }
+
+    public function sendRefundedPurchase(Purchase $purchase) {
+        $this->send2020Decision($purchase->getContractFan(), true, false, $purchase, false);
+    }
+
+    public function sendConfirmedPurchase(Purchase $purchase, $yellow = false) {
+        $this->send2020Decision($purchase->getContractFan(), false, false, $purchase, $yellow);
+    }
+
+    public function sendHalfConfirmedPurchase(Purchase $purchase, $yellow = false) {
+        $this->send2020Decision($purchase->getContractFan(), false, true, $purchase, $yellow);
+    }
+
+    public function send2020Decision(ContractFan $cf, $completeRefund, $partRefund, Purchase $purchase = null, $yellow = false) {
+        $purchases = $purchase == null ? $cf->getPurchases()->toArray() : [$purchase];
+        $amount = $purchase == null ? $cf->getAmount() : ($partRefund ? $purchase->getCounterpart()->getDifference() * $purchase->getQuantity() : $purchase->getAmount());
         $params = [
             'cf' => $cf,
+            'yellow' => $yellow,
+            'purchases' => $purchases,
+            'partRefund' => $partRefund,
+            'completeRefund' => $completeRefund,
+            'amount' => $amount,
+            'ca' => $cf->getContractArtist(),
         ];
 
         $to = [$cf->getUser()->getEmail() => $cf->getUser()->getPreferredLocale()];
         $toName = [$cf->getUser()->getDisplayName()];
 
-        $subject = 'subjects.refunded_contract_fan';
+        $subject = 'Festival Un-Mute au SeeU - résultats des courses !';
         $subject_params = [];
 
-        $this->sendEmail(MailTemplateProvider::REFUNDED_CONTRACT_FAN_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
+        $this->sendEmail(MailTemplateProvider::DECISION_2020_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
+
 
     public function sendArtistValidated(Artist $artist)
     {

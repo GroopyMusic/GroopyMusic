@@ -154,6 +154,23 @@ class FestivalDay
         return floor(self::TOTAL_SOLOS_AVAILABLE - $solosSold);
     }
 
+    public function atLeastOneLineUpConfirmed() {
+        foreach($this->getLineups() as $lineup) {
+            if($lineup->getSuccessful()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function allLineUpsConfirmed() {
+        foreach($this->getLineups() as $lineup) {
+            if($lineup->getFailed())
+                return false;
+        }
+        return true;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

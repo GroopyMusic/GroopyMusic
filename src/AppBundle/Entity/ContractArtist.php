@@ -680,6 +680,41 @@ class ContractArtist extends BaseContractArtist
         return '<pre>' . join(PHP_EOL, $exportList) . '</pre>';
     }
 
+    public function allLineUpsCanceled() {
+        foreach($this->getLineUps() as $lineup) {
+            if($lineup->getSuccessful()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function allLineUpsSuccessful() {
+        foreach($this->getLineUps() as $lineup) {
+            if($lineup->getFailed()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function atLeastOneLineUpPerDayConfirmed() {
+        foreach($this->getFestivaldays() as $fd) {
+            if(!$fd->atLeastOneLineUpConfirmed()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function isCancelledArtist(Artist $artist) {
+        foreach($this->getLineUps() as $lineup) {
+            if(in_array($artist, $lineup->getArtists())) {
+                return $lineup->getFailed();
+            }
+        }
+    }
+
     /**
      * @var Step
      *
