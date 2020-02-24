@@ -4,19 +4,18 @@
 
     <div class="content-box">
         <div class="content-box-content">
-            <h2>Envoi des tickets pour {{ contract }}</h2>
+            <h2>Envoi des mails pour {{ contract }}</h2>
 
             <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.slug}) }}">Voir la page de l'événement.</a></p>
 
             {% if not contract.successful %}
                 <p>
-                    Cet événement n'est pas marqué comme réussi ; impossible d'envoyer des tickets !
+                    Cet événement n'est pas marqué comme réussi ; impossible d'envoyer les mails !
                 </p>
             {% else %}
                 <p>
-                    Cet événement est marqué comme réussi. Tu peux donc expédier les tickets. Ils seront envoyés par mail.
-                    <b>Attention : il faut absolument avoir envoyé auparavant les mails de confirmation.</b>
-                    <b><u>Plus important encore</u> : remplissez bien la BD avec les heures de passage des artistes ET mettez knownLineUp à 1 !!!</b>
+                    Cet événement est marqué comme réussi. Tu peux donc envoyer les mails qui confirmeront les commandes en fonction de la réussite des lineups.
+                    <b>Attention : il faut absolument avoir marqué auparavant dans la base de données quelles line-ups sont réussies et lesquelles sont en échec.</b>
                 </p>
 
                 <div>
@@ -25,10 +24,10 @@
 
                     <div class="form-group">
                         {{ form_widget(form.send) }}
-                        {{ form_widget(form.preview) }}
                         {{ form_widget(form.cancel) }}
                     </div>
 
+                    {% do form.preview.setRendered(true) %}
                     {{ form_rest(form) }}
                 </div>
             {% endif %}

@@ -9,11 +9,16 @@ use AppBundle\Form\ContractArtistSendTicketsType;
 use AppBundle\Services\MailDispatcher;
 use AppBundle\Services\PaymentManager;
 use AppBundle\Services\TicketingManager;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class ContractArtistAdminController extends BaseAdminController
@@ -182,6 +187,78 @@ class ContractArtistAdminController extends BaseAdminController
             'contract' => $contract,
         ));
     }
+
+
+    public function mailsAction(Request $request, KernelInterface $kernel) {
+        $contract = $this->admin->getSubject();
+
+        /** @var ContractArtist $contract */
+        if (!$contract) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $contract->getId()));
+        }
+
+        $form = $this->createForm(ContractArtistSendTicketsType::class, $contract);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->get('send')->isClicked()) {
+
+                $application = new Application($kernel);
+                $application->setAutoExit(false);
+                $input = new ArrayInput(['command' => 'app:send-2020-validation-mails']);
+
+                // You can use NullOutput() if you don't need the output
+                $output = new NullOutput();
+                $application->run($input, $output);
+
+                $this->addFlash('sonata_flash_success', "Les mails de confirmation ont bien été envoyés.");
+            }
+            return new RedirectResponse($this->admin->generateUrl('list'));
+
+        }
+
+        return $this->render('@App/Admin/ContractArtist/action_mails.html.twig', array(
+            'form' => $form->createView(),
+            'contract' => $contract,
+        ));
+    }
+
+    public function refundsAction(Request $request, KernelInterface $kernel) {
+        $contract = $this->admin->getSubject();
+
+        /** @var ContractArtist $contract */
+        if (!$contract) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $contract->getId()));
+        }
+
+        $form = $this->createForm(ContractArtistSendTicketsType::class, $contract);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->get('send')->isClicked()) {
+                $application = new Application($kernel);
+                $application->setAutoExit(false);
+                $input = new ArrayInput(['command' => 'app:send-2020-refunds']);
+
+                // You can use NullOutput() if you don't need the output
+                $output = new NullOutput();
+                $application->run($input, $output);
+
+                $this->addFlash('sonata_flash_success', "Les remboursements ont bien été lancés.");
+            }
+            return new RedirectResponse($this->admin->generateUrl('list'));
+        }
+
+        return $this->render('@App/Admin/ContractArtist/action_refunds.html.twig', array(
+            'form' => $form->createView(),
+            'contract' => $contract,
+        ));
+    }
+
 
     public function ticketsAction(Request $request, UserInterface $user) {
         $em = $this->getDoctrine()->getManager();

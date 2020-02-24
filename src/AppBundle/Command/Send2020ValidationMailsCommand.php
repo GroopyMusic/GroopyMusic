@@ -31,93 +31,81 @@ class Send2020ValidationMailsCommand extends ContainerAwareCommand {
      */
     protected function execute(InputInterface $input, OutputInterface $output){
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        /** @var PaymentManager $paymentManager */
-        $paymentManager = $this->getContainer()->get(PaymentManager::class);
         /** @var MailDispatcher $mailDispatcher */
         $mailDispatcher = $this->getContainer()->get(MailDispatcher::class);
 
-        try {
-            /** @var ContractArtist $contract */
-            $contract = $em->getRepository('AppBundle:ContractArtist')->findVisibleIncludingPreValidation()[0];
+
+        /** @var ContractArtist $contract */
+        $contract = $em->getRepository('AppBundle:ContractArtist')->findVisibleIncludingPreValidation()[0];
 
 
-                foreach($contract->getContractsFanPaid() as $cf) {
-                    /** @var ContractFan $cf */
+        foreach($contract->getContractsFanPaid() as $cf) {
+            /** @var ContractFan $cf */
 
-                    if($contract->allLineUpsCanceled()) {
-                        // il faut rembourser tout
-                        if(!$cf->isRefunded()) {
-                            //$paymentManager->refundStripeAndUMContractFan($cf);
-                            $mailDispatcher->sendRefundedContractFan($cf);
-                            $cf->setRefunded(true);
-                        }
-                    }
+            if($contract->allLineUpsCanceled()) {
+                if(!$cf->isRefunded()) {
+                    $mailDispatcher->sendRefundedContractFan($cf);
+                }
+            }
 
-                    else {
-                        foreach($cf->getPurchases() as $purchase) {
-                            if (!$purchase->getRefunded() && !$purchase->getConfirmed()) {
-                                $em->persist($purchase);
-                                /** @var Purchase $purchase */
-                                $counterPart = $purchase->getCounterpart();
-                                $artist = $purchase->getArtist();
+            else {
+                foreach($cf->getPurchases() as $purchase) {
+                    if (!$purchase->getToRefund() && !$purchase->getConfirmed()) {
+                        $em->persist($purchase);
+                        /** @var Purchase $purchase */
+                        $counterPart = $purchase->getCounterpart();
+                        $artist = $purchase->getArtist();
 
-                                if ($artist == null) {
-                                    // Ticket combi, sans artiste
-                                    if ($counterPart->isCombo()) {
-                                        $yellow = !$contract->allLineUpsSuccessful();
-                                        if ($contract->atLeastOneLineUpPerDayConfirmed()) {
-                                            $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
-                                            $purchase->setConfirmed(true);
-                                        } else {
-                                            //$paymentManager->refundPurchaseDifference($purchase);
-                                            $mailDispatcher->sendHalfConfirmedPurchase($purchase, $yellow);
-                                            $purchase->setConfirmed(true);
-                                        }
-                                    } // Ticket journalier, sans artiste
-                                    else {
-                                        if ($counterPart->getFestivaldays()->first()->atLeastOneLineUpConfirmed()) {
-                                            $yellow = !$counterPart->getFestivaldays()->first()->allLineUpsConfirmed();
-                                            $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
-                                            $purchase->setConfirmed(true);
-                                        } else {
-                                            //$paymentManager->refundPurchase($purchase);
-                                            $mailDispatcher->sendRefundedPurchase($purchase);
-                                            $purchase->setRefunded(true);
-                                        }
-                                    }
+                        if ($artist == null) {
+                            // Ticket combi, sans artiste
+                            if ($counterPart->isCombo()) {
+                                $yellow = !$contract->allLineUpsSuccessful();
+                                if ($contract->atLeastOneLineUpPerDayConfirmed()) {
+                                    $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
+                                    $purchase->setConfirmed(true);
                                 } else {
-                                    if ($contract->isCancelledArtist($artist)) {
-                                        //$paymentManager->refundPurchase($purchase);
-                                        $mailDispatcher->sendRefundedPurchase($purchase);
-                                        $purchase->setRefunded(true);
-                                    } // Ticket combi, avec artiste
-                                    elseif ($counterPart->isCombo()) {
-                                        // autre jour annulé -> ticket partiel
-                                        if (!$contract->atLeastOneLineupPerDayConfirmed()) {
-                                            //$paymentManager->refundPurchaseDifference($purchase);
-                                            $mailDispatcher->sendHalfConfirmedPurchase($purchase);
-                                            $purchase->setConfirmed(true);
-                                        } // ticket 100 % confirmé
-                                        else {
-                                            $mailDispatcher->sendConfirmedPurchase($purchase);
-                                            $purchase->setConfirmed(true);
-                                        }
-                                    } // Ticket journalier, avec artiste
-                                    else {
-                                        $mailDispatcher->sendConfirmedPurchase($purchase);
-                                        $purchase->setConfirmed(true);
-                                    }
+                                    $mailDispatcher->sendHalfConfirmedPurchase($purchase, $yellow);
+                                    $purchase->setConfirmed(true)->setToRefund(true);
                                 }
+                            } // Ticket journalier, sans artiste
+                            else {
+                                if ($counterPart->getFestivaldays()->first()->atLeastOneLineUpConfirmed()) {
+                                    $yellow = !$counterPart->getFestivaldays()->first()->allLineUpsConfirmed();
+                                    $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
+                                    $purchase->setConfirmed(true);
+                                } else {
+                                    $mailDispatcher->sendRefundedPurchase($purchase);
+                                    $purchase->setToRefund(true);
+                                }
+                            }
+                        } else {
+                            if ($contract->isCancelledArtist($artist)) {
+                                //$paymentManager->refundPurchase($purchase);
+                                $mailDispatcher->sendRefundedPurchase($purchase);
+                                $purchase->setToRefund(true);
+                            } // Ticket combi, avec artiste
+                            elseif ($counterPart->isCombo()) {
+                                // autre jour annulé -> ticket partiel
+                                if (!$contract->atLeastOneLineupPerDayConfirmed()) {
+                                    $mailDispatcher->sendHalfConfirmedPurchase($purchase);
+                                    $purchase->setConfirmed(true)->setToRefund(true);
+                                } // ticket 100 % confirmé
+                                else {
+                                    $mailDispatcher->sendConfirmedPurchase($purchase);
+                                    $purchase->setConfirmed(true);
+                                }
+                            } // Ticket journalier, avec artiste
+                            else {
+                                $mailDispatcher->sendConfirmedPurchase($purchase);
+                                $purchase->setConfirmed(true);
                             }
                         }
                     }
                 }
+            }
+        }
 
-            $em->flush();
-            $output->writeln("Commande de validation effectuée avec succès.");
-        }
-        catch(\Throwable $exception) {
-            $output->writeln("La commande de validation a rencontré une erreur : " . $exception->getTraceAsString());
-        }
+        $em->flush();
+        $output->writeln("Commande de validation effectuée avec succès.");
     }
 }

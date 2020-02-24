@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BaseContractArtist;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\ContractArtist;
 use AppBundle\Entity\ContractFan;
@@ -369,8 +370,18 @@ class PaymentController extends BaseController
 
         $dispatcher->sendOrderRecap($cart);
         foreach($cart->getContracts() as $cf) {
-            if ($cf->getContractArtist() instanceof ContractArtist && $cf->getContractArtist()->getCounterPartsSent()) {
-                $ticketingManager->sendUnSentTicketsForContractFan($cf);
+            /** @var ContractFan $cf */
+            /** @var BaseContractArtist $ca */
+            $ca = $cf->getContractArtist();
+            if ($ca instanceof ContractArtist) {
+                if($ca->getSuccessful()) {
+                    foreach($cf->getPurchases() as $purchase) {
+                        $purchase->setConfirmed(true);
+                    }
+                }
+                if($ca->getCounterPartsSent()) {
+                    $ticketingManager->sendUnSentTicketsForContractFan($cf);
+                }
             }
         }
 

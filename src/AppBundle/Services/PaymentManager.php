@@ -28,7 +28,7 @@ class PaymentManager
         $this->rewardSpendingService = $rewardSpendingService;
     }
 
-    private function initStripe()
+    public function initStripe()
     {
         \Stripe\Stripe::setApiKey($this->stripe_api_secret);
     }
@@ -157,19 +157,29 @@ class PaymentManager
 
     public function refundPurchase(Purchase $purchase) {
         $payment = $purchase->getContractFan()->getPayment();
-        \Stripe\Refund::create(array(
-            "charge" => $payment->getChargeId(),
-            "amount" => $purchase->getAmount() * 100,
-        ));
+        try {
+            \Stripe\Refund::create(array(
+                "charge" => $payment->getChargeId(),
+                "amount" => $purchase->getAmount() * 100,
+            ));
+            $purchase->setRefunded(true);
+        } catch(\Throwable $e) {
+           // echo $e->getMessage();
+        }
     }
 
     public function refundPurchaseDifference(Purchase $purchase) {
-        $difference = $purchase->getCounterpart()->getDifference();
-        $payment = $purchase->getContractFan()->getPayment();
-        \Stripe\Refund::create(array(
-            "charge" => $payment->getChargeId(),
-            "amount" => $difference * $purchase->getQuantity() * 100,
-        ));
+        try {
+            $difference = $purchase->getCounterpart()->getDifference();
+            $payment = $purchase->getContractFan()->getPayment();
+            \Stripe\Refund::create(array(
+                "charge" => $payment->getChargeId(),
+                "amount" => $difference * $purchase->getQuantity() * 100,
+            ));
+            $purchase->setRefunded(true);
+        } catch(\Throwable $e) {
+            //echo $e->getMessage();
+        }
     }
 
 

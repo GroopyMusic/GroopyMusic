@@ -686,6 +686,10 @@ class ContractFan
      */
     public function addTicket(\AppBundle\Entity\Ticket $ticket)
     {
+        if($this->tickets == null) {
+            $this->tickets = new ArrayCollection();
+        }
+
         $this->tickets[] = $ticket;
 
         return $this;

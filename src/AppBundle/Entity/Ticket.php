@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Ticket
 {
-    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $seat = 'N/A')
+    public function __construct($cf, $counterPart, $num, $price, PhysicalPersonInterface $physicalPerson = null, $contractArtist = null, $seat = 'N/A', Purchase $purchase = null)
     {
         $this->contractFan = $cf;
         $this->counterPart = $counterPart;
@@ -23,8 +23,10 @@ class Ticket
         $this->validated = false;
         $this->rewards = new ArrayCollection();
         $this->seat = $seat;
+        $this->purchase = $purchase;
         if ($cf != null) {
-            $this->barcode_text = $cf->getBarcodeText() . '' . $num;
+            $barcode_base = $purchase != null && $purchase->getBarcodeText() != null ? $purchase->getBarcodeText() : $cf->getBarcodeText();
+            $this->barcode_text = $barcode_base . '' . $num;
             $this->contractArtist = $cf->getContractArtist();
             $this->name = $cf->getDisplayName();
         } else {
@@ -39,6 +41,18 @@ class Ticket
         $campaign = $this->getCounterPart()->getContractArtist();
         $config = $campaign->getConfig();
         return $config;
+    }
+
+    public function getFestivalDays() {
+        if($this->counterPart != null) {
+            return $this->counterPart->getFestivaldays()->toArray();
+        }
+        elseif($this->contractArtist instanceof ContractArtist) {
+            return $this->contractArtist->getFestivaldays()->toArray();
+        }
+        else {
+            return [];
+        }
     }
 
     /**
@@ -183,6 +197,11 @@ class Ticket
      * @ORM\Column(name="seatLabel", type="string")
      */
     private $seat;
+
+    /** @ORM\ManyToOne(targetEntity="Purchase", inversedBy="tickets", cascade={"persist"})
+     *  @ORM\JoinColumn(nullable=true)
+     */
+    private $purchase;
 
     /**
      * Get id

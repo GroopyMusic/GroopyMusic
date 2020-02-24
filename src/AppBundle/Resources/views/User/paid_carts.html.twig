@@ -24,8 +24,17 @@
                         <div class="form-header"><h2>Commande #{{ contract.id }}</h2></div>
                         <div class="form-body">
                             <div class="font-weight-bold">
+                                {% set tickets_cf = true %}
                                 {% for purchase in contract.purchases %}
                                     {{ purchase.counterpart.name }}
+
+                                    {% if purchase.confirmed and contract.contractArtist.ticketsSent %}
+                                        {% set tickets_cf = false %}
+                                        <a class="ml-4 my-2 btn btn-primary ml-3" href="{{ path('user_get_tickets_purchase', {'id': purchase.id}) }}" download="um_ticket_{{ purchase.id }}.pdf">
+                                            <img src="{{ asset('images/download.svg') }}" class="responsive-img pr-1"/>
+                                            Tickets
+                                        </a>
+                                    {% endif %}
                                     <br/>
                                 {% endfor %}
                                 {#<a href="{{ path('artist_contract', {'id':contract.contractArtist.id }) }}">#}
@@ -102,7 +111,7 @@
                                         Confirmation de commande
                                     </a>
                                 {% endif %}
-                                {% if contract.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') and contract.contractArtist.ticketsSent and not contract.refunded %}
+                                {% if tickets_cf and contract.contractArtist is instanceof('\\AppBundle\\Entity\\ContractArtist') and contract.contractArtist.ticketsSent and not contract.refunded %}
                                     <a class=" ml-4 btn btn-primary" href="{{ path('user_get_tickets', {'id': contract.id}) }}" download="um_ticket_{{ cart.first.id }}.pdf">
                                         <img src="{{ asset('images/download.svg') }}" class="responsive-img pr-1"/>
                                         Tickets

@@ -9,6 +9,13 @@
     border-right: 1px solid;
     }
 
+    .ticket_head {
+        height: 100%;
+        width: auto;
+        background:  no-repeat top left;
+        background-size: contain;
+    }
+
     .lineup-title {
     font-size: 5mm;
     padding: 3mm 0;
@@ -24,71 +31,78 @@
     }
 
     .td-timing {
-    padding-top: 20mm;
+    padding-top: 40mm;
     font-size: 3mm;
+    }
+    p {
+        margin-bottom: 4px;
+        margin-top: 5px;
+    }
+    .footer {
+    padding: 10px 20px;
     }
 {% endblock %}
 
 {% block page %}
+    {% block header %}
+    {% endblock %}
     {% for ticket in tickets %}
-        <page backtop="30mm" backbottom="7mm" backleft="10mm" backright="10mm">
-            {{ block('header') }}
+        <page backtop="90mm" backbottom="5mm" backleft="15mm" backright="4mm">
+                <page_header>
+                    <div class="header">
+                        <table>
+                            <tr>
+                            <td valign="middle">  <img src="{{ absolute_url(asset('images/logo.jpg')) }}" height="100" alt="Un-Mute ASBL" /><br>un-mute.be</td>
+                            <td valign="middle">{{ ticket.name }} <br> {% if ticket.counterPart is not null %}{{ ticket.counterPart.name }} {% endif %}({{ ticket.price }} €)<br><br>
+                                <qrcode value="{{ ticket.barCodeText }}" ec="H"
+                                        style="width: 30mm; background-color: white; color: black;"></qrcode>
+                                <br><br>{{ ticket.barCodeText }}</td>
+                            <td valign="middle"><img style="position:relative; top:-30px;" src="{{ absolute_url(asset('images/tickets/ticket-header.jpg')) }}"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </page_header>
             {{ block('footer') }}
 
-            <table class="ticket" style="position:relative">
-                <qrcode value="{{ ticket.barCodeText }}" ec="H"
-                        style="position:absolute; left: -40px; top: 50px; width: 30mm; background-color: white; color: black;"></qrcode>
+            <p class="text-right">
+                        {{ 'tickets_pdf.ticket.is_entry'|trans }}
+            </p>
 
-                <tr class="text-white">
-                    <td style="width: 30mm; text-align: center;">{{ ticket.price }} €</td>
-                    <td style="width: 50mm;">{{ ticket.name }} {% if ticket.counterPart is not null %}
-                            <br />{{ ticket.counterPart.name }}
-                        {% endif %}</td>
-                    <td style="width: 70mm; font-size:3mm;"
-                        class="text-right">{{ 'tickets_pdf.ticket.is_entry'|trans|nl2br }}</td>
-                </tr>
-                <tr class="text-white">
-                    <td>
-                    </td>
-                    <td colspan="2" style="width:130mm">
-                        <div class="text-center ticket-title text-bold">{{ ticket.contractArtist.getTitle() }}
-                            {#<br/>{% for date in ticket.contractArtist.festivalDates %}{% if not loop.first %} - {% endif %}{{ (date|date('d') ~ ' ' ~ ('months.' ~ date|date('m'))|trans ~ ' ' ~ date|date('Y'))|upper }}{% endfor %}
-                        #}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 30mm; font-size: 3mm;" valign="bottom">{{ ticket.barCodeText }}</td>
-                    <td colspan="2" class="td-timing">
-                        {% if ticket.contractArtist.knownLineup %}
-                            {% for festivalday in ticket.contractArtist.festivalDays %}
-                                <div>
-                                    <b>{{ ('Days ' ~ festivalday.date|date('w'))|trans }} {{ festivalday.date|date('j') }} {{ ('months.' ~ festivalday.date|date('m'))|trans }}</b>
-                                    <br />{{ 'doors_opening'|trans }} : {{ festivalday.date|date('H:i') }}
-                                    {% for performance in festivalday.performancesAsc %}
+            <br>
+            {% if ticket.contractArtist.knownLineup %}
+                {% for festivalday in ticket.festivalDays if festivalday.atLeastOneLineUpConfirmed %}
+                    <div>
+                        <b>{{ ('Days ' ~ festivalday.date|date('w'))|trans }} {{ festivalday.date|date('j') }} {{ ('months.' ~ festivalday.date|date('m'))|trans }}</b>
+                        <br />{{ 'doors_opening'|trans }} : {{ festivalday.date|date('H:i') }}
+                        <table>
+                            <tr>
+                            {% for lineup in festivalday.confirmedLineUps %}
+                                <td style="width: 45mm;">
+                                    <h5 style="margin-bottom: 0">Affiche "{{ lineup.getName }}"</h5>
+                                    {% for performance in lineup.performancesAsc %}
                                         <br />{{ performance.time|date('H:i') }} - {{ performance.timeEnd|date('H:i') }} : {{ performance.artist }}
                                     {% endfor %}
-                                </div>
-                                {% if festivalday.hall is not null %}
-                                    <p class="text-right">{{ festivalday.hall.name }}
-                                        - {{ festivalday.hall.address }}</p>
-                                {% endif %}
+                                </td>
                             {% endfor %}
-                        {% endif %}
+                            </tr>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-                    </td>
-                </tr>
-            </table>
-            <br>
-            <div>
-                {% if ticket.rewards is not empty %}
+            {% if ticket.rewards is not empty %}
+                <div>
                     <div>{{ 'tickets_pdf.rewards'|trans()|raw }} :</div>
                     {% for reward in ticket.rewards %}
                         <div>{{ reward.userReward.displayPracticalInformation }}</div>
                     {% endfor %}
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
 
-            <div class="between-tickets"></div>
+            <p class="text-right">Adresse : {{ ticket.contractArtist.getOnlyHall.name }}
+                - {{ ticket.contractArtist.getOnlyHall.address }}</p>
+
+            <br><br>
             <div style="font-size: 80%;">
                 <p>{{ 'tickets_pdf.conditions'|trans({'%conditionsUrl%': url('conditions')})|raw|nl2br }}
                 {% if ticket.counterpart is not null and ticket.counterpart.isChildEntry %}<br />

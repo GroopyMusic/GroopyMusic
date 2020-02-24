@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Purchase;
 use AppBundle\Entity\User;
 use AppBundle\Entity\User_Reward;
 use AppBundle\Form\ProfileType;
@@ -334,6 +335,45 @@ class UserController extends BaseController
             $finder = new Finder();
             $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $contract->getTicketsPath();
             $finder->files()->name($contract->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $contract::TICKETS_DIRECTORY);
+        }
+
+        foreach ($finder as $file) {
+            $response = new BinaryFileResponse($filePath);
+            // Set headers
+            $response->headers->set('Cache-Control', 'private');
+            $response->headers->set('Content-Type', 'PDF');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                'um-tickets.pdf'
+            ));
+            return $response;
+        }
+    }
+
+    /**
+     * get Tickets: same process as getOrder above, but with tickets
+     * @Route("/user/tickets/purchase/{id}", name="user_get_tickets_purchase")
+     */
+    public function getTicketsPurchaseAction(Request $request, UserInterface $user, Purchase $purchase, PDFWriter $writer, TicketingManager $ticketingManager, EntityManagerInterface $em, UserRolesManager $rolesManager)
+    {
+        $contract = $purchase->getContractFan();
+        if (!$purchase->getConfirmed() || ($contract->getUser() != $user && !$rolesManager->userHasRole($user, 'ROLE_ADMIN')) || !$contract->getContractArtist()->getCounterPartsSent()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $finder = new Finder();
+        $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $purchase->getTicketsPath();
+        $finder->files()->name($purchase->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $purchase::TICKETS_DIRECTORY);
+
+        if (count($finder) == 0) {
+            $ticketingManager->sendTicketsForPurchase($purchase);
+            $purchase->setTicketsSent(true);
+
+            $em->persist($purchase);
+            $em->flush();
+            $finder = new Finder();
+            $filePath = $this->get('kernel')->getRootDir() . '/../web/' . $purchase->getTicketsPath();
+            $finder->files()->name($purchase->getTicketsFileName())->in($this->get('kernel')->getRootDir() . '/../web/' . $purchase::TICKETS_DIRECTORY);
         }
 
         foreach ($finder as $file) {

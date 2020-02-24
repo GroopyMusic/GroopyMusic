@@ -460,7 +460,7 @@ class ContractArtist extends BaseContractArtist
     }
 
     public function getFilterableStages() {
-        if(!$this->successful && !$this->failed)
+        if(!$this->known_lineup)
             return $this->getStages();
         return array_filter($this->getStages(), function(Stage $stage) {
             return $stage->hasSuccessfulLineUp();
@@ -474,7 +474,7 @@ class ContractArtist extends BaseContractArtist
             $stages = [];
             foreach($this->getLineUps() as $lineup) {
                 $stage = $lineup->getStage();
-                if(!in_array($stage, $stages)) {
+                if(!in_array($stage, $stages) && $stage != null) {
                     $stages[] = $stage;
                 }
             }

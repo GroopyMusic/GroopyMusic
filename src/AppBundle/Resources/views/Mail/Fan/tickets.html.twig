@@ -6,6 +6,7 @@
         {% block content %}
             {{ email_content('concert.fan.tickets', {
                 '%festival_title%': contract.getTitle,
+                '%tickets_type%': tickets_type,
                 '%additional_info%': contract.additionalInfo,
             })|raw }}
         {% endblock %}

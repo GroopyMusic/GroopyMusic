@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\YB\Block;
 use AppBundle\Entity\YB\Booking;
+use AppBundle\Entity\YB\YBContractArtist;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Purchase
 {
     const MAX_QTY = 100000;
+    const TICKETS_DIRECTORY = 'pdf/tickets/';
+    const YB_TICKETS_DIRECTORY = 'yb/tickets/';
 
     public function __construct()
     {
@@ -31,6 +34,9 @@ class Purchase
         $this->moneyIncrease = 0;
         $this->confirmed = 0;
         $this->refunded = 0;
+        $this->ticketsSent = 0;
+        $this->tickets = new ArrayCollection();
+        $this->toRefund = false;
     }
 
     public function __toString()
@@ -115,7 +121,7 @@ class Purchase
     }
 
     /**
-     * @return ContractArtist
+     * @return BaseContractArtist
      */
     public function getContractArtist()
     {
@@ -206,6 +212,25 @@ class Purchase
 
     public function isCancelled() {
         return $this->refunded;
+    }
+
+    public function generateBarCode()
+    {
+        if (empty($this->barcode_text))
+            $this->barcode_text = 'pc' . $this->id . uniqid();
+    }
+
+    public function getTicketsPath()
+    {
+        if($this->getContractArtist() instanceof YBContractArtist)
+            return self::YB_TICKETS_DIRECTORY . $this->getTicketsFileName();
+        else
+            return self::TICKETS_DIRECTORY . $this->getTicketsFileName();
+    }
+
+    public function getTicketsFileName()
+    {
+        return $this->getBarcodeText() . '-tickets.pdf';
     }
 
     /**
@@ -301,6 +326,26 @@ class Purchase
      * @ORM\Column(name="refunded", type="boolean")
      */
     private $refunded;
+
+    /**
+     * @ORM\COlumn(name="tickets_sent", type="boolean")
+     */
+    private $ticketsSent;
+
+    /**
+     * @ORM\Column(name="barcode_text", type="string", length=255, nullable=true)
+     */
+    private $barcode_text;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Ticket", mappedBy="purchase", cascade={"persist"})
+     */
+    private $tickets;
+
+    /**
+     * @ORM\Column(name="to_refund", type="boolean")
+     */
+    private $toRefund;
 
     /**
      * Get id
@@ -616,5 +661,78 @@ class Purchase
     public function setRefunded($refunded) {
         $this->refunded = $refunded;
         return $this;
+    }
+    public function getToRefund() {
+        return $this->toRefund;
+    }
+    public function setToRefund($toRefund) {
+        $this->toRefund = $toRefund;
+        return $this;
+    }
+    public function getTicketsSent() {
+        return $this->ticketsSent;
+    }
+    public function setTicketsSent($ticketsSent) {
+        $this->ticketsSent = $ticketsSent;
+        return $this;
+    }
+    /**
+     * Set barcodeText
+     *
+     * @param string $barcodeText
+     *
+     * @return Purchase
+     */
+    public function setBarcodeText($barcodeText)
+    {
+        $this->barcode_text = $barcodeText;
+
+        return $this;
+    }
+
+    /**
+     * Get barcodeText
+     *
+     * @return string
+     */
+    public function getBarcodeText()
+    {
+        return $this->barcode_text;
+    }
+
+    /**
+     * Add ticket
+     *
+     * @param \AppBundle\Entity\Ticket $ticket
+     *
+     * @return Purchase
+     */
+    public function addTicket(\AppBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets[] = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * Remove ticket
+     *
+     * @param \AppBundle\Entity\Ticket $ticket
+     * @return Purchase
+     */
+    public function removeTicket(\AppBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets->removeElement($ticket);
+        return $this;
+    }
+
+    /**
+     * Get tickets
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
     }
 }

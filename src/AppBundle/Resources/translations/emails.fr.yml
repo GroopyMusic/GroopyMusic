@@ -96,11 +96,11 @@ concert:
 
       Envie de découvrir et soutenir d'autres artistes ? Rendez-vous très bientôt sur Un-Mute.be, il y a d'autres festivals prévus !
     tickets: |
-      Nous voici à quelques jours de l'événement "%festival_title%".
+      Nous voici à quelques jours du %festival_title%.
 
-      Vous trouverez votre ou vos ticket(s) en pièce jointe (format PDF).
+      Vous trouverez votre ou vos %tickets_type% en pièce jointe (format PDF).
 
-      Nous vous demandons de bien vouloir le(s) présenter le jour du festival car il s'agira de votre laissez-passer.
+      Nous vous demandons de bien vouloir le(s) présenter (de préférence sur un support électronique, mais les versions imprimées sont bien sûr aussi acceptées) le jour du festival car il s'agira de votre laissez-passer.
 
       %additional_info%
 

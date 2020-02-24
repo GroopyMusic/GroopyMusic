@@ -155,20 +155,21 @@ class FestivalDay
     }
 
     public function atLeastOneLineUpConfirmed() {
-        foreach($this->getLineups() as $lineup) {
-            if($lineup->getSuccessful()) {
-                return true;
-            }
-        }
-        return false;
+        return count($this->getConfirmedLineUps()) > 0;
     }
 
     public function allLineUpsConfirmed() {
-        foreach($this->getLineups() as $lineup) {
-            if($lineup->getFailed())
-                return false;
+       return count($this->getConfirmedLineUps()) == count($this->lineups);
+    }
+
+    protected $confirmedLineUps = null;
+    public function getConfirmedLineUps() {
+        if($this->confirmedLineUps == null) {
+            $this->confirmedLineUps = array_filter($this->lineups->toArray(), function (LineUp $lineup) {
+                return $lineup->isSuccessful();
+            });
         }
-        return true;
+        return $this->confirmedLineUps;
     }
 
     /**

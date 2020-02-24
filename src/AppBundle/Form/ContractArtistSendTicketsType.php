@@ -14,7 +14,7 @@ class ContractArtistSendTicketsType extends AbstractType
         // Admin only so no translation needed
         $builder
             ->add('send', SubmitType::class, array(
-                'label' => 'Envoyer les tickets',
+                'label' => 'On y va',
                 'attr' => array('class' => 'btn btn-success')
             ))
             ->add('preview', SubmitType::class, array(

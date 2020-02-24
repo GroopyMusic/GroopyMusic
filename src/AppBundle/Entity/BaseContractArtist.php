@@ -253,12 +253,27 @@ class BaseContractArtist implements TranslatableInterface
             usort($cfs, function(ContractFan $cf1, ContractFan $cf2) {
                 return $cf1->getDate() < $cf2->getDate() ? -1 : 1;
             });
-            $this->contractsFanPaid = array_filter($cfs, function(ContractFan $contractFan) {
-                return $contractFan->isPaid() && ($this->failed || !$contractFan->isRefunded());
+            $failed = $this->failed;
+            $this->contractsFanPaid = array_filter($cfs, function(ContractFan $contractFan) use ($failed) {
+                return $contractFan->isPaid() && ($failed || !$contractFan->isRefunded());
             });
         }
 
         return $this->contractsFanPaid;
+    }
+
+    protected $purchasesPaid = null;
+    public function getPurchasesPaid() {
+        if($this->purchasesPaid == null) {
+            $purchases = [];
+            foreach($this->getContractsFanPaid() as $cfp) {
+                foreach($cfp->getPurchases() as $purchase) {
+                    $purchases[] = $purchase;
+                }
+            }
+            $this->purchasesPaid = $purchases;
+        }
+        return $this->purchasesPaid;
     }
 
     protected $contractsFanPaidAndRefunded = null;

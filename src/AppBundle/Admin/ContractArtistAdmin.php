@@ -22,6 +22,8 @@ class ContractArtistAdmin extends BaseAdmin
         $collection
             ->remove('delete')
             ->add('refund', $this->getRouterIdParameter() . '/refund')
+            ->add('refunds', $this->getRouterIdParameter() . '/refunds')
+            ->add('mails', $this->getRouterIdParameter() . '/mails')
             ->add('validate', $this->getRouterIdParameter() . '/validate')
             ->add('prevalidate', $this->getRouterIdParameter() . '/prevalidate')
             ->add('tickets', $this->getRouterIdParameter() . '/tickets');
@@ -63,15 +65,18 @@ class ContractArtistAdmin extends BaseAdmin
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
-                    'refund' => array(
-                        'template' => 'AppBundle:Admin/ContractArtist:icon_refund.html.twig',
+                    'mails' => array(
+                        'template' => 'AppBundle:Admin/ContractArtist:icon_mails.html.twig',
                     ),
-                    'validate' => array(
+                    'refunds' => array(
+                        'template' => 'AppBundle:Admin/ContractArtist:icon_refunds.html.twig',
+                    ),
+                    /*'validate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_validate.html.twig',
                     ),
                     'prevalidate' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_prevalidate.html.twig',
-                    ),
+                    ),*/
                     'tickets' => array(
                         'template' => 'AppBundle:Admin/ContractArtist:icon_tickets.html.twig',
                     )

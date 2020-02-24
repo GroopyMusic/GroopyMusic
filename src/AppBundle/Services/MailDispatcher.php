@@ -343,9 +343,30 @@ class MailDispatcher
     {
         $params = [
             'contract' => $ca,
+            'tickets_type' => "ticket(s)",
         ];
 
         $attachments = ['um-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $cf->getTicketsPath()];
+
+        $to = [$cf->getFan()->getEmail() => $cf->getFan()->getPreferredLocale()];
+        $toName = [$cf->getFan()->getDisplayName()];
+
+        $subject = 'subjects.concert.fan.tickets';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::TICKETS_TEMPLATE, $subject, $params, $subject_params, [], $attachments, $to, $toName);
+    }
+
+    public function sendTicketsForPurchase(Purchase $purchase, ContractArtist $ca)
+    {
+        $params = [
+            'contract' => $ca,
+            'tickets_type' => strtoupper($purchase->getCounterpart()->getName()),
+        ];
+
+        $cf = $purchase->getContractFan();
+
+        $attachments = ['um-ticket.pdf' => $this->kernel->getRootDir() . '/../web/' . $purchase->getTicketsPath()];
 
         $to = [$cf->getFan()->getEmail() => $cf->getFan()->getPreferredLocale()];
         $toName = [$cf->getFan()->getDisplayName()];

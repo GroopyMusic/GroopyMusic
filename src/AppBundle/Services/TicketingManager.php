@@ -46,6 +46,28 @@ class TicketingManager
         $this->rewardSpendingService = $rewardSpendingService;
     }
 
+    public function generateTicketsForPurchase(Purchase $purchase)
+    {
+        $purchase->generateBarCode();
+
+        $contractFan = $purchase->getContractFan();
+
+        $j = 1;
+
+        /** @var Counterpart $counterPart */
+        $counterPart = $purchase->getCounterpart();
+
+        for($k = 1; $k <= $purchase->getQuantityOrganic(); $k++) {
+            $purchase->addTicket(new Ticket($contractFan, $counterPart, $j, $purchase->getUnitaryPrice(), null, null, 'N/A', $purchase));
+            $j++;
+        }
+        for ($i = 1; $i <= $purchase->getQuantityPromotional(); $i++) {
+            $purchase->addTicket(new Ticket($contractFan, $counterPart, $j, 0, null, null, 'N/A', $purchase));
+            $j++;
+        }
+    }
+
+
     /**
      * Generates all tickets linked to a fan order
      * Each ticket being related to a counterpart of the order, its price and a unique (for this order) ticket number
@@ -135,8 +157,7 @@ class TicketingManager
         $cf = new ContractFan($contractArtist);
         $cf->setCart($cart);
         $cf->generateBarCode();
-        $counterpart = new CounterPart();
-        $counterpart->setPrice(12);
+        $counterpart = null;
 
         $ticket1 = new Ticket($cf, $counterpart, 1, 12);
         $ticket2 = new Ticket($cf, $counterpart, 2, 0);
@@ -160,15 +181,21 @@ class TicketingManager
     public function sendUnSentTicketsForContractFan(ContractFan $cf)
     {
         if (!$cf->getcounterpartsSent()) {
-            try {
-                $this->sendTicketsForContractFan($cf);
-                $cf->setcounterpartsSent(true);
-            } catch (\Exception $e) {
-                $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage());
-                return $e;
+            foreach ($cf->getPurchases() as $purchase) {
+                /** @var Purchase $purchase */
+                try {
+                    if (!$purchase->getTicketsSent() && $purchase->getConfirmed()) {
+                        $this->sendTicketsForPurchase($purchase);
+                        $purchase->setTicketsSent(true);
+                    }
+                }
+                catch (\Exception $e) {
+                        $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ', purchase ' . $purchase->getId() . ' : ' . $e->getMessage());
+                        return $e;
+                    }
             }
+            $cf->setcounterpartsSent(true);
         }
-
         $this->em->flush();
         return null;
     }
@@ -183,23 +210,14 @@ class TicketingManager
      */
     public function sendUnSentTicketsForContractArtist(ContractArtist $contractArtist)
     {
-        $users = [];
-
+        $j = 0;
         foreach ($contractArtist->getContractsFanPaid() as $cf) {
             /** @var ContractFan $cf */
-            if (!$cf->getcounterpartsSent()) {
-                try {
-                    $this->sendUnSentTicketsForContractFan($cf);
-                    $cf->setcounterpartsSent(true);
-                    $users[] = $cf->getUser();
-                } catch (\Exception $e) {
-                    $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ' : ' . $e->getMessage() . ' \n ' . $e->getTraceAsString());
-                    return $e;
-                }
+            if(!$cf->getcounterpartsSent() && $j < 5) {
+                $this->sendUnSentTicketsForContractFan($cf);
             }
+            $j++;
         }
-
-        $this->em->flush();
 
         return null;
     }
@@ -231,6 +249,23 @@ class TicketingManager
             $this->writer->writeTickets($cf->getTicketsPath(), $cf, $tickets, $agenda);
             $this->mailDispatcher->sendTicketsForContractFan($cf, $cf->getContractArtist());
             $this->em->persist($cf);
+        }
+    }
+
+    /**
+     * Generates & sends tickets for one purchase
+     *
+     * @param ContractFan $cf
+     */
+    public function sendTicketsForPurchase(Purchase $purchase)
+    {
+        $this->generateTicketsForPurchase($purchase);
+        $tickets = $purchase->getTickets()->toArray();
+        if(count($tickets) > 0) {
+            $agenda = [];
+            $this->writer->writeTickets($purchase->getTicketsPath(), $purchase->getContractFan(), $tickets, $agenda, $purchase);
+            $this->mailDispatcher->sendTicketsForPurchase($purchase, $purchase->getContractFan()->getContractArtist());
+            $this->em->persist($purchase);
         }
     }
 
