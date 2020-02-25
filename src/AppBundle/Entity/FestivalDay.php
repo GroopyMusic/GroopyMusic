@@ -162,6 +162,10 @@ class FestivalDay
        return count($this->getConfirmedLineUps()) == count($this->lineups);
     }
 
+    public function allLineUpsCancelled() {
+        return !$this->atLeastOneLineUpConfirmed();
+    }
+
     protected $confirmedLineUps = null;
     public function getConfirmedLineUps() {
         if($this->confirmedLineUps == null) {

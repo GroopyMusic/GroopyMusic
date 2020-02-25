@@ -713,6 +713,16 @@ class ContractArtist extends BaseContractArtist
                 return $lineup->getFailed();
             }
         }
+        return false;
+    }
+
+    public function getDayOfPerformance(Artist $artist) {
+        foreach($this->getLineUps() as $lineup) {
+            if(in_array($artist, $lineup->getArtists())) {
+                return $lineup->getFestivalDay();
+            }
+        }
+        return null;
     }
 
     /**

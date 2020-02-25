@@ -395,7 +395,7 @@ pay_cart:
 
 my_orders:
   title: My orders
-  empty: You haven't ordered anything on Un-Mute.be yet. Check out our <a href="%catalog_url%">artistes</a> and help them <a href="{{ path('catalog_crowdfundings') }}">reach their objectives</a>!
+  empty: You haven't ordered anything on Un-Mute.be yet. Check out our <a href="%catalog_url%">artists</a> and help them reach their objectives!
   labels:
       details: Détails
       state: State

@@ -33,7 +33,7 @@ class VolunteerProposalType extends AbstractType
             ))
             ->add('firstName', TextType::class, array(
                 'constraints' => [new NotBlank()],
-                'label' => 'PréNom',
+                'label' => 'Prénom',
             ))
             ->add('email', EmailType::class, array(
                 'constraints' => [new Email()],
@@ -41,7 +41,8 @@ class VolunteerProposalType extends AbstractType
             ))
             ->add('commentary', TextareaType::class, array(
                 'required' => false,
-                'label' => 'Commentaire (facultatif)'
+                'label' => 'Disponibilités, tâches souhaitées, commentaires éventuels',
+                'attr' => ['rows' => '5'],
             ))
             ;
     }

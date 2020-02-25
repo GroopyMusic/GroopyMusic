@@ -406,8 +406,8 @@ class MailDispatcher
         $this->send2020Decision($cf, true, false, null, false);
     }
 
-    public function sendRefundedPurchase(Purchase $purchase) {
-        $this->send2020Decision($purchase->getContractFan(), true, false, $purchase, false);
+    public function sendRefundedPurchase(Purchase $purchase, $cancellable = true) {
+        $this->send2020Decision($purchase->getContractFan(), true, false, $purchase, false, $cancellable);
     }
 
     public function sendConfirmedPurchase(Purchase $purchase, $yellow = false) {
@@ -418,7 +418,7 @@ class MailDispatcher
         $this->send2020Decision($purchase->getContractFan(), false, true, $purchase, $yellow);
     }
 
-    public function send2020Decision(ContractFan $cf, $completeRefund, $partRefund, Purchase $purchase = null, $yellow = false) {
+    public function send2020Decision(ContractFan $cf, $completeRefund, $partRefund, Purchase $purchase = null, $yellow = false, $cancellable = true) {
         $purchases = $purchase == null ? $cf->getPurchases()->toArray() : [$purchase];
         $amount = $purchase == null ? $cf->getAmount() : ($partRefund ? $purchase->getCounterpart()->getDifference() * $purchase->getQuantity() : $purchase->getAmount());
         $params = [
@@ -429,6 +429,7 @@ class MailDispatcher
             'completeRefund' => $completeRefund,
             'amount' => $amount,
             'ca' => $cf->getContractArtist(),
+            'cancellable' => $cancellable,
         ];
 
         $to = [$cf->getUser()->getEmail() => $cf->getUser()->getPreferredLocale()];

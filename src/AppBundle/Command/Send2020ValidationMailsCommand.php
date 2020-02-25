@@ -50,7 +50,7 @@ class Send2020ValidationMailsCommand extends ContainerAwareCommand {
 
             else {
                 foreach($cf->getPurchases() as $purchase) {
-                    if (!$purchase->getToRefund() && !$purchase->getConfirmed()) {
+                    if (!$purchase->getToRefund() && !$purchase->getConfirmed() && !$purchase->getRefunded()) {
                         $em->persist($purchase);
                         /** @var Purchase $purchase */
                         $counterPart = $purchase->getCounterpart();
@@ -74,14 +74,14 @@ class Send2020ValidationMailsCommand extends ContainerAwareCommand {
                                     $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
                                     $purchase->setConfirmed(true);
                                 } else {
-                                    $mailDispatcher->sendRefundedPurchase($purchase);
+                                    $mailDispatcher->sendRefundedPurchase($purchase, false);
                                     $purchase->setToRefund(true);
                                 }
                             }
                         } else {
                             if ($contract->isCancelledArtist($artist)) {
-                                //$paymentManager->refundPurchase($purchase);
-                                $mailDispatcher->sendRefundedPurchase($purchase);
+                                $cancellable = !$contract->getDayOfPerformance($artist)->allLineUpsCancelled();
+                                $mailDispatcher->sendRefundedPurchase($purchase, $cancellable);
                                 $purchase->setToRefund(true);
                             } // Ticket combi, avec artiste
                             elseif ($counterPart->isCombo()) {

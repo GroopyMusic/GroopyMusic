@@ -29,12 +29,11 @@
 
             <p>
             {% if partRefund %}
-                Au vu des résultats des campagnes menées par les artistes, il se trouve que le ticket combi ne peut donner accès à deux jours de festival, puisqu'un seul jour seulement est confirmé. Vous allez dès lors recevoir un remboursement de {{ amount }} € (la différence de prix avec un ticket journalier si vous en aviez acheté un au lieu du ticket combi).
+                Au vu des résultats des campagnes menées par les artistes, il se trouve que le ticket combi ne peut donner accès à deux jours de festival, puisqu'un seul jour seulement est confirmé. Vous allez dès lors recevoir un remboursement de {{ amount }} € (la différence de prix entre vos tickets combis et les tickets journaliers équivalents).
                 Le remboursement sera effectué dans les quelques jours ouvrables qui viennent.
             {% elseif completeRefund %}
                 Au vu des résultats des campagnes menées par les artistes, il se trouve que votre achat concerne une affiche et/ou une journée qui a été annulée. Vous allez dès lors recevoir un remboursement intégral, de {{ amount }} €.
-                Le remboursement sera effectué dans les quelques jours ouvrables qui viennent, à moins que vous ne manifestiez, dans les 48 heures, votre souhait de ne pas être remboursé(e) par mail à festivals@un-mute.be. Dans ce dernier cas, vos tickets vous seront envoyés quelque temps avant le festival et seront valables au(x) jour(s) pour le(s)quel(s) ils étaient prévus.
-                Notez que vous ne pouvez pas faire une telle demande s'il s'agit d'un ticket journalier dont la journée complète est annulée.
+                Le remboursement sera effectué dans les quelques jours ouvrables qui viennent{% if cancellable %}, à moins que vous ne manifestiez, dans les 48 heures, votre souhait de ne pas être remboursé(e) par mail à festivals@un-mute.be. Dans ce dernier cas, vos tickets vous seront envoyés quelque temps avant le festival et seront valables au(x) jour(s) pour le(s)quel(s) ils étaient prévus{% endif %}.
             {% else %}
                 Au vu des résultats des campagnes menées par les artistes, votre achat reste valide et d'application. Vous recevrez vos tickets, seuls droits d'accès au festival, par mail dans les semaines qui viennent.
             {% endif %}

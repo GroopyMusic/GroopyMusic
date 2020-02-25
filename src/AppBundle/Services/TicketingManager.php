@@ -176,28 +176,28 @@ class TicketingManager
      * To be used when tickets are already sent for an event & there is a new order for that event
      *
      * @param ContractFan $cf
-     * @return \Exception|null
+     * @return \Exception|int
      */
     public function sendUnSentTicketsForContractFan(ContractFan $cf)
     {
-        if (!$cf->getcounterpartsSent()) {
-            foreach ($cf->getPurchases() as $purchase) {
-                /** @var Purchase $purchase */
-                try {
-                    if (!$purchase->getTicketsSent() && $purchase->getConfirmed()) {
-                        $this->sendTicketsForPurchase($purchase);
-                        $purchase->setTicketsSent(true);
-                    }
+        $nb_tickets_sent = 0;
+        foreach ($cf->getPurchases() as $purchase) {
+            /** @var Purchase $purchase */
+            try {
+                if (!$purchase->getTicketsSent() && $purchase->getConfirmed()) {
+                    $this->sendTicketsForPurchase($purchase);
+                    $purchase->setTicketsSent(true);
+                    $nb_tickets_sent += $purchase->getTickets()->count();
                 }
-                catch (\Exception $e) {
-                        $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ', purchase ' . $purchase->getId() . ' : ' . $e->getMessage());
-                        return $e;
-                    }
             }
-            $cf->setcounterpartsSent(true);
+            catch (\Exception $e) {
+                    $this->logger->error('Erreur lors de la génération de tickets pour le contrat fan ' . $cf->getId() . ', purchase ' . $purchase->getId() . ' : ' . $e->getMessage());
+                    return $e;
+                }
         }
+        $cf->setcounterpartsSent(true);
         $this->em->flush();
-        return null;
+        return $nb_tickets_sent;
     }
 
     /**
@@ -213,10 +213,12 @@ class TicketingManager
         $j = 0;
         foreach ($contractArtist->getContractsFanPaid() as $cf) {
             /** @var ContractFan $cf */
-            if(!$cf->getcounterpartsSent() && $j < 5) {
-                $this->sendUnSentTicketsForContractFan($cf);
+            if($j < 5) {
+                $nb = $this->sendUnSentTicketsForContractFan($cf);
+                if($nb > 0) {
+                    $j++;
+                }
             }
-            $j++;
         }
 
         return null;

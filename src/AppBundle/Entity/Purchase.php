@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Purchase
 {
     const MAX_QTY = 100000;
-    const TICKETS_DIRECTORY = 'pdf/tickets/';
+    const TICKETS_DIRECTORY = 'pdf/tickets/pc/';
     const YB_TICKETS_DIRECTORY = 'yb/tickets/';
 
     public function __construct()
@@ -660,6 +660,7 @@ class Purchase
     }
     public function setRefunded($refunded) {
         $this->refunded = $refunded;
+        $this->toRefund = false;
         return $this;
     }
     public function getToRefund() {

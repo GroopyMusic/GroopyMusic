@@ -327,7 +327,7 @@ class UserController extends BaseController
 
         if (count($finder) == 0) {
             $ticketingManager->generateTicketsForContractFan($contract);
-            $writer->writeTickets($contract->getTicketsPath(), $contract->getTickets());
+            $writer->writeTickets($contract->getTicketsPath(), $contract, $contract->getTickets());
             $contract->setcounterpartsSent(true);
 
             $em->persist($contract);

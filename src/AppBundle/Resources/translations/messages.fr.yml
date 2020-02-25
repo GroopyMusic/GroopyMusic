@@ -501,7 +501,7 @@ pay_cart:
 
 my_orders:
     title: Mes commandes
-    empty: Vous n'avez pas encore passé de commande. Faites un tour pour découvrir nos <a href="%catalog_url%">artistes</a> et soutenez <a href="{{ path('catalog_crowdfundings') }}">leurs événements</a> !
+    empty: Vous n'avez pas encore passé de commande. Découvrez notre concept sur la <a href="%home_url%">page d'accueil</a>, faites un tour pour découvrir nos <a href="%catalog_url%">artistes</a> et soutenez-les dans leurs campagnes !
     labels:
         details: Détail
         state: État

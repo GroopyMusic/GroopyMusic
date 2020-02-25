@@ -471,7 +471,7 @@ pay_cart:
 
 my_orders:
   title: Mijn bestellingen
-  empty: Je hebt nog geen bestelling geplaatst. Ontdek onze <a href="%catalog_url%">artiesten</a> en ondersteun <a href="{{ path('catalog_crowdfundings') }}">hun evenementen</a> !
+  empty: Je hebt nog geen bestelling geplaatst. Ontdek onze <a href="%catalog_url%">artiesten</a> en ondersteun hun evenementen!
   labels:
     details: Detail
     state: Status
