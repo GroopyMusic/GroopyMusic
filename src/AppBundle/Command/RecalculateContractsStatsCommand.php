@@ -71,41 +71,66 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
 
                     foreach($cf->getPurchases() as $purchase) {
                         /** @var Purchase $purchase */
-                        $cp = $purchase->getCounterpart();
-                        $cp->addNbSold($purchase->getQuantity());
-                        $festivalDays = $cp->getFestivaldays();
-                        $ti = $purchase->getThresholdIncrease();
-                        $mi = $purchase->getMoneyIncrease();
-                        $nbFestivalDays = count($festivalDays);
-                        foreach($festivalDays as $festivalDay) {
-                            /** @var FestivalDay $festivalDay */
-                            $fdIncrease = $ti/$nbFestivalDays;
-                            $festivalDay->addTicketsSold($fdIncrease);
-                            $contract->addCounterpartsSold($fdIncrease);
-                            $lineUps = $festivalDay->getLineups();
-                            if($purchase->getFirstArtist() != null) {
-                                $aps[$purchase->getFirstArtist()->getId()]->addTicketsSold($fdIncrease);
-                                $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addTicketsSold($fdIncrease);
-                                if($postval) {
-                                    $aps[$purchase->getFirstArtist()->getId()]->addTicketsSoldPostVal($fdIncrease);
-                                    $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addTicketsSoldPostVal($fdIncrease);
-                                }
-                                $aps[$purchase->getFirstArtist()->getId()]->addMoneyPoints($mi);
-                            }
-                            else {
-                                $lineUpsFiltered = array_filter($lineUps->toArray(), function(LineUp $lineUp) {
-                                    return !$lineUp->isSoldOut() && !$lineUp->isFailed();
-                                });
-                                $nbLineUps = count($lineUpsFiltered);
-                                foreach ($lineUpsFiltered as $lineUp) {
-                                    /** @var LineUp $lineUp */
-                                    foreach($lineUp->getArtistPerformances() as $perf) {
-                                        $aps[$perf->getArtist()->getId()]->addMoneyPoints($mi);
+
+                        if(!($postval && $purchase->getRefunded())) {
+                            $cp = $purchase->getCounterpart();
+                            //$output->writeln($cp->__toString() . ' x' . $purchase->getQuantity());
+                            $cp->addNbSold($purchase->getQuantity());
+                            $festivalDays = $cp->getFestivaldays();
+                            $ti = $purchase->getThresholdIncrease();
+                            $mi = $purchase->getMoneyIncrease();
+
+                            $nbLineUps = 0;
+                            // todo merge two next loops
+                            foreach($festivalDays as $fd) {
+                                foreach($fd->getLineUps() as $lineup) {
+                                    if(!$lineup->isSoldOut()) {
+                                        if(!$postval || $lineup->isSuccessful()) {
+                                            $nbLineUps++;
+                                        }
                                     }
-                                    $luIncrease = $fdIncrease/$nbLineUps;
-                                    $lineUp->addTicketsSold($luIncrease);
-                                    if($postval) {
-                                        $lineUp->addTicketsSoldPostVal($luIncrease);
+                                }
+                            }
+
+                            $ti_lu = $nbLineUps == 0 ? 0 : $ti / $nbLineUps;
+
+                           // $output->writeln($ti_lu);
+
+                            foreach ($festivalDays as $festivalDay) {
+                                /** @var FestivalDay $festivalDay */
+                                $lineUps = $festivalDay->getLineups();
+                                $lineUpsFiltered = array_filter($lineUps->toArray(), function (LineUp $lineUp) {
+                                    return !$lineUp->isSoldOut();
+                                });
+                                if ($postval) {
+                                    $lineUpsFiltered = array_filter($lineUpsFiltered, function (LineUp $lineUp) {
+                                        return !$lineUp->isFailed();
+                                    });
+                                }
+
+                                $fdIncrease = $ti_lu * count($lineUpsFiltered);
+                                $festivalDay->addTicketsSold($fdIncrease);
+                                $contract->addCounterpartsSold($fdIncrease);
+
+                                if ($purchase->getFirstArtist() != null) {
+                                    $aps[$purchase->getFirstArtist()->getId()]->addTicketsSold($fdIncrease);
+                                    $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addTicketsSold($fdIncrease);
+                                    if ($postval) {
+                                        $aps[$purchase->getFirstArtist()->getId()]->addTicketsSoldPostVal($fdIncrease);
+                                        $aps[$purchase->getFirstArtist()->getId()]->getLineUp()->addTicketsSoldPostVal($fdIncrease);
+                                    }
+                                    $aps[$purchase->getFirstArtist()->getId()]->addMoneyPoints($mi);
+                                } else {
+                                    foreach ($lineUpsFiltered as $lineUp) {
+                                        /** @var LineUp $lineUp */
+                                        // foreach($lineUp->getArtistPerformances() as $perf) {
+                                        //    $aps[$perf->getArtist()->getId()]->addMoneyPoints($mi);
+                                        //}
+                                        $luIncrease = $ti_lu;
+                                        $lineUp->addTicketsSold($luIncrease);
+                                        if ($postval) {
+                                            $lineUp->addTicketsSoldPostVal($luIncrease);
+                                        }
                                     }
                                 }
                             }
@@ -118,7 +143,7 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
             $output->writeln("Commande de recalcul effectuée avec succès.");
         }
         catch(\Throwable $exception) {
-            $output->writeln("La commande de recalcul a rencontré une erreur : " . $exception->getMessage());
+            $output->writeln("La commande de recalcul a rencontré une erreur : " . $exception->getMessage() . "\n" . $exception->getTraceAsString());
         }
 
 
