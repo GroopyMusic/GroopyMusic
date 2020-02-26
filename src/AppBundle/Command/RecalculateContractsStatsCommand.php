@@ -140,13 +140,11 @@ class RecalculateContractsStatsCommand extends ContainerAwareCommand {
             }
 
             $em->flush();
-            $output->writeln("Commande de recalcul effectuée avec succès.");
+            $output->writeln((new \DateTime())->format('d/m/Y H:i:s') . " Commande de recalcul effectuée avec succès.");
         }
         catch(\Throwable $exception) {
             $output->writeln("La commande de recalcul a rencontré une erreur : " . $exception->getMessage() . "\n" . $exception->getTraceAsString());
         }
-
-
     }
 
 }
