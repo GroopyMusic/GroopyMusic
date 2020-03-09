@@ -50,7 +50,7 @@
                         {% if campaign.hasSubEvents %}
                             <b>Dates : {% for se in campaign.getSubEvents %}{% if not loop.first %}, {% endif %}{{ se }}{% endfor %}</b>
                         {% else %}
-                            <b>Date : {{ campaign.dateEvent|date('d/m/Y') }}</b>
+                            <b>Date : {{ campaign.dateEvent|date('d/m/Y \à H\\hi') }}</b>
                         {% endif %}
                     </div>
                 {% endif %}

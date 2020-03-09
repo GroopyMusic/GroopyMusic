@@ -66,6 +66,7 @@ class UploadListener
         $response = $event->getResponse();
         $response['success'] = true;
         $response['newfilename'] = $photo->getFilename();
+        $response->headers->set('Access-Control-Allow-Origin', '*');
         return $response;
     }
 
