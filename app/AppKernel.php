@@ -54,6 +54,7 @@ class AppKernel extends Kernel
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new XBundle\XBundle(),
             new FM\BbcodeBundle\FMBbcodeBundle(),
+            new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Craue\FormFlowBundle\CraueFormFlowBundle(),
         ];
 

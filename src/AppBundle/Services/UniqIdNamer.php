@@ -35,7 +35,7 @@ class UniqIdNamer implements NamerInterface, ConfigurableInterface
     /**
      * {@inheritdoc}
      */
-    public function name($object, PropertyMapping $mapping)
+    public function name($object, PropertyMapping $mapping):string
     {
         $file = $mapping->getFile($object);
 
