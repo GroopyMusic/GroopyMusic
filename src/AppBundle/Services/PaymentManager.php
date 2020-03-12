@@ -174,7 +174,7 @@ class PaymentManager
             $payment = $purchase->getContractFan()->getPayment();
             \Stripe\Refund::create(array(
                 "charge" => $payment->getChargeId(),
-                "amount" => $difference * $purchase->getQuantity() * 100,
+                "amount" => $difference * $purchase->getQuantityOrganic() * 100,
             ));
             $purchase->setRefunded(true);
         } catch(\Throwable $e) {

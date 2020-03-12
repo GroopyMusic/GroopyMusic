@@ -56,33 +56,18 @@ class Send2020RefundsCommand extends ContainerAwareCommand
                     $em->persist($purchase);
 
                     $counterPart = $purchase->getCounterpart();
+                    $combi = $counterPart->isCombo();
                     $artist = $purchase->getArtist();
 
-                    if ($artist == null) {
-                        // Ticket combi, sans artiste
-                        if ($counterPart->isCombo()) {
-                            if (!$contract->atLeastOneLineUpPerDayConfirmed()) {
-                                $paymentManager->refundPurchaseDifference($purchase);
-                                $purchase->setRefunded(true);
-                            }
-                        } // Ticket journalier, sans artiste
-                        else {
-                            if (!$counterPart->getFestivaldays()->first()->atLeastOneLineUpConfirmed()) {
-                                $paymentManager->refundPurchase($purchase);
-                                $purchase->setRefunded(true);
-                            }
-                        }
-                    } else {
-                        if ($contract->isCancelledArtist($artist)) {
-                            $paymentManager->refundPurchase($purchase);
-                        } // Ticket combi, avec artiste
-                        elseif ($counterPart->isCombo()) {
-                            // autre jour annulé -> ticket partiel
-                            if (!$contract->atLeastOneLineupPerDayConfirmed()) {
-                                $paymentManager->refundPurchaseDifference($purchase);
-                                $purchase->setRefunded(true);
-                            } // ticket 100 % confirmé
-                        }
+                    if($combi && $purchase->getToRefund() && $purchase->getConfirmed()) {
+                        // part refund
+                        $paymentManager->refundPurchaseDifference($purchase);
+                        $purchase->setRefunded(true);
+                    }
+
+                    elseif(!$purchase->getConfirmed()) {
+                        $paymentManager->refundPurchase($purchase);
+                        $purchase->setRefunded(true);
                     }
                 }
             }

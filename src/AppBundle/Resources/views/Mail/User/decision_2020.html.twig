@@ -4,48 +4,67 @@
         {% block title %}{{ subject }}{% endblock %}
 
         {% block content %}
-            <p>
-                Chers et chères contributeurs au Festival Un-Mute des 16 et 17 mai prochains dans le grand Espace See U, à Ixelles,
-            </p>
-            <p>
-                Vous le savez : avec Un-Mute, les artistes sont regroupés en affiches (en fonction de leur style musical) ; chaque affiche doit mener une campagne de financement participatif pour collectivement jouer sur scène en cas de succès de la campagne ; en cas d'échec, malheureusement, l'affiche est annulée et ne pourra pas se produire sur scène le jour où elle était programmée.
-            </p>
+            {% set tickets = purchase.quantity > 1 ? 'vos tickets' : 'votre ticket' %}
 
-            <p>
-                Voici le résultat des courses, affiche par affiche, pour le festival 2020 au See U :
-            </p>
-            <ul>
-            {% for affiche in ca.lineups %}
-                <li>Affiche du {{ affiche.festivalDay.date|date('l')|trans|lower}} "{{ affiche.getName }}" ({% for artist in affiche.artists %}{{ artist }}{% if not loop.last %}, {% endif %}{% endfor %}) : {% if affiche.successful %}confirmée !{% elseif affiche.failed %}annulée{% endif %}</li>
-            {% endfor %}
-            </ul>
-
-            <p>Ce mail concerne {% if purchases|length <= 1 %}l'achat{% else %}les achats{% endif %} suivant{% if purchases|length > 1 %}s{% endif %} :</p>
-            <ul>
-            {% for purchase in purchases %}
-                <li>{{ purchase.getDisplayWithAmount }}</li>
-            {% endfor %}
-            </ul>
-
-            <p>
-            {% if partRefund %}
-                Au vu des résultats des campagnes menées par les artistes, il se trouve que le ticket combi ne peut donner accès à deux jours de festival, puisqu'un seul jour seulement est confirmé. Vous allez dès lors recevoir un remboursement de {{ amount }} € (la différence de prix entre vos tickets combis et les tickets journaliers équivalents).
-                Le remboursement sera effectué dans les quelques jours ouvrables qui viennent.
-            {% elseif completeRefund %}
-                Au vu des résultats des campagnes menées par les artistes, il se trouve que votre achat concerne une affiche et/ou une journée qui a été annulée. Vous allez dès lors recevoir un remboursement intégral, de {{ amount }} €.
-                Le remboursement sera effectué dans les quelques jours ouvrables qui viennent{% if cancellable %}, à moins que vous ne manifestiez, dans les 48 heures, votre souhait de ne pas être remboursé(e) par mail à festivals@un-mute.be. Dans ce dernier cas, vos tickets vous seront envoyés quelque temps avant le festival et seront valables au(x) jour(s) pour le(s)quel(s) ils étaient prévus{% endif %}.
+            {% if refund %}
+                <p>
+                    Bonjour !
+                </p>
+                <p>
+                    Si vous recevez ce mail, c'est que vous avez pris part à la campagne de financement participatif du Festival Un-Mute 2020 pour soutenir l'un de nos artistes, et nous vous en remercions.
+                </p>
+                <p>Ce mail concerne l'achat suivant :</p>
+                <ul>
+                    <li>{{ purchase.getDisplayWithAmount }}</li>
+                </ul>
+                <p>
+                    La campagne a pris fin ce mardi 10 mars 2020 à 23h59, et malheureusement, l'affiche à laquelle votre artiste était rattaché n'a pas été validée. Vous serez donc remboursé(e) entièrement de votre achat dans les 30 jours.
+                </p>
+                <p>
+                    Si vous voulez cependant continuer l'aventure, et participer tout de même au Festival dans sa version remaniée (trois affiches validées : "Rap", "French Pop" et "Trip-hop électro"), il vous suffit de de nous en avertir par mail à l'adresse festivals@un-mute.be <b>avant le dimanche 5 avril 2020 à 23h59</b> en nous spécifiant votre souhait de participer au Festival Un-Mute remanié (sans, donc, l'affiche que vous aviez initialement soutenue par votre achat). Nous ferons alors le nécessaire pour que {{ tickets }} pour l'événement {% if purchase.quantity > 1 %}restent valables{% else %}reste valable{% endif %} ! Vous pourrez alors profiter pleinement des artistes des affiches "Rap", "French Pop" et "Trip-hop électro" qui sont donc confirmées.
+                    {% if combi %}
+                        Notez, de plus, que tous les tickets achetés, qu'ils soient journaliers ou "combi", donnent finalement accès <b>aux deux jours</b> du festival. Dès lors, si vous choisissez de maintenir {{ tickets }}, vous serez de toute façon remboursé(e) des {{ combi_amount }} € de différence que vous avez payés pour {{ tickets }} combi par rapport à l'équivalent en tickets journaliers.
+                    {% else %}
+                        Notez, de plus, que tous les tickets achetés, qu'ils soient journaliers ou "combi", donnent finalement accès <b>aux deux jours</b> du festival. Dès lors, si vous choisissez de maintenir {{ tickets }}, vous aurez accès à l'événement tant le samedi 16 que le dimanche 17 mai.
+                    {% endif %}
+                </p>
+                <p>
+                    <u>Veuillez noter que sans réponse positive de votre part avant le dimanche 5 avril 2020 à 23h59, vous serez intégralement remboursé(e) du prix d'achat de {{ tickets }}, lequel ne vous permettra dès lors plus l'accès au Festival Un-Mute du 16 et 17 mai 2020.</u>
+                </p>
+                <p>
+                    Dans tous les cas, nous vous remercions pour la confiance que vous avez placée dans le projet, et espérons vous retrouver à l'un de nos prochains événements !
+                </p>
             {% else %}
-                Au vu des résultats des campagnes menées par les artistes, votre achat reste valide et d'application. Vous recevrez vos tickets, seuls droits d'accès au festival, par mail dans les semaines qui viennent.
+                <p>
+                    Bonjour !
+                </p>
+                <p>
+                    Si vous recevez ce mail, c'est que vous avez participé à la campagne de financement participatif du Festival Un-Mute 2020{% if purchase.artist is not null %} pour soutenir l'un de nos artistes{% endif %}, et nous vous en remercions.
+                </p>
+                <p>Ce mail concerne l'achat suivant :</p>
+                <ul>
+                    <li>{{ purchase.getDisplayWithAmount }}</li>
+                </ul>
+                <p>
+                    La campagne a pris fin ce mardi 10 mars 2020 à 23h59, et malgré des résultats n'ayant pas atteint les 100% de la validation, nous avons décidé de valider les Affiches "Rap", "French Pop" et "Trip-hop électro" qui sont donc confirmées.
+                </p>
+                <p>
+                    Vous êtes heureux d'apprendre que {{ purchase.artist is null ? 'vos artistes favoris joueront' : 'votre artiste favori jouera' }} sur scène et êtes impatient de le{% if purchase.artist is null %}s{% endif %} voir ? Vous n'avez plus rien à faire, et recevrez {{ tickets }} dans votre boite mail au plus tard 10 jours avant l'événement !
+                </p>
+                <p>
+                    Si, par contre, vous ne souhaitez plus participer au festival suite à l'annulation des affiches "Pop-Rock" et "Shades of Rock" (à savoir d'autres affiches que celle que vous avez soutenue par votre achat), il vous suffit de nous en avertir par mail à l'adresse festivals@un-mute.be <b>avant le dimanche 12 avril 2020 à 23h59</b> pour que nous vous remboursions {{ tickets }}.
+                </p>
+                <p>
+                    {% if combi %}
+                        Notez par ailleurs que tous les tickets achetés, qu'ils soient journaliers ou "combi", donnent finalement accès <b>aux deux jours</b> du festival. Dès lors, vous serez de toute façon remboursé(e) dans les 30 jours des {{ combi_amount }} € de différence que vous avez payés pour {{ tickets }} combi par rapport à l'équivalent en tickets journaliers.
+                    {% else %}
+                        Notez par ailleurs que tous les tickets achetés, qu'ils soient journaliers ou "combi", donnent finalement accès <b>aux deux jours</b> du festival. Autrement dit, tous les tickets sont des tickets combi ! Avec {{ tickets }} vous aurez donc accès à l'événement tant le samedi 16 que le dimanche 17 mai !
+                    {% endif %}
+                </p>
+                <p>
+                    Dans tous les cas, nous vous remercions pour la confiance que vous avez placée dans le projet, et espérons vous voir lors du Festival Un-Mute du 16 et 17 mai 2020 !
+                </p>
             {% endif %}
-            </p>
-
-            <p>
-                Si vous avez la moindre question concernant notre fonctionnement et/ou le résultat des campagnes, merci de nous envoyer un mail à festivals@un-mute.be dans les 14 jours qui viennent.
-                {% if yellow %}En particulier, si les accès auxquels vos tickets donnent droits ont été réduits par suite de campagnes échouées, et que vous souhaitez en conséquence annuler votre achat et demander son remboursement, merci de nous le faire savoir, également par mail à festivals@un-mute.be, dans les 14 jours.{% endif %}
-            </p>
-            <p>
-                Nous vous remercions chaleureusement d'avoir soutenu nos artistes dans leur campagne !
-            </p>
         {% endblock %}
     {% endspaceless %}
 {% endautoescape %}

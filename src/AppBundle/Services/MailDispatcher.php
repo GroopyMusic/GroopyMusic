@@ -406,36 +406,34 @@ class MailDispatcher
         $this->send2020Decision($cf, true, false, null, false);
     }
 
-    public function sendRefundedPurchase(Purchase $purchase, $cancellable = true) {
-        $this->send2020Decision($purchase->getContractFan(), true, false, $purchase, false, $cancellable);
+    public function sendRefundedPurchase(Purchase $purchase, $combi) {
+        $this->send2020Decision(true,  $purchase, $combi);
     }
 
-    public function sendConfirmedPurchase(Purchase $purchase, $yellow = false) {
-        $this->send2020Decision($purchase->getContractFan(), false, false, $purchase, $yellow);
+    public function sendConfirmedPurchase(Purchase $purchase, $combi = false) {
+        $this->send2020Decision(false, $purchase, $combi);
     }
 
     public function sendHalfConfirmedPurchase(Purchase $purchase, $yellow = false) {
         $this->send2020Decision($purchase->getContractFan(), false, true, $purchase, $yellow);
     }
 
-    public function send2020Decision(ContractFan $cf, $completeRefund, $partRefund, Purchase $purchase = null, $yellow = false, $cancellable = true) {
-        $purchases = $purchase == null ? $cf->getPurchases()->toArray() : [$purchase];
-        $amount = $purchase == null ? $cf->getAmount() : ($partRefund ? $purchase->getCounterpart()->getDifference() * $purchase->getQuantity() : $purchase->getAmount());
+    public function send2020Decision($refund, Purchase $purchase, $combi) {
         $params = [
-            'cf' => $cf,
-            'yellow' => $yellow,
-            'purchases' => $purchases,
-            'partRefund' => $partRefund,
-            'completeRefund' => $completeRefund,
-            'amount' => $amount,
-            'ca' => $cf->getContractArtist(),
-            'cancellable' => $cancellable,
+           // 'cf' => $cf,
+            'combi' => $combi,
+            'purchase' => $purchase,
+            'combi_amount' => $purchase->getCounterpart()->getDifference() * $purchase->getQuantity(),
+            'amount' => $purchase->getAmount(),
+            'refund' => $refund,
+            //'ca' => $purchase->getContractArtist(),
+           // 'cancellable' => $cancellable,
         ];
 
-        $to = [$cf->getUser()->getEmail() => $cf->getUser()->getPreferredLocale()];
-        $toName = [$cf->getUser()->getDisplayName()];
+        $to = [$purchase->getContractFan()->getUser()->getEmail() => $purchase->getContractFan()->getUser()->getPreferredLocale()];
+        $toName = [$purchase->getContractFan()->getUser()->getDisplayName()];
 
-        $subject = 'Festival Un-Mute au SeeU - résultats des courses !';
+        $subject = 'Festival Un-Mute au SeeU - résultats des courses - précisions post-campagne';
         $subject_params = [];
 
         $this->sendEmail(MailTemplateProvider::DECISION_2020_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);

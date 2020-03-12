@@ -33,76 +33,83 @@ class Send2020ValidationMailsCommand extends ContainerAwareCommand {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         /** @var MailDispatcher $mailDispatcher */
         $mailDispatcher = $this->getContainer()->get(MailDispatcher::class);
-
-
         /** @var ContractArtist $contract */
         $contract = $em->getRepository('AppBundle:ContractArtist')->findVisibleIncludingPreValidation()[0];
 
-
+    $i = 0;
         foreach($contract->getContractsFanPaid() as $cf) {
-            /** @var ContractFan $cf */
+            if($i < 10) {
+                /** @var ContractFan $cf */
 
-            if($contract->allLineUpsCanceled()) {
-                if(!$cf->isRefunded()) {
-                    $mailDispatcher->sendRefundedContractFan($cf);
-                }
-            }
+                //if($contract->allLineUpsCanceled()) {
+                //    if(!$cf->isRefunded()) {
+                //        $mailDispatcher->sendRefundedContractFan($cf);
+                //    }
+                //}
 
-            else {
-                foreach($cf->getPurchases() as $purchase) {
+                //else {
+                foreach ($cf->getPurchases() as $purchase) {
+
                     if (!$purchase->getToRefund() && !$purchase->getConfirmed() && !$purchase->getRefunded()) {
+                        //$i++;
                         $em->persist($purchase);
                         /** @var Purchase $purchase */
                         $counterPart = $purchase->getCounterpart();
                         $combi = $counterPart->isCombo();
+                        if($combi) {
+                            $purchase->setToRefund(true);
+                        }
                         $artist = $purchase->getArtist();
 
                         if ($artist == null) {
                             // Ticket combi, sans artiste
-                            if ($combi) {
-                                $yellow = !$contract->allLineUpsSuccessful();
-                                if ($contract->atLeastOneLineUpPerDayConfirmed()) {
-                                    $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
-                                    $purchase->setConfirmed(true);
-                                } else {
-                                    $mailDispatcher->sendHalfConfirmedPurchase($purchase, $yellow);
-                                    $purchase->setConfirmed(true)->setToRefund(true);
-                                }
-                            } // Ticket journalier, sans artiste
-                            else {
-                                if ($counterPart->getFestivaldays()->first()->atLeastOneLineUpConfirmed()) {
-                                    $yellow = !$counterPart->getFestivaldays()->first()->allLineUpsConfirmed();
-                                    $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
-                                    $purchase->setConfirmed(true);
-                                } else {
-                                    $mailDispatcher->sendRefundedPurchase($purchase, false);
-                                    $purchase->setToRefund(true);
-                                }
-                            }
+                            // if ($combi) {
+                            //$yellow = !$contract->allLineUpsSuccessful();
+                            //if ($contract->atLeastOneLineUpPerDayConfirmed()) {
+                            $mailDispatcher->sendConfirmedPurchase($purchase, $combi);
+                            $purchase->setConfirmed(true);
+                            //} else {
+                            //    $mailDispatcher->sendHalfConfirmedPurchase($purchase, $yellow);
+                            //    $purchase->setConfirmed(true)->setToRefund(true);
+                            //}
+                            // } // Ticket journalier, sans artiste
+                            //else {
+                            //if ($counterPart->getFestivaldays()->first()->atLeastOneLineUpConfirmed()) {
+                            //    $yellow = !$counterPart->getFestivaldays()->first()->allLineUpsConfirmed();
+                            //    $mailDispatcher->sendConfirmedPurchase($purchase, $combi);
+                            //    $purchase->setConfirmed(true);
+                            //} else {
+                            //    $mailDispatcher->sendRefundedPurchase($purchase, false);
+                            //    $purchase->setToRefund(true);
+                            //}
+                            // }
                         } else {
+                            // échec
                             if ($contract->isCancelledArtist($artist)) {
-                                $cancellable = !$contract->getDayOfPerformance($artist)->allLineUpsCancelled();
-                                $mailDispatcher->sendRefundedPurchase($purchase, $cancellable);
+                                //$cancellable = !$contract->getDayOfPerformance($artist)->allLineUpsCancelled();
+                                $mailDispatcher->sendRefundedPurchase($purchase, $combi);
                                 $purchase->setToRefund(true);
-                            } // Ticket combi, avec artiste
-                            elseif ($combi) {
+                            } else {// Ticket combi, avec artiste
+                                //elseif ($combi) {
                                 // autre jour annulé -> ticket partiel
-                                if (!$contract->atLeastOneLineupPerDayConfirmed()) {
-                                    $mailDispatcher->sendHalfConfirmedPurchase($purchase);
-                                    $purchase->setConfirmed(true)->setToRefund(true);
-                                } // ticket 100 % confirmé
-                                else {
-                                    $mailDispatcher->sendConfirmedPurchase($purchase);
-                                    $purchase->setConfirmed(true);
-                                }
-                            } // Ticket journalier, avec artiste
-                            else {
-                                $mailDispatcher->sendConfirmedPurchase($purchase);
+                                //if (!$contract->atLeastOneLineupPerDayConfirmed()) {
+                                //    $mailDispatcher->sendHalfConfirmedPurchase($purchase);
+                                //    $purchase->setConfirmed(true)->setToRefund(true);
+                                //} // ticket 100 % confirmé
+                                //else {
+                                $mailDispatcher->sendConfirmedPurchase($purchase, $combi);
                                 $purchase->setConfirmed(true);
                             }
+                            //}
+                            // } // Ticket journalier, avec artiste
+                            // else {
+                            //    $mailDispatcher->sendConfirmedPurchase($purchase);
+                            //    $purchase->setConfirmed(true);
+                            // }
                         }
                     }
                 }
+                //}
             }
         }
 
