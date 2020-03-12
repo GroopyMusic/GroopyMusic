@@ -54,11 +54,12 @@ class Send2020ValidationMailsCommand extends ContainerAwareCommand {
                         $em->persist($purchase);
                         /** @var Purchase $purchase */
                         $counterPart = $purchase->getCounterpart();
+                        $combi = $counterPart->isCombo();
                         $artist = $purchase->getArtist();
 
                         if ($artist == null) {
                             // Ticket combi, sans artiste
-                            if ($counterPart->isCombo()) {
+                            if ($combi) {
                                 $yellow = !$contract->allLineUpsSuccessful();
                                 if ($contract->atLeastOneLineUpPerDayConfirmed()) {
                                     $mailDispatcher->sendConfirmedPurchase($purchase, $yellow);
@@ -84,7 +85,7 @@ class Send2020ValidationMailsCommand extends ContainerAwareCommand {
                                 $mailDispatcher->sendRefundedPurchase($purchase, $cancellable);
                                 $purchase->setToRefund(true);
                             } // Ticket combi, avec artiste
-                            elseif ($counterPart->isCombo()) {
+                            elseif ($combi) {
                                 // autre jour annulé -> ticket partiel
                                 if (!$contract->atLeastOneLineupPerDayConfirmed()) {
                                     $mailDispatcher->sendHalfConfirmedPurchase($purchase);

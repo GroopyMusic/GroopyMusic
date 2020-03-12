@@ -18,48 +18,52 @@
 
     {% if contractArtist.crowdable %}
         {% for purchase in contract.children.purchases %}
-            <div class="row my-2 counterpart-form">
-                {% set counterpart = purchase.vars.value.counterpart %}
-                <div class="col-12 col-md-4 py-3 y-middle bg-black text-center round-left">
-                    <label><h3 class="text-primary text-uppercase m-0">{{ counterpart.name }}</h3></label>
-                </div>
+            {% set counterpart = purchase.vars.value.counterpart %}
+            {% if counterpart.disabled %}
+                {% do purchase.setRendered(true) %}
+            {% else %}
+                <div class="row my-2 counterpart-form">
+                    <div class="col-12 col-md-4 py-3 y-middle bg-black text-center round-left">
+                        <label><h3 class="text-primary text-uppercase m-0">{{ counterpart.name }}</h3></label>
+                    </div>
 
-                <div class="col-12 col-md-8 py-2 y-middle bg-white round-right h-100">
-                    <div class="row w-100">
-                        <div class="col-6 col-md-8 py-2 my-auto">
-                            <div>{{ form_errors(purchase) }}</div>
-                            <p class="font-weight-light">{{ counterpart.getDescription|raw }}</p>
-                            <div class="font-weight-bold counterpart-price">{{ counterpart.price }} €</div>
+                    <div class="col-12 col-md-8 py-2 y-middle bg-white round-right h-100">
+                        <div class="row w-100">
+                            <div class="col-6 col-md-8 py-2 my-auto">
+                                <div>{{ form_errors(purchase) }}</div>
+                                <p class="font-weight-light">{{ counterpart.getDescription|raw }}</p>
+                                <div class="font-weight-bold counterpart-price">{{ counterpart.price }} €</div>
 
-                            {% if counterpart.potentialArtists is not empty %}
-                                <div class="select2-artists">
-                                    Si vous venez en particulier pour un artiste, mentionnez-le&nbsp;:
-                                    <button type="button" class="info-btn" data-toggle="tooltip" data-placement="top" title="Chaque ticket acheté donne un point à l’artiste de votre choix ! Un seul des artistes de la liste peut être sélectionné par type de ticket choisi. Un ticket combi ne donne pas plus de points à l’artiste choisi lors de votre commande qu’un ticket journalier."><i class="fas fa-info-circle" style="color: orange"></i></button>
-                                    {{ form_widget(purchase.artist) }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="col-6 col-md-4 py-2 my-auto">
-                            {% if counterpart.disabled %}
-                                {% do purchase.setRendered(true) %}
-                                <p><i>Pas disponible pour l'instant</i></p>
-                            {% elseif counterpart.getNbAvailable() == 0 %}
-                                {% do purchase.setRendered(true) %}
-                                <p><i>SOLD OUT</i></p>
-                            {% else %}
-                                <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
-                                    <a class="incr-btn" data-action="decrease" href="#">–</a>
-                                    {{ form_widget(purchase.quantity) }}
-                                    <a class="incr-btn" data-action="increase"
-                                       data-max="{{ contractArtist.nbAvailable(counterpart) }}"
-                                       href="#">&plus;</a>
-                                </div>
+                                {% if counterpart.potentialArtists is not empty %}
+                                    <div class="select2-artists">
+                                        Si vous venez en particulier pour un artiste, mentionnez-le&nbsp;:
+                                        <button type="button" class="info-btn" data-toggle="tooltip" data-placement="top" title="Chaque ticket acheté donne un point à l’artiste de votre choix ! Un seul des artistes de la liste peut être sélectionné par type de ticket choisi. Un ticket combi ne donne pas plus de points à l’artiste choisi lors de votre commande qu’un ticket journalier."><i class="fas fa-info-circle" style="color: orange"></i></button>
+                                        {{ form_widget(purchase.artist) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-6 col-md-4 py-2 my-auto">
+                                {% if counterpart.disabled %}
+                                    {% do purchase.setRendered(true) %}
+                                    <p><i>Pas disponible pour l'instant</i></p>
+                                {% elseif counterpart.getNbAvailable() == 0 %}
+                                    {% do purchase.setRendered(true) %}
+                                    <p><i>SOLD OUT</i></p>
+                                {% else %}
+                                    <div class="count-input space-bottom" data-price="{{ counterpart.price }}">
+                                        <a class="incr-btn" data-action="decrease" href="#">–</a>
+                                        {{ form_widget(purchase.quantity) }}
+                                        <a class="incr-btn" data-action="increase"
+                                           data-max="{{ contractArtist.nbAvailable(counterpart) }}"
+                                           href="#">&plus;</a>
+                                    </div>
 
-                            {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         {% endfor %}
     {% endif %}
     {% do contract.setRendered %}

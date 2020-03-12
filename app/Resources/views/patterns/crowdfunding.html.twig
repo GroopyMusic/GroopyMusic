@@ -35,16 +35,24 @@
                 {% endif %}
                 <div class="col-{{ sizexs }} col-md-{{ sizemd~offset }} px-2 pb-3 text-center">
                     <h3 class="text-primary small-title">{{ lineUp.festivalDay.date|date('l')|trans }} - {{ lineUp.getName }}</h3>
-                    <div class="small font-weight-light">{% for performance in lineUp.performances %}{{ performance.artist }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
+                    {% if not lineUp.successful and not lineUp.failed  %}
+                        <div class="small font-weight-light">{% for performance in lineUp.performances %}{{ performance.artist }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
+                    {% endif %}
                     <div class="d-inline-block">
-                        <div class="c100 p{{ min(percent, 100) }} {{ color }}">
-                            <span class="{{ color}}">{{ percent }} %</span>
+                        {% set p = min(percent, 100) %}
+                        {% if lineUp.successful %}
+                            {% set p = 100 %}
+                        {% endif %}
+                        <div class="c100 p{{ p }} {{ color }}">
+                            <span class="{{ color}}">{{ p == 100 ? 'Confirmé' : lineUp.failed ? 'Annulé' : p ~ ' %' }}</span>
                             <div class="slice">
                                 <div class="bar"></div>
                                 <div class="fill"></div>
                             </div>
                         </div>
-                        <div class="text-center status-txt text-{{ color }}">{{ text|raw }}</div>
+                        {% if not lineUp.failed and not lineUp.successful %}
+                            <div class="text-center status-txt text-{{ color }}">{{ text|raw }}</div>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
