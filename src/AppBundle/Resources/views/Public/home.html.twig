@@ -30,7 +30,7 @@
                             <span class="card-text text-uppercase">{{ festival.displayHalls }}</span>
                         </div>
                         <div class="col-12">
-                            <p class="card-text text-uppercase my-3">{% for perf in festival.artistPerformances %}{{ perf.artist }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
+                            <p class="card-text text-uppercase my-3">{% for perf in festival.successfulPerformances %}{{ perf.artist }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
                             <div class="text-right">
                                 <a href="{{ path('artist_contract', {'id': festival.id, 'slug': festival.getSlug}) }}" class="card-text btn btn-primary1">PLUS D'INFOS</a>
                                 <a href="{{ path('tickets_marketplace') }}" class="btn btn-primary rounded-pill">TICKETS</a>
@@ -111,12 +111,18 @@
     <section class="container-fluid bg-white text-center" id="home-friends">
         <div class="container">
             <h2 class="home-section-title text-center mt-2 mt-lg-0">{{ 'home.partners.title'|trans }}</h2>
+
+            <div class="center mt-2 mb-5">
+                <p>Avec le soutien de la Fédération Wallonie-Bruxelles</p>
+               <!-- <div class="my-auto col-4 offset-sm-0 col-sm-3 col-md-2 offset-md-2 py-3">-->
+                <a href="http://federation-wallonie-bruxelles.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/fwb.png') }}" alt="Fédération Wallonie-Bruxelles"></a>
+            </div>
+
             <div class="row">
-                <div class="my-auto col-4 offset-sm-0 col-sm-3 col-md-2 offset-md-2 py-3"><a href="http://federation-wallonie-bruxelles.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/fwb.png') }}" alt="Fédération Wallonie-Bruxelles"></a></div>
-                <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://brusselsisyours.com/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/biy.jpg') }}" alt="Brussels is Yours"></a></div>
+                <div class="my-auto col-4 col-sm-3 offset-sm-2 offset-md-0 col-md-2 py-3"><a href="http://brusselsisyours.com/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/biy.jpg') }}" alt="Brussels is Yours"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="https://www.mybeerbox.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/mbb.png') }}" alt="My Beer Box"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://www.tacite.be" target="_blank"><img class="img-fluid" style="max-width: 80%;" src="{{ asset('images/friends/tacite.svg') }}" alt="Tacite, l'Allié des Artistes"></a></div>
-                <div class="my-auto col-4 col-sm-3 offset-sm-1 col-md-2 offset-md-3 py-3"><a href="https://www.facebook.com/cafedeshallesbxl/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/hsg.png') }}" alt="Café des Halles Saint-Géry"></a></div>
+                <div class="my-auto col-4 col-sm-3 offset-sm-2 offset-md-0 col-md-2 py-3"><a href="https://www.facebook.com/cafedeshallesbxl/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/hsg.png') }}" alt="Café des Halles Saint-Géry"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="https://www.maisonsclothes.be" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/maisonclothes.png') }}" alt="Maison Clothes"></a></div>
                 <div class="my-auto col-4 col-sm-3 col-md-2 py-3"><a href="http://www.whatthefun.be/" target="_blank"><img class="img-fluid" src="{{ asset('images/friends/wtf.png') }}" alt="What the Fun"></a></div>
             </div>

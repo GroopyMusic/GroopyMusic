@@ -504,6 +504,25 @@ class ContractArtist extends BaseContractArtist
     }
 
     // unmapped, memoized
+    private $successfulPerformances = null;
+    public function getSuccessfulPerformances() {
+        if($this->successfulPerformances == null) {
+            $performances_days = [];
+            $i = 0;
+
+            foreach($this->getFestivaldays() as $festivalDay) {
+                foreach($festivalDay->getSuccessfulPerformances() as $artistPerformance) {
+                    $performances_days[] = $artistPerformance;
+                }
+                $i++;
+            }
+
+            $this->successfulPerformances = $performances_days;
+        }
+        return $this->successfulPerformances;
+    }
+
+    // unmapped, memoized
     private $all_artists = null;
 
     public function getAllArtists()

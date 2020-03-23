@@ -51,6 +51,27 @@ class FestivalDay
         return $this->artist_perfs;
     }
 
+    private $successful_perfs = null;
+    public function getSuccessfulPerformances() {
+        if($this->successful_perfs != null) {
+            return $this->successful_perfs;
+        }
+
+        if($this->lineups->count() == 0) {
+            $this->successful_perfs = $this->getPerformances()->toArray();
+        }
+        else {
+            $perfs = [];
+            foreach($this->getConfirmedLineUps() as $lineup) {
+                /** @var LineUp $lineup */
+                $ps = $lineup->getPerformances()->toArray();
+                $perfs = array_merge($perfs, $ps);
+            }
+            $this->successful_perfs = $perfs;
+        }
+        return $this->successful_perfs;
+    }
+
     public function getFestival() {
         if(!empty($this->festivals))
             return $this->festivals->first();

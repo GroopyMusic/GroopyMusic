@@ -47,7 +47,7 @@
         <!-- this is the content of the card with an optionnal span for ⭐ -->
         <div>
             <span class="d-none artist-genres">{% for genre in artist.genres %}{% if not loop.first %} {% endif %}<span class="jplist-{{ genre|slug }}">{{ genre }}</span>{% endfor %}</span>
-            {% if artist.hasCurrentContract %}<span class="d-none artist-has-current-contract"></span>{% endif %}
+            {% if artist.hasCurrentContract and not artist.currentContract[0].isCancelledArtist(artist) %}<span class="d-none artist-has-current-contract"></span>{% endif %}
         </div>
 
         <!-- this is the link that the card need to take to -->
