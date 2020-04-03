@@ -635,10 +635,11 @@ class ContractFan
     public function setRefunded($refunded)
     {
         $this->refunded = $refunded;
-        foreach($this->purchases as $purchase) {
-            $purchase->setRefunded(true);
+        if($refunded) {
+            foreach($this->purchases as $purchase) {
+                $purchase->setRefunded(true);
+            }
         }
-
         return $this;
     }
 

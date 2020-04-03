@@ -64,8 +64,12 @@ class PaymentManager
 
     public function refundStripeAndUMContractFan(ContractFan $contractFan) {
         $this->initStripe();
-        $this->refundPartOfStripePayment($contractFan);
-        $this->refundUMContractFan($contractFan);
+        try {
+            $this->refundPartOfStripePayment($contractFan);
+            $this->refundUMContractFan($contractFan);}
+        catch(\Throwable $e) {
+
+        }
 
         $this->em->flush();
     }
@@ -141,7 +145,7 @@ class PaymentManager
 
             $this->em->persist($payment);
 
-            $this->notifyUserRefundedPayment($payment);
+            $this->notifyUserRefundedPayment($payment); // TODO
         }
         $this->em->flush();
     }

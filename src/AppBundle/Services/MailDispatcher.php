@@ -403,7 +403,7 @@ class MailDispatcher
             return;
         }
 
-        $this->send2020Decision($cf, true, false, null, false);
+       // TODO
     }
 
     public function sendRefundedPurchase(Purchase $purchase, $combi) {
