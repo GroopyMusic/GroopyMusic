@@ -254,6 +254,9 @@ class BaseContractArtist implements TranslatableInterface
                 return $cf1->getDate() < $cf2->getDate() ? -1 : 1;
             });
             $failed = $this->failed;
+            if($this instanceof ContractArtist) {
+                $failed = $failed || $this->allLineUpsCanceled();
+            }
             $this->contractsFanPaid = array_filter($cfs, function(ContractFan $contractFan) use ($failed) {
                 return $contractFan->isPaid() && ($failed || !$contractFan->isRefunded());
             });

@@ -397,15 +397,11 @@ class MailDispatcher
     }
 
     public function sendRefundedContractFan(ContractFan $cf) {
-
         if($cf->getContractArtist()->isYB()) {
             $this->sendRefundedYBContractFan($cf, 'other');
             return;
         }
-
-       // TODO
     }
-
     public function sendRefundedPurchase(Purchase $purchase, $combi) {
         $this->send2020Decision(true,  $purchase, $combi);
     }
@@ -438,6 +434,22 @@ class MailDispatcher
 
         $this->sendEmail(MailTemplateProvider::DECISION_2020_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
     }
+
+    public function send2020Corona(Purchase $purchase) {
+        $params = [
+            'purchase' => $purchase,
+        ];
+
+        $to = [$purchase->getContractFan()->getUser()->getEmail() => $purchase->getContractFan()->getUser()->getPreferredLocale()];
+        $toName = [$purchase->getContractFan()->getUser()->getDisplayName()];
+
+        $subject = 'ANNULATION - Festival Un-Mute au SeeU';
+        $subject_params = [];
+
+        $this->sendEmail(MailTemplateProvider::CORONA_2020_TEMPLATE, $subject, $params, $subject_params, [], [], $to, $toName);
+
+    }
+
 
 
     public function sendArtistValidated(Artist $artist)

@@ -46,6 +46,7 @@ class MailTemplateProvider extends AzineTemplateProvider implements TemplateProv
     const SPONSORSHIP_INVITATION_MAIL = "AppBundle:Mail/User:sponsorship_invitation_mail.txt.twig";
 
     const DECISION_2020_TEMPLATE = "AppBundle:Mail/User:decision_2020.txt.twig";
+    const CORONA_2020_TEMPLATE = "AppBundle:Mail/User:corona_2020.txt.twig";
 
     // Admin mails templates
     // TODO uniform names

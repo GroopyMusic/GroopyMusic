@@ -8,7 +8,7 @@
 
             <p><a href="{{ path('artist_contract', {'id':contract.id, 'slug': contract.slug}) }}">Voir la page de l'événement.</a></p>
 
-            {% if not contract.successful %}
+            {% if not (contract.successful or contract.failed) %}
                 <p>
                     Cet événement n'est pas marqué comme réussi ; impossible d'envoyer les mails !
                 </p>

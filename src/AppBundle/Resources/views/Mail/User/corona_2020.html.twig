@@ -1,0 +1,29 @@
+{% extends 'AppBundle:Mail:baseEmailLayout.html.twig' %}
+{% autoescape false %}
+    {% spaceless %}
+        {% block title %}{{ subject }}{% endblock %}
+
+        {% block content %}
+            {% set tickets = purchase.quantity > 1 ? 'vos tickets' : 'votre ticket' %}
+
+            <p>
+                Chers producteurs de la scène belge locale,
+            </p>
+            <p>
+                Si vous recevez ce mail, c'est que vous avez pris part à la campagne de financement participatif du Festival Un-Mute 2020, et nous vous en remercions encore.
+            </p>
+            <p>Ce mail concerne l'achat suivant :</p>
+            <ul>
+                <li>{{ purchase.getDisplayWithAmount }}</li>
+            </ul>
+            <p>
+                Malheureusement, à cause du virus qui sévit actuellement dans le monde entier, l'équipe Un-Mute a décidé d'annuler le festival des 16 et 17 mai prochains.
+                Notre festival, qui regroupait de nombreux artistes en différentes scènes correspondant à leur style de musique, est annulé, mais ce n'est que partie remise : le projet Un-Mute poursuit son chemin.
+                Une fois cette période étrange derrière nous, nous reviendrons avec de nouveaux événements, toujours dans un esprit de découverte locale et de collaboration entre artistes et public.
+            </p>
+            <p>
+                Si ce n'est pas encore le cas, vous devriez prochainement recevoir l'intégralité de votre paiement de retour sur votre compte.
+            </p>
+        {% endblock %}
+    {% endspaceless %}
+{% endautoescape %}
