@@ -122,6 +122,8 @@ abstract class BaseController extends Controller
         if($campaign != null && (!$user->ownsYBCampaign($campaign) && !$user->isSuperAdmin())) {
             throw new YBAuthenticationException();
         }
+        // The next line suppresses access to dashboard to non-super admins
+        $mustBeSuperAdmin = true; 
         if($mustBeSuperAdmin && !$user->isSuperAdmin()) {
             throw new YBAuthenticationException();
         }
